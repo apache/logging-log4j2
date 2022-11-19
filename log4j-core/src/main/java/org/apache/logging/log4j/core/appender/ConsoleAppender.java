@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
@@ -188,7 +189,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
         final PropertyEnvironment properties = PropertiesUtil.getProperties();
-        if (!properties.isOsWindows() || properties.getBooleanProperty("log4j.skipJansi", true) || direct) {
+        if (!properties.isOsWindows() || properties.getBooleanProperty(Log4jProperties.JANSI_DISABLED, true) || direct) {
             return outputStream;
         }
         try {

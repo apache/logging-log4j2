@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import com.lmax.disruptor.ExceptionHandler;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.message.Message;
@@ -28,6 +28,8 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
+
+import com.lmax.disruptor.ExceptionHandler;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @Tag("async")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
-@SetSystemProperty(key = "AsyncLogger.ExceptionHandler", value = "org.apache.logging.log4j.core.async.AsyncLoggerEventTranslationExceptionTest$TestExceptionHandler")
+@SetSystemProperty(key = Log4jProperties.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME, value = "org.apache.logging.log4j.core.async.AsyncLoggerEventTranslationExceptionTest$TestExceptionHandler")
 class AsyncLoggerEventTranslationExceptionTest {
 
     @Test

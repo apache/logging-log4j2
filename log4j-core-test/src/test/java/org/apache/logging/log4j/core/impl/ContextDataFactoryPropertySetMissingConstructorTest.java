@@ -18,20 +18,21 @@ package org.apache.logging.log4j.core.impl;
 
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the ContextDataFactory class.
  */
+@SetSystemProperty(key = Log4jProperties.THREAD_CONTEXT_DATA_CLASS_NAME, value = "org.apache.logging.log4j.core.impl.FactoryTestStringMapWithoutIntConstructor")
 public class ContextDataFactoryPropertySetMissingConstructorTest {
 
     @Test
     public void intArgReturnsSortedArrayStringMapIfPropertySpecifiedButMissingIntConstructor() throws Exception {
-        System.setProperty("log4j2.ContextData", FactoryTestStringMapWithoutIntConstructor.class.getName());
         assertTrue(ContextDataFactory.createContextData(2) instanceof SortedArrayStringMap);
         final SortedArrayStringMap actual = (SortedArrayStringMap) ContextDataFactory.createContextData(2);
         assertEquals(2, actual.getThreshold());
-        System.clearProperty("log4j2.ContextData");
     }
 }

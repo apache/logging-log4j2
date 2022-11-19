@@ -54,6 +54,7 @@ import org.apache.logging.log4j.core.async.AsyncWaitStrategyFactoryConfig;
 import org.apache.logging.log4j.core.config.arbiters.Arbiter;
 import org.apache.logging.log4j.core.config.arbiters.SelectArbiter;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
@@ -753,7 +754,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         rootLoggerConfig.addAppender(appender, null, null);
 
         final Level defaultLevel = Level.ERROR;
-        final String levelName = PropertiesUtil.getProperties().getStringProperty(DefaultConfiguration.DEFAULT_LEVEL,
+        final String levelName = PropertiesUtil.getProperties().getStringProperty(Log4jProperties.CONFIG_DEFAULT_LEVEL,
                 defaultLevel.name());
         final Level level = Level.valueOf(levelName);
         rootLoggerConfig.setLevel(level != null ? level : defaultLevel);

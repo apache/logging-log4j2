@@ -18,30 +18,18 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("async")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
+@SetSystemProperty(key = Log4jProperties.CONFIG_LOCATION, value = "AsyncWaitStrategyIncorrectFactoryConfigGlobalLoggerTest.xml")
 public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
-
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncWaitStrategyIncorrectFactoryConfigGlobalLoggerTest.xml");
-    }
-
-    @AfterAll
-    public static void afterClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-    }
-
 
     @Test
     public void testIncorrectConfigWaitStrategyFactory() throws Exception {

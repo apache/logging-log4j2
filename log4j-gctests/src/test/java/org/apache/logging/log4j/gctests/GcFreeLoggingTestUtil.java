@@ -59,7 +59,7 @@ public enum GcFreeLoggingTestUtil {;
 
         assertTrue(isThreadLocalsEnabled(), "Constants.ENABLE_THREADLOCALS");
         assertTrue(Constants.ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
-        assertFalse(isWebApp(), "Constants.IS_WEB_APP");
+        assertFalse(isWebApp(), "Constants.isWebApp()");
 
         final MyCharSeq myCharSeq = new MyCharSeq();
         final Marker testGrandParent = MarkerManager.getMarker("testGrandParent");

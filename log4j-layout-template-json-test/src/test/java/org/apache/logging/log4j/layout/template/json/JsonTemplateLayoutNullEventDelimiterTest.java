@@ -16,13 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.assertj.core.api.Assertions;
-import org.awaitility.Awaitility;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
@@ -30,6 +23,14 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.Duration;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.Test;
 
 class JsonTemplateLayoutNullEventDelimiterTest {
 
@@ -44,7 +45,7 @@ class JsonTemplateLayoutNullEventDelimiterTest {
                     "serverPort",
                     String.valueOf(server.getPort()));
             System.setProperty(
-                    "log4j.configurationFile",
+                    Log4jProperties.CONFIG_LOCATION,
                     "nullEventDelimitedJsonTemplateLayoutLogging.xml");
 
             // Produce log events.

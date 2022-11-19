@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -46,9 +47,9 @@ final class DisruptorUtil {
      * CPU utilization is significantly reduced by restricting access to the enqueue operation.
      */
     static final boolean ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
-            .getBooleanProperty("AsyncLogger.SynchronizeEnqueueWhenQueueFull", true);
+            .getBooleanProperty(Log4jProperties.ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, true);
     static final boolean ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
-            .getBooleanProperty("AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", true);
+            .getBooleanProperty(Log4jProperties.ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, true);
 
     private DisruptorUtil() {
     }
@@ -83,7 +84,7 @@ final class DisruptorUtil {
     }
 
     static ExceptionHandler<RingBufferLogEvent> getAsyncLoggerExceptionHandler() {
-        final String cls = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ExceptionHandler");
+        final String cls = PropertiesUtil.getProperties().getStringProperty(Log4jProperties.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME);
         if (cls == null) {
             return new AsyncLoggerDefaultExceptionHandler();
         }
@@ -92,14 +93,14 @@ final class DisruptorUtil {
             final Class<? extends ExceptionHandler<RingBufferLogEvent>> klass =
                 (Class<? extends ExceptionHandler<RingBufferLogEvent>>) Loader.loadClass(cls);
             return klass.newInstance();
-        } catch (final Exception ignored) {
-            LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: error creating {}: ", cls, ignored);
+        } catch (final Exception e) {
+            LOGGER.debug("Invalid {} value: error creating {}: ", Log4jProperties.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME, cls, e);
             return new AsyncLoggerDefaultExceptionHandler();
         }
     }
 
     static ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper> getAsyncLoggerConfigExceptionHandler() {
-        final String cls = PropertiesUtil.getProperties().getStringProperty("AsyncLoggerConfig.ExceptionHandler");
+        final String cls = PropertiesUtil.getProperties().getStringProperty(Log4jProperties.ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME);
         if (cls == null) {
             return new AsyncLoggerConfigDefaultExceptionHandler();
         }
@@ -108,8 +109,8 @@ final class DisruptorUtil {
             final Class<? extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>> klass =
                     (Class<? extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>>) Loader.loadClass(cls);
             return klass.newInstance();
-        } catch (final Exception ignored) {
-            LOGGER.debug("Invalid AsyncLoggerConfig.ExceptionHandler value: error creating {}: ", cls, ignored);
+        } catch (final Exception e) {
+            LOGGER.debug("Invalid {} value: error creating {}: ", Log4jProperties.ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME, cls, e);
             return new AsyncLoggerConfigDefaultExceptionHandler();
         }
     }

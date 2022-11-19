@@ -16,11 +16,13 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.LogManager;
+import java.util.concurrent.CountDownLatch;
+
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -28,8 +30,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Tests queue full scenarios with AsyncLoggers in configuration.
@@ -40,11 +40,14 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest2 extends QueueFul
 
     @BeforeClass
     public static void beforeClass() {
-        //FORMAT_MESSAGES_IN_BACKGROUND
-        System.setProperty("log4j.format.msg.async", "true");
-        System.setProperty("AsyncLoggerConfig.RingBufferSize", "128");
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "log4j2-queueFullAsyncLoggerConfig.xml");
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, "true");
+        System.setProperty(Log4jProperties.ASYNC_CONFIG_RING_BUFFER_SIZE, "128");
+    }
+
+    @AfterClass
+    public static void afterClass() throws Exception {
+        System.clearProperty(Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND);
+        System.clearProperty(Log4jProperties.ASYNC_CONFIG_RING_BUFFER_SIZE);
     }
 
     @Rule
@@ -57,9 +60,9 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest2 extends QueueFul
     }
 
     @Test(timeout = 5000)
-    public void testLoggingFromToStringCausesOutOfOrderMessages() throws InterruptedException {
+    public void testLoggingFromToStringCausesOutOfOrderMessages() {
         //TRACE = true;
-        final Logger logger = LogManager.getLogger(this.getClass());
+        final Logger logger = context.getLogger(this.getClass());
 
         blockingAppender.countDownLatch = new CountDownLatch(1);
         unlocker = new Unlocker(new CountDownLatch(129)); // count slightly different from "pure" async loggers

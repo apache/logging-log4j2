@@ -23,33 +23,20 @@ import java.io.FileReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Category(AsyncLoggers.class)
+@Tag("async")
+@SetSystemProperty(key = Log4jProperties.CONFIG_LOCATION, value = "AsyncLoggerThreadContextTest.xml")
+@ContextSelectorType(AsyncLoggerContextSelector.class)
 public class AsyncLoggerThreadContextTest {
-
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerThreadContextTest.xml");
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
-    }
 
     @Test
     public void testAsyncLogWritesToLog() throws Exception {
@@ -69,11 +56,11 @@ public class AsyncLoggerThreadContextTest {
         final String line1 = reader.readLine();
         reader.close();
         file.delete();
-        assertNotNull("line1", line1);
-        assertTrue("line1 correct", line1.contains(msg));
+        assertNotNull(line1, "line1");
+        assertTrue(line1.contains(msg), "line1 correct");
 
-        assertTrue("ThreadContext.map", line1.contains("mapvalue"));
-        assertTrue("ThreadContext.stack", line1.contains("stackvalue"));
+        assertTrue(line1.contains("mapvalue"), "ThreadContext.map");
+        assertTrue(line1.contains("stackvalue"), "ThreadContext.stack");
     }
 
 }

@@ -19,12 +19,12 @@ package org.apache.logging.log4j.core.async;
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -33,7 +33,8 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests queue full scenarios with AsyncLoggers in configuration.
@@ -44,9 +45,12 @@ public class QueueFullAsyncLoggerConfigTest extends QueueFullAbstractTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("AsyncLoggerConfig.RingBufferSize", "128"); // minimum ringbuffer size
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "log4j2-queueFullAsyncLoggerConfig.xml");
+        System.setProperty(Log4jProperties.ASYNC_CONFIG_RING_BUFFER_SIZE, "128"); // minimum ringbuffer size
+    }
+
+    @AfterClass
+    public static void afterClass() throws Exception {
+        System.clearProperty(Log4jProperties.ASYNC_CONFIG_RING_BUFFER_SIZE);
     }
 
     @Rule
@@ -61,7 +65,7 @@ public class QueueFullAsyncLoggerConfigTest extends QueueFullAbstractTest {
 
     @Test(timeout = 5000)
     public void testNormalQueueFullKeepsMessagesInOrder() throws InterruptedException {
-        final Logger logger = LogManager.getLogger(this.getClass());
+        final Logger logger = context.getLogger(this.getClass());
 
         blockingAppender.countDownLatch = new CountDownLatch(1);
         unlocker = new Unlocker(new CountDownLatch(129));

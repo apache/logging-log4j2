@@ -88,11 +88,11 @@ public final class Constants {
      * After a large message has been delivered to the appenders, the StringBuilder is trimmed to this size.
      * <p>
      * The default value is 518, which allows the StringBuilder to resize three times from its initial size.
-     * Users can override with system property {@value LoggingSystemProperties#LOGGER_REUSABLE_MESSAGE_MAX_SIZE}.
+     * Users can override with system property {@value LoggingSystemProperties#GC_REUSABLE_MESSAGE_MAX_SIZE}.
      * </p>
      * @since 2.9
      */
-    public static final int MAX_REUSABLE_MESSAGE_SIZE = size(LoggingSystemProperties.LOGGER_REUSABLE_MESSAGE_MAX_SIZE, (128 * 2 + 2) * 2 + 2);
+    public static final int MAX_REUSABLE_MESSAGE_SIZE = size(LoggingSystemProperties.GC_REUSABLE_MESSAGE_MAX_SIZE, (128 * 2 + 2) * 2 + 2);
 
     private static int size(final String property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);

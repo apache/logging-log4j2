@@ -16,30 +16,20 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
+import java.util.List;
+
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+@SetSystemProperty(key = "test", value = "test")
 public class XmlLoggerPropsTest {
-
-    @BeforeAll
-    static void setupClass() {
-        System.setProperty("test", "test");
-    }
-
-    @AfterAll
-    static void tearDownClass() {
-        System.clearProperty("test");
-    }
 
     @Test
     @LoggerContextSource("log4j-loggerprops.xml")

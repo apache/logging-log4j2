@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.config.composite;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -30,21 +36,10 @@ import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 /**
  * A Composite Configuration.
  */
 public class CompositeConfiguration extends AbstractConfiguration implements Reconfigurable {
-
-    /**
-     * Allow the ConfigurationFactory class to be specified as a system property.
-     */
-    public static final String MERGE_STRATEGY_PROPERTY = "log4j.mergeStrategy";
 
     private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
 

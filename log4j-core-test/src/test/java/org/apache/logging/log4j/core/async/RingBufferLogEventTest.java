@@ -14,27 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.async;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
-import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.ReusableMessageFactory;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.MutableThreadContextStack;
-import org.apache.logging.log4j.util.FilteredObjectInputStream;
-import org.apache.logging.log4j.util.StringMap;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,19 +23,37 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
+import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ReusableMessageFactory;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.spi.MutableThreadContextStack;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
+import org.apache.logging.log4j.util.StringMap;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the RingBufferLogEvent class.
  */
-@Category(AsyncLoggers.class)
+@Tag("async")
 public class RingBufferLogEventTest {
 
     @Test
     public void testToImmutable() {
         final LogEvent logEvent = new RingBufferLogEvent();
-        Assert.assertNotSame(logEvent, logEvent.toImmutable());
+        assertNotSame(logEvent, logEvent.toImmutable());
     }
 
     /**
@@ -167,7 +165,7 @@ public class RingBufferLogEventTest {
         assertEquals(fqcn, other.getLoggerFqcn());
         assertEquals(level, other.getLevel());
         assertEquals(data, other.getMessage());
-        assertNull("null after serialization", other.getThrown());
+        assertNull(other.getThrown(), "null after serialization");
         assertEquals(new ThrowableProxy(t), other.getThrownProxy());
         assertEquals(evt.getContextData(), other.getContextData());
         assertEquals(contextStack, other.getContextStack());

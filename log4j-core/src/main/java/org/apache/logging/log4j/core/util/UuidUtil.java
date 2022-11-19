@@ -22,8 +22,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -31,12 +30,6 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  * less than 10,000 IDs are generated per millisecond on the same device (as identified by its MAC address).
  */
 public final class UuidUtil {
-    /**
-     * System property that may be used to seed the UUID generation with an integer value.
-     */
-    public static final String UUID_SEQUENCE = "org.apache.logging.log4j.uuidSequence";
-
-    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final String ASSIGNED_SEQUENCES = "org.apache.logging.log4j.assignedSequences";
 
@@ -45,7 +38,7 @@ public final class UuidUtil {
     private static final byte VARIANT = (byte) 0x80;
     private static final int SEQUENCE_MASK = 0x3FFF;
     private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
-    private static final long INITIAL_UUID_SEQNO = PropertiesUtil.getProperties().getLongProperty(UUID_SEQUENCE, 0);
+    private static final long INITIAL_UUID_SEQNO = PropertiesUtil.getProperties().getLongProperty(Log4jProperties.UUID_SEQUENCE, 0);
 
     private static final long LOW_MASK = 0xffffffffL;
     private static final long MID_MASK = 0xffff00000000L;

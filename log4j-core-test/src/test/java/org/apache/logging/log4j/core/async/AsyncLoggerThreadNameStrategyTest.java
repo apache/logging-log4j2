@@ -1,7 +1,7 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
- * this work for additional rmation regarding copyright ownership.
+ * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -16,25 +16,16 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
-@Category(AsyncLoggers.class)
+@Tag("async")
 public class AsyncLoggerThreadNameStrategyTest {
-    @After
-    public void after() {
-        System.clearProperty("AsyncLogger.ThreadNameStrategy");
-    }
-
-    @Before
-    public void before() {
-        System.clearProperty("AsyncLogger.ThreadNameStrategy");
-    }
 
     @Test
     public void testDefaultIfNotConfigured() throws Exception {
@@ -43,22 +34,22 @@ public class AsyncLoggerThreadNameStrategyTest {
     }
 
     @Test
+    @SetSystemProperty(key = Log4jProperties.ASYNC_LOGGER_THREAD_NAME_STRATEGY, value = "\\%%InValid ")
     public void testDefaultIfInvalidConfig() throws Exception {
-        System.setProperty("AsyncLogger.ThreadNameStrategy", "\\%%InValid ");
         final ThreadNameCachingStrategy tns = ThreadNameCachingStrategy.create();
         assertSame(ThreadNameCachingStrategy.DEFAULT_STRATEGY, tns);
     }
 
     @Test
+    @SetSystemProperty(key = Log4jProperties.ASYNC_LOGGER_THREAD_NAME_STRATEGY, value = "CACHED")
     public void testUseCachedThreadNameIfConfigured() throws Exception {
-        System.setProperty("AsyncLogger.ThreadNameStrategy", "CACHED");
         final ThreadNameCachingStrategy tns = ThreadNameCachingStrategy.create();
         assertSame(ThreadNameCachingStrategy.CACHED, tns);
     }
 
     @Test
+    @SetSystemProperty(key = Log4jProperties.ASYNC_LOGGER_THREAD_NAME_STRATEGY, value = "UNCACHED")
     public void testUseUncachedThreadNameIfConfigured() throws Exception {
-        System.setProperty("AsyncLogger.ThreadNameStrategy", "UNCACHED");
         final ThreadNameCachingStrategy tns = ThreadNameCachingStrategy.create();
         assertSame(ThreadNameCachingStrategy.UNCACHED, tns);
     }

@@ -394,6 +394,6 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
 
     public boolean isShutdownHookEnabled() {
         return !isWebApp() && PropertiesUtil.getProperties()
-                .getBooleanProperty(ShutdownCallbackRegistry.SHUTDOWN_HOOK_ENABLED, true);
+                .getBooleanProperty(Log4jProperties.SHUTDOWN_HOOK_ENABLED, true);
     }
 }

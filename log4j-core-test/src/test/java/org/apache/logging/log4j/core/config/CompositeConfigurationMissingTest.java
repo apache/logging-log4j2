@@ -19,17 +19,15 @@ package org.apache.logging.log4j.core.config;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@SetSystemProperty(key = Log4jProperties.CONFIG_LOCATION, value = "classpath:log4j-comp-logger-root.xml,log4j-does-not-exist.json")
 public class CompositeConfigurationMissingTest {
-
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty("log4j2.configurationFile", "classpath:log4j-comp-logger-root.xml,log4j-does-not-exist.json");
-    }
 
     @Test
     public void testMissingConfig() {

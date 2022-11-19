@@ -21,8 +21,8 @@ import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.junit.Before;
@@ -42,12 +42,6 @@ import static org.junit.Assert.*;
 @Category(AsyncLoggers.class)
 public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "log4j2-queueFullAsyncAppender.xml");
-    }
-
     @Rule
     public LoggerContextRule context = new LoggerContextRule(
             "log4j2-queueFullAsyncAppender.xml");
@@ -59,8 +53,8 @@ public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
 
 
     @Test(timeout = 5000)
-    public void testNormalQueueFullKeepsMessagesInOrder() throws InterruptedException {
-        final Logger logger = LogManager.getLogger(this.getClass());
+    public void testNormalQueueFullKeepsMessagesInOrder() {
+        final Logger logger = context.getLogger(this.getClass());
 
         blockingAppender.countDownLatch = new CountDownLatch(1);
         unlocker = new Unlocker(new CountDownLatch(129));

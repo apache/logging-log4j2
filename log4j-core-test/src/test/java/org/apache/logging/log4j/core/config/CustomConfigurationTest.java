@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
@@ -23,19 +29,13 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -44,15 +44,11 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @CleanUpFiles("target/test.log")
+@SetSystemProperty(key = "log4j.level", value = "info")
+@SetSystemProperty(key = "log.level", value = "info")
 public class CustomConfigurationTest {
 
     public static final Path LOG_FILE = Paths.get("target", "test.log");
-
-    @BeforeAll
-    public static void before() {
-        System.setProperty("log4j.level", "info");
-        System.setProperty("log.level", "info");
-    }
 
     @Test
     @LoggerContextSource("log4j-props.xml")

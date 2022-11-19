@@ -35,6 +35,8 @@ import org.apache.logging.log4j.util.Unbox;
  * @see PropertiesUtil
  */
 public final class LoggingSystemProperties {
+    // TODO: rename properties according to established theme in
+    //  https://cwiki.apache.org/confluence/display/LOGGING/Properties+Enhancement
 
     /**
      * Property to enable TRACE-level debug logging in the Log4j system itself.
@@ -51,6 +53,7 @@ public final class LoggingSystemProperties {
      * Property to override webapp detection. Without this property, the presence of the {@code Servlet} interface
      * (from either {@code javax} or {@code jakarta}) is checked to see if this is a webapp.
      */
+    // Web.enableWebApp
     public static final String SYSTEM_IS_WEBAPP = "log4j2.isWebapp";
 
     /**
@@ -58,6 +61,7 @@ public final class LoggingSystemProperties {
      *
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1270">LOG4J2-1270</a>
      */
+    // GC.enableThreadLocals
     public static final String SYSTEM_THREAD_LOCALS_ENABLED = "log4j2.enableThreadlocals";
 
     /**
@@ -75,29 +79,34 @@ public final class LoggingSystemProperties {
     public static final String LOADER_FORCE_THREAD_CONTEXT_LOADER = "log4j2.forceTCLOnly";
 
     /**
-     * Property to override the default ringbuffer size used in {@link Unbox}.
+     * Property to override the default ringbuffer size used in {@link Unbox}. The default value is 32.
      */
+    // GC.unboxRingBufferSize
     public static final String UNBOX_RING_BUFFER_SIZE = "log4j2.unboxRingbufferSize";
 
     /**
      * Property to set to the fully qualified class name of a custom implementation of {@link LoggerContextFactory}.
      */
+    // LoggerContext.factory
     public static final String LOGGER_CONTEXT_FACTORY_CLASS = "log4j2.loggerContextFactory";
 
     /**
      * Property to override the default {@link MessageFactory} class.
      */
+    // Message.messageFactory
     public static final String LOGGER_MESSAGE_FACTORY_CLASS = "log4j2.messageFactory";
 
     /**
      * Property to override the default {@link FlowMessageFactory} class.
      */
+    // Message.flowMessageFactory
     public static final String LOGGER_FLOW_MESSAGE_FACTORY_CLASS = "log4j2.flowMessageFactory";
 
     /**
      * Property to override the default maximum nesting depth of map messages to format in JSON output. The
      * default value is 8.
      */
+    // Message.jsonFormatterMaxDepth
     public static final String LOGGER_MAP_MESSAGE_JSON_FORMATTER_MAX_DEPTH = "log4j2.mapMessageJsonFormatterMaxDepth";
 
     /**
@@ -106,48 +115,56 @@ public final class LoggingSystemProperties {
      * is trimmed to this maximum size. The default value is 518 which allows the StringBuilder to resize three times
      * from its initial size.
      */
-    public static final String LOGGER_REUSABLE_MESSAGE_MAX_SIZE = "log4j2.maxReusableMsgSize";
+    // GC.maxReusableMsgSize
+    public static final String GC_REUSABLE_MESSAGE_MAX_SIZE = "log4j2.maxReusableMsgSize";
 
     /**
      * Property that can be configured with the maximum number of status data entries to keep queued. Once the limit is
      * reached, older entries will be removed as new entries are added. The default value is 200.
      */
+    // StatusLogger.entries
     public static final String STATUS_MAX_ENTRIES = "log4j2.statusEntries";
 
     /**
      * Property that can be configured with the {@link Level} name to use as the default level for
      * {@link StatusListener}s. The default value is {@link Level#WARN}.
      */
+    // StatusLogger.statusLoggerLevel
     public static final String STATUS_DEFAULT_LISTENER_LEVEL = "log4j2.statusLoggerLevel";
 
     /**
      * Property that can be configured with a date-time format string to use as the format for timestamps
      * in the status logger output. See {@link java.text.SimpleDateFormat} for supported formats.
      */
+    // StatusLogger.dateFormat
     public static final String STATUS_DATE_FORMAT = "log4j2.statusLoggerDateFormat";
 
     /**
      * Property to control whether {@link ThreadContext} stores map data. If set to {@code true}, then the
      * thread context map will be disabled.
      */
+    // ThreadContext.enableMap
     public static final String THREAD_CONTEXT_MAP_DISABLED = "log4j2.disableThreadContextMap";
 
     /**
      * Property to control whether {@link ThreadContext} stores stack data. If set to {@code true}, then the
      * thread context stack will be disabled.
      */
+    // ThreadContext.enableStack
     public static final String THREAD_CONTEXT_STACK_DISABLED = "log4j2.disableThreadContextStack";
 
     /**
      * Property to control whether {@link ThreadContext} stores any data. If set to {@code true}, then the
      * thread context map and stack will be disabled.
      */
+    // ThreadContext.enabled
     public static final String THREAD_CONTEXT_DISABLED = "log4j2.disableThreadContext";
 
     /**
      * Property to control whether {@link ThreadContextMap} uses {@link InheritableThreadLocal} when {@code true} or
      * {@link ThreadLocal} otherwise for holding map data.
      */
+    // ThreadContext.inheritable
     public static final String THREAD_CONTEXT_MAP_INHERITABLE = "log4j2.isThreadContextMapInheritable";
 
     /**
@@ -160,11 +177,13 @@ public final class LoggingSystemProperties {
     /**
      * Property to override the initial capacity of the thread context map. The default value is 16.
      */
+    // ThreadContext.initialCapacity
     public static final String THREAD_CONTEXT_INITIAL_CAPACITY = "log4j2.threadContextInitialCapacity";
 
     /**
      * Property to override whether to use a garbage-free implementation of {@link ThreadContextMap}.
      */
+    // ThreadContext.garbageFree
     public static final String THREAD_CONTEXT_GARBAGE_FREE_ENABLED = "log4j2.garbagefreeThreadContextMap";
 
     private LoggingSystemProperties() {

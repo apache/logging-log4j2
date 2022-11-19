@@ -17,12 +17,12 @@
 package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
-
-import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 /**
  * Log4j Constants.
@@ -53,17 +53,17 @@ public final class Constants {
     /**
      * Name of the system property to use to identify the LogEvent factory.
      */
-    public static final String LOG4J_LOG_EVENT_FACTORY = "Log4jLogEventFactory";
+    public static final String LOG4J_LOG_EVENT_FACTORY = Log4jProperties.LOG_EVENT_FACTORY_CLASS_NAME;
 
     /**
      * Name of the system property to use to identify the ContextSelector Class.
      */
-    public static final String LOG4J_CONTEXT_SELECTOR = "Log4jContextSelector";
+    public static final String LOG4J_CONTEXT_SELECTOR = Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME;
 
     /**
      * Property name for the default status (internal log4j logging) level to use if not specified in configuration.
      */
-    public static final String LOG4J_DEFAULT_STATUS_LEVEL = "Log4jDefaultStatusLevel";
+    public static final String LOG4J_DEFAULT_STATUS_LEVEL = Log4jProperties.STATUS_DEFAULT_LEVEL;
 
     public static final Key<Level> DEFAULT_STATUS_LEVEL_KEY = new @Named("StatusLogger") Key<>() {};
 
@@ -81,39 +81,7 @@ public final class Constants {
      * Supports user request LOG4J2-898 to have the option to format a message in the background thread.
      */
     public static final boolean FORMAT_MESSAGES_IN_BACKGROUND = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j.format.msg.async", false);
-
-    /**
-     * LOG4J2-3198 property which used to globally opt out of lookups in pattern layout message text, however
-     * this is the default and this property is no longer read.
-     *
-     * Deprecated in 2.15.
-     *
-     * @since 2.10
-     * @deprecated no longer used, lookups are only used when {@code %m{lookups}} is specified
-     */
-    @Deprecated(forRemoval = true)
-    public static final boolean FORMAT_MESSAGES_PATTERN_DISABLE_LOOKUPS = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.formatMsgNoLookups", true);
-
-    /**
-     * {@code true} if we think we are running in a web container, based on the boolean value of system property
-     * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
-     * is present in the classpath.
-     */
-    @Deprecated(forRemoval = true)
-    public static final boolean IS_WEB_APP = org.apache.logging.log4j.util.Constants.isWebApp();
-
-    /**
-     * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
-     * <p>
-     * {@code True} for non-{@link #IS_WEB_APP web apps}, disable by setting system property
-     * "log4j2.enable.threadlocals" to "false".
-     *
-     * @since 2.6
-     */
-    @Deprecated(forRemoval = true)
-    public static final boolean ENABLE_THREADLOCALS = isThreadLocalsEnabled();
+            Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, false);
 
     /**
      * Kill switch for garbage-free Layout behaviour that encodes LogEvents directly into
@@ -127,7 +95,7 @@ public final class Constants {
      * @since 2.6
      */
     public static final boolean ENABLE_DIRECT_ENCODERS = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.enable.direct.encoders", true); // enable GC-free text encoding by default
+            Log4jProperties.GC_ENABLE_DIRECT_ENCODERS, true); // enable GC-free text encoding by default
             // the alternative is to enable GC-free encoding only by default only when using all-async loggers:
             //AsyncLoggerContextSelector.class.getName().equals(PropertiesUtil.getProperties().getStringProperty(LOG4J_CONTEXT_SELECTOR)));
 
@@ -138,7 +106,7 @@ public final class Constants {
      * </p>
      * @since 2.6
      */
-    public static final int INITIAL_REUSABLE_MESSAGE_SIZE = size("log4j.initialReusableMsgSize", 128);
+    public static final int INITIAL_REUSABLE_MESSAGE_SIZE = size(Log4jProperties.GC_INITIAL_REUSABLE_MESSAGE_SIZE, 128);
 
     /**
      * Maximum size of the StringBuilders used in RingBuffer LogEvents to store the contents of reusable Messages.
@@ -149,7 +117,7 @@ public final class Constants {
      * </p>
      * @since 2.6
      */
-    public static final int MAX_REUSABLE_MESSAGE_SIZE = size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
+    public static final int MAX_REUSABLE_MESSAGE_SIZE = size(LoggingSystemProperties.GC_REUSABLE_MESSAGE_MAX_SIZE, (128 * 2 + 2) * 2 + 2);
 
     /**
      * Size of CharBuffers used by text encoders.
@@ -158,7 +126,7 @@ public final class Constants {
      * </p>
      * @since 2.6
      */
-    public static final int ENCODER_CHAR_BUFFER_SIZE = size("log4j.encoder.charBufferSize", 2048);
+    public static final int ENCODER_CHAR_BUFFER_SIZE = size(Log4jProperties.GC_ENCODER_CHAR_BUFFER_SIZE, 2048);
 
     /**
      * Default size of ByteBuffers used to encode LogEvents without allocating temporary objects.
@@ -168,7 +136,7 @@ public final class Constants {
      * @see org.apache.logging.log4j.core.layout.ByteBufferDestination
      * @since 2.6
      */
-    public static final int ENCODER_BYTE_BUFFER_SIZE = size("log4j.encoder.byteBufferSize", 8 * 1024);
+    public static final int ENCODER_BYTE_BUFFER_SIZE = size(Log4jProperties.GC_ENCODER_BYTE_BUFFER_SIZE, 8 * 1024);
 
 
     private static int size(final String property, final int defaultValue) {

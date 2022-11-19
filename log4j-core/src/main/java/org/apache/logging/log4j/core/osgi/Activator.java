@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.InjectorCallback;
@@ -72,8 +72,8 @@ public final class Activator implements BundleActivator {
         registry.loadServicesFromBundle(ContextDataProvider.class, bundleId, classLoader);
         registry.loadServicesFromBundle(InjectorCallback.class, bundleId, classLoader);
         // allow the user to override the default ContextSelector (e.g., by using BasicContextSelector for a global cfg)
-        if (PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR) == null) {
-            System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, BundleContextSelector.class.getName());
+        if (PropertiesUtil.getProperties().getStringProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME) == null) {
+            System.setProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME, BundleContextSelector.class.getName());
         }
         contextRef.compareAndSet(null, context);
     }

@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.LogManager;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.GarbageCollectionHelper;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.Strings;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,9 +33,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertTrue;
 
@@ -48,18 +45,16 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
 
     @BeforeClass
     public static void beforeClass() {
-        //FORMAT_MESSAGES_IN_BACKGROUND
-        System.setProperty("log4j.format.msg.async", "true");
-        System.setProperty("log4j2.asyncQueueFullPolicy", "discard");
-
-        System.setProperty("AsyncLogger.RingBufferSize", "128"); // minimum ringbuffer size
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "log4j2-queueFull.xml");
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, "true");
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY, "discard");
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE, "128"); // minimum ringbuffer size
     }
 
     @AfterClass
     public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
+        System.clearProperty(Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND);
+        System.clearProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY);
+        System.clearProperty(Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE);
     }
 
     @Rule
@@ -74,7 +69,7 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
 
     @Test(timeout = 15000)
     public void discardedMessagesShouldBeGarbageCollected() throws InterruptedException {
-        final Logger logger = LogManager.getLogger(this.getClass());
+        final Logger logger = context.getLogger(this.getClass());
 
         blockingAppender.logEvents = null;
         blockingAppender.countDownLatch = new CountDownLatch(1);

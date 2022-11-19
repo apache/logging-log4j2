@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
@@ -58,8 +59,6 @@ public final class Server {
      * The domain part, or prefix ({@value}) of the {@code ObjectName} of all MBeans that instrument Log4J2 components.
      */
     public static final String DOMAIN = "org.apache.logging.log4j2";
-    private static final String PROPERTY_DISABLE_JMX = "log4j2.disable.jmx";
-    private static final String PROPERTY_ASYNC_NOTIF = "log4j2.jmx.notify.async";
     private static final String THREAD_NAME_PREFIX = "jmx.notif";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     static final Executor executor = isJmxDisabled() ? null : createExecutor();
@@ -76,7 +75,7 @@ public final class Server {
      */
     private static ExecutorService createExecutor() {
         final boolean defaultAsync = !Constants.isWebApp();
-        final boolean async = PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_ASYNC_NOTIF, defaultAsync);
+        final boolean async = PropertiesUtil.getProperties().getBooleanProperty(Log4jProperties.JMX_NOTIFY_ASYNC, defaultAsync);
         return async ? Executors.newFixedThreadPool(1, Log4jThreadFactory.createDaemonThreadFactory(THREAD_NAME_PREFIX))
                 : null;
     }
@@ -127,7 +126,7 @@ public final class Server {
     }
 
     private static boolean isJmxDisabled() {
-        return PropertiesUtil.getProperties().getBooleanProperty(PROPERTY_DISABLE_JMX);
+        return PropertiesUtil.getProperties().getBooleanProperty(Log4jProperties.JMX_DISABLED);
     }
 
     public static void reregisterMBeansAfterReconfigure() {

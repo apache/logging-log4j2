@@ -14,11 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.plugins.di.Key;
 
 /**
@@ -33,14 +33,14 @@ public interface ShutdownCallbackRegistry {
     /**
      * System property to set to choose the ShutdownCallbackRegistry.
      */
-    String SHUTDOWN_CALLBACK_REGISTRY = "log4j.shutdownCallbackRegistry";
+    String SHUTDOWN_CALLBACK_REGISTRY = Log4jProperties.SHUTDOWN_CALLBACK_REGISTRY_CLASS_NAME;
 
     Key<ShutdownCallbackRegistry> KEY = Key.forClass(ShutdownCallbackRegistry.class);
 
     /**
      * System property to set to override the global ability to register shutdown hooks.
      */
-    String SHUTDOWN_HOOK_ENABLED = "log4j.shutdownHookEnabled";
+    String SHUTDOWN_HOOK_ENABLED = Log4jProperties.SHUTDOWN_HOOK_ENABLED;
 
     /**
      * Shared Marker to indicate log messages corresponding to shutdown hooks.

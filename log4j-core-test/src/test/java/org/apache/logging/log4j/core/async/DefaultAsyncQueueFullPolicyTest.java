@@ -17,16 +17,15 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the DefaultAsyncQueueFullPolicy class.
  */
-@Category(AsyncLoggers.class)
+@Tag("async")
 public class DefaultAsyncQueueFullPolicyTest {
 
     private static long currentThreadId() {

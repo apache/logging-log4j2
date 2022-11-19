@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.File;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -44,7 +44,7 @@ public class RollingNewDirectoryTest implements RolloverListener {
     @LoggerContextSource(value = CONFIG, timeout = 10)
     public void streamClosedError(final Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
         manager.addRolloverListener(this);
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i <= 10; ++i) {
             logger.info("AAA");
             Thread.sleep(300);
         }

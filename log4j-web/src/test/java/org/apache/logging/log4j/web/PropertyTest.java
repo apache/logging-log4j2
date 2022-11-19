@@ -38,6 +38,6 @@ public class PropertyTest {
 
     @Test
     public void testIsWebApp() {
-        assertTrue(Constants.isWebApp(), "When servlet classes are available IS_WEB_APP should default to true");
+        assertTrue(Constants.isWebApp(), "When servlet classes are available Constants.isWebApp() should default to true");
     }
 }

@@ -21,6 +21,7 @@ import java.net.URI;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
@@ -63,16 +64,16 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     /**
      * Allows the ConfigurationFactory class to be specified as a system property.
      */
-    public static final String CONFIGURATION_FACTORY_PROPERTY = "log4j.configurationFactory";
+    public static final String CONFIGURATION_FACTORY_PROPERTY = Log4jProperties.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME;
 
     /**
      * Allows the location of the configuration file to be specified as a system property.
      */
-    public static final String CONFIGURATION_FILE_PROPERTY = "log4j.configurationFile";
+    public static final String CONFIGURATION_FILE_PROPERTY = Log4jProperties.CONFIG_LOCATION;
 
-    public static final String LOG4J1_CONFIGURATION_FILE_PROPERTY = "log4j.configuration";
+    public static final String LOG4J1_CONFIGURATION_FILE_PROPERTY = Log4jProperties.CONFIG_V1_FILE_NAME;
 
-    public static final String LOG4J1_EXPERIMENTAL = "log4j1.compatibility";
+    public static final String LOG4J1_EXPERIMENTAL = Log4jProperties.CONFIG_V1_COMPATIBILITY_ENABLED;
 
     /**
      * Plugin category used to inject a ConfigurationFactory {@link org.apache.logging.log4j.plugins.Plugin}

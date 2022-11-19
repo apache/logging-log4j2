@@ -19,53 +19,53 @@ package org.apache.logging.log4j.core.async;
 import java.util.Locale;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the AsyncQueueFullPolicyFactory class.
  */
-@Category(AsyncLoggers.class)
+@Tag("async")
 public class AsyncQueueFullPolicyFactoryTest {
 
-    @Before
-    @After
-    public void resetProperties() throws Exception {
-        System.clearProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER);
-        System.clearProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL);
-        ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
+    @BeforeEach
+    @AfterEach
+    public void resetProperties() {
+        System.clearProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY);
+        System.clearProperty(Log4jProperties.ASYNC_LOGGER_DISCARD_THRESHOLD);
+        PropertiesUtil.getProperties().reload();
     }
 
     @Test
-    public void testCreateReturnsDefaultRouterByDefault() throws Exception {
+    public void testCreateReturnsDefaultRouterByDefault() {
         final AsyncQueueFullPolicy router = AsyncQueueFullPolicyFactory.create();
         assertEquals(DefaultAsyncQueueFullPolicy.class, router.getClass());
     }
 
     @Test
-    public void testCreateReturnsDiscardingRouterIfSpecified() throws Exception {
-        System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
+    public void testCreateReturnsDiscardingRouterIfSpecified() {
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
         assertEquals(DiscardingAsyncQueueFullPolicy.class, AsyncQueueFullPolicyFactory.create().getClass());
 
-        System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
                 DiscardingAsyncQueueFullPolicy.class.getSimpleName());
         assertEquals(DiscardingAsyncQueueFullPolicy.class, AsyncQueueFullPolicyFactory.create().getClass());
 
-        System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
                 DiscardingAsyncQueueFullPolicy.class.getName());
         assertEquals(DiscardingAsyncQueueFullPolicy.class, AsyncQueueFullPolicyFactory.create().getClass());
     }
 
     @Test
-    public void testCreateDiscardingRouterDefaultThresholdLevelInfo() throws Exception {
-        System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
+    public void testCreateDiscardingRouterDefaultThresholdLevelInfo() {
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
         assertEquals(Level.INFO, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
                 getThresholdLevel());
@@ -73,19 +73,19 @@ public class AsyncQueueFullPolicyFactoryTest {
 
     @Test
     public void testCreateDiscardingRouterCaseInsensitive() {
-        System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER.toLowerCase(Locale.ENGLISH));
         assertEquals(Level.INFO, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
                 getThresholdLevel());
     }
 
     @Test
-    public void testCreateDiscardingRouterThresholdLevelCustomizable() throws Exception {
-        System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
+    public void testCreateDiscardingRouterThresholdLevelCustomizable() {
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
 
         for (final Level level : Level.values()) {
-            System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_DISCARDING_THRESHOLD_LEVEL,
+            System.setProperty(Log4jProperties.ASYNC_LOGGER_DISCARD_THRESHOLD,
                     level.name());
             assertEquals(level, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
                     getThresholdLevel());
@@ -106,15 +106,15 @@ public class AsyncQueueFullPolicyFactoryTest {
     }
 
     @Test
-    public void testCreateReturnsCustomRouterIfSpecified() throws Exception {
-        System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
+    public void testCreateReturnsCustomRouterIfSpecified() {
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
                 CustomRouterDefaultConstructor.class.getName());
         assertEquals(CustomRouterDefaultConstructor.class, AsyncQueueFullPolicyFactory.create().getClass());
     }
 
     @Test
-    public void testCreateReturnsDefaultRouterIfSpecifiedCustomRouterFails() throws Exception {
-        System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
+    public void testCreateReturnsDefaultRouterIfSpecifiedCustomRouterFails() {
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
                 DoesNotImplementInterface.class.getName());
         assertEquals(DefaultAsyncQueueFullPolicy.class, AsyncQueueFullPolicyFactory.create().getClass());
     }

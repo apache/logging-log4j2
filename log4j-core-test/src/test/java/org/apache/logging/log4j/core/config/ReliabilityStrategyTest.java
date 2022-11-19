@@ -14,29 +14,19 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.appender.AsyncAppender;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SetSystemProperty(key = Log4jProperties.CONFIG_RELIABILITY_STRATEGY, value = "org.apache.logging.log4j.core.config.MockReliabilityStrategy")
 class ReliabilityStrategyTest {
-
-    @BeforeAll
-    static void setUp() {
-        System.setProperty("log4j2.reliabilityStrategy", MockReliabilityStrategy.class.getName());
-    }
-
-    @AfterAll
-    static void tearDown() {
-        System.clearProperty("log4j2.reliabilityStrategy");
-    }
 
     @Test
     @LoggerContextSource("ReliabilityStrategyTest.xml")
