@@ -20,25 +20,22 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SetSystemProperty(key = Log4jProperties.JANSI_DISABLED, value = "false")
 public class StyleConverterTest {
 
     private static final String EXPECTED =
         "\u001B[1;31mERROR\u001B[m \u001B[1;36mLoggerTest\u001B[m o.a.l.l.c.p.StyleConverterTest org.apache.logging.log4j.core.pattern.StyleConverterTest"
         + Strings.LINE_SEPARATOR;
-
-    @BeforeAll
-    public static void beforeClass() {
-        System.setProperty("log4j.skipJansi", "false"); // LOG4J2-2087: explicitly enable
-    }
 
     @Test
     @LoggerContextSource("log4j-style.xml")
