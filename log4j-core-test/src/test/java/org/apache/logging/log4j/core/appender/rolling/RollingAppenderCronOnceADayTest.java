@@ -23,6 +23,8 @@ import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -37,6 +39,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Tag("flaky")
+@Disabled("https://issues.apache.org/jira/browse/LOG4J2-3633")
 public class RollingAppenderCronOnceADayTest extends AbstractRollingListenerTest {
 
     private static final int CRON_DELAY = 10;
