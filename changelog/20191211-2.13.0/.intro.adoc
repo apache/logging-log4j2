@@ -1,0 +1,35 @@
+The Apache Log4j 2 team is pleased to announce the Log4j 2.13.0 release!
+
+Apache Log4j is a well-known framework for logging application behavior.
+Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides many other modern features such as support for Markers, lambda expressions for lazy logging, property substitution using Lookups, multiple patterns on a `PatternLayout` and asynchronous Loggers.
+Another notable Log4j 2 feature is the ability to be _garbage-free_ (avoid allocating temporary objects) while logging.
+In addition, Log4j 2 will not lose events while reconfiguring.
+
+The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/download.html[].
+
+This release contains bugfixes and minor enhancements.
+Some of the new features in this release are:
+
+* Log4j 2 now requires Java 8 or higher to build and run.
+* Experimental support for Log4j 1 configuration files.
+See Log4j 2 Compatiblity with Log4j 1.
+* The Logger API has been enhanced to support a builder pattern.
+This can dramatically improve the overhead of capturing location information.
+See Log Builder.
+* Better integration with Spring Boot by providing access to Spring variables in Log4j 2 configuration files and allowing Log4j 2 system properties to be defined in the Spring configuration.
+See Logging in the Cloud.
+* Support for accessing Kubernetes information via a Log4j 2 Lookup.
+* The Gelf Layout now allows the message to be formatted using a `PatternLayout` pattern.
+Logging in the Cloud provides an example of this, as well as the use of the Spring and Kubernetes Lookups.
+
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+`log4j-slf4j-impl` should be used with SLF4J 1.7.x and earlier and `log4j-slf4j18-impl` should be used with SLF4J 1.8.x and later.
+
+Note that the XML, JSON and YAML formats changed in the 2.11.0 release: they no longer have the `timeMillis` attribute and instead have an `Instant` element with `epochSecond` and `nanoOfSecond` attributes.
+
+The Log4j 2.13.0 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.13.0 requires a minimum of Java 8 to build and run.
+Log4j 2.3 was the last release that supported Java 6 and Log4j 2.11.2 is the last release to support Java 7.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
