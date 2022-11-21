@@ -1,0 +1,21 @@
+The Apache Log4j 2 team is pleased to announce the Log4j 2.14.1 release!
+
+Apache Log4j is a well-known framework for logging application behavior.
+Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides many other modern features such as support for Markers, lambda expressions for lazy logging, property substitution using Lookups, multiple patterns on a `PatternLayout` and asynchronous Loggers.
+Another notable Log4j 2 feature is the ability to be _garbage-free_ (avoid allocating temporary objects) while logging.
+In addition, Log4j 2 will not lose events while reconfiguring.
+
+The artifacts may be downloaded from https://logging.apache.org/log4j/2.x/download.html[].
+
+This release contains a number of bug fixes and minor enhancements which are
+listed below.
+
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+`log4j-slf4j-impl` should be used with SLF4J 1.7.x and earlier and `log4j-slf4j18-impl` should be used with SLF4J 1.8.x and later.
+
+The Log4j 2.14.1 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.14.1 requires a minimum of Java 8 to build and run.
+Log4j 2.12.1 is the last release to support Java 7.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].

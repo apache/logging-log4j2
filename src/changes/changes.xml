@@ -680,7 +680,7 @@
       <action issue="LOG4J2-3049" dev="rgoers" type="add">
         Allow MapMessage and ThreadContext attributes to be prefixed.
       </action>
-      <action issue="LOG4J2=3048" dev="rgoers" type="add">
+      <action issue="LOG4J2-3048" dev="rgoers" type="add">
         Add improved MapMessage support to GelfLayout.
       </action>
       <action issue="LOG4J2-3044" dev="rgoers" type="add">
@@ -1509,7 +1509,7 @@
       <action issue="LOG4J2-2680" dev="rgoers" type="fix" due-to="Guillermo Xavier Hurtado Garcia">
         Set result of rename action to true if file was copied.
       </action>
-      <action issue="LOG4J-2672" dev="rgoers" type="fix" due-to="Stephen Colebourne">
+      <action issue="LOG4J2-2672" dev="rgoers" type="fix" due-to="Stephen Colebourne">
         Add automatic module names where missing.
       </action>
       <action issue="LOG4J2-2639" dev="rgoers" type="add">
@@ -2622,7 +2622,7 @@
       <action issue="LOG4J2-1900" dev="ggregory" type="update">
         Update JAnsi from 1.15 to 1.16.
       </action>
-      <action issue="LOG4J2-" dev="ggregory" type="update">
+      <action dev="ggregory" type="update">
         Update SLF4J from 1.7.24 to 1.7.25.
       </action>
       <action issue="LOG4J2-1938" dev="ggregory" type="update">
@@ -3610,7 +3610,7 @@
       <action issue="LOG4J2-1354" dev="ggregory" type="fix" due-to="Arkadiusz Adolph">
         No configuration reload is triggered under Windows when replacing the configuration file with one that has older last modified date.
       </action>
-      <action issue="LOG4J2-1346" type="fix">
+      <action issue="LOG4J2-1346" type="fix" dev="ggregory">
         Exception from Log4jServletContextListener prevents jetty-maven-plugin run-forked.
       </action>
       <action issue="LOG4J2-1339" dev="rpopma" type="fix">
@@ -4703,10 +4703,10 @@
       <action issue="LOG4J2-703" dev="ggregory" type="fix" due-to="Nelson Melina">
         Android: Could not find class 'javax.naming.InitialContext', referenced from method org.apache.logging.log4j.core.lookup.JndiLookup.lookup.
       </action>
-      <action issue="LOG4J2-732" dev="ggregory" type="updated">
+      <action issue="LOG4J2-732" dev="ggregory" type="update">
         Update to LMAX Disruptor 3.3.0 from 3.2.1.
       </action>
-      <action issue="LOG4J2-733" dev="ggregory" type="updated">
+      <action issue="LOG4J2-733" dev="ggregory" type="update">
         Update to latest Jackson jars from the 2.4.1.X line.
       </action>
     </release>
@@ -4992,7 +4992,7 @@
       </action>
     </release>
     <release version="2.0-rc1" date="2014-02-16" description="Bug fixes and enhancements">
-      <action dev="nickwilliams" type="delete">
+      <action dev="nickwilliams" type="remove">
         Removed the DataSourceConnectionSource and the &lt;DriverManager&gt; plugin for the JDBC Appender. It is not
         safe to use. Please use the DataSource or factory connection sources backed by a connection pool.
       </action>
@@ -6040,7 +6040,7 @@
       <action dev="rgoers" type="add">
         Added AsynchAppender.
       </action>
-      <action issue="LOG4J-81" dev="rgoers" type="fix">
+      <action issue="LOG4J2-81" dev="rgoers" type="fix">
         PatternLayout was not honoring format modifiers.
       </action>
       <action dev="rgoers" type="fix">

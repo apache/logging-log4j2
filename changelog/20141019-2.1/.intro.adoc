@@ -1,0 +1,15 @@
+The Apache Log4j 2 team is pleased to announce the Log4j 2.1 release!
+
+Apache Log4j is a well-known framework for logging application behavior.
+Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
+
+This is the fourth GA release which contains several bugfixes and new features.
+There are two new Maven artifacts in this release: `log4j-jul` and `log4j-iostreams`.
+Both components are API-based with optional Core features.
+
+Apache Log4j 2.1 requires a minimum of Java 6 to build and run.
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
