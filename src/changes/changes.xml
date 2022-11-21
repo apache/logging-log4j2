@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
    Licensed to the Apache Software Foundation (ASF) under one or more
@@ -265,7 +266,7 @@
       </action>
       <action issue="LOG4J2-3538" dev="pavel_k" type="add" due-to="Pavel_K">
         Add support for 24 colors in highlighting
-      </action>      
+      </action>
     </release>
     <release version="2.17.2" date="2022-02-23" description="GA Release 2.17.2">
       <!-- FIXES -->
@@ -349,7 +350,7 @@
       </action>
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge adds org.apache.log4j.helpers.LogLog.
-      </action>      
+      </action>
       <action dev="ggregory" type="fix">
         Log4j 1.2 bridge adds org.apache.log4j.helpers.Loader.
       </action>
@@ -399,7 +400,7 @@
         Log4j 1.2 bridge throws ClassCastException when using SimpleLayout and others #708.
       </action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory, Piotr P. Karwasz">
-        Log4j 1.2 bridge uses the wrong file pattern for rolling file appenders #710. 
+        Log4j 1.2 bridge uses the wrong file pattern for rolling file appenders #710.
       </action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory, Piotr P. Karwasz">
         Log4j 1.2 bridge throws ClassCastException when using SimpleLayout and others #708.
@@ -423,7 +424,7 @@
         Log4j 1.2 bridge missing some LocationInfo constructors.
       </action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">
-        Log4j 1.2 bridge missed 
+        Log4j 1.2 bridge missed
       </action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">
         Log4j 1.2 bridge missed org.apache.log4j.pattern.FormattingInfo.
@@ -493,7 +494,7 @@
         Add the log4j-to-jul JDK Logging Bridge
       </action>
       <action dev="ggregory" type="add">
-        Add org.apache.logging.log4j.core.appender.AsyncAppender.getAppenders() to more easily port from org.apache.log4j.AsyncAppender.getAllAppenders(). 
+        Add org.apache.logging.log4j.core.appender.AsyncAppender.getAppenders() to more easily port from org.apache.log4j.AsyncAppender.getAllAppenders().
       </action>
       <action type="add" dev="ggregory" due-to="Gary Gregory">
         Add Configurator.setLevel(Logger, Level), setLevel(String, String), and setLevel(Class, Level).

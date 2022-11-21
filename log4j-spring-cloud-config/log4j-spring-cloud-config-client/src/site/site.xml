@@ -43,8 +43,6 @@
     </menu>
 
     <menu name="Log4j Project Reports" img="icon-cog">
-      <item name="Changes Report" href="../changes-report.html" />
-      <item name="JIRA Report" href="../jira-report.html" />
       <item name="Surefire Report" href="../surefire-report.html" />
       <item name="RAT Report" href="../rat-report.html" />
     </menu>
