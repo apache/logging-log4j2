@@ -24,16 +24,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A source for global configuration properties.
+ * A source for global and LoggerContext configuration properties.
  *
  * @since 2.10.0
  */
 public interface PropertySource {
+    /**
+     * Constant value for the name used to represent the default context for providing default settings for
+     * LoggerContext properties along with default values for global properties.
+     *
+     * @since 3.0.0
+     */
+    String DEFAULT_CONTEXT = "*";
 
     /**
      * Returns the order in which this PropertySource has priority. A higher value means that the source will be
@@ -48,14 +57,16 @@ public interface PropertySource {
      *
      * @param action action to perform on each key/value pair
      */
+    @Deprecated(since = "3.0.0")
     default void forEach(final BiConsumer<String, String> action) {
     }
 
     /**
      * Returns the list of all property names.
-     * 
+     *
      * @return list of property names
      */
+    @Deprecated(since = "3.0.0")
     default Collection<String> getPropertyNames() {
         return Collections.emptySet();
     }
@@ -67,6 +78,7 @@ public interface PropertySource {
      * @param tokens list of property name tokens
      * @return a normalized property name using the given tokens
      */
+    @Deprecated(since = "3.0.0")
     default CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
         return null;
     }
@@ -81,6 +93,43 @@ public interface PropertySource {
         return null;
     }
 
+    default String getProperty(final String context, final String key) {
+        final String compositeKey = isDefaultContext(context) ? key : compositeKey(context, key);
+        return getProperty(compositeKey);
+    }
+
+    default List<String> getList(final String context, final String key) {
+        final String value = getProperty(context, key);
+        return List.of(Strings.splitList(value));
+    }
+
+    default BooleanProperty getBoolean(final String context, final String key) {
+        return BooleanProperty.parse(getProperty(context, key));
+    }
+
+    default OptionalInt getInt(final String context, final String key) {
+        final String value = getProperty(context, key);
+        if (value != null) {
+            try {
+                final int i = Integer.parseInt(value);
+                return OptionalInt.of(i);
+            } catch (final NumberFormatException ignored) {
+            }
+        }
+        return OptionalInt.empty();
+    }
+
+    default OptionalLong getLong(final String context, final String key) {
+        final String value = getProperty(context, key);
+        if (value != null) {
+            try {
+                final long i = Long.parseLong(value);
+                return OptionalLong.of(i);
+            } catch (final NumberFormatException ignored) {
+            }
+        }
+        return OptionalLong.empty();
+    }
 
     /**
      * For PropertySources that cannot iterate over all the potential properties this provides a direct lookup.
@@ -90,6 +139,24 @@ public interface PropertySource {
      */
     default boolean containsProperty(final String key) {
         return false;
+    }
+
+    default boolean containsProperty(final String context, final String key) {
+        return isDefaultContext(context) ?
+                containsProperty(key) :
+                containsProperty(compositeKey(context, key));
+    }
+
+    private static boolean isDefaultContext(final String context) {
+        return context == null || context.equals(DEFAULT_CONTEXT);
+    }
+
+    private static String compositeKey(final String context, final String key) {
+        final int i = key.indexOf('*');
+        if (i == -1 || i + 1 == key.length()) {
+            return "log4j2." + context + '.' + key;
+        }
+        return key.substring(0, i) + context + key.substring(i + 1);
     }
 
     /**
@@ -107,10 +174,9 @@ public interface PropertySource {
     }
 
     /**
-     * Utility methods useful for PropertySource implementations.
-     *
-     * @since 2.10.0
+     * @deprecated no longer needed by PropertySource
      */
+    @Deprecated(since = "3.0.0")
     final class Util {
         private static final Pattern PREFIX_PATTERN = Pattern.compile(
                 // just lookahead for AsyncLogger

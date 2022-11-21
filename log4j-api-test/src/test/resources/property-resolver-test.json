@@ -1,0 +1,22 @@
+{"log4j2": {
+  "*": {
+    "Component1": {
+      "propertyName1": "value1",
+      "propertyName2": "value2",
+      "propertyName3": 3,
+      "propertyName4": true
+    },
+    "Component2": {
+      "propertyName5": 90000,
+      "propertyName6": ["foo", "bar"]
+    }
+  },
+  "TestContext": {
+    "Component1": {
+      "propertyName1": "override"
+    },
+    "Component2": {
+      "propertyName5": 0
+    }
+  }
+}}

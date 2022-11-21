@@ -103,29 +103,35 @@ public class Log4jProperties {
     // JMX.notifyAsync
     public static final String JMX_NOTIFY_ASYNC = "log4j2.jmxNotifyAsync";
 
-    // TransportSecurity.trustStore.location
+    public static final String TRANSPORT_SECURITY_AUTHORIZATION_PROVIDER_CLASS_NAME = "log4j2.*.TransportSecurity.authorizationProvider";
+
+    public static final String TRANSPORT_SECURITY_BASIC_USERNAME = "log4j2.*.TransportSecurity.basicUsername";
+    public static final String TRANSPORT_SECURITY_BASIC_PASSWORD = "log4j2.*.TransportSecurity.basicPassword";
+    public static final String TRANSPORT_SECURITY_PASSWORD_DECRYPTOR_CLASS_NAME = "log4j2.*.TransportSecurity.passwordDecryptor";
+
+    // TransportSecurity.trustStoreLocation
     public static final String TRANSPORT_SECURITY_TRUST_STORE_LOCATION = "log4j2.trustStoreLocation";
-    // TransportSecurity.trustStore.password
+    // TransportSecurity.trustStorePassword
     public static final String TRANSPORT_SECURITY_TRUST_STORE_PASSWORD = "log4j2.trustStorePassword";
-    // TransportSecurity.trustStore.passwordFile
+    // TransportSecurity.trustStorePasswordFile
     public static final String TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_FILE = "log4j2.trustStorePasswordFile";
-    // TransportSecurity.trustStore.passwordEnvironmentVariable
+    // TransportSecurity.trustStorePasswordEnvironmentVariable
     public static final String TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_ENV_VAR = "log4j2.trustStorePasswordEnvironmentVariable";
-    // TransportSecurity.trustStore.keyStoreType
+    // TransportSecurity.trustStoreKeyStoreType
     public static final String TRANSPORT_SECURITY_TRUST_STORE_KEY_STORE_TYPE = "log4j2.trustStoreKeyStoreType";
-    // TransportSecurity.trustStore.keyManagerFactoryAlgorithm
+    // TransportSecurity.trustStoreKeyManagerFactoryAlgorithm
     public static final String TRANSPORT_SECURITY_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM = "log4j2.trustStoreKeyManagerFactoryAlgorithm";
-    // TransportSecurity.keyStore.location
+    // TransportSecurity.keyStoreLocation
     public static final String TRANSPORT_SECURITY_KEY_STORE_LOCATION = "log4j2.keyStoreLocation";
-    // TransportSecurity.keyStore.password
+    // TransportSecurity.keyStorePassword
     public static final String TRANSPORT_SECURITY_KEY_STORE_PASSWORD = "log4j2.keyStorePassword";
-    // TransportSecurity.keyStore.passwordFile
+    // TransportSecurity.keyStorePasswordFile
     public static final String TRANSPORT_SECURITY_KEY_STORE_PASSWORD_FILE = "log4j2.keyStorePasswordFile";
-    // TransportSecurity.keyStore.passwordEnvironmentVariable
+    // TransportSecurity.keyStorePasswordEnvironmentVariable
     public static final String TRANSPORT_SECURITY_KEY_STORE_PASSWORD_ENV_VAR = "log4j2.keyStorePasswordEnvironmentVariable";
-    // TransportSecurity.keyStore.keyStoreType
+    // TransportSecurity.keyStoreType
     public static final String TRANSPORT_SECURITY_KEY_STORE_TYPE = "log4j2.keyStoreType";
-    // TransportSecurity.keyStore.keyManagerFactoryAlgorithm
+    // TransportSecurity.keyStoreKeyManagerFactoryAlgorithm
     public static final String TRANSPORT_SECURITY_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM = "log4j2.keyStoreKeyManagerFactoryAlgorithm";
     // TransportSecurity.verifyHostName
     public static final String TRANSPORT_SECURITY_VERIFY_HOST_NAME = "log4j2.sslVerifyHostName";

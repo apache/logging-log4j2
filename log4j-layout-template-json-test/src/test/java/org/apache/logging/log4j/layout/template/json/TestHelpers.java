@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -27,14 +32,9 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import org.apache.logging.log4j.util.JsonReader;
 
 public final class TestHelpers {
 
