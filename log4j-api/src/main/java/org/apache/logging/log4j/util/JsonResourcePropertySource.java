@@ -138,7 +138,13 @@ public class JsonResourcePropertySource implements PropertySource {
 
     private String getString(final String[] path) {
         final Object value = lookup(path);
-        return value != null ? value.toString() : null;
+        if (value instanceof String) {
+            return (String) value;
+        }
+        if (value instanceof Number || value instanceof Boolean) {
+            return value.toString();
+        }
+        return null;
     }
 
     @Override
