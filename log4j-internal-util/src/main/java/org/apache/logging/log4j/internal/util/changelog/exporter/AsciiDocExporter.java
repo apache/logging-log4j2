@@ -49,13 +49,20 @@ public final class AsciiDocExporter {
     });
 
     private static final String LICENSE_HEADER_ASCIIDOC = "////\n" +
-            "Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements.\n" +
-            "See the `NOTICE.txt` file distributed with this work for additional information regarding copyright ownership.\n" +
-            "The ASF licenses this file to _you_ under the Apache License, Version 2.0 (the _License_); you may not use this file except in compliance with the License.\n" +
-            "You may obtain a copy of the License at [http://www.apache.org/licenses/LICENSE-2.0].\n" +
-            '\n' +
-            "Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an _AS IS_ BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
-            "See the License for the specific language governing permissions and limitations under the License.\n" +
+            "    Licensed to the Apache Software Foundation (ASF) under one or more\n" +
+            "    contributor license agreements.  See the NOTICE file distributed with\n" +
+            "    this work for additional information regarding copyright ownership.\n" +
+            "    The ASF licenses this file to You under the Apache License, Version 2.0\n" +
+            "    (the \"License\"); you may not use this file except in compliance with\n" +
+            "    the License.  You may obtain a copy of the License at\n" +
+            "\n" +
+            "         http://www.apache.org/licenses/LICENSE-2.0\n" +
+            "\n" +
+            "    Unless required by applicable law or agreed to in writing, software\n" +
+            "    distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+            "    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+            "    See the License for the specific language governing permissions and\n" +
+            "    limitations under the License.\n" +
             "////\n";
 
     private static final String AUTO_GENERATION_WARNING_ASCIIDOC = "////\n" +
@@ -385,10 +392,8 @@ public final class AsciiDocExporter {
     }
 
     private static String changelogReleaseAsciiDocFilename(final ChangelogRelease changelogRelease) {
-        return String.format(
-                "%s-%s.adoc",
-                changelogRelease.date.replaceAll("-", ""),
-                changelogRelease.version);
+        // Using only the version (that is, avoiding the date) in the filename so that one can determine the link to the changelog of a particular release with only version information.
+        return String.format("%s.adoc", changelogRelease.version);
     }
 
 }
