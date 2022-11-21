@@ -1745,6 +1745,7 @@
     <module>log4j-to-slf4j</module>
     <module>log4j-to-jul</module>
     <module>log4j-web</module>
+    <module>log4j-internal-util</module>
   </modules>
   <profiles>
     <profile>
