@@ -264,7 +264,6 @@
     <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
-    <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
     <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
     <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
     <maven-doap-plugin.version>1.2</maven-doap-plugin.version>
@@ -1145,11 +1144,6 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-changes-plugin</artifactId>
-          <version>${maven-changes-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${maven-checkstyle-plugin.version}</version>
           <dependencies>
@@ -1627,25 +1621,6 @@
           </excludes>
         </configuration>
       </plugin>
-      <!-- Changes report -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <inherited>false</inherited>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-              <report>jira-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <statusIds>Resolved, Closed</statusIds>
-          <columnNames>Type,Key,Summary,Assignee,Status,Resolution,Fix Version</columnNames>
-          <useJql>true</useJql>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -1765,43 +1740,6 @@
                 <configuration>
                   <outputDirectory>${project.reporting.outputDirectory}</outputDirectory>
                 </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>release-notes</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-changes-plugin</artifactId>
-            <configuration>
-              <template>announcement.vm</template>
-              <templateDirectory>src/changes</templateDirectory>
-              <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
-              <announcementDirectory>.</announcementDirectory>
-              <announcementFile>RELEASE-NOTES.md</announcementFile>
-              <issueManagementSystems>
-                <issueManagementSystem>changes.xml</issueManagementSystem>
-                <!--<issueManagementSystem>JIRA</issueManagementSystem> -->
-              </issueManagementSystems>
-              <version>${Log4jReleaseVersion}</version>
-              <announceParameters>
-                <releaseVersion>${Log4jReleaseVersion}</releaseVersion>
-                <releaseCount>${Log4jReleaseCount}</releaseCount>
-              </announceParameters>
-              <useJql>true</useJql>
-            </configuration>
-            <executions>
-              <execution>
-                <id>create-release-notes</id>
-                <phase>generate-resources</phase>
-                <goals>
-                  <goal>announcement-generate</goal>
-                </goals>
               </execution>
             </executions>
           </plugin>

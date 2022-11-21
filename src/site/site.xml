@@ -60,7 +60,7 @@
         <item name="Snapshot builds" href="/maven-artifacts.html#Snapshot_builds" />
       </item>
       <item name="Runtime Dependencies" href="/runtime-dependencies.html"/>
-      <item name="Changelog" href="/changelog.html"/>
+      <item name="Changelog" href="/changelog/"/>
       <item name="FAQ" href="/faq.html"/>
       <item name="Performance" href="/performance.html" collapse="true">
         <item name="Benchmarks" href="/performance.html#benchmarks" />
@@ -357,8 +357,6 @@
     </menu>
 
     <menu name="Project Reports" img="img/glyphicons/layers.png">
-      <item name="Changes Report" href="/changes-report.html" />
-      <item name="JIRA Report" href="/jira-report.html" />
       <item name="RAT Report" href="/rat-report.html" />
     </menu>
     <footer><![CDATA[<p align="center">Copyright &copy; ${project.inceptionYear}-${currentYear} <a class="external" href="https://www.apache.org">The Apache Software Foundation</a>. All Rights Reserved.<br>
