@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.util.JsonReader;
-import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+import org.apache.logging.log4j.util.JsonReader;
 
 /**
  * Main class for compiling {@link TemplateResolver}s from a template.

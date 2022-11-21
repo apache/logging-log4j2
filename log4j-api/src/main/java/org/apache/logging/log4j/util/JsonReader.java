@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.util;
+package org.apache.logging.log4j.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -46,6 +46,7 @@ import java.util.Objects;
  * This code is heavily influenced by the reader of
  * <a href="https://github.com/bolerio/mjson/blob/e7a4da2daa6e17a63ec057948bc30818e8f44686/src/java/mjson/Json.java#L2684">mjson</a>.
  */
+@InternalApi
 public final class JsonReader {
 
     private enum Delimiter {

@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.util.JsonReader;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
-import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-
 import java.util.Locale;
 import java.util.function.Function;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+import org.apache.logging.log4j.util.JsonReader;
 
 /**
  * Converts the case of string values.

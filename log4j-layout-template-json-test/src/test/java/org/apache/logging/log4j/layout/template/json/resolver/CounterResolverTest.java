@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.math.BigInteger;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
+import org.apache.logging.log4j.util.JsonReader;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigInteger;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
 import static org.assertj.core.api.Assertions.assertThat;
