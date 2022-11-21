@@ -29,6 +29,7 @@ import org.HdrHistogram.Histogram;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 
@@ -107,12 +108,12 @@ public class ResponseTimeTest {
         final String loggerLib = args.length > 2 ? args[2] : "Log4j2";
 
         // print to console if ringbuffer is full
-        System.setProperty("log4j2.AsyncQueueFullPolicy", PrintingAsyncQueueFullPolicy.class.getName());
-        System.setProperty("AsyncLogger.RingBufferSize", String.valueOf(256 * 1024));
-        //System.setProperty("Log4jContextSelector", AsyncLoggerContextSelector.class.getName());
-        //System.setProperty("log4j.configurationFile", "perf3PlainNoLoc.xml");
-        if (System.getProperty("AsyncLogger.WaitStrategy") == null) {
-            System.setProperty("AsyncLogger.WaitStrategy", "Yield");
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY, PrintingAsyncQueueFullPolicy.class.getName());
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE, String.valueOf(256 * 1024));
+        //System.setProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME, AsyncLoggerContextSelector.class.getName());
+        //System.setProperty(Log4jProperties.CONFIG_LOCATION, "perf3PlainNoLoc.xml");
+        if (System.getProperty(Log4jProperties.ASYNC_LOGGER_WAIT_STRATEGY) == null) {
+            System.setProperty(Log4jProperties.ASYNC_LOGGER_WAIT_STRATEGY, "Yield");
         }
         //for (Object key : System.getProperties().keySet()) {
         //    System.out.println(key + "=" + System.getProperty((String) key));

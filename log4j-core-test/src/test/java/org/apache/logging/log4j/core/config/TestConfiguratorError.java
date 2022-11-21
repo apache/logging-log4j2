@@ -17,15 +17,16 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.test.junit.LoggerContextFactoryExtension;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.test.junit.LoggerContextFactoryExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@ResourceLock("log4j2.LoggerContextFactory")
+@ResourceLock(LoggingSystemProperties.LOGGER_CONTEXT_FACTORY_CLASS)
 public class TestConfiguratorError {
 
     @RegisterExtension

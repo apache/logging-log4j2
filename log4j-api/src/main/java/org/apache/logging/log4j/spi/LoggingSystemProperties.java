@@ -43,17 +43,16 @@ public final class LoggingSystemProperties {
      * <p>
      * If property {@value} is either defined empty or its value equals to {@code true} (ignoring case), all internal
      * logging will be printed to the console. The presence of this system property overrides any value set in the
-     * configuration's {@code <Configuration status="<level>" ...>} status attribute, as well as any value set for
-     * system property {@code log4j2.simplelogStatusLoggerLevel}.
+     * configuration's {@code <Configuration status="<level>" ...>} status attribute.
      * </p>
      */
-    public static final String SYSTEM_DEBUG = "log4j2.debug";
+    public static final String SYSTEM_DEBUG = "log4j2.*.System.debug";
 
     /**
      * Property to override webapp detection. Without this property, the presence of the {@code Servlet} interface
      * (from either {@code javax} or {@code jakarta}) is checked to see if this is a webapp.
      */
-    // Web.enableWebApp
+    // Web.enableWebApp : calculate | true | false
     public static final String SYSTEM_IS_WEBAPP = "log4j2.isWebapp";
 
     /**
@@ -61,7 +60,7 @@ public final class LoggingSystemProperties {
      *
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1270">LOG4J2-1270</a>
      */
-    // GC.enableThreadLocals
+    // GC.enableThreadLocals : calculate | true | false
     public static final String SYSTEM_THREAD_LOCALS_ENABLED = "log4j2.enableThreadlocals";
 
     /**
@@ -69,6 +68,7 @@ public final class LoggingSystemProperties {
      *
      * @see LoaderUtil
      */
+    // TODO: see if this can be removed
     public static final String LOADER_IGNORE_THREAD_CONTEXT_LOADER = "log4j2.ignoreTCL";
 
     /**
@@ -76,6 +76,7 @@ public final class LoggingSystemProperties {
      *
      * @see LoaderUtil
      */
+    // TODO: see if this can be removed
     public static final String LOADER_FORCE_THREAD_CONTEXT_LOADER = "log4j2.forceTCLOnly";
 
     /**
@@ -117,6 +118,15 @@ public final class LoggingSystemProperties {
      */
     // GC.maxReusableMsgSize
     public static final String GC_REUSABLE_MESSAGE_MAX_SIZE = "log4j2.maxReusableMsgSize";
+
+    public static final String SIMPLE_SHOW_CONTEXT_MAP = "SimpleLogger.showContextMap";
+    public static final String SIMPLE_SHOW_LOG_NAME = "SimpleLogger.showLogName";
+    public static final String SIMPLE_SHOW_SHORT_LOG_NAME = "SimpleLogger.showShortLogName";
+    public static final String SIMPLE_SHOW_DATE_TIME = "SimpleLogger.showDateTime";
+    public static final String SIMPLE_DATE_TIME_FORMAT = "SimpleLogger.dateTimeFormat";
+    public static final String SIMPLE_LOG_FILE = "SimpleLogger.logFile";
+    public static final String SIMPLE_LOG_LEVEL = "SimpleLogger.logLevel";
+    public static final String SIMPLE_LOGGER_LOG_LEVEL = "SimpleLogger.%s.level";
 
     /**
      * Property that can be configured with the maximum number of status data entries to keep queued. Once the limit is
@@ -172,6 +182,7 @@ public final class LoggingSystemProperties {
      * also implement {@link ReadOnlyThreadContextMap} if they should be accessible to applications via
      * {@link ThreadContext#getThreadContextMap()}.
      */
+    // TODO: replace with LoggingSystem overrides
     public static final String THREAD_CONTEXT_MAP_CLASS = "log4j2.threadContextMap";
 
     /**

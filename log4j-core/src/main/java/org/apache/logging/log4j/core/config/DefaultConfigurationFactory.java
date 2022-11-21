@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -159,9 +160,10 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         LOGGER.warn("No Log4j 2 configuration file found. " +
                 "Using default configuration (logging only errors to the console), " +
                 "or user programmatically provided configurations. " +
-                "Set system property 'log4j2.debug' " +
+                "Set system property 'log4j2.*.{}' " +
                 "to show Log4j 2 internal initialization logging. " +
-                "See https://logging.apache.org/log4j/2.x/manual/configuration.html for instructions on how to configure Log4j 2");
+                "See https://logging.apache.org/log4j/2.x/manual/configuration.html for instructions on how to configure Log4j 2",
+                LoggingSystemProperties.SYSTEM_DEBUG);
         return new DefaultConfiguration();
     }
 

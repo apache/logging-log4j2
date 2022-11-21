@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.perf.jmh;
 
 import java.io.File;
@@ -23,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.perf.util.BenchmarkMessageParams;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -57,12 +57,12 @@ public class AsyncLoggersBenchmark {
 
     @Setup(Level.Trial)
     public void up() {
-        System.setProperty("log4j.configurationFile", "perf-WithoutAnyAppender.xml");
-        System.setProperty("Log4jContextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
-        System.setProperty("AsyncLogger.RingBufferSize", "262144");
-        System.setProperty("AsyncLogger.WaitStrategy", "Yield");
-        //System.setProperty("log4j2.enable.threadlocals", "true");
-        //System.setProperty("log4j.format.msg.async", "true");
+        System.setProperty(Log4jProperties.CONFIG_LOCATION, "perf-WithoutAnyAppender.xml");
+        System.setProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME, "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE, "262144");
+        System.setProperty(Log4jProperties.ASYNC_LOGGER_WAIT_STRATEGY, "Yield");
+        //System.setProperty(LoggingSystemProperties.SYSTEM_THREAD_LOCALS_ENABLED, "true");
+        //System.setProperty(Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, "true");
 
         logger = LogManager.getLogger(getClass());
         new File("perftest.log").delete();

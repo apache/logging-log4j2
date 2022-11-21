@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.perf.jmh;
 
 import java.util.ArrayList;
@@ -27,16 +26,17 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContextBenchmarkAccess;
-import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.spi.CopyOnWriteOpenHashMapThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.GarbageFreeOpenHashMapThreadContextMap;
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -103,7 +103,7 @@ public class ThreadContextBenchmark {
 
     @Setup
     public void setup() {
-        System.setProperty("log4j2.threadContextMap", IMPLEMENTATIONS.get(threadContextMapAlias).getName());
+        System.setProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS, IMPLEMENTATIONS.get(threadContextMapAlias).getName());
         ThreadContextBenchmarkAccess.init();
 
         injector = ContextDataInjectorFactory.createInjector();
@@ -139,7 +139,7 @@ public class ThreadContextBenchmark {
 
     @TearDown
     public void tearDown() {
-        System.clearProperty("log4j2.threadContextMap");
+        System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS);
         ThreadContextBenchmarkAccess.init();
     }
 

@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.perf.util.BenchmarkMessageParams;
 import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -100,13 +101,13 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
 
         @SuppressWarnings("unused") // Used by JMH
         public enum QueueFullPolicy {
-            ENQUEUE(Map.of("log4j2.AsyncQueueFullPolicy", "Default")),
+            ENQUEUE(Map.of(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY, "Default")),
             ENQUEUE_UNSYNCHRONIZED(Map.of(
-                "log4j2.AsyncQueueFullPolicy", "Default",
-                "AsyncLogger.SynchronizeEnqueueWhenQueueFull", "false",
-                "AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", "false"
+                Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY, "Default",
+                Log4jProperties.ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, "false",
+                Log4jProperties.ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, "false"
             )),
-            SYNCHRONOUS(Map.of("log4j2.AsyncQueueFullPolicy",
+            SYNCHRONOUS(Map.of(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
                     SynchronousAsyncQueueFullPolicy.class.getName()));
 
             private final Map<String, String> properties;
@@ -131,12 +132,12 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
             void setProperties() {
                 switch (this) {
                     case ASYNC_CONTEXT:
-                        System.setProperty("log4j.configurationFile", "ConcurrentAsyncLoggerToFileBenchmark.xml");
-                        System.setProperty("Log4jContextSelector",
+                        System.setProperty(Log4jProperties.CONFIG_LOCATION, "ConcurrentAsyncLoggerToFileBenchmark.xml");
+                        System.setProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME,
                                 "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
                         break;
                     case ASYNC_CONFIG:
-                        System.setProperty("log4j.configurationFile",
+                        System.setProperty(Log4jProperties.CONFIG_LOCATION,
                                 "ConcurrentAsyncLoggerToFileBenchmark-asyncConfig.xml");
                         break;
                     default:
