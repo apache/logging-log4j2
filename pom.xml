@@ -115,6 +115,15 @@
       <timezone>America/Detroit</timezone>
     </developer>
     <developer>
+      <id>rgupta</id>
+      <name>Raman Gupta</name>
+      <email>rgupta@apache.org</email>
+      <roles>
+        <role>Committer</role>
+      </roles>
+      <timezone>Asia/Kolkata</timezone>
+    </developer>
+    <developer>
       <id>mikes</id>
       <name>Mikael Ståldal</name>
       <email>mikes@apache.org</email>
@@ -163,6 +172,15 @@
         <role>PMC Member</role>
       </roles>
       <timezone>Europe/Warsaw</timezone>
+    </developer>
+    <developer>
+      <id>grobmeier</id>
+      <name>Christian Grobmeier</name>
+      <email>grobmeier@apache.org</email>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>Europe/Berlin</timezone>
     </developer>
   </developers>
   <!-- Contributors -->
