@@ -52,9 +52,10 @@ public final class MavenChangesImporter {
     private static void writeReleased(final Path projectRootDirectory, final MavenChanges.Release release) {
 
         // Determine the directory for this particular release.
-        final Path releaseDirectory = ChangelogFiles
-                .changelogDirectory(projectRootDirectory)
-                .resolve(String.format("%s-%s", release.date.replaceAll("-", ""), release.version));
+        final Path releaseDirectory = ChangelogFiles.releaseDirectory(
+                projectRootDirectory,
+                release.date.replaceAll("-", ""),
+                release.version);
 
         // Write release information.
         final Path releaseFile = ChangelogFiles.releaseXmlFile(releaseDirectory);
