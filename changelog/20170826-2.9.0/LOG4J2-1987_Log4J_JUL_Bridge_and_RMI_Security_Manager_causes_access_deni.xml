@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1987" link="https://issues.apache.org/jira/browse/LOG4J2-1987"/>
   <author id="ggregory"/>
+  <author name="Andreas Felder"/>
   <description format="asciidoc">Log4J JUL Bridge and RMI Security Manager causes access denied ("java.util.logging.LoggingPermission" "control")</description>
 </entry>

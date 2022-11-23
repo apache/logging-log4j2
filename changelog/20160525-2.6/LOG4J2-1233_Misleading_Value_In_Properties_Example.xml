@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-1233" link="https://issues.apache.org/jira/browse/LOG4J2-1233"/>
   <author id="ggregory"/>
+  <author name="Bahri Gencsoy"/>
   <description format="asciidoc">Misleading Value In Properties Example.</description>
 </entry>

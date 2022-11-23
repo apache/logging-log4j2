@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-2388" link="https://issues.apache.org/jira/browse/LOG4J2-2388"/>
   <author id="ggregory"/>
+  <author name="Failled"/>
   <description format="asciidoc">Thread indefinitely blocked when logging a message in an interrupted thread.</description>
 </entry>

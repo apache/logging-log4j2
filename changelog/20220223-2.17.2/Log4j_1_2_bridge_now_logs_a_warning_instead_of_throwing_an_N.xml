@@ -17,5 +17,6 @@
 -->
 <entry type="fixed">
   <author id="ggregory"/>
+  <author name="Gary Gregory"/>
   <description format="asciidoc">Log4j 1.2 bridge now logs a warning instead of throwing an NullPointerException when building a Syslog appender with a missing "SyslogHost" param.</description>
 </entry>

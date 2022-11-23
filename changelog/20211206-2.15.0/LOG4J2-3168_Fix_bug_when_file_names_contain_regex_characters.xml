@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-3168" link="https://issues.apache.org/jira/browse/LOG4J2-3168"/>
   <author id="rgoers"/>
+  <author name="Benjamin Wöster"/>
   <description format="asciidoc">Fix bug when file names contain regex characters.</description>
 </entry>

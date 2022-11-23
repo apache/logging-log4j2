@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-475" link="https://issues.apache.org/jira/browse/LOG4J2-475"/>
   <author id="nickwilliams"/>
+  <author id="mattsicker"/>
   <description format="asciidoc">Changed the MongoDBConnection to add a MongoDB encoding hook instead of a decoding hook.</description>
 </entry>

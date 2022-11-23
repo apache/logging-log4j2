@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-430" link="https://issues.apache.org/jira/browse/LOG4J2-430"/>
   <author id="rgoers"/>
+  <author name="David Gstir"/>
   <description format="asciidoc">Use the formatted Message in RFC5424Layout for non-StructuredDataMessages.</description>
 </entry>

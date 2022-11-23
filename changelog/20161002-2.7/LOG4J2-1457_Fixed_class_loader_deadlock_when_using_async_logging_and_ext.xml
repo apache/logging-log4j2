@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1457" link="https://issues.apache.org/jira/browse/LOG4J2-1457"/>
   <author id="mattsicker"/>
+  <author name="Leon Finker"/>
   <description format="asciidoc">Fixed class loader deadlock when using async logging and extended stack trace pattern.</description>
 </entry>

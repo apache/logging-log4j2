@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-3107" link="https://issues.apache.org/jira/browse/LOG4J2-3107"/>
   <author id="vy"/>
+  <author name="Markus Spann"/>
   <description format="asciidoc">SmtpManager.createManagerName ignores port.</description>
 </entry>

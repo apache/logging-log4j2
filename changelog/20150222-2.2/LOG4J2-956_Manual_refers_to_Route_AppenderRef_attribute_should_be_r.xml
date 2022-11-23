@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-956" link="https://issues.apache.org/jira/browse/LOG4J2-956"/>
   <author id="ggregory"/>
+  <author name="David Kellerman"/>
   <description format="asciidoc">Manual refers to Route "AppenderRef" attribute, should be "ref".</description>
 </entry>

@@ -17,6 +17,7 @@
 -->
 <entry type="added">
   <issue id="LOG4J2-3538" link="https://issues.apache.org/jira/browse/LOG4J2-3538"/>
-  <author id="pavel_k"/>
+  <author id="pkarwasz"/>
+  <author name="Pavel_K"/>
   <description format="asciidoc">Add support for 24 colors in highlighting</description>
 </entry>

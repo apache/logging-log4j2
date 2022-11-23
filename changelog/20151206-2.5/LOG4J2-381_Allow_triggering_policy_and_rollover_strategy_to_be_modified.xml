@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-381" link="https://issues.apache.org/jira/browse/LOG4J2-381"/>
   <author id="rgoers"/>
+  <author name="Anthony Baldocchi"/>
   <description format="asciidoc">Allow triggering policy and rollover strategy to be modified during reconfiguration.</description>
 </entry>

@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-745" link="https://issues.apache.org/jira/browse/LOG4J2-745"/>
   <author id="mattsicker"/>
+  <author name="Scott Harrington"/>
   <description format="asciidoc">Avoid ConverterKey plugin clashes by using a more predictable plugin loading infrastructure.
         Plugins have been segmented into three parts: class path, user-specified packages, and OSGi bundles.</description>
 </entry>

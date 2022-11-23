@@ -18,5 +18,7 @@
 <entry type="added">
   <issue id="LOG4J2-621" link="https://issues.apache.org/jira/browse/LOG4J2-621"/>
   <author id="ggregory"/>
+  <author name="Lee Theobald"/>
+  <author name="Kamal Mettananda"/>
   <description format="asciidoc">Pattern to drop first N package parts.</description>
 </entry>

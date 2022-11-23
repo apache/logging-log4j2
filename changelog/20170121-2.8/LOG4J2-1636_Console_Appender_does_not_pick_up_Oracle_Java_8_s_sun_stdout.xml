@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1636" link="https://issues.apache.org/jira/browse/LOG4J2-1636"/>
   <author id="ggregory"/>
+  <author name="Eldar Gabdullin"/>
   <description format="asciidoc">Console Appender does not pick up Oracle Java 8's sun.stdout.encoding and sun.stderr.encoding.</description>
 </entry>

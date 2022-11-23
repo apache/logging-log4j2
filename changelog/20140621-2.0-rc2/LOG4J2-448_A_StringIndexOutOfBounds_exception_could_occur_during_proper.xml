@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-448" link="https://issues.apache.org/jira/browse/LOG4J2-448"/>
   <author id="rgoers"/>
+  <author name="X86core"/>
   <description format="asciidoc">A StringIndexOutOfBounds exception could occur during property substitution.</description>
 </entry>

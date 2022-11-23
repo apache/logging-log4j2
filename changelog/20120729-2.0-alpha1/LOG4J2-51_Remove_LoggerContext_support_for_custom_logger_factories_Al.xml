@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-51" link="https://issues.apache.org/jira/browse/LOG4J2-51"/>
   <author id="rgoers"/>
+  <author name="John Vasileff"/>
   <description format="asciidoc">Remove LoggerContext support for custom logger factories. All Loggers returned
         by LoggerContext should be compatible and of the same type.</description>
 </entry>

@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-2794" link="https://issues.apache.org/jira/browse/LOG4J2-2794"/>
   <author id="rgoers"/>
+  <author name="Johan Karlberg"/>
   <description format="asciidoc">Make YamlLayoutTest more resilient to environmental differences.</description>
 </entry>

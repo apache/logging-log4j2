@@ -18,5 +18,6 @@
 <entry type="added">
   <issue id="LOG4J2-767" link="https://issues.apache.org/jira/browse/LOG4J2-767"/>
   <author id="ggregory"/>
+  <author id="mikes"/>
   <description format="asciidoc">New module for Liquibase integration.</description>
 </entry>

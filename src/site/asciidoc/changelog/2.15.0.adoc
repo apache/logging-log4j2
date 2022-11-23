@@ -6,7 +6,7 @@
     (the "License"); you may not use this file except in compliance with
     the License.  You may obtain a copy of the License at
 
-         http://www.apache.org/licenses/LICENSE-2.0
+         https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -81,38 +81,38 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Added
 
+* Improve NameAbbreviator worst-case performance. (for https://issues.apache.org/jira/browse/LOG4J2-3189[LOG4J2-3189] by `ckozak`)
 * Pattern layout no longer enables lookups within message text by default for cleaner API boundaries and reduced
         formatting overhead. The old 'log4j2.formatMsgNoLookups' which enabled this behavior has been removed as well
         as the 'nolookups' message pattern converter option. The old behavior can be enabled on a per-pattern basis
         using '%m{lookups}'. (for https://issues.apache.org/jira/browse/LOG4J2-3198[LOG4J2-3198] by `ckozak`)
-* Allow fractional attributes for size attribute of SizeBasedTriggeringPolicy. (for https://issues.apache.org/jira/browse/LOG4J2-3194[LOG4J2-3194] by `rgoers`)
+* Allow fractional attributes for size attribute of SizeBasedTriggeringPolicy. (for https://issues.apache.org/jira/browse/LOG4J2-3194[LOG4J2-3194] by `rgoers`, markuss)
+* Make CRLF/HTML encoding run in O(n) worst-case time, rather than O(n^2). (for https://issues.apache.org/jira/browse/LOG4J2-3170[LOG4J2-3170] by `vy`, Gareth Smith)
+* Add support for Jakarta EE 9 (Tomcat 10 / Jetty 11) (for https://issues.apache.org/jira/browse/LOG4J2-2978[LOG4J2-2978] by `rgoers`, Michael Seele)
 * Add missing slf4j-api singleton accessors to log4j-slf4j-impl (1.7) StaticMarkerBinder and StaticMDCBinder.
         This doesn't impact behavior or correctness, but avoids throwing and catching NoSuchMethodErrors when slf4j
         is initialized and avoids linkage linting warnings. (for https://issues.apache.org/jira/browse/LOG4J2-3133[LOG4J2-3133] by `ckozak`)
-* Improve NameAbbreviator worst-case performance. (for https://issues.apache.org/jira/browse/LOG4J2-3189[LOG4J2-3189] by `ckozak`)
-* Make CRLF/HTML encoding run in O(n) worst-case time, rather than O(n^2). (for https://issues.apache.org/jira/browse/LOG4J2-3170[LOG4J2-3170] by `vy`)
-* Add support for Jakarta EE 9 (Tomcat 10 / Jetty 11) (for https://issues.apache.org/jira/browse/LOG4J2-2978[LOG4J2-2978] by `rgoers`)
+* Add CaseConverterResolver to JsonTemplateLayout. (for https://issues.apache.org/jira/browse/LOG4J2-3051[LOG4J2-3051] by `vy`)
+* Add Arbiters and SpringProfile plugin. (for https://issues.apache.org/jira/browse/LOG4J2-3064[LOG4J2-3064] by `rgoers`)
 * Add replacement parameter to ReadOnlyStringMapResolver. (for https://issues.apache.org/jira/browse/LOG4J2-3074[LOG4J2-3074] by `vy`)
 * Add CounterResolver to JsonTemplateLayout. (for https://issues.apache.org/jira/browse/LOG4J2-3067[LOG4J2-3067] by `vy`)
 * Add JsonTemplateLayout for Google Cloud Platform structured logging layout. (for https://issues.apache.org/jira/browse/LOG4J2-3116[LOG4J2-3116] by `rgupta`)
-* Add support for US-style date patterns and micro/nano seconds to FixedDateTime. (for https://issues.apache.org/jira/browse/LOG4J2-2885[LOG4J2-2885] by `vy`)
-* Add CaseConverterResolver to JsonTemplateLayout. (for https://issues.apache.org/jira/browse/LOG4J2-3051[LOG4J2-3051] by `vy`)
+* Add support for US-style date patterns and micro/nano seconds to FixedDateTime. (for https://issues.apache.org/jira/browse/LOG4J2-2885[LOG4J2-2885] by `vy`, Markus Spann)
 * Allow MapMessage and ThreadContext attributes to be prefixed. (for https://issues.apache.org/jira/browse/LOG4J2-3049[LOG4J2-3049] by `rgoers`)
-* Add Arbiters and SpringProfile plugin. (for https://issues.apache.org/jira/browse/LOG4J2-3064[LOG4J2-3064] by `rgoers`)
 * Add plugin support to JsonTemplateLayout. (for https://issues.apache.org/jira/browse/LOG4J2-3004[LOG4J2-3004] by `vy`)
-* Refactor MD5 usage for sharing sensitive information. (for https://issues.apache.org/jira/browse/LOG4J2-3056[LOG4J2-3056] by `vy`)
+* Refactor MD5 usage for sharing sensitive information. (for https://issues.apache.org/jira/browse/LOG4J2-3056[LOG4J2-3056] by `vy`, Marcono1234)
+* Add RepeatPatternConverter. (for https://issues.apache.org/jira/browse/LOG4J2-3044[LOG4J2-3044] by `rgoers`)
 * Allow AdditionalFields to be ignored if their value is null or a zero-length String. (for https://issues.apache.org/jira/browse/LOG4J2-3050[LOG4J2-3050] by `rgoers`)
+* Add improved MapMessage support to GelfLayout. (for https://issues.apache.org/jira/browse/LOG4J2-3048[LOG4J2-3048] by `rgoers`)
 * Add BasicAsyncLoggerContextSelector equivalent to AsyncLoggerContextSelector for
         applications with a single LoggerContext. This selector avoids classloader lookup
         overhead incurred by the existing AsyncLoggerContextSelector. (for https://issues.apache.org/jira/browse/LOG4J2-2940[LOG4J2-2940] by `ckozak`)
-* Add RepeatPatternConverter. (for https://issues.apache.org/jira/browse/LOG4J2-3044[LOG4J2-3044] by `rgoers`)
-* Context selectors are aware of their dependence upon the callers ClassLoader, allowing
-        basic context selectors to avoid the unnecessary overhead of walking the stack to
-        determine the caller's ClassLoader. (for https://issues.apache.org/jira/browse/LOG4J2-2940[LOG4J2-2940] by `ckozak`)
-* Add improved MapMessage support to GelfLayout. (for https://issues.apache.org/jira/browse/LOG4J2-3048[LOG4J2-3048] by `rgoers`)
 * Avoid ThreadLocal overhead in RandomAccessFileAppender, RollingRandomAccessFileManager,
         and MemoryMappedFileManager due to the unused setEndOfBatch and isEndOfBatch methods.
         The methods on LogEvent are preferred. (for https://issues.apache.org/jira/browse/LOG4J2-3141[LOG4J2-3141] by `ckozak`)
+* Context selectors are aware of their dependence upon the callers ClassLoader, allowing
+        basic context selectors to avoid the unnecessary overhead of walking the stack to
+        determine the caller's ClassLoader. (for https://issues.apache.org/jira/browse/LOG4J2-2940[LOG4J2-2940] by `ckozak`)
 * Improve PatternLayout performance by reducing unnecessary indirection and branching. (for https://issues.apache.org/jira/browse/LOG4J2-3171[LOG4J2-3171] by `ckozak`)
 * Allow a PatternSelector to be specified on GelfLayout. (for https://issues.apache.org/jira/browse/LOG4J2-3041[LOG4J2-3041] by `rgoers`)
 * Prefer string.getBytes(Charset) over string.getBytes(String)
@@ -120,12 +120,12 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Changed
 
-* Correct documentation for SyslogAppender when using TLS. (for https://issues.apache.org/jira/browse/LOG4J2-2553[LOG4J2-2553] by `rgoers`)
-* Minor documentation corrections in the configuration section. (for https://issues.apache.org/jira/browse/LOG4J2-2541[LOG4J2-2541] by `rgoers`)
-* Minor documentation corrections regarding log levels. (for https://issues.apache.org/jira/browse/LOG4J2-2540[LOG4J2-2540] by `rgoers`)
 * Fix Log Event Level vs Logger Config Level table. (for https://issues.apache.org/jira/browse/LOG4J2-3166[LOG4J2-3166] by `rgoers`)
 * Log4j 1.x properties were not being substituted. (for https://issues.apache.org/jira/browse/LOG4J2-2951[LOG4J2-2951] by `rgoers`)
-* Handle interrupted exceptions that occur during rollover. (for https://issues.apache.org/jira/browse/LOG4J2-1798[LOG4J2-1798] by `rgoers`)
+* Handle interrupted exceptions that occur during rollover. (for https://issues.apache.org/jira/browse/LOG4J2-1798[LOG4J2-1798] by `rgoers`, Viacheslav Zhivaev)
+* Correct documentation for SyslogAppender when using TLS. (for https://issues.apache.org/jira/browse/LOG4J2-2553[LOG4J2-2553] by `rgoers`)
+* Minor documentation corrections in the configuration section. (for https://issues.apache.org/jira/browse/LOG4J2-2541[LOG4J2-2541] by `rgoers`, Gerold Broser)
+* Minor documentation corrections regarding log levels. (for https://issues.apache.org/jira/browse/LOG4J2-2540[LOG4J2-2540] by `rgoers`)
 * Provide support for overriding the Tomcat Log class in Tomcat 8.5+. (for https://issues.apache.org/jira/browse/LOG4J2-2025[LOG4J2-2025] by `rgoers`)
 * Update Spring framework to 5.3.13, Spring Boot to 2.5.7, and Spring Cloud to 2020.0.4. (by `rgoers`)
 * Updated dependencies.
@@ -180,42 +180,42 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Fixed
 
-* Enable immediate flush on RollingFileAppender when buffered i/o is not enabled. (for https://issues.apache.org/jira/browse/LOG4J2-3114[LOG4J2-3114] by `rgoers`)
+* Enable immediate flush on RollingFileAppender when buffered i/o is not enabled. (for https://issues.apache.org/jira/browse/LOG4J2-3114[LOG4J2-3114] by `rgoers`, Barnabas Bodnar)
 * Limit the protocols JNDI can use by default. Limit the servers and classes that can be accessed via LDAP. (for https://issues.apache.org/jira/browse/LOG4J2-3201[LOG4J2-3201] by `rgoers`)
-* Fix thread-safety issues in DefaultErrorHandler. (for https://issues.apache.org/jira/browse/LOG4J2-3185[LOG4J2-3185] by `vy`)
 * Fix the number of {}-placeholders in the string literal argument does not match the number of other arguments
-        to the logging call. (for https://issues.apache.org/jira/browse/LOG4J2-3110[LOG4J2-3110] by `rgoers`)
-* Fix thread-safety issues in DefaultErrorHandler. (for https://issues.apache.org/jira/browse/LOG4J2-3060[LOG4J2-3060] by `vy`)
+        to the logging call. (for https://issues.apache.org/jira/browse/LOG4J2-3110[LOG4J2-3110] by `rgoers`, Arturo Bernal)
+* Fix bug when file names contain regex characters. (for https://issues.apache.org/jira/browse/LOG4J2-3168[LOG4J2-3168] by `rgoers`, Benjamin Wöster)
+* Fix thread-safety issues in DefaultErrorHandler. (for https://issues.apache.org/jira/browse/LOG4J2-3185[LOG4J2-3185] by `vy`, mzbonnt)
+* Fix thread-safety issues in DefaultErrorHandler. (for https://issues.apache.org/jira/browse/LOG4J2-3060[LOG4J2-3060] by `vy`, Nikita Mikhailov)
 * Avoid using MutableInstant of the event as a cache key in JsonTemplateLayout. (for https://issues.apache.org/jira/browse/LOG4J2-3183[LOG4J2-3183] by `vy`)
-* Fix bug when file names contain regex characters. (for https://issues.apache.org/jira/browse/LOG4J2-3168[LOG4J2-3168] by `rgoers`)
-* Avoid KafkaManager override when topics differ. (for https://issues.apache.org/jira/browse/LOG4J2-3175[LOG4J2-3175] by `vy`)
-* Buffer immutable log events in the SmtpManager. (for https://issues.apache.org/jira/browse/LOG4J2-3172[LOG4J2-3172] by `vy`)
 * SocketAppender should propagate failures when reconnection fails. (for https://issues.apache.org/jira/browse/LOG4J2-2829[LOG4J2-2829] by `vy`)
-* Fix documentation on how to toggle log4j2.debug system property. (for https://issues.apache.org/jira/browse/LOG4J2-3160[LOG4J2-3160] by `vy`)
-* log4j-1.2-api implements LogEventAdapter.getTimestamp() based on the original event timestamp
-        instead of returning zero. (for https://issues.apache.org/jira/browse/LOG4J2-3142[LOG4J2-3142] by `ckozak`)
+* Avoid KafkaManager override when topics differ. (for https://issues.apache.org/jira/browse/LOG4J2-3175[LOG4J2-3175] by `vy`, wuqian0808)
+* Fix documentation on how to toggle log4j2.debug system property. (for https://issues.apache.org/jira/browse/LOG4J2-3160[LOG4J2-3160] by `vy`, Lars Bohl)
+* Buffer immutable log events in the SmtpManager. (for https://issues.apache.org/jira/browse/LOG4J2-3172[LOG4J2-3172] by `vy`, Barry Fleming)
 * DatePatternConverter performance is not impacted by microsecond-precision clocks when such precision isn't
         required. (for https://issues.apache.org/jira/browse/LOG4J2-3153[LOG4J2-3153] by `ckozak`)
-* LoggerContext skips resolving localhost when hostName is configured. (for https://issues.apache.org/jira/browse/LOG4J2-2808[LOG4J2-2808] by `ckozak`)
 * Fixed an unlikely race condition in Log4jMarker.getParents() volatile access. (for https://issues.apache.org/jira/browse/LOG4J2-3159[LOG4J2-3159] by `ckozak`)
-* RandomAccessFile appender uses the correct default buffer size of 256 kB
-        rather than the default appender buffer size of 8 kB. (for https://issues.apache.org/jira/browse/LOG4J2-3150[LOG4J2-3150] by `ckozak`)
-* Use SimpleMessage in Log4j 1 Category whenever possible. (for https://issues.apache.org/jira/browse/LOG4J2-3080[LOG4J2-3080] by `vy`)
-* log4j2 config modified at run-time may trigger incomplete MBean re-initialization due to InstanceAlreadyExistsException. (for https://issues.apache.org/jira/browse/LOG4J2-3121[LOG4J2-3121] by `ggregory`)
+* log4j-1.2-api implements LogEventAdapter.getTimestamp() based on the original event timestamp
+        instead of returning zero. (for https://issues.apache.org/jira/browse/LOG4J2-3142[LOG4J2-3142] by `ckozak`, John Meikle)
 * log4j-slf4j-impl and log4j-slf4j18-impl correctly detect the calling class using both LoggerFactory.getLogger
         methods as well as LoggerFactory.getILoggerFactory().getLogger. (for https://issues.apache.org/jira/browse/LOG4J2-3083[LOG4J2-3083] by `ckozak`)
-* SmtpManager.createManagerName ignores port. (for https://issues.apache.org/jira/browse/LOG4J2-3107[LOG4J2-3107] by `vy`)
-* Handle Disruptor event translation exceptions. (for https://issues.apache.org/jira/browse/LOG4J2-2816[LOG4J2-2816] by `vy`)
+* LoggerContext skips resolving localhost when hostName is configured. (for https://issues.apache.org/jira/browse/LOG4J2-2808[LOG4J2-2808] by `ckozak`, Asapha Halifa)
+* RandomAccessFile appender uses the correct default buffer size of 256 kB
+        rather than the default appender buffer size of 8 kB. (for https://issues.apache.org/jira/browse/LOG4J2-3150[LOG4J2-3150] by `ckozak`)
 * Fix a regression in 2.14.1 which allowed the AsyncAppender background thread to keep the JVM alive because
         the daemon flag was not set. (for https://issues.apache.org/jira/browse/LOG4J2-3102[LOG4J2-3102] by `ckozak`)
-* Fix JsonWriter memory leaks due to retained excessive buffer growth. (for https://issues.apache.org/jira/browse/LOG4J2-3092[LOG4J2-3092] by `vy`)
-* Fix sporadic JsonTemplateLayoutNullEventDelimiterTest failures on Windows. (for https://issues.apache.org/jira/browse/LOG4J2-3089[LOG4J2-3089] by `vy`)
-* Fix race condition which can result in ConcurrentModificationException on context.stop. (for https://issues.apache.org/jira/browse/LOG4J2-3103[LOG4J2-3103] by `ckozak`)
-* BasicContextSelector hasContext and shutdown take the default context into account (for https://issues.apache.org/jira/browse/LOG4J2-3054[LOG4J2-3054] by `ckozak`)
-* Ensure EncodingPatternConverter#handlesThrowable is implemented. (for https://issues.apache.org/jira/browse/LOG4J2-3070[LOG4J2-3070] by `vy`)
-* Fix race in JsonTemplateLayout where a timestamp could end up unquoted. (for https://issues.apache.org/jira/browse/LOG4J2-3087[LOG4J2-3087] by `vy`)
+* Use SimpleMessage in Log4j 1 Category whenever possible. (for https://issues.apache.org/jira/browse/LOG4J2-3080[LOG4J2-3080] by `vy`)
+* log4j2 config modified at run-time may trigger incomplete MBean re-initialization due to InstanceAlreadyExistsException. (for https://issues.apache.org/jira/browse/LOG4J2-3121[LOG4J2-3121] by `ggregory`, Markus Spann)
+* SmtpManager.createManagerName ignores port. (for https://issues.apache.org/jira/browse/LOG4J2-3107[LOG4J2-3107] by `vy`, Markus Spann)
+* Handle Disruptor event translation exceptions. (for https://issues.apache.org/jira/browse/LOG4J2-2816[LOG4J2-2816] by `vy`, Jacob Shields)
+* Fix JsonWriter memory leaks due to retained excessive buffer growth. (for https://issues.apache.org/jira/browse/LOG4J2-3092[LOG4J2-3092] by `vy`, xmh51)
+* Fix sporadic JsonTemplateLayoutNullEventDelimiterTest failures on Windows. (for https://issues.apache.org/jira/browse/LOG4J2-3089[LOG4J2-3089] by `vy`, Tim Perry)
 * Fix formatting of nanoseconds in JsonTemplateLayout. (for https://issues.apache.org/jira/browse/LOG4J2-3075[LOG4J2-3075] by `vy`)
-* Slf4j implementations walk the stack at most once rather than twice to determine the caller's class loader. (for https://issues.apache.org/jira/browse/LOG4J2-2940[LOG4J2-2940] by `ckozak`)
+* Fix race condition which can result in ConcurrentModificationException on context.stop. (for https://issues.apache.org/jira/browse/LOG4J2-3103[LOG4J2-3103] by `ckozak`, Mike Glazer)
 * Fixed a deadlock between the AsyncLoggerContextSelector and java.util.logging.LogManager by updating Disruptor to 3.4.4. (for https://issues.apache.org/jira/browse/LOG4J2-2965[LOG4J2-2965] by `ckozak`)
-* Wrong subject on mail when it depends on the LogEvent (for https://issues.apache.org/jira/browse/LOG4J2-3174[LOG4J2-3174] by `vy`)
-* Category.setLevel should accept null value. (for https://issues.apache.org/jira/browse/LOG4J2-3095[LOG4J2-3095] by `ggregory`)
+* BasicContextSelector hasContext and shutdown take the default context into account (for https://issues.apache.org/jira/browse/LOG4J2-3054[LOG4J2-3054] by `ckozak`)
+* Ensure EncodingPatternConverter#handlesThrowable is implemented. (for https://issues.apache.org/jira/browse/LOG4J2-3070[LOG4J2-3070] by `vy`, Romain Manni-Bucau)
+* Fix race in JsonTemplateLayout where a timestamp could end up unquoted. (for https://issues.apache.org/jira/browse/LOG4J2-3087[LOG4J2-3087] by `vy`, Anton Klarén)
+* Slf4j implementations walk the stack at most once rather than twice to determine the caller's class loader. (for https://issues.apache.org/jira/browse/LOG4J2-2940[LOG4J2-2940] by `ckozak`)
+* Category.setLevel should accept null value. (for https://issues.apache.org/jira/browse/LOG4J2-3095[LOG4J2-3095] by `ggregory`, Gary GregoryKenny MacLeod)
+* Wrong subject on mail when it depends on the LogEvent (for https://issues.apache.org/jira/browse/LOG4J2-3174[LOG4J2-3174] by `vy`, romainmoreau)

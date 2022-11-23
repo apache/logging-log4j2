@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-347" link="https://issues.apache.org/jira/browse/LOG4J2-347"/>
   <author id="rpopma"/>
+  <author name="David Phillips"/>
   <description format="asciidoc">Give the AsyncAppender thread a more descriptive name for easier debugging/profiling.</description>
 </entry>

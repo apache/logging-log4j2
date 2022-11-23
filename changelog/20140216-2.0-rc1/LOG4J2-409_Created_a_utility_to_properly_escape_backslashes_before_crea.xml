@@ -18,6 +18,8 @@
 <entry type="fixed">
   <issue id="LOG4J2-409" link="https://issues.apache.org/jira/browse/LOG4J2-409"/>
   <author id="nickwilliams"/>
+  <author name="Frank Steinmann"/>
+  <author name="Thomas Neidhart"/>
   <description format="asciidoc">Created a utility to properly escape backslashes before creating URIs, and changed URI creation to use the
         utility instead of instantiating URI directly.</description>
 </entry>

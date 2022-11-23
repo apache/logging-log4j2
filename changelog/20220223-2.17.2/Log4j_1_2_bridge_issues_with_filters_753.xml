@@ -17,5 +17,6 @@
 -->
 <entry type="fixed">
   <author id="ggregory"/>
+  <author name="Piotr P. Karwasz, Gary Gregory"/>
   <description format="asciidoc">Log4j 1.2 bridge issues with filters #753.</description>
 </entry>

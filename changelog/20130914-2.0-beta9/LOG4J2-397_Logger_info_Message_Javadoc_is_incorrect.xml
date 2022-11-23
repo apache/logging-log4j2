@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-397" link="https://issues.apache.org/jira/browse/LOG4J2-397"/>
   <author id="ggregory"/>
+  <author name="Yonatan Graber"/>
   <description format="asciidoc">Logger.info(Message) Javadoc is incorrect.</description>
 </entry>

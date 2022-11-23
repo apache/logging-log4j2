@@ -17,5 +17,6 @@
 -->
 <entry type="fixed">
   <author id="ggregory"/>
+  <author name="Gary Gregory"/>
   <description format="asciidoc">Log4j 1.2 bridge missed org.apache.log4j.pattern.FormattingInfo.</description>
 </entry>

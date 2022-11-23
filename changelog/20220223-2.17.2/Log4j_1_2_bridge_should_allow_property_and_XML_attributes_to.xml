@@ -17,5 +17,6 @@
 -->
 <entry type="fixed">
   <author id="ggregory"/>
+  <author name="Gary Gregory, Piotr P. Karwasz"/>
   <description format="asciidoc">Log4j 1.2 bridge should allow property and XML attributes to start with either an upper-case or lower-case letter.</description>
 </entry>

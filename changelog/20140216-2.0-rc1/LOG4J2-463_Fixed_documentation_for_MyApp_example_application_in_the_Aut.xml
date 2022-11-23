@@ -18,5 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-463" link="https://issues.apache.org/jira/browse/LOG4J2-463"/>
   <author id="rpopma"/>
+  <author id="mattsicker"/>
+  <author name="Michael Diamond"/>
   <description format="asciidoc">Fixed documentation for MyApp example application in the Automatic Configuration section</description>
 </entry>

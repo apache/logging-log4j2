@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-690" link="https://issues.apache.org/jira/browse/LOG4J2-690"/>
   <author id="rgoers"/>
+  <author name="Philip Helger"/>
   <description format="asciidoc">Log4j Web test dependencies should be in scope "test" in the pom.</description>
 </entry>

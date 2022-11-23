@@ -17,6 +17,6 @@
 -->
 <entry type="changed">
   <issue id="LOG4J2-386" link="https://issues.apache.org/jira/browse/LOG4J2-386"/>
-  <author id="gregory"/>
+  <author id="ggregory"/>
   <description format="asciidoc">Update NoSQL dependencies: lightcouch 0.0.6 from 0.0.5, mongodb 2.11.2 from 2.11.1.</description>
 </entry>

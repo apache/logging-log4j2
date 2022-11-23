@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-80" link="https://issues.apache.org/jira/browse/LOG4J2-80"/>
   <author id="rgoers"/>
+  <author name="Oliver Lamy"/>
   <description format="asciidoc">Allow Log4j 2 to be used as the implementation with SLF4J and SLF4J's jcl-over-slf4j by adding filtering
         to the log method in SLF4JLogger.</description>
 </entry>

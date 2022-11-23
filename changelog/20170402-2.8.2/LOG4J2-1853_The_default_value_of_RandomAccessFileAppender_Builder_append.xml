@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1853" link="https://issues.apache.org/jira/browse/LOG4J2-1853"/>
   <author id="ggregory"/>
+  <author name="wangyuntao"/>
   <description format="asciidoc">The default value of RandomAccessFileAppender.Builder append field is wrong.</description>
 </entry>

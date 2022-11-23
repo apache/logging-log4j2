@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-3121" link="https://issues.apache.org/jira/browse/LOG4J2-3121"/>
   <author id="ggregory"/>
+  <author name="Markus Spann"/>
   <description format="asciidoc">log4j2 config modified at run-time may trigger incomplete MBean re-initialization due to InstanceAlreadyExistsException.</description>
 </entry>

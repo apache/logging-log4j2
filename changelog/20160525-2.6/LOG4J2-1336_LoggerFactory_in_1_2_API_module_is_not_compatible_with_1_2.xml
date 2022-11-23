@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1336" link="https://issues.apache.org/jira/browse/LOG4J2-1336"/>
   <author id="ggregory"/>
+  <author name="Zbynek Vyskovsky"/>
   <description format="asciidoc">LoggerFactory in 1.2 API module is not compatible with 1.2.</description>
 </entry>

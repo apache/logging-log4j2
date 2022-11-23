@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-2624" link="https://issues.apache.org/jira/browse/LOG4J2-2624"/>
   <author id="mattsicker"/>
+  <author name="Tim Perry"/>
   <description format="asciidoc">Allow auto-shutdown of log4j in log4j-web to be turned off and provide a
         ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j.
         Register the listener at the top of web.xml to ensure the shutdown happens last.</description>

@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,6 +23,8 @@ import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.apache.logging.log4j.internal.util.StringUtils.isBlank;
 
 public final class MavenChangesImporter {
 
@@ -104,7 +106,11 @@ public final class MavenChangesImporter {
 
         // Create the `author`s.
         final List<ChangelogEntry.Author> authors = new ArrayList<>(2);
-        authors.add(new ChangelogEntry.Author(action.dev, null));
+        for (final String authorId : action.dev.split("\\s*,\\s*")) {
+            if (!isBlank(authorId)) {
+                authors.add(new ChangelogEntry.Author(authorId, null));
+            }
+        }
         if (action.dueTo != null) {
             authors.add(new ChangelogEntry.Author(null, action.dueTo));
         }

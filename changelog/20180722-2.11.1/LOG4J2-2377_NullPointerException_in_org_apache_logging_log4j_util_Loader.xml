@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-2377" link="https://issues.apache.org/jira/browse/LOG4J2-2377"/>
   <author id="ggregory"/>
+  <author name="Mirko Rzehak, Gary Gregory"/>
   <description format="asciidoc">NullPointerException in org.apache.logging.log4j.util.LoaderUtil.getClassLoaders() when using Bootstrap class loader.</description>
 </entry>

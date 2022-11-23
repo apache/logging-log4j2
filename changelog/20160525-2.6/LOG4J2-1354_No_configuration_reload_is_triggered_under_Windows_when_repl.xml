@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1354" link="https://issues.apache.org/jira/browse/LOG4J2-1354"/>
   <author id="ggregory"/>
+  <author name="Arkadiusz Adolph"/>
   <description format="asciidoc">No configuration reload is triggered under Windows when replacing the configuration file with one that has older last modified date.</description>
 </entry>

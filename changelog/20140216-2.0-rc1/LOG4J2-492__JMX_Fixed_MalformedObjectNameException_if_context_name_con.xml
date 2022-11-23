@@ -18,5 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-492" link="https://issues.apache.org/jira/browse/LOG4J2-492"/>
   <author id="rpopma"/>
+  <author name="Shaddy Baddah"/>
+  <author name="Herlani Junior"/>
   <description format="asciidoc">(JMX) Fixed MalformedObjectNameException if context name contains '=' or newline characters.</description>
 </entry>

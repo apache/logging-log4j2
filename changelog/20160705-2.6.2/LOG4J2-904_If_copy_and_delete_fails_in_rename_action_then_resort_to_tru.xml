@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-904" link="https://issues.apache.org/jira/browse/LOG4J2-904"/>
   <author id="rgoers"/>
+  <author name="Bernhard Mähr"/>
   <description format="asciidoc">If copy and delete fails in rename action then resort to truncating the source file after copying it.</description>
 </entry>

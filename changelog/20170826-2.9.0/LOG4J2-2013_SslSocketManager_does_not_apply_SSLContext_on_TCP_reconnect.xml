@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-2013" link="https://issues.apache.org/jira/browse/LOG4J2-2013"/>
   <author id="ggregory"/>
+  <author name="Taylor Patton, Gary Gregory"/>
   <description format="asciidoc">SslSocketManager does not apply SSLContext on TCP reconnect.</description>
 </entry>

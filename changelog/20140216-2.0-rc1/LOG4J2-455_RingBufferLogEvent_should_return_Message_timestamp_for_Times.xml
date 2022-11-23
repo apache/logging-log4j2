@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-455" link="https://issues.apache.org/jira/browse/LOG4J2-455"/>
   <author id="rpopma"/>
+  <author name="Robin Zhang Tao"/>
   <description format="asciidoc">RingBufferLogEvent should return Message timestamp for TimestampMessage messages.</description>
 </entry>

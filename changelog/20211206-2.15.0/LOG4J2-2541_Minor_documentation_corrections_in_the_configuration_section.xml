@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-2541" link="https://issues.apache.org/jira/browse/LOG4J2-2541"/>
   <author id="rgoers"/>
+  <author name="Gerold Broser"/>
   <description format="asciidoc">Minor documentation corrections in the configuration section.</description>
 </entry>

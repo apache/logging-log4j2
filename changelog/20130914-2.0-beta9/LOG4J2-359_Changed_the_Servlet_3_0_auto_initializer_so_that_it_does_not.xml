@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-359" link="https://issues.apache.org/jira/browse/LOG4J2-359"/>
   <author id="nickwilliams"/>
+  <author name="Abhinav Shah"/>
   <description format="asciidoc">Changed the Servlet 3.0 auto-initializer so that it does nothing in a Servlet 2.5 or older application. This
         ensures behavioral consistency across containers.</description>
 </entry>

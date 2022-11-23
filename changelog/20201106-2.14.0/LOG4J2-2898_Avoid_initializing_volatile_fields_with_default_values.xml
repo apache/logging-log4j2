@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-2898" link="https://issues.apache.org/jira/browse/LOG4J2-2898"/>
   <author id="ckozak"/>
+  <author name="Turbanov Andrey"/>
   <description format="asciidoc">Avoid initializing volatile fields with default values.</description>
 </entry>

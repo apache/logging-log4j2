@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-967" link="https://issues.apache.org/jira/browse/LOG4J2-967"/>
   <author id="ggregory"/>
+  <author name="Stefan Wehner"/>
   <description format="asciidoc">log4j2.component.properties not read for all properties.</description>
 </entry>

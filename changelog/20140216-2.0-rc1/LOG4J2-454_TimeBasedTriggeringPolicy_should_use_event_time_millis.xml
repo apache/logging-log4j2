@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-454" link="https://issues.apache.org/jira/browse/LOG4J2-454"/>
   <author id="rpopma"/>
+  <author name="Robin Zhang Tao"/>
   <description format="asciidoc">TimeBasedTriggeringPolicy should use event time millis.</description>
 </entry>

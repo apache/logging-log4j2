@@ -17,5 +17,6 @@
 -->
 <entry type="fixed">
   <author id="ggregory"/>
+  <author name="Gary Gregory, Piotr P. Karwasz"/>
   <description format="asciidoc">Log4j 1.2 bridge throws ClassCastException when using SimpleLayout and others #708.</description>
 </entry>

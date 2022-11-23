@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-2813" link="https://issues.apache.org/jira/browse/LOG4J2-2813"/>
   <author id="rgoers"/>
+  <author name="Keith D Gregory"/>
   <description format="asciidoc">serializeToBytes was checking wrong variable for null.</description>
 </entry>

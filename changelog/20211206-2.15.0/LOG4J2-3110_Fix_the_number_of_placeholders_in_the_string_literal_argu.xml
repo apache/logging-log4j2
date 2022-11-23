@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-3110" link="https://issues.apache.org/jira/browse/LOG4J2-3110"/>
   <author id="rgoers"/>
+  <author name="Arturo Bernal"/>
   <description format="asciidoc">Fix the number of {}-placeholders in the string literal argument does not match the number of other arguments
         to the logging call.</description>
 </entry>

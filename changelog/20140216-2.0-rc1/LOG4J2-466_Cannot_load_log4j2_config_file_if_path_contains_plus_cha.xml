@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-466" link="https://issues.apache.org/jira/browse/LOG4J2-466"/>
   <author id="rpopma"/>
+  <author name="Jan Tepke"/>
   <description format="asciidoc">Cannot load log4j2 config file if path contains plus '+' characters.</description>
 </entry>

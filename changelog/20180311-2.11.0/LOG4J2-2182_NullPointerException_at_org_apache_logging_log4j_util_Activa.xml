@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-2182" link="https://issues.apache.org/jira/browse/LOG4J2-2182"/>
   <author id="ggregory"/>
+  <author name="liwenxian2017, Gary Gregory"/>
   <description format="asciidoc">NullPointerException at org.apache.logging.log4j.util.Activator.loadProvider(Activator.java:81) in log4j 2.10.0.</description>
 </entry>

@@ -18,5 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-345" link="https://issues.apache.org/jira/browse/LOG4J2-345"/>
   <author id="rpopma"/>
+  <author id="mattsicker"/>
+  <author name="Roland Weiglhofer"/>
   <description format="asciidoc">(OSGi) logging.log4j-1.2-api doesn't export the log4j API 1.2. Dependent bundles can not be resolved.</description>
 </entry>

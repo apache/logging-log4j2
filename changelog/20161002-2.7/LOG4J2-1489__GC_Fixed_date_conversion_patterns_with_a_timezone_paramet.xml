@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1489" link="https://issues.apache.org/jira/browse/LOG4J2-1489"/>
   <author id="rpopma"/>
+  <author name="Richard Zschech"/>
   <description format="asciidoc">(GC) Fixed %date conversion patterns with a timezone parameter are now garbage free.</description>
 </entry>

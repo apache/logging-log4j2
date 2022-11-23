@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-2776" link="https://issues.apache.org/jira/browse/LOG4J2-2776"/>
   <author id="rgoers"/>
+  <author name="Christoph Kaser"/>
   <description format="asciidoc">An error message in RollingFileAppender uses a placeholder for the name but does not specify the name
         argument in the logging call</description>
 </entry>

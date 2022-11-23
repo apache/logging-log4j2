@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-3040" link="https://issues.apache.org/jira/browse/LOG4J2-3040"/>
   <author id="ggregory"/>
+  <author name="LF-Lin"/>
   <description format="asciidoc">Avoid ClassCastException in JeroMqManager with custom LoggerContextFactory #791.</description>
 </entry>

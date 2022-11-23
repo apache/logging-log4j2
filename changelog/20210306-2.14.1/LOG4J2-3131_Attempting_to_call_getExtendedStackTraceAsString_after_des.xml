@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-3131" link="https://issues.apache.org/jira/browse/LOG4J2-3131"/>
   <author id="ggregory"/>
+  <author name="Adam Long, Gary Gregory"/>
   <description format="asciidoc">Attempting to call getExtendedStackTraceAsString() after deserializing JSON LogEvent results in a NPE.</description>
 </entry>

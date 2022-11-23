@@ -17,6 +17,6 @@
 -->
 <entry type="fixed">
   <issue id="LOG4J2-3290" link="https://issues.apache.org/jira/browse/LOG4J2-3290"/>
-  <author id="rogers"/>
+  <author id="rgoers"/>
   <description format="asciidoc">Remove unused method.</description>
 </entry>

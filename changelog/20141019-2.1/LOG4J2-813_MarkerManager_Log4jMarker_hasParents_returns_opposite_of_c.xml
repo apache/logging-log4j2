@@ -18,5 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-813" link="https://issues.apache.org/jira/browse/LOG4J2-813"/>
   <author id="ggregory"/>
+  <author name="David Erichsen"/>
+  <author name="Brandon Barry"/>
   <description format="asciidoc">MarkerManager Log4jMarker.hasParents() returns opposite of correct result.</description>
 </entry>

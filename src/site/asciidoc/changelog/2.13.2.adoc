@@ -6,7 +6,7 @@
     (the "License"); you may not use this file except in compliance with
     the License.  You may obtain a copy of the License at
 
-         http://www.apache.org/licenses/LICENSE-2.0
+         https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,7 +48,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Added
 
-* Provide a Log4j implementation of System.Logger. (for https://issues.apache.org/jira/browse/LOG4J2-1360[LOG4J2-1360] by `rgoers`)
+* Provide a Log4j implementation of System.Logger. (for https://issues.apache.org/jira/browse/LOG4J2-1360[LOG4J2-1360] by `rgoers`, Kevin Leturc)
 * Added EventLookup to retrieve fields from the log event. (for https://issues.apache.org/jira/browse/LOG4J2-2807[LOG4J2-2807] by `rgoers`)
 
 === Changed
@@ -63,18 +63,18 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Fixed
 
-* Implement requiresLocation in GelfLayout to reflect whether location information is used in the message Pattern. (for https://issues.apache.org/jira/browse/LOG4J2-2824[LOG4J2-2824] by `rgoers`)
 * Add option to restore printing timeMillis in the JsonLayout. (for https://issues.apache.org/jira/browse/LOG4J2-2588[LOG4J2-2588] by `rgoers`)
-* Add information about using a url in log4j.configurationFile. (for https://issues.apache.org/jira/browse/LOG4J2-2810[LOG4J2-2810] by `rgoers`)
 * Initialize pattern processor before triggering policy during reconfiguration. (for https://issues.apache.org/jira/browse/LOG4J2-2766[LOG4J2-2766] by `rgoers`)
-* serializeToBytes was checking wrong variable for null. (for https://issues.apache.org/jira/browse/LOG4J2-2813[LOG4J2-2813] by `rgoers`)
-* Allow trailing and leading spaces in log level. (for https://issues.apache.org/jira/browse/LOG4J2-2793[LOG4J2-2793] by `rgoers`)
-* Allow the file size action to parse the value without being sensitive to the current locale. (for https://issues.apache.org/jira/browse/LOG4J2-2817[LOG4J2-2817] by `rgoers`)
-* Correct JsonLayout timestamp sorting issue. (for https://issues.apache.org/jira/browse/LOG4J2-2791[LOG4J2-2791] by `rgoers`)
+* Implement requiresLocation in GelfLayout to reflect whether location information is used in the message Pattern. (for https://issues.apache.org/jira/browse/LOG4J2-2824[LOG4J2-2824] by `rgoers`, CrazyBills)
+* Allow trailing and leading spaces in log level. (for https://issues.apache.org/jira/browse/LOG4J2-2793[LOG4J2-2793] by `rgoers`, Renukaprasad C)
+* Add information about using a url in log4j.configurationFile. (for https://issues.apache.org/jira/browse/LOG4J2-2810[LOG4J2-2810] by `rgoers`)
 * Fix Javadoc for ScriptPatternSelector. (for https://issues.apache.org/jira/browse/LOG4J2-2814[LOG4J2-2814] by `rgoers`)
-* Make YamlLayoutTest more resilient to environmental differences. (for https://issues.apache.org/jira/browse/LOG4J2-2794[LOG4J2-2794] by `rgoers`)
-* Add missing includeLocation parameter when creating AsyncLogger. (for https://issues.apache.org/jira/browse/LOG4J2-2811[LOG4J2-2811] by `rgoers`)
-* Conditionally allocate PluginEntry during PluginCache loading. (for https://issues.apache.org/jira/browse/LOG4J2-2790[LOG4J2-2790] by `rgoers`)
+* serializeToBytes was checking wrong variable for null. (for https://issues.apache.org/jira/browse/LOG4J2-2813[LOG4J2-2813] by `rgoers`, Keith D Gregory)
+* Allow the file size action to parse the value without being sensitive to the current locale. (for https://issues.apache.org/jira/browse/LOG4J2-2817[LOG4J2-2817] by `rgoers`, Trejkaz)
+* Make YamlLayoutTest more resilient to environmental differences. (for https://issues.apache.org/jira/browse/LOG4J2-2794[LOG4J2-2794] by `rgoers`, Johan Karlberg)
+* Correct JsonLayout timestamp sorting issue. (for https://issues.apache.org/jira/browse/LOG4J2-2791[LOG4J2-2791] by `rgoers`, Johan Karlberg)
+* Add missing includeLocation parameter when creating AsyncLogger. (for https://issues.apache.org/jira/browse/LOG4J2-2811[LOG4J2-2811] by `rgoers`, Kuojian21)
+* Conditionally allocate PluginEntry during PluginCache loading. (for https://issues.apache.org/jira/browse/LOG4J2-2790[LOG4J2-2790] by `rgoers`, Marius Volkhart)
+* Fix Exceptions when whitespace is in the file path and Java security manager is used. (for https://issues.apache.org/jira/browse/LOG4J2-2761[LOG4J2-2761] by `rgoers`, Uwe Schindler)
 * TimeFilter did not handle daylight saving time transitions and did not support a range over 2 days. (for https://issues.apache.org/jira/browse/LOG4J2-2805[LOG4J2-2805] by `rgoers`)
-* Avoid NullPointerException when StackWalker returns null. (for https://issues.apache.org/jira/browse/LOG4J2-2809[LOG4J2-2809] by `rgoers`)
-* Fix Exceptions when whitespace is in the file path and Java security manager is used. (for https://issues.apache.org/jira/browse/LOG4J2-2761[LOG4J2-2761] by `rgoers`)
+* Avoid NullPointerException when StackWalker returns null. (for https://issues.apache.org/jira/browse/LOG4J2-2809[LOG4J2-2809] by `rgoers`, Romain Manni-Bucau)

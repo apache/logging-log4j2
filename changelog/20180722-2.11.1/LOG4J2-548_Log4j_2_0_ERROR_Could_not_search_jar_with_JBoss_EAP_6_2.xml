@@ -18,5 +18,9 @@
 <entry type="changed">
   <issue id="LOG4J2-548" link="https://issues.apache.org/jira/browse/LOG4J2-548"/>
   <author id="ggregory"/>
+  <author name="Shehata"/>
+  <author name="Paresh Varke"/>
+  <author name="Eric Victorson"/>
+  <author name="Martin Laforet"/>
   <description format="asciidoc">Log4j 2.0 ERROR "Could not search jar" with JBoss EAP 6.2.</description>
 </entry>

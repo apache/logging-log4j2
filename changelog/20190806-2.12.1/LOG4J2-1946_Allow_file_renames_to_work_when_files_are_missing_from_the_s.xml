@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1946" link="https://issues.apache.org/jira/browse/LOG4J2-1946"/>
   <author id="rgoers"/>
+  <author name="Igor Perelyotov"/>
   <description format="asciidoc">Allow file renames to work when files are missing from the sequence.</description>
 </entry>

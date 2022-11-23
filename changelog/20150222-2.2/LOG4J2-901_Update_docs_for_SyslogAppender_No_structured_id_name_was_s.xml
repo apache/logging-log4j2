@@ -18,5 +18,7 @@
 <entry type="changed">
   <issue id="LOG4J2-901" link="https://issues.apache.org/jira/browse/LOG4J2-901"/>
   <author id="ggregory"/>
+  <author name="Tihomir Meščić"/>
+  <author name="Siegfried Greisinger"/>
   <description format="asciidoc">Update docs for SyslogAppender: "No structured id name was supplied"</description>
 </entry>

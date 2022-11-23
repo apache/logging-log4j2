@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-862" link="https://issues.apache.org/jira/browse/LOG4J2-862"/>
   <author id="mattsicker"/>
+  <author name="Michael Sutherland"/>
   <description format="asciidoc">Fixed classloader issue that prevented Log4j from finding the implementation when used in a custom Ant task.</description>
 </entry>

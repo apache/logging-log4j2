@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-2735" link="https://issues.apache.org/jira/browse/LOG4J2-2735"/>
   <author id="ckozak"/>
+  <author name="Andy Wilkinson"/>
   <description format="asciidoc">PluginCache output is reproducible allowing the annotation processor to produce deterministic results.</description>
 </entry>

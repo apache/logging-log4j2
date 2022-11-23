@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-367" link="https://issues.apache.org/jira/browse/LOG4J2-367"/>
   <author id="ggregory"/>
+  <author name="David Parry"/>
   <description format="asciidoc">JMS appenders send two messages for one append.</description>
 </entry>

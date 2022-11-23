@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1158" link="https://issues.apache.org/jira/browse/LOG4J2-1158"/>
   <author id="ggregory"/>
+  <author name="Michael Fortin, Gary Gregory"/>
   <description format="asciidoc">Log4J JUL adapter is using MessageFormat on String passed by java.util.function.Supplier&lt;String&gt;.</description>
 </entry>

@@ -17,6 +17,6 @@
 -->
 <entry type="changed">
   <issue id="LOG4J2-286" link="https://issues.apache.org/jira/browse/LOG4J2-286"/>
-  <author id="gregory"/>
+  <author id="ggregory"/>
   <description format="asciidoc">Update test H2 JDBC driver to 1.172 from 1.171.</description>
 </entry>

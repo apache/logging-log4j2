@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1258" link="https://issues.apache.org/jira/browse/LOG4J2-1258"/>
   <author id="ggregory"/>
+  <author name="Francis Lalonde"/>
   <description format="asciidoc">Async DynamicThresholdFilter does not use the log event's context map.</description>
 </entry>

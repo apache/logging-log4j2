@@ -17,5 +17,6 @@
 -->
 <entry type="fixed">
   <author id="ggregory"/>
+  <author name="LF-Lin"/>
   <description format="asciidoc">Fix minor typo #792.</description>
 </entry>

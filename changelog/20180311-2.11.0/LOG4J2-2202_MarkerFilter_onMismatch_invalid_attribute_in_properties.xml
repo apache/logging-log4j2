@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-2202" link="https://issues.apache.org/jira/browse/LOG4J2-2202"/>
   <author id="ggregory"/>
+  <author name="Kilian, Gary Gregory"/>
   <description format="asciidoc">MarkerFilter onMismatch invalid attribute in .properties.</description>
 </entry>

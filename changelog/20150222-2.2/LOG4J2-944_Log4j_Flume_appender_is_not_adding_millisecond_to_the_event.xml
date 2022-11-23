@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-944" link="https://issues.apache.org/jira/browse/LOG4J2-944"/>
   <author id="ggregory"/>
+  <author name="Vinayaka Ramachandra"/>
   <description format="asciidoc">Log4j Flume appender is not adding millisecond to the event headers when the event is logged at 000 milliseconds.</description>
 </entry>

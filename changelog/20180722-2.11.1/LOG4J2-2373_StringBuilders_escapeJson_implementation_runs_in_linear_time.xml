@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-2373" link="https://issues.apache.org/jira/browse/LOG4J2-2373"/>
   <author id="ckozak"/>
+  <author name="Kevin Meurer"/>
   <description format="asciidoc">StringBuilders.escapeJson implementation runs in linear time. Escaping large JSON strings
         in EncodingPatternConverter and MapMessage will perform significantly better.</description>
 </entry>

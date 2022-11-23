@@ -18,5 +18,6 @@
 <entry type="added">
   <issue id="LOG4J2-2109" link="https://issues.apache.org/jira/browse/LOG4J2-2109"/>
   <author id="mikes"/>
+  <author name="Carter Douglas Kozak"/>
   <description format="asciidoc">Add property to disable message pattern converter lookups.</description>
 </entry>

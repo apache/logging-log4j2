@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-766" link="https://issues.apache.org/jira/browse/LOG4J2-766"/>
   <author id="ggregory"/>
+  <author name="Bruno P. Kinoshita"/>
   <description format="asciidoc">Incomplete documentation for JSONLayout.</description>
 </entry>

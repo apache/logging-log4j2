@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-2304" link="https://issues.apache.org/jira/browse/LOG4J2-2304"/>
   <author id="ggregory"/>
+  <author name="wumengsheng"/>
   <description format="asciidoc">Log4j2 2.8.2 JMX unregister NullPointerException.</description>
 </entry>

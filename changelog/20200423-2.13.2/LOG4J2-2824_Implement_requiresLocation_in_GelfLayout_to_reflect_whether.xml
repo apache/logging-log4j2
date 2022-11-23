@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-2824" link="https://issues.apache.org/jira/browse/LOG4J2-2824"/>
   <author id="rgoers"/>
+  <author name="CrazyBills"/>
   <description format="asciidoc">Implement requiresLocation in GelfLayout to reflect whether location information is used in the message Pattern.</description>
 </entry>

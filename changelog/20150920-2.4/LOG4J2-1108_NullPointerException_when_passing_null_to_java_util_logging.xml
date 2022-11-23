@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1108" link="https://issues.apache.org/jira/browse/LOG4J2-1108"/>
   <author id="ggregory"/>
+  <author name="Mikael Ståldal"/>
   <description format="asciidoc">NullPointerException when passing null to java.util.logging.Logger.setLevel().</description>
 </entry>

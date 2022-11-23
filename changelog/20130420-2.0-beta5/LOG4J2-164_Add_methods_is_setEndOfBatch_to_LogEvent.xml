@@ -18,5 +18,6 @@
 <entry type="added">
   <issue id="LOG4J2-164" link="https://issues.apache.org/jira/browse/LOG4J2-164"/>
   <author id="rgoers"/>
+  <author id="rpopma"/>
   <description format="asciidoc">Add methods is/setEndOfBatch to LogEvent.</description>
 </entry>

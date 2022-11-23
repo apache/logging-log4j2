@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-2197" link="https://issues.apache.org/jira/browse/LOG4J2-2197"/>
   <author id="ggregory"/>
+  <author name="Fabrice Daugan"/>
   <description format="asciidoc">Document default property value support.</description>
 </entry>

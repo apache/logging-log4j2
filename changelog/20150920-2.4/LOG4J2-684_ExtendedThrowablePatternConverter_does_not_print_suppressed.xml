@@ -18,5 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-684" link="https://issues.apache.org/jira/browse/LOG4J2-684"/>
   <author id="ggregory"/>
+  <author name="Joern Huxhorn"/>
+  <author name="Mauro Molinari"/>
   <description format="asciidoc">ExtendedThrowablePatternConverter does not print suppressed exceptions.</description>
 </entry>

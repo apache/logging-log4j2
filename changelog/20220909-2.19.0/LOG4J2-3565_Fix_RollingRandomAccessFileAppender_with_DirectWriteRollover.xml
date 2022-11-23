@@ -17,6 +17,7 @@
 -->
 <entry type="fixed">
   <issue id="LOG4J2-3565" link="https://issues.apache.org/jira/browse/LOG4J2-3565"/>
-  <author id="dafengsu7"/>
+  <author id="pkarwasz"/>
+  <author name="Su Pei Tao"/>
   <description format="asciidoc">Fix RollingRandomAccessFileAppender with DirectWriteRolloverStrategy can't create the first log file of different directory.</description>
 </entry>

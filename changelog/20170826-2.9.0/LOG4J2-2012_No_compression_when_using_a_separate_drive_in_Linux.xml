@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-2012" link="https://issues.apache.org/jira/browse/LOG4J2-2012"/>
   <author id="ggregory"/>
+  <author name="Benjamin Jaton"/>
   <description format="asciidoc">No compression when using a separate drive in Linux.</description>
 </entry>

@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-531" link="https://issues.apache.org/jira/browse/LOG4J2-531"/>
   <author id="rpopma"/>
+  <author name="Geoff Ballinger"/>
   <description format="asciidoc">Fixed bugs where rolled log files were overwritten by RollingFile appender with
         composite time and size based policies.</description>
 </entry>

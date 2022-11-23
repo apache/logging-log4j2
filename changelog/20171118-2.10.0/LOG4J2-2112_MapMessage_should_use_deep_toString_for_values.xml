@@ -18,5 +18,6 @@
 <entry type="added">
   <issue id="LOG4J2-2112" link="https://issues.apache.org/jira/browse/LOG4J2-2112"/>
   <author id="mikes"/>
+  <author name="Carter Douglas Kozak"/>
   <description format="asciidoc">MapMessage should use deep toString for values.</description>
 </entry>

@@ -18,5 +18,8 @@
 <entry type="fixed">
   <issue id="LOG4J2-447" link="https://issues.apache.org/jira/browse/LOG4J2-447"/>
   <author id="ggregory"/>
+  <author id="sdeboy"/>
+  <author name="Jeff Hudren"/>
+  <author name="Mark Paluch"/>
   <description format="asciidoc">XMLLayout does not include marker name.</description>
 </entry>

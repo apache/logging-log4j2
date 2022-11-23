@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-392" link="https://issues.apache.org/jira/browse/LOG4J2-392"/>
   <author id="rpopma"/>
+  <author name="Andre Bogus"/>
   <description format="asciidoc">Resolved a problem with the previous solution for LOG4J2-392 that resulted in dropped events
         when using AsyncLoggerConfig with slow appenders when application is stopped.</description>
 </entry>

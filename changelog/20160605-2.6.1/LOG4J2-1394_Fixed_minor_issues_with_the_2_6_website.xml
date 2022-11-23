@@ -17,6 +17,7 @@
 -->
 <entry type="fixed">
   <issue id="LOG4J2-1394" link="https://issues.apache.org/jira/browse/LOG4J2-1394"/>
-  <author id="mattsicker,mikes"/>
+  <author id="mattsicker"/>
+  <author id="mikes"/>
   <description format="asciidoc">Fixed minor issues with the 2.6 website.</description>
 </entry>
