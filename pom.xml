@@ -1712,6 +1712,7 @@
     <module>log4j-couchdb</module>
     <module>log4j-docker</module>
     <module>log4j-flume-ng</module>
+    <module>log4j-internal-util</module>
     <module>log4j-iostreams</module>
     <module>log4j-jakarta-smtp</module>
     <module>log4j-jakarta-web</module>
@@ -1738,7 +1739,6 @@
     <module>log4j-to-slf4j</module>
     <module>log4j-to-jul</module>
     <module>log4j-web</module>
-    <module>log4j-internal-util</module>
   </modules>
   <profiles>
     <profile>
