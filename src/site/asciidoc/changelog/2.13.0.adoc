@@ -62,14 +62,14 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Added
 
+* Add builder pattern to Logger interface. (for https://issues.apache.org/jira/browse/LOG4J2-2639[LOG4J2-2639] by `rgoers`)
 * Add a Level Pattern Selector. (for https://issues.apache.org/jira/browse/LOG4J2-2731[LOG4J2-2731] by `rgoers`)
 * Add experimental support for Log4j 1 configuration files. (for https://issues.apache.org/jira/browse/LOG4J2-63[LOG4J2-63] by `rgoers`)
-* Add ThreadContext.putIfNotNull method. (for https://issues.apache.org/jira/browse/LOG4J2-2732[LOG4J2-2732] by `rgoers`, Matt Pavlovich)
 * Add the ability to lookup Kubernetes attributes in the Log4j configuration. Allow Log4j properties to
         be retrieved from the Spring environment if it is available. (for https://issues.apache.org/jira/browse/LOG4J2-2716[LOG4J2-2716] by `rgoers`)
 * Allow Spring Boot application properties to be accessed in the Log4j 2 configuration. Add
         lower and upper case Lookups. (for https://issues.apache.org/jira/browse/LOG4J2-2710[LOG4J2-2710] by `rgoers`)
-* Add builder pattern to Logger interface. (for https://issues.apache.org/jira/browse/LOG4J2-2639[LOG4J2-2639] by `rgoers`)
+* Add ThreadContext.putIfNotNull method. (for https://issues.apache.org/jira/browse/LOG4J2-2732[LOG4J2-2732] by `rgoers`, Matt Pavlovich)
 
 === Changed
 
@@ -79,18 +79,18 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Fixed
 
-* Prevent recursive calls to java.util.LogManager.getLogger(). (for https://issues.apache.org/jira/browse/LOG4J2-2058[LOG4J2-2058] by `rgoers`)
-* Use a less confusing name for the CompositeConfiguration source. (for https://issues.apache.org/jira/browse/LOG4J2-2674[LOG4J2-2674] by `rgoers`, Anton Korenkov)
-* ArrayIndexOutOfBoundsException could occur with MAC address longer than 6 bytes. (for https://issues.apache.org/jira/browse/LOG4J2-2707[LOG4J2-2707] by `rgoers`, Christian Frank)
-* Add setKey method to Kafka Appender Builder. (for https://issues.apache.org/jira/browse/LOG4J2-2727[LOG4J2-2727] by `rgoers`, Clément Mathieu)
-* Wrong java version check in ThreadNameCachingStrategy. (for https://issues.apache.org/jira/browse/LOG4J2-2635[LOG4J2-2635] by `rgoers`, Filipp Gunbin)
-* LOG4J2-2725 - Added try/finally around event.execute() for RingBufferLogEventHandler to clear memory
-        correctly in case of exception/error (for https://issues.apache.org/jira/browse/LOG4J2-2725[LOG4J2-2725] by `ckozak`, Dzmitry Anikechanka)
 * @PluginValue does not support attribute names besides "value". (for https://issues.apache.org/jira/browse/LOG4J2-2693[LOG4J2-2693] by `mattsicker`)
+* Prevent recursive calls to java.util.LogManager.getLogger(). (for https://issues.apache.org/jira/browse/LOG4J2-2058[LOG4J2-2058] by `rgoers`)
+* Validation blocks definition of script in properties configuration. (for https://issues.apache.org/jira/browse/LOG4J2-2647[LOG4J2-2647] by `mattsicker`)
 * The rolling file appenders would fail to compress the file after rollover if the file name matched the
         file pattern. (for https://issues.apache.org/jira/browse/LOG4J2-2712[LOG4J2-2712] by `rgoers`)
+* Use a less confusing name for the CompositeConfiguration source. (for https://issues.apache.org/jira/browse/LOG4J2-2674[LOG4J2-2674] by `rgoers`, Anton Korenkov)
+* OutputStreamAppender.Builder ignores setFilter(). (for https://issues.apache.org/jira/browse/LOG4J2-2673[LOG4J2-2673] by `ggregory`, Yuichi Sugimura)
 * Set result of rename action to true if file was copied. (for https://issues.apache.org/jira/browse/LOG4J2-2680[LOG4J2-2680] by `rgoers`, Guillermo Xavier Hurtado Garcia)
-* Validation blocks definition of script in properties configuration. (for https://issues.apache.org/jira/browse/LOG4J2-2647[LOG4J2-2647] by `mattsicker`)
+* Wrong java version check in ThreadNameCachingStrategy. (for https://issues.apache.org/jira/browse/LOG4J2-2635[LOG4J2-2635] by `rgoers`, Filipp Gunbin)
 * Add automatic module names where missing. (for https://issues.apache.org/jira/browse/LOG4J2-2672[LOG4J2-2672] by `rgoers`, Stephen Colebourne)
 * Prevent a memory leak when async loggers throw errors. (for https://issues.apache.org/jira/browse/LOG4J2-2725[LOG4J2-2725] by `ckozak`, Dzmitry Anikechanka)
-* OutputStreamAppender.Builder ignores setFilter(). (for https://issues.apache.org/jira/browse/LOG4J2-2673[LOG4J2-2673] by `ggregory`, Yuichi Sugimura)
+* ArrayIndexOutOfBoundsException could occur with MAC address longer than 6 bytes. (for https://issues.apache.org/jira/browse/LOG4J2-2707[LOG4J2-2707] by `rgoers`, Christian Frank)
+* Add setKey method to Kafka Appender Builder. (for https://issues.apache.org/jira/browse/LOG4J2-2727[LOG4J2-2727] by `rgoers`, Clément Mathieu)
+* LOG4J2-2725 - Added try/finally around event.execute() for RingBufferLogEventHandler to clear memory
+        correctly in case of exception/error (for https://issues.apache.org/jira/browse/LOG4J2-2725[LOG4J2-2725] by `ckozak`, Dzmitry Anikechanka)
