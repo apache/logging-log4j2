@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.internal.util.changelog.releaser;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDate;
+
 import org.apache.logging.log4j.internal.util.AsciiDocUtils;
 import org.apache.logging.log4j.internal.util.XmlReader;
 import org.apache.logging.log4j.internal.util.changelog.ChangelogFiles;
 import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
 import org.w3c.dom.Element;
-
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDate;
 
 import static java.time.format.DateTimeFormatter.BASIC_ISO_DATE;
 import static org.apache.logging.log4j.internal.util.StringUtils.isBlank;
