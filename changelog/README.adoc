@@ -1,0 +1,112 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+:generator-target-dir: src/site/asciidoc/changelog
+
+This directory contains the _sources_ for changelogs associated with each release.
+Tooling generating changelogs stored under `{generator-target-dir}` directory is a part of the `log4j-internal-util` module.
+
+[#released-version-changelogs]
+== Released version changelogs
+
+Changelogs of past released versions are contained in directories named as `<releaseDate>-<releaseVersion>`, e.g., `20220909-2.10.0`.
+A released version changelog directory consists of following files:
+
+`.release.xml`::
+the meta information about the release (e.g., release version and date)
+
+`.intro.adoc`::
+the introductory content used by the generator
+
+`[<issueId>_]<shortSummary>.xml`::
+changelog entry associated with a change
+
+Generator will compile these files to emit a single `{generator-target-dir}/<releaseVersion>.adoc` file and update `{generator-target-dir}/index.adoc` accordingly.
+
+[#unreleased-version-changelog]
+== Unreleased version changelog
+
+Changelogs of the staged changes for the next version is stored in `.unreleased` directory.
+Compared to released version changelog directories (e.g., `20220909-2.10.0`), `.unreleased` directory only consists of changelog entry files (i.e., `[<issueId>_]<shortSummary>.xml`).
+
+Generator will compile these files to emit a single `{generator-target-dir}/unreleased.adoc` file and update `{generator-target-dir}/index.adoc` accordingly.
+
+[#changelog-entry-file]
+== Changelog entry file
+
+A changelog entry file consists of short meta information regarding a particular change.
+They are named following the `[<issueId>_]<shortSummary>.xml` pattern.
+Consider the following examples:
+
+* `LOG4J2-3556_Make_JsonTemplateLayout_stack_trace_truncation_operate_for_e.xml`
+* `LOG4J2-3578_Generate_new_SSL_certs_for_testing.xml`
+* `Update_jackson_2_11_0_2_11_2.xml`
+
+A sample _changelog entry_ file is shared below.
+
+[source,xml]
+----
+<entry type="fixed">
+  <issue id="LOG4J2-3556" link="https://issues.apache.org/jira/browse/LOG4J2-3556"/>
+  <author id="vy"/>
+  <author name="Arthur Gavlyukovskiy"/>
+  <description format="asciidoc">Make JsonTemplateLayout stack trace truncation operate for each label block.</description>
+</entry>
+----
+
+Some remarks about the structure of changelog entry files:
+
+* The root element must be named `entry`.
+* `entry.type` attribute is required and must be one of the https://keepachangelog.com/en/1.0.0/#how[_Keep a Changelog_ change types]:
+** `added` – for new features
+** `changed` – for changes in existing functionality
+** `deprecated` – for soon-to-be removed features
+** `removed` – for now removed features
+** `fixed` – for any bug fixes
+** `security` – for vulnerabilities
+* `issue` element is optional, and, if present, must contain `id` and `link` attributes.
+* `author` element must have at least one of `id` or `name` attributes.
+* There must be at least one author.
+* There must be a single `description` element with non-blank content and `format="asciidoc"` attribute.
+
+== Q&A
+
+=== How can I add an entry for a change I am about to commit?
+
+You have just committed, or better, about to commit a great feature you have been working on.
+Simply create a <<#changelog-entry-file>> and commit it along with your change!
+
+=== How can I generate AsciiDoc files in `{generator-target-dir}`?
+
+These files are generated as a part of the `log4j-internal-util` module build lifecycle.
+You can manually trigger it using `./mvnw -pl log4j-internal-util` command.
+
+=== I am about to deploy a new Log4j _release candidate_. Now what?
+
+For release candidates, you don't need to touch anything.
+Your regular build should have already populated `{generator-target-dir}/unreleased.adoc`.
+**Make sure to commit these!**
+
+=== I am about to deploy a new Log4j _release_. Now what?
+
+. Create the `<releaseDate>-<releaseVersion>` (e.g., `20220909-2.10.0`) directory populated from `.unreleased` directory: `./mvnw -pl log4j-internal-util -P changelog-releaser`
+. Edit the created `.intro.adoc`
+. Generate AsciiDoc files: `./mvnw -pl log4j-internal-util`
+. Verify and commit the following changes:
+.. Cleaned up `.unreleased` directory
+.. Created `<releaseDate>-<releaseVersion>` directory containing `.intro.adoc`, `.release.xml`, and changelog entry files
+.. `{generator-target-dir}/<releaseVersion>.adoc` and `{generator-target-dir}/index.adoc` files
