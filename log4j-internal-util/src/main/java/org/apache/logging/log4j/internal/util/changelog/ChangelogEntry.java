@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -156,7 +156,7 @@ public final class ChangelogEntry {
 
         // Read the `entry` root element.
         final Element entryElement = XmlReader.readXmlFileRootElement(path, "entry");
-        final String typeAttribute = entryElement.getAttribute("type");
+        final String typeAttribute = XmlReader.requireAttribute(entryElement, "type");
         final Type type;
         try {
             type = Type.fromXmlAttribute(typeAttribute);
@@ -171,8 +171,8 @@ public final class ChangelogEntry {
                 .range(0, issueCount)
                 .mapToObj(issueIndex -> {
                     final Element issueElement = (Element) issueElements.item(issueIndex);
-                    final String issueId = issueElement.getAttribute("id");
-                    final String issueLink = issueElement.getAttribute("link");
+                    final String issueId = XmlReader.requireAttribute(issueElement, "id");
+                    final String issueLink = XmlReader.requireAttribute(issueElement, "link");
                     return new Issue(issueId, issueLink);
                 })
                 .collect(Collectors.toList());
@@ -187,8 +187,12 @@ public final class ChangelogEntry {
                 .range(0, authorCount)
                 .mapToObj(authorIndex -> {
                     final Element authorElement = (Element) authorElements.item(authorIndex);
-                    final String authorId = authorElement.getAttribute("id");
-                    final String authorName = authorElement.getAttribute("name");
+                    final String authorId = authorElement.hasAttribute("id")
+                            ? authorElement.getAttribute("id")
+                            : null;
+                    final String authorName = authorElement.hasAttribute("name")
+                            ? authorElement.getAttribute("name")
+                            : null;
                     return new Author(authorId, authorName);
                 })
                 .collect(Collectors.toList());
@@ -201,7 +205,7 @@ public final class ChangelogEntry {
                     entryElement, "was expecting a single `description` element, found: %d", descriptionCount);
         }
         final Element descriptionElement = (Element) descriptionElements.item(0);
-        final String descriptionFormat = descriptionElement.getAttribute("format");
+        final String descriptionFormat = XmlReader.requireAttribute(descriptionElement, "format");
         final String descriptionText = trimNullable(descriptionElement.getTextContent());
         final Description description = new Description(descriptionFormat, descriptionText);
 
