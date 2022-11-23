@@ -17,5 +17,6 @@
 -->
 <entry type="fixed">
   <author id="ggregory"/>
+  <author name="Gary Gregory"/>
   <description format="asciidoc">Trim whitespace before parsing a String into an Integer.</description>
 </entry>

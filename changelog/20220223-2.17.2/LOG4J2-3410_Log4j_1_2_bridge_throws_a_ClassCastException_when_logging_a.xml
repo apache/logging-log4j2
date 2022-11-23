@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-3410" link="https://issues.apache.org/jira/browse/LOG4J2-3410"/>
   <author id="ggregory"/>
+  <author name="Barry Sham, Gary Gregory"/>
   <description format="asciidoc">Log4j 1.2 bridge throws a ClassCastException when logging a Map with non-String keys.</description>
 </entry>

@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-2478" link="https://issues.apache.org/jira/browse/LOG4J2-2478"/>
   <author id="ckozak"/>
+  <author name="Diego Elias Costa"/>
   <description format="asciidoc">AbstractStringLayoutStringEncodingBenchmark returns the computed variables on each benchmark to avoid DCE.</description>
 </entry>

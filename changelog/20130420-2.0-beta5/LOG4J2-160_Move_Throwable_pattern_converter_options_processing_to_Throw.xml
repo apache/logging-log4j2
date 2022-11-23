@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-160" link="https://issues.apache.org/jira/browse/LOG4J2-160"/>
   <author id="rgoers"/>
+  <author name="Joanne Polsky"/>
   <description format="asciidoc">Move Throwable pattern converter options processing to ThrowableFormatOptions class.</description>
 </entry>

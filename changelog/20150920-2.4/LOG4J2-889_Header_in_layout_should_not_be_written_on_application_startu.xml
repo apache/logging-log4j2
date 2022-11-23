@@ -18,5 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-889" link="https://issues.apache.org/jira/browse/LOG4J2-889"/>
   <author id="rpopma"/>
+  <author name="Maciej Karaś"/>
+  <author name="Kenneth Leider"/>
   <description format="asciidoc">Header in layout should not be written on application startup if appending to an existing file. Fixes LOG4J2-1030.</description>
 </entry>

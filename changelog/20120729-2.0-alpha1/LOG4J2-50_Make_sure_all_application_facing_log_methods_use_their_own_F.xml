@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-50" link="https://issues.apache.org/jira/browse/LOG4J2-50"/>
   <author id="rgoers"/>
+  <author name="John Vasileff"/>
   <description format="asciidoc">Make sure all application facing log methods use their own FQCN. This patch
         resolves a unit test failure for the %C pattern when using the Category logger.</description>
 </entry>

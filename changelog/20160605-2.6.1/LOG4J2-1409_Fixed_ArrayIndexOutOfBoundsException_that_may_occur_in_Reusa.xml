@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1409" link="https://issues.apache.org/jira/browse/LOG4J2-1409"/>
   <author id="rpopma"/>
+  <author name="Shahan"/>
   <description format="asciidoc">Fixed ArrayIndexOutOfBoundsException that may occur in ReusableParameterizedMessage.</description>
 </entry>

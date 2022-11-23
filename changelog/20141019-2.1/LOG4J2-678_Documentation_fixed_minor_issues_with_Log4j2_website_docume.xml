@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-678" link="https://issues.apache.org/jira/browse/LOG4J2-678"/>
   <author id="rpopma"/>
+  <author id="mattsicker"/>
   <description format="asciidoc">Documentation: fixed minor issues with Log4j2 website/documentation.</description>
 </entry>

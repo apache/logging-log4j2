@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-703" link="https://issues.apache.org/jira/browse/LOG4J2-703"/>
   <author id="ggregory"/>
+  <author name="Nelson Melina"/>
   <description format="asciidoc">Android: Could not find class 'javax.naming.InitialContext', referenced from method org.apache.logging.log4j.core.lookup.JndiLookup.lookup.</description>
 </entry>

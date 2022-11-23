@@ -17,6 +17,7 @@
 -->
 <entry type="fixed">
   <issue id="LOG4J2-1376" link="https://issues.apache.org/jira/browse/LOG4J2-1376"/>
-  <author id="mneundorfer"/>
+  <author id="pkarwasz"/>
+  <author name="Mark Niggemann"/>
   <description format="asciidoc">Allow enterprise id to be an OID fragment.</description>
 </entry>

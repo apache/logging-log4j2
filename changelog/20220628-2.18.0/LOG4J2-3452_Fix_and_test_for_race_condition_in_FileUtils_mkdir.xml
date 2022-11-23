@@ -17,6 +17,7 @@
 -->
 <entry type="fixed">
   <issue id="LOG4J2-3452" link="https://issues.apache.org/jira/browse/LOG4J2-3452"/>
-  <author id="stefanvodita"/>
+  <author id="pkarwasz"/>
+  <author name="Stefan Vodita"/>
   <description format="asciidoc">Fix and test for race condition in FileUtils.mkdir().</description>
 </entry>

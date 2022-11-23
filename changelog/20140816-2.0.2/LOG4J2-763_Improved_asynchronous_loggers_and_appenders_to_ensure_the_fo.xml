@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-763" link="https://issues.apache.org/jira/browse/LOG4J2-763"/>
   <author id="rpopma"/>
+  <author name="Stephen Connolly"/>
   <description format="asciidoc">Improved asynchronous loggers and appenders to ensure the formatted message does not change even if
         parameters are modified by the application. (ParameterizedMessage was already safe.)
         Improved documentation.</description>

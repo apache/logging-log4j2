@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-991" link="https://issues.apache.org/jira/browse/LOG4J2-991"/>
   <author id="rpopma"/>
+  <author name="Ryan Rupp"/>
   <description format="asciidoc">Async root logger config should default includeLocation to false.</description>
 </entry>

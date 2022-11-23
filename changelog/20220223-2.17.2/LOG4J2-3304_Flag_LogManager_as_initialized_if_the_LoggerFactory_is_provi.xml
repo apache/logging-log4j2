@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-3304" link="https://issues.apache.org/jira/browse/LOG4J2-3304"/>
   <author id="rgoers"/>
+  <author name="francis-FY"/>
   <description format="asciidoc">Flag LogManager as initialized if the LoggerFactory is provided as a property.</description>
 </entry>

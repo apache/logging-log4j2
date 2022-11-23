@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-1798" link="https://issues.apache.org/jira/browse/LOG4J2-1798"/>
   <author id="rgoers"/>
+  <author name="Viacheslav Zhivaev"/>
   <description format="asciidoc">Handle interrupted exceptions that occur during rollover.</description>
 </entry>

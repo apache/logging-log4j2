@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-219" link="https://issues.apache.org/jira/browse/LOG4J2-219"/>
   <author id="rpopma"/>
+  <author name="Peter DePasquale"/>
   <description format="asciidoc">Fix: install default root logger if not configured (this is unchanged),
         but make sure to include configured named loggers. Clarified documentation.</description>
 </entry>

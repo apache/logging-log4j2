@@ -18,5 +18,7 @@
 <entry type="added">
   <issue id="LOG4J2-428" link="https://issues.apache.org/jira/browse/LOG4J2-428"/>
   <author id="ggregory"/>
+  <author id="mikes"/>
+  <author name="Mark Paluch"/>
   <description format="asciidoc">Implement a GELF layout.</description>
 </entry>

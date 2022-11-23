@@ -18,5 +18,6 @@
 <entry type="added">
   <issue id="LOG4J2-1843" link="https://issues.apache.org/jira/browse/LOG4J2-1843"/>
   <author id="mattsicker"/>
+  <author name="Zilong Song"/>
   <description format="asciidoc">Add support for appending common suffix to each line of throwable stack trace.</description>
 </entry>

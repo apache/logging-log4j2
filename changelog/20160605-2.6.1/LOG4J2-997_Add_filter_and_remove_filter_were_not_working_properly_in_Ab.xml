@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-997" link="https://issues.apache.org/jira/browse/LOG4J2-997"/>
   <author id="rgoers"/>
+  <author name="Maytee Chinavanichkit"/>
   <description format="asciidoc">Add filter and remove filter were not working properly in AbstractFilterable.</description>
 </entry>

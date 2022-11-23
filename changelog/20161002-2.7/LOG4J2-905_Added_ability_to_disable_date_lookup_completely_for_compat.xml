@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-905" link="https://issues.apache.org/jira/browse/LOG4J2-905"/>
   <author id="ggregory"/>
+  <author name="Moritz Löser"/>
   <description format="asciidoc">Added ability to disable (date) lookup completely for compatibility with other libraries like Camel.</description>
 </entry>

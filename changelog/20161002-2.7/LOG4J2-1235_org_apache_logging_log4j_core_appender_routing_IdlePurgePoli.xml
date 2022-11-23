@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1235" link="https://issues.apache.org/jira/browse/LOG4J2-1235"/>
   <author id="ggregory"/>
+  <author name="Niranjan Rao, Sascha Scholz, Aleksey Zvolinsky"/>
   <description format="asciidoc">org.apache.logging.log4j.core.appender.routing.IdlePurgePolicy was not working correctly.</description>
 </entry>

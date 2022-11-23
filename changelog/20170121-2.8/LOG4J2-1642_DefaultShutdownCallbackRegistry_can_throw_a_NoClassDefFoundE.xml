@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1642" link="https://issues.apache.org/jira/browse/LOG4J2-1642"/>
   <author id="ggregory"/>
+  <author name="Johno Crawford"/>
   <description format="asciidoc">DefaultShutdownCallbackRegistry can throw a NoClassDefFoundError.</description>
 </entry>

@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1488" link="https://issues.apache.org/jira/browse/LOG4J2-1488"/>
   <author id="rpopma"/>
+  <author name="Richard Zschech"/>
   <description format="asciidoc">(GC) Fixed ISO8601 %date conversion pattern with a period '.' separator for milliseconds is now garbage free.</description>
 </entry>

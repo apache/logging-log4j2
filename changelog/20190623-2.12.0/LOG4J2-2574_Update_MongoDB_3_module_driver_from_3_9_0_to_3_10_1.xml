@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-2574" link="https://issues.apache.org/jira/browse/LOG4J2-2574"/>
   <author id="ggregory"/>
+  <author name="Gary Gregory"/>
   <description format="asciidoc">Update MongoDB 3 module driver from 3.9.0 to 3.10.1.</description>
 </entry>

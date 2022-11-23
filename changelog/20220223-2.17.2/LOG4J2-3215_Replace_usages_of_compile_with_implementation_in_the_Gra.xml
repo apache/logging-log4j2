@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-3215" link="https://issues.apache.org/jira/browse/LOG4J2-3215"/>
   <author id="vy"/>
+  <author name="quapka"/>
   <description format="asciidoc">Replace usages of "compile" with "implementation" in the Gradle docs.</description>
 </entry>

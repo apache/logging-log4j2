@@ -17,6 +17,6 @@
 -->
 <entry type="changed">
   <issue id="LOG4J2-285" link="https://issues.apache.org/jira/browse/LOG4J2-285"/>
-  <author id="gregory"/>
+  <author id="ggregory"/>
   <description format="asciidoc">Update Jansi jar to 1.11 from 1.9.</description>
 </entry>

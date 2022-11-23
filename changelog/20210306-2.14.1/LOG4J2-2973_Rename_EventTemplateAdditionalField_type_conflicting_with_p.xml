@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-2973" link="https://issues.apache.org/jira/browse/LOG4J2-2973"/>
   <author id="vy"/>
+  <author name="Fabio Ricchiuti"/>
   <description format="asciidoc">Rename EventTemplateAdditionalField#type (conflicting with properties file parser) to "format".</description>
 </entry>

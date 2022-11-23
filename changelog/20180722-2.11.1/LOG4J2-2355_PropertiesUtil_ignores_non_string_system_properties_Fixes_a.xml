@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-2355" link="https://issues.apache.org/jira/browse/LOG4J2-2355"/>
   <author id="ckozak"/>
+  <author name="Henrik Brautaset Aronsen"/>
   <description format="asciidoc">PropertiesUtil ignores non-string system properties. Fixes a NoClassDefFoundError initializing StatusLogger
         caused by an NPE while initializing the static PropertiesUtil field.</description>
 </entry>

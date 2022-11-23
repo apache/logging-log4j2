@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-3131" link="https://issues.apache.org/jira/browse/LOG4J2-3131"/>
   <author id="ggregory"/>
+  <author name="Gary Gregory"/>
   <description format="asciidoc">NoGcLayout allocates empty bytes arrays for its header and footer.</description>
 </entry>

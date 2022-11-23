@@ -17,5 +17,6 @@
 -->
 <entry type="fixed">
   <author id="ggregory"/>
+  <author name="Gary Gregory"/>
   <description format="asciidoc">Log4j 1.2 bridge creates a SocketAppender instead of a SyslogAppender.</description>
 </entry>

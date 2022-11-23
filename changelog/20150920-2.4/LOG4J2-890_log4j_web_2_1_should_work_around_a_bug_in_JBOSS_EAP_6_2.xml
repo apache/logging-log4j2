@@ -18,5 +18,8 @@
 <entry type="changed">
   <issue id="LOG4J2-890" link="https://issues.apache.org/jira/browse/LOG4J2-890"/>
   <author id="ggregory"/>
+  <author id="rpopma"/>
+  <author name="Hassan Kalaldeh"/>
+  <author name="Robert Andersson"/>
   <description format="asciidoc">log4j-web-2.1 should work around a bug in JBOSS EAP 6.2.</description>
 </entry>

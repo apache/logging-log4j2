@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-547" link="https://issues.apache.org/jira/browse/LOG4J2-547"/>
   <author id="rgoers"/>
+  <author id="bbrouwer"/>
   <description format="asciidoc">Have Logger API expose a PrintWriter instead of custom LoggerStream.</description>
 </entry>

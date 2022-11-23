@@ -18,5 +18,8 @@
 <entry type="fixed">
   <issue id="LOG4J2-834" link="https://issues.apache.org/jira/browse/LOG4J2-834"/>
   <author id="ggregory"/>
+  <author name="Nikita Koval"/>
+  <author name="Leonard Broman"/>
+  <author name="Thiago Kronig"/>
   <description format="asciidoc">ThrowableProxy throws NoClassDefFoundError.</description>
 </entry>

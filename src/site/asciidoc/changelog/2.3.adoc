@@ -6,7 +6,7 @@
     (the "License"); you may not use this file except in compliance with
     the License.  You may obtain a copy of the License at
 
-         http://www.apache.org/licenses/LICENSE-2.0
+         https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -44,37 +44,37 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Added
 
-* PatternLayout %highlight to support noConsoleNoAnsi like %style. (for https://issues.apache.org/jira/browse/LOG4J2-984[LOG4J2-984] by `ggregory`)
-* Truncate from the end of text format modifier. (for https://issues.apache.org/jira/browse/LOG4J2-926[LOG4J2-926] by `ggregory`)
+* PatternLayout %highlight to support noConsoleNoAnsi like %style. (for https://issues.apache.org/jira/browse/LOG4J2-984[LOG4J2-984] by `ggregory`, Jonas Höpfner)
+* Truncate from the end of text format modifier. (for https://issues.apache.org/jira/browse/LOG4J2-926[LOG4J2-926] by `ggregory`, David Ohana)
 
 === Changed
 
 * Move UTF-8 constant from Charsets to Constants class. Remove Charsets class. (for https://issues.apache.org/jira/browse/LOG4J2-995[LOG4J2-995] by `rgoers`)
-* Make org.apache.logging.log4j.core.Logger#updateConfiguration protected. (for https://issues.apache.org/jira/browse/LOG4J2-998[LOG4J2-998] by `ggregory`)
+* Make org.apache.logging.log4j.core.Logger#updateConfiguration protected. (for https://issues.apache.org/jira/browse/LOG4J2-998[LOG4J2-998] by `ggregory`, Mariano Gonzalez)
+* Update Slf4j from 1.7.7 to 1.7.12. (for https://issues.apache.org/jira/browse/LOG4J2-1005[LOG4J2-1005] by `ggregory`)
 * Update tests to use ActiveMQ from 5.10 to 5.11.1. (for https://issues.apache.org/jira/browse/LOG4J2-988[LOG4J2-988] by `ggregory`)
+* Update Jackson from 2.5.1 to 2.5.3. (for https://issues.apache.org/jira/browse/LOG4J2-1004[LOG4J2-1004] by `ggregory`)
 * Migrate tests from Logback 1.1.2 to 1.1.3. (for https://issues.apache.org/jira/browse/LOG4J2-987[LOG4J2-987] by `ggregory`)
 * Update LMAX Disruptor from 3.3.0 to 3.3.2. (for https://issues.apache.org/jira/browse/LOG4J2-988[LOG4J2-988] by `ggregory`)
-* Update Slf4j from 1.7.7 to 1.7.12. (for https://issues.apache.org/jira/browse/LOG4J2-1005[LOG4J2-1005] by `ggregory`)
-* Update Jackson from 2.5.1 to 2.5.3. (for https://issues.apache.org/jira/browse/LOG4J2-1004[LOG4J2-1004] by `ggregory`)
 
 === Fixed
 
-* Incorrectly defined compressionType parameter to GelfLayout. (for https://issues.apache.org/jira/browse/LOG4J2-1009[LOG4J2-1009] by `ggregory`)
-* org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.extractPath(URL) incorrectly converts '+' characters to spaces. (for https://issues.apache.org/jira/browse/LOG4J2-1008[LOG4J2-1008] by `ggregory`)
+* JUL Logger.throwing is mis-mapped to ERROR when it should be TRACE. (for https://issues.apache.org/jira/browse/LOG4J2-1003[LOG4J2-1003] by `ggregory`, Dan Armbrust)
+* System.out no longer works after the Console appender and JANSI are initialized. (for https://issues.apache.org/jira/browse/LOG4J2-965[LOG4J2-965] by `ggregory`, Khotyn Huang)
+* Using monitorInterval with YAML config file format causes JSONParseException. (for https://issues.apache.org/jira/browse/LOG4J2-976[LOG4J2-976] by `ggregory`, Matt Quinn)
+* A new StatusLoggerAdmin listener is added to StatusLogger every time the log is reconfigured. (for https://issues.apache.org/jira/browse/LOG4J2-947[LOG4J2-947] by `ggregory`, Stefan Wehner)
+* AbstractFilter should not implement equals() and hashCode(). (for https://issues.apache.org/jira/browse/LOG4J2-985[LOG4J2-985] by `rpopma`, Sean Dawson)
+* Async root logger config should default includeLocation to false. (for https://issues.apache.org/jira/browse/LOG4J2-991[LOG4J2-991] by `rpopma`, Ryan Rupp)
+* Incorrect unlock in ProviderUtil. (for https://issues.apache.org/jira/browse/LOG4J2-981[LOG4J2-981] by `ggregory`, Mikhail Mazurskiy)
 * Deadlock would occur if appender thread creates a new Logger during reconfiguration. (for https://issues.apache.org/jira/browse/LOG4J2-993[LOG4J2-993] by `rgoers`)
-* JUL Logger.throwing is mis-mapped to ERROR when it should be TRACE. (for https://issues.apache.org/jira/browse/LOG4J2-1003[LOG4J2-1003] by `ggregory`)
-* System.out no longer works after the Console appender and JANSI are initialized. (for https://issues.apache.org/jira/browse/LOG4J2-965[LOG4J2-965] by `ggregory`)
-* org.apache.logging.log4j.core.util#fileFromUri(URI uri) incorrectly converts '+' characters to spaces. (for https://issues.apache.org/jira/browse/LOG4J2-1007[LOG4J2-1007] by `ggregory`)
-* Using monitorInterval with YAML config file format causes JSONParseException. (for https://issues.apache.org/jira/browse/LOG4J2-976[LOG4J2-976] by `ggregory`)
-* AbstractFilter should not implement equals() and hashCode(). (for https://issues.apache.org/jira/browse/LOG4J2-985[LOG4J2-985] by `rpopma`)
-* Async root logger config should default includeLocation to false. (for https://issues.apache.org/jira/browse/LOG4J2-991[LOG4J2-991] by `rpopma`)
-* Incorrect unlock in ProviderUtil. (for https://issues.apache.org/jira/browse/LOG4J2-981[LOG4J2-981] by `ggregory`)
-* StringFormattedMessage serialization is incorrect. (for https://issues.apache.org/jira/browse/LOG4J2-964[LOG4J2-964] by `ggregory`)
-* Numerical overflow in BurstFilter not handled correctly. (for https://issues.apache.org/jira/browse/LOG4J2-980[LOG4J2-980] by `ggregory`)
+* StringFormattedMessage serialization is incorrect. (for https://issues.apache.org/jira/browse/LOG4J2-964[LOG4J2-964] by `ggregory`, Jonne Jyrylä)
+* Numerical overflow in BurstFilter not handled correctly. (for https://issues.apache.org/jira/browse/LOG4J2-980[LOG4J2-980] by `ggregory`, Mikhail Mazurskiy)
 * KeyStoreConfiguration.createKeyStoreConfiguration() ignores keyManagerFactoryAlgorithm. (for https://issues.apache.org/jira/browse/LOG4J2-966[LOG4J2-966] by `ggregory`)
-* Another bad priority in Syslog messages. (for https://issues.apache.org/jira/browse/LOG4J2-971[LOG4J2-971] by `ggregory`)
-* A new StatusLoggerAdmin listener is added to StatusLogger every time the log is reconfigured. (for https://issues.apache.org/jira/browse/LOG4J2-947[LOG4J2-947] by `ggregory`)
-* Typo in EventLogger documentation. (for https://issues.apache.org/jira/browse/LOG4J2-974[LOG4J2-974] by `ggregory`)
-* log4j2.component.properties not read for all properties. (for https://issues.apache.org/jira/browse/LOG4J2-967[LOG4J2-967] by `ggregory`)
-* SyslogLayout contains extra space. (for https://issues.apache.org/jira/browse/LOG4J2-968[LOG4J2-968] by `ggregory`)
+* Another bad priority in Syslog messages. (for https://issues.apache.org/jira/browse/LOG4J2-971[LOG4J2-971] by `ggregory`, Paul D Johe)
+* Typo in EventLogger documentation. (for https://issues.apache.org/jira/browse/LOG4J2-974[LOG4J2-974] by `ggregory`, Daniel Galán y Martins)
+* log4j2.component.properties not read for all properties. (for https://issues.apache.org/jira/browse/LOG4J2-967[LOG4J2-967] by `ggregory`, Stefan Wehner)
+* SyslogLayout contains extra space. (for https://issues.apache.org/jira/browse/LOG4J2-968[LOG4J2-968] by `ggregory`, Paul D Johe)
 * org.apache.logging.log4j.core.net.ssl.TlsSyslogInputStreamReader does not need to create temp Integer objects. (for https://issues.apache.org/jira/browse/LOG4J2-972[LOG4J2-972] by `ggregory`)
+* Incorrectly defined compressionType parameter to GelfLayout. (for https://issues.apache.org/jira/browse/LOG4J2-1009[LOG4J2-1009] by `ggregory`, `mikes`)
+* org.apache.logging.log4j.core.util#fileFromUri(URI uri) incorrectly converts '+' characters to spaces. (for https://issues.apache.org/jira/browse/LOG4J2-1007[LOG4J2-1007] by `rgoers`, `ggregory`)
+* org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.extractPath(URL) incorrectly converts '+' characters to spaces. (for https://issues.apache.org/jira/browse/LOG4J2-1008[LOG4J2-1008] by `rgoers`, `ggregory`)

@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-3407" link="https://issues.apache.org/jira/browse/LOG4J2-3407"/>
   <author id="ggregory"/>
+  <author name="Kenny MacLeod"/>
   <description format="asciidoc">Log4j 1.2 bridge Check for non-existent appender when parsing properties #761.</description>
 </entry>

@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-819" link="https://issues.apache.org/jira/browse/LOG4J2-819"/>
   <author id="mattsicker"/>
+  <author id="ggregory"/>
   <description format="asciidoc">Fixed memory leak in Tomcat 6 caused by clock background threads unintentionally
         started by Tomcat after web application stop.</description>
 </entry>

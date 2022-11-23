@@ -17,6 +17,7 @@
 -->
 <entry type="fixed">
   <issue id="LOG4J2-3537" link="https://issues.apache.org/jira/browse/LOG4J2-3537"/>
-  <author id="pavel_k"/>
+  <author id="pkarwasz"/>
+  <author name="Pavel_K"/>
   <description format="asciidoc">Fixes problem with wrong ANSI escape code for bright colors</description>
 </entry>

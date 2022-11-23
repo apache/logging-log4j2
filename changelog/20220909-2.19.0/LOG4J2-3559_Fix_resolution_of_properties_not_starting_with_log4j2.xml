@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-3559" link="https://issues.apache.org/jira/browse/LOG4J2-3559"/>
   <author id="pkarwasz"/>
+  <author name="Gary Gregory"/>
   <description format="asciidoc">Fix resolution of properties not starting with `log4j2.`.</description>
 </entry>

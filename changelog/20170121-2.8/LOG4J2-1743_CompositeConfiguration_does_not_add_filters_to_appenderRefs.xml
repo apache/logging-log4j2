@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1743" link="https://issues.apache.org/jira/browse/LOG4J2-1743"/>
   <author id="ggregory"/>
+  <author name="Toby Shepheard"/>
   <description format="asciidoc">CompositeConfiguration does not add filters to appenderRefs.</description>
 </entry>

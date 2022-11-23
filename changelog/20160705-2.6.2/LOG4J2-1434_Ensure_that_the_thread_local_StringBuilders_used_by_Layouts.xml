@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-1434" link="https://issues.apache.org/jira/browse/LOG4J2-1434"/>
   <author id="rpopma"/>
+  <author name="Luke Butters"/>
   <description format="asciidoc">Ensure that the thread-local StringBuilders used by Layouts to format log events to text will not
         retain excessive memory after a large message was logged.</description>
 </entry>

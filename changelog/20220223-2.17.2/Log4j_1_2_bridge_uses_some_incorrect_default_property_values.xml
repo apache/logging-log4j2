@@ -17,5 +17,6 @@
 -->
 <entry type="fixed">
   <author id="ggregory"/>
+  <author name="Piotr P. Karwasz"/>
   <description format="asciidoc">Log4j 1.2 bridge uses some incorrect default property values in some appenders.</description>
 </entry>

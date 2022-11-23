@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-3561" link="https://issues.apache.org/jira/browse/LOG4J2-3561"/>
   <author id="pkarwasz"/>
+  <author name="Robert Papp"/>
   <description format="asciidoc">Allows a space separated list of style specifiers in the %style pattern for consistency with %highlight.</description>
 </entry>

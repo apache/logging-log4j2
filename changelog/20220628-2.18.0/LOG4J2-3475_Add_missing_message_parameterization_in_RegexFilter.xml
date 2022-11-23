@@ -17,6 +17,7 @@
 -->
 <entry type="fixed">
   <issue id="LOG4J2-3475" link="https://issues.apache.org/jira/browse/LOG4J2-3475"/>
-  <author id="jjlin"/>
+  <author id="pkarwasz"/>
+  <author name="Jeremy Lin"/>
   <description format="asciidoc">Add missing message parameterization in RegexFilter.</description>
 </entry>

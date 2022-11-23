@@ -18,5 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-408" link="https://issues.apache.org/jira/browse/LOG4J2-408"/>
   <author id="rpopma"/>
+  <author id="mattsicker"/>
+  <author name="Dongqing Hu"/>
   <description format="asciidoc">Fixed error in documentation code example in manual/eventlogging.html</description>
 </entry>

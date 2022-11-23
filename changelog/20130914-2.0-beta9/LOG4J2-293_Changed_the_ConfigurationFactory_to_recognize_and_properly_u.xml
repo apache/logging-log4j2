@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-293" link="https://issues.apache.org/jira/browse/LOG4J2-293"/>
   <author id="nickwilliams"/>
+  <author name="Abhinav Shah"/>
   <description format="asciidoc">Changed the ConfigurationFactory to recognize and properly use the classpath: URI scheme in addition to the
         classloader: URI scheme.</description>
 </entry>

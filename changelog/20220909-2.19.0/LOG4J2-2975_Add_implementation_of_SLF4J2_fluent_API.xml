@@ -18,5 +18,6 @@
 <entry type="added">
   <issue id="LOG4J2-2975" link="https://issues.apache.org/jira/browse/LOG4J2-2975"/>
   <author id="pkarwasz"/>
+  <author name="Daniel Gray"/>
   <description format="asciidoc">Add implementation of SLF4J2 fluent API.</description>
 </entry>

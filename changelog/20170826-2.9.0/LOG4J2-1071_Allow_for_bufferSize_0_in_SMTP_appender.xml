@@ -18,5 +18,7 @@
 <entry type="changed">
   <issue id="LOG4J2-1071" link="https://issues.apache.org/jira/browse/LOG4J2-1071"/>
   <author id="ggregory"/>
+  <author name="Ben Ludkiewicz"/>
+  <author name="Benjamin Jaton"/>
   <description format="asciidoc">Allow for bufferSize=0 in SMTP appender.</description>
 </entry>

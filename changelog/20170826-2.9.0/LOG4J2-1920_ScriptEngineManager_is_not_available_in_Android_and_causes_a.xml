@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1920" link="https://issues.apache.org/jira/browse/LOG4J2-1920"/>
   <author id="ggregory"/>
+  <author name="Ajitha"/>
   <description format="asciidoc">ScriptEngineManager is not available in Android and causes a NoClassDefFoundError.</description>
 </entry>

@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-3550" link="https://issues.apache.org/jira/browse/LOG4J2-3550"/>
   <author id="rgoers"/>
+  <author name="DongjianPeng"/>
   <description format="asciidoc">SystemPropertyArbiter was assigning the value as the name.</description>
 </entry>

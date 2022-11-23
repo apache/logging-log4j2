@@ -18,5 +18,6 @@
 <entry type="added">
   <issue id="LOG4J2-2403" link="https://issues.apache.org/jira/browse/LOG4J2-2403"/>
   <author id="rgoers"/>
+  <author name="hupfdule"/>
   <description format="asciidoc">Allow zero padding the counter of a RollingFileAppender.</description>
 </entry>

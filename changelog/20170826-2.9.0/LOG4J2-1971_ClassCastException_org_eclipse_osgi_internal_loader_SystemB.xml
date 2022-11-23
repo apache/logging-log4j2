@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1971" link="https://issues.apache.org/jira/browse/LOG4J2-1971"/>
   <author id="ggregory"/>
+  <author name="liwenxian2017"/>
   <description format="asciidoc">ClassCastException: org.eclipse.osgi.internal.loader.SystemBundleLoader$1 cannot be cast to java.lang.ClassLoader.</description>
 </entry>

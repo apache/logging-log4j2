@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-152" link="https://issues.apache.org/jira/browse/LOG4J2-152"/>
   <author id="rgoers"/>
+  <author id="rpopma"/>
   <description format="asciidoc">RollingFileAppender's FileRenameAction was throwing a NullPointerException if no directory was specified
         on the target file name.</description>
 </entry>

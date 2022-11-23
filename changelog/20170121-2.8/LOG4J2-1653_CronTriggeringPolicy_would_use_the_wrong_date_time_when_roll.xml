@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1653" link="https://issues.apache.org/jira/browse/LOG4J2-1653"/>
   <author id="rgoers"/>
+  <author name="Georg Friedrich"/>
   <description format="asciidoc">CronTriggeringPolicy would use the wrong date/time when rolling over and create multiple triggering policies on reconfiguration.</description>
 </entry>

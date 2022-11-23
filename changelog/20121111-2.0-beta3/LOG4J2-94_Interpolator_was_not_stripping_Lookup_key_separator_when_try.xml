@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-94" link="https://issues.apache.org/jira/browse/LOG4J2-94"/>
   <author id="rgoers"/>
+  <author name="Denis Treskunov"/>
   <description format="asciidoc">Interpolator was not stripping Lookup key separator when trying to locate the default value for a variable.</description>
 </entry>

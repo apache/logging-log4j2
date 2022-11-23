@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1831" link="https://issues.apache.org/jira/browse/LOG4J2-1831"/>
   <author id="ggregory"/>
+  <author name="Edward Serebrinskiy"/>
   <description format="asciidoc">NullPointerException in HtmlLayout.</description>
 </entry>

@@ -6,7 +6,7 @@
     (the "License"); you may not use this file except in compliance with
     the License.  You may obtain a copy of the License at
 
-         http://www.apache.org/licenses/LICENSE-2.0
+         https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -52,13 +52,13 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Changed
 
-* Update MongoDB driver from 2.13.3 to 3.0.4. (for https://issues.apache.org/jira/browse/LOG4J2-1040[LOG4J2-1040] by `ggregory`)
 * Performance improvement: backport Java 8 fast ISO-8859-1 String to byte[] encoder to AbstractStringLayout. (for https://issues.apache.org/jira/browse/LOG4J2-1151[LOG4J2-1151] by `rpopma`)
-* Performance improvement when converting Strings to byte[] arrays. (for https://issues.apache.org/jira/browse/LOG4J2-935[LOG4J2-935] by `rpopma`)
-* Reuse StringBuilder to improve performance for String-based layouts: CSV, GELF, HTML, RFC524, Syslog. (for https://issues.apache.org/jira/browse/LOG4J2-1128[LOG4J2-1128] by `ggregory`)
 * Do not use Jackson deprecated methods. (for https://issues.apache.org/jira/browse/LOG4J2-1138[LOG4J2-1138] by `ggregory`)
 * Update Jackson from 2.6.1 to 2.6.2. (for https://issues.apache.org/jira/browse/LOG4J2-1139[LOG4J2-1139] by `ggregory`)
+* Update MongoDB driver from 2.13.3 to 3.0.4. (for https://issues.apache.org/jira/browse/LOG4J2-1040[LOG4J2-1040] by `ggregory`)
+* Performance improvement when converting Strings to byte[] arrays. (for https://issues.apache.org/jira/browse/LOG4J2-935[LOG4J2-935] by `rpopma`)
 * Update kafka-clients from 0.8.2.1 to 0.8.2.2. (for https://issues.apache.org/jira/browse/LOG4J2-1150[LOG4J2-1150] by `ggregory`)
+* Reuse StringBuilder to improve performance for String-based layouts: CSV, GELF, HTML, RFC524, Syslog. (for https://issues.apache.org/jira/browse/LOG4J2-1128[LOG4J2-1128] by `ggregory`)
 * Update mongo-java-driver from 2.13.2 to 2.13.3. (for https://issues.apache.org/jira/browse/LOG4J2-1131[LOG4J2-1131] by `ggregory`)
 
 === Fixed

@@ -18,5 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-385" link="https://issues.apache.org/jira/browse/LOG4J2-385"/>
   <author id="rpopma"/>
+  <author name="Ace Funk"/>
+  <author name="Porfirio Partida"/>
   <description format="asciidoc">Fixed issues with time-based file rollover (monthly, weekly, hourly and every minute).</description>
 </entry>

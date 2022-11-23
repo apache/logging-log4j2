@@ -17,6 +17,6 @@
 -->
 <entry type="changed">
   <issue id="LOG4J2-288" link="https://issues.apache.org/jira/browse/LOG4J2-288"/>
-  <author id="gregory"/>
+  <author id="ggregory"/>
   <description format="asciidoc">Update JUnit to 4.11 from 4.7.</description>
 </entry>

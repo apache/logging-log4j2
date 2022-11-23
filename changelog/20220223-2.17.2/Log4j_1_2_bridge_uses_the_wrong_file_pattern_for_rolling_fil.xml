@@ -17,5 +17,6 @@
 -->
 <entry type="fixed">
   <author id="ggregory"/>
+  <author name="Gary Gregory, Piotr P. Karwasz"/>
   <description format="asciidoc">Log4j 1.2 bridge uses the wrong file pattern for rolling file appenders #710.</description>
 </entry>

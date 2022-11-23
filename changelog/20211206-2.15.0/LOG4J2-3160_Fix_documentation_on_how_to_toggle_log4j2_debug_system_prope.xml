@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-3160" link="https://issues.apache.org/jira/browse/LOG4J2-3160"/>
   <author id="vy"/>
+  <author name="Lars Bohl"/>
   <description format="asciidoc">Fix documentation on how to toggle log4j2.debug system property.</description>
 </entry>

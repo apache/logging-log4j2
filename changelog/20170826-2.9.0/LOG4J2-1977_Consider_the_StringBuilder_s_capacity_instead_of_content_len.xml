@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1977" link="https://issues.apache.org/jira/browse/LOG4J2-1977"/>
   <author id="ggregory"/>
+  <author name="Jerry xnslong"/>
   <description format="asciidoc">Consider the StringBuilder's capacity instead of content length when trimming.</description>
 </entry>

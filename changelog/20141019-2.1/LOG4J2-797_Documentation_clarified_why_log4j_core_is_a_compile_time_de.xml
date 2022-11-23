@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-797" link="https://issues.apache.org/jira/browse/LOG4J2-797"/>
   <author id="rpopma"/>
+  <author name="Andreas Rytina"/>
   <description format="asciidoc">Documentation: clarified why log4j-core is a compile-time dependency in Maven and Ivy page.</description>
 </entry>

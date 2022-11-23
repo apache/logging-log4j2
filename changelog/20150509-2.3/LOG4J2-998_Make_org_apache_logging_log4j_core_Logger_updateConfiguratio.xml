@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-998" link="https://issues.apache.org/jira/browse/LOG4J2-998"/>
   <author id="ggregory"/>
+  <author name="Mariano Gonzalez"/>
   <description format="asciidoc">Make org.apache.logging.log4j.core.Logger#updateConfiguration protected.</description>
 </entry>

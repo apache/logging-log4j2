@@ -17,6 +17,7 @@
 -->
 <entry type="fixed">
   <issue id="LOG4J2-3534" link="https://issues.apache.org/jira/browse/LOG4J2-3534"/>
-  <author id="yueki1993"/>
+  <author id="pkarwasz"/>
+  <author name="Yohei Ueki"/>
   <description format="asciidoc">Fix LevelRangeFilterBuilder to align with log4j1's behavior.</description>
 </entry>

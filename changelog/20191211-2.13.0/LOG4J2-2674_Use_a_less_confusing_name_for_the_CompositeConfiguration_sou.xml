@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-2674" link="https://issues.apache.org/jira/browse/LOG4J2-2674"/>
   <author id="rgoers"/>
+  <author name="Anton Korenkov"/>
   <description format="asciidoc">Use a less confusing name for the CompositeConfiguration source.</description>
 </entry>

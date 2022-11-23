@@ -18,5 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-344" link="https://issues.apache.org/jira/browse/LOG4J2-344"/>
   <author id="nickwilliams"/>
+  <author name="Keir Lawson"/>
+  <author name="Tomasz Wladzinski"/>
   <description format="asciidoc">Changed the Servlet 3.0 auto-initializer to add the filter by class to get around a WebLogic bug.</description>
 </entry>

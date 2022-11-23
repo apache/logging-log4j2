@@ -18,6 +18,9 @@
 <entry type="fixed">
   <issue id="LOG4J2-873" link="https://issues.apache.org/jira/browse/LOG4J2-873"/>
   <author id="rpopma"/>
+  <author name="Martin Dickins"/>
+  <author name="LC"/>
+  <author name="Luke Woodward"/>
   <description format="asciidoc">Fixed bug where omitting the &lt;display-name&gt; element in web.xml caused incorrect log4j initialization,
         resulting in memory leaks when the web application was stopped or reloaded.</description>
 </entry>

@@ -17,6 +17,6 @@
 -->
 <entry type="changed">
   <issue id="LOG4J2-283" link="https://issues.apache.org/jira/browse/LOG4J2-283"/>
-  <author id="gregory"/>
+  <author id="ggregory"/>
   <description format="asciidoc">Remove dependency on Apache ORO jar.</description>
 </entry>

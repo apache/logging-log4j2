@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-982" link="https://issues.apache.org/jira/browse/LOG4J2-982"/>
   <author id="ggregory"/>
+  <author name="Mikhail Mazurskiy"/>
   <description format="asciidoc">Use System.nanoTime() to measure time intervals.</description>
 </entry>

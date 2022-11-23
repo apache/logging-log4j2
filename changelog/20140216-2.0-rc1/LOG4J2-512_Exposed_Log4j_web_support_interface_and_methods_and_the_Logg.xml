@@ -18,6 +18,8 @@
 <entry type="fixed">
   <issue id="LOG4J2-512" link="https://issues.apache.org/jira/browse/LOG4J2-512"/>
   <author id="nickwilliams"/>
+  <author id="mattsicker"/>
+  <author name="Chandra Sekhar Kakarla"/>
   <description format="asciidoc">Exposed Log4j web support interface and methods and the LoggerContext through ServletContext attributes
         so that threads not affected by filters (such as asynchronous threads) can utilize the LoggerContext. Also
         updated the Log4j filter so that it supports async.</description>

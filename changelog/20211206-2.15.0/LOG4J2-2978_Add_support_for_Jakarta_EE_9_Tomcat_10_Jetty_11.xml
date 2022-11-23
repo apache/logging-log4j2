@@ -18,5 +18,6 @@
 <entry type="added">
   <issue id="LOG4J2-2978" link="https://issues.apache.org/jira/browse/LOG4J2-2978"/>
   <author id="rgoers"/>
+  <author name="Michael Seele"/>
   <description format="asciidoc">Add support for Jakarta EE 9 (Tomcat 10 / Jetty 11)</description>
 </entry>

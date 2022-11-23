@@ -17,5 +17,6 @@
 -->
 <entry type="fixed">
   <author id="ggregory"/>
+  <author id="pkarwasz"/>
   <description format="asciidoc">Fix log4j-jakarta-web service file #723.</description>
 </entry>

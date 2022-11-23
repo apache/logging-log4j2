@@ -17,6 +17,7 @@
 -->
 <entry type="fixed">
   <issue id="LOG4J2-2727" link="https://issues.apache.org/jira/browse/LOG4J2-2727"/>
-  <author id="rogers"/>
+  <author id="rgoers"/>
+  <author name="Clément Mathieu"/>
   <description format="asciidoc">Add setKey method to Kafka Appender Builder.</description>
 </entry>

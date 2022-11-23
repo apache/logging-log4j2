@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-938" link="https://issues.apache.org/jira/browse/LOG4J2-938"/>
   <author id="rpopma"/>
+  <author name="Mauro Molinari"/>
   <description format="asciidoc">(JMX) To avoid memory leaks when web applications are restarted, JMX notifications are sent from
         the caller thread in web applications. For non-web applications notifications are sent from a background thread
         as before.</description>

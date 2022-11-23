@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-750" link="https://issues.apache.org/jira/browse/LOG4J2-750"/>
   <author id="ggregory"/>
+  <author name="Mike Calmus"/>
   <description format="asciidoc">Webapp configuration page has incorrect class name.</description>
 </entry>

@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-663" link="https://issues.apache.org/jira/browse/LOG4J2-663"/>
   <author id="mattsicker"/>
+  <author name="Florian Brunner"/>
   <description format="asciidoc">Fix OSGi Import-Package problem with the JMS API.</description>
 </entry>

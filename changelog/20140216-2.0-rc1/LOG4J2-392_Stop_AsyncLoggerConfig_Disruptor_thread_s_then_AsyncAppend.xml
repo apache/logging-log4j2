@@ -18,6 +18,8 @@
 <entry type="fixed">
   <issue id="LOG4J2-392" link="https://issues.apache.org/jira/browse/LOG4J2-392"/>
   <author id="rpopma"/>
+  <author name="ilynaf"/>
+  <author name="Andre Bogus"/>
   <description format="asciidoc">Stop AsyncLoggerConfig Disruptor thread(s), then AsyncAppender thread(s) first
         before stopping other appenders.</description>
 </entry>

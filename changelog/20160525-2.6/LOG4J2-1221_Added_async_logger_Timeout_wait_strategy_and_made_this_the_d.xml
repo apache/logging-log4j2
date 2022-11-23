@@ -18,6 +18,7 @@
 <entry type="added">
   <issue id="LOG4J2-1221" link="https://issues.apache.org/jira/browse/LOG4J2-1221"/>
   <author id="rpopma"/>
+  <author name="Michael Barker"/>
   <description format="asciidoc">Added async logger Timeout wait strategy and made this the default wait strategy for async loggers.
         This prevents a rare deadlock that may occur on Solaris.</description>
 </entry>

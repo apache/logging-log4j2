@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1341" link="https://issues.apache.org/jira/browse/LOG4J2-1341"/>
   <author id="rpopma"/>
+  <author name="Richard Zschech"/>
   <description format="asciidoc">(GC) HighlightConverter and StyleConverter are now GC-free.</description>
 </entry>

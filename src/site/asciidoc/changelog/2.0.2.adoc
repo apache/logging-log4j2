@@ -6,7 +6,7 @@
     (the "License"); you may not use this file except in compliance with
     the License.  You may obtain a copy of the License at
 
-         http://www.apache.org/licenses/LICENSE-2.0
+         https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -45,17 +45,17 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 === Fixed
 
 * Site: log4j-core component pages were still using the old logo. (for https://issues.apache.org/jira/browse/LOG4J2-773[LOG4J2-773] by `rpopma`)
-* Prevent application from hanging when PatternLayout configuration has opening '{' but no closing '}'. (for https://issues.apache.org/jira/browse/LOG4J2-726[LOG4J2-726] by `rpopma`)
-* Startup takes a long time if you have empty packages attribute. (for https://issues.apache.org/jira/browse/LOG4J2-769[LOG4J2-769] by `rpopma`)
-* Documentation improvement: link to dependency tree from log4j-core component page,
-        link to log4j-core component page from FAQ page. (for https://issues.apache.org/jira/browse/LOG4J2-760[LOG4J2-760] by `rpopma`)
-* Resolved race condition that caused log file rotation to fail with error: "Unable to create directory ..." (for https://issues.apache.org/jira/browse/LOG4J2-679[LOG4J2-679] by `rpopma`)
 * Clarified in documentation that SLF4J API jar is required when using log4j-slf4j-impl. (for https://issues.apache.org/jira/browse/LOG4J2-723[LOG4J2-723] by `rpopma`)
 * Fixed various minor site/documentation issues, mostly versioning related. (for https://issues.apache.org/jira/browse/LOG4J2-759[LOG4J2-759] by `rpopma`)
+* Prevent application from hanging when PatternLayout configuration has opening '{' but no closing '}'. (for https://issues.apache.org/jira/browse/LOG4J2-726[LOG4J2-726] by `rpopma`)
 * Emit warning message to console if no configuration file found. (for https://issues.apache.org/jira/browse/LOG4J2-729[LOG4J2-729] by `rpopma`)
+* Startup takes a long time if you have empty packages attribute. (for https://issues.apache.org/jira/browse/LOG4J2-769[LOG4J2-769] by `rpopma`, Scott Harrington)
 * Improved asynchronous loggers and appenders to ensure the formatted message does not change even if
         parameters are modified by the application. (ParameterizedMessage was already safe.)
-        Improved documentation. (for https://issues.apache.org/jira/browse/LOG4J2-763[LOG4J2-763] by `rpopma`)
+        Improved documentation. (for https://issues.apache.org/jira/browse/LOG4J2-763[LOG4J2-763] by `rpopma`, Stephen Connolly)
+* Documentation improvement: link to dependency tree from log4j-core component page,
+        link to log4j-core component page from FAQ page. (for https://issues.apache.org/jira/browse/LOG4J2-760[LOG4J2-760] by `rpopma`)
 * Clarified in documentation that Commons Logging jar is required when using log4j-jcl. (for https://issues.apache.org/jira/browse/LOG4J2-722[LOG4J2-722] by `rpopma`)
-* Prevent JUnit test from creating unnecessary Log4j2Plugins.dat during build. (for https://issues.apache.org/jira/browse/LOG4J2-756[LOG4J2-756] by `rpopma`)
+* Prevent JUnit test from creating unnecessary Log4j2Plugins.dat during build. (for https://issues.apache.org/jira/browse/LOG4J2-756[LOG4J2-756] by `rpopma`, Scott Harrington)
 * Improve warning message when missing log4j-core in the classpath. (for https://issues.apache.org/jira/browse/LOG4J2-765[LOG4J2-765] by `rpopma`)
+* Resolved race condition that caused log file rotation to fail with error: "Unable to create directory ..." (for https://issues.apache.org/jira/browse/LOG4J2-679[LOG4J2-679] by `rpopma`)

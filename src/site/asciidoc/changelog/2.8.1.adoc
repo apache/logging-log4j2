@@ -6,7 +6,7 @@
     (the "License"); you may not use this file except in compliance with
     the License.  You may obtain a copy of the License at
 
-         http://www.apache.org/licenses/LICENSE-2.0
+         https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
@@ -69,24 +69,24 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Added
 
-* [core] Add and implement LogEvent.toImmutable(). (for https://issues.apache.org/jira/browse/LOG4J2-1807[LOG4J2-1807] by `ggregory`)
 * Remove deprecation on MessageSupplier lambda functions in Logger API. (for https://issues.apache.org/jira/browse/LOG4J2-1823[LOG4J2-1823] by `mattsicker`)
+* [core] Add and implement LogEvent.toImmutable(). (for https://issues.apache.org/jira/browse/LOG4J2-1807[LOG4J2-1807] by `ggregory`)
 
 === Changed
 
 * Improved error message when log4j 2 configuration file not found. (for https://issues.apache.org/jira/browse/LOG4J2-1812[LOG4J2-1812] by `rpopma`)
-* Update SLF4J to 1.7.24. (for https://issues.apache.org/jira/browse/LOG4J2-1822[LOG4J2-1822] by `rgoers`)
 * Update to use Logback 1.1.10 and then Logback 1.2 for tests. (for https://issues.apache.org/jira/browse/LOG4J2-1810[LOG4J2-1810] by `rgoers`)
+* Update SLF4J to 1.7.24. (for https://issues.apache.org/jira/browse/LOG4J2-1822[LOG4J2-1822] by `rgoers`)
 * Update Jackson from 2.8.5 to 2.8.6. (for https://issues.apache.org/jira/browse/LOG4J2-1819[LOG4J2-1819] by `ggregory`)
 
 === Fixed
 
-* Allow %i in file pattern to be preceded with characters other than just '-'. (for https://issues.apache.org/jira/browse/LOG4J2-1804[LOG4J2-1804] by `rgoers`)
+* Allow %i in file pattern to be preceded with characters other than just '-'. (for https://issues.apache.org/jira/browse/LOG4J2-1804[LOG4J2-1804] by `rgoers`, Pierrick Hymbert)
 * Fixed rare race condition in FixedDateFormat, made FixedDateFormat::millisSinceMidnight method public. (for https://issues.apache.org/jira/browse/LOG4J2-1805[LOG4J2-1805] by `rpopma`)
-* Report errors when sending to Kafka when using syncSend=false. (for https://issues.apache.org/jira/browse/LOG4J2-1800[LOG4J2-1800] by `mikes`)
-* Change minOccur to minOccurs in Log4j-config.xsd. (for https://issues.apache.org/jira/browse/LOG4J2-1816[LOG4J2-1816] by `rpopma`)
+* Fix rollover to work when filePattern contains no directory components. (for https://issues.apache.org/jira/browse/LOG4J2-1818[LOG4J2-1818] by `ggregory`, xkr47)
+* Report errors when sending to Kafka when using syncSend=false. (for https://issues.apache.org/jira/browse/LOG4J2-1800[LOG4J2-1800] by `mikes`, Vincent Tieleman)
+* Fixed bug in PropertiesUtil::getCharsetProperty that caused UnsupportedCharsetException for ConsoleAppender. (for https://issues.apache.org/jira/browse/LOG4J2-1799[LOG4J2-1799] by `rpopma`, Eduard Gizatullin)
+* Change minOccur to minOccurs in Log4j-config.xsd. (for https://issues.apache.org/jira/browse/LOG4J2-1816[LOG4J2-1816] by `rpopma`, shubhankar1100)
 * Fix Maven POM to ensure JMH generated classes in log4j-perf are included in benchmarks jar. (for https://issues.apache.org/jira/browse/LOG4J2-1803[LOG4J2-1803] by `rgoers`)
-* Fix ClassNotFoundException org.apache.logging.log4j.core.util.ExecutorServices in OSGi tests. (for https://issues.apache.org/jira/browse/LOG4J2-1753[LOG4J2-1753] by `ggregory`)
-* Fix rollover to work when filePattern contains no directory components. (for https://issues.apache.org/jira/browse/LOG4J2-1818[LOG4J2-1818] by `ggregory`)
-* Fixed bug in PropertiesUtil::getCharsetProperty that caused UnsupportedCharsetException for ConsoleAppender. (for https://issues.apache.org/jira/browse/LOG4J2-1799[LOG4J2-1799] by `rpopma`)
-* Fix Javadoc for DefaultRolloverStrategy::purgeAscending (for https://issues.apache.org/jira/browse/LOG4J2-1806[LOG4J2-1806] by `rpopma`)
+* Fix Javadoc for DefaultRolloverStrategy::purgeAscending (for https://issues.apache.org/jira/browse/LOG4J2-1806[LOG4J2-1806] by `rpopma`, challarao)
+* Fix ClassNotFoundException org.apache.logging.log4j.core.util.ExecutorServices in OSGi tests. (for https://issues.apache.org/jira/browse/LOG4J2-1753[LOG4J2-1753] by `ggregory`, Ludovic Hochet)

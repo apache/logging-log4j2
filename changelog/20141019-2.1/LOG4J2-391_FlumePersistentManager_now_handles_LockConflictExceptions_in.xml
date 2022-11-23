@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-391" link="https://issues.apache.org/jira/browse/LOG4J2-391"/>
   <author id="rgoers"/>
+  <author name="Kamal Bahadur"/>
   <description format="asciidoc">FlumePersistentManager now handles LockConflictExceptions in Berkeley Db when sending a batch.</description>
 </entry>

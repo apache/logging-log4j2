@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1888" link="https://issues.apache.org/jira/browse/LOG4J2-1888"/>
   <author id="ggregory"/>
+  <author name="Misagh Moayyed"/>
   <description format="asciidoc">Log4j throws a java.nio.charset.UnsupportedCharsetException: cp65001.</description>
 </entry>

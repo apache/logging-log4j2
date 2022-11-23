@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-1687" link="https://issues.apache.org/jira/browse/LOG4J2-1687"/>
   <author id="ggregory"/>
+  <author name="Robert Christiansen"/>
   <description format="asciidoc">NPE in ThrowableProxy when resolving stack in Java EE/OSGi environment.</description>
 </entry>

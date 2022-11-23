@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-101" link="https://issues.apache.org/jira/browse/LOG4J2-101"/>
   <author id="rgoers"/>
+  <author name="Emanuele Colombo"/>
   <description format="asciidoc">A NullPointerException would occur if no format value was passed to the SyslogAppender.</description>
 </entry>

@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-713" link="https://issues.apache.org/jira/browse/LOG4J2-713"/>
   <author id="ggregory"/>
+  <author name="Nelson Melina"/>
   <description format="asciidoc">Android: java.lang.VerifyError: org/apache/logging/log4j/core/util/Closer</description>
 </entry>

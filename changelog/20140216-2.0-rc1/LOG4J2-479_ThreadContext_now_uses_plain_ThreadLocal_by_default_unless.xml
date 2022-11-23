@@ -18,6 +18,7 @@
 <entry type="added">
   <issue id="LOG4J2-479" link="https://issues.apache.org/jira/browse/LOG4J2-479"/>
   <author id="rpopma"/>
+  <author name="MK"/>
   <description format="asciidoc">ThreadContext now uses plain ThreadLocal by default, unless system property
         isThreadContextMapInheritable has value "true".</description>
 </entry>

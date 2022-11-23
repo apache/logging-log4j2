@@ -17,6 +17,8 @@
 -->
 <entry type="fixed">
   <issue id="LOG4J2-351" link="https://issues.apache.org/jira/browse/LOG4J2-351"/>
-  <author id="rpopma, ggregory"/>
+  <author id="rpopma"/>
+  <author id="ggregory"/>
+  <author name="Roland Weiglhofer"/>
   <description format="asciidoc">[OSGi] Fixed wrong Fragment-Host in manifest files.</description>
 </entry>

@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-477" link="https://issues.apache.org/jira/browse/LOG4J2-477"/>
   <author id="rpopma"/>
+  <author name="Tal Liron"/>
   <description format="asciidoc">NPE in ClassLoaderContextSelector.</description>
 </entry>

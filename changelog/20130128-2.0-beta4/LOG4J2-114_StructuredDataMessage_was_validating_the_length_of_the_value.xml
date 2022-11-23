@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-114" link="https://issues.apache.org/jira/browse/LOG4J2-114"/>
   <author id="rgoers"/>
+  <author name="Arkin Yetis"/>
   <description format="asciidoc">StructuredDataMessage was validating the length of the values in the event Map instead of the lengths
         of the keys.</description>
 </entry>

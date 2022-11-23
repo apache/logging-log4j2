@@ -18,5 +18,6 @@
 <entry type="fixed">
   <issue id="LOG4J2-622" link="https://issues.apache.org/jira/browse/LOG4J2-622"/>
   <author id="rpopma"/>
+  <author name="Farooq Khan"/>
   <description format="asciidoc">RollingFileManager now correctly honours the bufferedIO configuration after rollover.</description>
 </entry>

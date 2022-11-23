@@ -18,6 +18,8 @@
 <entry type="fixed">
   <issue id="LOG4J2-520" link="https://issues.apache.org/jira/browse/LOG4J2-520"/>
   <author id="rpopma"/>
+  <author name="JavaTech"/>
+  <author name="Andre Bogus"/>
   <description format="asciidoc">Resolved issue where AsyncAppender dropped events if queue still contained
         events when application is stopped.</description>
 </entry>

@@ -18,5 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-443" link="https://issues.apache.org/jira/browse/LOG4J2-443"/>
   <author id="rpopma"/>
+  <author name="Colin Froggatt"/>
+  <author name="Tudor Har"/>
   <description format="asciidoc">(JMX) Fixed issue where log4j2 LoggerContext did not show up in JMX GUI or JConsole.</description>
 </entry>

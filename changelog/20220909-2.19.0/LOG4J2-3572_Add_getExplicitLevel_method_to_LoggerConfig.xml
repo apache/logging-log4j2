@@ -17,6 +17,6 @@
 -->
 <entry type="changed">
   <issue id="LOG4J2-3572" link="https://issues.apache.org/jira/browse/LOG4J2-3572"/>
-  <author id="rgeors"/>
+  <author id="rgoers"/>
   <description format="asciidoc">Add getExplicitLevel method to LoggerConfig.</description>
 </entry>

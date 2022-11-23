@@ -18,5 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-922" link="https://issues.apache.org/jira/browse/LOG4J2-922"/>
   <author id="ggregory"/>
+  <author name="angus.aqlu"/>
+  <author name="Paul Burrowes"/>
   <description format="asciidoc">Parameter of mdcId in SyslogAppender has no default value.</description>
 </entry>

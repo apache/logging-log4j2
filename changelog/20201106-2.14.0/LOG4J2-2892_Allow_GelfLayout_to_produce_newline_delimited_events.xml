@@ -18,5 +18,6 @@
 <entry type="changed">
   <issue id="LOG4J2-2892" link="https://issues.apache.org/jira/browse/LOG4J2-2892"/>
   <author id="rgoers"/>
+  <author name="Jakub Lukes"/>
   <description format="asciidoc">Allow GelfLayout to produce newline delimited events.</description>
 </entry>
