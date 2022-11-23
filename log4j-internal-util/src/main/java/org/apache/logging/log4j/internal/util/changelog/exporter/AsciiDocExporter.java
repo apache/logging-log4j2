@@ -185,18 +185,37 @@ public final class AsciiDocExporter {
     }
 
     private static String readIntroAsciiDoc(final Path releaseDirectory) {
+
+        // Determine the file to be read.
         final Path introAsciiDocFile = ChangelogFiles.introAsciiDocFile(releaseDirectory);
         if (!Files.exists(introAsciiDocFile)) {
             return "";
         }
-        final byte[] introAsciiDocBytes;
+
+        // Read the file.
+        final List<String> introAsciiDocLines;
         try {
-            introAsciiDocBytes = Files.readAllBytes(introAsciiDocFile);
+            introAsciiDocLines = Files.readAllLines(introAsciiDocFile, StandardCharsets.UTF_8);
         } catch (final IOException error) {
             final String message = String.format("failed reading intro AsciiDoc file: `%s`", introAsciiDocFile);
             throw new UncheckedIOException(message, error);
         }
-        return new String(introAsciiDocBytes, StandardCharsets.UTF_8);
+
+        // Erase comment blocks.
+        final boolean[] inCommentBlock = {false};
+        return introAsciiDocLines
+                .stream()
+                .filter(line -> {
+                    final boolean commentBlock = "////".equals(line);
+                    if (commentBlock) {
+                        inCommentBlock[0] = !inCommentBlock[0];
+                        return false;
+                    }
+                    return !inCommentBlock[0];
+                })
+                .collect(Collectors.joining("\n"))
+                + "\n";
+
     }
 
     private static void exportRelease(
