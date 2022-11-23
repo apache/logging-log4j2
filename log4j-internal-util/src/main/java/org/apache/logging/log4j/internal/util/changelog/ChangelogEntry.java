@@ -19,13 +19,11 @@ package org.apache.logging.log4j.internal.util.changelog;
 import org.apache.logging.log4j.internal.util.XmlReader;
 import org.apache.logging.log4j.internal.util.XmlWriter;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.apache.logging.log4j.internal.util.StringUtils.trimNullable;
 
@@ -165,12 +163,9 @@ public final class ChangelogEntry {
         }
 
         // Read the `issue` elements.
-        final NodeList issueElements = entryElement.getElementsByTagName("issue");
-        final int issueCount = issueElements.getLength();
-        final List<Issue> issues = IntStream
-                .range(0, issueCount)
-                .mapToObj(issueIndex -> {
-                    final Element issueElement = (Element) issueElements.item(issueIndex);
+        final List<Issue> issues = XmlReader
+                .childElementsMatchingName(entryElement, "issue")
+                .map(issueElement -> {
                     final String issueId = XmlReader.requireAttribute(issueElement, "id");
                     final String issueLink = XmlReader.requireAttribute(issueElement, "link");
                     return new Issue(issueId, issueLink);
@@ -178,15 +173,9 @@ public final class ChangelogEntry {
                 .collect(Collectors.toList());
 
         // Read the `author` elements.
-        final NodeList authorElements = entryElement.getElementsByTagName("author");
-        final int authorCount = authorElements.getLength();
-        if (authorCount < 1) {
-            throw XmlReader.failureAtXmlNode(entryElement, "no `author` elements found");
-        }
-        final List<Author> authors = IntStream
-                .range(0, authorCount)
-                .mapToObj(authorIndex -> {
-                    final Element authorElement = (Element) authorElements.item(authorIndex);
+        final List<Author> authors = XmlReader
+                .childElementsMatchingName(entryElement, "author")
+                .map(authorElement -> {
                     final String authorId = authorElement.hasAttribute("id")
                             ? authorElement.getAttribute("id")
                             : null;
@@ -196,15 +185,12 @@ public final class ChangelogEntry {
                     return new Author(authorId, authorName);
                 })
                 .collect(Collectors.toList());
+        if (authors.isEmpty()) {
+            throw XmlReader.failureAtXmlNode(entryElement, "no `author` elements found");
+        }
 
         // Read the `description` element.
-        final NodeList descriptionElements = entryElement.getElementsByTagName("description");
-        final int descriptionCount = descriptionElements.getLength();
-        if (descriptionCount != 1) {
-            throw XmlReader.failureAtXmlNode(
-                    entryElement, "was expecting a single `description` element, found: %d", descriptionCount);
-        }
-        final Element descriptionElement = (Element) descriptionElements.item(0);
+        final Element descriptionElement = XmlReader.childElementMatchingName(entryElement, "description");
         final String descriptionFormat = XmlReader.requireAttribute(descriptionElement, "format");
         final String descriptionText = trimNullable(descriptionElement.getTextContent());
         final Description description = new Description(descriptionFormat, descriptionText);

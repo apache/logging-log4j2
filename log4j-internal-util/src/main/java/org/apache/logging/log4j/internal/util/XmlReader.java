@@ -19,6 +19,7 @@ package org.apache.logging.log4j.internal.util;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,6 +28,10 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * A SAX2-based XML reader.
@@ -62,6 +67,29 @@ public final class XmlReader {
         PositionalSaxEventHandler handler = new PositionalSaxEventHandler(document);
         parser.parse(inputStream, handler);
         return document;
+    }
+
+    public static Stream<Element> childElementsMatchingName(final Element parentElement, final String childElementName) {
+        final NodeList childNodes = parentElement.getChildNodes();
+        return IntStream
+                .range(0, childNodes.getLength())
+                .mapToObj(childNodes::item)
+                .filter(childNode -> childNode.getNodeType() == Node.ELEMENT_NODE && childElementName.equals(childNode.getNodeName()))
+                .map(childNode -> (Element) childNode);
+    }
+
+    public static Element childElementMatchingName(final Element parentElement, final String childElementName) {
+        final List<Element> childElements = childElementsMatchingName(parentElement, childElementName)
+                .collect(Collectors.toList());
+        final int childElementCount = childElements.size();
+        if (childElementCount != 1) {
+            throw failureAtXmlNode(
+                    parentElement,
+                    "was expecting a single `%s` element, found: %d",
+                    childElementName,
+                    childElementCount);
+        }
+        return childElements.get(0);
     }
 
     public static String requireAttribute(final Element element, final String attributeName) {

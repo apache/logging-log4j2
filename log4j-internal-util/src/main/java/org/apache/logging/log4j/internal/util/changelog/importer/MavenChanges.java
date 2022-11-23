@@ -46,13 +46,7 @@ final class MavenChanges {
         final Element documentElement = readXmlFileRootElement(xmlPath, "document");
 
         // Read the `body` element.
-        final NodeList bodyElements = documentElement.getElementsByTagName("body");
-        final int bodyElementCount = bodyElements.getLength();
-        if (bodyElementCount != 1) {
-            throw XmlReader.failureAtXmlNode(
-                    documentElement, "was expecting a single `body` element, found: %d", bodyElementCount);
-        }
-        final Node bodyElement = bodyElements.item(0);
+        final Element bodyElement = XmlReader.childElementMatchingName(documentElement, "body");
 
         // Read releases.
         final List<Release> releases = new ArrayList<>();

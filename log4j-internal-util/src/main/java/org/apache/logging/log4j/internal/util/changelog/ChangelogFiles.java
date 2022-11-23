@@ -26,6 +26,28 @@ public final class ChangelogFiles {
         return projectRootDirectory.resolve("changelog");
     }
 
+    public static Path unreleasedDirectory(final Path projectRootDirectory) {
+        return changelogDirectory(projectRootDirectory).resolve(".unreleased");
+    }
+
+    public static Path releaseDirectory(
+            final Path projectRootDirectory,
+            final String releaseDate,
+            final String releaseVersion) {
+        if (!releaseDate.matches("^\\d{8}$")) {
+            final String message = String.format(
+                    "was expecting release date to be formatted as `YYYYmmdd`, found: `%s`", releaseDate);
+            throw new IllegalArgumentException(message);
+        }
+        if (!releaseVersion.matches("^\\d+\\.\\d+\\.\\d+$")) {
+            final String message = String.format(
+                    "was expecting release version to be formatted as `0.1.2`, found: `%s`", releaseVersion);
+            throw new IllegalArgumentException(message);
+        }
+        final String releaseDirectoryName = String.format("%s-%s", releaseDate, releaseVersion);
+        return changelogDirectory(projectRootDirectory).resolve(releaseDirectoryName);
+    }
+
     public static Path releaseXmlFile(final Path releaseDirectory) {
         return releaseDirectory.resolve(".release.xml");
     }
