@@ -31,4 +31,134 @@
   <name>Apache Log4j internal utilities</name>
   <description>Internal Log4j utilities for project's build infrastructure.</description>
 
+  <properties>
+    <log4jParentDir>${basedir}/..</log4jParentDir>  <!-- required for `spotless-maven-plugin` inherited configuration -->
+    <maven.doap.skip>true</maven.doap.skip>
+  </properties>
+
+  <build>
+    <finalName>log4j-internal-util</finalName>
+    <plugins>
+
+      <!-- Disable ITs: -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <!-- Disable tests: -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <!-- Disable deployment: -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <!-- Disarm existing configurations for the JAR plugin.
+           Otherwise it complains about `MANIFEST.MF` and such when the module is tried to be packaged individually: `./mvnw package -pl log4j-internal-util`. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration combine.self="override"/>
+          </execution>
+        </executions>
+      </plugin>
+
+
+    </plugins>
+  </build>
+
+  <profiles>
+
+    <!-- AsciiDoc-formatted changelog generator: -->
+    <profile>
+      <id>changelog-asciidoc-exporter</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <defaultGoal>package</defaultGoal>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>changelog-asciidoc-export</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <mainClass>org.apache.logging.log4j.internal.util.changelog.exporter.AsciiDocExporter</mainClass>
+              <arguments>
+                <argument>${maven.multiModuleProjectDirectory}</argument>   <!-- requires Maven >=3.6.0 -->
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- Changelog releaser: -->
+    <profile>
+      <id>changelog-releaser</id>
+      <build>
+        <defaultGoal>package</defaultGoal>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>changelog-releaser</id>
+                <!-- the closest phase to non-existent `post-package`: -->
+                <phase>package</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <mainClass>org.apache.logging.log4j.internal.util.changelog.releaser.ChangelogReleaser</mainClass>
+              <arguments>
+                <argument>${maven.multiModuleProjectDirectory}</argument>   <!-- requires Maven >=3.6.0 -->
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
 </project>
