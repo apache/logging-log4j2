@@ -98,11 +98,11 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 === Fixed
 
 * Inspect all known ClassLoaders to locate the service provider. (for https://issues.apache.org/jira/browse/LOG4J2-2030[LOG4J2-2030] by `rgoers`)
-* Increase default queue size for AsyncAppender from 128 to 1024. (for https://issues.apache.org/jira/browse/LOG4J2-2048[LOG4J2-2048] by `rpopma`)
-* Java 9 StackLocator was not properly skipping the initial stack frames. (for https://issues.apache.org/jira/browse/LOG4J2-2028[LOG4J2-2028] by `rgoers`, Jason Tedor)
 * Prevent ConcurrentModificationException with AsyncLoggerConfig. (for https://issues.apache.org/jira/browse/LOG4J2-1988[LOG4J2-1988] by `rpopma`)
-* Fix documentation to clarify disruptor-3.3.4 is now required for async loggers (previously the docs referred to disruptor-3.3.3 which was never released). (for https://issues.apache.org/jira/browse/LOG4J2-2035[LOG4J2-2035] by `rpopma`)
 * Prevent ConcurrentModificationException with AsyncLoggerConfig. (for https://issues.apache.org/jira/browse/LOG4J2-1914[LOG4J2-1914] by `rpopma`)
+* Increase default queue size for AsyncAppender from 128 to 1024. (for https://issues.apache.org/jira/browse/LOG4J2-2048[LOG4J2-2048] by `rpopma`)
+* Fix documentation to clarify disruptor-3.3.4 is now required for async loggers (previously the docs referred to disruptor-3.3.3 which was never released). (for https://issues.apache.org/jira/browse/LOG4J2-2035[LOG4J2-2035] by `rpopma`)
 * java.lang.AbstractMethodError: javax.xml.parsers.DocumentBuilderFactory.setFeature(). (for https://issues.apache.org/jira/browse/LOG4J2-2026[LOG4J2-2026] by `ggregory`, Leon Finker)
+* Java 9 StackLocator was not properly skipping the initial stack frames. (for https://issues.apache.org/jira/browse/LOG4J2-2028[LOG4J2-2028] by `rgoers`, Jason Tedor)
 * Marker examples should not use deprecated flow APIs. (for https://issues.apache.org/jira/browse/LOG4J2-2029[LOG4J2-2029] by `ggregory`, Fabrizio Cucci)
 * ClassNotFoundException when making all loggers asynchronous under OSGi environment. (for https://issues.apache.org/jira/browse/LOG4J2-1936[LOG4J2-1936] by `ggregory`, Helber Belmiro)

@@ -70,8 +70,8 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Added
 
-* Remove deprecation on MessageSupplier lambda functions in Logger API. (for https://issues.apache.org/jira/browse/LOG4J2-1823[LOG4J2-1823] by `mattsicker`)
 * [core] Add and implement LogEvent.toImmutable(). (for https://issues.apache.org/jira/browse/LOG4J2-1807[LOG4J2-1807] by `ggregory`)
+* Remove deprecation on MessageSupplier lambda functions in Logger API. (for https://issues.apache.org/jira/browse/LOG4J2-1823[LOG4J2-1823] by `mattsicker`)
 
 === Changed
 
@@ -82,12 +82,12 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Fixed
 
-* Allow %i in file pattern to be preceded with characters other than just '-'. (for https://issues.apache.org/jira/browse/LOG4J2-1804[LOG4J2-1804] by `rgoers`, Pierrick Hymbert)
 * Fixed rare race condition in FixedDateFormat, made FixedDateFormat::millisSinceMidnight method public. (for https://issues.apache.org/jira/browse/LOG4J2-1805[LOG4J2-1805] by `rpopma`)
+* Fix Maven POM to ensure JMH generated classes in log4j-perf are included in benchmarks jar. (for https://issues.apache.org/jira/browse/LOG4J2-1803[LOG4J2-1803] by `rgoers`)
+* Allow %i in file pattern to be preceded with characters other than just '-'. (for https://issues.apache.org/jira/browse/LOG4J2-1804[LOG4J2-1804] by `rgoers`, Pierrick Hymbert)
 * Fix rollover to work when filePattern contains no directory components. (for https://issues.apache.org/jira/browse/LOG4J2-1818[LOG4J2-1818] by `ggregory`, xkr47)
 * Report errors when sending to Kafka when using syncSend=false. (for https://issues.apache.org/jira/browse/LOG4J2-1800[LOG4J2-1800] by `mikes`, Vincent Tieleman)
 * Fixed bug in PropertiesUtil::getCharsetProperty that caused UnsupportedCharsetException for ConsoleAppender. (for https://issues.apache.org/jira/browse/LOG4J2-1799[LOG4J2-1799] by `rpopma`, Eduard Gizatullin)
 * Change minOccur to minOccurs in Log4j-config.xsd. (for https://issues.apache.org/jira/browse/LOG4J2-1816[LOG4J2-1816] by `rpopma`, shubhankar1100)
-* Fix Maven POM to ensure JMH generated classes in log4j-perf are included in benchmarks jar. (for https://issues.apache.org/jira/browse/LOG4J2-1803[LOG4J2-1803] by `rgoers`)
 * Fix Javadoc for DefaultRolloverStrategy::purgeAscending (for https://issues.apache.org/jira/browse/LOG4J2-1806[LOG4J2-1806] by `rpopma`, challarao)
 * Fix ClassNotFoundException org.apache.logging.log4j.core.util.ExecutorServices in OSGi tests. (for https://issues.apache.org/jira/browse/LOG4J2-1753[LOG4J2-1753] by `ggregory`, Ludovic Hochet)

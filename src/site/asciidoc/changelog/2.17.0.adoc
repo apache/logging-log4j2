@@ -54,9 +54,9 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 * Limit JNDI to the java protocol only. JNDI will remain disabled by default. Rename JNDI enablement property from
         'log4j2.enableJndi' to 'log4j2.enableJndiLookup', 'log4j2.enableJndiJms', and 'log4j2.enableJndiContextSelector'. (for https://issues.apache.org/jira/browse/LOG4J2-3242[LOG4J2-3242] by `rgoers`)
-* Fix string substitution recursion. (for https://issues.apache.org/jira/browse/LOG4J2-3230[LOG4J2-3230] by `ckozak`)
 * Log4j 1.2 bridge for Syslog Appender defaults to port 512 instead of 514. (for https://issues.apache.org/jira/browse/LOG4J2-3249[LOG4J2-3249] by `ggregory`)
 * Do not declare log4j-api-java9 and log4j-core-java9 as dependencies as it causes problems with the
         Maven enforcer plugin. (for https://issues.apache.org/jira/browse/LOG4J2-3241[LOG4J2-3241] by `rgoers`)
 * PropertiesConfiguration.parseAppenderFilters NPE when parsing properties file filters. (for https://issues.apache.org/jira/browse/LOG4J2-3247[LOG4J2-3247] by `ggregory`)
+* Fix string substitution recursion. (for https://issues.apache.org/jira/browse/LOG4J2-3230[LOG4J2-3230] by `ckozak`)
 * Log4j 1.2 bridge API hard codes the Syslog protocol to TCP. (for https://issues.apache.org/jira/browse/LOG4J2-3237[LOG4J2-3237] by `ggregory`)

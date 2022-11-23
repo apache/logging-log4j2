@@ -71,30 +71,30 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Added
 
-* Add "direct" option to ConsoleAppender for increased performance. (for https://issues.apache.org/jira/browse/LOG4J2-1395[LOG4J2-1395] by `mikes`)
-* (GC) ObjectMessage and ReusableObjectMessage now avoid calling toString() on auto-boxed primitive parameters. (for https://issues.apache.org/jira/browse/LOG4J2-1437[LOG4J2-1437] by `rpopma`)
 * Unbox utility's ringbuffer of StringBuilders is now configurable. (for https://issues.apache.org/jira/browse/LOG4J2-1412[LOG4J2-1412] by `rpopma`)
+* Add "direct" option to ConsoleAppender for increased performance. (for https://issues.apache.org/jira/browse/LOG4J2-1395[LOG4J2-1395] by `mikes`)
 * (GC) ParameterFormatter now avoids calling toString() on auto-boxed primitive message parameters. (for https://issues.apache.org/jira/browse/LOG4J2-1415[LOG4J2-1415] by `rpopma`)
+* (GC) ObjectMessage and ReusableObjectMessage now avoid calling toString() on auto-boxed primitive parameters. (for https://issues.apache.org/jira/browse/LOG4J2-1437[LOG4J2-1437] by `rpopma`)
 
 === Changed
 
+* Update Jackson from 2.7.4 to 2.7.5. (for https://issues.apache.org/jira/browse/LOG4J2-1432[LOG4J2-1432] by `ggregory`)
 * Update Jansi from 1.11 to 1.13. (for https://issues.apache.org/jira/browse/LOG4J2-1433[LOG4J2-1433] by `ggregory`)
 * Update Apache Commons Compress from 1.11 to 1.12. (for https://issues.apache.org/jira/browse/LOG4J2-1444[LOG4J2-1444] by `ggregory`)
-* Update Jackson from 2.7.4 to 2.7.5. (for https://issues.apache.org/jira/browse/LOG4J2-1432[LOG4J2-1432] by `ggregory`)
 
 === Fixed
 
-* Fixed issue where reusable messages broke flow tracing logic. (for https://issues.apache.org/jira/browse/LOG4J2-1452[LOG4J2-1452] by `rpopma`, Mikael Ståldal)
-* Ensure that the thread-local StringBuilders used by Layouts to format log events to text will not
-        retain excessive memory after a large message was logged. (for https://issues.apache.org/jira/browse/LOG4J2-1434[LOG4J2-1434] by `rpopma`, Luke Butters)
-* Fix bug in OnStartupTriggeringPolicy that allowed it to roll over on every reconfiguration. Added
-        minSize attribute. (for https://issues.apache.org/jira/browse/LOG4J2-1440[LOG4J2-1440] by `rgoers`)
-* If copy and delete fails in rename action then resort to truncating the source file after copying it. (for https://issues.apache.org/jira/browse/LOG4J2-904[LOG4J2-904] by `rgoers`, Bernhard Mähr)
 * RollingRandomAccessFileManager was not properly rolling over on startup and was getting a NullPointerException. (for https://issues.apache.org/jira/browse/LOG4J2-1420[LOG4J2-1420] by `rgoers`)
 * Provide MessageFactory2 to custom Logger implementations. (for https://issues.apache.org/jira/browse/LOG4J2-1418[LOG4J2-1418] by `mikes`)
-* Fixed minor issues with the 2.6.1 website. (for https://issues.apache.org/jira/browse/LOG4J2-1414[LOG4J2-1414] by `rpopma`, Ralph Goers)
 * CronTriggeringPolicy was not properly setting the prevFileTime value for the PatternProcessor so
         file dates and times on rolled files were incorrect. (for https://issues.apache.org/jira/browse/LOG4J2-1250[LOG4J2-1250] by `rgoers`)
-* OnStartupTriggeringPolicyTest fails on Windows saying the file is used by another process. (for https://issues.apache.org/jira/browse/LOG4J2-1445[LOG4J2-1445] by `ggregory`, Ludovic HOCHET)
 * Fixed issue where AsyncAppenderQueueFullPolicyTest sometimes hangs. (for https://issues.apache.org/jira/browse/LOG4J2-1422[LOG4J2-1422] by `rpopma`)
 * Fixed issue where Unbox utility ignored the value Constants.ENABLE_THREADLOCALS and always stored non-JDK classes in ThreadLocals. (for https://issues.apache.org/jira/browse/LOG4J2-1417[LOG4J2-1417] by `rpopma`)
+* Fix bug in OnStartupTriggeringPolicy that allowed it to roll over on every reconfiguration. Added
+        minSize attribute. (for https://issues.apache.org/jira/browse/LOG4J2-1440[LOG4J2-1440] by `rgoers`)
+* Fixed issue where reusable messages broke flow tracing logic. (for https://issues.apache.org/jira/browse/LOG4J2-1452[LOG4J2-1452] by `rpopma`, Mikael Ståldal)
+* OnStartupTriggeringPolicyTest fails on Windows saying the file is used by another process. (for https://issues.apache.org/jira/browse/LOG4J2-1445[LOG4J2-1445] by `ggregory`, Ludovic HOCHET)
+* Ensure that the thread-local StringBuilders used by Layouts to format log events to text will not
+        retain excessive memory after a large message was logged. (for https://issues.apache.org/jira/browse/LOG4J2-1434[LOG4J2-1434] by `rpopma`, Luke Butters)
+* If copy and delete fails in rename action then resort to truncating the source file after copying it. (for https://issues.apache.org/jira/browse/LOG4J2-904[LOG4J2-904] by `rgoers`, Bernhard Mähr)
+* Fixed minor issues with the 2.6.1 website. (for https://issues.apache.org/jira/browse/LOG4J2-1414[LOG4J2-1414] by `rpopma`, Ralph Goers)
