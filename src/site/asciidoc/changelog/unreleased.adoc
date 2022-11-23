@@ -29,7 +29,9 @@ Changes staged for the next version that is yet to be released.
 === Changed
 
 * Add LogEvent timestamp to ProducerRecord in KafkaAppender. (for https://issues.apache.org/jira/browse/LOG4J2-2678[LOG4J2-2678] by `pkarwasz`, Federico D'Ambrosio)
+* Replaced `maven-changes-plugin` with a custom changelog implementation (for https://issues.apache.org/jira/browse/LOG4J2-3628[LOG4J2-3628] by `vy`)
 
 === Fixed
 
+* Fix level propagation in `Log4jBridgeHandler`. (for https://issues.apache.org/jira/browse/LOG4J2-3634[LOG4J2-3634] by `pkarwasz`, Marcel Koch)
 * Fix `Configurator#setLevel` for internal classes. (for https://issues.apache.org/jira/browse/LOG4J2-3631[LOG4J2-3631] by `pkarwasz`, Jeff Thomas)
