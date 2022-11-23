@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.internal.util.changelog;
 
-import org.apache.logging.log4j.internal.util.XmlReader;
-import org.apache.logging.log4j.internal.util.XmlWriter;
-import org.w3c.dom.Element;
-
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.internal.util.XmlReader;
+import org.apache.logging.log4j.internal.util.XmlWriter;
+import org.w3c.dom.Element;
 
 import static org.apache.logging.log4j.internal.util.StringUtils.trimNullable;
 
@@ -182,6 +182,10 @@ public final class ChangelogEntry {
                     final String authorName = authorElement.hasAttribute("name")
                             ? authorElement.getAttribute("name")
                             : null;
+                    if (authorId == null && authorName == null) {
+                        throw XmlReader.failureAtXmlNode(
+                                authorElement, "`author` must have at least one of `id` or `name` attributes");
+                    }
                     return new Author(authorId, authorName);
                 })
                 .collect(Collectors.toList());

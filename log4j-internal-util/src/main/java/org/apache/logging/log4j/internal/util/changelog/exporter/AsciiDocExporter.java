@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,11 +15,6 @@
  * limitations under the license.
  */
 package org.apache.logging.log4j.internal.util.changelog.exporter;
-
-import org.apache.logging.log4j.internal.util.AsciiDocUtils;
-import org.apache.logging.log4j.internal.util.changelog.ChangelogEntry;
-import org.apache.logging.log4j.internal.util.changelog.ChangelogFiles;
-import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -34,6 +29,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.logging.log4j.internal.util.AsciiDocUtils;
+import org.apache.logging.log4j.internal.util.changelog.ChangelogEntry;
+import org.apache.logging.log4j.internal.util.changelog.ChangelogFiles;
+import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
 
 public final class AsciiDocExporter {
 
@@ -400,7 +400,7 @@ public final class AsciiDocExporter {
                 .append('\n')
                 .append(AUTO_GENERATION_WARNING_ASCIIDOC)
                 .append("\n= Release changelogs\n\n")
-                .append("* [????-??-??] xref:unreleased.adoc[Unreleased]\n");
+                .append("* xref:unreleased.adoc[Unreleased]\n");
         for (int releaseIndex = changelogReleases.size() - 1; releaseIndex >= 0; releaseIndex--) {
             final ChangelogRelease changelogRelease = changelogReleases.get(releaseIndex);
             final String asciiDocFilename = changelogReleaseAsciiDocFilename(changelogRelease);
