@@ -75,19 +75,19 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Changed
 
-* Improved error message when log4j 2 configuration file not found. (for https://issues.apache.org/jira/browse/LOG4J2-1812[LOG4J2-1812] by `rpopma`)
 * Update to use Logback 1.1.10 and then Logback 1.2 for tests. (for https://issues.apache.org/jira/browse/LOG4J2-1810[LOG4J2-1810] by `rgoers`)
-* Update SLF4J to 1.7.24. (for https://issues.apache.org/jira/browse/LOG4J2-1822[LOG4J2-1822] by `rgoers`)
+* Improved error message when log4j 2 configuration file not found. (for https://issues.apache.org/jira/browse/LOG4J2-1812[LOG4J2-1812] by `rpopma`)
 * Update Jackson from 2.8.5 to 2.8.6. (for https://issues.apache.org/jira/browse/LOG4J2-1819[LOG4J2-1819] by `ggregory`)
+* Update SLF4J to 1.7.24. (for https://issues.apache.org/jira/browse/LOG4J2-1822[LOG4J2-1822] by `rgoers`)
 
 === Fixed
 
-* Fixed rare race condition in FixedDateFormat, made FixedDateFormat::millisSinceMidnight method public. (for https://issues.apache.org/jira/browse/LOG4J2-1805[LOG4J2-1805] by `rpopma`)
+* Fix ClassNotFoundException org.apache.logging.log4j.core.util.ExecutorServices in OSGi tests. (for https://issues.apache.org/jira/browse/LOG4J2-1753[LOG4J2-1753] by `ggregory`, Ludovic Hochet)
+* Fixed bug in PropertiesUtil::getCharsetProperty that caused UnsupportedCharsetException for ConsoleAppender. (for https://issues.apache.org/jira/browse/LOG4J2-1799[LOG4J2-1799] by `rpopma`, Eduard Gizatullin)
+* Report errors when sending to Kafka when using syncSend=false. (for https://issues.apache.org/jira/browse/LOG4J2-1800[LOG4J2-1800] by `mikes`, Vincent Tieleman)
 * Fix Maven POM to ensure JMH generated classes in log4j-perf are included in benchmarks jar. (for https://issues.apache.org/jira/browse/LOG4J2-1803[LOG4J2-1803] by `rgoers`)
 * Allow %i in file pattern to be preceded with characters other than just '-'. (for https://issues.apache.org/jira/browse/LOG4J2-1804[LOG4J2-1804] by `rgoers`, Pierrick Hymbert)
-* Fix rollover to work when filePattern contains no directory components. (for https://issues.apache.org/jira/browse/LOG4J2-1818[LOG4J2-1818] by `ggregory`, xkr47)
-* Report errors when sending to Kafka when using syncSend=false. (for https://issues.apache.org/jira/browse/LOG4J2-1800[LOG4J2-1800] by `mikes`, Vincent Tieleman)
-* Fixed bug in PropertiesUtil::getCharsetProperty that caused UnsupportedCharsetException for ConsoleAppender. (for https://issues.apache.org/jira/browse/LOG4J2-1799[LOG4J2-1799] by `rpopma`, Eduard Gizatullin)
-* Change minOccur to minOccurs in Log4j-config.xsd. (for https://issues.apache.org/jira/browse/LOG4J2-1816[LOG4J2-1816] by `rpopma`, shubhankar1100)
+* Fixed rare race condition in FixedDateFormat, made FixedDateFormat::millisSinceMidnight method public. (for https://issues.apache.org/jira/browse/LOG4J2-1805[LOG4J2-1805] by `rpopma`)
 * Fix Javadoc for DefaultRolloverStrategy::purgeAscending (for https://issues.apache.org/jira/browse/LOG4J2-1806[LOG4J2-1806] by `rpopma`, challarao)
-* Fix ClassNotFoundException org.apache.logging.log4j.core.util.ExecutorServices in OSGi tests. (for https://issues.apache.org/jira/browse/LOG4J2-1753[LOG4J2-1753] by `ggregory`, Ludovic Hochet)
+* Change minOccur to minOccurs in Log4j-config.xsd. (for https://issues.apache.org/jira/browse/LOG4J2-1816[LOG4J2-1816] by `rpopma`, shubhankar1100)
+* Fix rollover to work when filePattern contains no directory components. (for https://issues.apache.org/jira/browse/LOG4J2-1818[LOG4J2-1818] by `ggregory`, xkr47)

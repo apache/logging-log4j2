@@ -70,10 +70,10 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Added
 
-* Add JSON encoding support to EncodingPatternConverter %encode{}. (for https://issues.apache.org/jira/browse/LOG4J2-1848[LOG4J2-1848] by `mattsicker`)
-* Add support for filtering input in TcpSocketServer and UdpSocketServer. (for https://issues.apache.org/jira/browse/LOG4J2-1863[LOG4J2-1863] by `mattsicker`)
 * Add support for appending common suffix to each line of extended and root throwable stack trace. (for https://issues.apache.org/jira/browse/LOG4J2-1838[LOG4J2-1838] by `mattsicker`, Zilong Song)
 * Add support for appending common suffix to each line of throwable stack trace. (for https://issues.apache.org/jira/browse/LOG4J2-1843[LOG4J2-1843] by `mattsicker`, Zilong Song)
+* Add JSON encoding support to EncodingPatternConverter %encode{}. (for https://issues.apache.org/jira/browse/LOG4J2-1848[LOG4J2-1848] by `mattsicker`)
+* Add support for filtering input in TcpSocketServer and UdpSocketServer. (for https://issues.apache.org/jira/browse/LOG4J2-1863[LOG4J2-1863] by `mattsicker`)
 
 === Changed
 
@@ -82,15 +82,15 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Fixed
 
-* Fixed daylight savings time (DST) issue with FixedDateFormat. (for https://issues.apache.org/jira/browse/LOG4J2-1849[LOG4J2-1849] by `rpopma`)
-* Fix JavaDoc on org.apache.logging.log4j.ThreadContext about inheritance. (for https://issues.apache.org/jira/browse/LOG4J2-1861[LOG4J2-1861] by `mattsicker`)
+* Log4j 2.8 can lose exceptions when a security manager is present. (for https://issues.apache.org/jira/browse/LOG4J2-1820[LOG4J2-1820] by `ggregory`, Jason Tedor)
+* NullPointerException in HtmlLayout. (for https://issues.apache.org/jira/browse/LOG4J2-1831[LOG4J2-1831] by `ggregory`, Edward Serebrinskiy)
+* Fix documentation about the licensing for JeroMQ. (for https://issues.apache.org/jira/browse/LOG4J2-1835[LOG4J2-1835] by `mattsicker`)
 * Update the API version to 2.6.0. (for https://issues.apache.org/jira/browse/LOG4J2-1836[LOG4J2-1836] by `rgoers`)
+* Fix typo in %replace converter documentation. (for https://issues.apache.org/jira/browse/LOG4J2-1840[LOG4J2-1840] by `mattsicker`, Pradeep Balasundaram)
 * Handle when LogEvent.getLoggerName() returns null in KafkaAppender. (for https://issues.apache.org/jira/browse/LOG4J2-1845[LOG4J2-1845] by `mikes`)
 * Handle when LogEvent.getLoggerName() returns null in LoggerNameLevelRewritePolicy. (for https://issues.apache.org/jira/browse/LOG4J2-1846[LOG4J2-1846] by `mikes`)
-* Fix documentation about the licensing for JeroMQ. (for https://issues.apache.org/jira/browse/LOG4J2-1835[LOG4J2-1835] by `mattsicker`)
-* NullPointerException in HtmlLayout. (for https://issues.apache.org/jira/browse/LOG4J2-1831[LOG4J2-1831] by `ggregory`, Edward Serebrinskiy)
-* Fix typo in %replace converter documentation. (for https://issues.apache.org/jira/browse/LOG4J2-1840[LOG4J2-1840] by `mattsicker`, Pradeep Balasundaram)
-* Log4j 2.8 can lose exceptions when a security manager is present. (for https://issues.apache.org/jira/browse/LOG4J2-1820[LOG4J2-1820] by `ggregory`, Jason Tedor)
+* Fixed daylight savings time (DST) issue with FixedDateFormat. (for https://issues.apache.org/jira/browse/LOG4J2-1849[LOG4J2-1849] by `rpopma`)
 * Fix CassandraRule and unit tests on Windows. (for https://issues.apache.org/jira/browse/LOG4J2-1850[LOG4J2-1850] by `mattsicker`, Ludovic Hochet)
 * The default value of RandomAccessFileAppender.Builder append field is wrong. (for https://issues.apache.org/jira/browse/LOG4J2-1853[LOG4J2-1853] by `ggregory`, wangyuntao)
+* Fix JavaDoc on org.apache.logging.log4j.ThreadContext about inheritance. (for https://issues.apache.org/jira/browse/LOG4J2-1861[LOG4J2-1861] by `mattsicker`)
 * Fix JavaDoc about @Order and OrderComparator ordering. (for https://issues.apache.org/jira/browse/LOG4J2-1862[LOG4J2-1862] by `mattsicker`, wangyuntao)
