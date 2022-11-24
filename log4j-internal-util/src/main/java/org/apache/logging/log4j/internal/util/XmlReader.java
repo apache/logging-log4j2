@@ -23,10 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.*;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -61,7 +58,7 @@ public final class XmlReader {
     private static Document readXml(final InputStream inputStream) throws Exception {
         final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         final SAXParser parser = parserFactory.newSAXParser();
-        final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        final DocumentBuilderFactory documentBuilderFactory = XmlUtils.createDocumentBuilderFactory();
         final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         final Document document = documentBuilder.newDocument();
         PositionalSaxEventHandler handler = new PositionalSaxEventHandler(document);

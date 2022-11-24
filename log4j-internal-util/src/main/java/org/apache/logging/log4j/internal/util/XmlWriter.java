@@ -56,7 +56,7 @@ public final class XmlWriter {
         try {
 
             // Create the document.
-            final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            final DocumentBuilderFactory documentBuilderFactory = XmlUtils.createDocumentBuilderFactory();
             final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
             // Append the license comment.
