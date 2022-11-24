@@ -88,21 +88,21 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 === Changed
 
 * Use a class' canonical name instead of name to create its logger name. (for https://issues.apache.org/jira/browse/LOG4J2-2023[LOG4J2-2023] by `ggregory`)
-* Update Apache Commons Compress from 1.13 to 1.14. (for https://issues.apache.org/jira/browse/LOG4J2-2046[LOG4J2-2046] by `ggregory`)
 * Update Jackson from 2.9.0 to 2.9.1 (fix for Java 9.) (for https://issues.apache.org/jira/browse/LOG4J2-2043[LOG4J2-2043] by `ggregory`)
-* Update javax.mail from 1.5.6 to 1.6.0. (for https://issues.apache.org/jira/browse/LOG4J2-2045[LOG4J2-2045] by `ggregory`)
-* Update Cassandra driver from 3.1.0 to 3.1.4. (for https://issues.apache.org/jira/browse/LOG4J2-2047[LOG4J2-2047] by `ggregory`)
 * Update Apache Commons CSV from 1.4 to 1.5. (for https://issues.apache.org/jira/browse/LOG4J2-2044[LOG4J2-2044] by `ggregory`)
+* Update javax.mail from 1.5.6 to 1.6.0. (for https://issues.apache.org/jira/browse/LOG4J2-2045[LOG4J2-2045] by `ggregory`)
+* Update Apache Commons Compress from 1.13 to 1.14. (for https://issues.apache.org/jira/browse/LOG4J2-2046[LOG4J2-2046] by `ggregory`)
+* Update Cassandra driver from 3.1.0 to 3.1.4. (for https://issues.apache.org/jira/browse/LOG4J2-2047[LOG4J2-2047] by `ggregory`)
 * Update Apache Kafka Client from 0.11.0.0 to 0.11.0.1. (for https://issues.apache.org/jira/browse/LOG4J2-2049[LOG4J2-2049] by `ggregory`)
 
 === Fixed
 
-* Inspect all known ClassLoaders to locate the service provider. (for https://issues.apache.org/jira/browse/LOG4J2-2030[LOG4J2-2030] by `rgoers`)
-* Prevent ConcurrentModificationException with AsyncLoggerConfig. (for https://issues.apache.org/jira/browse/LOG4J2-1988[LOG4J2-1988] by `rpopma`)
 * Prevent ConcurrentModificationException with AsyncLoggerConfig. (for https://issues.apache.org/jira/browse/LOG4J2-1914[LOG4J2-1914] by `rpopma`)
-* Increase default queue size for AsyncAppender from 128 to 1024. (for https://issues.apache.org/jira/browse/LOG4J2-2048[LOG4J2-2048] by `rpopma`)
-* Fix documentation to clarify disruptor-3.3.4 is now required for async loggers (previously the docs referred to disruptor-3.3.3 which was never released). (for https://issues.apache.org/jira/browse/LOG4J2-2035[LOG4J2-2035] by `rpopma`)
+* ClassNotFoundException when making all loggers asynchronous under OSGi environment. (for https://issues.apache.org/jira/browse/LOG4J2-1936[LOG4J2-1936] by `ggregory`, Helber Belmiro)
+* Prevent ConcurrentModificationException with AsyncLoggerConfig. (for https://issues.apache.org/jira/browse/LOG4J2-1988[LOG4J2-1988] by `rpopma`)
 * java.lang.AbstractMethodError: javax.xml.parsers.DocumentBuilderFactory.setFeature(). (for https://issues.apache.org/jira/browse/LOG4J2-2026[LOG4J2-2026] by `ggregory`, Leon Finker)
 * Java 9 StackLocator was not properly skipping the initial stack frames. (for https://issues.apache.org/jira/browse/LOG4J2-2028[LOG4J2-2028] by `rgoers`, Jason Tedor)
 * Marker examples should not use deprecated flow APIs. (for https://issues.apache.org/jira/browse/LOG4J2-2029[LOG4J2-2029] by `ggregory`, Fabrizio Cucci)
-* ClassNotFoundException when making all loggers asynchronous under OSGi environment. (for https://issues.apache.org/jira/browse/LOG4J2-1936[LOG4J2-1936] by `ggregory`, Helber Belmiro)
+* Inspect all known ClassLoaders to locate the service provider. (for https://issues.apache.org/jira/browse/LOG4J2-2030[LOG4J2-2030] by `rgoers`)
+* Fix documentation to clarify disruptor-3.3.4 is now required for async loggers (previously the docs referred to disruptor-3.3.3 which was never released). (for https://issues.apache.org/jira/browse/LOG4J2-2035[LOG4J2-2035] by `rpopma`)
+* Increase default queue size for AsyncAppender from 128 to 1024. (for https://issues.apache.org/jira/browse/LOG4J2-2048[LOG4J2-2048] by `rpopma`)

@@ -57,17 +57,17 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 === Changed
 
 * Make Log4j Core optional for Log4j 1.2 API. (for https://issues.apache.org/jira/browse/LOG4J2-2556[LOG4J2-2556] by `rgoers`)
-* Retry when JDBC throws a java.sql.SQLTransactionRollbackException in commitAndClose(). (for https://issues.apache.org/jira/browse/LOG4J2-2660[LOG4J2-2660] by `ggregory`)
 * Update MongoDB 3 driver from 3.10.1 to 3.10.2. (for https://issues.apache.org/jira/browse/LOG4J2-2646[LOG4J2-2646] by `ggregory`)
 * Improve exception messages in the JDBC appender. (for https://issues.apache.org/jira/browse/LOG4J2-2657[LOG4J2-2657] by `ggregory`)
+* Retry when JDBC throws a java.sql.SQLTransactionRollbackException in commitAndClose(). (for https://issues.apache.org/jira/browse/LOG4J2-2660[LOG4J2-2660] by `ggregory`)
 
 === Fixed
 
-* Improve the performance of capturing location information. (for https://issues.apache.org/jira/browse/LOG4J2-2644[LOG4J2-2644] by `rgoers`)
+* Allow file renames to work when files are missing from the sequence. (for https://issues.apache.org/jira/browse/LOG4J2-1946[LOG4J2-1946] by `rgoers`, Igor Perelyotov)
 * Remove references to LoggerContext when it is shutdown. (for https://issues.apache.org/jira/browse/LOG4J2-2366[LOG4J2-2366] by `rgoers`)
-* AbstractAction handles and records unchecked RuntimeException and Error in addition to IOException. (for https://issues.apache.org/jira/browse/LOG4J2-2659[LOG4J2-2659] by `ckozak`)
+* Improve the performance of capturing location information. (for https://issues.apache.org/jira/browse/LOG4J2-2644[LOG4J2-2644] by `rgoers`)
+* Support emulating a MAC address when using ipv6. (for https://issues.apache.org/jira/browse/LOG4J2-2650[LOG4J2-2650] by `rgoers`, Mattia Bertorello)
 * AbstractAction.reportException records a warning to the status logger, providing more information when file
         based appenders fail to compress rolled data asynchronously. (for https://issues.apache.org/jira/browse/LOG4J2-2658[LOG4J2-2658] by `ckozak`)
-* Allow file renames to work when files are missing from the sequence. (for https://issues.apache.org/jira/browse/LOG4J2-1946[LOG4J2-1946] by `rgoers`, Igor Perelyotov)
+* AbstractAction handles and records unchecked RuntimeException and Error in addition to IOException. (for https://issues.apache.org/jira/browse/LOG4J2-2659[LOG4J2-2659] by `ckozak`)
 * "Values not bound to statement" when using JDBC appender, appender does not respect bufferSize="0". (for https://issues.apache.org/jira/browse/LOG4J2-2667[LOG4J2-2667] by `ggregory`, Edith ChuiGary Gregory)
-* Support emulating a MAC address when using ipv6. (for https://issues.apache.org/jira/browse/LOG4J2-2650[LOG4J2-2650] by `rgoers`, Mattia Bertorello)

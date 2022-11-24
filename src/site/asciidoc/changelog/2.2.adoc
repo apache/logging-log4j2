@@ -44,45 +44,45 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Added
 
-* Specify the SocketAppender connect timeout value as part of the configuration.
-        The SyslogAppender takes a new parameter connectTimeoutMillis. (for https://issues.apache.org/jira/browse/LOG4J2-899[LOG4J2-899] by `ggregory`)
 * Specify the SyslogAppender connect timeout value as part of the configuration.
         The SyslogAppender takes a new parameter connectTimeoutMillis. (for https://issues.apache.org/jira/browse/LOG4J2-895[LOG4J2-895] by `ggregory`)
-* Allow JSON layout to create one compact log record per line. (for https://issues.apache.org/jira/browse/LOG4J2-941[LOG4J2-941] by `ggregory`, Konstantinos Liakos)
+* Specify the SocketAppender connect timeout value as part of the configuration.
+        The SyslogAppender takes a new parameter connectTimeoutMillis. (for https://issues.apache.org/jira/browse/LOG4J2-899[LOG4J2-899] by `ggregory`)
 * HTML layout should not use attribute minimalization for hr noshade. (for https://issues.apache.org/jira/browse/LOG4J2-933[LOG4J2-933] by `ggregory`, ppiman)
+* Allow JSON layout to create one compact log record per line. (for https://issues.apache.org/jira/browse/LOG4J2-941[LOG4J2-941] by `ggregory`, Konstantinos Liakos)
 
 === Changed
 
-* Update org.eclipse.osgi from 3.6.0 to 3.7.1. (for https://issues.apache.org/jira/browse/LOG4J2-884[LOG4J2-884] by `ggregory`)
 * Update Jackson from 2.4.2 to 2.4.3. (for https://issues.apache.org/jira/browse/LOG4J2-881[LOG4J2-881] by `ggregory`)
-* Update tests from org.apache.felix.framework 4.2.1 to 4.4.1. (for https://issues.apache.org/jira/browse/LOG4J2-883[LOG4J2-883] by `ggregory`)
 * Update maven-core from 3.1.0 to 3.2.3. (for https://issues.apache.org/jira/browse/LOG4J2-882[LOG4J2-882] by `ggregory`)
-* Update Jackson from 2.4.3 to 2.4.4. (for https://issues.apache.org/jira/browse/LOG4J2-910[LOG4J2-910] by `ggregory`)
+* Update tests from org.apache.felix.framework 4.2.1 to 4.4.1. (for https://issues.apache.org/jira/browse/LOG4J2-883[LOG4J2-883] by `ggregory`)
+* Update org.eclipse.osgi from 3.6.0 to 3.7.1. (for https://issues.apache.org/jira/browse/LOG4J2-884[LOG4J2-884] by `ggregory`)
 * Update Apache Flume from 1.5.0.1 to 1.5.2. (for https://issues.apache.org/jira/browse/LOG4J2-900[LOG4J2-900] by `ggregory`)
+* Update docs for SyslogAppender: "No structured id name was supplied" (for https://issues.apache.org/jira/browse/LOG4J2-901[LOG4J2-901] by `ggregory`, Tihomir Meščić, Siegfried Greisinger)
+* Update Jackson from 2.4.3 to 2.4.4. (for https://issues.apache.org/jira/browse/LOG4J2-910[LOG4J2-910] by `ggregory`)
 * Update from Jackson 2.4.4 to 2.5.0. (for https://issues.apache.org/jira/browse/LOG4J2-925[LOG4J2-925] by `ggregory`)
+* Incorrect attribute name in PropertiesRewritePolicy example. (for https://issues.apache.org/jira/browse/LOG4J2-950[LOG4J2-950] by `ggregory`, Joel Edwards)
 * Documentation: clarify system properties to control status logger, improve troubleshooting FAQ entry. (for https://issues.apache.org/jira/browse/LOG4J2-955[LOG4J2-955] by `rpopma`)
 * Update from Jackson 2.5.0 to 2.5.1. (for https://issues.apache.org/jira/browse/LOG4J2-958[LOG4J2-958] by `ggregory`)
-* Update docs for SyslogAppender: "No structured id name was supplied" (for https://issues.apache.org/jira/browse/LOG4J2-901[LOG4J2-901] by `ggregory`, Tihomir Meščić, Siegfried Greisinger)
-* Incorrect attribute name in PropertiesRewritePolicy example. (for https://issues.apache.org/jira/browse/LOG4J2-950[LOG4J2-950] by `ggregory`, Joel Edwards)
 
 === Fixed
 
+* ThrowableProxy throws NoClassDefFoundError. (for https://issues.apache.org/jira/browse/LOG4J2-834[LOG4J2-834] by `ggregory`, Nikita Koval, Leonard Broman, Thiago Kronig)
+* AbstractLifecycle should not implement equals() and hashCode(). (for https://issues.apache.org/jira/browse/LOG4J2-881[LOG4J2-881] by `ggregory`, Mariano Gonzalez)
 * AbstractLifecycle should not implement equals() and hashCode(). (for https://issues.apache.org/jira/browse/LOG4J2-891[LOG4J2-891] by `ggregory`)
-* XML configuration does not report full error message for XInclude parser configuration problems. (for https://issues.apache.org/jira/browse/LOG4J2-912[LOG4J2-912] by `ggregory`)
-* Javadoc for org.apache.log4j.BasicConfigurator.configure() is incorrect. (for https://issues.apache.org/jira/browse/LOG4J2-897[LOG4J2-897] by `ggregory`)
 * JUL adapter does not map Log4j'2 FATAL level to a JUL level. (for https://issues.apache.org/jira/browse/LOG4J2-892[LOG4J2-892] by `ggregory`)
 * NullPointerException on filter when mapping JUL to Log4j2. (for https://issues.apache.org/jira/browse/LOG4J2-893[LOG4J2-893] by `ggregory`)
-* ThrowableProxy throws NoClassDefFoundError. (for https://issues.apache.org/jira/browse/LOG4J2-834[LOG4J2-834] by `ggregory`, Nikita Koval, Leonard Broman, Thiago Kronig)
+* Javadoc for org.apache.log4j.BasicConfigurator.configure() is incorrect. (for https://issues.apache.org/jira/browse/LOG4J2-897[LOG4J2-897] by `ggregory`)
+* ClassLoaderContextSelector uses ClassLoader.toString() as a key (for https://issues.apache.org/jira/browse/LOG4J2-903[LOG4J2-903] by `ggregory`, Mauro Molinari)
+* XML configuration does not report full error message for XInclude parser configuration problems. (for https://issues.apache.org/jira/browse/LOG4J2-912[LOG4J2-912] by `ggregory`)
+* ThrowableProxy.getExtendedStackTraceAsString causes NullPointerException. (for https://issues.apache.org/jira/browse/LOG4J2-914[LOG4J2-914] by `ggregory`, Kaj Bjurman)
+* Logging system fails to initialize if XInclude API is not available. (for https://issues.apache.org/jira/browse/LOG4J2-919[LOG4J2-919] by `ggregory`, David Johle)
+* Log4j 1.2 Bridge doesn't map level ALL correctly in Category.getEffectiveLevel(). (for https://issues.apache.org/jira/browse/LOG4J2-924[LOG4J2-924] by `ggregory`, Ryan Rupp)
+* ConsoleAppender is missing @PluginFactory annotation at createAppender method. (for https://issues.apache.org/jira/browse/LOG4J2-931[LOG4J2-931] by `ggregory`, Robert Gacki)
 * (JMX) To avoid memory leaks when web applications are restarted, JMX notifications are sent from
         the caller thread in web applications. For non-web applications notifications are sent from a background thread
         as before. (for https://issues.apache.org/jira/browse/LOG4J2-938[LOG4J2-938] by `rpopma`, Mauro Molinari)
-* [docs] Using Log4j 2 in Web Applications: Update example (Log4jWebLifeCycle is not visible). (for https://issues.apache.org/jira/browse/LOG4J2-946[LOG4J2-946] by `ggregory`, artemonster)
-* AbstractLifecycle should not implement equals() and hashCode(). (for https://issues.apache.org/jira/browse/LOG4J2-881[LOG4J2-881] by `ggregory`, Mariano Gonzalez)
-* ConsoleAppender is missing @PluginFactory annotation at createAppender method. (for https://issues.apache.org/jira/browse/LOG4J2-931[LOG4J2-931] by `ggregory`, Robert Gacki)
-* Manual refers to Route "AppenderRef" attribute, should be "ref". (for https://issues.apache.org/jira/browse/LOG4J2-956[LOG4J2-956] by `ggregory`, David Kellerman)
-* ThrowableProxy.getExtendedStackTraceAsString causes NullPointerException. (for https://issues.apache.org/jira/browse/LOG4J2-914[LOG4J2-914] by `ggregory`, Kaj Bjurman)
 * Log4j Flume appender is not adding millisecond to the event headers when the event is logged at 000 milliseconds. (for https://issues.apache.org/jira/browse/LOG4J2-944[LOG4J2-944] by `ggregory`, Vinayaka Ramachandra)
-* Log4j 1.2 Bridge doesn't map level ALL correctly in Category.getEffectiveLevel(). (for https://issues.apache.org/jira/browse/LOG4J2-924[LOG4J2-924] by `ggregory`, Ryan Rupp)
-* ClassLoaderContextSelector uses ClassLoader.toString() as a key (for https://issues.apache.org/jira/browse/LOG4J2-903[LOG4J2-903] by `ggregory`, Mauro Molinari)
-* Logging system fails to initialize if XInclude API is not available. (for https://issues.apache.org/jira/browse/LOG4J2-919[LOG4J2-919] by `ggregory`, David Johle)
+* [docs] Using Log4j 2 in Web Applications: Update example (Log4jWebLifeCycle is not visible). (for https://issues.apache.org/jira/browse/LOG4J2-946[LOG4J2-946] by `ggregory`, artemonster)
+* Manual refers to Route "AppenderRef" attribute, should be "ref". (for https://issues.apache.org/jira/browse/LOG4J2-956[LOG4J2-956] by `ggregory`, David Kellerman)
 * Missing toUpperCase(Locale.ENGLISH). (for https://issues.apache.org/jira/browse/LOG4J2-957[LOG4J2-957] by `ggregory`, Fatih Guleryuz)

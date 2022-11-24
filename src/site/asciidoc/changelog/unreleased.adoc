@@ -33,5 +33,5 @@ Changes staged for the next version that is yet to be released.
 
 === Fixed
 
-* Fix level propagation in `Log4jBridgeHandler`. (for https://issues.apache.org/jira/browse/LOG4J2-3634[LOG4J2-3634] by `pkarwasz`, Marcel Koch)
 * Fix `Configurator#setLevel` for internal classes. (for https://issues.apache.org/jira/browse/LOG4J2-3631[LOG4J2-3631] by `pkarwasz`, Jeff Thomas)
+* Fix level propagation in `Log4jBridgeHandler`. (for https://issues.apache.org/jira/browse/LOG4J2-3634[LOG4J2-3634] by `pkarwasz`, Marcel Koch)
