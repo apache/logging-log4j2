@@ -66,7 +66,7 @@ public final class XmlReader {
         return document;
     }
 
-    public static Stream<Element> childElementsMatchingName(final Element parentElement, final String childElementName) {
+    public static Stream<Element> findChildElementsMatchingName(final Element parentElement, final String childElementName) {
         final NodeList childNodes = parentElement.getChildNodes();
         return IntStream
                 .range(0, childNodes.getLength())
@@ -75,8 +75,8 @@ public final class XmlReader {
                 .map(childNode -> (Element) childNode);
     }
 
-    public static Element childElementMatchingName(final Element parentElement, final String childElementName) {
-        final List<Element> childElements = childElementsMatchingName(parentElement, childElementName)
+    public static Element requireChildElementMatchingName(final Element parentElement, final String childElementName) {
+        final List<Element> childElements = findChildElementsMatchingName(parentElement, childElementName)
                 .collect(Collectors.toList());
         final int childElementCount = childElements.size();
         if (childElementCount != 1) {

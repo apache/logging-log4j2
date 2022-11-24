@@ -164,7 +164,7 @@ public final class ChangelogEntry {
 
         // Read the `issue` elements.
         final List<Issue> issues = XmlReader
-                .childElementsMatchingName(entryElement, "issue")
+                .findChildElementsMatchingName(entryElement, "issue")
                 .map(issueElement -> {
                     final String issueId = XmlReader.requireAttribute(issueElement, "id");
                     final String issueLink = XmlReader.requireAttribute(issueElement, "link");
@@ -174,7 +174,7 @@ public final class ChangelogEntry {
 
         // Read the `author` elements.
         final List<Author> authors = XmlReader
-                .childElementsMatchingName(entryElement, "author")
+                .findChildElementsMatchingName(entryElement, "author")
                 .map(authorElement -> {
                     final String authorId = authorElement.hasAttribute("id")
                             ? authorElement.getAttribute("id")
@@ -194,7 +194,7 @@ public final class ChangelogEntry {
         }
 
         // Read the `description` element.
-        final Element descriptionElement = XmlReader.childElementMatchingName(entryElement, "description");
+        final Element descriptionElement = XmlReader.requireChildElementMatchingName(entryElement, "description");
         final String descriptionFormat = XmlReader.requireAttribute(descriptionElement, "format");
         final String descriptionText = trimNullable(descriptionElement.getTextContent());
         final Description description = new Description(descriptionFormat, descriptionText);

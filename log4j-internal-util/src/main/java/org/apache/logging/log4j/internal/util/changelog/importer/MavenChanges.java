@@ -46,7 +46,7 @@ final class MavenChanges {
         final Element documentElement = readXmlFileRootElement(xmlPath, "document");
 
         // Read the `body` element.
-        final Element bodyElement = XmlReader.childElementMatchingName(documentElement, "body");
+        final Element bodyElement = XmlReader.requireChildElementMatchingName(documentElement, "body");
 
         // Read releases.
         final List<Release> releases = new ArrayList<>();

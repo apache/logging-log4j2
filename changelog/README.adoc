@@ -43,7 +43,7 @@ Generator will compile these files to emit a single `{generator-target-dir}/<rel
 Changelogs of the staged changes for the next version is stored in `.unreleased` directory.
 Compared to released version changelog directories (e.g., `20220909-2.10.0`), `.unreleased` directory only consists of changelog entry files (i.e., `[<issueId>_]<shortSummary>.xml`).
 
-Generator will compile these files to emit a single `{generator-target-dir}/unreleased.adoc` file and update `{generator-target-dir}/index.adoc` accordingly.
+Generator will compile these files to emit a single `{generator-target-dir}/<releaseVersionMajor>.x.x.adoc` file and update `{generator-target-dir}/index.adoc` accordingly, where `releaseVersionMajor` is populated from the root `pom.xml` file.
 
 [#changelog-entry-file]
 == Changelog entry file
@@ -98,7 +98,7 @@ You can manually trigger it using `./mvnw -pl log4j-internal-util` command.
 === I am about to deploy a new Log4j _release candidate_. Now what?
 
 For release candidates, you don't need to touch anything.
-Your regular build should have already populated `{generator-target-dir}/unreleased.adoc`.
+Your regular build should have already populated `{generator-target-dir}/<releaseVersionMajor>.x.x.adoc`.
 **Make sure to commit these!**
 
 === I am about to deploy a new Log4j _release_. Now what?

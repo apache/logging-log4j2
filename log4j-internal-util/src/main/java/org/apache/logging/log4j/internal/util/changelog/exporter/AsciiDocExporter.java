@@ -29,9 +29,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.internal.util.AsciiDocUtils;
+import org.apache.logging.log4j.internal.util.XmlReader;
 import org.apache.logging.log4j.internal.util.changelog.ChangelogEntry;
 import org.apache.logging.log4j.internal.util.changelog.ChangelogFiles;
 import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
+import org.w3c.dom.Element;
+
+import static org.apache.logging.log4j.internal.util.StringUtils.isBlank;
+import static org.apache.logging.log4j.internal.util.StringUtils.trimNullable;
 
 public final class AsciiDocExporter {
 
@@ -95,9 +100,13 @@ public final class AsciiDocExporter {
         }
 
         // Export unreleased.
-        exportUnreleased(args.projectRootDirectory);
+        final int releaseVersionMajor = readRootPomVersionMajor(args.projectRootDirectory);
+        final String releaseVersion = releaseVersionMajor + ".x.x";
+        final ChangelogRelease upcomingRelease = new ChangelogRelease(releaseVersion, null);
+        exportUnreleased(args.projectRootDirectory, upcomingRelease);
 
         // Export the release index.
+        changelogReleases.add(upcomingRelease);
         exportReleaseIndex(args.projectRootDirectory, changelogReleases);
 
     }
@@ -220,19 +229,17 @@ public final class AsciiDocExporter {
                 .append('\n')
                 .append(AUTO_GENERATION_WARNING_ASCIIDOC)
                 .append('\n')
-                .append("= ");
-        if (release.version != null) {
+                .append("= ")
+                .append(release.version);
+        if (release.date != null) {
             stringBuilder
-                    .append(release.version)
                     .append(" (")
                     .append(release.date)
                     .append(")\n")
                     .append(introAsciiDoc)
                     .append("\n");
         } else {
-            stringBuilder
-                    .append("Unreleased\n\n")
-                    .append("Changes staged for the next version that is yet to be released.\n\n");
+            stringBuilder.append("\n\nChanges staged for the next version that is yet to be released.\n\n");
         }
 
         if (!entries.isEmpty()) {
@@ -357,12 +364,27 @@ public final class AsciiDocExporter {
         }
     }
 
-    private static void exportUnreleased(final Path projectRootDirectory) {
+    private static int readRootPomVersionMajor(final Path projectRootDirectory) {
+        final Path rootPomFile = projectRootDirectory.resolve("pom.xml");
+        final Element projectElement = XmlReader.readXmlFileRootElement(rootPomFile, "project");
+        final Element versionElement = XmlReader.requireChildElementMatchingName(projectElement, "version");
+        final String version = trimNullable(versionElement.getTextContent());
+        if (isBlank(version)) {
+            throw XmlReader.failureAtXmlNode(versionElement, "blank `version`");
+        }
+        final String versionPattern = "^\\d+\\.\\d+.\\d+(-SNAPSHOT)?$";
+        if (!version.matches(versionPattern)) {
+            throw XmlReader.failureAtXmlNode(
+                    versionElement, "`version` doesnt' match the expected pattern `%s`: `%s`", versionPattern, version);
+        }
+        return Integer.parseInt(version.split("\\.", 2)[0]);
+    }
+
+    private static void exportUnreleased(final Path projectRootDirectory, final ChangelogRelease upcomingRelease) {
         final Path unreleasedDirectory = ChangelogFiles.unreleasedDirectory(projectRootDirectory);
         final List<ChangelogEntry> changelogEntries = readChangelogEntries(unreleasedDirectory);
-        final ChangelogRelease changelogRelease = new ChangelogRelease(null, null);
         try {
-            exportRelease(projectRootDirectory, changelogRelease, null, changelogEntries);
+            exportRelease(projectRootDirectory, upcomingRelease, null, changelogEntries);
         } catch (final IOException error) {
             throw new UncheckedIOException("failed exporting unreleased changes", error);
         }
@@ -388,14 +410,16 @@ public final class AsciiDocExporter {
                 .append(AsciiDocUtils.LICENSE_COMMENT_BLOCK)
                 .append('\n')
                 .append(AUTO_GENERATION_WARNING_ASCIIDOC)
-                .append("\n= Release changelogs\n\n")
-                .append("* xref:unreleased.adoc[Unreleased]\n");
+                .append("\n= Release changelogs\n\n");
         for (int releaseIndex = changelogReleases.size() - 1; releaseIndex >= 0; releaseIndex--) {
             final ChangelogRelease changelogRelease = changelogReleases.get(releaseIndex);
             final String asciiDocFilename = changelogReleaseAsciiDocFilename(changelogRelease);
+            final String asciiDocBulletDatePrefix = changelogRelease.date != null
+                    ? ('[' + changelogRelease.date + "] ")
+                    : "";
             final String asciiDocBullet = String.format(
-                    "* [%s] xref:%s[%s]\n",
-                    changelogRelease.date,
+                    "* %sxref:%s[%s]\n",
+                    asciiDocBulletDatePrefix,
                     asciiDocFilename,
                     changelogRelease.version);
             stringBuilder.append(asciiDocBullet);
@@ -404,10 +428,8 @@ public final class AsciiDocExporter {
     }
 
     private static String changelogReleaseAsciiDocFilename(final ChangelogRelease changelogRelease) {
-        return changelogRelease.version == null
-                ? "unreleased.adoc"
-                // Using only the version (that is, avoiding the date) in the filename so that one can determine the link to the changelog of a particular release with only version information.
-                : String.format("%s.adoc", changelogRelease.version);
+        // Using only the version (that is, avoiding the date) in the filename so that one can determine the link to the changelog of a particular release with only version information.
+        return String.format("%s.adoc", changelogRelease.version);
     }
 
 }

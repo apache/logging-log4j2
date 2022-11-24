@@ -81,7 +81,7 @@ public final class ChangelogReleaser {
         final Element projectElement = XmlReader.readXmlFileRootElement(rootPomFile, "project");
 
         // Read the `version` element.
-        final Element versionElement = XmlReader.childElementMatchingName(projectElement, "version");
+        final Element versionElement = XmlReader.requireChildElementMatchingName(projectElement, "version");
         final String version = trimNullable(versionElement.getTextContent());
         if (isBlank(version)) {
             throw XmlReader.failureAtXmlNode(versionElement, "blank `version`: %s", version);
