@@ -67,9 +67,6 @@
       <action issue="LOG4J2-3242" dev="rgoers" type="fix">
         Move JNDI to its own module.
       </action>
-      <action issue="LOG4J2-2400" dev="rgoers" type="add" due-to="Natalie Meurer">
-        Add Redis Appender.
-      </action>
       <action issue="LOG4J2-2749" dev="vy" type="fix" due-to="Oleksii Khomchenko">
         JsonLayout KeyValuePair should discard blank JSON keys.
       </action>
