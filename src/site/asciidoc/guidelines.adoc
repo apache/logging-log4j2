@@ -251,11 +251,11 @@ equivalent of a "bug fix" commit. The veto must be rescinded before the
 change can be included in any public release.
 
 [#changelogs]
-== changes.xml and Git logs
+== Changelog and Git logs
 
-Many code changes should be noted in the changes.xml file, and all
+Many code changes should be noted in a `changelog/.unreleased-*/<issueId>_<shortSummary>.xml` file, and all
 should be documented in Git commit messages. Often the text of the Git
-log and the changes.xml entry are the same, but the distinct
+log and the changelog entry are the same, but the distinct
 requirements sometimes result in different information.
 
 [#subversion-log]
@@ -287,9 +287,9 @@ Reviewed by: susiecommitter
 ....
 
 [#changes]
-=== changes.xml
+=== Changelog
 
-changes.xml is the subset of the information that end users need to see
+Changelog is a subset of the information that end users need to see
 when they upgrade from one release to the next:
 
 * what can I now do that I couldn't do before
@@ -298,7 +298,7 @@ now fixed
 * all security fixes included, with CVE number. (If not available at the
 time of the commit, add later.)
 
-All entries in changes.xml should include the appropriate JIRA issue
+All entries in changelog should include the appropriate JIRA issue
 number and should credit contributions made by non-committers by
 referencing them in the due-to attribute even if modifications needed to
 be made to the contribution.
