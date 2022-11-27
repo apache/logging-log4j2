@@ -761,7 +761,7 @@ public class Log4jLogEvent implements LogEvent {
             this.thrownProxy = event.thrownProxy;
             this.contextData = event.contextData;
             this.contextStack = event.contextStack;
-            this.source = includeLocation ? event.getSource() : null;
+            this.source = includeLocation || !event.isIncludeLocation() ? event.getSource() : null;
             this.threadId = event.getThreadId();
             this.threadName = event.getThreadName();
             this.threadPriority = event.getThreadPriority();
@@ -786,7 +786,7 @@ public class Log4jLogEvent implements LogEvent {
             this.thrownProxy = event.getThrownProxy();
             this.contextData = memento(event.getContextData());
             this.contextStack = event.getContextStack();
-            this.source = includeLocation ? event.getSource() : null;
+            this.source = includeLocation || !event.isIncludeLocation() ? event.getSource() : null;
             this.threadId = event.getThreadId();
             this.threadName = event.getThreadName();
             this.threadPriority = event.getThreadPriority();
