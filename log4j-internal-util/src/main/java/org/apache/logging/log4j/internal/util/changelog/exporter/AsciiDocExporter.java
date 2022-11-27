@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.internal.util.changelog.exporter;
 
+import org.apache.logging.log4j.internal.util.AsciiDocUtils;
+import org.apache.logging.log4j.internal.util.changelog.ChangelogEntry;
+import org.apache.logging.log4j.internal.util.changelog.ChangelogFiles;
+import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
@@ -27,16 +32,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.apache.logging.log4j.internal.util.AsciiDocUtils;
-import org.apache.logging.log4j.internal.util.XmlReader;
-import org.apache.logging.log4j.internal.util.changelog.ChangelogEntry;
-import org.apache.logging.log4j.internal.util.changelog.ChangelogFiles;
-import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
-import org.w3c.dom.Element;
-
-import static org.apache.logging.log4j.internal.util.StringUtils.isBlank;
-import static org.apache.logging.log4j.internal.util.StringUtils.trimNullable;
 
 public final class AsciiDocExporter {
 
@@ -100,13 +95,20 @@ public final class AsciiDocExporter {
         }
 
         // Export unreleased.
-        final int releaseVersionMajor = readRootPomVersionMajor(args.projectRootDirectory);
-        final String releaseVersion = releaseVersionMajor + ".x.x";
-        final ChangelogRelease upcomingRelease = new ChangelogRelease(releaseVersion, null);
-        exportUnreleased(args.projectRootDirectory, upcomingRelease);
+        ChangelogFiles
+                .unreleasedDirectoryVersionMajors(args.projectRootDirectory)
+                .stream()
+                .sorted()
+                .forEach(upcomingReleaseVersionMajor -> {
+                    final Path upcomingReleaseDirectory =
+                            ChangelogFiles.unreleasedDirectory(args.projectRootDirectory, upcomingReleaseVersionMajor);
+                    final ChangelogRelease upcomingRelease = upcomingRelease(upcomingReleaseVersionMajor);
+                    exportUnreleased(args.projectRootDirectory, upcomingReleaseDirectory, upcomingRelease);
+                    System.out.format("exporting upcoming release directory: `%s`%n", upcomingReleaseDirectory);
+                    changelogReleases.add(upcomingRelease);
+                });
 
         // Export the release index.
-        changelogReleases.add(upcomingRelease);
         exportReleaseIndex(args.projectRootDirectory, changelogReleases);
 
     }
@@ -364,30 +366,21 @@ public final class AsciiDocExporter {
         }
     }
 
-    private static int readRootPomVersionMajor(final Path projectRootDirectory) {
-        final Path rootPomFile = projectRootDirectory.resolve("pom.xml");
-        final Element projectElement = XmlReader.readXmlFileRootElement(rootPomFile, "project");
-        final Element versionElement = XmlReader.requireChildElementMatchingName(projectElement, "version");
-        final String version = trimNullable(versionElement.getTextContent());
-        if (isBlank(version)) {
-            throw XmlReader.failureAtXmlNode(versionElement, "blank `version`");
-        }
-        final String versionPattern = "^\\d+\\.\\d+.\\d+(-SNAPSHOT)?$";
-        if (!version.matches(versionPattern)) {
-            throw XmlReader.failureAtXmlNode(
-                    versionElement, "`version` doesnt' match the expected pattern `%s`: `%s`", versionPattern, version);
-        }
-        return Integer.parseInt(version.split("\\.", 2)[0]);
-    }
-
-    private static void exportUnreleased(final Path projectRootDirectory, final ChangelogRelease upcomingRelease) {
-        final Path unreleasedDirectory = ChangelogFiles.unreleasedDirectory(projectRootDirectory);
-        final List<ChangelogEntry> changelogEntries = readChangelogEntries(unreleasedDirectory);
+    private static void exportUnreleased(
+            final Path projectRootDirectory,
+            final Path upcomingReleaseDirectory,
+            final ChangelogRelease upcomingRelease) {
+        final List<ChangelogEntry> changelogEntries = readChangelogEntries(upcomingReleaseDirectory);
         try {
             exportRelease(projectRootDirectory, upcomingRelease, null, changelogEntries);
         } catch (final IOException error) {
             throw new UncheckedIOException("failed exporting unreleased changes", error);
         }
+    }
+
+    private static ChangelogRelease upcomingRelease(final int versionMajor) {
+        final String releaseVersion = versionMajor + ".x.x";
+        return new ChangelogRelease(releaseVersion, null);
     }
 
     private static void exportReleaseIndex(

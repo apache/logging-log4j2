@@ -16,20 +16,17 @@
  */
 package org.apache.logging.log4j.internal.util.changelog.releaser;
 
+import org.apache.logging.log4j.internal.util.AsciiDocUtils;
+import org.apache.logging.log4j.internal.util.PomUtils;
+import org.apache.logging.log4j.internal.util.changelog.ChangelogFiles;
+import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
+
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 
-import org.apache.logging.log4j.internal.util.AsciiDocUtils;
-import org.apache.logging.log4j.internal.util.XmlReader;
-import org.apache.logging.log4j.internal.util.changelog.ChangelogFiles;
-import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
-import org.w3c.dom.Element;
-
 import static java.time.format.DateTimeFormatter.BASIC_ISO_DATE;
-import static org.apache.logging.log4j.internal.util.StringUtils.isBlank;
-import static org.apache.logging.log4j.internal.util.StringUtils.trimNullable;
 import static org.apache.logging.log4j.internal.util.changelog.ChangelogFiles.releaseDirectory;
 
 public final class ChangelogReleaser {
@@ -43,14 +40,16 @@ public final class ChangelogReleaser {
 
         // Read the release date and version.
         final String releaseDate = BASIC_ISO_DATE.format(LocalDate.now());
-        final String releaseVersion = readReleaseVersion(args.projectRootDirectory);
+        final String releaseVersion = PomUtils.readRootPomVersion(args.projectRootDirectory);
+        final int releaseVersionMajor = PomUtils.versionMajor(releaseVersion);
         System.out.format(
                 "using `%s` and `%s` for release date and version, respectively%n",
                 releaseDate, releaseVersion);
 
         // Move unreleased directory to a release directory.
         final Path releaseDirectory = releaseDirectory(args.projectRootDirectory, releaseDate, releaseVersion);
-        final Path unreleasedDirectory = ChangelogFiles.unreleasedDirectory(args.projectRootDirectory);
+        final Path unreleasedDirectory =
+                ChangelogFiles.unreleasedDirectory(args.projectRootDirectory, releaseVersionMajor);
         if (!Files.exists(unreleasedDirectory)) {
             final String message = String.format(
                     "`%s` does not exist! A release without any changelogs don't make sense!",
@@ -71,22 +70,6 @@ public final class ChangelogReleaser {
         final Path introAsciiDocFile = ChangelogFiles.introAsciiDocFile(releaseDirectory);
         Files.write(introAsciiDocFile, AsciiDocUtils.LICENSE_COMMENT_BLOCK.getBytes(StandardCharsets.UTF_8));
         System.out.format("created intro file at `%s`%n", introAsciiDocFile);
-
-    }
-
-    private static String readReleaseVersion(final Path projectRootDirectory) {
-
-        // Read the root `project` element.
-        final Path rootPomFile = projectRootDirectory.resolve("pom.xml");
-        final Element projectElement = XmlReader.readXmlFileRootElement(rootPomFile, "project");
-
-        // Read the `version` element.
-        final Element versionElement = XmlReader.requireChildElementMatchingName(projectElement, "version");
-        final String version = trimNullable(versionElement.getTextContent());
-        if (isBlank(version)) {
-            throw XmlReader.failureAtXmlNode(versionElement, "blank `version`: %s", version);
-        }
-        return version;
 
     }
 
