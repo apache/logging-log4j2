@@ -83,30 +83,52 @@ Some remarks about the structure of changelog entry files:
 * There must be at least one author.
 * There must be a single `description` element with non-blank content and `format="asciidoc"` attribute.
 
+[#qa]
 == Q&A
 
+[#qa-entry]
 === How can I add an entry for a change I am about to commit?
 
 You have just committed, or better, about to commit a great feature you have been working on.
 Simply create a <<#changelog-entry-file>> and commit it along with your change!
 
+[#qa-generate]
 === How can I generate AsciiDoc files in `{generator-target-dir}`?
 
 These files are generated as a part of the `log4j-internal-util` module build lifecycle.
 You can manually trigger it using `./mvnw -pl log4j-internal-util` command.
 
+[#qa-deploy-rc]
 === I am about to deploy a new Log4j _release candidate_. Now what?
 
-For release candidates, you don't need to touch anything.
-Your regular build should have already populated `{generator-target-dir}/<releaseVersionMajor>.x.x.adoc`.
-**Make sure to commit these!**
+For release candidates, you don't need to change, add, commit anything next to what is already committed in the `changelog` directory.
 
+[#qa-deploy-release]
 === I am about to deploy a new Log4j _release_. Now what?
 
 . Create the `<releaseDate>-<releaseVersion>` (e.g., `20220909-2.10.0`) directory populated from `.unreleased` directory: `./mvnw -pl log4j-internal-util -P changelog-releaser`
+. Verify that `.unreleased` directory is emptied
+. Verify that `<releaseDate>-<releaseVersion>` directory is created, and it contains `.intro.adoc`, `.release.xml`, and changelog entry files
 . Edit the created `.intro.adoc`
 . Generate AsciiDoc files: `./mvnw -pl log4j-internal-util`
-. Verify and commit the following changes:
-.. Cleaned up `.unreleased` directory
-.. Created `<releaseDate>-<releaseVersion>` directory containing `.intro.adoc`, `.release.xml`, and changelog entry files
-.. `{generator-target-dir}/<releaseVersion>.adoc` and `{generator-target-dir}/index.adoc` files
+. Verify generated `{generator-target-dir}/<releaseVersion>.adoc` and `{generator-target-dir}/index.adoc` files
+. `git add` the created `<releaseDate>-<releaseVersion>` directory and commit it together with the emptied `.unreleased` directory
+
+[#qa-deploy-website]
+=== I am about to generate the website for the new release. Now what?
+
+You need `{generator-target-dir}` contents populated from `changelog` directory.
+`log4j-internal-util` module is responsible for generating these files and should have already done its job if you have already run the Maven `package` goal.
+You can also manually trigger it using the `./mvnw -pl log4j-internal-util` command.
+Simply make sure that `{generator-target-dir}` is populated as expected.
+
+[#qa-why-entry-files]
+=== Why do we store changelog entries in individual files?
+
+To avoid merge-conflicts between unrelated feature branches.
+
+[#qa-why-adoc-not-committed]
+=== Why doesn't `{generator-target-dir}` need to be committed?
+
+For one, this would again cause merge-conflicts between unrelated feature branches.
+Second, these contents are only relevant for the website compilation, which is as of this moment performed by the Maven `site` goal.
