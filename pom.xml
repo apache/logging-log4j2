@@ -1555,11 +1555,9 @@
         <configuration>
           <!-- only build English site even on other language OS -->
           <locales>en</locales>
-          <!-- Exclude the navigation file for Maven 1 sites
-               and the changes file used by the changes-plugin,
-               as they interfere with the site generation. -->
+          <!-- Exclude the navigation file for Maven 1 sites as it interferes with the site generation. -->
           <moduleExcludes>
-            <xdoc>navigation.xml,changes.xml</xdoc>
+            <xdoc>navigation.xml</xdoc>
           </moduleExcludes>
           <asciidoc>
             <attributes>
