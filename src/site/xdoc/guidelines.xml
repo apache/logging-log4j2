@@ -233,10 +233,10 @@
         change can be included in any public release.</p>
       </subsection>
       <a name="changelogs"/>
-      <subsection name="changes.xml and Git logs">
-      <p>Many code changes should be noted in the changes.xml file, and all should be
+      <subsection name="Changelog and Git logs">
+      <p>Many code changes should be noted in a <code>changelog/.unreleased-*/&lt;issueId&gt;_&lt;shortSummary&gt;.xml</code> file, and all should be
         documented in Git commit messages. Often the text of the Git
-        log and the changes.xml entry are the same, but the distinct requirements
+        log and the changelog entry are the same, but the distinct requirements
         sometimes result in different information.</p>
       <h3 id="subversion-log">Git log</h3>
       <p>The Git commit log message contains any information needed by</p>
@@ -264,8 +264,8 @@ crash if requests contain an invalid content length.
 Submitted by: Jane Doe <janedoe example.com>
 Reviewed by: susiecommitter
         ]]></pre>
-      <h3 id="changes">changes.xml</h3>
-      <p>changes.xml is the subset of the information that end users need to see when
+      <h3 id="changes">changelog</h3>
+      <p>changelog is a subset of the information that end users need to see when
         they upgrade from one release to the next:</p>
       <ul>
         <li>
