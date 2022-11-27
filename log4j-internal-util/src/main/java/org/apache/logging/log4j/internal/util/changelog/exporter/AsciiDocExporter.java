@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.internal.util.changelog.exporter;
 
-import org.apache.logging.log4j.internal.util.AsciiDocUtils;
-import org.apache.logging.log4j.internal.util.changelog.ChangelogEntry;
-import org.apache.logging.log4j.internal.util.changelog.ChangelogFiles;
-import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
-
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
@@ -32,6 +27,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.logging.log4j.internal.util.AsciiDocUtils;
+import org.apache.logging.log4j.internal.util.changelog.ChangelogEntry;
+import org.apache.logging.log4j.internal.util.changelog.ChangelogFiles;
+import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
 
 public final class AsciiDocExporter {
 

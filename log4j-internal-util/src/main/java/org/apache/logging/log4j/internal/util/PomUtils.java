@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.internal.util;
 
-import org.w3c.dom.Element;
-
 import java.nio.file.Path;
+
+import org.w3c.dom.Element;
 
 import static org.apache.logging.log4j.internal.util.StringUtils.isBlank;
 import static org.apache.logging.log4j.internal.util.StringUtils.trimNullable;

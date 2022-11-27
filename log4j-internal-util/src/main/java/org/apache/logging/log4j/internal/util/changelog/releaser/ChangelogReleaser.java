@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.internal.util.changelog.releaser;
 
-import org.apache.logging.log4j.internal.util.AsciiDocUtils;
-import org.apache.logging.log4j.internal.util.PomUtils;
-import org.apache.logging.log4j.internal.util.changelog.ChangelogFiles;
-import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
-
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+
+import org.apache.logging.log4j.internal.util.AsciiDocUtils;
+import org.apache.logging.log4j.internal.util.PomUtils;
+import org.apache.logging.log4j.internal.util.changelog.ChangelogFiles;
+import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
 
 import static java.time.format.DateTimeFormatter.BASIC_ISO_DATE;
 import static org.apache.logging.log4j.internal.util.changelog.ChangelogFiles.releaseDirectory;
