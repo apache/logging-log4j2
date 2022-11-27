@@ -40,8 +40,8 @@ Generator will compile these files to emit a single `{generator-target-dir}/<rel
 [#unreleased-version-changelog]
 == Unreleased version changelog
 
-Changelogs of the staged changes for the next version is stored in `.unreleased` directory.
-Compared to released version changelog directories (e.g., `20220909-2.10.0`), `.unreleased` directory only consists of changelog entry files (i.e., `[<issueId>_]<shortSummary>.xml`).
+Changelogs of upcoming release versions are stored in `.unreleased-<releaseVersionMajor>.x.x` directories.
+Compared to released version changelog directories (e.g., `20220909-2.10.0`), `.unreleased-<releaseVersionMajor>.x.x` directories only consist of changelog entry files (i.e., `[<issueId>_]<shortSummary>.xml`).
 
 Generator will compile these files to emit a single `{generator-target-dir}/<releaseVersionMajor>.x.x.adoc` file and update `{generator-target-dir}/index.adoc` accordingly, where `releaseVersionMajor` is populated from the root `pom.xml` file.
 
@@ -106,13 +106,13 @@ For release candidates, you don't need to change, add, commit anything next to w
 [#qa-deploy-release]
 === I am about to deploy a new Log4j _release_. Now what?
 
-. Create the `<releaseDate>-<releaseVersion>` (e.g., `20220909-2.10.0`) directory populated from `.unreleased` directory: `./mvnw -pl log4j-internal-util -P changelog-releaser`
-. Verify that `.unreleased` directory is emptied
+. Create the `<releaseDate>-<releaseVersion>` (e.g., `20220909-2.10.0`) directory populated from `.unreleased-<releaseVersionMajor>.x.x` directory: `./mvnw -pl log4j-internal-util -P changelog-releaser`
+. Verify that `.unreleased-<releaseVersionMajor>.x.x` directory is emptied
 . Verify that `<releaseDate>-<releaseVersion>` directory is created, and it contains `.intro.adoc`, `.release.xml`, and changelog entry files
 . Edit the created `.intro.adoc`
 . Generate AsciiDoc files: `./mvnw -pl log4j-internal-util`
 . Verify generated `{generator-target-dir}/<releaseVersion>.adoc` and `{generator-target-dir}/index.adoc` files
-. `git add` the created `<releaseDate>-<releaseVersion>` directory and commit it together with the emptied `.unreleased` directory
+. `git add` the created `<releaseDate>-<releaseVersion>` directory and commit it together with the emptied `.unreleased-<releaseVersionMajor>.x.x` directory
 
 [#qa-deploy-website]
 === I am about to generate the website for the new release. Now what?

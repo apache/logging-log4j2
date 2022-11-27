@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.internal.util.PomUtils;
 import org.apache.logging.log4j.internal.util.changelog.ChangelogEntry;
 import org.apache.logging.log4j.internal.util.changelog.ChangelogFiles;
 import org.apache.logging.log4j.internal.util.changelog.ChangelogRelease;
@@ -43,9 +44,8 @@ public final class MavenChangesImporter {
     }
 
     private static void writeUnreleased(final Path projectRootDirectory, final MavenChanges.Release release) {
-        final Path releaseDirectory = ChangelogFiles
-                .changelogDirectory(projectRootDirectory)
-                .resolve(".unreleased");
+        final int releaseVersionMajor = PomUtils.readRootPomVersionMajor(projectRootDirectory);
+        final Path releaseDirectory = ChangelogFiles.unreleasedDirectory(projectRootDirectory, releaseVersionMajor);
         release.actions.forEach(action -> writeAction(releaseDirectory, action));
     }
 

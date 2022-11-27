@@ -16,7 +16,12 @@
  */
 package org.apache.logging.log4j.internal.util.changelog;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class ChangelogFiles {
 
@@ -26,8 +31,30 @@ public final class ChangelogFiles {
         return projectRootDirectory.resolve("changelog");
     }
 
-    public static Path unreleasedDirectory(final Path projectRootDirectory) {
-        return changelogDirectory(projectRootDirectory).resolve(".unreleased");
+    public static Path unreleasedDirectory(final Path projectRootDirectory, final int versionMajor) {
+        final String filename = String.format(".unreleased-%d.x.x", versionMajor);
+        return changelogDirectory(projectRootDirectory).resolve(filename);
+    }
+
+    public static Set<Integer> unreleasedDirectoryVersionMajors(final Path projectRootDirectory) {
+        final Path changelogDirectory = changelogDirectory(projectRootDirectory);
+        try {
+            return Files
+                    .walk(changelogDirectory, 1)
+                    .filter(path -> {
+                        return !path.equals(projectRootDirectory) &&                        // Skip the directory itself.
+                                path.getFileName().toString().startsWith(".unreleased-");   // Only select `.unreleased-*` directories.
+                    })
+                    .map(path -> {
+                        final String filename = path.getFileName().toString();
+                        final String versionMajor = filename.replaceFirst("^\\.unreleased-(\\d+)\\.x\\.x", "$1");
+                        return Integer.parseInt(versionMajor);
+                    })
+                    .collect(Collectors.toSet());
+        } catch (final IOException error) {
+            final String message = String.format("failed walking directory: `%s`", projectRootDirectory);
+            throw new UncheckedIOException(message, error);
+        }
     }
 
     public static Path releaseDirectory(
