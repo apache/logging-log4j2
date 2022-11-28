@@ -25,6 +25,8 @@ import static org.apache.logging.log4j.internal.util.StringUtils.trimNullable;
 
 public final class PomUtils {
 
+    public static final String VERSION_PATTERN = "^\\d+\\.\\d+.\\d+(-SNAPSHOT)?$";
+
     private PomUtils() {}
 
     public static int readRootPomVersionMajor(final Path projectRootDirectory) {
@@ -40,10 +42,9 @@ public final class PomUtils {
         if (isBlank(version)) {
             throw XmlReader.failureAtXmlNode(versionElement, "blank `version`");
         }
-        final String versionPattern = "^\\d+\\.\\d+.\\d+(-SNAPSHOT)?$";
-        if (!version.matches(versionPattern)) {
+        if (!version.matches(VERSION_PATTERN)) {
             throw XmlReader.failureAtXmlNode(
-                    versionElement, "`version` doesnt' match the expected pattern `%s`: `%s`", versionPattern, version);
+                    versionElement, "`version` doesnt' match the expected `%s` pattern: `%s`", VERSION_PATTERN, version);
         }
         return version;
     }
