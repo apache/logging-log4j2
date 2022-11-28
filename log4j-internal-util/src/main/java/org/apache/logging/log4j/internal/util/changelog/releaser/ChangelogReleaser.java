@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Locale;
 
 import org.apache.logging.log4j.internal.util.AsciiDocUtils;
 import org.apache.logging.log4j.internal.util.PomUtils;
@@ -31,6 +32,10 @@ import static org.apache.logging.log4j.internal.util.changelog.ChangelogFiles.re
 
 public final class ChangelogReleaser {
 
+    private static final boolean SNAPSHOTS_ALLOWED = !"false".equals(System
+            .getProperty("log4j.changelog.releaser.snapshotsAllowed", "false")
+            .toLowerCase(Locale.US));
+
     private ChangelogReleaser() {}
 
     public static void main(final String[] mainArgs) throws Exception {
@@ -41,6 +46,10 @@ public final class ChangelogReleaser {
         // Read the release date and version.
         final String releaseDate = BASIC_ISO_DATE.format(LocalDate.now());
         final String releaseVersion = PomUtils.readRootPomVersion(args.projectRootDirectory);
+        if (releaseVersion.endsWith("-SNAPSHOT") && !SNAPSHOTS_ALLOWED) {
+            final String message = String.format("SNAPSHOT versions are not allowed: `%s`", releaseVersion);
+            throw new IllegalStateException(message);
+        }
         final int releaseVersionMajor = PomUtils.versionMajor(releaseVersion);
         System.out.format(
                 "using `%s` and `%s` for release date and version, respectively%n",
