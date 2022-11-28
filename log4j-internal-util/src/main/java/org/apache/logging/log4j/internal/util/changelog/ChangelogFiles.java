@@ -28,7 +28,7 @@ public final class ChangelogFiles {
     private ChangelogFiles() {}
 
     public static Path changelogDirectory(final Path projectRootDirectory) {
-        return projectRootDirectory.resolve("changelog");
+        return projectRootDirectory.resolve("src/changelog");
     }
 
     public static Path unreleasedDirectory(final Path projectRootDirectory, final int versionMajor) {
