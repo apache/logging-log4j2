@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.internal.util.changelog;
 
+import org.apache.logging.log4j.internal.util.PomUtils;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -63,12 +65,13 @@ public final class ChangelogFiles {
             final String releaseVersion) {
         if (!releaseDate.matches("^\\d{8}$")) {
             final String message = String.format(
-                    "was expecting release date to be formatted as `YYYYmmdd`, found: `%s`", releaseDate);
+                    "release date doesn't match the expected `YYYYmmdd` pattern: `%s`", releaseDate);
             throw new IllegalArgumentException(message);
         }
-        if (!releaseVersion.matches("^\\d+\\.\\d+\\.\\d+$")) {
+        if (!releaseVersion.matches(PomUtils.VERSION_PATTERN)) {
             final String message = String.format(
-                    "was expecting release version to be formatted as `0.1.2`, found: `%s`", releaseVersion);
+                    "release version doesn't match the expected `%s` pattern: `%s`",
+                    PomUtils.VERSION_PATTERN, releaseVersion);
             throw new IllegalArgumentException(message);
         }
         final String releaseDirectoryName = String.format("%s-%s", releaseDate, releaseVersion);
