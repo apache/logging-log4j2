@@ -357,7 +357,7 @@
     <log4j2-ecs-layout.version>1.5.0</log4j2-ecs-layout.version>
     <logback.version>1.2.11</logback.version>
     <maven.version>3.8.6</maven.version>
-    <mockito.version>4.8.1</mockito.version>
+    <mockito.version>4.9.0</mockito.version>
     <mongodb.version>4.5.0</mongodb.version>
     <netty.version>4.1.84.Final</netty.version>
     <org.eclipse.osgi.version>3.13.0.v20180226-1711</org.eclipse.osgi.version>
