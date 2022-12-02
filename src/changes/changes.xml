@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.19.1" date="TBD" description="GA Release 2.19.1">
+      <action issue="LOG4J2-3487" dev="dmessink" type="fix" due-to="Dave Messink">
+        Correct default to not include location for AsyncRootLoggers
+      </action>
       <action issue="LOG4J2-2678" dev="pkarwasz" type="update" due-to="Federico D'Ambrosio">
         Add LogEvent timestamp to ProducerRecord in KafkaAppender.
       </action>

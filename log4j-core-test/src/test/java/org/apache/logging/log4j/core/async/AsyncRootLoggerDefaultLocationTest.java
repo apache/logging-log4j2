@@ -36,12 +36,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @Category(AsyncLoggers.class)
-public class AsyncLoggerDefaultLocationTest {
+public class AsyncRootLoggerDefaultLocationTest {
 
     @BeforeClass
     public static void beforeClass() {
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerDefaultLocationTest.xml");
+                "AsyncRootLoggerDefaultLocationTest.xml");
     }
 
     @AfterClass
@@ -55,7 +55,7 @@ public class AsyncLoggerDefaultLocationTest {
         ListAppender app = context.getConfiguration().getAppender("List");
         assertNotNull(app);
         final Logger log = context.getLogger("com.foo.Bar");
-        final String msg = "Async logger msg with no location by default";
+        final String msg = "Async root logger msg with no location by default";
         log.info(msg);
         context.stop();
         assertEquals(1, app.getEvents().size());
@@ -63,5 +63,4 @@ public class AsyncLoggerDefaultLocationTest {
         assertFalse("includeLocation should be false", event.isIncludeLocation());
         assertNull("Location data should not be present", event.getSource());
     }
-
 }
