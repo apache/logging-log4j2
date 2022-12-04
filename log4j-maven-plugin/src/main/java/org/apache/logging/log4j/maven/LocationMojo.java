@@ -27,8 +27,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.instrument.location.LocationCache;
-import org.apache.logging.log4j.instrument.location.LocationClassConverter;
+import org.apache.logging.log4j.instrument.LocationCache;
+import org.apache.logging.log4j.instrument.LocationClassConverter;
 import org.apache.logging.log4j.maven.scan.ClassFileInclusionScanner;
 import org.apache.logging.log4j.maven.scan.SimpleInclusionScanner;
 import org.apache.maven.plugin.AbstractMojo;

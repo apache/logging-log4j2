@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.instrument.location;
+package org.apache.logging.log4j.instrument.log4j2;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ import org.apache.logging.log4j.util.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LocationExample {
+public class LoggerConversionHandlerExample {
 
     private static final CharSequence CHAR_SEQUENCE = "(CharSequence)";
     private static final Message MESSAGE = new SimpleMessage("(Message)");
@@ -776,7 +776,7 @@ public class LocationExample {
         assertThat(event.isIncludeLocation()).isFalse();
         assertThat(event.getSource()).isNotNull();
         final StackTraceElement location = event.getSource();
-        assertThat(location.getClassName()).isEqualTo(LocationExample.class.getName());
+        assertThat(location.getClassName()).isEqualTo(LoggerConversionHandlerExample.class.getName());
         assertThat(location.getMethodName()).isEqualTo(methodName);
         assertThat(location.getFileName()).isEqualTo("LocationExample.java");
         assertThat(location.getLineNumber()).isEqualTo(lineNumber);

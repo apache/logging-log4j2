@@ -14,9 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.instrument.location;
+package org.apache.logging.log4j.instrument;
 
-import org.apache.logging.log4j.instrument.location.LocationCache.LocationCacheValue;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.logging.log4j.instrument.LocationCache.LocationCacheValue;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -24,6 +28,7 @@ import org.objectweb.asm.Opcodes;
 public class LocationClassVisitor extends ClassVisitor {
 
     private final LocationCache locationCache;
+    private final Map<String, ClassConversionHandler> conversionHandlers;
 
     private String fileName;
     private String declaringClass;
@@ -32,6 +37,7 @@ public class LocationClassVisitor extends ClassVisitor {
     protected LocationClassVisitor(ClassVisitor cv, LocationCache locationCache) {
         super(Opcodes.ASM9, cv);
         this.locationCache = locationCache;
+        this.conversionHandlers = new HashMap<>();
     }
 
     @Override
@@ -51,7 +57,14 @@ public class LocationClassVisitor extends ClassVisitor {
             String[] exceptions) {
         this.methodName = name;
         final MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
-        return mv != null ? new LocationMethodVisitor(this, mv, access, name, descriptor) : null;
+        return mv != null
+                ? new LocationMethodVisitor(this, Collections.unmodifiableMap(conversionHandlers), mv, access, name,
+                        descriptor)
+                : null;
+    }
+
+    public void addClassConversionHandler(final ClassConversionHandler handler) {
+        this.conversionHandlers.put(handler.getOwner(), handler);
     }
 
     public LocationCacheValue addStackTraceElement(final int lineNumber) {

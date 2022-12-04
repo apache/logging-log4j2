@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.instrument.location;
+package org.apache.logging.log4j.instrument.log4j2;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,6 +25,8 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.instrument.LocationCache;
+import org.apache.logging.log4j.instrument.LocationClassConverter;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -32,7 +34,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @LoggerContextSource("log4j2-test.xml")
-public class LocationTest {
+public class LoggerConversionHandlerTest {
 
     private static Class<?> convertedClass;
     private static Object testObject;
@@ -43,14 +45,14 @@ public class LocationTest {
         final ByteArrayOutputStream dest = new ByteArrayOutputStream();
         final LocationClassConverter converter = new LocationClassConverter();
         final LocationCache locationCache = new LocationCache();
-        converter.convert(LocationTest.class.getResourceAsStream("LocationExample.class"), dest, locationCache);
+        converter.convert(LoggerConversionHandlerTest.class.getResourceAsStream("LocationExample.class"), dest, locationCache);
 
         final Lookup lookup = MethodHandles.lookup();
         locationCache.generateClasses().values().forEach(t -> assertDoesNotThrow(() -> lookup.defineClass(t)));
         convertedClass = lookup.defineClass(dest.toByteArray());
         testObject = convertedClass.getConstructor().newInstance();
 
-        LocationTest.appender = appender;
+        LoggerConversionHandlerTest.appender = appender;
     }
 
     static Stream<String> testLocationConverter() {
@@ -62,4 +64,5 @@ public class LocationTest {
     public void testLocationConverter(final String methodName) throws Exception {
         convertedClass.getMethod(methodName, ListAppender.class).invoke(testObject, appender);
     }
+
 }
