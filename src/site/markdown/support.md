@@ -57,7 +57,7 @@ the Log4j products, individual committers may collaborate with services that pro
 
 The following aims to be a list of all commercial support services involving one or more Log4j committers.
 
-### TideLift
+### Tidelift
 
 Some Log4j maintainers are working with Tidelift to deliver commercial support and maintenance for the Open Source
 dependencies you use to build your applications. Learn more on the [TideLift website](https://tidelift.com).
