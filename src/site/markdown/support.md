@@ -59,5 +59,5 @@ The following aims to be a list of all commercial support services involving one
 
 ### Tidelift
 
-Some Log4j maintainers are working with Tidelift to deliver commercial support and maintenance for the Open Source
-dependencies you use to build your applications. Learn more on the [TideLift website](https://tidelift.com).
+Some Log4j maintainers receive funding from Tidelift for their maintenance efforts. See [the Tidelift website](https://tidelift.com) for details.
+
