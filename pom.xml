@@ -1516,25 +1516,67 @@
           </execution>
         </executions>
       </plugin>
+      <!-- export AsciiDoc-formatted sources to `target/generated-sources/site/asciidoc/changelog` -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>changelog-asciidoc-export</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <includeProjectDependencies>false</includeProjectDependencies>
+          <includePluginDependencies>true</includePluginDependencies>
+          <executableDependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-changelog</artifactId>
+          </executableDependency>
+          <mainClass>org.apache.logging.log4j.changelog.exporter.AsciiDocExporter</mainClass>
+          <systemProperties>
+            <systemProperty>
+              <key>log4j.changelog.projectRootDirectory</key>
+              <value>${project.basedir}</value>
+            </systemProperty>
+            <systemProperty>
+              <key>log4j.changelog.asciiDocExporter.outputDirectory</key>
+              <value>${project.build.directory}/generated-sources/site/asciidoc/changelog</value>
+            </systemProperty>
+          </systemProperties>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-changelog</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+            <type>jar</type>
+          </dependency>
+        </dependencies>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
+          <!-- copy `src/site` to `target/generated-sources/site` -->
           <execution>
-            <id>copy-sitecss</id>
-            <!-- fetch site.xml before creating site documentation -->
+            <id>copy-site</id>
             <phase>pre-site</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/site</outputDirectory>
+              <outputDirectory>${project.build.directory}/generated-sources/site</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${log4jParentDir}/src/site/resources</directory>
-                  <includes>
-                    <include>**/*</include>
-                  </includes>
+                  <directory>${log4jParentDir}/src/site</directory>
+                  <excludes>
+                    <exclude>/resources/glyphicons-halflings-2-1.zip</exclude>
+                    <exclude>/resources/logo/**/*</exclude>
+                  </excludes>
                 </resource>
               </resources>
             </configuration>
@@ -1553,6 +1595,7 @@
           </dependency>
         </dependencies>
         <configuration>
+          <siteDirectory>${project.build.directory}/generated-sources/site</siteDirectory>
           <!-- only build English site even on other language OS -->
           <locales>en</locales>
           <!-- Exclude the navigation file for Maven 1 sites as it interferes with the site generation. -->
@@ -1716,7 +1759,6 @@
     <module>log4j-couchdb</module>
     <module>log4j-docker</module>
     <module>log4j-flume-ng</module>
-    <module>log4j-internal-util</module>
     <module>log4j-iostreams</module>
     <module>log4j-jakarta-smtp</module>
     <module>log4j-jakarta-web</module>
