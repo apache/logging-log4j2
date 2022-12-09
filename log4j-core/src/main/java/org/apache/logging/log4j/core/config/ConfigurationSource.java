@@ -62,8 +62,6 @@ public class ConfigurationSource {
      * ConfigurationSource to use with {@link org.apache.logging.log4j.core.config.composite.CompositeConfiguration}.
      */
     public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(Constants.EMPTY_BYTE_ARRAY, null, 0);
-    private static final String HTTPS = "https";
-    private static final String JAR = "jar";
 
     private final InputStream stream;
     private volatile byte[] data;
@@ -367,7 +365,7 @@ public class ConfigurationSource {
             try {
                 if (file != null) {
                     return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
-                } else if (JAR.equals(url.getProtocol())) {
+                } else if (urlConnection instanceof JarURLConnection) {
                     // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
                     long lastModified = new File(((JarURLConnection)urlConnection).getJarFile().getName())
                             .lastModified();
