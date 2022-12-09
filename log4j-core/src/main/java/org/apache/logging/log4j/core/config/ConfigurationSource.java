@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config;
 
 import java.io.ByteArrayInputStream;
@@ -34,19 +33,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
-import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
-import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
-import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Represents the source for the logging configuration.
@@ -209,15 +201,15 @@ public class ConfigurationSource {
     private boolean isFile() {
         return source == null ? false : source.getFile() != null;
     }
-    
+
     private boolean isURL() {
         return source == null ? false : source.getURI() != null;
     }
-    
+
     private boolean isLocation() {
         return source == null ? false : source.getLocation() != null;
     }
-    
+
     /**
      * Returns the configuration source URL, or {@code null} if this configuration source is based on a file or has
      * neither a file nor an URL.
