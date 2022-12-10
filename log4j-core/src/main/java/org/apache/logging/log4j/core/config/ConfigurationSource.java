@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config;
 
 import java.io.ByteArrayInputStream;
@@ -34,19 +33,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import javax.net.ssl.HttpsURLConnection;
-
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
-import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
-import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
-import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Represents the source for the logging configuration.
@@ -62,8 +54,6 @@ public class ConfigurationSource {
      * ConfigurationSource to use with {@link org.apache.logging.log4j.core.config.composite.CompositeConfiguration}.
      */
     public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(Constants.EMPTY_BYTE_ARRAY, null, 0);
-    private static final String HTTPS = "https";
-    private static final String JAR = "jar";
 
     private final InputStream stream;
     private volatile byte[] data;
@@ -211,15 +201,15 @@ public class ConfigurationSource {
     private boolean isFile() {
         return source == null ? false : source.getFile() != null;
     }
-    
+
     private boolean isURL() {
         return source == null ? false : source.getURI() != null;
     }
-    
+
     private boolean isLocation() {
         return source == null ? false : source.getLocation() != null;
     }
-    
+
     /**
      * Returns the configuration source URL, or {@code null} if this configuration source is based on a file or has
      * neither a file nor an URL.
@@ -367,7 +357,7 @@ public class ConfigurationSource {
             try {
                 if (file != null) {
                     return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
-                } else if (JAR.equals(url.getProtocol())) {
+                } else if (urlConnection instanceof JarURLConnection) {
                     // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
                     long lastModified = new File(((JarURLConnection)urlConnection).getJarFile().getName())
                             .lastModified();
