@@ -14,17 +14,17 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.di;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.function.Supplier;
+import org.apache.logging.log4j.spi.InstanceFactory;
 
 /**
  * Manages dependency injection of a set of bindings between {@link Key}s and {@link Supplier}s lifecycle-bound to
@@ -46,7 +46,7 @@ import java.util.function.Supplier;
  * plugin class to return the plugin instance. Configuring a node configures its children nodes and consumes its
  * attributes before returning the plugin instance.</p>
  */
-public interface Injector {
+public interface Injector extends InstanceFactory {
     /**
      * The key corresponding to the current Injector.
      */
@@ -105,6 +105,7 @@ public interface Injector {
      * @param <T>   type of instance
      * @return an instance of the provided class
      */
+    @Override
     default <T> T getInstance(final Class<T> clazz) {
         return getFactory(clazz).get();
     }

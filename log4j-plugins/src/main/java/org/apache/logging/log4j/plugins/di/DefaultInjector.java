@@ -64,6 +64,7 @@ import org.apache.logging.log4j.plugins.validation.Constraint;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidationException;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
+import org.apache.logging.log4j.spi.InstanceFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.EnglishEnums;
@@ -84,11 +85,14 @@ class DefaultInjector implements Injector {
     DefaultInjector() {
         bindingMap = new BindingMap();
         bindingMap.put(KEY, () -> this);
+        bindingMap.put(Key.forClass(InstanceFactory.class), () -> this);
         scopes.put(Singleton.class, new SingletonScope());
     }
 
     DefaultInjector(final DefaultInjector original) {
         bindingMap = new BindingMap(original.bindingMap);
+        bindingMap.put(KEY, () -> this);
+        bindingMap.put(Key.forClass(InstanceFactory.class), () -> this);
         scopes.putAll(original.scopes);
         typeConverters.putAll(original.typeConverters);
         accessor = original.accessor;
@@ -116,6 +120,11 @@ class DefaultInjector implements Injector {
     @Override
     public <T> Supplier<T> getFactory(final Key<T> key) {
         return getFactory(key, Set.of(), null, Set.of());
+    }
+
+    @Override
+    public <T> Optional<T> tryGetInstance(final Class<T> type) {
+        return getOptionalInstance(Key.forClass(type), Set.of(), null, Set.of());
     }
 
     @Override
