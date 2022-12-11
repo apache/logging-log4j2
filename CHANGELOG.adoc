@@ -17,10 +17,49 @@
 
 :log4j-changelog-ref: https://github.com/apache/logging-log4j-tools/tree/master/log4j-changelog[log4j-changelog]
 
-Changelog sources are stored in xref:src/changelog[`src/changelog`] directory.
+== Where are changelogs stored?
+
+Changelogs are stored in xref:src/changelog[`src/changelog`] directory.
 
 {log4j-changelog-ref} is used to generate AsciiDoc-formatted changelog files during Maven `pre-site` phase and export them to xref:target/generated-sources/site/asciidoc/changelog[`target/generated-sources/site/asciidoc/changelog`] directory.
 These exported AsciiDoc files are not committed, since they are only relevant for the website, and they cause merge-conflicts between feature branches.
 `./mvnw -N site` command can be used to manually generate these files.
 
 See {log4j-changelog-ref} project for further details; how to use this changelog system, what steps are needed while making a new release, etc.
+
+== I am about to deploy a new release. What shall I do?
+
+Just before a release, two things need to happen in the changelog sources:
+
+. Changelog entries of the upcoming release directory `src/changelog/.<releaseVersionMajor>.x.x` needs to be moved to the release changelog directory `src/changelog/<releaseVersion>`
+. `.index.adoc` and `.release.xml` need to be created in the release changelog directory `src/changelog/<releaseVersion>`
+
+Due to the nature of release candidates, above steps might need to be repeated multiple times.
+
+[TIP]
+====
+Log4j _releases_ and _release candidates_ all get deployed to the same https://repository.apache.org/#stagingRepositories[_staging repository_].
+Their `pom.xml` files all contain the same release version, e.g., `2.19.0`.
+There are no `-rc1`, `-rc2`, etc. suffixes in the version of a release candidate.
+Once a release candidate voting reaches to a consensus for release, associated artifacts simply get promoted from the _staging_ to the _public_ repository.
+Hence, there are no differences between releases and release candidates.
+====
+
+How to carry out aforementioned two changes are explained below in steps:
+
+. Populate the `src/changelog/<releaseVersion>` directory (e.g., `src/changelog/2.19.0`) from the upcoming release changelog directory (e.g., `src/changelog/.2.x.x`):
++
+[source,bash]
+----
+./mvnw -N -P changelog-releaser
+----
+. Verify that `src/changelog/.<releaseVersionMajor>.x.x` directory (e.g., `src/changelog/.2.x.x`) is emptied
+. Verify that `src/changelog/<releaseVersion>` directory (e.g., `src/changelog/2.19.0`) is created, and it contains `.intro.adoc`, `.release.xml`, and changelog entry files
++
+[IMPORTANT]
+====
+If `src/changelog/<releaseVersion>` directory (e.g., `src/changelog/2.19.0`) already exists with certain content, `changelog-releaser` profile will only move new changelog entry files and override `.release.xml`; `.intro.adoc` will not be touched, if exists.
+This allows one to run `changelog-releaser` profile multiple times, e.g., to incorporate changes added to a release candidate.
+====
+. Edit the created `.intro.adoc`
+. `git add` the changes in `/src/changelog` and commit them
