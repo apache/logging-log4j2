@@ -15,12 +15,6 @@
     limitations under the License.
 ////
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.3 release!
-
-Apache Log4j is a well-known framework for logging application behavior.
-Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides many other modern features such as support for Markers, property substitution using Lookups, and asynchronous Loggers.
-In addition, Log4j 2 will not lose events while reconfiguring.
-
 This is the sixth GA release.
 It contains several bugfixes and new features.
 
