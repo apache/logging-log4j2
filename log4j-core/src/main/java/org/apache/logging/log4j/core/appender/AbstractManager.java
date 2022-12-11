@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Cast;
 
 /**
  * Abstract base class used to register managers.
@@ -107,8 +108,7 @@ public abstract class AbstractManager implements AutoCloseable {
                                                               final T data) {
         LOCK.lock();
         try {
-            @SuppressWarnings("unchecked")
-            M manager = (M) MAP.get(name);
+            M manager = Cast.cast(MAP.get(name));
             if (manager == null) {
                 manager = factory.createManager(name, data);
                 if (manager == null) {
@@ -162,7 +162,7 @@ public abstract class AbstractManager implements AutoCloseable {
      */
     protected static <M extends AbstractManager> M narrow(final Class<M> narrowClass, final AbstractManager manager) {
         if (narrowClass.isAssignableFrom(manager.getClass())) {
-            return (M) manager;
+            return narrowClass.cast(manager);
         }
         throw new ConfigurationException(
                 "Configuration has multiple incompatible Appenders pointing to the same resource '" +
