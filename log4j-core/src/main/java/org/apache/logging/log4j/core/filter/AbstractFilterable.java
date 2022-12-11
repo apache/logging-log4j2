@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.util.Cast;
 
 /**
  * Enhances a Class by allowing it to contain Filters.
@@ -44,9 +45,8 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
         @PluginElement("Properties")
         private Property[] propertyArray;
 
-        @SuppressWarnings("unchecked")
         public B asBuilder() {
-            return (B) this;
+            return Cast.cast(this);
         }
 
         public Filter getFilter() {
