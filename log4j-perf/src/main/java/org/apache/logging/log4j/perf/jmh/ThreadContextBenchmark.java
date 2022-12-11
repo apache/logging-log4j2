@@ -25,7 +25,6 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.ThreadContextBenchmarkAccess;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
@@ -104,7 +103,7 @@ public class ThreadContextBenchmark {
     @Setup
     public void setup() {
         System.setProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS, IMPLEMENTATIONS.get(threadContextMapAlias).getName());
-        ThreadContextBenchmarkAccess.init();
+        ThreadContext.init();
 
         injector = ContextDataInjectorFactory.createInjector();
         System.out.println(threadContextMapAlias + ": Injector = " + injector);
@@ -140,7 +139,7 @@ public class ThreadContextBenchmark {
     @TearDown
     public void tearDown() {
         System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS);
-        ThreadContextBenchmarkAccess.init();
+        ThreadContext.init();
     }
 
     public void clearAndPut() {

@@ -21,10 +21,9 @@ import java.util.concurrent.ExecutionException;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
-import org.apache.logging.log4j.test.ThreadContextUtilityClass;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.After;
@@ -103,8 +102,7 @@ public class ThreadContextDataInjectorTest {
 
     private void prepareThreadContext(boolean isThreadContextMapInheritable) {
         System.setProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_INHERITABLE, Boolean.toString(isThreadContextMapInheritable));
-        ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
-        ThreadContextUtilityClass.reset();
+        ThreadContext.init();
         ThreadContext.remove("baz");
         ThreadContext.put("foo", "bar");
     }
@@ -119,12 +117,7 @@ public class ThreadContextDataInjectorTest {
     public void testInheritableThreadContextImmutability() throws Throwable {
         prepareThreadContext(true);
         try {
-            newSingleThreadExecutor().submit(new Runnable() {
-                @Override
-                public void run() {
-                    testContextDataInjector();
-                }
-            }).get();
+            newSingleThreadExecutor().submit(this::testContextDataInjector).get();
         } catch (ExecutionException ee) {
             throw ee.getCause();
         }
