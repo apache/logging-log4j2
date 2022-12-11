@@ -15,13 +15,7 @@
     limitations under the License.
 ////
 
-The Apache Log4j 2 team is pleased to announce the Log4j 2.0.1 release!
-
-Apache log4j is a well known framework for logging application behavior.
-Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
-
 This is the first patch release of Log4j 2.0 which contains numerous bug fixes.
-Version 2.0.1 is available now!
 
 Apache Log4j 2.0.1 requires a minimum of Java 6 to build and run.
 Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
