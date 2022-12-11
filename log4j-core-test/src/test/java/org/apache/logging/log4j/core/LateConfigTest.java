@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
 import java.util.stream.Stream;
 
@@ -39,6 +34,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @Tag("functional")
 public class LateConfigTest {
 
@@ -47,12 +44,13 @@ public class LateConfigTest {
     private static final String FQCN = Log4jContextFactory.class.getName();
 
     static Stream<Log4jContextFactory> selectors() {
-        Injector injector = DI.createInjector();
-        injector.init();
-        return Stream
-                .<ContextSelector>of(new ClassLoaderContextSelector(injector.copy()), new BasicContextSelector(injector.copy()),
-                        new AsyncLoggerContextSelector(injector.copy()), new BasicAsyncLoggerContextSelector(injector.copy()))
-                .map(Log4jContextFactory::new);
+        return Stream.of(ClassLoaderContextSelector.class, BasicContextSelector.class, AsyncLoggerContextSelector.class, BasicAsyncLoggerContextSelector.class)
+                .map(contextSelectorClass -> {
+                    Injector inj = DI.createInjector();
+                    inj.registerBinding(ContextSelector.KEY, inj.getFactory(contextSelectorClass));
+                    inj.init();
+                    return inj.getInstance(Log4jContextFactory.class);
+                });
     }
 
     @ParameterizedTest
@@ -73,4 +71,3 @@ public class LateConfigTest {
         assertSame(newConfig, sameConfig, "Configuration should not have been reset");
     }
 }
-

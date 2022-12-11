@@ -30,7 +30,7 @@ public class AsyncLoggerContextSelectorInitialStateTest {
     public void testLoggerContextsListInitiallyEmpty() {
         final Injector injector = DI.createInjector();
         injector.init();
-        final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector(injector);
+        final AsyncLoggerContextSelector selector = injector.getInstance(AsyncLoggerContextSelector.class);
         assertTrue(selector.getLoggerContexts().isEmpty());
     }
 }
