@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -43,8 +44,8 @@ public class BasicArbiterTest {
     }
 
     @Test
+    @SetSystemProperty(key = "env", value = "prod")
     public void prodTest() {
-        System.setProperty("env", "prod");
         loggerContext = Configurator.initialize(null, CONFIG);
         assertNotNull(loggerContext);
         Appender app = loggerContext.getConfiguration().getAppender("Out");
@@ -53,8 +54,8 @@ public class BasicArbiterTest {
     }
 
     @Test
+    @SetSystemProperty(key = "env", value = "dev")
     public void devTest() {
-        System.setProperty("env", "dev");
         loggerContext = Configurator.initialize(null, CONFIG);
         assertNotNull(loggerContext);
         Appender app = loggerContext.getConfiguration().getAppender("Out");
