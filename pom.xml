@@ -1543,11 +1543,11 @@
           <mainClass>org.apache.logging.log4j.changelog.exporter.AsciiDocExporter</mainClass>
           <systemProperties>
             <systemProperty>
-              <key>log4j.changelog.projectRootDirectory</key>
-              <value>${project.basedir}</value>
+              <key>log4j.changelog.directory</key>
+              <value>${project.basedir}/src/changelog</value>
             </systemProperty>
             <systemProperty>
-              <key>log4j.changelog.asciiDocExporter.outputDirectory</key>
+              <key>log4j.changelog.exporter.outputDirectory</key>
               <value>${project.build.directory}/generated-sources/site/asciidoc/changelog</value>
             </systemProperty>
           </systemProperties>
@@ -1810,6 +1810,56 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- populate `src/changelog/<releaseVersion>` from `src/changelog/.<releaseVersionMajor>.x.x` -->
+    <profile>
+      <id>changelog-releaser</id>
+      <build>
+        <defaultGoal>validate</defaultGoal>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>changelog-releaser</id>
+                <!-- Choosing the earlier possible phase, since `ChangelogReleaser` execution doesn't depend on anything: -->
+                <phase>validate</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <includeProjectDependencies>false</includeProjectDependencies>
+              <includePluginDependencies>true</includePluginDependencies>
+              <executableDependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-changelog</artifactId>
+              </executableDependency>
+              <mainClass>org.apache.logging.log4j.changelog.releaser.ChangelogReleaser</mainClass>
+              <systemProperties>
+                <systemProperty>
+                  <key>log4j.changelog.directory</key>
+                  <value>${project.basedir}/src/changelog</value>
+                </systemProperty>
+                <systemProperty>
+                  <key>log4j.changelog.releaseVersion</key>
+                  <value>${project.version}</value>
+                </systemProperty>
+              </systemProperties>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-changelog</artifactId>
+                <version>0.1.0-SNAPSHOT</version>
+                <type>jar</type>
+              </dependency>
+            </dependencies>
           </plugin>
         </plugins>
       </build>
