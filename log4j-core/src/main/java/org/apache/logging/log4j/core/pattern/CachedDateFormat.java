@@ -22,6 +22,7 @@ import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.util.Constants;
 
@@ -91,6 +92,8 @@ final class CachedDateFormat extends DateFormat {
     private static final int TWO_DIGITS = 10;
 
     private static final long SLOTS = 1000L;
+
+    private static final long MILLIS_IN_SECONDS = TimeUnit.SECONDS.toMillis(1);
 
     /**
      * Wrapped formatter.
@@ -170,10 +173,10 @@ final class CachedDateFormat extends DateFormat {
      *         field (likely RelativeTimeDateFormat)
      */
     public static int findMillisecondStart(final long time, final String formatted, final DateFormat formatter) {
-        long slotBegin = (time / Constants.MILLIS_IN_SECONDS) * Constants.MILLIS_IN_SECONDS;
+        long slotBegin = (time / MILLIS_IN_SECONDS) * MILLIS_IN_SECONDS;
 
         if (slotBegin > time) {
-            slotBegin -= Constants.MILLIS_IN_SECONDS;
+            slotBegin -= MILLIS_IN_SECONDS;
         }
 
         final int millis = (int) (time - slotBegin);
@@ -290,10 +293,10 @@ final class CachedDateFormat extends DateFormat {
         cache.append(formatter.format(tmpDate));
         buf.append(cache);
         previousTime = now;
-        slotBegin = (previousTime / Constants.MILLIS_IN_SECONDS) * Constants.MILLIS_IN_SECONDS;
+        slotBegin = (previousTime / MILLIS_IN_SECONDS) * MILLIS_IN_SECONDS;
 
         if (slotBegin > previousTime) {
-            slotBegin -= Constants.MILLIS_IN_SECONDS;
+            slotBegin -= MILLIS_IN_SECONDS;
         }
 
         //
