@@ -282,6 +282,7 @@
     <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
     <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
     <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
+    <log4j-tools.version>0.1.0-SNAPSHOT</log4j-tools.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
     <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
     <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
@@ -1533,10 +1534,10 @@
           <includeProjectDependencies>false</includeProjectDependencies>
           <includePluginDependencies>true</includePluginDependencies>
           <executableDependency>
-            <groupId>org.apache.logging.log4j</groupId>
+            <groupId>org.apache.logging.log4j.tools</groupId>
             <artifactId>log4j-changelog</artifactId>
           </executableDependency>
-          <mainClass>org.apache.logging.log4j.changelog.exporter.AsciiDocExporter</mainClass>
+          <mainClass>org.apache.logging.log4j.tools.changelog.exporter.AsciiDocExporter</mainClass>
           <systemProperties>
             <systemProperty>
               <key>log4j.changelog.directory</key>
@@ -1550,9 +1551,9 @@
         </configuration>
         <dependencies>
           <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
+            <groupId>org.apache.logging.log4j.tools</groupId>
             <artifactId>log4j-changelog</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>${log4j-tools.version}</version>
             <type>jar</type>
           </dependency>
         </dependencies>
@@ -1833,10 +1834,10 @@
               <includeProjectDependencies>false</includeProjectDependencies>
               <includePluginDependencies>true</includePluginDependencies>
               <executableDependency>
-                <groupId>org.apache.logging.log4j</groupId>
+                <groupId>org.apache.logging.log4j.tools</groupId>
                 <artifactId>log4j-changelog</artifactId>
               </executableDependency>
-              <mainClass>org.apache.logging.log4j.changelog.releaser.ChangelogReleaser</mainClass>
+              <mainClass>org.apache.logging.log4j.tools.changelog.releaser.ChangelogReleaser</mainClass>
               <systemProperties>
                 <systemProperty>
                   <key>log4j.changelog.directory</key>
@@ -1850,9 +1851,9 @@
             </configuration>
             <dependencies>
               <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
+                <groupId>org.apache.logging.log4j.tools</groupId>
                 <artifactId>log4j-changelog</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>${log4j-tools.version}</version>
                 <type>jar</type>
               </dependency>
             </dependencies>
