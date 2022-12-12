@@ -65,6 +65,7 @@ public class ContextDataInjectorFactory {
      * @see LogEvent#getContextData()
      * @see ContextDataInjector
      */
+    @Deprecated(forRemoval = true)
     public static ContextDataInjector createInjector() {
         final String className = PropertiesUtil.getProperties().getStringProperty(Log4jProperties.THREAD_CONTEXT_DATA_INJECTOR_CLASS_NAME);
         if (className == null) {

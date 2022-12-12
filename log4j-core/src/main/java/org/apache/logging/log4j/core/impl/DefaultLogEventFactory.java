@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.ContextDataInjector;
@@ -28,13 +30,12 @@ import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.util.StringMap;
 
-import java.util.List;
-
 /**
  * Always creates new LogEvent instances.
  */
 public class DefaultLogEventFactory implements LogEventFactory {
 
+    @Deprecated(forRemoval = true) // TODO(ms): replace with appropriate dependency injection
     public static DefaultLogEventFactory newInstance() {
         final var injector = DI.createInjector();
         injector.init();

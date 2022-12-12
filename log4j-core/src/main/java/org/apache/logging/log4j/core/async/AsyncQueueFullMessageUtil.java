@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.InternalApi;
 
 /**
  * <b>Consider this class private.</b>
@@ -24,6 +25,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Logs a warning to the {@link StatusLogger} when events are logged out of order to avoid deadlocks.
  * </p>
  */
+@InternalApi
 public final class AsyncQueueFullMessageUtil {
     private AsyncQueueFullMessageUtil() {
         // Utility Class
