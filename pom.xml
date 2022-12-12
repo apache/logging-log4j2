@@ -1844,7 +1844,7 @@
                 </systemProperty>
                 <systemProperty>
                   <key>log4j.changelog.releaseVersion</key>
-                  <value>${project.version}</value>
+                  <value>${Log4jReleaseVersion}</value>
                 </systemProperty>
               </systemProperties>
             </configuration>
