@@ -16,75 +16,51 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import java.security.KeyStore;
+
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.Test;
-
-import java.security.KeyStore;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @StatusLoggerLevel("OFF")
 public class KeyStoreConfigurationTest {
-    @SuppressWarnings("deprecation")
-    @Test
-    public void loadEmptyConfigurationDeprecated() {
-        assertThrows(StoreConfigurationException.class,
-                () -> new KeyStoreConfiguration(null, TestConstants.NULL_PWD, null, null));
-    }
-
     @Test
     public void loadEmptyConfiguration() {
         assertThrows(StoreConfigurationException.class,
-                () -> new KeyStoreConfiguration(null, new MemoryPasswordProvider(TestConstants.NULL_PWD), null, null));
-    }
-
-    @Test
-    public void loadNotEmptyConfigurationDeprecated() throws StoreConfigurationException {
-        @SuppressWarnings("deprecation") final KeyStoreConfiguration ksc =
-                new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(),
-                        TestConstants.KEYSTORE_TYPE, null);
-        final KeyStore ks = ksc.getKeyStore();
-        assertNotNull(ks);
+                () -> KeyStoreConfiguration.builder().build());
     }
 
     @Test
     public void loadNotEmptyConfiguration() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()),
-                TestConstants.KEYSTORE_TYPE, null);
+        final KeyStoreConfiguration ksc = KeyStoreConfiguration.builder()
+                .setLocation(TestConstants.KEYSTORE_FILE)
+                .setPassword(TestConstants.KEYSTORE_PWD())
+                .setKeyStoreType(TestConstants.KEYSTORE_TYPE)
+                .build();
         final KeyStore ks = ksc.getKeyStore();
         assertNotNull(ks);
     }
 
     @Test
-    public void returnTheSameKeyStoreAfterMultipleLoadsDeprecated() throws StoreConfigurationException {
-        @SuppressWarnings("deprecation") final KeyStoreConfiguration ksc =
-                new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(),
-                        TestConstants.KEYSTORE_TYPE, null);
-        final KeyStore ks = ksc.getKeyStore();
-        final KeyStore ks2 = ksc.getKeyStore();
-        assertSame(ks, ks2);
-    }
-
-    @Test
     public void returnTheSameKeyStoreAfterMultipleLoads() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()),
-                TestConstants.KEYSTORE_TYPE, null);
+        final KeyStoreConfiguration ksc = KeyStoreConfiguration.builder()
+                .setLocation(TestConstants.KEYSTORE_FILE)
+                .setPassword(TestConstants.KEYSTORE_PWD())
+                .setKeyStoreType(TestConstants.KEYSTORE_TYPE)
+                .build();
         final KeyStore ks = ksc.getKeyStore();
         final KeyStore ks2 = ksc.getKeyStore();
         assertSame(ks, ks2);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void wrongPasswordDeprecated() {
-        assertThrows(StoreConfigurationException.class,
-                () -> new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, "wrongPassword!", null, null));
     }
 
     @Test
     public void wrongPassword() {
-        assertThrows(StoreConfigurationException.class, () -> new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
-                new MemoryPasswordProvider("wrongPassword!".toCharArray()), null, null));
+        assertThrows(StoreConfigurationException.class, () ->
+                KeyStoreConfiguration.builder()
+                        .setLocation(TestConstants.KEYSTORE_FILE)
+                        .setPassword("wrongPassword!".toCharArray())
+                        .build());
     }
 }

@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import javax.net.ssl.TrustManagerFactory;
+
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import javax.net.ssl.TrustManagerFactory;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 
 /**
  * Configuration of the TrustStore
@@ -35,71 +34,14 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
 
     private final String trustManagerFactoryAlgorithm;
 
-    public TrustStoreConfiguration(final String location,
-                                   final PasswordProvider passwordProvider,
-                                   final String keyStoreType,
-                                   final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
+    private TrustStoreConfiguration(final String location,
+                                    final PasswordProvider passwordProvider,
+                                    final String keyStoreType,
+                                    final String trustManagerFactoryAlgorithm)
+            throws StoreConfigurationException {
         super(location, passwordProvider, keyStoreType);
         this.trustManagerFactoryAlgorithm = trustManagerFactoryAlgorithm == null ? TrustManagerFactory
                 .getDefaultAlgorithm() : trustManagerFactoryAlgorithm;
-    }
-
-    /**
-     * @deprecated Use {@link #TrustStoreConfiguration(String, PasswordProvider, String, String)} instead
-     */
-    @Deprecated
-    public TrustStoreConfiguration(final String location, final char[] password, final String keyStoreType,
-            final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
-        this(location, new MemoryPasswordProvider(password), keyStoreType, trustManagerFactoryAlgorithm);
-        if (password != null) {
-            Arrays.fill(password, '\0');
-        }
-    }
-
-    /**
-     * Creates a KeyStoreConfiguration.
-     *
-     * @param location
-     *        The location of the KeyStore, a file path, URL or resource.
-     * @param password
-     *        The password to access the KeyStore.
-     * @param keyStoreType
-     *        The KeyStore type, null defaults to {@code "JKS"}.
-     * @param trustManagerFactoryAlgorithm
-     *        The standard name of the requested trust management algorithm. See the Java Secure Socket Extension Reference Guide for information these names.
-     * @return a new TrustStoreConfiguration
-     * @throws StoreConfigurationException Thrown if this instance cannot load the KeyStore.
-     */
-    @PluginFactory
-    public static TrustStoreConfiguration createKeyStoreConfiguration(
-            // @formatter:off
-            @PluginAttribute final String location,
-            @PluginAttribute(sensitive = true) final char[] password,
-            @PluginAttribute final String passwordEnvironmentVariable,
-            @PluginAttribute final String passwordFile,
-            @PluginAttribute("type") final String keyStoreType,
-            @PluginAttribute final String trustManagerFactoryAlgorithm) throws StoreConfigurationException {
-            // @formatter:on
-
-        if (password != null && passwordEnvironmentVariable != null && passwordFile != null) {
-            throw new IllegalStateException("You MUST set only one of 'password', 'passwordEnvironmentVariable' or 'passwordFile'.");
-        }
-        try {
-            // @formatter:off
-            final PasswordProvider provider = passwordFile != null
-                    ? new FilePasswordProvider(passwordFile)
-                    : passwordEnvironmentVariable != null
-                            ? new EnvironmentPasswordProvider(passwordEnvironmentVariable)
-                            // the default is memory char[] array, which may be null
-                            : new MemoryPasswordProvider(password);
-            // @formatter:on
-            if (password != null) {
-                Arrays.fill(password, '\0');
-            }
-            return new TrustStoreConfiguration(location, provider, keyStoreType, trustManagerFactoryAlgorithm);
-        } catch (final Exception ex) {
-            throw new StoreConfigurationException("Could not configure TrustStore", ex);
-        }
     }
 
     public TrustManagerFactory initTrustManagerFactory() throws NoSuchAlgorithmException, KeyStoreException {
@@ -141,5 +83,29 @@ public class TrustStoreConfiguration extends AbstractKeyStoreConfiguration {
 
     public String getTrustManagerFactoryAlgorithm() {
         return trustManagerFactoryAlgorithm;
+    }
+
+    @PluginFactory
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder extends AbstractKeyStoreConfiguration.Builder<Builder, TrustStoreConfiguration> {
+        private String trustManagerFactoryAlgorithm;
+
+        public String getTrustManagerFactoryAlgorithm() {
+            return trustManagerFactoryAlgorithm;
+        }
+
+        public Builder setTrustManagerFactoryAlgorithm(@PluginAttribute final String trustManagerFactoryAlgorithm) {
+            this.trustManagerFactoryAlgorithm = trustManagerFactoryAlgorithm;
+            return this;
+        }
+
+        @Override
+        public TrustStoreConfiguration build() throws StoreConfigurationException {
+            return new TrustStoreConfiguration(getLocation(), buildPasswordProvider(), getKeyStoreType(),
+                    getTrustManagerFactoryAlgorithm());
+        }
     }
 }

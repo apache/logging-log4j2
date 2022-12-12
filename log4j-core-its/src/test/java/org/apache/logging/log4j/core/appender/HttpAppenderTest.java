@@ -16,21 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.put;
-import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.IOException;
 import java.net.URL;
 
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.config.Property;
@@ -38,10 +28,10 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
-import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
+import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
@@ -50,8 +40,10 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
-import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @Ignore("Fails often on Windows")
 
@@ -183,14 +175,22 @@ public class HttpAppenderTest {
         wireMockRule.stubFor(post(urlEqualTo("/test/log4j/"))
             .willReturn(SUCCESS_RESPONSE));
 
+        final TrustStoreConfiguration trustStoreConfiguration = TrustStoreConfiguration.builder()
+                .setLocation(TestConstants.TRUSTSTORE_FILE)
+                .setPassword(TestConstants.TRUSTSTORE_PWD())
+                .setKeyStoreType(TestConstants.TRUSTSTORE_TYPE)
+                .build();
+        final KeyStoreConfiguration keyStoreConfiguration = KeyStoreConfiguration.builder()
+                .setLocation(TestConstants.KEYSTORE_FILE)
+                .setPassword(TestConstants.KEYSTORE_PWD())
+                .setKeyStoreType(TestConstants.KEYSTORE_TYPE)
+                .build();
         final Appender appender = HttpAppender.newBuilder()
             .setName("Http")
             .setLayout(JsonLayout.createDefaultLayout())
             .setConfiguration(ctx.getConfiguration())
             .setUrl(new URL("https://localhost:" + wireMockRule.httpsPort() + "/test/log4j/"))
-            .setSslConfiguration(SslConfiguration.createSSLConfiguration(null,
-                KeyStoreConfiguration.createKeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(), null, null, TestConstants.KEYSTORE_TYPE, null),
-                TrustStoreConfiguration.createKeyStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD(), null ,null, TestConstants.TRUSTSTORE_TYPE, null)))
+            .setSslConfiguration(SslConfiguration.createSSLConfiguration(null, keyStoreConfiguration, trustStoreConfiguration))
             .setVerifyHostname(false)
             .build();
         appender.append(createLogEvent());

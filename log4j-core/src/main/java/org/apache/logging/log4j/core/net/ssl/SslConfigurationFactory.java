@@ -16,73 +16,72 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.util.PropertyResolver;
+
+import static org.apache.logging.log4j.core.impl.Log4jProperties.*;
 
 /**
  * Creates an SSL configuration from Log4j properties.
  */
-public class SslConfigurationFactory {
+public class SslConfigurationFactory implements Supplier<SslConfiguration> {
 
-    private static final Logger LOGGER = StatusLogger.getLogger();
+    private final PropertyResolver propertyResolver;
 
-    private static final Lazy<SslConfiguration> SSL_CONFIGURATION = Lazy.lazy(() -> {
-        final PropertyEnvironment props = PropertiesUtil.getProperties();
-        return createSslConfiguration(props);
-    });
+    @Inject
+    public SslConfigurationFactory(final PropertyResolver propertyResolver) {
+        this.propertyResolver = propertyResolver;
+    }
 
-    static SslConfiguration createSslConfiguration(final PropertyEnvironment props) {
-        KeyStoreConfiguration keyStoreConfiguration = null;
-        TrustStoreConfiguration trustStoreConfiguration = null;
-        String location = props.getStringProperty(Log4jProperties.TRANSPORT_SECURITY_TRUST_STORE_LOCATION);
-        if (location != null) {
-            final String password = props.getStringProperty(Log4jProperties.TRANSPORT_SECURITY_TRUST_STORE_PASSWORD);
-            char[] passwordChars = null;
-            if (password != null) {
-                passwordChars = password.toCharArray();
-            }
-            try {
-                trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(location, passwordChars,
-                        props.getStringProperty(Log4jProperties.TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_ENV_VAR),
-                        props.getStringProperty(Log4jProperties.TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_FILE),
-                        props.getStringProperty(Log4jProperties.TRANSPORT_SECURITY_TRUST_STORE_KEY_STORE_TYPE),
-                        props.getStringProperty(Log4jProperties.TRANSPORT_SECURITY_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM));
-            } catch (final Exception ex) {
-                LOGGER.warn("Unable to create trust store configuration due to: {} {}", ex.getClass().getName(),
-                        ex.getMessage());
-            }
-        }
-        location = props.getStringProperty(Log4jProperties.TRANSPORT_SECURITY_KEY_STORE_LOCATION);
-        if (location != null) {
-            final String password = props.getStringProperty(Log4jProperties.TRANSPORT_SECURITY_KEY_STORE_PASSWORD);
-            char[] passwordChars = null;
-            if (password != null) {
-                passwordChars = password.toCharArray();
-            }
-            try {
-                keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(location, passwordChars,
-                        props.getStringProperty(Log4jProperties.TRANSPORT_SECURITY_KEY_STORE_PASSWORD_ENV_VAR),
-                        props.getStringProperty(Log4jProperties.TRANSPORT_SECURITY_KEY_STORE_PASSWORD_FILE),
-                        props.getStringProperty(Log4jProperties.TRANSPORT_SECURITY_KEY_STORE_TYPE),
-                        props.getStringProperty(Log4jProperties.TRANSPORT_SECURITY_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM));
-            } catch (final Exception ex) {
-                LOGGER.warn("Unable to create key store configuration due to: {} {}", ex.getClass().getName(),
-                        ex.getMessage());
-            }
-        }
+    @Override
+    public SslConfiguration get() {
+        final String trustStoreAlgorithm =
+                propertyResolver.getString(TRANSPORT_SECURITY_TRUST_STORE_KEY_MANAGER_FACTORY_ALGORITHM)
+                        .orElse(null);
+        final TrustStoreConfiguration trustStoreConfiguration = initKeyStoreConfigBuilder(
+                TrustStoreConfiguration::builder,
+                TRANSPORT_SECURITY_TRUST_STORE_LOCATION,
+                TRANSPORT_SECURITY_TRUST_STORE_PASSWORD,
+                TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_ENV_VAR,
+                TRANSPORT_SECURITY_TRUST_STORE_PASSWORD_FILE,
+                TRANSPORT_SECURITY_TRUST_STORE_KEY_STORE_TYPE)
+                .map(builder -> builder.setTrustManagerFactoryAlgorithm(trustStoreAlgorithm).get())
+                .orElse(null);
+        final String keyStoreAlgorithm =
+                propertyResolver.getString(TRANSPORT_SECURITY_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM)
+                        .orElse(null);
+        final KeyStoreConfiguration keyStoreConfiguration = initKeyStoreConfigBuilder(
+                KeyStoreConfiguration::builder,
+                TRANSPORT_SECURITY_KEY_STORE_LOCATION,
+                TRANSPORT_SECURITY_KEY_STORE_PASSWORD,
+                TRANSPORT_SECURITY_KEY_STORE_PASSWORD_ENV_VAR,
+                TRANSPORT_SECURITY_KEY_STORE_PASSWORD_FILE,
+                TRANSPORT_SECURITY_KEY_STORE_TYPE)
+                .map(builder -> builder.setKeyManagerFactoryAlgorithm(keyStoreAlgorithm).get())
+                .orElse(null);
         if (trustStoreConfiguration != null || keyStoreConfiguration != null) {
-            final boolean isVerifyHostName = props.getBooleanProperty(Log4jProperties.TRANSPORT_SECURITY_VERIFY_HOST_NAME, false);
-            return SslConfiguration.createSSLConfiguration(null, keyStoreConfiguration,
-                    trustStoreConfiguration, isVerifyHostName);
+            final boolean isVerifyHostName = propertyResolver.getBoolean(TRANSPORT_SECURITY_VERIFY_HOST_NAME);
+            return SslConfiguration.createSSLConfiguration(null, keyStoreConfiguration, trustStoreConfiguration, isVerifyHostName);
         }
         return null;
     }
 
-    public static SslConfiguration getSslConfiguration() {
-        return SSL_CONFIGURATION.value();
+    private <B extends AbstractKeyStoreConfiguration.Builder<B, C>, C extends AbstractKeyStoreConfiguration>
+    Optional<B> initKeyStoreConfigBuilder(final Supplier<B> builderFactory,
+                                          final String locationKey,
+                                          final String passwordKey,
+                                          final String passwordEnvVarKey,
+                                          final String passwordFileKey,
+                                          final String keyStoreTypeKey) {
+        return propertyResolver.getString(locationKey)
+                .map(location -> builderFactory.get()
+                        .setLocation(location)
+                        .setPassword(propertyResolver.getString(passwordKey).map(String::toCharArray).orElse(null))
+                        .setPasswordEnvironmentVariable(propertyResolver.getString(passwordEnvVarKey).orElse(null))
+                        .setPasswordFile(propertyResolver.getString(passwordFileKey).orElse(null))
+                        .setKeyStoreType(propertyResolver.getString(keyStoreTypeKey).orElse(null)));
     }
 }

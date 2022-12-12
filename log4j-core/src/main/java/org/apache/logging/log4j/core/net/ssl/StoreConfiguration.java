@@ -18,8 +18,11 @@ package org.apache.logging.log4j.core.net.ssl;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.Supplier;
 
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Cast;
 
 /**
  *
@@ -98,5 +101,65 @@ public class StoreConfiguration<T> {
             return false;
         }
         return true;
+    }
+
+    public static abstract class Builder<B extends Builder<B, C, S>, C extends StoreConfiguration<S>, S>
+            implements Supplier<C> {
+        private String location;
+        private char[] password;
+        private String passwordEnvironmentVariable;
+        private String passwordFile;
+
+        protected B asBuilder() {
+            return Cast.cast(this);
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public B setLocation(@PluginAttribute final String location) {
+            this.location = location;
+            return asBuilder();
+        }
+
+        public char[] getPassword() {
+            return password;
+        }
+
+        public B setPassword(@PluginAttribute(sensitive = true) final char[] password) {
+            this.password = password;
+            return asBuilder();
+        }
+
+        public String getPasswordEnvironmentVariable() {
+            return passwordEnvironmentVariable;
+        }
+
+        public B setPasswordEnvironmentVariable(@PluginAttribute final String passwordEnvironmentVariable) {
+            this.passwordEnvironmentVariable = passwordEnvironmentVariable;
+            return asBuilder();
+        }
+
+        public String getPasswordFile() {
+            return passwordFile;
+        }
+
+        public B setPasswordFile(@PluginAttribute final String passwordFile) {
+            this.passwordFile = passwordFile;
+            return asBuilder();
+        }
+
+        public abstract C build() throws StoreConfigurationException;
+
+        @Override
+        public C get() {
+            try {
+                return build();
+            } catch (final StoreConfigurationException e) {
+                LOGGER.warn("Unable to configure keystore", e);
+                return null;
+            }
+        }
     }
 }

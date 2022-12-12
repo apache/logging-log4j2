@@ -16,17 +16,27 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.net.JarURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.file.NoSuchFileException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 
-import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 
 /**
  * Configuration of the KeyStore
@@ -84,7 +94,32 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
     }
 
     private InputStream openInputStream(final String filePathOrUri) {
-        return ConfigurationSource.fromUri(NetUtils.toURI(filePathOrUri)).getInputStream();
+        // to avoid a circular dependency between SslConfigurationFactory and UrlConnectionFactory, we replicate
+        // some of essential logic without supporting more specific ssl configuration as this is part of the ssl
+        // configuration in the first place
+        final URI uri = NetUtils.toURI(filePathOrUri);
+        try {
+            final File file = FileUtils.fileFromUri(uri);
+            if (file != null) {
+                return new FileInputStream(file);
+            }
+        } catch (final FileNotFoundException e) {
+            LOGGER.warn("Cannot locate file {}", filePathOrUri);
+        }
+        final String scheme = uri.getScheme();
+        if (scheme == null || "classpath".equals(scheme) || "classloader".equals(scheme)) {
+            final String resource = scheme == null ? uri.getPath() : uri.getSchemeSpecificPart();
+            return Loader.getResourceAsStream(resource, null);
+        }
+        try {
+            final URL url = uri.toURL();
+            final URLConnection urlConnection = url.openConnection();
+            // A "jar:" URL file remains open after the stream is closed, so do not cache it.
+            urlConnection.setUseCaches(false);
+            return urlConnection.getInputStream();
+        } catch (final IOException e) {
+            throw new UncheckedIOException("Cannot load file path or URI: " + filePathOrUri, e);
+        }
     }
 
     public KeyStore getKeyStore() {
@@ -133,4 +168,42 @@ public class AbstractKeyStoreConfiguration extends StoreConfiguration<KeyStore> 
         return keyStoreType;
     }
 
+    public static abstract class Builder<B extends Builder<B, C>, C extends AbstractKeyStoreConfiguration>
+            extends StoreConfiguration.Builder<B, C, KeyStore> {
+        private String type;
+
+        public String getKeyStoreType() {
+            return type;
+        }
+
+        public B setKeyStoreType(@PluginAttribute final String type) {
+            this.type = type;
+            return asBuilder();
+        }
+
+        protected PasswordProvider buildPasswordProvider() throws StoreConfigurationException {
+            final char[] password = getPassword();
+            final String passwordEnvironmentVariable = getPasswordEnvironmentVariable();
+            final String passwordFile = getPasswordFile();
+            if (password != null && passwordEnvironmentVariable != null && passwordFile != null) {
+                throw new StoreConfigurationException("You MUST set only one of 'password', 'passwordEnvironmentVariable' or 'passwordFile'.");
+            }
+            final PasswordProvider passwordProvider;
+            if (passwordFile != null) {
+                try {
+                    return new FilePasswordProvider(passwordFile);
+                } catch (final NoSuchFileException e) {
+                    throw new StoreConfigurationException("Unable to configure TrustStore with password file", e);
+                }
+            } else if (passwordEnvironmentVariable != null) {
+                passwordProvider = new EnvironmentPasswordProvider(passwordEnvironmentVariable);
+            } else {
+                passwordProvider = new MemoryPasswordProvider(password);
+            }
+            if (password != null) {
+                Arrays.fill(password, '\0');
+            }
+            return passwordProvider;
+        }
+    }
 }

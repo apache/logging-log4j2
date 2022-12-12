@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
-
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -36,37 +35,29 @@ public class SslConfigurationTest {
     private static final String TLS_TEST_HOST = "login.yahoo.com";
     private static final int TLS_TEST_PORT = 443;
 
-    @SuppressWarnings("deprecation")
-    public static SslConfiguration createTestSslConfigurationResourcesDeprecated() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE_RESOURCE,
-                TestConstants.KEYSTORE_PWD(), TestConstants.KEYSTORE_TYPE, null);
-        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE_RESOURCE,
-                TestConstants.TRUSTSTORE_PWD(), null, null);
-        return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
-    }
-
     public static SslConfiguration createTestSslConfigurationResources() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE_RESOURCE,
-                new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()), TestConstants.KEYSTORE_TYPE, null);
-        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE_RESOURCE,
-                new MemoryPasswordProvider(TestConstants.TRUSTSTORE_PWD()), null, null);
-        return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
-    }
-
-    @SuppressWarnings("deprecation")
-    public static SslConfiguration createTestSslConfigurationFilesDeprecated() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
-                TestConstants.KEYSTORE_PWD(), TestConstants.KEYSTORE_TYPE, null);
-        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
-                TestConstants.TRUSTSTORE_PWD(), null, null);
+        final KeyStoreConfiguration ksc = KeyStoreConfiguration.builder()
+                .setLocation(TestConstants.KEYSTORE_FILE_RESOURCE)
+                .setPassword(TestConstants.KEYSTORE_PWD())
+                .setKeyStoreType(TestConstants.KEYSTORE_TYPE)
+                .build();
+        final TrustStoreConfiguration tsc = TrustStoreConfiguration.builder()
+                .setLocation(TestConstants.TRUSTSTORE_FILE_RESOURCE)
+                .setPassword(TestConstants.TRUSTSTORE_PWD())
+                .build();
         return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
     }
 
     public static SslConfiguration createTestSslConfigurationFiles() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
-                new MemoryPasswordProvider(TestConstants.KEYSTORE_PWD()), TestConstants.KEYSTORE_TYPE, null);
-        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
-                new MemoryPasswordProvider(TestConstants.TRUSTSTORE_PWD()), null, null);
+        final KeyStoreConfiguration ksc = KeyStoreConfiguration.builder()
+                .setLocation(TestConstants.KEYSTORE_FILE)
+                .setPassword(TestConstants.KEYSTORE_PWD())
+                .setKeyStoreType(TestConstants.KEYSTORE_TYPE)
+                .build();
+        final TrustStoreConfiguration tsc = TrustStoreConfiguration.builder()
+                .setLocation(TestConstants.TRUSTSTORE_FILE)
+                .setPassword(TestConstants.TRUSTSTORE_PWD())
+                .build();
         return SslConfiguration.createSSLConfiguration(null, ksc, tsc);
     }
 
@@ -116,8 +107,7 @@ public class SslConfigurationTest {
 
     @Test
     public void connectionFailsWithoutValidServerCertificate() throws IOException, StoreConfigurationException {
-        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
-                new MemoryPasswordProvider(TestConstants.NULL_PWD), null, null);
+        final TrustStoreConfiguration tsc = TrustStoreConfiguration.builder().setLocation(TestConstants.TRUSTSTORE_FILE).build();
         final SslConfiguration sc = SslConfiguration.createSSLConfiguration(null, null, tsc);
         final SSLSocketFactory factory = sc.getSslSocketFactory();
         try {
@@ -133,8 +123,7 @@ public class SslConfigurationTest {
 
     @Test
     public void loadKeyStoreWithoutPassword() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
-                new MemoryPasswordProvider(TestConstants.NULL_PWD), null, null);
+        final KeyStoreConfiguration ksc = KeyStoreConfiguration.builder().setLocation(TestConstants.KEYSTORE_FILE).build();
         final SslConfiguration sslConf = SslConfiguration.createSSLConfiguration(null, ksc, null);
         final SSLSocketFactory factory = sslConf.getSslSocketFactory();
         assertNotNull(factory);
