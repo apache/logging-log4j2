@@ -50,6 +50,7 @@ import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.PropertyResolver;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -456,6 +457,10 @@ public class LoggerConfig extends AbstractFilterable {
 
     public boolean isPropertiesRequireLookup() {
         return propertiesRequireLookup;
+    }
+
+    public PropertyResolver getPropertyResolver() {
+        return config.getPropertyResolver();
     }
 
     /**

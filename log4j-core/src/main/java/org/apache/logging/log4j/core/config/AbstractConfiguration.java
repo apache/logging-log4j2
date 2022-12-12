@@ -80,10 +80,12 @@ import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
+import org.apache.logging.log4j.spi.ClassFactory;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.NameUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyResolver;
 import org.apache.logging.log4j.util.ServiceRegistry;
 
 /**
@@ -127,6 +129,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected ScriptManager scriptManager;
 
     protected final Injector injector;
+    protected final PropertyResolver propertyResolver;
+
     /**
      * The Advertiser which exposes appender configurations to external systems.
      */
@@ -161,10 +165,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
         if (loggerContext != null) {
             injector = loggerContext.getInjector();
+            propertyResolver = loggerContext.getPropertyResolver();
         } else {
             // for NullConfiguration
             injector = DI.createInjector();
             injector.init();
+            propertyResolver = LoggingSystem.getPropertyResolver();
         }
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         interpolatorFactory = injector.getInstance(InterpolatorFactory.class);
@@ -190,6 +196,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public Map<String, String> getProperties() {
         return properties;
+    }
+
+    @Override
+    public PropertyResolver getPropertyResolver() {
+        return propertyResolver;
     }
 
     @Override
@@ -230,7 +241,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // lazily instantiate only when requested by AsyncLoggers:
         // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
         if (asyncLoggerConfigDisruptor == null) {
-            asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor(asyncWaitStrategyFactory);
+            asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor(propertyResolver,
+                    injector.getInstance(ClassFactory.class), injector, asyncWaitStrategyFactory);
         }
         return asyncLoggerConfigDisruptor;
     }
@@ -643,7 +655,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     protected void doConfigure() {
         injector.registerBinding(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
-        injector.registerBinding(LoggerContext.KEY, () -> loggerContext);
+        injector.registerBinding(LoggerContext.KEY, this::getLoggerContext);
         processConditionals(rootNode);
         preConfigure(rootNode);
         configurationScheduler.start();
@@ -653,7 +665,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             if (first.getObject() != null) {
                 StrLookup lookup = first.getObject();
                 if (lookup instanceof LoggerContextAware) {
-                    ((LoggerContextAware) lookup).setLoggerContext(loggerContext.get());
+                    ((LoggerContextAware) lookup).setLoggerContext(getLoggerContext());
                 }
                 runtimeStrSubstitutor.setVariableResolver(lookup);
                 configurationStrSubstitutor.setVariableResolver(lookup);
@@ -662,7 +674,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
             Interpolator interpolator = interpolatorFactory.newInterpolator(lookup);
-            interpolator.setLoggerContext(loggerContext.get());
+            interpolator.setLoggerContext(getLoggerContext());
             runtimeStrSubstitutor.setVariableResolver(interpolator);
             configurationStrSubstitutor.setVariableResolver(interpolator);
         }
@@ -754,10 +766,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         rootLoggerConfig.addAppender(appender, null, null);
 
         final Level defaultLevel = Level.ERROR;
-        final String levelName = PropertiesUtil.getProperties().getStringProperty(Log4jProperties.CONFIG_DEFAULT_LEVEL,
-                defaultLevel.name());
-        final Level level = Level.valueOf(levelName);
-        rootLoggerConfig.setLevel(level != null ? level : defaultLevel);
+        final Level level = propertyResolver
+                .getString(Log4jProperties.CONFIG_DEFAULT_LEVEL)
+                .map(Level::valueOf)
+                .orElse(defaultLevel);
+        rootLoggerConfig.setLevel(level);
     }
 
     /**
@@ -850,17 +863,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public Advertiser getAdvertiser() {
         return advertiser;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apache.logging.log4j.core.config.ReliabilityStrategyFactory#getReliabilityStrategy(org.apache.logging.log4j
-     * .core.config.LoggerConfig)
-     */
-    @Override
-    public ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig) {
-        return ReliabilityStrategyFactory.getReliabilityStrategy(loggerConfig);
     }
 
     /**

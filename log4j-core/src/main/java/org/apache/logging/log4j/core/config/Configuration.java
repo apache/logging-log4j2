@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -33,10 +37,7 @@ import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.Key;
-
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 /**
  * Interface that must be implemented to create a configuration.
@@ -109,6 +110,8 @@ public interface Configuration extends Filterable {
     List<String> getPluginPackages();
 
     Map<String, String> getProperties();
+
+    PropertyResolver getPropertyResolver();
 
     /**
      * Returns the root Logger.
@@ -207,16 +210,6 @@ public interface Configuration extends Filterable {
      * @return the WatchManager.
      */
     WatchManager getWatchManager();
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.apache.logging.log4j.core.config.ReliabilityStrategyFactory#getReliabilityStrategy(org.apache.logging.log4j
-     * .core.config.LoggerConfig)
-     */
-
-    ReliabilityStrategy getReliabilityStrategy(LoggerConfig loggerConfig);
 
     /**
      * Returns the {@link NanoClock} instance for this configuration.
