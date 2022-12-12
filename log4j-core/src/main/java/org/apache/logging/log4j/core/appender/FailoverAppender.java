@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -31,11 +36,6 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The FailoverAppender will capture exceptions in an Appender and then route the event
@@ -193,10 +193,10 @@ public final class FailoverAppender extends AbstractAppender {
 
         final int retryIntervalMillis;
         if (retryIntervalSeconds >= 0) {
-            retryIntervalMillis = retryIntervalSeconds * Constants.MILLIS_IN_SECONDS;
+            retryIntervalMillis = Math.toIntExact(TimeUnit.SECONDS.toMillis(retryIntervalSeconds));
         } else {
             LOGGER.warn("Interval {} is less than zero. Using default", retryIntervalSeconds);
-            retryIntervalMillis = DEFAULT_INTERVAL_SECONDS * Constants.MILLIS_IN_SECONDS;
+            retryIntervalMillis = Math.toIntExact(TimeUnit.SECONDS.toMillis(DEFAULT_INTERVAL_SECONDS));
         }
         return new FailoverAppender(name, filter, primary, failovers, retryIntervalMillis, config, ignoreExceptions, Property.EMPTY_ARRAY);
     }

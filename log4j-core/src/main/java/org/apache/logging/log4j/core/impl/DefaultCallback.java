@@ -16,16 +16,32 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.apache.logging.log4j.core.util.Loader;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.InjectorCallback;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.spi.ClassFactory;
+import org.apache.logging.log4j.spi.DefaultClassFactory;
+import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 public class DefaultCallback implements InjectorCallback {
     @Override
     public void configure(final Injector injector) {
-        injector.setReflectionAccessor(object -> object.setAccessible(true));
-        injector.registerBundle(new DefaultBundle(injector, PropertiesUtil.getProperties(), Loader.getClassLoader()));
+        if (System.getSecurityManager() != null) {
+            injector.setReflectionAccessor(object -> AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
+                object.setAccessible(true);
+                return null;
+            }));
+
+        } else {
+            injector.setReflectionAccessor(object -> object.setAccessible(true));
+        }
+        injector.registerBinding(Key.forClass(PropertyResolver.class), LoggingSystem::getPropertyResolver)
+                .registerBinding(Key.forClass(ClassFactory.class), DefaultClassFactory::new)
+                .registerBundle(DefaultBundle.class);
     }
 
     @Override

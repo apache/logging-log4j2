@@ -14,34 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core;
+package org.apache.logging.log4j.core.config;
 
-import java.lang.reflect.Method;
+import java.net.URI;
+import java.util.Map;
 
-import org.apache.logging.log4j.ThreadContext;
-
-import static org.junit.jupiter.api.Assertions.fail;
-
-/**
- * <p>
- * Utility class to access package protected methods in {@code ThreadContext}.
- * </p>
- *
- * @see ThreadContext
- * @since 2.7
- */
-public final class ThreadContextTestAccess {
-    private ThreadContextTestAccess() { // prevent instantiation
-    }
-
-    public static void init() {
-        try {
-            Class<ThreadContext> clazz = ThreadContext.class;
-            Method method = clazz.getDeclaredMethod("init");
-            method.setAccessible(true);
-            method.invoke(null);
-        } catch (Exception ex) {
-            fail("Unable to reinitialize ThreadContext");
-        }
-    }
+public interface LoggerContextNamingStrategy {
+    String getName(final URI configLocation, final ClassLoader classLoader, final Object externalContext,
+                   final Map.Entry<String, Object> entry);
 }

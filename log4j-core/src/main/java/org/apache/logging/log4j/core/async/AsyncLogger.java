@@ -35,6 +35,7 @@ import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ReusableMessage;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -72,10 +73,9 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     private final Clock clock; // not reconfigurable
     private final ContextDataInjector contextDataInjector; // not reconfigurable
 
-    private static final ThreadNameCachingStrategy THREAD_NAME_CACHING_STRATEGY = ThreadNameCachingStrategy.create();
-
     private final ThreadLocal<RingBufferLogEventTranslator> threadLocalTranslator = new ThreadLocal<>();
     private final AsyncLoggerDisruptor loggerDisruptor;
+    private final ThreadNameCachingStrategy threadNameCachingStrategy;
 
     private volatile boolean includeLocation; // reconfigurable
     private volatile NanoClock nanoClock; // reconfigurable
@@ -92,11 +92,12 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             final AsyncLoggerDisruptor loggerDisruptor) {
         super(context, name, messageFactory);
         this.loggerDisruptor = loggerDisruptor;
+        final Injector injector = context.getInjector();
+        threadNameCachingStrategy = injector.getInstance(ThreadNameCachingStrategyFactory.class).get();
         includeLocation = privateConfig.loggerConfig.isIncludeLocation();
-        final Configuration configuration = context.getConfiguration();
-        nanoClock = configuration.getNanoClock();
-        clock = configuration.getComponent(Clock.KEY);
-        contextDataInjector = configuration.getComponent(ContextDataInjector.KEY);
+        nanoClock = injector.getInstance(NanoClock.KEY);
+        clock = injector.getInstance(Clock.KEY);
+        contextDataInjector = injector.getInstance(ContextDataInjector.KEY);
     }
 
     /*
@@ -298,7 +299,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
     private void initTranslatorThreadValues(final RingBufferLogEventTranslator translator) {
         // constant check should be optimized out when using default (CACHED)
-        if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
+        if (threadNameCachingStrategy == ThreadNameCachingStrategy.UNCACHED) {
             translator.updateThreadValues();
         }
     }
@@ -414,7 +415,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         final ContextStack contextStack = ThreadContext.getImmutableStack();
 
         final Thread currentThread = Thread.currentThread();
-        final String threadName = THREAD_NAME_CACHING_STRATEGY.getThreadName();
+        final String threadName = threadNameCachingStrategy.getThreadName();
         event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown,
                 // config properties are taken care of in the EventHandler thread
                 // in the AsyncLogger#actualAsyncLog method

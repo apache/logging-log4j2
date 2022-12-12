@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.NanoClock;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterConsumer;
 import org.apache.logging.log4j.message.ParameterVisitable;
@@ -148,7 +148,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         if (messageText == null) {
             // Happens the first time messageText is requested or if a user logs
             // a custom reused message when Constants.ENABLE_THREADLOCALS is false
-            messageText = new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE);
+            messageText = new StringBuilder(GarbageFreeConfiguration.getDefaultConfiguration().getInitialReusableMessageSize());
         }
         messageText.setLength(0);
         return messageText;
@@ -423,7 +423,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
         // ensure that excessively long char[] arrays are not kept in memory forever
         if (isThreadLocalsEnabled()) {
-            StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+            StringBuilders.trimToMaxSize(messageText, GarbageFreeConfiguration.getDefaultConfiguration().getMaxReusableMessageSize());
 
             if (parameters != null) {
                 Arrays.fill(parameters, null);

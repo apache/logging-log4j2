@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -24,16 +27,16 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.SingletonFactory;
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SetSystemProperty(key = LoggingSystemProperties.SYSTEM_ENABLE_WEBAPP, value = "false")
 public class ShutdownCallbackRegistryTest {
 
     @SingletonFactory

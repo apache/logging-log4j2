@@ -24,13 +24,11 @@ import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
@@ -112,7 +110,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
     protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
 
     protected static final int MAX_STRING_BUILDER_SIZE = Math.max(DEFAULT_STRING_BUILDER_SIZE,
-            size(Log4jProperties.GC_LAYOUT_STRING_BUILDER_MAX_SIZE, 2 * 1024));
+            GarbageFreeConfiguration.getDefaultConfiguration().getLayoutStringBuilderMaxSize());
 
     private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
 
@@ -134,10 +132,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         trimToMaxSize(result);
         result.setLength(0);
         return result;
-    }
-
-    private static int size(final String property, final int defaultValue) {
-        return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
     }
 
     protected static void trimToMaxSize(final StringBuilder stringBuilder) {
@@ -170,7 +164,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         this.headerSerializer = null;
         this.footerSerializer = null;
         this.charset = aCharset == null ? StandardCharsets.UTF_8 : aCharset;
-        textEncoder = Constants.ENABLE_DIRECT_ENCODERS ? new StringBuilderEncoder(charset) : null;
+        textEncoder = GarbageFreeConfiguration.getDefaultConfiguration().isDirectEncodersEnabled() ? new StringBuilderEncoder(charset) : null;
     }
 
     /**
@@ -187,7 +181,7 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         this.headerSerializer = headerSerializer;
         this.footerSerializer = footerSerializer;
         this.charset = aCharset == null ? StandardCharsets.UTF_8 : aCharset;
-        textEncoder = Constants.ENABLE_DIRECT_ENCODERS ? new StringBuilderEncoder(charset) : null;
+        textEncoder = GarbageFreeConfiguration.getDefaultConfiguration().isDirectEncodersEnabled() ? new StringBuilderEncoder(charset) : null;
     }
 
     protected byte[] getBytes(final String s) {

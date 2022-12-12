@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.NanoClock;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterConsumer;
 import org.apache.logging.log4j.message.ParameterVisitable;
@@ -150,7 +150,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         // threadName = null; // no need to clear threadName
 
         // ensure that excessively long char[] arrays are not kept in memory forever
-        StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+        StringBuilders.trimToMaxSize(messageText, GarbageFreeConfiguration.getDefaultConfiguration().getMaxReusableMessageSize());
 
         if (parameters != null) {
             Arrays.fill(parameters, null);
@@ -227,7 +227,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     private StringBuilder getMessageTextForWriting() {
         if (messageText == null) {
             // Happens the first time messageText is requested
-            messageText = new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE);
+            messageText = new StringBuilder(GarbageFreeConfiguration.getDefaultConfiguration().getInitialReusableMessageSize());
         }
         messageText.setLength(0);
         return messageText;

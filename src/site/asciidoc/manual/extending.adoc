@@ -55,10 +55,10 @@ optionally, a link:../log4j-core/apidocs/org/apache/logging/log4j/spi/ThreadCont
 ..  Create a `META-INF/services/org.apache.logging.spi.Provider` file
 that contains the name of the class that implements
 `org.apache.logging.spi.Provider`.
-2.  Setting the system property "log4j2.loggerContextFactory" to the name
+2.  Setting the system property `log4j2.*.LoggerContext.factory` to the name
 of the `LoggerContextFactory` class to use.
-3.  Setting the property "log4j2.loggerContextFactory" in a properties
-file named "log4j2.LogManager.properties" to the name of the
+3.  Setting the property `log4j2.*.LoggerContext.factory` in a properties
+file named "log4j2.component.properties" to the name of the
 LoggerContextFactory class to use. The properties file must be on the
 classpath.
 

@@ -19,8 +19,9 @@ package org.apache.logging.log4j.core.async;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyResolver;
 import org.apache.logging.log4j.util.Strings;
 
 import com.lmax.disruptor.BlockingWaitStrategy;
@@ -30,28 +31,29 @@ import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
 
 class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory {
-    static final String DEFAULT_WAIT_STRATEGY_CLASSNAME = TimeoutBlockingWaitStrategy.class.getName();
     private static final Logger LOGGER = StatusLogger.getLogger();
+    private final PropertyResolver propertyResolver;
     private final String propertyName;
 
-    public DefaultAsyncWaitStrategyFactory(String propertyName) {
+    public DefaultAsyncWaitStrategyFactory(final PropertyResolver propertyResolver, final String propertyName) {
+        this.propertyResolver = propertyResolver;
         this.propertyName = propertyName;
     }
 
     @Override
     public WaitStrategy createWaitStrategy() {
-        final String strategy = PropertiesUtil.getProperties().getStringProperty(propertyName, "TIMEOUT");
-        LOGGER.trace("DefaultAsyncWaitStrategyFactory property {}={}", propertyName, strategy);
-        final String strategyUp = Strings.toRootUpperCase(strategy);
+        final String strategyUp = propertyResolver
+                .getString(propertyName)
+                .map(Strings::toRootUpperCase)
+                .orElse("TIMEOUT");
         // String (not enum) is deliberately used here to avoid IllegalArgumentException being thrown. In case of
         // incorrect property value, default WaitStrategy is created.
         switch (strategyUp) {
             case "SLEEP":
-                final long sleepTimeNs =
-                        parseAdditionalLongProperty(propertyName, "SleepTimeNs", 100L);
-                final String key = getFullPropertyKey(propertyName, "Retries");
-                final int retries =
-                        PropertiesUtil.getProperties().getIntegerProperty(key, 200);
+                final String sleepTimeKey = getFullPropertyKey(propertyName, "SleepTimeNs");
+                final long sleepTimeNs = propertyResolver.getLong(sleepTimeKey).orElse(100L);
+                final String retriesKey = getFullPropertyKey(propertyName, "Retries");
+                final int retries = propertyResolver.getInt(retriesKey).orElse(200);
                 LOGGER.trace("DefaultAsyncWaitStrategyFactory creating SleepingWaitStrategy(retries={}, sleepTimeNs={})", retries, sleepTimeNs);
                 return new SleepingWaitStrategy(retries, sleepTimeNs);
             case "YIELD":
@@ -71,25 +73,19 @@ class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory {
     }
 
     static WaitStrategy createDefaultWaitStrategy(final String propertyName) {
-        final long timeoutMillis = parseAdditionalLongProperty(propertyName, "Timeout", 10L);
+        final String key = getFullPropertyKey(propertyName, "Timeout");
+        final long timeoutMillis = LoggingSystem.getPropertyResolver().getLong(key).orElse(10L);
         LOGGER.trace("DefaultAsyncWaitStrategyFactory creating TimeoutBlockingWaitStrategy(timeout={}, unit=MILLIS)", timeoutMillis);
         return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);
     }
 
     private static String getFullPropertyKey(final String strategyKey, final String additionalKey) {
-        if (strategyKey.startsWith("AsyncLogger.")) {
-            return "AsyncLogger." + additionalKey;
-        } else if (strategyKey.startsWith("AsyncLoggerConfig.")) {
-            return "AsyncLoggerConfig." + additionalKey;
+        if (strategyKey.startsWith("log4j2.*.AsyncLogger.")) {
+            return "log4j2.*.AsyncLogger." + additionalKey;
+        } else if (strategyKey.startsWith("log4j2.*.AsyncLoggerConfig.")) {
+            return "log4j2.*.AsyncLoggerConfig." + additionalKey;
         }
         return strategyKey + additionalKey;
     }
 
-    private static long parseAdditionalLongProperty(
-            final String propertyName,
-            final String additionalKey,
-            long defaultValue) {
-        final String key = getFullPropertyKey(propertyName, additionalKey);
-        return PropertiesUtil.getProperties().getLongProperty(key, defaultValue);
-    }
 }

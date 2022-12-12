@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.test.junit;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
@@ -33,6 +32,7 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.CleanFiles;
 import org.apache.logging.log4j.test.junit.CleanFolders;
@@ -128,19 +128,19 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
                     injector.registerBinding(ContextSelector.KEY, injector.getFactory(contextSelectorClass));
                 }
                 injector.init();
-                final Log4jContextFactory factory = new Log4jContextFactory(injector);
-                LogManager.setFactory(factory);
+                final Log4jContextFactory factory = injector.getInstance(Log4jContextFactory.class);
+                LoggingSystem.getInstance().setLoggerContextFactory(factory);
                 final String fqcn = getClass().getName();
                 final ClassLoader classLoader = description.getTestClass().getClassLoader();
 
                 if (Strings.isBlank(configurationLocation)) {
-                    loggerContext = factory.getContext(fqcn, classLoader, null, false);
+                    loggerContext = factory.getContext(fqcn, classLoader, false, null, displayName, injector);
                 } else if (configurationLocation.contains(",")) {
                     loggerContext = factory.getContext(fqcn, classLoader, null, false, NetUtils.toURIs(configurationLocation),
                             displayName);
                 } else {
-                    loggerContext = factory.getContext(fqcn, classLoader, null, false, NetUtils.toURI(configurationLocation),
-                            displayName);
+                    loggerContext = factory.getContext(fqcn, classLoader, false, NetUtils.toURI(configurationLocation),
+                            displayName, injector);
                 }
                 assertNotNull("Error initializing LoggerContext", loggerContext);
                 try {

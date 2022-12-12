@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
+import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.LoggerContextAccessor;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.test.junit.TypeBasedParameterResolver;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -110,19 +111,18 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     }
 
     private static LoggerContext setUpLoggerContext(final LoggerContextSource source, final ExtensionContext extensionContext) {
-        final String displayName = extensionContext.getDisplayName();
         final Injector injector = extensionContext.getTestInstance().map(DI::createInjector).orElseGet(DI::createInjector);
         injector.init();
+        final LoggingSystem system = LoggingSystem.getInstance();
         final Log4jContextFactory loggerContextFactory;
         if (source.bootstrap()) {
-            loggerContextFactory = new Log4jContextFactory(injector);
-            LogManager.setFactory(loggerContextFactory);
+            loggerContextFactory = injector.getInstance(Log4jContextFactory.class);
+            system.setLoggerContextFactory(loggerContextFactory);
         } else {
-            loggerContextFactory = (Log4jContextFactory) LogManager.getFactory();
+            loggerContextFactory = (Log4jContextFactory) LoggingSystem.getLoggerContextFactory();
         }
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         final ClassLoader classLoader = testClass.getClassLoader();
-        final Map.Entry<String, Object> injectorContext = Map.entry(Injector.class.getName(), injector);
         final String configLocation = source.value();
         final URI configUri;
         if (source.v1config()) {
@@ -131,7 +131,11 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         } else {
             configUri = configLocation.isEmpty() ? null : NetUtils.toURI(configLocation);
         }
-        final LoggerContext context = loggerContextFactory.getContext(FQCN, classLoader, injectorContext, false, configUri, displayName);
+        final String contextName = Optional.of(source.name())
+                .filter(name -> !name.isEmpty())
+                .or(() -> extensionContext.getTestMethod().map(Method::getName))
+                .orElseGet(testClass::getSimpleName);
+        final LoggerContext context = loggerContextFactory.getContext(FQCN, classLoader, false, configUri, contextName, injector);
         assertNotNull(context, () -> "No LoggerContext created for " + testClass + " and config file " + configLocation);
         final Store store = getTestStore(extensionContext);
         store.put(ReconfigurationPolicy.class, source.reconfigure());

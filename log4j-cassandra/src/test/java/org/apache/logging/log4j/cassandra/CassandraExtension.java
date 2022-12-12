@@ -24,12 +24,14 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
 import org.apache.cassandra.service.CassandraDaemon;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -37,9 +39,6 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.opentest4j.TestAbortedException;
-
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Session;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -122,7 +121,7 @@ public class CassandraExtension extends TypeBasedParameterResolver<Cluster> impl
         @Override
         public void cancel() {
             // LOG4J2-1850 Cassandra on Windows calls System.exit in the daemon stop method
-            if (PropertiesUtil.getProperties().isOsWindows()) {
+            if (Constants.isWindows()) {
                 cancelOnWindows();
             } else {
                 daemon.stop();

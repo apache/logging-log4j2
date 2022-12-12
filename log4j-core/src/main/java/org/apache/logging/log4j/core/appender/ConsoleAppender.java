@@ -40,9 +40,11 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.util.Chars;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 /**
  * Appends log events to <code>System.out</code> or <code>System.err</code> using a layout specified by the user. The
@@ -188,8 +190,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         } catch (final UnsupportedEncodingException ex) { // should never happen
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
-        final PropertyEnvironment properties = PropertiesUtil.getProperties();
-        if (!properties.isOsWindows() || properties.getBooleanProperty(Log4jProperties.JANSI_DISABLED, true) || direct) {
+        final PropertyResolver resolver = LoggingSystem.getPropertyResolver();
+        if (!Constants.isWindows() || !resolver.getBoolean(Log4jProperties.JANSI_ENABLED) || direct) {
             return outputStream;
         }
         try {

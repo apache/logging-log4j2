@@ -16,13 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -30,14 +23,22 @@ import java.lang.ref.Cleaner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("functional")
-@SetSystemProperty(key = "log4j2.enable.direct.encoders", value = "true")
-@SetSystemProperty(key = "log4j2.configurationFile", value = "EventParameterMemoryLeakTest.xml")
+@SetSystemProperty(key = Log4jProperties.GC_ENABLE_DIRECT_ENCODERS, value = "true")
+@SetSystemProperty(key = Log4jProperties.CONFIG_LOCATION, value = "EventParameterMemoryLeakTest.xml")
 public class EventParameterMemoryLeakTest {
 
     @Test

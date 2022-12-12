@@ -271,6 +271,9 @@ the ``2'' in the file name! (See the
 link:manual/configuration.html#AutomaticConfiguration[configuration
 manual page] for more details.)
 
+From log4j-3.0.0 onward::
+Define the property `log4j2.*.System.debug` or set it to `true` (ignoring case) to enable internal logging to the console.
+
 From log4j-2.9 onward::
 From log4j-2.9 onward, log4j2 will print all internal logging to the
 console if system property `log4j2.debug` is either defined empty or its value

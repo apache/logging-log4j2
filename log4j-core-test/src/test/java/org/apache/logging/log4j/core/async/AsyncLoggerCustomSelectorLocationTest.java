@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -24,17 +31,11 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -80,6 +81,12 @@ public class AsyncLoggerCustomSelectorLocationTest {
 
         @Override
         public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext, URI configLocation) {
+            return CONTEXT;
+        }
+
+        @Override
+        public LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader, final boolean currentContext,
+                                        final URI configLocation, final Injector injector) {
             return CONTEXT;
         }
 

@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.core.util.Loader;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
@@ -143,7 +143,7 @@ public class ResponseTimeTest {
         runLatencyTest(logger, WARMUP_DURATION_MILLIS, WARMUP_COUNT, loadMessagesPerSec, idleStrategy,
                 warmupServiceTmHistograms, warmupResponseTmHistograms, threadCount);
         System.out.println("-----------------Warmup done. load=" + loadMessagesPerSec);
-        if (!Constants.ENABLE_DIRECT_ENCODERS || !isThreadLocalsEnabled()) {
+        if (!GarbageFreeConfiguration.getDefaultConfiguration().isDirectEncodersEnabled() || !isThreadLocalsEnabled()) {
             //System.gc();
             //Thread.sleep(5000);
         }

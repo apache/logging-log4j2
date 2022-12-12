@@ -21,12 +21,7 @@ import java.util.Map;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.util.Timer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ThreadContextUtilityClass {
 
@@ -118,7 +113,4 @@ public class ThreadContextUtilityClass {
         assertEquals("testValue", ThreadContext.get("testKey"));
     }
 
-    public static void reset() {
-        ThreadContext.init();
-    }
 }

@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -148,7 +148,7 @@ public class SyslogAppender extends SocketAppender {
                 return null;
             }
             final AbstractSocketManager manager = createSocketManager(name, protocol, getHost(), getPort(), getConnectTimeoutMillis(),
-                    sslConfiguration, getReconnectDelayMillis(), getImmediateFail(), layout, Constants.ENCODER_BYTE_BUFFER_SIZE, null);
+                    sslConfiguration, getReconnectDelayMillis(), getImmediateFail(), layout, GarbageFreeConfiguration.getDefaultConfiguration().getEncoderByteBufferSize(), null);
 
             return new SyslogAppender(name, layout, getFilter(), isIgnoreExceptions(), isImmediateFlush(), manager,
                     getAdvertise() ? configuration.getAdvertiser() : null);

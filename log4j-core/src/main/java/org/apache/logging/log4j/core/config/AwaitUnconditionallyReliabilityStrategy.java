@@ -24,7 +24,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Supplier;
 
 /**
@@ -33,16 +32,14 @@ import org.apache.logging.log4j.util.Supplier;
 public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrategy {
 
     private static final long DEFAULT_SLEEP_MILLIS = 5000; // 5 seconds
-    private static final long SLEEP_MILLIS = sleepMillis();
     private final LoggerConfig loggerConfig;
+    private final long sleepMillis;
 
     public AwaitUnconditionallyReliabilityStrategy(final LoggerConfig loggerConfig) {
         this.loggerConfig = Objects.requireNonNull(loggerConfig, "loggerConfig is null");
-    }
-
-    private static long sleepMillis() {
-        return PropertiesUtil.getProperties().getLongProperty(Log4jProperties.CONFIG_RELIABILITY_STRATEGY_AWAIT_UNCONDITIONALLY_MILLIS,
-                DEFAULT_SLEEP_MILLIS);
+        this.sleepMillis = loggerConfig.getPropertyResolver()
+                .getLong(Log4jProperties.CONFIG_RELIABILITY_STRATEGY_AWAIT_UNCONDITIONALLY_MILLIS)
+                .orElse(DEFAULT_SLEEP_MILLIS);
     }
 
     /*
@@ -127,7 +124,7 @@ public class AwaitUnconditionallyReliabilityStrategy implements ReliabilityStrat
         // only sleep once per configuration stop
         if (loggerConfig == configuration.getRootLogger()) {
             try {
-                Thread.sleep(SLEEP_MILLIS);
+                Thread.sleep(sleepMillis);
             } catch (final InterruptedException e) {
                 StatusLogger.getLogger().warn("Sleep before stop configuration was interrupted.");
             }

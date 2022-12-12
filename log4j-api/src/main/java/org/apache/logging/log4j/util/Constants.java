@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.LoggingSystemProperties;
 
 /**
@@ -26,9 +30,7 @@ import org.apache.logging.log4j.spi.LoggingSystemProperties;
 @InternalApi
 public final class Constants {
 
-    private static final LazyBoolean isWebApp = new LazyBoolean(() -> PropertiesUtil.getProperties()
-            .getBooleanProperty(LoggingSystemProperties.SYSTEM_IS_WEBAPP,
-                    isClassAvailable("javax.servlet.Servlet") || isClassAvailable("jakarta.servlet.Servlet")));
+    private static final PrivilegedAction<String> GET_OPERATING_SYSTEM_NAME = () -> System.getProperty("os.name", "");
 
     /**
      * {@code true} if we think we are running in a web container, based on the boolean value of system property
@@ -36,25 +38,19 @@ public final class Constants {
      * is present in the classpath.
      */
     public static boolean isWebApp() {
-        return isWebApp.getAsBoolean();
+        return isWebApp(LoggingSystem.getPropertyResolver());
     }
 
-    public static void setWebApp(final boolean webApp) {
-        isWebApp.setAsBoolean(webApp);
+    public static boolean isWebApp(final PropertyResolver resolver) {
+        return resolver
+                .getString(LoggingSystemProperties.SYSTEM_ENABLE_WEBAPP)
+                .filter(value -> "calculate".equalsIgnoreCase(value) ? isServletClassAvailable() : "true".equalsIgnoreCase(value))
+                .isPresent();
     }
 
-    public static void resetWebApp() {
-        isWebApp.reset();
+    private static boolean isServletClassAvailable() {
+        return isClassAvailable("javax.servlet.Servlet") || isClassAvailable("jakarta.servlet.Servlet");
     }
-
-    /**
-     * @deprecated use {@link #isWebApp()}
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static final boolean IS_WEB_APP = isWebApp();
-
-    private static final LazyBoolean threadLocalsEnabled = new LazyBoolean(
-            () -> !isWebApp() && PropertiesUtil.getProperties().getBooleanProperty(LoggingSystemProperties.SYSTEM_THREAD_LOCALS_ENABLED, true));
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
@@ -64,22 +60,15 @@ public final class Constants {
      * </p>
      */
     public static boolean isThreadLocalsEnabled() {
-        return threadLocalsEnabled.getAsBoolean();
+        return isThreadLocalsEnabled(LoggingSystem.getPropertyResolver());
     }
 
-    public static void setThreadLocalsEnabled(final boolean enabled) {
-        threadLocalsEnabled.setAsBoolean(enabled);
+    public static boolean isThreadLocalsEnabled(final PropertyResolver resolver) {
+        final String value = resolver
+                .getString(LoggingSystemProperties.SYSTEM_THREAD_LOCALS_ENABLED)
+                .orElse("true");
+        return "calculate".equalsIgnoreCase(value) ? !isServletClassAvailable() : "true".equalsIgnoreCase(value);
     }
-
-    public static void resetThreadLocalsEnabled() {
-        threadLocalsEnabled.reset();
-    }
-
-    /**
-     * @deprecated use {@link #isThreadLocalsEnabled()}
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static final boolean ENABLE_THREADLOCALS = isThreadLocalsEnabled();
 
     public static final int JAVA_MAJOR_VERSION = getMajorVersion();
 
@@ -92,10 +81,27 @@ public final class Constants {
      * </p>
      * @since 2.9
      */
-    public static final int MAX_REUSABLE_MESSAGE_SIZE = size(LoggingSystemProperties.GC_REUSABLE_MESSAGE_MAX_SIZE, (128 * 2 + 2) * 2 + 2);
+    public static final int MAX_REUSABLE_MESSAGE_SIZE = LoggingSystem.getPropertyResolver()
+            .getInt(LoggingSystemProperties.GC_REUSABLE_MESSAGE_MAX_SIZE)
+            .orElse((128 * 2 + 2) * 2 + 2);
 
-    private static int size(final String property, final int defaultValue) {
-        return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
+    /**
+     * Indicates if the current operating system is Windows-based. This may be useful for enabling Windows-specific
+     * compatibility or dependencies.
+     *
+     * @since 3.0.0
+     */
+    public static boolean isWindows() {
+        return getOperatingSystemName().startsWith("Windows");
+    }
+
+    private static String getOperatingSystemName() {
+        try {
+            return System.getSecurityManager() != null ? AccessController.doPrivileged(GET_OPERATING_SYSTEM_NAME) :
+                    GET_OPERATING_SYSTEM_NAME.run();
+        } catch (final SecurityException ignored) {
+            return Strings.EMPTY;
+        }
     }
 
     /**

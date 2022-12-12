@@ -86,7 +86,7 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
         @Setup
         public final void before() throws IOException {
             Files.deleteIfExists(Path.of("target", "ConcurrentAsyncLoggerToFileBenchmark.log"));
-            System.setProperty(LoggingSystemProperties.SYSTEM_IS_WEBAPP, "false");
+            System.setProperty(LoggingSystemProperties.SYSTEM_ENABLE_WEBAPP, "false");
             asyncLoggerType.setProperties();
             queueFullPolicy.setProperties();
             logger = LogManager.getLogger(ConcurrentAsyncLoggerToFileBenchmark.class);

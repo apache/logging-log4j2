@@ -42,9 +42,10 @@ import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 /**
  * Creates MBeans to instrument various classes in the log4j class hierarchy.
@@ -74,8 +75,11 @@ public final class Server {
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-938">LOG4J2-938</a>
      */
     private static ExecutorService createExecutor() {
-        final boolean defaultAsync = !Constants.isWebApp();
-        final boolean async = PropertiesUtil.getProperties().getBooleanProperty(Log4jProperties.JMX_NOTIFY_ASYNC, defaultAsync);
+        final PropertyResolver resolver = LoggingSystem.getPropertyResolver();
+        final boolean defaultAsync = !Constants.isWebApp(resolver);
+        final boolean async = resolver.getString(Log4jProperties.JMX_NOTIFY_ASYNC)
+                .filter(value -> "calculate".equalsIgnoreCase(value) ? defaultAsync : "true".equalsIgnoreCase(value))
+                .isPresent();
         return async ? Executors.newFixedThreadPool(1, Log4jThreadFactory.createDaemonThreadFactory(THREAD_NAME_PREFIX))
                 : null;
     }
@@ -126,7 +130,7 @@ public final class Server {
     }
 
     private static boolean isJmxDisabled() {
-        return PropertiesUtil.getProperties().getBooleanProperty(Log4jProperties.JMX_DISABLED);
+        return !LoggingSystem.getPropertyResolver().getBoolean(Log4jProperties.JMX_ENABLED, true);
     }
 
     public static void reregisterMBeansAfterReconfigure() {

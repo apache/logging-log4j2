@@ -23,7 +23,7 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
 import java.util.Objects;
 
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -48,7 +48,7 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
     private final int byteBufferSize;
 
     public StringBuilderEncoder(final Charset charset) {
-        this(charset, Constants.ENCODER_CHAR_BUFFER_SIZE, Constants.ENCODER_BYTE_BUFFER_SIZE);
+        this(charset, GarbageFreeConfiguration.getDefaultConfiguration().getEncoderCharBufferSize(), GarbageFreeConfiguration.getDefaultConfiguration().getEncoderByteBufferSize());
     }
 
     public StringBuilderEncoder(final Charset charset, final int charBufferSize, final int byteBufferSize) {

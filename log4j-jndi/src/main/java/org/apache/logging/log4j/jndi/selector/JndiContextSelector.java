@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.jndi.selector;
 
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
+import javax.naming.NamingException;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.selector.ContextSelector;
@@ -23,17 +31,8 @@ import org.apache.logging.log4j.core.selector.NamedContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.jndi.JndiManager;
 import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import javax.naming.NamingException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This class can be used to define a custom logger repository. It makes use of the fact that in J2EE environments, each
@@ -149,6 +148,12 @@ public class JndiContextSelector implements NamedContextSelector {
         return loggingContextName == null ? CONTEXT : locateContext(loggingContextName, null, configLocation);
     }
 
+    @Override
+    public LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader, final boolean currentContext,
+                                    final URI configLocation, final Injector injector) {
+        throw new UnsupportedOperationException();
+    }
+
     private String getContextName() {
         String loggingContextName = null;
 
@@ -195,7 +200,7 @@ public class JndiContextSelector implements NamedContextSelector {
 
     @Override
     public List<LoggerContext> getLoggerContexts() {
-        return Collections.unmodifiableList(new ArrayList<>(CONTEXT_MAP.values()));
+        return List.copyOf(CONTEXT_MAP.values());
     }
 
 }

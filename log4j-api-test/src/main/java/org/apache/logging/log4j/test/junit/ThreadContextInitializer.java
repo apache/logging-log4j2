@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.test.junit;
 
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.test.ThreadContextUtilityClass;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -42,14 +41,14 @@ class ThreadContextInitializer implements BeforeAllCallback, BeforeEachCallback 
     }
 
     private void resetThreadContext(ExtensionContext context) {
-        ThreadContextUtilityClass.reset();
+        ThreadContext.init();
         // We use `CloseableResource` instead of `afterAll` to reset the
         // ThreadContextFactory
         // *after* the `@SetSystemProperty` extension has restored the properties
         ExtensionContextAnchor.setAttribute(ThreadContext.class, new CloseableResource() {
             @Override
             public void close() throws Throwable {
-                ThreadContextUtilityClass.reset();
+                ThreadContext.init();
             }
 
         }, context);

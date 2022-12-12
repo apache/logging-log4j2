@@ -20,9 +20,9 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.SocketAppenderTest.TcpSocketTestServer;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -61,12 +61,12 @@ public class SocketAppenderBufferSizeTest {
 
     @Test
     public void testTcpAppenderDefaultEncoderBufferSize() throws Exception {
-        SocketAppenderTest.testTcpAppender(tcpServer, logger, Constants.ENCODER_BYTE_BUFFER_SIZE);
+        SocketAppenderTest.testTcpAppender(tcpServer, logger, GarbageFreeConfiguration.getDefaultConfiguration().getEncoderByteBufferSize());
     }
 
     @Test
     public void testTcpAppenderLargeEncoderBufferSize() throws Exception {
-        SocketAppenderTest.testTcpAppender(tcpServer, logger, Constants.ENCODER_BYTE_BUFFER_SIZE * 100);
+        SocketAppenderTest.testTcpAppender(tcpServer, logger, GarbageFreeConfiguration.getDefaultConfiguration().getEncoderByteBufferSize() * 100);
     }
 
     @Test

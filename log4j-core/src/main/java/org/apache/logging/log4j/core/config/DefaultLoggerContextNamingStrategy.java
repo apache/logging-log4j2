@@ -14,21 +14,17 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j;
+package org.apache.logging.log4j.core.config;
 
-/**
- * <p>
- * Utility class to access package protected methods in {@code ThreadContext}.
- * </p>
- *
- * @see ThreadContext
- * @since 2.7
- */
-public final class ThreadContextBenchmarkAccess {
-    private ThreadContextBenchmarkAccess() { // prevent instantiation
-    }
+import java.net.URI;
+import java.util.Map;
 
-    public static void init() {
-        ThreadContext.init();
+import org.apache.logging.log4j.util.PropertyResolver;
+
+public class DefaultLoggerContextNamingStrategy implements LoggerContextNamingStrategy {
+    @Override
+    public String getName(final URI configLocation, final ClassLoader classLoader, final Object externalContext,
+                          final Map.Entry<String, Object> entry) {
+        return PropertyResolver.DEFAULT_CONTEXT;
     }
 }

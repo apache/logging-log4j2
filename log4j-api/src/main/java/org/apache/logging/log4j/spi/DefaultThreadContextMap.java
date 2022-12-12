@@ -23,7 +23,6 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.Cast;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -65,7 +64,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     }
 
     public DefaultThreadContextMap(final boolean useMap) {
-        this(useMap, PropertiesUtil.getProperties().getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE));
+        this(useMap, LoggingSystem.getPropertyResolver().getBoolean(THREAD_CONTEXT_MAP_INHERITABLE));
     }
 
     DefaultThreadContextMap(final boolean useMap, final boolean inheritableMap) {

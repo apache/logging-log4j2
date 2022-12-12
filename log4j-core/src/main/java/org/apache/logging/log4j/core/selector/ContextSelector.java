@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.plugins.di.Key;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.Key;
 
 /**
  * Interface used to locate a LoggerContext.
@@ -71,6 +72,11 @@ public interface ContextSelector {
      */
     LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext);
 
+    default LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader,
+                                     final boolean currentContext) {
+        return getContext(fqcn, name, loader, currentContext, null);
+    }
+
     /**
      * Returns the LoggerContext.
      * @param fqcn The fully qualified class name of the caller.
@@ -100,6 +106,11 @@ public interface ContextSelector {
      */
     LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext, URI configLocation);
 
+    default LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader,
+                                     final boolean currentContext, final URI configLocation) {
+        return getContext(fqcn, name, loader, currentContext, configLocation, null);
+    }
+
     /**
      * Returns the LoggerContext.
      * @param fqcn The fully qualified class name of the caller.
@@ -117,6 +128,20 @@ public interface ContextSelector {
         }
         return lc;
     }
+
+    default LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader,
+                                     final Map.Entry<String, Object> entry, final boolean currentContext,
+                                     final URI configLocation) {
+        final LoggerContext lc = getContext(fqcn, name, loader, currentContext, configLocation);
+        if (entry != null) {
+            lc.putObject(entry.getKey(), entry.getValue());
+        }
+        return lc;
+    }
+
+
+    LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader, final boolean currentContext,
+                             final URI configLocation, final Injector injector);
 
     /**
      * Returns a List of all the available LoggerContexts.

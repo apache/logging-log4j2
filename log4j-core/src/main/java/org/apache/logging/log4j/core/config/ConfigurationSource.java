@@ -19,28 +19,15 @@ package org.apache.logging.log4j.core.config;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
-import javax.net.ssl.HttpsURLConnection;
 
-import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
-import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
-import org.apache.logging.log4j.core.util.AuthorizationProvider;
-import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Represents the source for the logging configuration.
@@ -50,17 +37,17 @@ public class ConfigurationSource {
     /**
      * ConfigurationSource to use with Configurations that do not require a "real" configuration source.
      */
-    public static final ConfigurationSource NULL_SOURCE = new ConfigurationSource(new byte[0], null, 0);
+    public static final ConfigurationSource NULL_SOURCE = new ConfigurationSource(new byte[0], null, 0, null);
     /**
      * ConfigurationSource to use with {@link org.apache.logging.log4j.core.config.composite.CompositeConfiguration}.
      */
-    public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(new byte[0], null, 0);
-    private static final String HTTPS = "https";
-    private static final String HTTP = "http";
+    public static final ConfigurationSource COMPOSITE_SOURCE = new ConfigurationSource(new byte[0], null, 0, null);
 
     private final InputStream stream;
     private volatile byte[] data;
-    private volatile Source source;
+    private final Source source;
+    // Set when using a URL-based configuration for reloading
+    private final ConfigurationResolver configurationResolver;
     private final long lastModified;
     // Set when the configuration has been updated so reset can use it for the next lastModified timestamp.
     private volatile long modifiedMillis;
@@ -76,6 +63,7 @@ public class ConfigurationSource {
         this.stream = Objects.requireNonNull(stream, "stream is null");
         this.data = null;
         this.source = new Source(file);
+        this.configurationResolver = null;
         long modified = 0;
         try {
             modified = file.lastModified();
@@ -96,6 +84,7 @@ public class ConfigurationSource {
         this.stream = Objects.requireNonNull(stream, "stream is null");
         this.data = null;
         this.source = new Source(path);
+        this.configurationResolver = null;
         long modified = 0;
         try {
             modified = Files.getLastModifiedTime(path).toMillis();
@@ -113,10 +102,15 @@ public class ConfigurationSource {
      * @param url the URL where the input stream originated
      */
     public ConfigurationSource(final InputStream stream, final URL url) {
+        this(stream, url, null);
+    }
+
+    public ConfigurationSource(final InputStream stream, final URL url, final ConfigurationResolver configurationResolver) {
         this.stream = Objects.requireNonNull(stream, "stream is null");
         this.data = null;
         this.lastModified = 0;
         this.source = new Source(url);
+        this.configurationResolver = configurationResolver;
     }
 
     /**
@@ -128,10 +122,16 @@ public class ConfigurationSource {
      * @param lastModified when the source was last modified.
      */
     public ConfigurationSource(final InputStream stream, final URL url, long lastModified) {
+        this(stream, url, lastModified, null);
+    }
+
+    public ConfigurationSource(final InputStream stream, final URL url, long lastModified,
+                               final ConfigurationResolver configurationResolver) {
         this.stream = Objects.requireNonNull(stream, "stream is null");
         this.data = null;
         this.lastModified = lastModified;
         this.source = new Source(url);
+        this.configurationResolver = configurationResolver;
     }
 
     /**
@@ -142,7 +142,7 @@ public class ConfigurationSource {
      * @throws IOException if an exception occurred reading from the specified stream
      */
     public ConfigurationSource(final InputStream stream) throws IOException {
-        this(stream.readAllBytes(), null, 0);
+        this(stream.readAllBytes(), null, 0, null);
     }
 
     public ConfigurationSource(final Source source, final byte[] data, final long lastModified) throws IOException {
@@ -151,17 +151,15 @@ public class ConfigurationSource {
         this.stream = new ByteArrayInputStream(data);
         this.lastModified = lastModified;
         this.source = source;
+        this.configurationResolver = null;
     }
 
-    private ConfigurationSource(final byte[] data, final URL url, final long lastModified) {
+    private ConfigurationSource(final byte[] data, final URL url, final long lastModified, final ConfigurationResolver configurationResolver) {
         this.data = Objects.requireNonNull(data, "data is null");
         this.stream = new ByteArrayInputStream(data);
         this.lastModified = lastModified;
-        if (url == null) {
-            this.data = data;
-        } else {
-            this.source = new Source(url);
-        }
+        this.source = url == null ? null : new Source(url);
+        this.configurationResolver = configurationResolver;
     }
 
     /**
@@ -175,15 +173,15 @@ public class ConfigurationSource {
     }
 
     private boolean isFile() {
-        return source == null ? false : source.getFile() != null;
+        return source != null && source.getFile() != null;
     }
 
     private boolean isURL() {
-        return source == null ? false : source.getURI() != null;
+        return source != null && source.getURI() != null;
     }
 
     private boolean isLocation() {
-        return source == null ? false : source.getLocation() != null;
+        return source != null && source.getLocation() != null;
     }
 
     /**
@@ -194,14 +192,6 @@ public class ConfigurationSource {
      */
     public URL getURL() {
         return source == null ? null : source.getURL();
-    }
-
-    /**
-     * @deprecated Not used internally, no replacement. TODO remove and make source final.
-     */
-    @Deprecated
-    public void setSource(Source source) {
-        this.source = source;
     }
 
     public void setData(final byte[] data) {
@@ -260,11 +250,11 @@ public class ConfigurationSource {
             return new ConfigurationSource(new FileInputStream(getFile()), getFile());
         } else if (isURL() && data != null) {
             // Creates a ConfigurationSource without accessing the URL since the data was provided.
-            return new ConfigurationSource(data, getURL(), modifiedMillis == 0 ? lastModified : modifiedMillis);
+            return new ConfigurationSource(data, getURL(), modifiedMillis == 0 ? lastModified : modifiedMillis, configurationResolver);
         } else if (isURL()) {
-            return fromUri(getURI());
+            return configurationResolver.tryResolve(getURI()).orElse(null);
         } else if (data != null) {
-            return new ConfigurationSource(data, null, lastModified);
+            return new ConfigurationSource(data, null, lastModified, configurationResolver);
         }
         return null;
     }
@@ -284,82 +274,4 @@ public class ConfigurationSource {
         return "stream (" + length + " bytes, unknown location)";
     }
 
-    /**
-     * Loads the configuration from a URI.
-     * @param configLocation A URI representing the location of the configuration.
-     * @return The ConfigurationSource for the configuration.
-     */
-    public static ConfigurationSource fromUri(final URI configLocation) {
-        final File configFile = FileUtils.fileFromUri(configLocation);
-        if (configFile != null && configFile.exists() && configFile.canRead()) {
-            try {
-                return new ConfigurationSource(new FileInputStream(configFile), configFile);
-            } catch (final FileNotFoundException ex) {
-                ConfigurationFactory.LOGGER.error("Cannot locate file {}", configLocation.getPath(), ex);
-            }
-        }
-        if (ConfigurationFactory.isClassLoaderUri(configLocation)) {
-            final ClassLoader loader = LoaderUtil.getThreadContextClassLoader();
-            final String path = ConfigurationFactory.extractClassLoaderUriPath(configLocation);
-            return fromResource(path, loader);
-        }
-        if (!configLocation.isAbsolute()) { // LOG4J2-704 avoid confusing error message thrown by uri.toURL()
-            ConfigurationFactory.LOGGER.error("File not found in file system or classpath: {}", configLocation.toString());
-            return null;
-        }
-        try {
-            return getConfigurationSource(configLocation.toURL());
-        } catch (final MalformedURLException ex) {
-            ConfigurationFactory.LOGGER.error("Invalid URL {}", configLocation.toString(), ex);
-        }
-        return null;
-    }
-
-    /**
-     * Retrieves the configuration via the ClassLoader.
-     * @param resource The resource to load.
-     * @param loader The default ClassLoader to use.
-     * @return The ConfigurationSource for the configuration.
-     */
-    public static ConfigurationSource fromResource(final String resource, final ClassLoader loader) {
-        final URL url = Loader.getResource(resource, loader);
-        if (url == null) {
-            return null;
-        }
-        return getConfigurationSource(url);
-    }
-
-    private static ConfigurationSource getConfigurationSource(final URL url) {
-        try {
-            final URLConnection urlConnection = url.openConnection();
-            // A "jar:" URL file remains open after the stream is closed, so do not cache it.
-            urlConnection.setUseCaches(false);
-            final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
-            provider.addAuthorization(urlConnection);
-            if (url.getProtocol().equals(HTTPS)) {
-                final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
-                if (sslConfiguration != null) {
-                    ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
-                    if (!sslConfiguration.isVerifyHostName()) {
-                        ((HttpsURLConnection) urlConnection).setHostnameVerifier(LaxHostnameVerifier.INSTANCE);
-                    }
-                }
-            }
-            final File file = FileUtils.fileFromUri(url.toURI());
-            try {
-                if (file != null) {
-                    return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
-                } else {
-                    return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
-                }
-            } catch (final FileNotFoundException ex) {
-                ConfigurationFactory.LOGGER.info("Unable to locate file {}, ignoring.", url.toString());
-                return null;
-            }
-        } catch (final IOException | URISyntaxException ex) {
-            ConfigurationFactory.LOGGER.warn("Error accessing {} due to {}, ignoring.", url.toString(),
-                    ex.getMessage());
-            return null;
-        }
-    }
 }

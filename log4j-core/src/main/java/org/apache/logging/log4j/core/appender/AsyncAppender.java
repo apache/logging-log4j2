@@ -16,13 +16,20 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TransferQueue;
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.ArrayBlockingQueueFactory;
 import org.apache.logging.log4j.core.async.AsyncQueueFullMessageUtil;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
-import org.apache.logging.log4j.core.async.AsyncQueueFullPolicyFactory;
 import org.apache.logging.log4j.core.async.BlockingQueueFactory;
 import org.apache.logging.log4j.core.async.DiscardingAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
@@ -37,19 +44,13 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.spi.AbstractLogger;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TransferQueue;
 
 /**
  * Appends to one or more Appenders asynchronously. You can configure an AsyncAppender with one or more Appenders and an
@@ -73,12 +74,15 @@ public final class AsyncAppender extends AbstractAppender {
     private AppenderControl errorAppender;
     private AsyncAppenderEventDispatcher dispatcher;
     private AsyncQueueFullPolicy asyncQueueFullPolicy;
+    private final Supplier<AsyncQueueFullPolicy> asyncQueueFullPolicySupplier;
 
     private AsyncAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
-            final String errorRef, final int queueSize, final boolean blocking, final boolean ignoreExceptions,
-            final long shutdownTimeout, final Configuration config, final boolean includeLocation,
-            final BlockingQueueFactory<LogEvent> blockingQueueFactory, final Property[] properties) {
+                          final String errorRef, final int queueSize, final boolean blocking, final boolean ignoreExceptions,
+                          final long shutdownTimeout, final Configuration config, final boolean includeLocation,
+                          final BlockingQueueFactory<LogEvent> blockingQueueFactory, final Property[] properties,
+                          final Supplier<AsyncQueueFullPolicy> asyncQueueFullPolicySupplier) {
         super(name, filter, null, ignoreExceptions, properties);
+        this.asyncQueueFullPolicySupplier = asyncQueueFullPolicySupplier;
         this.queue = blockingQueueFactory.create(queueSize);
         this.queueSize = queueSize;
         this.blocking = blocking;
@@ -115,7 +119,7 @@ public final class AsyncAppender extends AbstractAppender {
         } else if (errorRef == null) {
             throw new ConfigurationException("No appenders are available for AsyncAppender " + getName());
         }
-        asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
+        asyncQueueFullPolicy = asyncQueueFullPolicySupplier.get();
 
         dispatcher.start();
         super.start();
@@ -273,60 +277,69 @@ public final class AsyncAppender extends AbstractAppender {
         @PluginElement(BlockingQueueFactory.ELEMENT_TYPE)
         private BlockingQueueFactory<LogEvent> blockingQueueFactory = new ArrayBlockingQueueFactory<>();
 
-        public Builder setAppenderRefs(final AppenderRef[] appenderRefs) {
+        private Supplier<AsyncQueueFullPolicy> asyncQueueFullPolicySupplier;
+
+        public B setAppenderRefs(final AppenderRef[] appenderRefs) {
             this.appenderRefs = appenderRefs;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setErrorRef(final String errorRef) {
+        public B setErrorRef(final String errorRef) {
             this.errorRef = errorRef;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setBlocking(final boolean blocking) {
+        public B setBlocking(final boolean blocking) {
             this.blocking = blocking;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setShutdownTimeout(final long shutdownTimeout) {
+        public B setShutdownTimeout(final long shutdownTimeout) {
             this.shutdownTimeout = shutdownTimeout;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setBufferSize(final int bufferSize) {
+        public B setBufferSize(final int bufferSize) {
             this.bufferSize = bufferSize;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setName(final String name) {
+        public B setName(final String name) {
             this.name = name;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setIncludeLocation(final boolean includeLocation) {
+        public B setIncludeLocation(final boolean includeLocation) {
             this.includeLocation = includeLocation;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setConfiguration(final Configuration configuration) {
+        public B setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setIgnoreExceptions(final boolean ignoreExceptions) {
+        public B setIgnoreExceptions(final boolean ignoreExceptions) {
             this.ignoreExceptions = ignoreExceptions;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setBlockingQueueFactory(final BlockingQueueFactory<LogEvent> blockingQueueFactory) {
+        public B setBlockingQueueFactory(final BlockingQueueFactory<LogEvent> blockingQueueFactory) {
             this.blockingQueueFactory = blockingQueueFactory;
-            return this;
+            return asBuilder();
+        }
+
+        @Inject
+        public B setAsyncQueueFullPolicySupplier(final Supplier<AsyncQueueFullPolicy> asyncQueueFullPolicySupplier) {
+            this.asyncQueueFullPolicySupplier = asyncQueueFullPolicySupplier;
+            return asBuilder();
         }
 
         @Override
         public AsyncAppender build() {
             return new AsyncAppender(name, getFilter(), appenderRefs, errorRef, bufferSize, blocking, ignoreExceptions,
-                shutdownTimeout, configuration, includeLocation, blockingQueueFactory, getPropertyArray());
+                shutdownTimeout, configuration, includeLocation, blockingQueueFactory, getPropertyArray(),
+                    asyncQueueFullPolicySupplier);
         }
     }
 

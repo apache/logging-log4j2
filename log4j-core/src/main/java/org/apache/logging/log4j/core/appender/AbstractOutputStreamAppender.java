@@ -23,8 +23,8 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.util.Constants;
 
 /**
  * Appends log events as bytes to a byte output stream. The stream encoding is defined in the layout.
@@ -44,7 +44,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
         private boolean bufferedIo = true;
 
         @PluginBuilderAttribute
-        private int bufferSize = Constants.ENCODER_BYTE_BUFFER_SIZE;
+        private int bufferSize = GarbageFreeConfiguration.getDefaultConfiguration().getEncoderByteBufferSize();
 
         @PluginBuilderAttribute
         private boolean immediateFlush = true;
@@ -169,7 +169,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
     }
 
     private void tryAppend(final LogEvent event) {
-        if (Constants.ENABLE_DIRECT_ENCODERS) {
+        if (GarbageFreeConfiguration.getDefaultConfiguration().isDirectEncodersEnabled()) {
             directEncodeEvent(event);
         } else {
             writeByteArrayToManager(event);

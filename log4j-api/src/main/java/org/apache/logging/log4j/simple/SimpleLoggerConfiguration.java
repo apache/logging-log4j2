@@ -20,27 +20,27 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 import static org.apache.logging.log4j.simple.SimpleLoggerContext.DEFAULT_DATE_TIME_FORMAT;
-import static org.apache.logging.log4j.simple.SimpleLoggerContext.SYSTEM_PREFIX;
 
 public class SimpleLoggerConfiguration {
 
-    protected final PropertyEnvironment environment;
+    protected final PropertyResolver propertyResolver;
 
-    public SimpleLoggerConfiguration(final PropertyEnvironment environment) {
-        this.environment = environment;
+    public SimpleLoggerConfiguration(final PropertyResolver resolver) {
+        propertyResolver = resolver;
     }
 
     /** Include the ThreadContextMap in the log message */
     public boolean isContextMapShown() {
-        return environment.getBooleanProperty(SYSTEM_PREFIX + "showContextMap", false);
+        return propertyResolver.getBoolean(LoggingSystemProperties.SIMPLE_SHOW_CONTEXT_MAP, false);
     }
 
     /** Include the instance name in the log message? */
     public boolean isLogNameShown() {
-        return environment.getBooleanProperty(SYSTEM_PREFIX + "showlogname", false);
+        return propertyResolver.getBoolean(LoggingSystemProperties.SIMPLE_SHOW_LOG_NAME, false);
     }
 
     /**
@@ -48,33 +48,39 @@ public class SimpleLoggerConfiguration {
      * lost in a flood of messages without knowing who sends them.
      */
     public boolean isShortNameShown() {
-        return environment.getBooleanProperty(SYSTEM_PREFIX + "showShortLogname", true);
+        return propertyResolver.getBoolean(LoggingSystemProperties.SIMPLE_SHOW_SHORT_LOG_NAME, true);
     }
 
     /** Include the current time in the log message */
     public boolean isDateTimeShown() {
-        return environment.getBooleanProperty(SYSTEM_PREFIX + "showdatetime", false);
+        return propertyResolver.getBoolean(LoggingSystemProperties.SIMPLE_SHOW_DATE_TIME, false);
     }
 
     public Level getDefaultLevel() {
-        final String level = environment.getStringProperty(SYSTEM_PREFIX + "level");
-        return Level.toLevel(level, Level.ERROR);
+        return propertyResolver.getString(LoggingSystemProperties.SIMPLE_LOG_LEVEL)
+                .map(Level::getLevel)
+                .orElse(Level.ERROR);
     }
 
     public Level getLoggerLevel(final String loggerName) {
-        final String level = environment.getStringProperty(SYSTEM_PREFIX + loggerName + ".level");
-        return Level.toLevel(level, getDefaultLevel());
+        return propertyResolver.getString(String.format(LoggingSystemProperties.SIMPLE_LOGGER_LOG_LEVEL, loggerName))
+                .map(Level::getLevel)
+                .orElseGet(this::getDefaultLevel);
     }
 
     public DateFormat getDateTimeFormat() {
-        try {
-            return new SimpleDateFormat(environment.getStringProperty(SYSTEM_PREFIX + "dateTimeFormat", DEFAULT_DATE_TIME_FORMAT));
-        } catch (final IllegalArgumentException e) {
-            return new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT);
-        }
+        return propertyResolver.getString(LoggingSystemProperties.SIMPLE_DATE_TIME_FORMAT)
+                .map(format -> {
+                    try {
+                        return new SimpleDateFormat(format);
+                    } catch (final IllegalArgumentException ignored) {
+                        return null;
+                    }
+                })
+                .orElseGet(() -> new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT));
     }
 
     public String getLogFileName() {
-        return environment.getStringProperty(SYSTEM_PREFIX + "logFile", "system.err");
+        return propertyResolver.getString(LoggingSystemProperties.SIMPLE_LOG_FILE).orElse("system.err");
     }
 }

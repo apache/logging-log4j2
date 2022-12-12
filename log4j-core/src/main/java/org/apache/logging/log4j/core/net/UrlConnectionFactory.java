@@ -22,26 +22,29 @@ import java.net.JarURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import javax.net.ssl.HttpsURLConnection;
 
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.InternalApi;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 /**
  * Constructs an HTTPURLConnection. This class should be considered to be internal
  */
+@InternalApi
+@Singleton
 public class UrlConnectionFactory {
 
-    private static final int DEFAULT_TIMEOUT = 60000;
+    private static final int DEFAULT_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(1);
     private static final int connectTimeoutMillis = DEFAULT_TIMEOUT;
     private static final int readTimeoutMillis = DEFAULT_TIMEOUT;
     private static final String JSON = "application/json";
@@ -51,17 +54,28 @@ public class UrlConnectionFactory {
     private static final String HTTP = "http";
     private static final String HTTPS = "https";
     private static final String JAR = "jar";
-    private static final String DEFAULT_ALLOWED_PROTOCOLS = "https, file, jar";
+    private static final List<String> DEFAULT_ALLOWED_PROTOCOLS = List.of("https", "file", "jar");
     private static final String NO_PROTOCOLS = "_none";
-    public static final String ALLOWED_PROTOCOLS = "log4j2.Configuration.allowedProtocols";
+    public static final String ALLOWED_PROTOCOLS = Log4jProperties.CONFIG_ALLOWED_PROTOCOLS;
 
-    @SuppressWarnings("unchecked")
-    public static <T extends URLConnection> T createConnection(final URL url, final long lastModifiedMillis,
-            final SslConfiguration sslConfiguration, final AuthorizationProvider authorizationProvider)
-        throws IOException {
-        final PropertyEnvironment props = PropertiesUtil.getProperties();
-        final List<String> allowed = Arrays.asList(Strings.splitList(props
-                .getStringProperty(ALLOWED_PROTOCOLS, DEFAULT_ALLOWED_PROTOCOLS).toLowerCase(Locale.ROOT)));
+    private final PropertyResolver propertyResolver;
+    private final AuthorizationProvider authorizationProvider;
+    private final SslConfigurationFactory sslConfigurationFactory;
+
+    @Inject
+    public UrlConnectionFactory(final PropertyResolver propertyResolver,
+                                final AuthorizationProvider authorizationProvider,
+                                final SslConfigurationFactory sslConfigurationFactory) {
+        this.propertyResolver = propertyResolver;
+        this.authorizationProvider = authorizationProvider;
+        this.sslConfigurationFactory = sslConfigurationFactory;
+    }
+
+    public <T extends URLConnection> T openConnection(final URL url, final long lastModifiedMillis) throws IOException {
+        List<String> allowed = propertyResolver.getList(Log4jProperties.CONFIG_ALLOWED_PROTOCOLS);
+        if (allowed.isEmpty()) {
+            allowed = DEFAULT_ALLOWED_PROTOCOLS;
+        }
         if (allowed.size() == 1 && NO_PROTOCOLS.equals(allowed.get(0))) {
             throw new ProtocolException("No external protocols have been enabled");
         }
@@ -95,6 +109,7 @@ public class UrlConnectionFactory {
             if (lastModifiedMillis > 0) {
                 httpURLConnection.setIfModifiedSince(lastModifiedMillis);
             }
+            final SslConfiguration sslConfiguration = sslConfigurationFactory.get();
             if (url.getProtocol().equals(HTTPS) && sslConfiguration != null) {
                 ((HttpsURLConnection) httpURLConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
                 if (!sslConfiguration.isVerifyHostName()) {
@@ -108,14 +123,13 @@ public class UrlConnectionFactory {
         } else {
             urlConnection = url.openConnection();
         }
-        return (T) urlConnection;
+        return Cast.cast(urlConnection);
     }
 
-    public static URLConnection createConnection(final URL url) throws IOException {
-        URLConnection urlConnection = null;
+    public URLConnection openConnection(final URL url) throws IOException {
+        final URLConnection urlConnection;
         if (url.getProtocol().equals(HTTPS) || url.getProtocol().equals(HTTP)) {
-            final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
-            urlConnection = createConnection(url, 0, SslConfigurationFactory.getSslConfiguration(), provider);
+            urlConnection = openConnection(url, 0);
         } else {
             urlConnection = url.openConnection();
             if (urlConnection instanceof JarURLConnection) {

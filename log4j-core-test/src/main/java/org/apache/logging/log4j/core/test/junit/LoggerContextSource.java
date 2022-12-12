@@ -14,16 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.test.junit;
-
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.AbstractManager;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -32,6 +23,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AbstractManager;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Specifies a configuration file to use for unit tests. This configuration file will be loaded once and used for all tests
@@ -63,6 +63,14 @@ import java.util.concurrent.TimeUnit;
 @ExtendWith(AppenderManagerResolver.class)
 @ExtendWith(LoggerResolver.class)
 public @interface LoggerContextSource {
+
+    /**
+     * Specifies the LoggerContext name to run under. If no name is given or is an empty string, then
+     * the simple test class name or test method name will be used depending on whether this annotation is applied
+     * to a test class or test method respectively.
+     */
+    String name() default "";
+
     /**
      * Specifies the name of the configuration file to use for the annotated test.
      */
@@ -89,7 +97,8 @@ public @interface LoggerContextSource {
     boolean v1config() default false;
 
     /**
-     * Determines whether to bootstrap a fresh LoggerContextFactory.
+     * Determines whether to bootstrap a fresh LoggerContextFactory. This may be useful when configuring
+     * classes used by {@link org.apache.logging.log4j.core.impl.Log4jContextFactory}.
      */
     boolean bootstrap() default false;
 }

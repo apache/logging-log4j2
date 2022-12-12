@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 
 /**
  * Manages an OutputStream so that it can be shared by multiple Appenders and will
@@ -42,7 +42,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,
             final boolean writeHeader) {
-        this(os, streamName, layout, writeHeader, Constants.ENCODER_BYTE_BUFFER_SIZE);
+        this(os, streamName, layout, writeHeader, GarbageFreeConfiguration.getDefaultConfiguration().getEncoderByteBufferSize());
     }
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout<?> layout,

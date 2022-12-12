@@ -20,19 +20,24 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
 
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.ClearSystemProperty;
 import org.junitpioneer.jupiter.ReadsSystemProperty;
+import org.junitpioneer.jupiter.WritesSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ReadsSystemProperty
+@WritesSystemProperty
+@ClearSystemProperty(key = LoggingSystemProperties.LOADER_FORCE_THREAD_CONTEXT_LOADER)
 public class LoaderUtilTest {
     @BeforeEach
     @AfterEach
     public void reset() {
-        LoaderUtil.forceTcclOnly = null;
+        System.clearProperty(LoggingSystemProperties.LOADER_FORCE_THREAD_CONTEXT_LOADER);
     }
 
     @Test
@@ -40,7 +45,7 @@ public class LoaderUtilTest {
         final Thread thread = Thread.currentThread();
         final ClassLoader tccl = thread.getContextClassLoader();
 
-        LoaderUtil.forceTcclOnly = true;
+        System.setProperty(LoggingSystemProperties.LOADER_FORCE_THREAD_CONTEXT_LOADER, "true");
         final ClassLoader loader = new ClassLoader(tccl) {
             @Override
             public Enumeration<URL> getResources(final String name) {
@@ -51,7 +56,7 @@ public class LoaderUtilTest {
         try {
             assertEquals(0, LoaderUtil.findUrlResources("Log4j-charsets.properties", false).size());
 
-            LoaderUtil.forceTcclOnly = false;
+            System.setProperty(LoggingSystemProperties.LOADER_FORCE_THREAD_CONTEXT_LOADER, "false");
             assertEquals(1, LoaderUtil.findUrlResources("Log4j-charsets.properties", false).size());
         } finally {
             thread.setContextClassLoader(tccl);

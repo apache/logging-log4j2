@@ -19,17 +19,15 @@ package org.apache.logging.log4j.spi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -41,11 +39,14 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.DefaultPropertyResolver;
+import org.apache.logging.log4j.util.JsonResourcePropertySource;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.LowLevelLogUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.PropertiesPropertySource;
+import org.apache.logging.log4j.util.PropertyResolver;
+import org.apache.logging.log4j.util.PropertySource;
 import org.apache.logging.log4j.util.ServiceRegistry;
 
 import static org.apache.logging.log4j.spi.LoggingSystemProperties.*;
@@ -64,6 +65,10 @@ public class LoggingSystem {
     private static final String PROVIDER_RESOURCE = "META-INF/log4j-provider.properties";
     private static final String API_VERSION = "Log4jAPIVersion";
     private static final String[] COMPATIBLE_API_VERSIONS = {"3.0.0"};
+    private static final String JSON_FILE_NAME = "log4j2.component.json";
+    private static final String PROPERTIES_FILE_NAME = "log4j2.component.properties";
+    private static final String DEFAULT_JSON_FILE_NAME = "META-INF/log4j2.default.component.json";
+    private static final String DEFAULT_PROPERTIES_FILE_NAME = "META-INF/log4j2.default.component.properties";
 
     public static final int THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY = 16;
 
@@ -71,33 +76,15 @@ public class LoggingSystem {
 
     private final Lock initializationLock = new ReentrantLock();
     private volatile SystemProvider provider;
-    private final Lazy<PropertyEnvironment> environmentLazy = Lazy.relaxed(PropertiesUtil::getProperties);
-    private final Lazy<LoggerContextFactory> loggerContextFactoryLazy = environmentLazy.map(environment ->
-            getProvider().createLoggerContextFactory(environment));
-    private final Lazy<MessageFactory> messageFactoryLazy = environmentLazy.map(environment -> {
-        final String className = environment.getStringProperty(LOGGER_MESSAGE_FACTORY_CLASS);
-        if (className != null) {
-            final MessageFactory factory = createInstance(className, MessageFactory.class);
-            if (factory != null) {
-                return factory;
-            }
-        }
-        return Constants.isThreadLocalsEnabled() ? new ReusableMessageFactory() : new ParameterizedMessageFactory();
-    });
-    private final Lazy<FlowMessageFactory> flowMessageFactoryLazy = environmentLazy.map(environment -> {
-        final String className = environment.getStringProperty(LOGGER_FLOW_MESSAGE_FACTORY_CLASS);
-        if (className != null) {
-            final FlowMessageFactory factory = createInstance(className, FlowMessageFactory.class);
-            if (factory != null) {
-                return factory;
-            }
-        }
-        return new DefaultFlowMessageFactory();
-    });
-    private final Lazy<Supplier<ThreadContextMap>> threadContextMapFactoryLazy = environmentLazy.map(environment ->
-            () -> getProvider().createContextMap(environment));
-    private final Lazy<Supplier<ThreadContextStack>> threadContextStackFactoryLazy = environmentLazy.map(environment ->
-            () -> getProvider().createContextStack(environment));
+    private final PropertyResolver propertyResolver = new DefaultPropertyResolver();
+    private final ClassFactory classFactory = new DefaultClassFactory();
+    private final InstanceFactory instanceFactory = new DefaultInstanceFactory();
+    private final Lazy<LoggerContextFactory> loggerContextFactoryLazy = Lazy.lazy(() ->
+            getProvider().createLoggerContextFactory());
+
+    private LoggingSystem() {
+        loadPropertySources(propertyResolver);
+    }
 
     /**
      * Acquires a lock on the initialization of locating a logging system provider. This lock should be
@@ -116,6 +103,10 @@ public class LoggingSystem {
      */
     public void releaseInitializationLock() {
         initializationLock.unlock();
+    }
+
+    public void setLoggerContextFactory(final LoggerContextFactory loggerContextFactory) {
+        loggerContextFactoryLazy.set(loggerContextFactory);
     }
 
     private SystemProvider getProvider() {
@@ -155,24 +146,38 @@ public class LoggingSystem {
         return new SystemProvider(provider);
     }
 
-    public void setLoggerContextFactory(final LoggerContextFactory loggerContextFactory) {
-        loggerContextFactoryLazy.set(loggerContextFactory);
+    private <T> Optional<T> tryGetInstance(final String className, final Class<T> type) {
+        return classFactory
+                .tryGetClass(className, type)
+                .flatMap(instanceFactory::tryGetInstance);
     }
 
-    public void setMessageFactory(final MessageFactory messageFactory) {
-        messageFactoryLazy.set(messageFactory);
+    private boolean isThreadLocalsEnabled() {
+        final String value = propertyResolver.getString(SYSTEM_THREAD_LOCALS_ENABLED).orElse("true");
+        return "calculate".equalsIgnoreCase(value) ? !isWebAppEnabled() : "true".equalsIgnoreCase(value);
     }
 
-    public void setFlowMessageFactory(final FlowMessageFactory flowMessageFactory) {
-        flowMessageFactoryLazy.set(flowMessageFactory);
+    private boolean isWebAppEnabled() {
+        return propertyResolver.getString(SYSTEM_ENABLE_WEBAPP)
+                .filter(value -> "calculate".equalsIgnoreCase(value) ? isServletClassAvailable() : "true".equalsIgnoreCase(value))
+                .isPresent();
     }
 
-    public void setThreadContextMapFactory(final Supplier<ThreadContextMap> threadContextMapFactory) {
-        threadContextMapFactoryLazy.set(threadContextMapFactory);
+    private boolean isServletClassAvailable() {
+        return classFactory.isClassAvailable("javax.servlet.Servlet") ||
+                classFactory.isClassAvailable("jakarta.servlet.Servlet");
     }
 
-    public void setThreadContextStackFactory(final Supplier<ThreadContextStack> threadContextStackFactory) {
-        threadContextStackFactoryLazy.set(threadContextStackFactory);
+    private MessageFactory newMessageFactory(final String context) {
+        return propertyResolver.getString(context, LOGGER_MESSAGE_FACTORY_CLASS)
+                .flatMap(className -> tryGetInstance(className, MessageFactory.class))
+                .orElseGet(() -> isThreadLocalsEnabled() ? ReusableMessageFactory.INSTANCE : ParameterizedMessageFactory.INSTANCE);
+    }
+
+    private FlowMessageFactory newFlowMessageFactory(final String context) {
+        return propertyResolver.getString(context, LOGGER_FLOW_MESSAGE_FACTORY_CLASS)
+                .flatMap(className -> tryGetInstance(className, FlowMessageFactory.class))
+                .orElseGet(DefaultFlowMessageFactory::new);
     }
 
     /**
@@ -180,6 +185,10 @@ public class LoggingSystem {
      */
     public static LoggingSystem getInstance() {
         return SYSTEM.value();
+    }
+
+    public static PropertyResolver getPropertyResolver() {
+        return getInstance().propertyResolver;
     }
 
     /**
@@ -190,26 +199,84 @@ public class LoggingSystem {
         return getInstance().loggerContextFactoryLazy.value();
     }
 
+    public static MessageFactory createMessageFactory(final String context) {
+        return getInstance().newMessageFactory(context);
+    }
+
+    public static FlowMessageFactory createFlowMessageFactory(final String context) {
+        return getInstance().newFlowMessageFactory(context);
+    }
+
     public static MessageFactory getMessageFactory() {
-        return getInstance().messageFactoryLazy.value();
+        return createMessageFactory(PropertyResolver.DEFAULT_CONTEXT);
     }
 
     public static FlowMessageFactory getFlowMessageFactory() {
-        return getInstance().flowMessageFactoryLazy.value();
+        return createFlowMessageFactory(PropertyResolver.DEFAULT_CONTEXT);
     }
 
     /**
      * Creates a new ThreadContextMap.
      */
     public static ThreadContextMap createContextMap() {
-        return getInstance().threadContextMapFactoryLazy.value().get();
+        return getInstance().getProvider().createContextMap();
     }
 
     /**
      * Creates a new ThreadContextStack.
      */
     public static ThreadContextStack createContextStack() {
-        return getInstance().threadContextStackFactoryLazy.value().get();
+        return getInstance().getProvider().createContextStack();
+    }
+
+    private static void loadPropertySources(final PropertyResolver resolver) {
+        loadPropertySourceServices(resolver);
+        loadJsonSources(resolver, DEFAULT_JSON_FILE_NAME, 1000);
+        loadPropertiesSources(resolver, DEFAULT_PROPERTIES_FILE_NAME, 1000);
+        loadJsonSources(resolver, JSON_FILE_NAME, 50);
+        loadPropertiesSources(resolver, PROPERTIES_FILE_NAME, 50);
+    }
+
+    private static void loadPropertySourceServices(final PropertyResolver resolver) {
+        ServiceRegistry.getInstance()
+                .getServices(PropertySource.class, MethodHandles.lookup(), null)
+                .forEach(resolver::addSource);
+    }
+
+    private static void loadJsonSources(final PropertyResolver resolver, final String name, final int priority) {
+        LoaderUtil.findResources(name, false)
+                .stream()
+                .map(url -> loadJsonSource(url, priority))
+                .filter(Objects::nonNull)
+                .forEach(resolver::addSource);
+    }
+
+    private static PropertySource loadJsonSource(final URL url, final int priority) {
+        try {
+            return JsonResourcePropertySource.fromUrl(url, priority);
+        } catch (final RuntimeException e) {
+            LowLevelLogUtil.logException("Unable to read " + url, e);
+            return null;
+        }
+    }
+
+    private static void loadPropertiesSources(final PropertyResolver resolver, final String name, final int priority) {
+        LoaderUtil.findResources(name, false)
+                .stream()
+                .map(url -> loadPropertiesSource(url, priority))
+                .filter(Objects::nonNull)
+                .forEach(resolver::addSource);
+    }
+
+    private static PropertySource loadPropertiesSource(final URL url, final int priority) {
+        final Properties properties = new Properties();
+        try (final InputStream in = url.openStream()) {
+            properties.load(in);
+            return new PropertiesPropertySource(properties, priority);
+        } catch (final IOException e) {
+            LowLevelLogUtil.logException("Unable to read " + url, e);
+            return null;
+        }
     }
 
     private static List<Provider> loadDefaultProviders() {
@@ -248,46 +315,7 @@ public class LoggingSystem {
         return false;
     }
 
-    private static <T> T tryInstantiate(final Class<T> clazz) {
-        Constructor<T> constructor;
-        try {
-            constructor = clazz.getConstructor();
-        } catch (final NoSuchMethodException ignored) {
-            try {
-                constructor = clazz.getDeclaredConstructor();
-                if (!(constructor.canAccess(null) || constructor.trySetAccessible())) {
-                    LowLevelLogUtil.log("Unable to access constructor for " + clazz);
-                    return null;
-                }
-            } catch (final NoSuchMethodException e) {
-                LowLevelLogUtil.logException("Unable to find a default constructor for " + clazz, e);
-                return null;
-            }
-        }
-        try {
-            return constructor.newInstance();
-        } catch (final InvocationTargetException e) {
-            LowLevelLogUtil.logException("Exception thrown by constructor for " + clazz, e.getCause());
-        } catch (final InstantiationException | LinkageError e) {
-            LowLevelLogUtil.logException("Unable to create instance of " + clazz, e);
-        } catch (final IllegalAccessException e) {
-            LowLevelLogUtil.logException("Unable to access constructor for " + clazz, e);
-        }
-        return null;
-    }
-
-    private static <T> T createInstance(final String className, final Class<T> type) {
-        try {
-            final Class<?> loadedClass = LoaderUtil.loadClass(className);
-            final Class<? extends T> typedClass = loadedClass.asSubclass(type);
-            return tryInstantiate(typedClass);
-        } catch (final ClassNotFoundException | ClassCastException e) {
-            LowLevelLogUtil.logException(String.format("Unable to load %s class '%s'", type.getSimpleName(), className), e);
-            return null;
-        }
-    }
-
-    private static class SystemProvider {
+    private class SystemProvider {
         private final Provider provider;
 
         private SystemProvider() {
@@ -298,27 +326,18 @@ public class LoggingSystem {
             this.provider = provider;
         }
 
-        public LoggerContextFactory createLoggerContextFactory(final PropertyEnvironment environment) {
-            final String customFactoryClass = environment.getStringProperty(LogManager.FACTORY_PROPERTY_NAME);
-            if (customFactoryClass != null) {
-                final LoggerContextFactory customFactory = createInstance(customFactoryClass, LoggerContextFactory.class);
-                if (customFactory != null) {
-                    return customFactory;
-                }
-            }
-            if (provider != null) {
-                final Class<? extends LoggerContextFactory> factoryClass = provider.loadLoggerContextFactory();
-                if (factoryClass != null) {
-                    final LoggerContextFactory factory = tryInstantiate(factoryClass);
-                    if (factory != null) {
-                        return factory;
-                    }
-                }
-            }
-            LowLevelLogUtil.log("Log4j could not find a logging implementation. " +
-                    "Please add log4j-core dependencies to classpath or module path. " +
-                    "Using SimpleLogger to log to the console.");
-            return SimpleLoggerContextFactory.INSTANCE;
+        public LoggerContextFactory createLoggerContextFactory() {
+            return propertyResolver.getString(LogManager.FACTORY_PROPERTY_NAME)
+                    .flatMap(className -> tryGetInstance(className, LoggerContextFactory.class))
+                    .or(() -> Optional.ofNullable(provider)
+                            .map(Provider::loadLoggerContextFactory)
+                            .flatMap(instanceFactory::tryGetInstance))
+                    .orElseGet(() -> {
+                        LowLevelLogUtil.log("Log4j could not find a logging implementation. " +
+                                "Please add log4j-core dependencies to classpath or module path. " +
+                                "Using SimpleLogger to log to the console.");
+                        return SimpleLoggerContextFactory.INSTANCE;
+                    });
         }
 
         /**
@@ -341,44 +360,37 @@ public class LoggingSystem {
          * @see ReadOnlyThreadContextMap
          * @see org.apache.logging.log4j.ThreadContext
          */
-        public ThreadContextMap createContextMap(final PropertyEnvironment environment) {
-            final String customThreadContextMap = environment.getStringProperty(THREAD_CONTEXT_MAP_CLASS);
-            if (customThreadContextMap != null) {
-                final ThreadContextMap customContextMap = createInstance(customThreadContextMap, ThreadContextMap.class);
-                if (customContextMap != null) {
-                    return customContextMap;
-                }
-            }
-            final boolean disableMap = environment.getBooleanProperty(THREAD_CONTEXT_MAP_DISABLED,
-                    environment.getBooleanProperty(THREAD_CONTEXT_DISABLED));
-            if (disableMap) {
-                return new NoOpThreadContextMap();
-            }
-            final Class<? extends ThreadContextMap> mapClass = provider.loadThreadContextMap();
-            if (mapClass != null) {
-                final ThreadContextMap map = tryInstantiate(mapClass);
-                if (map != null) {
-                    return map;
-                }
-            }
-            final boolean threadLocalsEnabled = Constants.isThreadLocalsEnabled();
-            final boolean garbageFreeEnabled = environment.getBooleanProperty(THREAD_CONTEXT_GARBAGE_FREE_ENABLED);
-            final boolean inheritableMap = environment.getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE);
-            final int initialCapacity = environment.getIntegerProperty(THREAD_CONTEXT_INITIAL_CAPACITY,
-                    THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY);
-            if (threadLocalsEnabled) {
-                if (garbageFreeEnabled) {
-                    return new GarbageFreeSortedArrayThreadContextMap(inheritableMap, initialCapacity);
-                }
-                return new CopyOnWriteSortedArrayThreadContextMap(inheritableMap, initialCapacity);
-            }
-            return new DefaultThreadContextMap(true, inheritableMap);
+        public ThreadContextMap createContextMap() {
+            return propertyResolver.getString(THREAD_CONTEXT_MAP_CLASS)
+                    .flatMap(className -> tryGetInstance(className, ThreadContextMap.class))
+                    .orElseGet(() -> {
+                        final boolean enabled = propertyResolver.getBoolean(THREAD_CONTEXT_MAP_ENABLED, true) &&
+                                propertyResolver.getBoolean(THREAD_CONTEXT_ENABLED, true);
+                        if (!enabled) {
+                            return new NoOpThreadContextMap();
+                        }
+                        return Optional.ofNullable(provider.loadThreadContextMap())
+                                .<ThreadContextMap>flatMap(instanceFactory::tryGetInstance)
+                                .orElseGet(() -> {
+                                    final boolean garbageFreeEnabled = propertyResolver.getBoolean(THREAD_CONTEXT_GARBAGE_FREE_ENABLED);
+                                    final boolean inheritableMap = propertyResolver.getBoolean(THREAD_CONTEXT_MAP_INHERITABLE);
+                                    final int initialCapacity = propertyResolver.getInt(THREAD_CONTEXT_INITIAL_CAPACITY)
+                                            .orElse(THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY);
+                                    if (isThreadLocalsEnabled()) {
+                                        if (garbageFreeEnabled) {
+                                            return new GarbageFreeSortedArrayThreadContextMap(inheritableMap, initialCapacity);
+                                        }
+                                        return new CopyOnWriteSortedArrayThreadContextMap(inheritableMap, initialCapacity);
+                                    }
+                                    return new DefaultThreadContextMap(true, inheritableMap);
+                                });
+                    });
         }
 
-        public ThreadContextStack createContextStack(final PropertyEnvironment environment) {
-            final boolean disableStack = environment.getBooleanProperty(THREAD_CONTEXT_STACK_DISABLED,
-                    environment.getBooleanProperty(THREAD_CONTEXT_DISABLED));
-            return new DefaultThreadContextStack(!disableStack);
+        public ThreadContextStack createContextStack() {
+            final boolean enabled = propertyResolver.getBoolean(THREAD_CONTEXT_STACK_ENABLED, true) &&
+                    propertyResolver.getBoolean(THREAD_CONTEXT_ENABLED, true);
+            return new DefaultThreadContextStack(enabled);
         }
     }
 }

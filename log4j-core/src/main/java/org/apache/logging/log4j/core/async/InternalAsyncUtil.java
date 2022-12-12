@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.util.InternalApi;
 
 /**
  * Helper class providing some async logging-related functionality.
@@ -26,11 +28,12 @@ import org.apache.logging.log4j.message.Message;
  *     Consider this class private.
  * </p>
  */
+@InternalApi
 public class InternalAsyncUtil {
     /**
      * Returns the specified message, with its content frozen unless system property
-     * {@code log4j.format.msg.async} is true or the message class is annotated with
-     * {@link AsynchronouslyFormattable}.
+     * {@value Log4jProperties#ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND} is true or
+     * the message class is annotated with {@link AsynchronouslyFormattable}.
      *
      * @param msg the message object to inspect, modify and return
      * @return Returns the specified message, with its content frozen
@@ -44,7 +47,12 @@ public class InternalAsyncUtil {
     }
 
     private static boolean canFormatMessageInBackground(final Message message) {
-        return Constants.FORMAT_MESSAGES_IN_BACKGROUND // LOG4J2-898: user wants to format all msgs in background
+        return isBackgroundFormattingEnabled()
                 || message.getClass().isAnnotationPresent(AsynchronouslyFormattable.class); // LOG4J2-1718
+    }
+
+    private static boolean isBackgroundFormattingEnabled() {
+        // LOG4J2-898: user wants to format all msgs in background
+        return LoggingSystem.getPropertyResolver().getBoolean(Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, false);
     }
 }

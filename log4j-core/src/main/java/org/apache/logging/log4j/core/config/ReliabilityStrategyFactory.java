@@ -17,20 +17,29 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.impl.Log4jProperties;
-import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.spi.ClassFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 /**
  * Factory for ReliabilityStrategies.
  */
+@Singleton
 public final class ReliabilityStrategyFactory {
-    private ReliabilityStrategyFactory() {
+    private final PropertyResolver propertyResolver;
+    private final ClassFactory classFactory;
+
+    @Inject
+    public ReliabilityStrategyFactory(final PropertyResolver propertyResolver, final ClassFactory classFactory) {
+        this.propertyResolver = propertyResolver;
+        this.classFactory = classFactory;
     }
 
     /**
      * Returns a new {@code ReliabilityStrategy} instance based on the value of system property
-     * {@code log4j.ReliabilityStrategy}. If not value was specified this method returns a new
+     * {@value Log4jProperties#CONFIG_RELIABILITY_STRATEGY}. If not value was specified this method returns a new
      * {@code AwaitUnconditionallyReliabilityStrategy}.
      * <p>
      * Valid values for this system property are {@code "AwaitUnconditionally"} (use
@@ -44,10 +53,9 @@ public final class ReliabilityStrategyFactory {
      * @return a ReliabilityStrategy that helps the specified LoggerConfig to log events reliably during or after a
      *         configuration change
      */
-    public static ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig) {
-
-        final String strategy = PropertiesUtil.getProperties().getStringProperty(Log4jProperties.CONFIG_RELIABILITY_STRATEGY,
-                "AwaitCompletion");
+    public ReliabilityStrategy getReliabilityStrategy(final LoggerConfig loggerConfig) {
+        final String strategy = propertyResolver.getString(Log4jProperties.CONFIG_RELIABILITY_STRATEGY)
+                .orElse("AwaitCompletion");
         if ("AwaitCompletion".equals(strategy)) {
             return new AwaitCompletionReliabilityStrategy(loggerConfig);
         }
@@ -57,14 +65,17 @@ public final class ReliabilityStrategyFactory {
         if ("Locking".equals(strategy)) {
             return new LockingReliabilityStrategy(loggerConfig);
         }
-        try {
-            final Class<? extends ReliabilityStrategy> cls = Loader.loadClass(strategy).asSubclass(
-                ReliabilityStrategy.class);
-            return cls.getConstructor(LoggerConfig.class).newInstance(loggerConfig);
-        } catch (final Exception dynamicFailed) {
-            StatusLogger.getLogger().warn(
-                    "Could not create ReliabilityStrategy for '{}', using default AwaitCompletionReliabilityStrategy: {}", strategy, dynamicFailed);
-            return new AwaitCompletionReliabilityStrategy(loggerConfig);
-        }
+        return classFactory.tryGetClass(strategy, ReliabilityStrategy.class)
+                .<ReliabilityStrategy>map(clazz -> {
+                    try {
+                        return clazz.getConstructor(LoggerConfig.class).newInstance(loggerConfig);
+                    } catch (final Exception dynamicFailed) {
+                        StatusLogger.getLogger().warn(
+                                "Could not create ReliabilityStrategy for '{}', using default AwaitCompletionReliabilityStrategy: {}",
+                                strategy, dynamicFailed);
+                        return null;
+                    }
+                })
+                .orElseGet(() -> new AwaitCompletionReliabilityStrategy(loggerConfig));
     }
 }

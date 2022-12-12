@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedTimeZoneFormat;
-import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,7 +90,7 @@ public class DatePatternConverterTest {
     }
 
     public DatePatternConverterTest(final Boolean threadLocalEnabled) {
-        Constants.setThreadLocalsEnabled(threadLocalEnabled);
+        System.setProperty(LoggingSystemProperties.SYSTEM_THREAD_LOCALS_ENABLED, threadLocalEnabled.toString());
     }
 
     private static Date date(final int year, final int month, final int date) {

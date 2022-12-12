@@ -24,7 +24,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.core.layout.TextEncoderHelper;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.layout.template.json.resolver.*;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
@@ -226,8 +226,8 @@ public class JsonTemplateLayout implements StringLayout {
                     .newEncoder()
                     .onMalformedInput(CodingErrorAction.REPLACE)
                     .onUnmappableCharacter(CodingErrorAction.REPLACE);
-            this.charBuffer = CharBuffer.allocate(Constants.ENCODER_CHAR_BUFFER_SIZE);
-            this.byteBuffer = ByteBuffer.allocate(Constants.ENCODER_BYTE_BUFFER_SIZE);
+            this.charBuffer = CharBuffer.allocate(GarbageFreeConfiguration.getDefaultConfiguration().getEncoderCharBufferSize());
+            this.byteBuffer = ByteBuffer.allocate(GarbageFreeConfiguration.getDefaultConfiguration().getEncoderByteBufferSize());
         }
 
         @Override

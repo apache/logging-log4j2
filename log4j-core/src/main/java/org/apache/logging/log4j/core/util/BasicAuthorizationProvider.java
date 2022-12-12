@@ -17,49 +17,45 @@
 package org.apache.logging.log4j.core.util;
 
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.PropertyResolver;
+import org.apache.logging.log4j.util.ReflectionUtil;
 
 /**
  * Provides the Basic Authorization header to a request.
  */
 public class BasicAuthorizationProvider implements AuthorizationProvider {
-    private static final String[] PREFIXES = {"log4j2.config.", "log4j2.Configuration.", "logging.auth."};
-    private static final String AUTH_USER_NAME = "username";
-    private static final String AUTH_PASSWORD = "password";
-    private static final String AUTH_PASSWORD_DECRYPTOR = "passwordDecryptor";
-    public static final String CONFIG_USER_NAME = "log4j2.configurationUserName";
-    public static final String CONFIG_PASSWORD = "log4j2.configurationPassword";
-    public static final String PASSWORD_DECRYPTOR = "log4j2.passwordDecryptor";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Base64.Encoder encoder = Base64.getEncoder();
 
     private String authString = null;
 
-    public BasicAuthorizationProvider(final PropertyEnvironment props) {
-        final String userName = props.getStringProperty(PREFIXES,AUTH_USER_NAME,
-                () -> props.getStringProperty(CONFIG_USER_NAME));
-        String password = props.getStringProperty(PREFIXES, AUTH_PASSWORD,
-                () -> props.getStringProperty(CONFIG_PASSWORD));
-        final String decryptor = props.getStringProperty(PREFIXES, AUTH_PASSWORD_DECRYPTOR,
-                () -> props.getStringProperty(PASSWORD_DECRYPTOR));
-        if (decryptor != null) {
-            try {
-                final Object obj = LoaderUtil.newInstanceOf(decryptor);
-                if (obj instanceof PasswordDecryptor) {
-                    password = ((PasswordDecryptor) obj).decryptPassword(password);
-                }
-            } catch (final Exception ex) {
-                LOGGER.warn("Unable to decrypt password.", ex);
-            }
-        }
-        if (userName != null && password != null) {
-            authString = "Basic " + encoder.encodeToString((userName + ":" + password).getBytes());
+    public BasicAuthorizationProvider(final PropertyResolver resolver) {
+        final String user = resolver.getString(Log4jProperties.TRANSPORT_SECURITY_BASIC_USERNAME).orElse(null);
+        final String pass = resolver.getString(Log4jProperties.TRANSPORT_SECURITY_BASIC_PASSWORD)
+                .map(password -> resolver.getString(Log4jProperties.TRANSPORT_SECURITY_PASSWORD_DECRYPTOR_CLASS_NAME)
+                        .map(className -> {
+                            // FIXME(ms): this should use a binding instead
+                            try {
+                                final Class<? extends PasswordDecryptor> klass = Class.forName(className)
+                                        .asSubclass(PasswordDecryptor.class);
+                                final PasswordDecryptor decryptor = ReflectionUtil.instantiate(klass);
+                                return decryptor.decryptPassword(password);
+                            } catch (final Exception e) {
+                                LOGGER.warn("Unable to decrypt password", e);
+                                return null;
+                            }
+                        })
+                        .orElse(password))
+                .orElse(null);
+        if (user != null && pass != null) {
+            authString = "Basic " + encoder.encodeToString((user + ':' + pass).getBytes(StandardCharsets.UTF_8));
         }
     }
 

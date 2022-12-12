@@ -41,8 +41,10 @@ import java.util.Set;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
+import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 
 /**
@@ -382,11 +384,14 @@ public class FileManager extends OutputStreamManager {
             final File file = new File(name);
             try {
                 FileUtils.makeParentDirs(file);
-                final int actualSize = data.bufferedIo ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
+                final LoggerContext loggerContext = data.getLoggerContext();
+                final PropertyResolver resolver = loggerContext != null ? loggerContext.getPropertyResolver() : LoggingSystem.getPropertyResolver();
+                final GarbageFreeConfiguration configuration = new GarbageFreeConfiguration(resolver);
+                final int actualSize = data.bufferedIo ? data.bufferSize : configuration.getEncoderByteBufferSize();
                 final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[actualSize]);
                 final FileOutputStream fos = data.createOnDemand ? null : new FileOutputStream(file, data.append);
                 final boolean writeHeader = file.exists() && file.length() == 0;
-                final FileManager fm = new FileManager(data.getLoggerContext(), name, fos, data.append, data.locking,
+                final FileManager fm = new FileManager(loggerContext, name, fos, data.append, data.locking,
                         data.createOnDemand, data.advertiseURI, data.layout,
                         data.filePermissions, data.fileOwner, data.fileGroup, writeHeader, byteBuffer);
                 if (fos != null && fm.attributeViewEnabled) {

@@ -48,6 +48,7 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertyResolver;
@@ -259,7 +260,8 @@ public class LoggerConfig extends AbstractFilterable {
             this.properties = null;
         }
         this.propertiesRequireLookup = containsPropertyRequiringLookup(properties);
-        this.reliabilityStrategy = config.getReliabilityStrategy(this);
+        this.reliabilityStrategy = config.getComponent(Key.forClass(ReliabilityStrategyFactory.class))
+                .getReliabilityStrategy(this);
     }
 
     private static boolean containsPropertyRequiringLookup(final Property[] properties) {
@@ -675,6 +677,7 @@ public class LoggerConfig extends AbstractFilterable {
             if (context != null) {
                 return !(context instanceof AsyncLoggerContext);
             } else {
+                // FIXME: this should check if the ContextSelector binding is AsyncLoggerContextSelector
                 return !AsyncLoggerContextSelector.isSelected();
             }
         }

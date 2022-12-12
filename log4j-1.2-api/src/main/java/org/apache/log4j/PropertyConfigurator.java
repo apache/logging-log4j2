@@ -49,6 +49,8 @@ import org.apache.log4j.spi.ThrowableRenderer;
 import org.apache.log4j.spi.ThrowableRendererSupport;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
@@ -383,7 +385,10 @@ public class PropertyConfigurator implements Configurator {
     Configuration doConfigure(final URL url, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
         LogLog.debug("Reading configuration from URL " + url);
         try {
-            final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
+            // TODO: find better place to anchor Injector creation
+            final Injector injector = DI.createInjector();
+            injector.init();
+            final URLConnection urlConnection = injector.getInstance(UrlConnectionFactory.class).openConnection(url);
             try (InputStream inputStream = urlConnection.getInputStream()) {
                 return doConfigure(inputStream, loggerRepository, classLoader);
             }

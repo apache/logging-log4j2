@@ -38,8 +38,8 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -575,9 +575,8 @@ public final class PatternLayout extends AbstractStringLayout {
         }
 
         private boolean useAnsiEscapeCodes() {
-            final PropertyEnvironment properties = PropertiesUtil.getProperties();
-            final boolean isPlatformSupportsAnsi = !properties.isOsWindows();
-            final boolean isJansiRequested = !properties.getBooleanProperty(Log4jProperties.JANSI_DISABLED, true);
+            final boolean isPlatformSupportsAnsi = !Constants.isWindows();
+            final boolean isJansiRequested = LoggingSystem.getPropertyResolver().getBoolean(Log4jProperties.JANSI_ENABLED);
             return isPlatformSupportsAnsi || isJansiRequested;
         }
 
@@ -640,7 +639,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         /**
          * @param disableAnsi
-         *        If {@code "true"} (default is value of system property `log4j.skipJansi`, or `true` if undefined),
+         *        If {@code "true"} (default is the opposite value of system property {@value Log4jProperties#JANSI_ENABLED}, or `true` if undefined),
          *        do not output ANSI escape codes
          */
         public Builder setDisableAnsi(final boolean disableAnsi) {

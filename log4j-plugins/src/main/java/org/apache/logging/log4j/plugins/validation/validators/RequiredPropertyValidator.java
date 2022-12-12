@@ -19,8 +19,8 @@ package org.apache.logging.log4j.plugins.validation.validators;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.validation.constraints.RequiredProperty;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
  * Validator that checks that a property exists and has the correct value if a value is required.
@@ -40,7 +40,9 @@ public class RequiredPropertyValidator implements ConstraintValidator<RequiredPr
 
     @Override
     public boolean isValid(final String name, final Object value) {
-        String property = PropertiesUtil.getProperties().getStringProperty(annotation.name());
+        final String property = LoggingSystem.getPropertyResolver()
+                .getString(annotation.name())
+                .orElse(null);
         if (property == null) {
             LOGGER.error("{} cannot be used. Required property {} is not defined", name, annotation.name());
             return false;

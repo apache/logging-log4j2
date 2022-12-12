@@ -1,0 +1,116 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
+{
+  "log4j2": {
+    "*": {
+      "AsyncLogger": {
+        "discardThreshold": "INFO",
+        "exceptionHandler": null,
+        "formatMsgAsync": false,
+        "queueFullPolicy": "Default",
+        "ringBufferSize": "calculate",
+        "synchronizeEnqueueWhenQueueFull": true,
+        "threadNameStrategy": "CACHED",
+        "waitStrategy": "Timeout"
+      },
+      "AsyncLoggerConfig": {
+        "exceptionHandler": null,
+        "ringBufferSize": "calculate",
+        "synchronizeEnqueueWhenQueueFull": true,
+        "waitStrategy": "Timeout"
+      },
+      "Configuration": {
+        "allowedProtocols": [
+          "https",
+          "file",
+          "jar"
+        ],
+        "clock": null,
+        /*"clock": "org.apache.logging.log4j.core.util.SystemClock",*/
+        "factory": null,
+        /*"factory": "org.apache.logging.log4j.core.config.DefaultConfigurationFactory",*/
+        "level": "ERROR",
+        "location": null,
+        "mergeStrategy": null,
+        /*"mergeStrategy": "org.apache.logging.log4j.core.config.composite.DefaultMergeStrategy",*/
+        "reliabilityStrategy": "AwaitCompletion",
+        "reliabilityStrategyAwaitUnconditionallyMillis": 5000
+      },
+      "GC": {
+        "enableDirectEncoders": true,
+        "encoderByteBufferSize": 8192,
+        "encoderCharBufferSize": 2048,
+        "initialReusableMsgSize": 128,
+        "layoutStringBuilderMaxSize": 2048
+      },
+      "Jansi": {
+        "enabled": true
+      },
+      "JMX": {
+        "enabled": false,
+        "notifyAsync": "calculate"
+      },
+      "JNDI": {
+        "enableContextSelector": false,
+        "enableJdbc": false,
+        "enableJms": false,
+        "enableLookup": false
+      },
+      "LoggerContext": {
+        "contextSelector": null,
+        /*"contextSelector": "org.apache.logging.log4j.core.selector.ClassLoaderContextSelector",*/
+        "factory": null,
+        /*"factory": "org.apache.logging.log4j.core.impl.Log4jContextFactory",*/
+        "logEventFactory": null,
+        /*"logEventFactory": "org.apache.logging.log4j.core.impl.DefaultLogEventFactory",*/
+        "shutdownCallbackRegistry": null,
+        /*"shutdownCallbackRegistry": "org.apache.logging.log4j.core.util.DefaultShutdownCallbackRegistry",*/
+        "shutdownHookEnabled": true,
+        "stacktraceOnStart": false
+      },
+      "Script": {
+        "enableLanguages": []
+      },
+      "StatusLogger": {
+        "defaultStatusLevel": "ERROR"
+      },
+      "ThreadContext": {
+        "contextData": null,
+        "contextDataInjector": null
+      },
+      "TransportSecurity": {
+        "authorizationProvider": null,
+        "keyStoreKeyManagerFactoryAlgorithm": null,
+        "keyStoreLocation": null,
+        "keyStorePassword": null,
+        "keyStorePasswordEnvironmentVariable": null,
+        "keyStorePasswordFile": null,
+        "keyStoreType": null,
+        "trustStoreKeyStoreType": null,
+        "trustStoreKeyManagerFactoryAlgorithm": null,
+        "trustStoreLocation": null,
+        "trustStorePassword": null,
+        "trustStorePasswordEnvironmentVariable": null,
+        "trustStorePasswordFile": null,
+        "verifyHostName": true
+      },
+      "UUID": {
+        "sequence": 0
+      }
+    }
+  }
+}

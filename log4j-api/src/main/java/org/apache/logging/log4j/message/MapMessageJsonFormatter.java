@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.util.IndexedStringMap;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 
@@ -65,9 +65,9 @@ enum MapMessageJsonFormatter {;
     private static final char COLON = ':';
 
     private static int readMaxDepth() {
-        final int maxDepth = PropertiesUtil
-                .getProperties()
-                .getIntegerProperty(LoggingSystemProperties.LOGGER_MAP_MESSAGE_JSON_FORMATTER_MAX_DEPTH, 8);
+        final int maxDepth = LoggingSystem.getPropertyResolver()
+                .getInt(LoggingSystemProperties.LOGGER_MAP_MESSAGE_JSON_FORMATTER_MAX_DEPTH)
+                .orElse(8);
         if (maxDepth < 0) {
             throw new IllegalArgumentException(
                     "was expecting a positive maxDepth, found: " + maxDepth);

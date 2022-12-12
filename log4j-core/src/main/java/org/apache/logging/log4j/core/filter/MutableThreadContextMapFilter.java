@@ -28,29 +28,28 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.mutable.KeyValuePairConfig;
-import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.core.util.internal.HttpInputStreamUtil;
+import org.apache.logging.log4j.core.util.internal.HttpResponse;
+import org.apache.logging.log4j.core.util.internal.HttpSourceLoader;
 import org.apache.logging.log4j.core.util.internal.LastModifiedSource;
 import org.apache.logging.log4j.core.util.internal.Status;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,19 +71,26 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
     private final long pollInterval;
     private final ConfigurationScheduler scheduler;
     private final LastModifiedSource source;
-    private final AuthorizationProvider authorizationProvider;
     private final List<FilterConfigUpdateListener> listeners = new ArrayList<>();
     private ScheduledFuture<?> future = null;
+    private final ContextDataInjector contextDataInjector;
+    private final HttpSourceLoader httpSourceLoader;
 
-    private MutableThreadContextMapFilter(final Filter filter, final LastModifiedSource source,
-            final long pollInterval, final AuthorizationProvider authorizationProvider,
-            final Result onMatch, final Result onMismatch, final Configuration configuration) {
+    private MutableThreadContextMapFilter(final Filter filter,
+                                          final LastModifiedSource source,
+                                          final long pollInterval,
+                                          final Result onMatch,
+                                          final Result onMismatch,
+                                          final Configuration configuration,
+                                          final ContextDataInjector contextDataInjector,
+                                          final HttpSourceLoader httpSourceLoader) {
         super(onMatch, onMismatch);
         this.filter = filter;
         this.pollInterval = pollInterval;
         this.source = source;
         this.scheduler = configuration.getScheduler();
-        this.authorizationProvider = authorizationProvider;
+        this.contextDataInjector = contextDataInjector;
+        this.httpSourceLoader = httpSourceLoader;
     }
 
     @Override
@@ -210,6 +216,12 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
         @PluginConfiguration
         private Configuration configuration;
 
+        private ContextDataInjector contextDataInjector;
+
+        // HttpSourceLoader is not exported, so let's keep it hidden
+        @Inject
+        private HttpSourceLoader httpSourceLoader;
+
         /**
          * Sets the Configuration.
          * @param configuration The Configuration.
@@ -241,29 +253,38 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
             return this;
         }
 
+        @Inject
+        public Builder setContextDataInjector(final ContextDataInjector contextDataInjector) {
+            this.contextDataInjector = contextDataInjector;
+            return this;
+        }
+
         @Override
         public MutableThreadContextMapFilter build() {
             final LastModifiedSource source = getSource(configLocation);
             if (source == null) {
                 return new MutableThreadContextMapFilter(new NoOpFilter(), null, 0,
-                        null, getOnMatch(), getOnMismatch(), configuration);
+                        getOnMatch(), getOnMismatch(), configuration, contextDataInjector, httpSourceLoader);
             }
-            final AuthorizationProvider authorizationProvider =
-                    ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
             Filter filter;
             if (pollInterval <= 0) {
-                ConfigResult result = getConfig(source, authorizationProvider);
-                if (result.status == Status.SUCCESS) {
+                ConfigResult result = getConfig(source, httpSourceLoader);
+                if (result.getStatus() == Status.SUCCESS) {
                     if (result.pairs.length > 0) {
-                        filter = ThreadContextMapFilter.createFilter(result.pairs, "or",
-                                getOnMatch(), getOnMismatch());
+                        filter = ThreadContextMapFilter.newBuilder()
+                                .setPairs(result.pairs)
+                                .setOperator("or")
+                                .setOnMatch(getOnMatch())
+                                .setOnMismatch(getOnMismatch())
+                                .setContextDataInjector(contextDataInjector)
+                                .get();
                     } else {
                         filter = new NoOpFilter();
                     }
-                } else if (result.status == Status.NOT_FOUND || result.status == Status.EMPTY) {
+                } else if (result.getStatus() == Status.NOT_FOUND || result.getStatus() == Status.EMPTY) {
                     filter = new NoOpFilter();
                 } else {
-                    LOGGER.warn("Unexpected response returned on initial call: {}", result.status);
+                    LOGGER.warn("Unexpected response returned on initial call: {}", result.getStatus());
                     filter = new NoOpFilter();
                 }
             } else {
@@ -273,8 +294,8 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
             if (pollInterval > 0) {
                 configuration.getScheduler().incrementScheduledItems();
             }
-            return new MutableThreadContextMapFilter(filter, source, pollInterval, authorizationProvider,
-                    getOnMatch(), getOnMismatch(), configuration);
+            return new MutableThreadContextMapFilter(filter, source, pollInterval,
+                    getOnMatch(), getOnMismatch(), configuration, contextDataInjector, httpSourceLoader);
         }
     }
 
@@ -282,20 +303,20 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
 
         @Override
         public void run() {
-            final ConfigResult result = getConfig(source, authorizationProvider);
-            if (result.status == Status.SUCCESS) {
+            final ConfigResult result = getConfig(source, httpSourceLoader);
+            if (result.getStatus() == Status.SUCCESS) {
                 filter = ThreadContextMapFilter.newBuilder()
                         .setPairs(result.pairs)
                         .setOperator("or")
                         .setOnMatch(getOnMatch())
                         .setOnMismatch(getOnMismatch())
-                        .setContextDataInjector(ContextDataInjectorFactory.createInjector())
+                        .setContextDataInjector(contextDataInjector)
                         .get();
                 LOGGER.info("Filter configuration was updated: {}", filter.toString());
                 for (FilterConfigUpdateListener listener : listeners) {
                     listener.onEvent();
                 }
-            } else if (result.status == Status.NOT_FOUND) {
+            } else if (result.getStatus() == Status.NOT_FOUND) {
                 if (!(filter instanceof NoOpFilter)) {
                     LOGGER.info("Filter configuration was removed");
                     filter = new NoOpFilter();
@@ -303,7 +324,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                         listener.onEvent();
                     }
                 }
-            } else if (result.status == Status.EMPTY) {
+            } else if (result.getStatus() == Status.EMPTY) {
                 LOGGER.debug("Filter configuration is empty");
                 filter = new NoOpFilter();
             }
@@ -327,10 +348,10 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
     }
 
     private static ConfigResult getConfig(final LastModifiedSource source,
-            final AuthorizationProvider authorizationProvider) {
+                                          final HttpSourceLoader httpSourceLoader) {
         final File inputFile = source.getFile();
         InputStream inputStream = null;
-        HttpInputStreamUtil.Result result = null;
+        HttpResponse response;
         final long lastModified = source.getLastModified();
         if (inputFile != null && inputFile.exists()) {
             try {
@@ -338,25 +359,24 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                 if (modified > lastModified) {
                     source.setLastModified(modified);
                     inputStream = new FileInputStream(inputFile);
-                    result = new HttpInputStreamUtil.Result(Status.SUCCESS);
+                    response = new HttpResponse(Status.SUCCESS);
                 } else {
-                    result = new HttpInputStreamUtil.Result(Status.NOT_MODIFIED);
+                    response = new HttpResponse(Status.NOT_MODIFIED);
                 }
             } catch (Exception ex) {
-                result = new HttpInputStreamUtil.Result(Status.ERROR);
+                response = new HttpResponse(Status.ERROR);
             }
         } else if (source.getURI() != null) {
             try {
-                result = HttpInputStreamUtil.getInputStream(source, authorizationProvider);
-                inputStream = result.getInputStream();
+                response = httpSourceLoader.load(source);
+                inputStream = response.getInputStream();
             } catch (ConfigurationException ex) {
-                result = new HttpInputStreamUtil.Result(Status.ERROR);
+                response = new HttpResponse(Status.ERROR);
             }
         } else {
-            result = new HttpInputStreamUtil.Result(Status.NOT_FOUND);
+            response = new HttpResponse(Status.NOT_FOUND);
         }
-        final ConfigResult configResult = new ConfigResult();
-        if (result.getStatus() == Status.SUCCESS) {
+        if (response.getStatus() == Status.SUCCESS) {
             LOGGER.debug("Processing Debug key/value pairs from: {}", source.toString());
             try {
                 final KeyValuePairConfig keyValuePairConfig = MAPPER.readValue(inputStream, KeyValuePairConfig.class);
@@ -375,27 +395,21 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                             }
                         }
                         if (pairs.size() > 0) {
-                            configResult.pairs = pairs.toArray(EMPTY_ARRAY);
-                            configResult.status = Status.SUCCESS;
-                        } else {
-                            configResult.status = Status.EMPTY;
+                            return new ConfigResult(Status.SUCCESS, pairs.toArray(EMPTY_ARRAY));
                         }
-                    } else {
-                        LOGGER.debug("No configuration data in {}", source.toString());
-                        configResult.status = Status.EMPTY;
+                        return new ConfigResult(Status.EMPTY);
                     }
-                } else {
-                    LOGGER.warn("No configs element in MutableThreadContextMapFilter configuration");
-                    configResult.status = Status.ERROR;
+                    LOGGER.debug("No configuration data in {}", source.toString());
+                    return new ConfigResult(Status.EMPTY);
                 }
+                LOGGER.warn("No configs element in MutableThreadContextMapFilter configuration");
+                return new ConfigResult(Status.ERROR);
             } catch (Exception ex) {
                 LOGGER.warn("Invalid key/value pair configuration, input ignored: {}", ex.getMessage());
-                configResult.status = Status.ERROR;
+                return new ConfigResult(Status.ERROR);
             }
-        } else {
-            configResult.status = result.getStatus();
         }
-        return configResult;
+        return new ConfigResult(Status.ERROR);
     }
 
     private static class NoOpFilter extends AbstractFilter {
@@ -409,8 +423,17 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
         void onEvent();
     }
 
-    private static class ConfigResult extends HttpInputStreamUtil.Result {
-        public KeyValuePair[] pairs;
-        public Status status;
+    private static class ConfigResult extends HttpResponse {
+        private final KeyValuePair[] pairs;
+
+        private ConfigResult(final Status status) {
+            super(status);
+            this.pairs = EMPTY_ARRAY;
+        }
+
+        private ConfigResult(final Status status, final KeyValuePair... pairs) {
+            super(status);
+            this.pairs = pairs;
+        }
     }
 }

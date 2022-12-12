@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.selector.BasicContextSelector;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 /**
  * Returns either this Thread's context or the default {@link AsyncLoggerContext}.
@@ -33,12 +34,12 @@ import org.apache.logging.log4j.plugins.di.Injector;
 public class BasicAsyncLoggerContextSelector extends BasicContextSelector {
 
     @Inject
-    public BasicAsyncLoggerContextSelector(Injector injector) {
-        super(injector);
+    public BasicAsyncLoggerContextSelector(final Injector injector, final PropertyResolver resolver) {
+        super(injector, resolver);
     }
 
     @Override
     protected LoggerContext createContext() {
-        return new AsyncLoggerContext("AsyncDefault", null, (URI) null, injector);
+        return new AsyncLoggerContext("AsyncDefault", null, (URI) null, injector, propertyResolver);
     }
 }

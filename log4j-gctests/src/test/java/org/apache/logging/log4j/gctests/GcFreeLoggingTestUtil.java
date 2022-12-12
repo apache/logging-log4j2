@@ -31,7 +31,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.spi.LoggingSystemProperties;
 
@@ -53,12 +54,12 @@ public enum GcFreeLoggingTestUtil {;
                                       final Class<?> testClass) throws Exception {
 
         System.setProperty(LoggingSystemProperties.SYSTEM_THREAD_LOCALS_ENABLED, "true");
-        System.setProperty("log4j2.enable.direct.encoders", "true");
-        System.setProperty(LoggingSystemProperties.SYSTEM_IS_WEBAPP, "false");
-        System.setProperty("log4j.configurationFile", configurationFile);
+        System.setProperty(Log4jProperties.GC_ENABLE_DIRECT_ENCODERS, "true");
+        System.setProperty(LoggingSystemProperties.SYSTEM_ENABLE_WEBAPP, "false");
+        System.setProperty(Log4jProperties.CONFIG_LOCATION, configurationFile);
 
         assertTrue(isThreadLocalsEnabled(), "Constants.ENABLE_THREADLOCALS");
-        assertTrue(Constants.ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
+        assertTrue(GarbageFreeConfiguration.getDefaultConfiguration().isDirectEncodersEnabled(), "Constants.ENABLE_DIRECT_ENCODERS");
         assertFalse(isWebApp(), "Constants.isWebApp()");
 
         final MyCharSeq myCharSeq = new MyCharSeq();

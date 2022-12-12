@@ -32,7 +32,8 @@ import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.PropertyResolver;
+import org.apache.logging.log4j.util.ReflectionUtil;
 
 /**
  * Factory class for parsed {@link Configuration} objects from a configuration file.
@@ -71,7 +72,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      */
     public static final String CONFIGURATION_FILE_PROPERTY = Log4jProperties.CONFIG_LOCATION;
 
-    public static final String LOG4J1_CONFIGURATION_FILE_PROPERTY = Log4jProperties.CONFIG_V1_FILE_NAME;
+    public static final String LOG4J1_CONFIGURATION_FILE_PROPERTY = Log4jProperties.CONFIG_V1_LOCATION;
 
     public static final String LOG4J1_EXPERIMENTAL = Log4jProperties.CONFIG_V1_COMPATIBILITY_ENABLED;
 
@@ -115,39 +116,40 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      */
     private static final String CLASS_PATH_SCHEME = "classpath";
 
-    private static final String[] PREFIXES = {"log4j2.", "log4j2.Configuration."};
+    @Deprecated(forRemoval = true) // TODO(ms): replace with appropriate dependency injection
+    public static AuthorizationProvider authorizationProvider(final PropertyResolver resolver, final String context) {
 
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static ConfigurationFactory getInstance() {
-        return LoggerContext.getContext(false).getInjector().getInstance(KEY);
-    }
-
-    public static AuthorizationProvider authorizationProvider(final PropertyEnvironment props) {
-        final String authClass = props.getStringProperty(PREFIXES, "authorizationProvider", null);
-        AuthorizationProvider provider = null;
-        if (authClass != null) {
-            try {
-                final Object obj = LoaderUtil.newInstanceOf(authClass);
-                if (obj instanceof AuthorizationProvider) {
-                    provider = (AuthorizationProvider) obj;
-                } else {
-                    LOGGER.warn("{} is not an AuthorizationProvider, using default", obj.getClass().getName());
-                }
-            } catch (final Exception ex) {
-                LOGGER.warn("Unable to create {}, using default: {}", authClass, ex.getMessage());
-            }
-        }
-        if (provider == null) {
-            provider = new BasicAuthorizationProvider(props);
-        }
-        return provider;
+        return resolver.getString(context, Log4jProperties.TRANSPORT_SECURITY_AUTHORIZATION_PROVIDER_CLASS_NAME)
+                .map(className -> {
+                    try {
+                        final Class<? extends AuthorizationProvider> klass = Class.forName(className)
+                                .asSubclass(AuthorizationProvider.class);
+                        return ReflectionUtil.instantiate(klass);
+                    } catch (final Exception e) {
+                        LOGGER.warn("Unable to create {}, using default: {}", className, e);
+                        return (AuthorizationProvider) null;
+                    }
+                })
+                .orElseGet(() -> new BasicAuthorizationProvider(resolver));
     }
 
     protected StrSubstitutor substitutor;
+    protected PropertyResolver propertyResolver;
+    protected ConfigurationResolver configurationResolver;
 
     @Inject
     public void setSubstitutor(final StrSubstitutor substitutor) {
         this.substitutor = substitutor;
+    }
+
+    @Inject
+    public void setPropertyResolver(final PropertyResolver resolver) {
+        propertyResolver = resolver;
+    }
+
+    @Inject
+    public void setConfigurationResolver(final ConfigurationResolver configurationResolver) {
+        this.configurationResolver = configurationResolver;
     }
 
     protected abstract String[] getSupportedTypes();
@@ -182,10 +184,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             return null;
         }
         if (configLocation != null) {
-            final ConfigurationSource source = ConfigurationSource.fromUri(configLocation);
-            if (source != null) {
-                return getConfiguration(loggerContext, source);
-            }
+            return configurationResolver.tryResolve(configLocation)
+                    .map(source -> getConfiguration(loggerContext, source))
+                    .orElse(null);
         }
         return null;
     }
@@ -209,12 +210,11 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         }
         if (isClassLoaderUri(configLocation)) {
             final String path = extractClassLoaderUriPath(configLocation);
-            final ConfigurationSource source = ConfigurationSource.fromResource(path, loader);
-            if (source != null) {
-                final Configuration configuration = getConfiguration(loggerContext, source);
-                if (configuration != null) {
-                    return configuration;
-                }
+            final Configuration configuration = configurationResolver.tryResolve(path, loader)
+                    .map(source -> getConfiguration(loggerContext, source))
+                    .orElse(null);
+            if (configuration != null) {
+                return configuration;
             }
         }
         return getConfiguration(loggerContext, name, configLocation);

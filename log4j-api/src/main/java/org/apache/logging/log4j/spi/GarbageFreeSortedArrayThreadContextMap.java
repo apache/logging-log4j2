@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -45,8 +44,9 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
 
     public GarbageFreeSortedArrayThreadContextMap() {
         this(
-                PropertiesUtil.getProperties().getBooleanProperty(THREAD_CONTEXT_MAP_INHERITABLE),
-                PropertiesUtil.getProperties().getIntegerProperty(THREAD_CONTEXT_INITIAL_CAPACITY, THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY)
+                LoggingSystem.getPropertyResolver().getBoolean(THREAD_CONTEXT_MAP_INHERITABLE),
+                LoggingSystem.getPropertyResolver().getInt(THREAD_CONTEXT_INITIAL_CAPACITY)
+                        .orElse(THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY)
         );
     }
 

@@ -16,18 +16,6 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,14 +27,17 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.Enumeration;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.ConfigurationResolver;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -55,9 +46,14 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import com.sun.management.UnixOperatingSystemMXBean;
+
+import static javax.servlet.http.HttpServletResponse.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the UrlConnectionFactory
@@ -70,7 +66,6 @@ public class UrlConnectionFactoryTest {
     private static Server server;
     private static final Base64.Decoder decoder = Base64.getDecoder();
     private static int port;
-    private static final int BUF_SIZE = 1024;
 
     @BeforeAll
     public static void startServer() throws Exception {
@@ -97,24 +92,33 @@ public class UrlConnectionFactoryTest {
         server.stop();
     }
 
-    @Test
-    public void testBadCrdentials() throws Exception {
-        System.setProperty("log4j2.Configuration.username", "foo");
-        System.setProperty("log4j2.Configuration.password", "bar");
-        System.setProperty("log4j2.Configuration.allowedProtocols", "http");
-        final URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
-        final ConfigurationSource source = ConfigurationSource.fromUri(uri);
-        assertNull(source, "A ConfigurationSource should not have been returned");
+    private UrlConnectionFactory urlConnectionFactory;
+    private ConfigurationResolver configurationResolver;
+
+    @BeforeEach
+    void setUp() {
+        final Injector injector = DI.createInjector();
+        injector.init();
+        urlConnectionFactory = injector.getInstance(UrlConnectionFactory.class);
+        configurationResolver = injector.getInstance(ConfigurationResolver.class);
     }
 
     @Test
-    public void withAuthentication() throws Exception {
-        System.setProperty("log4j2.Configuration.username", "testuser");
-        System.setProperty("log4j2.Configuration.password", "password");
-        System.setProperty("log4j2.Configuration.allowedProtocols", "http");
+    @SetSystemProperty(key = Log4jProperties.TRANSPORT_SECURITY_BASIC_USERNAME, value = "foo")
+    @SetSystemProperty(key = Log4jProperties.TRANSPORT_SECURITY_BASIC_PASSWORD, value = "bar")
+    @SetSystemProperty(key = Log4jProperties.CONFIG_ALLOWED_PROTOCOLS, value = "http")
+    public void testBadCredentials() throws Exception {
         final URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
-        final ConfigurationSource source = ConfigurationSource.fromUri(uri);
-        assertNotNull(source, "No ConfigurationSource returned");
+        assertTrue(configurationResolver.tryResolve(uri).isEmpty(), "A ConfigurationSource should not have been returned");
+    }
+
+    @Test
+    @SetSystemProperty(key = Log4jProperties.TRANSPORT_SECURITY_BASIC_USERNAME, value = "testuser")
+    @SetSystemProperty(key = Log4jProperties.TRANSPORT_SECURITY_BASIC_PASSWORD, value = "password")
+    @SetSystemProperty(key = Log4jProperties.CONFIG_ALLOWED_PROTOCOLS, value = "http")
+    public void withAuthentication() throws Exception {
+        final URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
+        final ConfigurationSource source = configurationResolver.tryResolve(uri).orElseThrow();
         InputStream is = source.getInputStream();
         assertNotNull(is, "No data returned");
         is.close();
@@ -130,8 +134,7 @@ public class UrlConnectionFactoryTest {
     }
 
     private int verifyNotModified(final URI uri, final long lastModifiedMillis) throws Exception {
-        final HttpURLConnection urlConnection = UrlConnectionFactory.createConnection(uri.toURL(),
-                lastModifiedMillis, null, null);
+        final HttpURLConnection urlConnection = urlConnectionFactory.openConnection(uri.toURL(), lastModifiedMillis);
         urlConnection.connect();
 
         try {
@@ -146,15 +149,15 @@ public class UrlConnectionFactoryTest {
     public void testNoJarFileLeak() throws Exception {
         final URL url = new File("target/test-classes/jarfile.jar").toURI().toURL();
         // Retrieve using 'file:'
-        URL jarUrl = new URL("jar:" + url.toString() + "!/config/console.xml");
+        URL jarUrl = new URL("jar:" + url + "!/config/console.xml");
         long expected = getOpenFileDescriptorCount();
-        UrlConnectionFactory.createConnection(jarUrl).getInputStream().close();
+        urlConnectionFactory.openConnection(jarUrl).getInputStream().close();
         assertEquals(expected, getOpenFileDescriptorCount());
         // Retrieve using 'http:'
         jarUrl = new URL("jar:http://localhost:" + port + "/jarfile.jar!/config/console.xml");
         final File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         expected = tmpDir.list().length;
-        UrlConnectionFactory.createConnection(jarUrl).getInputStream().close();
+        urlConnectionFactory.openConnection(jarUrl).getInputStream().close();
         assertEquals(expected, tmpDir.list().length, "File descriptor leak");
     }
 

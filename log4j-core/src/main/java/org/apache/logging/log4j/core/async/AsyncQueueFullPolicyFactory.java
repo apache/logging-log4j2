@@ -16,13 +16,16 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
-import org.apache.logging.log4j.core.util.Loader;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.spi.ClassFactory;
+import org.apache.logging.log4j.spi.InstanceFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 /**
  * Creates {@link AsyncQueueFullPolicy} instances based on user-specified system properties. The {@code AsyncQueueFullPolicy}
@@ -44,16 +47,30 @@ import org.apache.logging.log4j.util.PropertyEnvironment;
  *
  * @since 2.6
  */
-public class AsyncQueueFullPolicyFactory {
+public class AsyncQueueFullPolicyFactory implements Supplier<AsyncQueueFullPolicy> {
     static final String PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER = "Default";
     static final String PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER = "Discard";
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
+    private final PropertyResolver propertyResolver;
+    private final ClassFactory classFactory;
+    private final InstanceFactory instanceFactory;
+
+    @Inject
+    public AsyncQueueFullPolicyFactory(
+            final PropertyResolver propertyResolver,
+            final ClassFactory classFactory,
+            final InstanceFactory instanceFactory) {
+        this.propertyResolver = propertyResolver;
+        this.classFactory = classFactory;
+        this.instanceFactory = instanceFactory;
+    }
+
     /**
      * Creates and returns {@link AsyncQueueFullPolicy} instances based on user-specified system properties.
      * <p>
-     * Property {@code "log4j2.AsyncQueueFullPolicy"} controls the routing behaviour. If this property is not specified or
+     * Property {@value Log4jProperties#ASYNC_LOGGER_QUEUE_FULL_POLICY} controls the routing behaviour. If this property is not specified or
      * has value {@code "Default"}, this method returns {@link DefaultAsyncQueueFullPolicy} objects.
      * </p> <p>
      * If this property has value {@code "Discard"}, this method returns {@link DiscardingAsyncQueueFullPolicy} objects.
@@ -64,45 +81,32 @@ public class AsyncQueueFullPolicyFactory {
      *
      * @return a new AsyncQueueFullPolicy
      */
-    public static AsyncQueueFullPolicy create() {
-        final String router = PropertiesUtil.getProperties().getStringProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY);
+    @Override
+    public AsyncQueueFullPolicy get() {
+        final String router = propertyResolver.getString(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY).orElse(null);
         if (router == null || isRouterSelected(
                 router, DefaultAsyncQueueFullPolicy.class, PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER)) {
             return new DefaultAsyncQueueFullPolicy();
         }
         if (isRouterSelected(
                 router, DiscardingAsyncQueueFullPolicy.class, PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER)) {
-            return createDiscardingAsyncQueueFullPolicy();
+            final Level thresholdLevel = propertyResolver.getString(Log4jProperties.ASYNC_LOGGER_DISCARD_THRESHOLD)
+                    .map(Level::getLevel)
+                    .orElse(Level.INFO);
+            LOGGER.debug("Creating custom DiscardingAsyncQueueFullPolicy(discardThreshold:{})", thresholdLevel);
+            return new DiscardingAsyncQueueFullPolicy(thresholdLevel);
         }
-        return createCustomRouter(router);
+        return classFactory.tryGetClass(router, AsyncQueueFullPolicy.class)
+                .<AsyncQueueFullPolicy>flatMap(instanceFactory::tryGetInstance)
+                .orElseGet(DefaultAsyncQueueFullPolicy::new);
     }
 
     private static boolean isRouterSelected(
             final String propertyValue,
             final Class<? extends AsyncQueueFullPolicy> policy,
             final String shortPropertyValue) {
-        return propertyValue != null && (shortPropertyValue.equalsIgnoreCase(propertyValue)
+        return shortPropertyValue.equalsIgnoreCase(propertyValue)
                 || policy.getName().equals(propertyValue)
-                || policy.getSimpleName().equals(propertyValue));
-    }
-
-    private static AsyncQueueFullPolicy createCustomRouter(final String router) {
-        try {
-            final Class<? extends AsyncQueueFullPolicy> cls = Loader.loadClass(router).asSubclass(AsyncQueueFullPolicy.class);
-            LOGGER.debug("Creating custom AsyncQueueFullPolicy '{}'", router);
-            return cls.newInstance();
-        } catch (final Exception ex) {
-            LOGGER.debug("Using DefaultAsyncQueueFullPolicy. Could not create custom AsyncQueueFullPolicy '{}': {}", router,
-                    ex.toString());
-            return new DefaultAsyncQueueFullPolicy();
-        }
-    }
-
-    private static AsyncQueueFullPolicy createDiscardingAsyncQueueFullPolicy() {
-        final PropertyEnvironment properties = PropertiesUtil.getProperties();
-        final String level = properties.getStringProperty(Log4jProperties.ASYNC_LOGGER_DISCARD_THRESHOLD, Level.INFO.name());
-        final Level thresholdLevel = Level.toLevel(level, Level.INFO);
-        LOGGER.debug("Creating custom DiscardingAsyncQueueFullPolicy(discardThreshold:{})", thresholdLevel);
-        return new DiscardingAsyncQueueFullPolicy(thresholdLevel);
+                || policy.getSimpleName().equals(propertyValue);
     }
 }

@@ -30,8 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class NoopThreadContextTest {
 
     @Test
-    @SetSystemProperty(key = LoggingSystemProperties.THREAD_CONTEXT_DISABLED, value = "true")
-    @SetSystemProperty(key = LoggingSystemProperties.THREAD_CONTEXT_MAP_DISABLED, value = "true")
+    @SetSystemProperty(key = LoggingSystemProperties.THREAD_CONTEXT_ENABLED, value = "false")
+    @SetSystemProperty(key = LoggingSystemProperties.THREAD_CONTEXT_MAP_ENABLED, value = "false")
     @InitializesThreadContext
     @UsingThreadContextMap
     public void testNoop() {

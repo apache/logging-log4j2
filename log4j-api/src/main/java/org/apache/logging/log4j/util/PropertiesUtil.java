@@ -29,6 +29,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import org.apache.logging.log4j.spi.LoggingSystem;
+
 /**
  * <em>Consider this class private.</em>
  * <p>
@@ -87,13 +89,11 @@ public class PropertiesUtil implements PropertyEnvironment {
      * Returns the PropertiesUtil used by Log4j.
      *
      * @return the main Log4j PropertiesUtil instance.
+     * @deprecated use {@link LoggingSystem#getPropertyResolver()}
      */
+    @Deprecated
     public static PropertiesUtil getProperties() {
         return COMPONENT_PROPERTIES.value();
-    }
-
-    public static PropertyEnvironment getProperties(final String namespace) {
-        return new Environment(new PropertyFilePropertySource(String.format("log4j2.%s.properties", namespace)));
     }
 
     public static ResourceBundle getCharsetsResourceBundle() {

@@ -25,7 +25,6 @@ import java.net.URI;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.ThreadContextTestAccess;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
@@ -39,7 +38,6 @@ import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Unbox;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Tag;
@@ -90,8 +88,7 @@ public class AsyncThreadContextTest {
             System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS);
             final String PACKAGE = "org.apache.logging.log4j.spi.";
             System.setProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS, PACKAGE + implClassSimpleName());
-            PropertiesUtil.getProperties().reload();
-            ThreadContextTestAccess.init();
+            ThreadContext.init();
         }
 
         public String implClassSimpleName() {
@@ -132,7 +129,7 @@ public class AsyncThreadContextTest {
         final Injector injector = DI.createInjector();
         injector.registerBinding(ContextSelector.KEY, injector.getFactory(asyncMode.contextSelectorType));
         injector.init();
-        final Log4jContextFactory factory = new Log4jContextFactory(injector);
+        final Log4jContextFactory factory = injector.getInstance(Log4jContextFactory.class);
         final String fqcn = testClass.getName();
         final ClassLoader classLoader = testClass.getClassLoader();
         final String name = contextImpl.toString() + ' ' + asyncMode;

@@ -22,21 +22,19 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.ClassFactory;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.PropertyResolver;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -63,10 +61,12 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
      */
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
+        final String context = loggerContext != null ? loggerContext.getName() : PropertyResolver.DEFAULT_CONTEXT;
 
         if (configLocation == null) {
-            final PropertyEnvironment properties = PropertiesUtil.getProperties();
-            final String configLocationStr = substitutor.replace(properties.getStringProperty(CONFIGURATION_FILE_PROPERTY));
+            final String configLocationStr = propertyResolver.getString(context, Log4jProperties.CONFIG_LOCATION)
+                    .map(substitutor::replace)
+                    .orElse(null);
             if (configLocationStr != null) {
                 final String[] sources = parseConfigLocations(configLocationStr);
                 if (sources.length > 1) {
@@ -92,10 +92,11 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 }
                 return getConfiguration(loggerContext, configLocationStr);
             } else {
-                final String log4j1ConfigStr =
-                        substitutor.replace(properties.getStringProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY));
+                final String log4j1ConfigStr = propertyResolver.getString(context, Log4jProperties.CONFIG_V1_LOCATION)
+                        .map(substitutor::replace)
+                        .orElse(null);
                 if (log4j1ConfigStr != null) {
-                    System.setProperty(LOG4J1_EXPERIMENTAL, "true");
+                    System.setProperty(Log4jProperties.CONFIG_V1_COMPATIBILITY_ENABLED.replace("*", context), "true");
                     return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr);
                 }
             }
@@ -157,13 +158,14 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         if (config != null) {
             return config;
         }
-        LOGGER.warn("No Log4j 2 configuration file found. " +
+        LOGGER.warn("No Log4j configuration file found. " +
                 "Using default configuration (logging only errors to the console), " +
                 "or user programmatically provided configurations. " +
-                "Set system property 'log4j2.*.{}' " +
-                "to show Log4j 2 internal initialization logging. " +
-                "See https://logging.apache.org/log4j/2.x/manual/configuration.html for instructions on how to configure Log4j 2",
-                LoggingSystemProperties.SYSTEM_DEBUG);
+                "Set system property 'log4j2.{}.System.debug' " +
+                "to show Log4j internal initialization logging. " +
+                // TODO: update link for 3.x
+                "See https://logging.apache.org/log4j/2.x/manual/configuration.html for instructions on how to configure Log4j",
+                context);
         return new DefaultConfiguration();
     }
 
@@ -176,7 +178,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
             final String configLocationStr) {
         ConfigurationSource source = null;
         try {
-            source = ConfigurationSource.fromUri(NetUtils.toURI(configLocationStr));
+            source = configurationResolver.tryResolve(NetUtils.toURI(configLocationStr)).orElse(null);
         } catch (final Exception ex) {
             // Ignore the error and try as a String.
             LOGGER.catching(Level.DEBUG, ex);
@@ -219,7 +221,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 }
                 configName = named ? prefix + name + suffix : prefix + suffix;
 
-                final ConfigurationSource source = ConfigurationSource.fromResource(configName, loader);
+                final ConfigurationSource source = configurationResolver.tryResolve(configName, loader).orElse(null);
                 if (source != null) {
                     if (!factory.isActive()) {
                         LOGGER.warn("Found configuration file {} for inactive ConfigurationFactory {}", configName,
@@ -296,8 +298,10 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     private static List<ConfigurationFactory> loadConfigurationFactories(final Injector injector) {
         final List<ConfigurationFactory> factories = new ArrayList<>();
 
-        Optional.ofNullable(PropertiesUtil.getProperties().getStringProperty(Log4jProperties.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME))
-                .flatMap(DefaultConfigurationFactory::tryLoadFactoryClass)
+        final ClassFactory classFactory = injector.getInstance(ClassFactory.class);
+        LoggingSystem.getPropertyResolver()
+                .getString(Log4jProperties.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME)
+                .flatMap(className -> classFactory.tryGetClass(className, ConfigurationFactory.class))
                 .map(clazz -> {
                     try {
                         return injector.getInstance(clazz);
@@ -326,14 +330,5 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         });
 
         return factories;
-    }
-
-    private static Optional<Class<? extends ConfigurationFactory>> tryLoadFactoryClass(final String factoryClass) {
-        try {
-            return Optional.of(Loader.loadClass(factoryClass).asSubclass(ConfigurationFactory.class));
-        } catch (final Exception ex) {
-            LOGGER.error("Unable to load ConfigurationFactory class {}", factoryClass, ex);
-            return Optional.empty();
-        }
     }
 }

@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.jackson.json.Log4jJsonObjectMapper;
 import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
@@ -112,13 +112,13 @@ public class SocketAppenderTest {
 
     @Test
     public void testTcpAppender1() throws Exception {
-        testTcpAppender(tcpServer, logger, Constants.ENCODER_BYTE_BUFFER_SIZE);
+        testTcpAppender(tcpServer, logger, GarbageFreeConfiguration.getDefaultConfiguration().getEncoderByteBufferSize());
     }
 
     @Test
     @Disabled("WIP Bug when this method runs after testTcpAppender1()")
     public void testTcpAppender2() throws Exception {
-        testTcpAppender(tcpServer, logger, Constants.ENCODER_BYTE_BUFFER_SIZE);
+        testTcpAppender(tcpServer, logger, GarbageFreeConfiguration.getDefaultConfiguration().getEncoderByteBufferSize());
     }
 
     static void testTcpAppender(final TcpSocketTestServer tcpTestServer, final Logger logger, final int bufferSize)

@@ -55,8 +55,10 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.spi.LoggerContextShutdownEnabled;
 import org.apache.logging.log4j.spi.LoggerRegistry;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Terminable;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.ContextPropertyResolver;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
@@ -73,7 +75,7 @@ public class LoggerContext extends AbstractLifeCycle
      * Property name of the property change event fired if the configuration is changed.
      */
     public static final String PROPERTY_CONFIG = "config";
-    public  static final Key<WeakReference<LoggerContext>> KEY = new Key<>() {};
+    public static final Key<LoggerContext> KEY = new Key<>() {};
 
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
@@ -81,6 +83,7 @@ public class LoggerContext extends AbstractLifeCycle
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
     private volatile List<LoggerContextShutdownAware> listeners;
     private final Injector injector;
+    private final PropertyResolver propertyResolver;
 
     /**
      * The Configuration is volatile to guarantee that initialization of the Configuration has completed before the
@@ -90,6 +93,7 @@ public class LoggerContext extends AbstractLifeCycle
     private static final String EXTERNAL_CONTEXT_KEY = "__EXTERNAL_CONTEXT_KEY__";
     private final ConcurrentMap<String, Object> externalMap = new ConcurrentHashMap<>();
     private String contextName;
+    private String contextKey;
     private volatile URI configLocation;
     private Cancellable shutdownCallback;
 
@@ -119,30 +123,36 @@ public class LoggerContext extends AbstractLifeCycle
      *
      * @param name The context name.
      * @param externalContext The external context.
-     * @param configLocn The location of the configuration as a URI.
+     * @param configLocation The location of the configuration as a URI.
      */
-    public LoggerContext(final String name, final Object externalContext, final URI configLocn) {
-        this(name, externalContext, configLocn, DI.createInjector());
-        injector.init();
-        injector.registerBindingIfAbsent(KEY, () -> new WeakReference<>(this));
+    public LoggerContext(final String name, final Object externalContext, final URI configLocation) {
+        this(name, externalContext, configLocation, DI.createInjector(), LoggingSystem.getPropertyResolver());
+        this.injector.init();
+        final var ref = new WeakReference<>(this);
+        this.injector.registerBindingIfAbsent(KEY, ref::get);
     }
 
     /**
-     * Constructs a LoggerContext with a name, external context, configuration URI, and an Injector.
+     * Constructs a LoggerContext with a name, external context, configuration URI, an Injector, and a PropertyResolver.
      *
      * @param name context name
      * @param externalContext external context or null
-     * @param configLocn location of configuration as a URI
+     * @param configLocation location of configuration as a URI or null
      * @param injector initialized Injector instance
+     * @param resolver main property resolver
      */
-    public LoggerContext(final String name, final Object externalContext, final URI configLocn, final Injector injector) {
-        this.contextName = name;
+    public LoggerContext(final String name, final Object externalContext, final URI configLocation,
+                         final Injector injector, final PropertyResolver resolver) {
+        this.contextName = Objects.requireNonNull(name, "No LoggerContext name specified");
+        Objects.requireNonNull(injector, "No Injector provided");
+        Objects.requireNonNull(resolver, "No PropertyResolver provided");
         if (externalContext != null) {
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }
-        this.configLocation = configLocn;
+        this.configLocation = configLocation;
         this.injector = injector.copy();
-        injector.registerBindingIfAbsent(KEY, () -> new WeakReference<>(this));
+        this.propertyResolver = new ContextPropertyResolver(resolver, name);
+        this.injector.registerBinding(Key.forClass(PropertyResolver.class), this::getPropertyResolver);
     }
 
     /**
@@ -151,12 +161,11 @@ public class LoggerContext extends AbstractLifeCycle
      *
      * @param name The configuration location.
      * @param externalContext The external context.
-     * @param configLocn The configuration location.
+     * @param configLocation The configuration location.
      */
-    public LoggerContext(final String name, final Object externalContext, final String configLocn) {
-        this(name, externalContext, configLocn, DI.createInjector());
-        injector.init();
-        injector.registerBindingIfAbsent(KEY, () -> new WeakReference<>(this));
+    public LoggerContext(final String name, final Object externalContext, final String configLocation) {
+        this(name, externalContext, configLocation, DI.createInjector(), LoggingSystem.getPropertyResolver());
+        this.injector.init();
     }
 
     /**
@@ -165,27 +174,34 @@ public class LoggerContext extends AbstractLifeCycle
      *
      * @param name context name
      * @param externalContext external context or null
-     * @param configLocn configuration location
+     * @param configLocation configuration location
      * @param injector initialized Injector instance
+     * @param resolver main property resolver
      */
-    public LoggerContext(final String name, final Object externalContext, final String configLocn, final Injector injector) {
-        this.contextName = name;
+    public LoggerContext(final String name, final Object externalContext, final String configLocation,
+                         final Injector injector, final PropertyResolver resolver) {
+        this.contextName = Objects.requireNonNull(name, "No LoggerContext name specified");
+        Objects.requireNonNull(injector, "No Injector provided");
+        Objects.requireNonNull(resolver, "No PropertyResolver provided");
         if (externalContext != null) {
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }
-        if (configLocn != null) {
+        if (configLocation != null) {
             URI uri;
             try {
-                uri = new File(configLocn).toURI();
+                uri = new File(configLocation).toURI();
             } catch (final Exception ex) {
                 uri = null;
             }
-            configLocation = uri;
+            this.configLocation = uri;
         } else {
-            configLocation = null;
+            this.configLocation = null;
         }
         this.injector = injector.copy();
-        this.injector.registerBindingIfAbsent(KEY, () -> new WeakReference<>(this));
+        final var ref = new WeakReference<>(this);
+        this.injector.registerBindingIfAbsent(KEY, ref::get);
+        this.propertyResolver = new ContextPropertyResolver(resolver, name);
+        this.injector.registerBinding(Key.forClass(PropertyResolver.class), this::getPropertyResolver);
     }
 
     public void addShutdownListener(final LoggerContextShutdownAware listener) {
@@ -274,7 +290,8 @@ public class LoggerContext extends AbstractLifeCycle
     @Override
     public void start() {
         LOGGER.debug("Starting {}...", this);
-        if (PropertiesUtil.getProperties().getBooleanProperty(Log4jProperties.LOGGER_CONTEXT_STACKTRACE_ON_START, false)) {
+        final boolean stacktraceOnStart = propertyResolver.getBoolean(Log4jProperties.LOGGER_CONTEXT_STACKTRACE_ON_START);
+        if (stacktraceOnStart) {
             LOGGER.debug("Stack trace to locate invoker",
                     new Exception("Not a real error, showing stack trace to locate invoker"));
         }
@@ -434,6 +451,15 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     /**
+     * Gets the key for this context to use when indexing logger contexts.
+     * @return the context key
+     * @since 3.0.0
+     */
+    public String getKey() {
+        return contextKey;
+    }
+
+    /**
      * Gets the root logger.
      *
      * @return the root logger.
@@ -450,6 +476,10 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public void setName(final String name) {
         contextName = Objects.requireNonNull(name);
+    }
+
+    public void setKey(final String key) {
+        contextKey = Objects.requireNonNull(key);
     }
 
     @Override
@@ -564,6 +594,10 @@ public class LoggerContext extends AbstractLifeCycle
      */
     public Injector getInjector() {
         return injector;
+    }
+
+    public PropertyResolver getPropertyResolver() {
+        return propertyResolver;
     }
 
     /**

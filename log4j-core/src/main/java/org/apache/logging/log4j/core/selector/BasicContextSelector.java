@@ -29,6 +29,7 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 /**
  * Returns either this Thread's context or the default LoggerContext.
@@ -40,10 +41,12 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
 
     protected final Lazy<LoggerContext> context = Lazy.lazy(this::createContext);
     protected final Injector injector;
+    protected final PropertyResolver propertyResolver;
 
     @Inject
-    public BasicContextSelector(final Injector injector) {
+    public BasicContextSelector(final Injector injector, final PropertyResolver propertyResolver) {
         this.injector = injector;
+        this.propertyResolver = propertyResolver;
     }
 
     @Override
@@ -95,6 +98,13 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
     }
 
     @Override
+    public LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader,
+                                    final boolean currentContext, final URI configLocation, final Injector injector) {
+        // not useful to override the injector in a singleton context
+        return getContext(fqcn, loader, currentContext, configLocation);
+    }
+
+    @Override
     public void removeContext(final LoggerContext context) {
         if (context == this.context.get()) {
             this.context.set(null);
@@ -112,6 +122,6 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
     }
 
     protected LoggerContext createContext() {
-        return new LoggerContext("Default", null, (URI) null, injector);
+        return new LoggerContext("Default", null, (URI) null, injector, propertyResolver);
     }
 }

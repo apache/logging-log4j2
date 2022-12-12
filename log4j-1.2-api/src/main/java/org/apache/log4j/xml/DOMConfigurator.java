@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
-
 import javax.xml.parsers.FactoryConfigurationError;
 
 import org.apache.log4j.LogManager;
@@ -41,6 +40,8 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.util.IOUtils;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.w3c.dom.Element;
 
 /**
@@ -145,7 +146,10 @@ public class DOMConfigurator {
 
     public void doConfigure(final URL url, final LoggerRepository repository) {
         try {
-            final URLConnection connection = UrlConnectionFactory.createConnection(url);
+            // TODO: find better place to anchor Injector creation
+            final Injector injector = DI.createInjector();
+            injector.init();
+            final URLConnection connection = injector.getInstance(UrlConnectionFactory.class).openConnection(url);
             try (InputStream inputStream = connection.getInputStream()) {
                 doConfigure(new ConfigurationSource(inputStream, url));
             }

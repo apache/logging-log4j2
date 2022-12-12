@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.util;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -51,7 +52,7 @@ public class Unbox {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int BITS_PER_INT = 32;
     private static final int RINGBUFFER_MIN_SIZE = 32;
-    private static final int RINGBUFFER_SIZE = calculateRingBufferSize(LoggingSystemProperties.UNBOX_RING_BUFFER_SIZE);
+    private static final int RINGBUFFER_SIZE = calculateRingBufferSize();
     private static final int MASK = RINGBUFFER_SIZE - 1;
 
     /**
@@ -128,22 +129,16 @@ public class Unbox {
         // this is a utility
     }
 
-    private static int calculateRingBufferSize(final String propertyName) {
-        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(propertyName,
-                String.valueOf(RINGBUFFER_MIN_SIZE));
-        try {
-            int size = Integer.parseInt(userPreferredRBSize);
-            if (size < RINGBUFFER_MIN_SIZE) {
-                size = RINGBUFFER_MIN_SIZE;
-                LOGGER.warn("Invalid {} {}, using minimum size {}.", propertyName, userPreferredRBSize,
-                        RINGBUFFER_MIN_SIZE);
-            }
-            return ceilingNextPowerOfTwo(size);
-        } catch (final Exception ex) {
-            LOGGER.warn("Invalid {} {}, using default size {}.", propertyName, userPreferredRBSize,
-                    RINGBUFFER_MIN_SIZE);
-            return RINGBUFFER_MIN_SIZE;
+    private static int calculateRingBufferSize() {
+        int size = LoggingSystem.getPropertyResolver()
+                .getInt(LoggingSystemProperties.UNBOX_RING_BUFFER_SIZE)
+                .orElse(RINGBUFFER_MIN_SIZE);
+        if (size < RINGBUFFER_MIN_SIZE) {
+            LOGGER.warn("Invalid {} {}, using minimum size {}.",
+                    LoggingSystemProperties.UNBOX_RING_BUFFER_SIZE, size, RINGBUFFER_MIN_SIZE);
+            size = RINGBUFFER_MIN_SIZE;
         }
+        return ceilingNextPowerOfTwo(size);
     }
 
     /**

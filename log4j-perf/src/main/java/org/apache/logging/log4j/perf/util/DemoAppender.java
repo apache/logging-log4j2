@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 
 import java.nio.ByteBuffer;
 
@@ -40,7 +40,7 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
 
     @Override
     public void append(final LogEvent event) {
-        if (Constants.ENABLE_DIRECT_ENCODERS) {
+        if (GarbageFreeConfiguration.getDefaultConfiguration().isDirectEncodersEnabled()) {
             getLayout().encode(event, this);
             drain(byteBuffer);
         } else {

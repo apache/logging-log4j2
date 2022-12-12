@@ -34,6 +34,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.server.Server;
@@ -41,17 +42,13 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test for simple App.
@@ -111,11 +108,11 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
     }
 
     @Test
+    @SetSystemProperty(key = Log4jProperties.CONFIG_ALLOWED_PROTOCOLS, value = "http")
+    @SetSystemProperty(key = Log4jProperties.TRANSPORT_SECURITY_BASIC_USERNAME, value = "log4j")
+    @SetSystemProperty(key = Log4jProperties.TRANSPORT_SECURITY_BASIC_PASSWORD, value = "log4j")
     public void filterTest() throws Exception {
-        System.setProperty("log4j2.Configuration.allowedProtocols", "http");
-        System.setProperty("logging.auth.username", "log4j");
-        System.setProperty("logging.auth.password", "log4j");
-        System.setProperty("configLocation", "http://localhost:" + port + "/testConfig.json");
+        System.setProperty(Log4jProperties.CONFIG_LOCATION, "http://localhost:" + port + "/testConfig.json");
         ThreadContext.put("loginId", "rgoers");
         Path source = new File("target/test-classes/emptyConfig.json").toPath();
         Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
@@ -131,7 +128,7 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
         filter.registerListener(this);
         Logger logger = loggerContext.getLogger("Test");
         logger.debug("This is a test");
-        Assertions.assertEquals(0, ((ListAppender) app).getEvents().size());
+        assertEquals(0, ((ListAppender) app).getEvents().size());
         source = new File("target/test-classes/filterConfig.json").toPath();
         Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
         assertNotEquals(fileTime, targetFile.lastModified());
@@ -140,8 +137,8 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
         }
         updated = new CountDownLatch(1);
         logger.debug("This is a test");
-        Assertions.assertEquals(1, ((ListAppender) app).getEvents().size());
-        Assertions.assertTrue(Files.deleteIfExists(target));
+        assertEquals(1, ((ListAppender) app).getEvents().size());
+        assertTrue(Files.deleteIfExists(target));
         if (!updated.await(5, TimeUnit.SECONDS)) {
             fail("File update for delete was not detected");
         }
@@ -161,7 +158,7 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
             }
             while (headers.hasMoreElements()) {
                 String authData = headers.nextElement();
-                Assert.assertTrue("Not a Basic auth header", authData.startsWith(BASIC));
+                assertTrue(authData.startsWith(BASIC), "Not a Basic auth header");
                 String credentials = new String(decoder.decode(authData.substring(BASIC.length())));
                 if (!expectedCreds.equals(credentials)) {
                     response.sendError(401, "Invalid credentials");

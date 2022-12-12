@@ -22,8 +22,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 
 @Singleton
 public class OnPropertyCondition implements Condition {
@@ -38,9 +38,11 @@ public class OnPropertyCondition implements Condition {
         }
         final String name = annotation.name();
         final String value = annotation.value();
-        final String property = PropertiesUtil.getProperties().getStringProperty(name);
-        final boolean result = property != null && (value.isEmpty() || value.equalsIgnoreCase(property));
-        LOGGER.debug("ConditionalOnProperty {} for name='{}', value='{}'; property='{}'", result, name, value, property);
+        final boolean result = LoggingSystem.getPropertyResolver()
+                .getString(name)
+                .filter(property -> value.isEmpty() || value.equalsIgnoreCase(property))
+                .isPresent();
+        LOGGER.debug("ConditionalOnProperty {} for name='{}', value='{}'", result, name, value);
         return result;
     }
 }

@@ -259,7 +259,7 @@ public final class StatusLogger extends AbstractLogger {
         } finally {
             msgLock.unlock();
         }
-        // LOG4J2-1813 if system property "log4j2.debug" is defined, all status logging is enabled
+        // LOG4J2-1813 if system property LoggingSystemProperties#SYSTEM_DEBUG is defined, all status logging is enabled
         if (configuration.isDebugEnabled() || listeners.isEmpty()) {
             logger.logMessage(fqcn, level, marker, msg, t);
         } else {

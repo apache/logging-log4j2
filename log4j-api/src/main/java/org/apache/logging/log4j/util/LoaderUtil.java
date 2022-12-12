@@ -26,6 +26,7 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.LoggingSystemProperties;
 
 /**
@@ -43,13 +44,9 @@ public final class LoaderUtil {
 
     private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();
 
-    // this variable must be lazily loaded; otherwise, we get a nice circular class loading problem where LoaderUtil
-    // wants to use PropertiesUtil, but then PropertiesUtil wants to use LoaderUtil.
-    private static Boolean ignoreTCCL;
-
+    private static final PrivilegedAction<Boolean> IS_FORCE_THREAD_CONTEXT_CLASS_LOADER_ONLY =
+            () -> Boolean.getBoolean(LoggingSystemProperties.LOADER_FORCE_THREAD_CONTEXT_LOADER);
     private static final boolean GET_CLASS_LOADER_DISABLED;
-
-    protected static Boolean forceTcclOnly;
 
     private static final PrivilegedAction<ClassLoader> TCCL_GETTER = new ThreadContextClassLoaderGetter();
 
@@ -294,51 +291,19 @@ public final class LoaderUtil {
         return newInstanceOf(loadClass(className).asSubclass(clazz));
     }
 
-    /**
-     * Loads and instantiates a class given by a property name.
-     *
-     * @param propertyName The property name to look up a class name for.
-     * @param clazz        The class to cast it to.
-     * @param <T>          The type to cast it to.
-     * @return new instance of the class given in the property or {@code null} if the property was unset.
-     * @throws ClassNotFoundException    if the class isn't available to the usual ClassLoaders
-     * @throws IllegalAccessException    if the class can't be instantiated through a public constructor
-     * @throws InstantiationException    if there was an exception whilst instantiating the class
-     * @throws InvocationTargetException if there was an exception whilst constructing the class
-     * @throws ClassCastException        if the constructed object isn't type compatible with {@code T}
-     * @since 2.5
-     */
-    public static <T> T newCheckedInstanceOfProperty(final String propertyName, final Class<T> clazz)
-        throws ClassNotFoundException, InvocationTargetException, InstantiationException,
-        IllegalAccessException {
-        final String className = PropertiesUtil.getProperties().getStringProperty(propertyName);
-        if (className == null) {
-            return null;
-        }
-        return newCheckedInstanceOf(className, clazz);
-    }
-
     private static boolean isIgnoreTccl() {
-        // we need to lazily initialize this, but concurrent access is not an issue
-        if (ignoreTCCL == null) {
-            final String ignoreTccl = PropertiesUtil.getProperties().getStringProperty(LoggingSystemProperties.LOADER_IGNORE_THREAD_CONTEXT_LOADER, null);
-            ignoreTCCL = ignoreTccl != null && !"false".equalsIgnoreCase(ignoreTccl.trim());
-        }
-        return ignoreTCCL;
+        return LoggingSystem.getPropertyResolver()
+                .getBoolean(LoggingSystemProperties.LOADER_IGNORE_THREAD_CONTEXT_LOADER, false, true);
     }
 
-    private static boolean isForceTccl() {
-        if (forceTcclOnly == null) {
-            // PropertiesUtil.getProperties() uses that code path so don't use that!
-            try {
-                forceTcclOnly = System.getSecurityManager() == null ?
-                    Boolean.getBoolean(LoggingSystemProperties.LOADER_FORCE_THREAD_CONTEXT_LOADER) :
-                    AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> Boolean.getBoolean(LoggingSystemProperties.LOADER_FORCE_THREAD_CONTEXT_LOADER));
-            } catch (final SecurityException se) {
-                forceTcclOnly = false;
-            }
+    static boolean isForceTccl() {
+        // used by LoaderUtil::findResources/findUrlResources -> LoggingSystem::loadPropertySources -> PropertyResolver initialization
+        try {
+            return System.getSecurityManager() == null ? IS_FORCE_THREAD_CONTEXT_CLASS_LOADER_ONLY.run() :
+                    AccessController.doPrivileged(IS_FORCE_THREAD_CONTEXT_CLASS_LOADER_ONLY);
+        } catch (final SecurityException ignored) {
+            return false;
         }
-        return forceTcclOnly;
     }
 
     /**
@@ -371,7 +336,7 @@ public final class LoaderUtil {
     public static Collection<UrlResource> findUrlResources(final String resource, boolean useTccl) {
         // @formatter:off
         final ClassLoader[] candidates = {
-                getThreadContextClassLoader(),
+                useTccl ? getThreadContextClassLoader() : null,
                 isForceTccl() ? null : LoaderUtil.class.getClassLoader(),
                 isForceTccl() || GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader()};
         // @formatter:on

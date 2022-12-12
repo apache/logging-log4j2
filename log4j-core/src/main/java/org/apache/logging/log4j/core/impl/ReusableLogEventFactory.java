@@ -16,12 +16,15 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.ThreadNameCachingStrategy;
+import org.apache.logging.log4j.core.async.ThreadNameCachingStrategyFactory;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.NanoClock;
@@ -29,26 +32,25 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.util.StringMap;
 
-import java.util.List;
-
 /**
  * Garbage-free LogEventFactory that reuses a single mutable log event.
  * @since 2.6
  */
 public class ReusableLogEventFactory implements LogEventFactory {
-    private static final ThreadNameCachingStrategy THREAD_NAME_CACHING_STRATEGY = ThreadNameCachingStrategy.create();
-
     private static final ThreadLocal<MutableLogEvent> mutableLogEventThreadLocal = new ThreadLocal<>();
 
     private final ContextDataInjector injector;
     private final Clock clock;
     private final NanoClock nanoClock;
+    private final ThreadNameCachingStrategyFactory factory;
 
     @Inject
-    public ReusableLogEventFactory(final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock) {
+    public ReusableLogEventFactory(final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock,
+                                   final ThreadNameCachingStrategyFactory factory) {
         this.injector = injector;
         this.clock = clock;
         this.nanoClock = nanoClock;
+        this.factory = factory;
     }
 
     /**
@@ -102,7 +104,7 @@ public class ReusableLogEventFactory implements LogEventFactory {
         result.setContextData(injector.injectContextData(properties, (StringMap) result.getContextData()));
         result.setContextStack(ThreadContext.getDepth() == 0 ? ThreadContext.EMPTY_STACK : ThreadContext.cloneStack());// mutable copy
 
-        if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
+        if (factory.get() == ThreadNameCachingStrategy.UNCACHED) {
             result.setThreadName(Thread.currentThread().getName()); // Thread.getName() allocates Objects on each call
             result.setThreadPriority(Thread.currentThread().getPriority());
         }

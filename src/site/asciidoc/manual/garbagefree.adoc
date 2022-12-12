@@ -86,7 +86,7 @@ reference these fields after the web application is undeployed. To avoid
 causing memory leaks, Log4j will not use these ThreadLocals when it
 detects that it is used in a web application (when the
 `javax.servlet.Servlet` class is in the classpath, or when system
-property `log4j2.isWebapp` is set to "true").
+property `log4j2.*.Web.enableWebApp` is set to "true").
 
 Some garbage-reducing functionality does not rely on ThreadLocals and is
 enabled by default for all applications: in Log4j 2.6, converting log
@@ -116,7 +116,7 @@ you may also configure a link:async.html#WaitStrategy[custom wait strategy].)
 There are two separate system properties for manually controlling the
 mechanisms Log4j uses to avoid creating temporary objects:
 
-* `log4j2.enableThreadlocals` - if "true" (the default for non-web
+* `log4j2.*.GC.enableThreadLocals` - if "true" (the default for non-web
 applications) objects are stored in ThreadLocal fields and reused,
 otherwise new objects are created for each log event.
 * `log4j2.enableDirectEncoders` - if "true" (the default) log events are
@@ -389,7 +389,7 @@ interface. If an object is logged that implements this interface, its
 
 Log4j may call `toString()` on message and parameter objects when
 garbage-free logging is disabled (when system property
-`log4j2.enableThreadlocals` is set to "false".)
+`log4j2.*.GC.enableThreadLocals` is set to "false".)
 
 [#codeImpact]
 === Impact on Application Code: Autoboxing

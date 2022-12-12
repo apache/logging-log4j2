@@ -25,7 +25,7 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.spi.LoggerRegistry;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.spi.LoggingSystem;
 
 /**
  * A simple {@link LoggerContext} implementation.
@@ -42,9 +42,6 @@ public class SimpleLoggerContext implements LoggerContext {
     /** The default format to use when formatting dates */
     protected static final String DEFAULT_DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss:SSS zzz";
 
-    /** All system properties used by <code>SimpleLog</code> start with this */
-    protected static final String SYSTEM_PREFIX = "org.apache.logging.log4j.simplelog.";
-
     private final SimpleLoggerConfiguration configuration;
 
     private final PrintStream stream;
@@ -55,7 +52,7 @@ public class SimpleLoggerContext implements LoggerContext {
      * Constructs a new initialized instance.
      */
     public SimpleLoggerContext() {
-        this(new SimpleLoggerConfiguration(PropertiesUtil.getProperties("simplelog")));
+        this(new SimpleLoggerConfiguration(LoggingSystem.getPropertyResolver()));
     }
 
     public SimpleLoggerContext(final SimpleLoggerConfiguration configuration) {

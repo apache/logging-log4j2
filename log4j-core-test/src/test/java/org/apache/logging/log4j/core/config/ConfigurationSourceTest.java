@@ -14,12 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -31,9 +26,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.Test;
 
 import com.sun.management.UnixOperatingSystemMXBean;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ConfigurationSourceTest {
 
@@ -46,7 +45,7 @@ public class ConfigurationSourceTest {
     /**
      * Checks if the usage of 'jar:' URLs does not increase the file descriptor
      * count and the jar file can be deleted.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -56,7 +55,10 @@ public class ConfigurationSourceTest {
         Files.copy(original, copy);
         final URL jarUrl = new URL("jar:" + copy.toUri().toURL() + "!/config/console.xml");
         final long expected = getOpenFileDescriptorCount();
-        UrlConnectionFactory.createConnection(jarUrl).getInputStream().close();
+        final Injector injector = DI.createInjector();
+        injector.init();
+        final UrlConnectionFactory urlConnectionFactory = injector.getInstance(UrlConnectionFactory.class);
+        urlConnectionFactory.openConnection(jarUrl).getInputStream().close();
         // This can only fail on UNIX
         assertEquals(expected, getOpenFileDescriptorCount());
         // This can only fail on Windows

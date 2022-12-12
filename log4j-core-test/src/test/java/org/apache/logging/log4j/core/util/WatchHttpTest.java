@@ -37,7 +37,7 @@ import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
 import org.apache.logging.log4j.test.junit.StatusLoggerRule;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.Constants;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -47,11 +47,7 @@ import org.junit.Test;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.removeStub;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -66,7 +62,7 @@ public class WatchHttpTest {
     private static FastDateFormat formatter;
     private static final String XML = "application/xml";
 
-    private static final boolean IS_WINDOWS = PropertiesUtil.getProperties().isOsWindows();
+    private static final boolean IS_WINDOWS = Constants.isWindows();
 
     @BeforeClass
     public static void beforeClass() {

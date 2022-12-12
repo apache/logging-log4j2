@@ -14,32 +14,28 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.async;
+package org.apache.logging.log4j.core.util.internal;
 
-/**
- * Strategy for deciding whether thread name should be cached or not.
- */
-public enum ThreadNameCachingStrategy { // LOG4J2-467
-    CACHED {
-        @Override
-        public String getThreadName() {
-            String result = THREADLOCAL_NAME.get();
-            if (result == null) {
-                result = Thread.currentThread().getName();
-                THREADLOCAL_NAME.set(result);
-            }
-            return result;
-        }
-    },
-    UNCACHED {
-        @Override
-        public String getThreadName() {
-            return Thread.currentThread().getName();
-        }
-    };
+import java.io.InputStream;
 
-    private static final ThreadLocal<String> THREADLOCAL_NAME = new ThreadLocal<>();
+public class HttpResponse {
+    private final Status status;
+    private final InputStream inputStream;
 
-    abstract String getThreadName();
+    public HttpResponse(final Status status) {
+        this(status, InputStream.nullInputStream());
+    }
 
+    public HttpResponse(final Status status, final InputStream inputStream) {
+        this.status = status;
+        this.inputStream = inputStream;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public InputStream getInputStream() {
+        return inputStream;
+    }
 }

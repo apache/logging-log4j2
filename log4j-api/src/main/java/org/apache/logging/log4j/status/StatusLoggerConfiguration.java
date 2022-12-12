@@ -20,37 +20,40 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 import static org.apache.logging.log4j.spi.LoggingSystemProperties.*;
 
 public class StatusLoggerConfiguration {
-    private final PropertyEnvironment environment;
+    private final PropertyResolver resolver;
 
-    public StatusLoggerConfiguration(final PropertyEnvironment environment) {
-        this.environment = environment;
+    public StatusLoggerConfiguration(final PropertyResolver resolver) {
+        this.resolver = resolver;
     }
 
     public int getMaxEntries() {
-        return environment.getIntegerProperty(STATUS_MAX_ENTRIES, 200);
+        return resolver.getInt(STATUS_MAX_ENTRIES).orElse(200);
     }
 
     public Level getDefaultLevel() {
-        return Level.toLevel(environment.getStringProperty(STATUS_DEFAULT_LISTENER_LEVEL), Level.WARN);
+        return resolver.getString(STATUS_DEFAULT_LISTENER_LEVEL)
+                .map(Level::getLevel)
+                .orElse(Level.WARN);
     }
 
     public boolean isDebugEnabled() {
-        return environment.getBooleanProperty(SYSTEM_DEBUG, false, true);
+        return resolver.getBoolean(SYSTEM_DEBUG, false, true);
     }
 
     public DateFormat getDateTimeFormat() {
-        final String format = environment.getStringProperty(STATUS_DATE_FORMAT);
-        if (format != null) {
-            try {
-                return new SimpleDateFormat(format);
-            } catch (final IllegalArgumentException ignored) {
-            }
-        }
-        return null;
+        return resolver.getString(STATUS_DATE_FORMAT)
+                .map(format -> {
+                    try {
+                        return new SimpleDateFormat(format);
+                    } catch (final IllegalArgumentException ignored) {
+                        return null;
+                    }
+                })
+                .orElse(null);
     }
 }

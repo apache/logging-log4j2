@@ -19,12 +19,14 @@ package org.apache.logging.log4j.core.async;
 import java.net.URI;
 
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.LoggerContextNamingStrategy;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyResolver;
 
 /**
  * {@code ContextSelector} that manages {@code AsyncLoggerContext} instances.
@@ -40,6 +42,7 @@ public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
      *
      * @return {@code true} if all loggers are asynchronous, {@code false} otherwise.
      */
+    @Deprecated(forRemoval = true)
     public static boolean isSelected() {
         // FIXME(ms): this should check Injector bindings
         return AsyncLoggerContextSelector.class.getName().equals(
@@ -47,13 +50,17 @@ public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
     }
 
     @Inject
-    public AsyncLoggerContextSelector(final Injector injector) {
-        super(injector);
+    public AsyncLoggerContextSelector(final Injector injector, final PropertyResolver resolver,
+                                      final LoggerContextNamingStrategy namingStrategy) {
+        super(injector, resolver, namingStrategy);
     }
 
     @Override
-    protected LoggerContext createContext(final String name, final URI configLocation, final Injector injector) {
-        return new AsyncLoggerContext(name, null, configLocation, injector);
+    protected LoggerContext createContext(final String key, final String name, final URI configLocation, final Injector injector) {
+        final AsyncLoggerContext context = new AsyncLoggerContext(name, null, configLocation,
+                injector != null ? injector : this.injector, propertyResolver);
+        context.setKey(key);
+        return context;
     }
 
     @Override

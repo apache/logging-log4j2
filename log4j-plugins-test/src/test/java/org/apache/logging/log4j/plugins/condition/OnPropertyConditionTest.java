@@ -19,7 +19,6 @@ package org.apache.logging.log4j.plugins.condition;
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ClearSystemProperty;
@@ -31,13 +30,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class OnPropertyConditionTest {
 
     static class OnProperty {
-        @ConditionalOnProperty(name = "foo.bar", value = "true")
+        @ConditionalOnProperty(name = "log4j2.*.foo.bar", value = "true")
         @Factory
         String truth() {
             return "truth";
         }
 
-        @ConditionalOnProperty(name = "foo.bar")
+        @ConditionalOnProperty(name = "log4j2.*.foo.bar")
         @Ordered(Ordered.LAST)
         @Factory
         String string() {
@@ -52,25 +51,22 @@ class OnPropertyConditionTest {
     }
 
     @Test
-    @ClearSystemProperty(key = "foo.bar")
+    @ClearSystemProperty(key = "log4j2.*.foo.bar")
     void whenPropertyAbsent() {
-        ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
         final String value = DI.createInjector(OnProperty.class).getInstance(String.class);
         assertEquals("goodbye", value);
     }
 
     @Test
-    @SetSystemProperty(key = "foo.bar", value = "whatever")
+    @SetSystemProperty(key = "log4j2.*.foo.bar", value = "whatever")
     void whenPropertyPresent() {
-        ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
         final String value = DI.createInjector(OnProperty.class).getInstance(String.class);
         assertEquals("hello", value);
     }
 
     @Test
-    @SetSystemProperty(key = "foo.bar", value = "true")
+    @SetSystemProperty(key = "log4j2.*.foo.bar", value = "true")
     void whenPropertyMatches() {
-        ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
         final String value = DI.createInjector(OnProperty.class).getInstance(String.class);
         assertEquals("truth", value);
     }

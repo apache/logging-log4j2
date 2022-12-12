@@ -30,7 +30,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SetSystemProperty(key = Log4jProperties.JANSI_DISABLED, value = "false")
+@SetSystemProperty(key = Log4jProperties.JANSI_ENABLED, value = "true")
 public class StyleConverterTest {
 
     private static final String EXPECTED =

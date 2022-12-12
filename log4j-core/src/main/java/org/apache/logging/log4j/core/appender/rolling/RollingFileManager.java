@@ -45,8 +45,8 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 
 /**
@@ -96,7 +96,7 @@ public class RollingFileManager extends FileManager {
             final String filePermissions, final String fileOwner, final String fileGroup,
             final boolean writeHeader, final ByteBuffer buffer) {
         super(loggerContext, fileName != null ? fileName : pattern, os, append, false, createOnDemand,
-			advertiseURI, layout, filePermissions, fileOwner, fileGroup, writeHeader, buffer);
+            advertiseURI, layout, filePermissions, fileOwner, fileGroup, writeHeader, buffer);
         this.size = size;
         this.initialTime = initialTime;
         this.triggeringPolicy = triggeringPolicy;
@@ -302,12 +302,12 @@ public class RollingFileManager extends FileManager {
         return status;
     }
 
-	public synchronized void rollover(final long prevFileTime, final long prevRollTime) {
+    public synchronized void rollover(final long prevFileTime, final long prevRollTime) {
         LOGGER.debug("Rollover PrevFileTime: {}, PrevRollTime: {}", prevFileTime, prevRollTime);
-		getPatternProcessor().setPrevFileTime(prevFileTime);
-		getPatternProcessor().setCurrentFileTime(prevRollTime);
-		rollover();
-	}
+        getPatternProcessor().setPrevFileTime(prevFileTime);
+        getPatternProcessor().setCurrentFileTime(prevRollTime);
+        rollover();
+    }
 
     public synchronized void rollover() {
         if (!hasOutputStream() && !isCreateOnDemand() && !isDirectWrite()) {
@@ -675,7 +675,7 @@ public class RollingFileManager extends FileManager {
             }
 
             try {
-                final int actualSize = data.bufferedIO ? data.bufferSize : Constants.ENCODER_BYTE_BUFFER_SIZE;
+                final int actualSize = data.bufferedIO ? data.bufferSize : GarbageFreeConfiguration.getDefaultConfiguration().getEncoderByteBufferSize();
                 final ByteBuffer buffer = ByteBuffer.wrap(new byte[actualSize]);
                 final OutputStream os = data.createOnDemand  || data.fileName == null ? null :
                         new FileOutputStream(data.fileName, data.append);

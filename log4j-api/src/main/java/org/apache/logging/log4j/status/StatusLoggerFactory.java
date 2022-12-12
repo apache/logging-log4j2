@@ -22,7 +22,7 @@ import java.text.DateFormat;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.spi.LoggingSystem;
 
 class StatusLoggerFactory {
     private static final String STATUS_LOGGER = "StatusLogger";
@@ -45,6 +45,6 @@ class StatusLoggerFactory {
     }
 
     static StatusLoggerFactory getInstance() {
-        return new StatusLoggerFactory(new StatusLoggerConfiguration(PropertiesUtil.getProperties(STATUS_LOGGER)));
+        return new StatusLoggerFactory(new StatusLoggerConfiguration(LoggingSystem.getPropertyResolver()));
     }
 }
