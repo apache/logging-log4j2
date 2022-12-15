@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,4 +67,11 @@ public class ServiceLoaderUtilTest {
                 ServiceConfigurationError.class, ServiceConfigurationError.class, ClassFormatError.class);
     }
 
+    @Test
+    public void testOsgiUnavailable() {
+        // OSGI classes are present...
+        assertDoesNotThrow(() -> Class.forName("org.osgi.framework.FrameworkUtil"));
+        // ...but we don't run in an OSGI container
+        assertThat(OsgiServiceLocator.isAvailable()).as("Running in OSGI container").isFalse();
+    }
 }

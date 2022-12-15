@@ -99,16 +99,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.framework</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.tycho</groupId>
-      <artifactId>org.eclipse.osgi</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>uk.org.webcompere</groupId>
       <artifactId>system-stubs-jupiter</artifactId>
       <scope>test</scope>

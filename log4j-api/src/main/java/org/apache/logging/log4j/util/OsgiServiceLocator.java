@@ -30,12 +30,17 @@ public class OsgiServiceLocator {
 
     private static boolean checkOsgiAvailable() {
         try {
-            Class.forName("org.osgi.framework.Bundle");
-            return true;
-        } catch (final ClassNotFoundException | LinkageError e) {
+            /*
+             * OSGI classes of any version can still be present even if Log4j2 does not run in
+             * an OSGI container, hence we check if this class is in a bundle.
+             */
+            final Class< ? > clazz = Class.forName("org.osgi.framework.FrameworkUtil");
+            return clazz.getMethod("getBundle", Class.class)
+                    .invoke(null, OsgiServiceLocator.class) != null;
+        } catch (final ClassNotFoundException | NoSuchMethodException | LinkageError e) {
             return false;
         } catch (final Throwable e) {
-            LowLevelLogUtil.logException("Unknown error checking for existence of class: org.osgi.framework.Bundle", e);
+            LowLevelLogUtil.logException("Unknown error checking OSGI environment.", e);
             return false;
         }
     }
