@@ -23,8 +23,6 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.util.AuthorizationProvider;
-import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.Injector;
@@ -33,7 +31,6 @@ import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertyResolver;
-import org.apache.logging.log4j.util.ReflectionUtil;
 
 /**
  * Factory class for parsed {@link Configuration} objects from a configuration file.
@@ -115,23 +112,6 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      * The name of the classpath URI scheme, synonymous with the classloader URI scheme.
      */
     private static final String CLASS_PATH_SCHEME = "classpath";
-
-    @Deprecated(forRemoval = true) // TODO(ms): replace with appropriate dependency injection
-    public static AuthorizationProvider authorizationProvider(final PropertyResolver resolver, final String context) {
-
-        return resolver.getString(context, Log4jProperties.TRANSPORT_SECURITY_AUTHORIZATION_PROVIDER_CLASS_NAME)
-                .map(className -> {
-                    try {
-                        final Class<? extends AuthorizationProvider> klass = Class.forName(className)
-                                .asSubclass(AuthorizationProvider.class);
-                        return ReflectionUtil.instantiate(klass);
-                    } catch (final Exception e) {
-                        LOGGER.warn("Unable to create {}, using default: {}", className, e);
-                        return (AuthorizationProvider) null;
-                    }
-                })
-                .orElseGet(() -> new BasicAuthorizationProvider(resolver));
-    }
 
     protected StrSubstitutor substitutor;
     protected PropertyResolver propertyResolver;
