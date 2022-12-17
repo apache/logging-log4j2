@@ -39,6 +39,7 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.InternalApi;
 import org.apache.logging.log4j.util.DefaultPropertyResolver;
 import org.apache.logging.log4j.util.JsonResourcePropertySource;
 import org.apache.logging.log4j.util.Lazy;
@@ -94,6 +95,7 @@ public class LoggingSystem {
      *
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-373">LOG4J2-373</a>
      */
+    @InternalApi
     public void acquireInitializationLock() {
         initializationLock.lock();
     }
@@ -101,6 +103,7 @@ public class LoggingSystem {
     /**
      * Releases a lock on the initialization phase of this logging system.
      */
+    @InternalApi
     public void releaseInitializationLock() {
         initializationLock.unlock();
     }
