@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.OutputStream;
+import java.io.Serializable;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
-import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.io.OutputStream;
-import java.io.Serializable;
 
 /**
  * Appends log events to a given output stream using a layout.
@@ -153,7 +152,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
     private static OutputStreamManager getManager(final OutputStream target, final boolean follow,
             final Layout<? extends Serializable> layout) {
-        final OutputStream os = target == null ? NullOutputStream.getInstance() : new CloseShieldOutputStream(target);
+        final OutputStream os = target == null ? OutputStream.nullOutputStream() : new CloseShieldOutputStream(target);
         final OutputStream targetRef = target == null ? os : target;
         final String managerName = targetRef.getClass().getName() + "@" + Integer.toHexString(targetRef.hashCode())
                 + '.' + follow;

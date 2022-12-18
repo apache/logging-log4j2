@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.Socket;
 import javax.net.ssl.SSLServerSocketFactory;
 
@@ -32,10 +31,8 @@ import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
-import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -91,8 +88,6 @@ public class SecureSocketAppenderSocketOptionsTest {
         Assert.assertNotNull(appender);
         final TcpSocketManager manager = (TcpSocketManager) appender.getManager();
         Assert.assertNotNull(manager);
-        final OutputStream outputStream = manager.getOutputStream();
-        Assert.assertFalse(outputStream instanceof NullOutputStream);
         final SocketOptions socketOptions = manager.getSocketOptions();
         Assert.assertNotNull(socketOptions);
         final Socket socket = manager.getSocket();
@@ -117,15 +112,5 @@ public class SecureSocketAppenderSocketOptionsTest {
         // Assert.assertEquals(8000, socket.getSendBufferSize());
         Assert.assertEquals(12345, socket.getSoLinger());
         Assert.assertEquals(54321, socket.getSoTimeout());
-    }
-
-    @Test
-    public void testSocketTrafficClass() throws IOException {
-        Assume.assumeTrue("Run only on Java 7", System.getProperty("java.specification.version").equals("1.7"));
-        Assume.assumeFalse("Do not run on Travis CI", "true".equals(System.getenv("TRAVIS")));
-        final SocketAppender appender = loggerContextRule.getAppender("socket", SocketAppender.class);
-        final TcpSocketManager manager = (TcpSocketManager) appender.getManager();
-        final Socket socket = manager.getSocket();
-        Assert.assertEquals(Rfc1349TrafficClass.IPTOS_LOWCOST.value(), socket.getTrafficClass());
     }
 }

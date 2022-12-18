@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.NullOutputStream;
-import org.apache.logging.log4j.util.ReflectionUtil;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -38,6 +32,11 @@ import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.util.ReflectionUtil;
 
 //Lines too long...
 //CHECKSTYLE:OFF
@@ -344,7 +343,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             }
 
             final boolean writeHeader = !data.append || !file.exists();
-            final OutputStream os = NullOutputStream.getInstance();
+            final OutputStream os = OutputStream.nullOutputStream();
             RandomAccessFile raf = null;
             try {
                 FileUtils.makeParentDirs(file);
