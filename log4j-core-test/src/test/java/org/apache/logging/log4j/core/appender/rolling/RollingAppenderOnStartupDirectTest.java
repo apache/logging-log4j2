@@ -33,12 +33,12 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -55,7 +55,7 @@ public class RollingAppenderOnStartupDirectTest {
 
     private static LoggerContext loggerContext;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() throws Exception {
         if (Files.exists(Paths.get("target/onStartup"))) {
             try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
@@ -86,16 +86,15 @@ public class RollingAppenderOnStartupDirectTest {
                 ++fileCount;
                 if (path.toFile().getName().startsWith(ROLLED)) {
                     List<String> lines = Files.readAllLines(path);
-                    assertTrue("No messages in " + path.toFile().getName(), lines.size() > 0);
-                    assertTrue("Missing message for " + path.toFile().getName(),
-                            lines.get(0).startsWith(PREFIX));
+                    assertTrue(lines.size() > 0, "No messages in " + path.toFile().getName());
+                    assertTrue(lines.get(0).startsWith(PREFIX), "Missing message for " + path.toFile().getName());
                 }
             }
         }
-        assertEquals("File did not roll", 2, fileCount);
+        assertEquals(2, fileCount, "File did not roll");
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() throws Exception {
         Configurator.shutdown(loggerContext);
         try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
