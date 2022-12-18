@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.File;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Phaser;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
@@ -26,15 +35,7 @@ import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Phaser;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import org.junit.jupiter.api.Timeout;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -44,6 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * create multiple files per directory.
  */
 @Disabled("https://issues.apache.org/jira/browse/LOG4J2-3449")
+@Timeout(30)
 public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
 
     private static final String CONFIG = "log4j-rolling-size-time-new-directory.xml";
@@ -98,5 +100,3 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
         phaser.arriveAndDeregister();
     }
 }
-
-

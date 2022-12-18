@@ -27,10 +27,10 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
-
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.rules.RuleChain;
 
 import static org.junit.Assert.assertTrue;
@@ -39,6 +39,7 @@ import static org.junit.Assert.fail;
 /**
  *
  */
+@Timeout(30)
 public class RollingAppenderDirectCronTest {
 
     private static final String CONFIG = "log4j-rolling-direct-cron.xml";
