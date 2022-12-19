@@ -78,7 +78,7 @@ jobs:
     strategy:
       matrix:
         os: [ macos-latest, ubuntu-latest, windows-latest ]
-        jdk: [ 11, 17 ]
+        jdk: [ 11, 17, 19 ]
         concurrency: [ 1, 8 ]
         jmhCommand:
           - "-t $CONCURRENCY -f 3 -wi 3 -w 10s -i 4 -r 20s -prof gc -prof perfnorm -rf json -rff results-layout-jtl.json '.*JsonTemplateLayoutBenchmark.*Jtl4EcsLayout'"
