@@ -321,7 +321,6 @@
 
     <menu name="Components" inherit="top" img="img/glyphicons/cog.png">
       <item name="API" href="log4j-api.html"/>
-      <item name="Implementation" href="log4j-core.html"/>
       <item name="Commons Logging Bridge" href="log4j-jcl.html"/>
       <item name="Log4j 1.2 API" href="log4j-1.2-api.html"/>
       <item name="SLF4J Binding" href="log4j-slf4j-impl.html"/>
