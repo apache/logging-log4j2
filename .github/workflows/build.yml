@@ -97,7 +97,6 @@ jobs:
         run: |
           ./mvnw \
             --show-version --batch-mode --errors --no-transfer-progress \
-            --non-recursive \
             -DskipTests \
             --global-toolchains ".github/workflows/maven-toolchains.xml" \
             site
