@@ -35,7 +35,6 @@
     <projectDir>/log4j-perf</projectDir>
     <uberjar.name>benchmarks</uberjar.name>
     <revapi.skip>true</revapi.skip>
-    <maven.doap.skip>true</maven.doap.skip>
     <module.name>org.apache.logging.log4j.perf</module.name>
   </properties>
 

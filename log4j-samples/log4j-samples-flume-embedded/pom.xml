@@ -58,10 +58,6 @@
       <artifactId>flume-ng-node</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-core</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.logging.log4j.samples</groupId>
       <artifactId>log4j-samples-flume-common</artifactId>
     </dependency>

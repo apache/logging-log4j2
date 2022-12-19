@@ -58,4 +58,4 @@ To remedy this, you can execute the following:
 
 You can build the website and manual as follows:
 
-    ./mvnw --non-recursive -Dmaven.doap.skip -DskipTests site
+    ./mvnw --non-recursive -DskipTests site
