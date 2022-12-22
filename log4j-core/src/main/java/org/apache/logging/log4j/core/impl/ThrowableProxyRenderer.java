@@ -37,58 +37,68 @@ class ThrowableProxyRenderer {
     }
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
-    static void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages,
-                              final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+    static int formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages,
+                              final TextRenderer textRenderer, final String suffix, final String lineSeparator, final int maxLinesToWrite) {
         final Throwable caused = cause.getCauseProxy() != null ? cause.getCauseProxy().getThrowable() : null;
-        if (caused != null) {
-            formatWrapper(sb, cause.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator);
+        int linesToWrite = maxLinesToWrite;
+        if (caused != null && linesToWrite > 0) {
+            linesToWrite = formatWrapper(sb, cause.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
             sb.append(WRAPPED_BY_LABEL);
             renderSuffix(suffix, sb, textRenderer);
         }
-        renderOn(cause, sb, textRenderer);
-        renderSuffix(suffix, sb, textRenderer);
-        textRenderer.render(lineSeparator, sb, "Text");
-        formatElements(sb, Strings.EMPTY, cause.getCommonElementCount(),
-                cause.getThrowable().getStackTrace(), cause.getExtendedStackTrace(), ignorePackages, textRenderer, suffix, lineSeparator);
+        if (linesToWrite-- > 0) {
+	        renderOn(cause, sb, textRenderer);
+	        renderSuffix(suffix, sb, textRenderer);
+	        textRenderer.render(lineSeparator, sb, "Text");
+	        linesToWrite = formatElements(sb, Strings.EMPTY, cause.getCommonElementCount(),
+	                cause.getThrowable().getStackTrace(), cause.getExtendedStackTrace(), ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
+        }
+        return linesToWrite;
     }
 
-    private static void formatCause(final StringBuilder sb, final String prefix, final ThrowableProxy cause,
-                                    final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
-        formatThrowableProxy(sb, prefix, CAUSED_BY_LABEL, cause, ignorePackages, textRenderer, suffix, lineSeparator);
+    private static int formatCause(final StringBuilder sb, final String prefix, final ThrowableProxy cause,
+                                    final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator, final int linesToWrite) {
+        return formatThrowableProxy(sb, prefix, CAUSED_BY_LABEL, cause, ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
     }
 
-    private static void formatThrowableProxy(final StringBuilder sb, final String prefix, final String causeLabel,
+    private static int formatThrowableProxy(final StringBuilder sb, final String prefix, final String causeLabel,
                                              final ThrowableProxy throwableProxy, final List<String> ignorePackages,
-                                             final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
-        if (throwableProxy == null) {
-            return;
+                                             final TextRenderer textRenderer, final String suffix, final String lineSeparator, final int maxLinesToWrite) {
+        if (throwableProxy == null || maxLinesToWrite <= 0) {
+            return maxLinesToWrite;
         }
         textRenderer.render(prefix, sb, "Prefix");
         textRenderer.render(causeLabel, sb, "CauseLabel");
         renderOn(throwableProxy, sb, textRenderer);
         renderSuffix(suffix, sb, textRenderer);
         textRenderer.render(lineSeparator, sb, "Text");
-        formatElements(sb, prefix, throwableProxy.getCommonElementCount(),
-                throwableProxy.getStackTrace(), throwableProxy.getExtendedStackTrace(), ignorePackages, textRenderer, suffix, lineSeparator);
-        formatSuppressed(sb, prefix + TAB, throwableProxy.getSuppressedProxies(), ignorePackages, textRenderer, suffix, lineSeparator);
-        formatCause(sb, prefix, throwableProxy.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator);
+        int linesToWrite = formatElements(sb, prefix, throwableProxy.getCommonElementCount(),
+                throwableProxy.getStackTrace(), throwableProxy.getExtendedStackTrace(), ignorePackages, textRenderer, suffix, lineSeparator, maxLinesToWrite-1);
+        linesToWrite = formatSuppressed(sb, prefix + TAB, throwableProxy.getSuppressedProxies(), ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
+        return formatCause(sb, prefix, throwableProxy.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
     }
 
-    private static void formatSuppressed(final StringBuilder sb, final String prefix, final ThrowableProxy[] suppressedProxies,
-                                         final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+    private static int formatSuppressed(final StringBuilder sb, final String prefix, final ThrowableProxy[] suppressedProxies,
+                                         final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator, final int maxLinesToWrite) {
         if (suppressedProxies == null) {
-            return;
+            return maxLinesToWrite;
         }
+        int linesToWrite = maxLinesToWrite;
         for (final ThrowableProxy suppressedProxy : suppressedProxies) {
-            formatThrowableProxy(sb, prefix, SUPPRESSED_LABEL, suppressedProxy, ignorePackages, textRenderer, suffix, lineSeparator);
+        	linesToWrite = formatThrowableProxy(sb, prefix, SUPPRESSED_LABEL, suppressedProxy, ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
         }
+        return linesToWrite;
     }
 
-    private static void formatElements(final StringBuilder sb, final String prefix, final int commonCount,
+    private static int formatElements(final StringBuilder sb, final String prefix, final int commonCount,
                                        final StackTraceElement[] causedTrace, final ExtendedStackTraceElement[] extStackTrace,
-                                       final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
-        if (ignorePackages == null || ignorePackages.isEmpty()) {
+                                       final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator, final int maxLinesToWrite) {
+    	int linesToWrite = maxLinesToWrite;
+    	if (ignorePackages == null || ignorePackages.isEmpty()) {
             for (final ExtendedStackTraceElement element : extStackTrace) {
+            	if (linesToWrite-- <= 0) {
+            		break;
+            	}
                 formatEntry(element, sb, prefix, textRenderer, suffix, lineSeparator);
             }
         } else {
@@ -96,19 +106,26 @@ class ThrowableProxyRenderer {
             for (int i = 0; i < extStackTrace.length; ++i) {
                 if (!ignoreElement(causedTrace[i], ignorePackages)) {
                     if (count > 0) {
-                        appendSuppressedCount(sb, prefix, count, textRenderer, suffix, lineSeparator);
-                        count = 0;
+                        if (linesToWrite-- <= 0) {
+                    		count = 0;
+                        	break;
+                        }
+                		appendSuppressedCount(sb, prefix, count, textRenderer, suffix, lineSeparator);
+                		count = 0;
+                    }
+                    if (linesToWrite-- <= 0) {
+                    	break;
                     }
                     formatEntry(extStackTrace[i], sb, prefix, textRenderer, suffix, lineSeparator);
                 } else {
                     ++count;
                 }
             }
-            if (count > 0) {
-                appendSuppressedCount(sb, prefix, count, textRenderer, suffix, lineSeparator);
+            if (count > 0 && linesToWrite-- > 0) {
+            	appendSuppressedCount(sb, prefix, count, textRenderer, suffix, lineSeparator);
             }
         }
-        if (commonCount != 0) {
+        if (commonCount != 0 && linesToWrite-- > 0) {
             textRenderer.render(prefix, sb, "Prefix");
             textRenderer.render("\t... ", sb, "More");
             textRenderer.render(Integer.toString(commonCount), sb, "More");
@@ -116,6 +133,8 @@ class ThrowableProxyRenderer {
             renderSuffix(suffix, sb, textRenderer);
             textRenderer.render(lineSeparator, sb, "Text");
         }
+
+        return linesToWrite;
     }
 
     private static void renderSuffix(final String suffix, final StringBuilder sb, final TextRenderer textRenderer) {
@@ -169,21 +188,23 @@ class ThrowableProxyRenderer {
      * @param textRenderer   The message renderer.
      * @param suffix         Append this to the end of each stack frame.
      * @param lineSeparator  The end-of-line separator.
+     * @param lines          The number of lines from the stack trace to write.
      */
-    static void formatExtendedStackTraceTo(final ThrowableProxy src, final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+    static void formatExtendedStackTraceTo(final ThrowableProxy src, final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator, final int lines) {
         textRenderer.render(src.getName(), sb, "Name");
         textRenderer.render(": ", sb, "NameMessageSeparator");
         textRenderer.render(src.getMessage(), sb, "Message");
         renderSuffix(suffix, sb, textRenderer);
         textRenderer.render(lineSeparator, sb, "Text");
+        int linesToWrite = lines - 1;
         final StackTraceElement[] causedTrace = src.getThrowable() != null ? src.getThrowable().getStackTrace() : null;
-        formatElements(sb, Strings.EMPTY, 0, causedTrace, src.getExtendedStackTrace(), ignorePackages, textRenderer, suffix, lineSeparator);
-        formatSuppressed(sb, TAB, src.getSuppressedProxies(), ignorePackages, textRenderer, suffix, lineSeparator);
-        formatCause(sb, Strings.EMPTY, src.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator);
+        linesToWrite = formatElements(sb, Strings.EMPTY, 0, causedTrace, src.getExtendedStackTrace(), ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
+        linesToWrite = formatSuppressed(sb, TAB, src.getSuppressedProxies(), ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
+        formatCause(sb, Strings.EMPTY, src.getCauseProxy(), ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
     }
 
     /**
-     * Formats the Throwable that is the cause of the <pre>src</pre> Throwable.
+     * Formats the Throwable that is the cause of the {@code src} Throwable.
      *
      * @param src            Throwable whose cause to render
      * @param sb             Destination to render the formatted Throwable that caused this Throwable onto.
@@ -191,19 +212,23 @@ class ThrowableProxyRenderer {
      * @param textRenderer   The text renderer.
      * @param suffix         Append this to the end of each stack frame.
      * @param lineSeparator  The end-of-line separator.
+     * @param lines          The number of lines from the stack trace to write.
      */
-    static void formatCauseStackTrace(final ThrowableProxy src, final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+    static void formatCauseStackTrace(final ThrowableProxy src, final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator, final int lines) {
         final ThrowableProxy causeProxy = src.getCauseProxy();
+        int linesToWrite = lines;
         if (causeProxy != null) {
-            formatWrapper(sb, causeProxy, ignorePackages, textRenderer, suffix, lineSeparator);
+        	linesToWrite = formatWrapper(sb, causeProxy, ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
             sb.append(WRAPPED_BY_LABEL);
-            ThrowableProxyRenderer.renderSuffix(suffix, sb, textRenderer);
+            renderSuffix(suffix, sb, textRenderer);
         }
-        renderOn(src, sb, textRenderer);
-        ThrowableProxyRenderer.renderSuffix(suffix, sb, textRenderer);
-        textRenderer.render(lineSeparator, sb, "Text");
-        ThrowableProxyRenderer.formatElements(sb, Strings.EMPTY, 0, src.getStackTrace(), src.getExtendedStackTrace(),
-                ignorePackages, textRenderer, suffix, lineSeparator);
+        if (linesToWrite-- > 0) {
+	        renderOn(src, sb, textRenderer);
+	        renderSuffix(suffix, sb, textRenderer);
+	        textRenderer.render(lineSeparator, sb, "Text");
+	        formatElements(sb, Strings.EMPTY, 0, src.getStackTrace(), src.getExtendedStackTrace(),
+	                ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
+        }
     }
 
     private static void renderOn(final ThrowableProxy src, final StringBuilder output, final TextRenderer textRenderer) {

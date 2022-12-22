@@ -29,6 +29,6 @@ public class ThrowableProxyRendererTest {
     @Test
     public void test_formatExtendedStackTraceTo() {
         ThrowableProxyRenderer.formatExtendedStackTraceTo(new ThrowableProxy(), new StringBuilder(), new ArrayList<>(),
-            new PlainTextRenderer(), "", System.lineSeparator());
+            new PlainTextRenderer(), "", System.lineSeparator(), Integer.MAX_VALUE);
     }
 }

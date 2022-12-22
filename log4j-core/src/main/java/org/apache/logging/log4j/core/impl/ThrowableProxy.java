@@ -176,7 +176,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Formats the specified Throwable.
-     *  @param sb    StringBuilder to contain the formatted Throwable.
+     * @param sb    StringBuilder to contain the formatted Throwable.
      * @param cause The Throwable to format.
      * @param suffix
      */
@@ -186,7 +186,7 @@ public class ThrowableProxy implements Serializable {
 
     /**
      * Formats the specified Throwable.
-     *  @param sb             StringBuilder to contain the formatted Throwable.
+     * @param sb             StringBuilder to contain the formatted Throwable.
      * @param cause          The Throwable to format.
      * @param ignorePackages The List of packages to be suppressed from the trace.
      * @param suffix
@@ -207,7 +207,7 @@ public class ThrowableProxy implements Serializable {
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages,
             final TextRenderer textRenderer, final String suffix) {
-        formatWrapper(sb, cause, ignorePackages, textRenderer, suffix, EOL_STR);
+        this.formatWrapper(sb, cause, ignorePackages, textRenderer, suffix, EOL_STR, Integer.MAX_VALUE);
     }
 
     /**
@@ -222,7 +222,23 @@ public class ThrowableProxy implements Serializable {
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages,
                               final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
-        ThrowableProxyRenderer.formatWrapper(sb,  cause, ignorePackages, textRenderer, suffix, lineSeparator);
+        this.formatWrapper(sb, cause, ignorePackages, textRenderer, suffix, lineSeparator, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Formats the specified Throwable.
+     * @param sb StringBuilder to contain the formatted Throwable.
+     * @param cause The Throwable to format.
+     * @param ignorePackages The List of packages to be suppressed from the stack trace.
+     * @param textRenderer The text renderer.
+     * @param suffix Append this to the end of each stack frame.
+     * @param lineSeparator The end-of-line separator.
+     * @param lines The number of lines from the stack trace to write.
+     */
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages,
+                              final TextRenderer textRenderer, final String suffix, final String lineSeparator, final int lines) {
+        ThrowableProxyRenderer.formatWrapper(sb,  cause, ignorePackages, textRenderer, suffix, lineSeparator, lines);
     }
 
     public ThrowableProxy getCauseProxy() {
@@ -236,7 +252,7 @@ public class ThrowableProxy implements Serializable {
      * @param suffix
      */
     public String getCauseStackTraceAsString(final String suffix) {
-        return this.getCauseStackTraceAsString(null, PlainTextRenderer.getInstance(), suffix, EOL_STR);
+        return this.getCauseStackTraceAsString(null, PlainTextRenderer.getInstance(), suffix, EOL_STR, Integer.MAX_VALUE);
     }
 
     /**
@@ -247,7 +263,7 @@ public class ThrowableProxy implements Serializable {
      * @return The formatted Throwable that caused this Throwable.
      */
     public String getCauseStackTraceAsString(final List<String> packages, final String suffix) {
-        return getCauseStackTraceAsString(packages, PlainTextRenderer.getInstance(), suffix, EOL_STR);
+        return getCauseStackTraceAsString(packages, PlainTextRenderer.getInstance(), suffix, EOL_STR, Integer.MAX_VALUE);
     }
 
     /**
@@ -259,7 +275,7 @@ public class ThrowableProxy implements Serializable {
      * @return The formatted Throwable that caused this Throwable.
      */
     public String getCauseStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix) {
-        return getCauseStackTraceAsString(ignorePackages, textRenderer, suffix, EOL_STR);
+        return getCauseStackTraceAsString(ignorePackages, textRenderer, suffix, EOL_STR, Integer.MAX_VALUE);
     }
 
     /**
@@ -272,9 +288,37 @@ public class ThrowableProxy implements Serializable {
      * @return The formatted Throwable that caused this Throwable.
      */
     public String getCauseStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+        return getCauseStackTraceAsString(ignorePackages, textRenderer, suffix, lineSeparator, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Formats the Throwable that is the cause of this Throwable.
+     *
+     * @param ignorePackages The List of packages to be suppressed from the stack trace.
+     * @param textRenderer The text renderer.
+     * @param suffix Append this to the end of each stack frame.
+     * @param lineSeparator The end-of-line separator.
+     * @param lines The number of lines from the stack trace to write.
+     * @return The formatted Throwable that caused this Throwable.
+     */
+    public String getCauseStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator, final int lines) {
         final StringBuilder sb = new StringBuilder();
-        ThrowableProxyRenderer.formatCauseStackTrace(this, sb, ignorePackages, textRenderer, suffix, lineSeparator);
+        formatCauseStackTraceTo(sb, ignorePackages, textRenderer, suffix, lineSeparator, lines);
         return sb.toString();
+    }
+
+    /**
+    * Formats the Throwable that is the cause of this Throwable.
+     *
+     * @param sb Destination.
+     * @param ignorePackages List of packages to be ignored in the trace.
+     * @param textRenderer The message renderer.
+     * @param suffix Append this to the end of each stack frame.
+     * @param lineSeparator The end-of-line separator.
+     * @param lines The number of lines from the stack trace to write.
+     */
+    public void formatCauseStackTraceTo(final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator, final int lines) {
+        ThrowableProxyRenderer.formatCauseStackTrace(this, sb, ignorePackages, textRenderer, suffix, lineSeparator, lines);
     }
 
     /**
@@ -313,7 +357,7 @@ public class ThrowableProxy implements Serializable {
      * @return The formatted stack trace including packaging information.
      */
     public String getExtendedStackTraceAsString() {
-        return this.getExtendedStackTraceAsString(null, PlainTextRenderer.getInstance(), Strings.EMPTY, EOL_STR);
+        return this.getExtendedStackTraceAsString(null, PlainTextRenderer.getInstance(), Strings.EMPTY, EOL_STR, Integer.MAX_VALUE);
     }
 
     /**
@@ -323,7 +367,7 @@ public class ThrowableProxy implements Serializable {
      * @param suffix Append this to the end of each stack frame.
      */
     public String getExtendedStackTraceAsString(final String suffix) {
-        return this.getExtendedStackTraceAsString(null, PlainTextRenderer.getInstance(), suffix, EOL_STR);
+        return this.getExtendedStackTraceAsString(null, PlainTextRenderer.getInstance(), suffix, EOL_STR, Integer.MAX_VALUE);
     }
 
     /**
@@ -334,7 +378,7 @@ public class ThrowableProxy implements Serializable {
      * @return The formatted stack trace including packaging information.
      */
     public String getExtendedStackTraceAsString(final List<String> ignorePackages, final String suffix) {
-        return getExtendedStackTraceAsString(ignorePackages, PlainTextRenderer.getInstance(), suffix, EOL_STR);
+        return getExtendedStackTraceAsString(ignorePackages, PlainTextRenderer.getInstance(), suffix, EOL_STR, Integer.MAX_VALUE);
     }
 
     /**
@@ -346,7 +390,7 @@ public class ThrowableProxy implements Serializable {
      * @return The formatted stack trace including packaging information.
      */
     public String getExtendedStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix) {
-        return getExtendedStackTraceAsString(ignorePackages, textRenderer, suffix, EOL_STR);
+        return getExtendedStackTraceAsString(ignorePackages, textRenderer, suffix, EOL_STR, Integer.MAX_VALUE);
     }
 
     /**
@@ -359,8 +403,22 @@ public class ThrowableProxy implements Serializable {
      * @return The formatted stack trace including packaging information.
      */
     public String getExtendedStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
+        return getExtendedStackTraceAsString(ignorePackages, textRenderer, suffix, lineSeparator, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Formats the stack trace including packaging information.
+     *
+     * @param ignorePackages List of packages to be ignored in the trace.
+     * @param textRenderer The message renderer.
+     * @param suffix Append this to the end of each stack frame.
+     * @param lineSeparator The end-of-line separator.
+     * @param lines The number of lines from the stack trace to write.
+     * @return The formatted stack trace including packaging information.
+     */
+    public String getExtendedStackTraceAsString(final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator, final int lines) {
         final StringBuilder sb = new StringBuilder(1024);
-        formatExtendedStackTraceTo(sb, ignorePackages, textRenderer, suffix, lineSeparator);
+        formatExtendedStackTraceTo(sb, ignorePackages, textRenderer, suffix, lineSeparator, lines);
         return sb.toString();
     }
 
@@ -372,9 +430,10 @@ public class ThrowableProxy implements Serializable {
      * @param textRenderer The message renderer.
      * @param suffix Append this to the end of each stack frame.
      * @param lineSeparator The end-of-line separator.
+     * @param lines The number of lines from the stack trace to write.
      */
-    public void formatExtendedStackTraceTo(final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator) {
-        ThrowableProxyRenderer.formatExtendedStackTraceTo(this, sb, ignorePackages, textRenderer, suffix, lineSeparator);
+    public void formatExtendedStackTraceTo(final StringBuilder sb, final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator, final int lines) {
+        ThrowableProxyRenderer.formatExtendedStackTraceTo(this, sb, ignorePackages, textRenderer, suffix, lineSeparator, lines);
     }
 
     public String getLocalizedMessage() {
