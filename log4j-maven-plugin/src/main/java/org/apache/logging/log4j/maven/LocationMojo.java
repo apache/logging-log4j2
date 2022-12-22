@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.instrument.LocationCache;
+import org.apache.logging.log4j.instrument.LocationCacheGenerator;
 import org.apache.logging.log4j.instrument.LocationClassConverter;
 import org.apache.logging.log4j.maven.scan.ClassFileInclusionScanner;
 import org.apache.logging.log4j.maven.scan.SimpleInclusionScanner;
@@ -69,14 +69,14 @@ public class LocationMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         final Path sourceDirectory = this.sourceDirectory.toPath();
         final Path outputDirectory = this.outputDirectory.toPath();
-        final LocationCache locationCache = new LocationCache();
+        final LocationCacheGenerator locationCache = new LocationCacheGenerator();
         final LocationClassConverter converter = new LocationClassConverter();
 
         try {
             final Set<Path> staleClassFiles = getClassFileInclusionScanner().getIncludedClassFiles(sourceDirectory,
                     outputDirectory);
             staleClassFiles.stream()
-                    .collect(Collectors.groupingBy(LocationCache::getCacheClassFile))
+                    .collect(Collectors.groupingBy(LocationCacheGenerator::getCacheClassFile))
                     .values()
                     .parallelStream()
                     .forEach(p -> convertClassfiles(p, converter, locationCache));
@@ -88,7 +88,7 @@ public class LocationMojo extends AbstractMojo {
     }
 
     private void convertClassfiles(List<Path> classFiles, LocationClassConverter converter,
-            LocationCache locationCache) {
+            LocationCacheGenerator locationCache) {
         final Path sourceDirectory = this.sourceDirectory.toPath();
         classFiles.sort(Path::compareTo);
         final ByteArrayOutputStream buf = new ByteArrayOutputStream();

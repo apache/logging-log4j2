@@ -19,22 +19,27 @@ package org.apache.logging.log4j.instrument;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
-import org.apache.logging.log4j.instrument.LocationCache.LocationCacheValue;
+import org.apache.logging.log4j.instrument.LocationCacheGenerator.LocationCacheValue;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Handle;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+
+import static org.apache.logging.log4j.instrument.Constants.OBJECT_TYPE;
 
 public class LocationClassVisitor extends ClassVisitor {
 
-    private final LocationCache locationCache;
+    private final LocationCacheGenerator locationCache;
     private final Map<String, ClassConversionHandler> conversionHandlers;
 
     private String fileName;
     private String declaringClass;
     private String methodName;
 
-    protected LocationClassVisitor(ClassVisitor cv, LocationCache locationCache) {
+    protected LocationClassVisitor(ClassVisitor cv, LocationCacheGenerator locationCache) {
         super(Opcodes.ASM9, cv);
         this.locationCache = locationCache;
         this.conversionHandlers = new HashMap<>();
@@ -71,4 +76,13 @@ public class LocationClassVisitor extends ClassVisitor {
         return locationCache.addLocation(declaringClass, methodName, fileName, lineNumber);
     }
 
+    public Handle createLambda(SupplierLambdaType type) {
+        switch (type) {
+            case MESSAGE_SUPPLIER:
+                return new Handle(Opcodes.H_INVOKEINTERFACE, Type.getType(Supplier.class).getInternalName(), "get",
+                        Type.getMethodDescriptor(OBJECT_TYPE), true);
+            default:
+                return locationCache.createLambda(declaringClass, type);
+        }
+    }
 }

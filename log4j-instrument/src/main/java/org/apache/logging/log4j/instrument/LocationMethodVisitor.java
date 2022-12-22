@@ -16,21 +16,42 @@
  */
 package org.apache.logging.log4j.instrument;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.Map;
 
-import org.apache.logging.log4j.instrument.LocationCache.LocationCacheValue;
+import org.apache.logging.log4j.instrument.LocationCacheGenerator.LocationCacheValue;
+import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
 
 import static org.apache.logging.log4j.instrument.Constants.LOG_BUILDER_TYPE;
+import static org.apache.logging.log4j.instrument.Constants.MESSAGE_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.OBJECT_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.STACK_TRACE_ELEMENT_ARRAY_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.STACK_TRACE_ELEMENT_TYPE;
+import static org.apache.logging.log4j.instrument.Constants.STRING_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.WITH_LOCATION_METHOD;
 
 public class LocationMethodVisitor extends GeneratorAdapter {
+
+    // Programmatically define LAMBDA_METAFACTORY_HANDLE
+    private static Type SUPPLIER_OF_OBJECT_TYPE = Type.getMethodType(OBJECT_TYPE);
+    private static Type SUPPLIER_OF_MESSAGE_TYPE = Type.getMethodType(MESSAGE_TYPE);
+    private static final Type LAMBDA_METAFACTORY_TYPE = Type.getType(LambdaMetafactory.class);
+    private static final Type METHOD_HANDLE_TYPE = Type.getType(MethodHandle.class);
+    private static final Type METHOD_TYPE_TYPE = Type.getType(MethodType.class);
+    private static final String LAMBDA_METAFACTORY_DESC = Type.getMethodDescriptor(Type.getType(CallSite.class),
+            Type.getType(MethodHandles.Lookup.class), STRING_TYPE, METHOD_TYPE_TYPE, METHOD_TYPE_TYPE,
+            METHOD_HANDLE_TYPE, METHOD_TYPE_TYPE);
+    private static final Handle LAMBDA_METAFACTORY_HANDLE = new Handle(Opcodes.H_INVOKESTATIC,
+            LAMBDA_METAFACTORY_TYPE.getInternalName(), "metafactory", LAMBDA_METAFACTORY_DESC, false);
 
     private final LocationClassVisitor locationClassVisitor;
     private final Map<String, ClassConversionHandler> handlers;
@@ -114,5 +135,14 @@ public class LocationMethodVisitor extends GeneratorAdapter {
         }
         nextVariable++;
         return varIndex;
+    }
+
+    public void invokeSupplierLambda(SupplierLambdaType type) {
+        invokeDynamic("get",
+                type.getMethodDescriptor(),
+                LAMBDA_METAFACTORY_HANDLE,
+                SUPPLIER_OF_OBJECT_TYPE,
+                locationClassVisitor.createLambda(type),
+                SUPPLIER_OF_MESSAGE_TYPE);
     }
 }

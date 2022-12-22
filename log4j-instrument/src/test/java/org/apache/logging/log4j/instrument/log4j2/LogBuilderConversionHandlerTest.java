@@ -28,13 +28,14 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.instrument.LocationCacheGenerator;
 import org.apache.logging.log4j.instrument.LocationClassConverter;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @LoggerContextSource("log4j2-test.xml")
-public class LoggerConversionHandlerTest {
+public class LogBuilderConversionHandlerTest {
 
     private static Class<?> convertedClass;
     private static Object testObject;
@@ -46,7 +47,7 @@ public class LoggerConversionHandlerTest {
         final ByteArrayOutputStream dest = new ByteArrayOutputStream();
         final LocationClassConverter converter = new LocationClassConverter();
         final LocationCacheGenerator locationCache = new LocationCacheGenerator();
-        converter.convert(LoggerConversionHandlerTest.class.getResourceAsStream("LoggerConversionHandlerExample.class"),
+        converter.convert(LogBuilderConversionHandlerTest.class.getResourceAsStream("LogBuilderConversionHandlerExample.class"),
                 dest, locationCache);
 
         final Lookup lookup = MethodHandles.lookup();
@@ -54,18 +55,12 @@ public class LoggerConversionHandlerTest {
         convertedClass = lookup.defineClass(dest.toByteArray());
         testObject = convertedClass.getConstructor().newInstance();
 
-        LoggerConversionHandlerTest.appender = appender;
+        LogBuilderConversionHandlerTest.appender = appender;
     }
 
-    static Stream<String> testLocationConverter() {
-        return Stream.of("testFatal", "testError", "testWarn", "testInfo", "testDebug", "testLog", "testFrames",
-                "testPrintf", "testLogBuilder", "testPassthrough", "testCatchingThrowing");
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    public void testLocationConverter(final String methodName) throws Exception {
-        convertedClass.getMethod(methodName, ListAppender.class).invoke(testObject, appender);
+    @Test
+    public void testWithLocation() throws Exception {
+        convertedClass.getMethod("testWithLocation", ListAppender.class).invoke(testObject, appender);
     }
 
 }

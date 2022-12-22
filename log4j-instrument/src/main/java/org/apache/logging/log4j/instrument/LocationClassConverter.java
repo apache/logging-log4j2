@@ -34,7 +34,7 @@ public class LocationClassConverter implements ClassFileTransformer {
      * @param dest          transformed classfile
      * @param locationCache a container for location data
      */
-    public void convert(InputStream src, OutputStream dest, LocationCache locationCache) throws IOException {
+    public void convert(InputStream src, OutputStream dest, LocationCacheGenerator locationCache) throws IOException {
         final ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         final LocationClassVisitor converter = new LocationClassVisitor(writer, locationCache);
         converter.addClassConversionHandler(new LoggerConversionHandler());

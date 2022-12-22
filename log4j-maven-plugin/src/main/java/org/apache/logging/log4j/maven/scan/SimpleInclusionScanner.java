@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.instrument.Constants;
-import org.apache.logging.log4j.instrument.LocationCache;
+import org.apache.logging.log4j.instrument.LocationCacheGenerator;
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.DirectoryScanner;
 
@@ -75,7 +75,7 @@ public class SimpleInclusionScanner implements ClassFileInclusionScanner {
 
     private boolean isLocationCacheStale(Path sourceDir, Path targetDir, Path source) {
         try {
-            final Path target = targetDir.resolve(LocationCache.getCacheClassFile(source));
+            final Path target = targetDir.resolve(LocationCacheGenerator.getCacheClassFile(source));
             if (!Files.exists(target)) {
                 return true;
             }
