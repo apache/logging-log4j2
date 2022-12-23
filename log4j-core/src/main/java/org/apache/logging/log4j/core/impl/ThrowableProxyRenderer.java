@@ -47,11 +47,11 @@ class ThrowableProxyRenderer {
             renderSuffix(suffix, sb, textRenderer);
         }
         if (linesToWrite-- > 0) {
-	        renderOn(cause, sb, textRenderer);
-	        renderSuffix(suffix, sb, textRenderer);
-	        textRenderer.render(lineSeparator, sb, "Text");
-	        linesToWrite = formatElements(sb, Strings.EMPTY, cause.getCommonElementCount(),
-	                cause.getThrowable().getStackTrace(), cause.getExtendedStackTrace(), ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
+            renderOn(cause, sb, textRenderer);
+            renderSuffix(suffix, sb, textRenderer);
+            textRenderer.render(lineSeparator, sb, "Text");
+            linesToWrite = formatElements(sb, Strings.EMPTY, cause.getCommonElementCount(),
+                    cause.getThrowable().getStackTrace(), cause.getExtendedStackTrace(), ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
         }
         return linesToWrite;
     }
@@ -85,7 +85,7 @@ class ThrowableProxyRenderer {
         }
         int linesToWrite = maxLinesToWrite;
         for (final ThrowableProxy suppressedProxy : suppressedProxies) {
-        	linesToWrite = formatThrowableProxy(sb, prefix, SUPPRESSED_LABEL, suppressedProxy, ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
+            linesToWrite = formatThrowableProxy(sb, prefix, SUPPRESSED_LABEL, suppressedProxy, ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
         }
         return linesToWrite;
     }
@@ -93,12 +93,12 @@ class ThrowableProxyRenderer {
     private static int formatElements(final StringBuilder sb, final String prefix, final int commonCount,
                                        final StackTraceElement[] causedTrace, final ExtendedStackTraceElement[] extStackTrace,
                                        final List<String> ignorePackages, final TextRenderer textRenderer, final String suffix, final String lineSeparator, final int maxLinesToWrite) {
-    	int linesToWrite = maxLinesToWrite;
-    	if (ignorePackages == null || ignorePackages.isEmpty()) {
+        int linesToWrite = maxLinesToWrite;
+        if (ignorePackages == null || ignorePackages.isEmpty()) {
             for (final ExtendedStackTraceElement element : extStackTrace) {
-            	if (linesToWrite-- <= 0) {
-            		break;
-            	}
+                if (linesToWrite-- <= 0) {
+                    break;
+                }
                 formatEntry(element, sb, prefix, textRenderer, suffix, lineSeparator);
             }
         } else {
@@ -107,14 +107,14 @@ class ThrowableProxyRenderer {
                 if (!ignoreElement(causedTrace[i], ignorePackages)) {
                     if (count > 0) {
                         if (linesToWrite-- <= 0) {
-                    		count = 0;
-                        	break;
+                            count = 0;
+                            break;
                         }
-                		appendSuppressedCount(sb, prefix, count, textRenderer, suffix, lineSeparator);
-                		count = 0;
+                        appendSuppressedCount(sb, prefix, count, textRenderer, suffix, lineSeparator);
+                        count = 0;
                     }
                     if (linesToWrite-- <= 0) {
-                    	break;
+                        break;
                     }
                     formatEntry(extStackTrace[i], sb, prefix, textRenderer, suffix, lineSeparator);
                 } else {
@@ -122,7 +122,7 @@ class ThrowableProxyRenderer {
                 }
             }
             if (count > 0 && linesToWrite-- > 0) {
-            	appendSuppressedCount(sb, prefix, count, textRenderer, suffix, lineSeparator);
+                appendSuppressedCount(sb, prefix, count, textRenderer, suffix, lineSeparator);
             }
         }
         if (commonCount != 0 && linesToWrite-- > 0) {
@@ -218,16 +218,16 @@ class ThrowableProxyRenderer {
         final ThrowableProxy causeProxy = src.getCauseProxy();
         int linesToWrite = lines;
         if (causeProxy != null) {
-        	linesToWrite = formatWrapper(sb, causeProxy, ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
+            linesToWrite = formatWrapper(sb, causeProxy, ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
             sb.append(WRAPPED_BY_LABEL);
             renderSuffix(suffix, sb, textRenderer);
         }
         if (linesToWrite-- > 0) {
-	        renderOn(src, sb, textRenderer);
-	        renderSuffix(suffix, sb, textRenderer);
-	        textRenderer.render(lineSeparator, sb, "Text");
-	        formatElements(sb, Strings.EMPTY, 0, src.getStackTrace(), src.getExtendedStackTrace(),
-	                ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
+            renderOn(src, sb, textRenderer);
+            renderSuffix(suffix, sb, textRenderer);
+            textRenderer.render(lineSeparator, sb, "Text");
+            formatElements(sb, Strings.EMPTY, 0, src.getStackTrace(), src.getExtendedStackTrace(),
+                    ignorePackages, textRenderer, suffix, lineSeparator, linesToWrite);
         }
     }
 
