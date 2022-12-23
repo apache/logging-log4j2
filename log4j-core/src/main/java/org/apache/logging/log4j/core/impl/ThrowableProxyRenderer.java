@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.util.List;
+
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.util.Strings;
-
-import java.util.List;
 
 /**
  * {@link ThrowableProxyRenderer} is an internal utility providing the code to render a {@link ThrowableProxy}
