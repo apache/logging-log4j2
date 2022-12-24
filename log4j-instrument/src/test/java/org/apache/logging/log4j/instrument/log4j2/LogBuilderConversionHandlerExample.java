@@ -41,7 +41,7 @@ public class LogBuilderConversionHandlerExample {
                 locationRef.set(location);
                 return LogBuilder.super.withLocation(location);
             }
-            
+
         };
         // We remove the call without parameters
         logBuilder.withLocation().log();
