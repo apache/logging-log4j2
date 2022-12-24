@@ -20,47 +20,37 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
-import java.util.stream.Stream;
 
-import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.instrument.LocationCacheGenerator;
 import org.apache.logging.log4j.instrument.LocationClassConverter;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@LoggerContextSource("log4j2-test.xml")
 public class LogBuilderConversionHandlerTest {
 
     private static Class<?> convertedClass;
     private static Object testObject;
-    private static ListAppender appender;
 
     @BeforeAll
-    public static void setup(final @Named("List") ListAppender appender)
-            throws ReflectiveOperationException, IOException {
+    public static void setup() throws ReflectiveOperationException, IOException {
         final ByteArrayOutputStream dest = new ByteArrayOutputStream();
         final LocationClassConverter converter = new LocationClassConverter();
         final LocationCacheGenerator locationCache = new LocationCacheGenerator();
-        converter.convert(LogBuilderConversionHandlerTest.class.getResourceAsStream("LogBuilderConversionHandlerExample.class"),
+        converter.convert(
+                LogBuilderConversionHandlerTest.class.getResourceAsStream("LogBuilderConversionHandlerExample.class"),
                 dest, locationCache);
 
         final Lookup lookup = MethodHandles.lookup();
         locationCache.generateClasses().values().forEach(t -> assertDoesNotThrow(() -> lookup.defineClass(t)));
         convertedClass = lookup.defineClass(dest.toByteArray());
         testObject = convertedClass.getConstructor().newInstance();
-
-        LogBuilderConversionHandlerTest.appender = appender;
     }
 
     @Test
     public void testWithLocation() throws Exception {
-        convertedClass.getMethod("testWithLocation", ListAppender.class).invoke(testObject, appender);
+        convertedClass.getMethod("testWithLocation").invoke(testObject);
     }
 
 }

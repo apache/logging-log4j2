@@ -32,13 +32,8 @@ public class LogBuilderConversionHandler implements ClassConversionHandler {
 
     @Override
     public void handleMethodInstruction(LocationMethodVisitor mv, String name, String descriptor) {
-        if ("withLocation".equals(name)) {
-            final Type[] types = Type.getArgumentTypes(descriptor);
-            // We only add a location if the parameterless `withLocation` method is called.
-            if (types.length == 0) {
-                mv.storeLocation();
-                return;
-            }
+        if ("withLocation".equals(name) && Type.getMethodDescriptor(LOG_BUILDER_TYPE).equals(descriptor)) {
+            return;
         }
         mv.invokeInterface(LOG_BUILDER_TYPE, new Method(name, descriptor));
     }

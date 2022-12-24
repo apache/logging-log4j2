@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.instrument.ClassFileTransformer;
 
+import org.apache.logging.log4j.instrument.log4j2.LogBuilderConversionHandler;
 import org.apache.logging.log4j.instrument.log4j2.LoggerConversionHandler;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -38,6 +39,7 @@ public class LocationClassConverter implements ClassFileTransformer {
         final ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         final LocationClassVisitor converter = new LocationClassVisitor(writer, locationCache);
         converter.addClassConversionHandler(new LoggerConversionHandler());
+        converter.addClassConversionHandler(new LogBuilderConversionHandler());
         new ClassReader(src).accept(converter, ClassReader.EXPAND_FRAMES);
 
         dest.write(writer.toByteArray());

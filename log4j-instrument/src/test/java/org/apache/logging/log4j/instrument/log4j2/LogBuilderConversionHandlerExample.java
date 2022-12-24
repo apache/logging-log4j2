@@ -16,43 +16,42 @@
  */
 package org.apache.logging.log4j.instrument.log4j2;
 
-import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.LogBuilder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LogBuilderConversionHandlerExample {
+    public void testWithLocation() {
+        // We can't use verify: if `withLocation` is correctly remove, so is verify(...).withLocation()
+        final AtomicBoolean called = new AtomicBoolean();
+        final AtomicReference<StackTraceElement> locationRef = new AtomicReference<>();
+        final LogBuilder logBuilder = new LogBuilder() {
 
-    private static final Logger logger = LogManager.getLogger();
+            @Override
+            public LogBuilder withLocation() {
+                called.set(true);
+                return LogBuilder.super.withLocation();
+            }
 
-    private static final int referenceLine = 32;
+            @Override
+            public LogBuilder withLocation(StackTraceElement location) {
+                locationRef.set(location);
+                return LogBuilder.super.withLocation(location);
+            }
+            
+        };
+        // We remove the call without parameters
+        logBuilder.withLocation().log();
+        assertThat(called).isFalse();
 
-    public void testWithLocation(final ListAppender app) {
-        app.clear();
-        logger.atInfo().withLocation().log();
-        assertLocationEquals("testWithLocation", referenceLine + 4, app);
-        logger.atInfo()
-                .withLocation(new StackTraceElement(LogBuilderConversionHandlerExample.class.getName(), "specialMethod",
-                        "LogBuilderConversionHandlerExample.java", 1024))
-                .log();
-        assertLocationEquals("specialMethod", 1024, app);
+        final StackTraceElement stackTraceElement = new StackTraceElement(
+                LogBuilderConversionHandlerExample.class.getName(), "specialMethod",
+                "LogBuilderConversionHandlerExample.java", 1024);
+        logBuilder.withLocation(stackTraceElement).log();
+        assertThat(locationRef).hasValue(stackTraceElement);
     }
 
-    private static void assertLocationEquals(final String methodName, final int lineNumber, final ListAppender app) {
-        final List<LogEvent> events = app.getEvents();
-        assertThat(events).hasSize(1);
-        final LogEvent event = events.get(0);
-        assertThat(event.isIncludeLocation()).isFalse();
-        assertThat(event.getSource()).isNotNull();
-        final StackTraceElement location = event.getSource();
-        assertThat(location.getClassName()).isEqualTo(LogBuilderConversionHandlerExample.class.getName());
-        assertThat(location.getMethodName()).isEqualTo(methodName);
-        assertThat(location.getFileName()).isEqualTo("LogBuilderConversionHandlerExample.java");
-        assertThat(location.getLineNumber()).isEqualTo(lineNumber);
-        app.clear();
-    }
 }
