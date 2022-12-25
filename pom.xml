@@ -342,7 +342,7 @@
     <jeromq.version>0.5.2</jeromq.version>
     <jetty.version>9.4.49.v20220914</jetty.version>
     <jmdns.version>3.5.8</jmdns.version>
-    <jmh.version>1.35</jmh.version>
+    <jmh.version>1.36</jmh.version>
     <jna.version>5.12.1</jna.version>
     <json-unit.version>2.36.0</json-unit.version>
     <junit.version>4.13.2</junit.version>
