@@ -17,6 +17,7 @@
 package org.apache.logging.slf4j;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -47,43 +48,40 @@ class Log4jMarker implements Marker {
 
     @Override
     public void add(final Marker marker) {
-		if (marker == null) {
-			throw new IllegalArgumentException();
-		}
+        if (marker == null) {
+            throw new IllegalArgumentException();
+        }
         final Marker m = factory.getMarker(marker.getName());
         this.marker.addParents(((Log4jMarker)m).getLog4jMarker());
     }
 
     @Override
-	public boolean contains(final Marker marker) {
-		if (marker == null) {
-			throw new IllegalArgumentException();
-		}
-		return this.marker.isInstanceOf(marker.getName());
-	}
+    public boolean contains(final Marker marker) {
+        if (marker == null) {
+            throw new IllegalArgumentException();
+        }
+        return this.marker.isInstanceOf(marker.getName());
+    }
 
     @Override
-	public boolean contains(final String s) {
-		return s != null ? this.marker.isInstanceOf(s) : false;
-	}
+    public boolean contains(final String s) {
+        return s != null ? this.marker.isInstanceOf(s) : false;
+    }
 
     @Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof Log4jMarker)) {
-			return false;
-		}
-		final Log4jMarker other = (Log4jMarker) obj;
-		if (!Objects.equals(marker, other.marker)) {
-			return false;
-		}
-		return true;
-	}
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Log4jMarker)) {
+            return false;
+        }
+        final Log4jMarker other = (Log4jMarker) obj;
+        return Objects.equals(marker, other.marker);
+    }
 
     public org.apache.logging.log4j.Marker getLog4jMarker() {
         return marker;
@@ -100,27 +98,30 @@ class Log4jMarker implements Marker {
     }
 
     @Override
-	public int hashCode() {
-		return 31 + Objects.hashCode(marker);
-	}
+    public int hashCode() {
+        return 31 + Objects.hashCode(marker);
+    }
 
     @Override
     public boolean hasReferences() {
         return marker.hasParents();
     }
 
-	@Override
+    @Override
     public Iterator<Marker> iterator() {
         final org.apache.logging.log4j.Marker[] log4jParents = this.marker.getParents();
+        if (log4jParents == null) {
+            return Collections.emptyIterator();
+        }
         final List<Marker> parents = new ArrayList<>(log4jParents.length);
-		for (final org.apache.logging.log4j.Marker m : log4jParents) {
+        for (final org.apache.logging.log4j.Marker m : log4jParents) {
             parents.add(factory.getMarker(m.getName()));
         }
         return parents.iterator();
     }
 
-	@Override
-	public boolean remove(final Marker marker) {
-		return marker != null ? this.marker.remove(MarkerManager.getMarker(marker.getName())) : false;
-	}
+    @Override
+    public boolean remove(final Marker marker) {
+        return marker != null ? this.marker.remove(MarkerManager.getMarker(marker.getName())) : false;
+    }
 }
