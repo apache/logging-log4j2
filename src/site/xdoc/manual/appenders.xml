@@ -158,7 +158,7 @@
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <File name="MyFile" fileName="logs/app.log">
       <PatternLayout>
@@ -471,7 +471,7 @@ CREATE TABLE logs (
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%m%n"/>
@@ -540,7 +540,7 @@ CREATE TABLE logs (
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"
                  ignoreExceptions="false">
@@ -701,7 +701,7 @@ CREATE TABLE logs (
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <File name="MyFile" fileName="logs/app.log">
       <PatternLayout>
@@ -887,7 +887,7 @@ CREATE TABLE logs (
             </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Flume name="eventLogger" compress="true">
       <Agent host="192.168.10.101" port="8800"/>
@@ -907,7 +907,7 @@ CREATE TABLE logs (
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Flume name="eventLogger" compress="true" type="persistent" dataDir="./logData">
       <Agent host="192.168.10.101" port="8800"/>
@@ -928,7 +928,7 @@ CREATE TABLE logs (
             Agent.
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Flume name="eventLogger" compress="true" type="Embedded">
       <Agent host="192.168.10.101" port="8800"/>
@@ -954,7 +954,7 @@ CREATE TABLE logs (
             events to an embedded Flume Agent.
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error" name="MyApp" packages="">
+<Configuration status="error" name="MyApp">
   <Appenders>
     <Flume name="eventLogger" compress="true" type="Embedded">
       <Property name="channels">file</Property>
@@ -2237,7 +2237,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </p>
 
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <MemoryMappedFile name="MyFile" fileName="logs/app.log">
       <PatternLayout>
@@ -2820,7 +2820,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </p>
 
 					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RandomAccessFile name="MyFile" fileName="logs/app.log">
       <PatternLayout>
@@ -2915,7 +2915,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%m%n"/>
@@ -2957,7 +2957,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             to the MapMessage:
           </p>
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%m%n"/>
@@ -3520,7 +3520,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
@@ -3543,7 +3543,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             This second example shows a rollover strategy that will keep up to 20 files before removing them.
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
@@ -3571,7 +3571,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
@@ -3597,7 +3597,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </p>
 
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" filePattern="logs/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
       <PatternLayout>
@@ -3620,7 +3620,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </p>
 
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" filePattern="logs/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
       <PatternLayout>
@@ -3857,7 +3857,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Properties>
     <Property name="baseDir">logs</Property>
   </Properties>
@@ -3892,7 +3892,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Properties>
     <Property name="baseDir">logs</Property>
   </Properties>
@@ -3998,7 +3998,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="trace" name="MyApp" packages="">
+<Configuration status="trace" name="MyApp">
   <Properties>
     <Property name="baseDir">logs</Property>
   </Properties>
@@ -4121,7 +4121,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="trace" name="MyApp" packages="">
+<Configuration status="trace" name="MyApp">
   <Properties>
     <Property name="baseDir">logs</Property>
   </Properties>
@@ -4339,7 +4339,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </p>
 
 					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
@@ -4363,7 +4363,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
 					20 files before removing them.
         </p>
 					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
@@ -4398,7 +4398,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
         </p>
 
 					<pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
@@ -4641,7 +4641,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Flume name="AuditLogger" compress="true">
       <Agent host="192.168.10.101" port="8800"/>
@@ -4796,7 +4796,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             </tr>
           </table>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <SMTP name="Mail" subject="Error Log" to="errors@logging.apache.org" from="test@logging.apache.org"
           smtpHost="localhost" smtpPort="25" bufferSize="50">
@@ -4952,7 +4952,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             This is an unsecured TCP configuration:
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Socket name="socket" host="localhost" port="9500">
       <JsonLayout properties="true"/>
@@ -4969,7 +4969,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             This is a secured <a href="#SSL">SSL</a> configuration:
           </p>
           <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Socket name="socket" host="localhost" port="9500">
       <JsonLayout properties="true"/>
@@ -5332,7 +5332,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Syslog name="bsd" host="localhost" port="514" protocol="TCP"/>
     <Syslog name="RFC5424" format="RFC5424" host="localhost" port="8514"
@@ -5356,7 +5356,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
           </p>
 
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Syslog name="bsd" host="localhost" port="6514" protocol="SSL">
       <SSL>
