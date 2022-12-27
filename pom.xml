@@ -1554,7 +1554,6 @@
             <groupId>org.apache.logging.log4j.tools</groupId>
             <artifactId>log4j-changelog</artifactId>
             <version>${log4j-tools.version}</version>
-            <type>jar</type>
           </dependency>
         </dependencies>
       </plugin>
@@ -1854,7 +1853,6 @@
                 <groupId>org.apache.logging.log4j.tools</groupId>
                 <artifactId>log4j-changelog</artifactId>
                 <version>${log4j-tools.version}</version>
-                <type>jar</type>
               </dependency>
             </dependencies>
           </plugin>
