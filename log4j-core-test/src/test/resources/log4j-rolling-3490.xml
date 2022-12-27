@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" filePattern="target/rolling-3490/app-%i.log">
       <PatternLayout>

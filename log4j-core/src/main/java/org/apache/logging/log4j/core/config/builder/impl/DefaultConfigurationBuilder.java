@@ -24,7 +24,6 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -201,9 +200,6 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
             }
             if (destination != null) {
                 configuration.getStatusConfiguration().setDestination(destination);
-            }
-            if (packages != null) {
-                configuration.setPluginPackages(packages);
             }
             if (shutdownFlag != null) {
                 configuration.setShutdownHook(shutdownFlag);

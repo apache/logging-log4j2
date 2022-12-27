@@ -248,7 +248,7 @@ public class PluginRegistry {
      * Gets the registered plugins for the given namespace. If additional scan packages are provided, then plugins
      * are scanned and loaded from there as well.
      */
-    public PluginNamespace getNamespace(final String namespace, final List<String> additionalScanPackages) {
+    public PluginNamespace getNamespace(final String namespace) {
         final var pluginNamespace = new PluginNamespace(namespace);
 
         // First, iterate the PluginService services and legacy Log4j2Plugin.dat files found in the main CLASSPATH
@@ -259,17 +259,6 @@ public class PluginRegistry {
 
         // Next, iterate OSGi modules that provide plugins as OSGi services
         namespacesByBundleId.values().forEach(bundle -> pluginNamespace.mergeAll(bundle.get(namespace)));
-
-        // Finally, iterate over additional packages from configuration
-        if (additionalScanPackages != null) {
-            for (final String pkg : additionalScanPackages) {
-                pluginNamespace.mergeAll(namespacesByPackage.computeIfAbsent(pkg, ignored -> {
-                    final var bundle = new Namespaces();
-                    loadFromPackage(bundle, pkg);
-                    return bundle;
-                }).get(namespace));
-            }
-        }
 
         LOGGER.debug("Discovered {} plugins in namespace '{}'", box(pluginNamespace.size()), namespace);
 

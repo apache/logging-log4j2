@@ -135,10 +135,6 @@ public class BuiltConfiguration extends AbstractConfiguration {
         return statusConfig;
     }
 
-    public void setPluginPackages(final String packages) {
-        pluginPackages.addAll(Arrays.asList(packages.split(Patterns.COMMA_SEPARATOR)));
-    }
-
     public void setShutdownHook(final String flag) {
         isShutdownHookEnabled = !"disable".equalsIgnoreCase(flag);
     }

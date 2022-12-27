@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="INFO" packages="">
+<Configuration status="INFO">
   <Appenders>
     <File name="stdout" ignoreExceptions="false" fileName="target/test-yaml-layout.log" append="false">
       <YamlLayout compact="true" eventEol="true" />

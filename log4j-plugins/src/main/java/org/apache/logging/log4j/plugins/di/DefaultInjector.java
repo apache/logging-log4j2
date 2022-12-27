@@ -314,19 +314,14 @@ class DefaultInjector implements Injector {
     }
 
     private Supplier<PluginNamespace> createPluginNamespaceFactory(final Key<PluginNamespace> key) {
-        return Lazy.lazy(() -> getInstance(PluginRegistry.class).getNamespace(key.getNamespace(), getPluginPackages()))::value;
-    }
-
-    private List<String> getPluginPackages() {
-        final Binding<List<String>> pluginPackagesBinding = bindingMap.get(Keys.PLUGIN_PACKAGES_KEY, List.of());
-        return pluginPackagesBinding != null ? pluginPackagesBinding.getSupplier().get() : List.of();
+        return Lazy.lazy(() -> getInstance(PluginRegistry.class).getNamespace(key.getNamespace()))::value;
     }
 
     private <T> Stream<PluginType<T>> streamPluginsFromNamespace(final Key<T> itemKey) {
         if (itemKey == null) {
             return Stream.empty();
         }
-        final PluginNamespace namespace = getInstance(PluginRegistry.class).getNamespace(itemKey.getNamespace(), getPluginPackages());
+        final PluginNamespace namespace = getInstance(PluginRegistry.class).getNamespace(itemKey.getNamespace());
         final Type type = itemKey.getType();
         return namespace.stream()
                 .filter(pluginType -> TypeUtil.isAssignable(type, pluginType.getPluginClass()))

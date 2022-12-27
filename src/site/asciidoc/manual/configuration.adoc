@@ -598,11 +598,6 @@ elapse before the file configuration is checked for changes.
 |name
 |The name of the configuration.
 
-|packages
-|A comma separated list of package names to search for
-plugins. Plugins are only loaded once per classloader so changing this
-value may not have any effect upon reconfiguration.
-
 |schema
 |Identifies the location for the classloader to located the XML
 Schema to use to validate the configuration. Only valid when strict is
