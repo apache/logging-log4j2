@@ -50,11 +50,11 @@
               the build (more details below).</li>
             <li>(OSGi only) Serialized plugin listing files in each active OSGi bundle. A <code>BundleListener</code>
               is added on activation to continue checking new bundles after <code>log4j-core</code> has started.</li>
-            <li>A comma-separated list of packages specified by the <code>log4j.plugin.packages</code>
+            <li><b>(Deprecated)</b> A comma-separated list of packages specified by the <code>log4j.plugin.packages</code>
               system property.</li>
-            <li>Packages passed to the static <code>PluginManager.addPackages</code> method (before Log4j configuration
+            <li><b>(Deprecated)</b> Packages passed to the static <code>PluginManager.addPackages</code> method (before Log4j configuration
               occurs).</li>
-            <li>The <a href="./configuration.html#ConfigurationSyntax">packages</a> declared in your log4j2
+            <li><b>(Deprecated)</b> The <a href="./configuration.html#ConfigurationSyntax">packages</a> declared in your log4j2
               configuration file.</li>
           </ol>
           <p>
