@@ -36,8 +36,11 @@ import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Type with an optional {@link QualifierType} type, name, and namespace. Keys are used for binding to and looking up instance
- * factories via {@link Injector}.
+ * Provides a type token for generic types with associated dependency injection metadata. Keys contain optional
+ * metadata including a {@linkplain org.apache.logging.log4j.plugins.Namespace namespace}, a
+ * {@linkplain org.apache.logging.log4j.plugins.Named name}, a {@linkplain QualifierType qualifier annotation},
+ * and an {@linkplain Ordered ordinal value}. Keys are used for binding and looking up instance factories (sometimes
+ * referred to as <i>beans</i> or <i>bindings</i>) via the {@link Injector} API.
  *
  * @param <T> type of key
  */
