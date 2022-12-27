@@ -250,7 +250,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         runtimeStrSubstitutor.setConfiguration(this);
         configurationStrSubstitutor.setConfiguration(this);
         initializeScriptManager();
-        injector.registerBindingIfAbsent(Keys.PLUGIN_PACKAGES_KEY, this::getPluginPackages);
         corePlugins = injector.getInstance(Core.PLUGIN_NAMESPACE_KEY);
         final PluginNamespace levelPlugins = injector.getInstance(new @Namespace(Level.CATEGORY) Key<>() {});
         levelPlugins.forEach(type -> {

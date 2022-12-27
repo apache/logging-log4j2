@@ -47,9 +47,6 @@ public final class Keys {
     public static final String SUBSTITUTOR_NAME = "StringSubstitutor";
     public static final Key<Function<String, String>> SUBSTITUTOR_KEY = new @Named(SUBSTITUTOR_NAME) Key<>() {};
 
-    public static final String PLUGIN_PACKAGES_NAME = "PluginPackages";
-    public static final Key<List<String>> PLUGIN_PACKAGES_KEY = new @Named(PLUGIN_PACKAGES_NAME) Key<>() {};
-
     public static String getNamespace(final AnnotatedElement element) {
         return Optional.ofNullable(AnnotationUtil.getLogicalAnnotation(element, Namespace.class))
                 .map(Namespace::value)

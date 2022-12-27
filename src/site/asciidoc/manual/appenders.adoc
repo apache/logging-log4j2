@@ -128,7 +128,7 @@ A typical AsyncAppender configuration might look like:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <File name="MyFile" fileName="logs/app.log">
       <PatternLayout>
@@ -380,7 +380,7 @@ A typical Console configuration might look like:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%m%n"/>
@@ -432,7 +432,7 @@ A Failover configuration might look like:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"
                  ignoreExceptions="false">
@@ -574,7 +574,7 @@ Here is a sample File configuration:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <File name="MyFile" fileName="logs/app.log">
       <PatternLayout>
@@ -748,7 +748,7 @@ RFC5424Layout, and persists encrypted events to disk:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Flume name="eventLogger" compress="true" type="persistent" dataDir="./logData">
       <Agent host="192.168.10.101" port="8800"/>
@@ -772,7 +772,7 @@ RFC5424Layout and passes the events to an embedded Flume Agent.
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Flume name="eventLogger" compress="true" type="Embedded">
       <Agent host="192.168.10.101" port="8800"/>
@@ -802,7 +802,7 @@ an embedded Flume Agent.
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error" name="MyApp" packages="">
+<Configuration status="error" name="MyApp">
   <Appenders>
     <Flume name="eventLogger" compress="true" type="Embedded">
       <Property name="channels">file</Property>
@@ -1832,7 +1832,7 @@ Here is a sample MemoryMappedFile configuration:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <MemoryMappedFile name="MyFile" fileName="logs/app.log">
       <PatternLayout>
@@ -2277,7 +2277,7 @@ Here is a sample RandomAccessFile configuration:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RandomAccessFile name="MyFile" fileName="logs/app.log">
       <PatternLayout>
@@ -2354,7 +2354,7 @@ product key and its value to the MapMessage.:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%m%n"/>
@@ -2395,7 +2395,7 @@ product key and its value to the MapMessage:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%m%n"/>
@@ -2872,7 +2872,7 @@ the current year and month, and will compress each archive using gzip:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
@@ -2899,7 +2899,7 @@ files before removing them.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
@@ -2930,7 +2930,7 @@ and will roll every 6 hours when the hour is divisible by 6:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
@@ -2959,7 +2959,7 @@ while the file size is limited to 250MB:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" filePattern="logs/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
       <PatternLayout>
@@ -2985,7 +2985,7 @@ number of files saved each hour to 10:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" filePattern="logs/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
       <PatternLayout>
@@ -3187,7 +3187,7 @@ and are 60 days old or older are deleted at rollover time.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Properties>
     <Property name="baseDir">logs</Property>
   </Properties>
@@ -3224,7 +3224,7 @@ comes first.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Properties>
     <Property name="baseDir">logs</Property>
   </Properties>
@@ -3314,7 +3314,7 @@ by the script.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="trace" name="MyApp" packages="">
+<Configuration status="trace" name="MyApp">
   <Properties>
     <Property name="baseDir">logs</Property>
   </Properties>
@@ -3439,7 +3439,7 @@ files.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="trace" name="MyApp" packages="">
+<Configuration status="trace" name="MyApp">
   <Properties>
     <Property name="baseDir">logs</Property>
   </Properties>
@@ -3613,7 +3613,7 @@ will compress each archive using gzip:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
@@ -3640,7 +3640,7 @@ files before removing them.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
@@ -3672,7 +3672,7 @@ the hour is divisible by 6:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
@@ -3888,7 +3888,7 @@ created as needed.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Flume name="AuditLogger" compress="true">
       <Agent host="192.168.10.101" port="8800"/>
@@ -3998,7 +3998,7 @@ Appender in a link:#FailoverAppender[FailoverAppender].
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <SMTP name="Mail" subject="Error Log" to="errors@logging.apache.org" from="test@logging.apache.org"
           smtpHost="localhost" smtpPort="25" bufferSize="50">
@@ -4127,7 +4127,7 @@ This is an unsecured TCP configuration:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Socket name="socket" host="localhost" port="9500">
       <JsonLayout properties="true"/>
@@ -4146,7 +4146,7 @@ This is a secured link:#SSL[SSL] configuration:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Socket name="socket" host="localhost" port="9500">
       <JsonLayout properties="true"/>
@@ -4404,7 +4404,7 @@ A sample syslogAppender configuration that is configured with two
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Syslog name="bsd" host="localhost" port="514" protocol="TCP"/>
     <Syslog name="RFC5424" format="RFC5424" host="localhost" port="8514"
@@ -4430,7 +4430,7 @@ conforms with either the BSD Syslog format or the RFC 5424 format.
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Syslog name="bsd" host="localhost" port="6514" protocol="SSL">
       <SSL>

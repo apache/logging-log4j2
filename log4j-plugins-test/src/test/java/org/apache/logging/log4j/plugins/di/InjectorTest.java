@@ -862,7 +862,6 @@ class InjectorTest {
     @Test
     void namespaceQualifierInjection() {
         final ContainerPluginBeanInjection instance = DI.createInjector()
-                .registerBinding(Keys.PLUGIN_PACKAGES_KEY, () -> List.of(BaseBean.class.getPackageName()))
                 .getInstance(ContainerPluginBeanInjection.class);
         assertThat(instance.list).hasSize(3).first().isInstanceOf(BetaBean.class);
         assertThat(instance.collection).containsExactlyElementsOf(instance.list);
