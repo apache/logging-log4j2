@@ -37,16 +37,7 @@ public class AbstractLifeCycle implements LifeCycle {
      */
     protected static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
 
-    /**
-     * Gets the status logger.
-     *
-     * @return the status logger.
-     */
-    protected static org.apache.logging.log4j.Logger getStatusLogger() {
-        return LOGGER;
-    }
-
-    private volatile LifeCycle.State state = LifeCycle.State.INITIALIZED;
+    private volatile LifeCycle.State state = State.INITIALIZED;
 
     protected boolean equalsImpl(final Object obj) {
         if (this == obj) {
@@ -75,28 +66,6 @@ public class AbstractLifeCycle implements LifeCycle {
         int result = 1;
         result = prime * result + ((state == null) ? 0 : state.hashCode());
         return result;
-    }
-
-    public boolean isInitialized() {
-        return this.state == LifeCycle.State.INITIALIZED;
-    }
-
-    @Override
-    public boolean isStarted() {
-        return this.state == LifeCycle.State.STARTED;
-    }
-
-    public boolean isStarting() {
-        return this.state == LifeCycle.State.STARTING;
-    }
-
-    @Override
-    public boolean isStopped() {
-        return this.state == LifeCycle.State.STOPPED;
-    }
-
-    public boolean isStopping() {
-        return this.state == LifeCycle.State.STOPPING;
     }
 
     protected void setStarted() {

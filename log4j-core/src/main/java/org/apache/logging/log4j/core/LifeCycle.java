@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core;
 
 import java.util.concurrent.TimeUnit;
@@ -64,9 +63,29 @@ public interface LifeCycle {
 
     void stop();
 
-    boolean isStarted();
+    default boolean isInitializing() {
+        return getState() == State.INITIALIZING;
+    }
 
-    boolean isStopped();
+    default boolean isInitialized() {
+        return getState() == State.INITIALIZED;
+    }
+
+    default boolean isStarting() {
+        return getState() == State.STARTING;
+    }
+
+    default boolean isStarted() {
+        return getState() == State.STARTED;
+    }
+
+    default boolean isStopping() {
+        return getState() == State.STOPPING;
+    }
+
+    default boolean isStopped() {
+        return getState() == State.STOPPED;
+    }
 
     /**
      * Blocks until all tasks have completed execution after a shutdown request, or the timeout occurs, or the current
