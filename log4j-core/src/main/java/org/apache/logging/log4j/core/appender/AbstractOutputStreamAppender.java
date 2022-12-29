@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Filter;
@@ -97,7 +96,7 @@ public abstract class AbstractOutputStreamAppender<M extends OutputStreamManager
      * @param properties Optional properties.
      * @param manager The OutputStreamManager.
      */
-    protected AbstractOutputStreamAppender(final String name, final Layout<? extends Serializable> layout,
+    protected AbstractOutputStreamAppender(final String name, final Layout<?> layout,
               final Filter filter, final boolean ignoreExceptions, final boolean immediateFlush, final Property[] properties,
               final M manager) {
         super(name, filter, layout, ignoreExceptions, properties);

@@ -102,7 +102,7 @@ public class ListAppender extends AbstractAppender {
         raw = false;
     }
 
-    public ListAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+    public ListAppender(final String name, final Filter filter, final Layout<?> layout,
             final boolean newline, final boolean raw) {
         super(name, filter, layout, true, Property.EMPTY_ARRAY);
         this.newLine = newline;
@@ -117,7 +117,7 @@ public class ListAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        final Layout<? extends Serializable> layout = getLayout();
+        final Layout<?> layout = getLayout();
         if (layout == null) {
             if (event instanceof MutableLogEvent) {
                 // must take snapshot or subsequent calls to logger.log() will modify this event
@@ -174,7 +174,7 @@ public class ListAppender extends AbstractAppender {
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
         super.stop(timeout, timeUnit, false);
-        final Layout<? extends Serializable> layout = getLayout();
+        final Layout<?> layout = getLayout();
         if (layout != null) {
             final byte[] bytes = layout.getFooter();
             if (bytes != null) {
@@ -221,7 +221,7 @@ public class ListAppender extends AbstractAppender {
     }
 
     public static ListAppender createAppender(final String name, final boolean newLine, final boolean raw,
-            final Layout<? extends Serializable> layout, final Filter filter) {
+            final Layout<?> layout, final Filter filter) {
         return new ListAppender(name, filter, layout, newLine, raw);
     }
 
@@ -235,7 +235,7 @@ public class ListAppender extends AbstractAppender {
         private String name;
         private boolean entryPerNewLine;
         private boolean raw;
-        private Layout<? extends Serializable> layout;
+        private Layout<?> layout;
         private Filter filter;
 
         public Builder setName(@Required @PluginAttribute final String name) {
@@ -253,7 +253,7 @@ public class ListAppender extends AbstractAppender {
             return this;
         }
 
-        public Builder setLayout(@PluginElement final Layout<? extends Serializable> layout) {
+        public Builder setLayout(@PluginElement final Layout<?> layout) {
             this.layout = layout;
             return this;
         }

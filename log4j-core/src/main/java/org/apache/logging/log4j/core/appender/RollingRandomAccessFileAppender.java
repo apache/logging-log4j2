@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.zip.Deflater;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -32,12 +37,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.zip.Deflater;
 
 /**
  * An appender that writes to random access files and can roll over at
@@ -122,7 +121,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
                 return null;
             }
 
-            final Layout<? extends Serializable> layout = getOrCreateLayout();
+            final Layout<?> layout = getOrCreateLayout();
 
             final boolean immediateFlush = isImmediateFlush();
             final int bufferSize = getBufferSize();
@@ -197,7 +196,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
     private final Object advertisement;
     private final Advertiser advertiser;
 
-    private RollingRandomAccessFileAppender(final String name, final Layout<? extends Serializable> layout,
+    private RollingRandomAccessFileAppender(final String name, final Layout<?> layout,
             final Filter filter, final RollingRandomAccessFileManager manager, final String fileName,
             final String filePattern, final boolean ignoreExceptions,
             final boolean immediateFlush, final int bufferSize, final Advertiser advertiser) {

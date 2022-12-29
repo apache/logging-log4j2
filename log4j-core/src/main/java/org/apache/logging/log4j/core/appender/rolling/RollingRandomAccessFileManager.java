@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.file.Paths;
 
@@ -53,7 +52,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final String fileName, final String pattern, final OutputStream os, final boolean append,
             final boolean immediateFlush, final int bufferSize, final long initialTime, final long time,
             final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
-            final Layout<? extends Serializable> layout,
+            final Layout<?> layout,
             final String filePermissions, final String fileOwner, final String fileGroup,
             final boolean writeHeader) {
         super(loggerContext, fileName, pattern, os, append, false, initialTime, time, policy, strategy, advertiseURI, layout,
@@ -87,7 +86,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     public static RollingRandomAccessFileManager getRollingRandomAccessFileManager(final String fileName,
             final String filePattern, final boolean isAppend, final boolean immediateFlush, final int bufferSize,
             final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
-            final Layout<? extends Serializable> layout, final String filePermissions, final String fileOwner, final String fileGroup,
+            final Layout<?> layout, final String filePermissions, final String fileOwner, final String fileGroup,
             final Configuration configuration) {
         if (strategy instanceof DirectWriteRolloverStrategy && fileName != null) {
             LOGGER.error("The fileName attribute must not be specified with the DirectWriteRolloverStrategy");
@@ -264,7 +263,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         private final TriggeringPolicy policy;
         private final RolloverStrategy strategy;
         private final String advertiseURI;
-        private final Layout<? extends Serializable> layout;
+        private final Layout<?> layout;
         private final String filePermissions;
         private final String fileOwner;
         private final String fileGroup;
@@ -288,7 +287,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
          */
         public FactoryData(final String fileName, final String pattern, final boolean append, final boolean immediateFlush,
                 final int bufferSize, final TriggeringPolicy policy, final RolloverStrategy strategy,
-                final String advertiseURI, final Layout<? extends Serializable> layout,
+                final String advertiseURI, final Layout<?> layout,
                 final String filePermissions, final String fileOwner, final String fileGroup,
                 final Configuration configuration) {
             super(configuration);

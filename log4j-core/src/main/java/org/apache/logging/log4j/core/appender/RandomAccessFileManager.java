@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +44,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
 
     protected RandomAccessFileManager(final LoggerContext loggerContext, final RandomAccessFile file, final String fileName,
             final OutputStream os, final int bufferSize, final String advertiseURI,
-            final Layout<? extends Serializable> layout, final boolean writeHeader) {
+            final Layout<?> layout, final boolean writeHeader) {
         super(loggerContext, os, fileName, false, layout, writeHeader, ByteBuffer.wrap(new byte[bufferSize]));
         this.randomAccessFile = file;
         this.advertiseURI = advertiseURI;
@@ -67,7 +66,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
      */
     public static RandomAccessFileManager getFileManager(final String fileName, final boolean append,
             final boolean immediateFlush, final int bufferSize, final String advertiseURI,
-            final Layout<? extends Serializable> layout, final Configuration configuration) {
+            final Layout<?> layout, final Configuration configuration) {
         return narrow(RandomAccessFileManager.class, getManager(fileName,
                 new FactoryData(append, immediateFlush, bufferSize, advertiseURI, layout, configuration), FACTORY));
     }
@@ -159,7 +158,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
         private final boolean immediateFlush;
         private final int bufferSize;
         private final String advertiseURI;
-        private final Layout<? extends Serializable> layout;
+        private final Layout<?> layout;
 
         /**
          * Constructor.
@@ -169,7 +168,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
          * @param configuration The configuration.
          */
         public FactoryData(final boolean append, final boolean immediateFlush, final int bufferSize,
-                final String advertiseURI, final Layout<? extends Serializable> layout, final Configuration configuration) {
+                final String advertiseURI, final Layout<?> layout, final Configuration configuration) {
             super(configuration);
             this.append = append;
             this.immediateFlush = immediateFlush;

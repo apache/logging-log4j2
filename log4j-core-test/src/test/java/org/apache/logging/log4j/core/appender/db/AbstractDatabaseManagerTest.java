@@ -16,23 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.io.Serializable;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.*;
 
 public class AbstractDatabaseManagerTest {
     // this stub is provided because mocking constructors is hard
@@ -63,7 +56,7 @@ public class AbstractDatabaseManagerTest {
         }
 
         @Override
-        protected void writeInternal(final LogEvent event, final Serializable serializable) {
+        protected void writeInternal(final LogEvent event, final Object serializable) {
             // noop
         }
 

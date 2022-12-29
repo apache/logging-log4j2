@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.net;
 
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -45,7 +44,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @param bufferSize The buffer size
      */
     protected DatagramSocketManager(final String name, final OutputStream os, final InetAddress inetAddress, final String host,
-                final int port, final Layout<? extends Serializable> layout, final int bufferSize) {
+                final int port, final Layout<?> layout, final int bufferSize) {
         super(name, os, inetAddress, host, port, layout, true, bufferSize);
     }
 
@@ -58,7 +57,7 @@ public class DatagramSocketManager extends AbstractSocketManager {
      * @return A DatagramSocketManager.
      */
     public static DatagramSocketManager getSocketManager(final String host, final int port,
-            final Layout<? extends Serializable> layout, final int bufferSize) {
+            final Layout<?> layout, final int bufferSize) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
@@ -92,10 +91,10 @@ public class DatagramSocketManager extends AbstractSocketManager {
     private static class FactoryData {
         private final String host;
         private final int port;
-        private final Layout<? extends Serializable> layout;
+        private final Layout<?> layout;
         private final int bufferSize;
 
-        public FactoryData(final String host, final int port, final Layout<? extends Serializable> layout, final int bufferSize) {
+        public FactoryData(final String host, final int port, final Layout<?> layout, final int bufferSize) {
             this.host = host;
             this.port = port;
             this.layout = layout;

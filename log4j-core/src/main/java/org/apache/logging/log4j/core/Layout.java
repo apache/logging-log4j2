@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
@@ -30,8 +29,6 @@ import org.apache.logging.log4j.core.layout.Encoder;
  * <li>
  * {@code byte[]}</li>
  * <li>
- * an implementer of {@linkplain Serializable}, like {@code byte[]}</li>
- * <li>
  * {@linkplain String}</li>
  * <li>
  * {@linkplain LogEvent}</li>
@@ -42,9 +39,9 @@ import org.apache.logging.log4j.core.layout.Encoder;
  * </p>
  *
  * @param <T>
- *            The {@link Serializable} type returned by {@link #toSerializable(LogEvent)}
+ *            The type returned by {@link #toSerializable(LogEvent)}
  */
-public interface Layout<T extends Serializable> extends Encoder<LogEvent> {
+public interface Layout<T> extends Encoder<LogEvent> {
 
     /**
      * Main {@linkplain org.apache.logging.log4j.plugins.Configurable#elementType() plugin element type} for

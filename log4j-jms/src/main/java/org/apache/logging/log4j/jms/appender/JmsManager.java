@@ -361,16 +361,18 @@ public class JmsManager extends AbstractManager {
      * @return A new JMS message containing the provided object.
      * @throws JMSException if an error occurs.
      */
-    public Message createMessage(final Serializable object) throws JMSException {
+    public Message createMessage(final Object object) throws JMSException {
         if (object instanceof String) {
             return this.session.createTextMessage((String) object);
         } else if (object instanceof org.apache.logging.log4j.message.MapMessage) {
             return map((org.apache.logging.log4j.message.MapMessage<?, ?>) object, this.session.createMapMessage());
+        } else if (object instanceof Serializable) {
+            return this.session.createObjectMessage((Serializable) object);
         }
-        return this.session.createObjectMessage(object);
+        throw new UnsupportedOperationException("Cannot create JMS message for object with type " + object.getClass());
     }
 
-    private void createMessageAndSend(final LogEvent event, final Serializable serializable) throws JMSException {
+    private void createMessageAndSend(final LogEvent event, final Object serializable) throws JMSException {
         final Message message = createMessage(serializable);
         message.setJMSTimestamp(event.getTimeMillis());
         messageProducer.send(message);
@@ -453,7 +455,7 @@ public class JmsManager extends AbstractManager {
         return closed && this.jndiManager.stop(timeout, timeUnit);
     }
 
-    void send(final LogEvent event, final Serializable serializable) {
+    void send(final LogEvent event, final Object serializable) {
         if (messageProducer == null) {
             if (reconnector != null && !configuration.isImmediateFail()) {
                 reconnector.latch();

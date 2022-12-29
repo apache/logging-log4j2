@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.web.appender;
 
+import javax.servlet.ServletContext;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -29,9 +31,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.web.WebLoggerContextUtils;
-
-import javax.servlet.ServletContext;
-import java.io.Serializable;
 
 /**
  * Logs using the ServletContext's log method
@@ -57,7 +56,7 @@ public class ServletAppender extends AbstractAppender {
 				LOGGER.error("No servlet context is available");
 				return null;
 			}
-			Layout<? extends Serializable> layout = getLayout();
+			Layout<?> layout = getLayout();
 			if (layout == null) {
 				layout = PatternLayout.createDefaultLayout();
 			} else if (!(layout instanceof AbstractStringLayout)) {
@@ -94,7 +93,7 @@ public class ServletAppender extends AbstractAppender {
     private final ServletContext servletContext;
     private final boolean logThrowables;
 
-    private ServletAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
+    private ServletAppender(final String name, final Layout<?> layout, final Filter filter,
             final ServletContext servletContext, final boolean ignoreExceptions, final boolean logThrowables,
             Property[] properties) {
         super(name, filter, layout, ignoreExceptions, properties);

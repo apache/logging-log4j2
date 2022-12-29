@@ -16,15 +16,9 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.List;
@@ -53,6 +47,8 @@ import org.apache.logging.log4j.core.filter.LevelRangeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test configuration from Properties.
@@ -299,7 +295,7 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             assertEquals(Level.DEBUG, rootLogger.getLevel());
             final Appender appender = config.getAppender("Console");
             assertTrue(appender instanceof ConsoleAppender);
-            final Layout<? extends Serializable> layout = appender.getLayout();
+            final Layout<?> layout = appender.getLayout();
             assertTrue(layout instanceof PatternLayout);
             assertEquals("%v1Level - %m%n", ((PatternLayout)layout).getConversionPattern());
             final Filter filter = ((Filterable) appender).getFilter();

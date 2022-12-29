@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -26,11 +30,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * File Appender.
@@ -89,7 +88,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             if (!bufferedIo && bufferSize > 0) {
                 LOGGER.warn("The bufferSize is set to {} but bufferedIo is false: {}", bufferSize, bufferedIo);
             }
-            final Layout<? extends Serializable> layout = getOrCreateLayout();
+            final Layout<?> layout = getOrCreateLayout();
 
             final FileManager manager = FileManager.getFileManager(fileName, append, locking, bufferedIo, createOnDemand,
                     advertiseUri, layout, bufferSize, filePermissions, fileOwner, fileGroup, getConfiguration());
@@ -195,7 +194,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
     private final Object advertisement;
 
-    private FileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
+    private FileAppender(final String name, final Layout<?> layout, final Filter filter,
             final FileManager manager, final String filename, final boolean ignoreExceptions,
             final boolean immediateFlush, final Advertiser advertiser, final Property[] properties) {
 

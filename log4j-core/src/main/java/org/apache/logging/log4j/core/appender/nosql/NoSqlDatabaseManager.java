@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -68,7 +66,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void writeInternal(final LogEvent event, final Serializable serializable) {
+    protected void writeInternal(final LogEvent event, final Object serializable) {
         if (!this.isRunning() || this.connection == null || this.connection.isClosed()) {
             throw new AppenderLoggingException(
                     "Cannot write logging event; NoSQL manager not connected to the database.");
@@ -176,7 +174,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         // also, all our NoSQL drivers use internal connection pooling and provide clients, not connections.
         // thus, we should not be closing the client until shutdown as NoSQL is very different from SQL.
         // see LOG4J2-591 and LOG4J2-676
-    	return true;
+        return true;
     }
 
     private NoSqlObject<W>[] convertStackTrace(final StackTraceElement[] stackTrace) {

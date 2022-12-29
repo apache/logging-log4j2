@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.configuration;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Layout;
@@ -62,7 +60,7 @@ public class CustomConfiguration extends AbstractConfiguration {
         super(loggerContext, source);
 
         setName(CONFIG_NAME);
-        final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
+        final Layout<?> layout = PatternLayout.newBuilder()
                 .setPattern(DEFAULT_PATTERN)
                 .setConfiguration(this)
                 .build();

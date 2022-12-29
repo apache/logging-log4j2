@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.Objects;
@@ -70,7 +69,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @since 2.7
      */
     protected OutputStreamManager(final LoggerContext loggerContext, final OutputStream os, final String streamName,
-            final boolean createOnDemand, final Layout<? extends Serializable> layout, final boolean writeHeader,
+            final boolean createOnDemand, final Layout<?> layout, final boolean writeHeader,
             final ByteBuffer byteBuffer) {
         super(loggerContext, streamName);
         if (createOnDemand && os != null) {

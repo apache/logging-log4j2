@@ -14,18 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.layout;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout.Serializer;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +44,7 @@ public class Log4j2_2195_Test {
         assertFalse(logEvent.contains("org.junit"), "\"org.junit\" should not be here");
         assertFalse(logEvent.contains("org.eclipse"), "\"org.eclipse\" should not be here");
         //
-        Layout<? extends Serializable> layout = listAppender.getLayout();
+        Layout<?> layout = listAppender.getLayout();
         PatternLayout pLayout = (PatternLayout) layout;
         assertNotNull(pLayout);
         Serializer eventSerializer = pLayout.getEventSerializer();

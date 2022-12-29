@@ -17,6 +17,10 @@
 
 package org.apache.logging.log4j.jeromq.appender;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -31,11 +35,6 @@ import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.Strings;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Sends log events to one or more ZeroMQ (JeroMQ) endpoints.
@@ -64,7 +63,7 @@ public final class JeroMqAppender extends AbstractAppender {
     private int sendRcFalse;
     private int sendRcTrue;
 
-    private JeroMqAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+    private JeroMqAppender(final String name, final Filter filter, final Layout<?> layout,
             final boolean ignoreExceptions, final List<String> endpoints, final long affinity, final long backlog,
             final boolean delayAttachOnConnect, final byte[] identity, final boolean ipv4Only, final long linger,
             final long maxMsgSize, final long rcvHwm, final long receiveBufferSize, final int receiveTimeOut,
@@ -140,7 +139,7 @@ public final class JeroMqAppender extends AbstractAppender {
 
     @Override
     public synchronized void append(final LogEvent event) {
-        final Layout<? extends Serializable> layout = getLayout();
+        final Layout<?> layout = getLayout();
         final byte[] formattedMessage = layout.toByteArray(event);
         if (manager.send(getLayout().toByteArray(event))) {
             sendRcTrue++;
