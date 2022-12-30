@@ -16,21 +16,23 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.File;
+import java.util.concurrent.CountDownLatch;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.util.concurrent.CountDownLatch;
+import org.junit.jupiter.api.Timeout;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  *
  */
+@Timeout(10)
 public class RollingAppenderTimeTest extends AbstractRollingListenerTest {
 
     private static final String CONFIG = "log4j-rolling2.xml";
