@@ -1527,7 +1527,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>changelog-asciidoc-export</id>
+            <id>changelog-export</id>
             <phase>pre-site</phase>
             <goals>
               <goal>java</goal>
@@ -1541,7 +1541,7 @@
             <groupId>org.apache.logging.log4j.tools</groupId>
             <artifactId>log4j-changelog</artifactId>
           </executableDependency>
-          <mainClass>org.apache.logging.log4j.tools.changelog.exporter.AsciiDocExporter</mainClass>
+          <mainClass>org.apache.logging.log4j.tools.changelog.exporter.ChangelogExporter</mainClass>
           <systemProperties>
             <systemProperty>
               <key>log4j.changelog.directory</key>
