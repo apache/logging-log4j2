@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.junit.jupiter.api.Tag;
@@ -32,9 +33,9 @@ import org.junitpioneer.jupiter.SetSystemProperty;
  */
 @Tag("async")
 @Tag("functional")
+@ContextSelectorType(AsyncLoggerContextSelector.class)
 public class AsyncLoggerUseAfterShutdownTest {
     @Test
-    @SetSystemProperty(key = Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME, value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
     @SetSystemProperty(key = Log4jProperties.CONFIG_LOCATION, value = "AsyncLoggerTest.xml")
     public void testNoErrorIfLogAfterShutdown() throws Exception {
         final Logger log = LogManager.getLogger("com.foo.Bar");

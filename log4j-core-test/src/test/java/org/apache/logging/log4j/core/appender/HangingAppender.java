@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -27,9 +29,6 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 
 @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
 @Plugin("Hanging")
@@ -63,7 +62,7 @@ public class HangingAppender extends AbstractAppender {
             @PluginAttribute final long delay,
             @PluginAttribute final long startupDelay,
             @PluginAttribute final long shutdownDelay,
-            @PluginElement final Layout<? extends Serializable> layout,
+            @PluginElement final Layout<?> layout,
             @PluginElement final Filter filter) {
         return new HangingAppender(name, delay, startupDelay, shutdownDelay);
     }

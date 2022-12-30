@@ -27,11 +27,11 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.spi.CopyOnWriteOpenHashMapThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.GarbageFreeOpenHashMapThreadContextMap;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -105,7 +105,7 @@ public class ThreadContextBenchmark {
         System.setProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS, IMPLEMENTATIONS.get(threadContextMapAlias).getName());
         ThreadContext.init();
 
-        injector = ContextDataInjectorFactory.createInjector();
+        injector = LoggingSystem.getInstance().getInstanceFactory().getInstance(ContextDataInjector.class);
         System.out.println(threadContextMapAlias + ": Injector = " + injector);
 
         reusableContextData = threadContextMapAlias.contains("Array")

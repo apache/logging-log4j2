@@ -38,7 +38,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
 @SetSystemProperty(key = Log4jProperties.CONFIG_LOCATION, value = "AsyncLoggerConfigErrorOnFormat.xml")
-@SetSystemProperty(key = Log4jProperties.LOG_EVENT_FACTORY_CLASS_NAME, value = "org.apache.logging.log4j.core.impl.DefaultLogEventFactory")
 public class AsyncLoggerConfigErrorOnFormat {
 
     @Test

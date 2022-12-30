@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.impl;
 
 import java.io.Serializable;
 
+import org.apache.logging.log4j.core.ExtendedStackTraceElement;
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 

@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
+import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -229,11 +229,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         return headerSerializer;
     }
 
-    private DefaultLogEventFactory getLogEventFactory() {
-        // TODO: inject this
-        return DefaultLogEventFactory.newInstance();
-    }
-
     /**
      * Returns a {@code Encoder<StringBuilder>} that this Layout implementation can use for encoding log events.
      *
@@ -260,8 +255,10 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         }
         final LoggerConfig rootLogger = getConfiguration().getRootLogger();
         // Using "" for the FQCN, does it matter?
-        final LogEvent logEvent = getLogEventFactory().createEvent(rootLogger.getName(), null, Strings.EMPTY,
-                rootLogger.getLevel(), null, null, null);
+
+        final LogEvent logEvent = getConfiguration()
+                .getInstance(LogEventFactory.class)
+                .createEvent(rootLogger.getName(), null, Strings.EMPTY, rootLogger.getLevel(), null, null, null);
         return serializer.toSerializable(logEvent);
     }
 

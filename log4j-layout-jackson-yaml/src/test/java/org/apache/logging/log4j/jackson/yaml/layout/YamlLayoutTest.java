@@ -23,11 +23,12 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.ImmutableLogEvent;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
@@ -112,7 +113,7 @@ public class YamlLayoutTest {
     }
 
     private String prepareYAMLForStacktraceTests(final boolean stacktraceAsString) {
-        final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
+        final var expected = LogEventFixtures.createLogEvent();
         // @formatter:off
         final AbstractJacksonLayout layout = YamlLayout.newBuilder()
                 .setIncludeStacktrace(true)
@@ -151,7 +152,7 @@ public class YamlLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setConfiguration(ctx.getConfiguration())
                 .build();
-        Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
+        var logEvent = LogEventFixtures.createLogEvent();
         final MutableLogEvent mutableEvent = new MutableLogEvent();
         mutableEvent.initFrom(logEvent);
         final String strLogEvent = layout.toSerializable(logEvent);
@@ -161,7 +162,7 @@ public class YamlLayoutTest {
 
     private void testAllFeatures(final boolean includeSource, final boolean compact, final boolean eventEol,
             final boolean includeContext, final boolean contextMapAslist, final boolean includeStacktrace) throws Exception {
-        final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
+        final var expected = LogEventFixtures.createLogEvent();
         final AbstractJacksonLayout layout = YamlLayout.newBuilder()
                 .setLocationInfo(includeSource)
                 .setProperties(includeContext)
@@ -174,7 +175,7 @@ public class YamlLayoutTest {
         assertEquals(!compact || eventEol, str.contains("\n"), str);
         assertEquals(includeSource, str.contains("source"), str);
         assertEquals(includeContext, str.contains("contextMap"), str);
-        final Log4jLogEvent actual = new Log4jYamlObjectMapper(contextMapAslist, includeStacktrace,false).readValue(str, Log4jLogEvent.class);
+        final var actual = new Log4jYamlObjectMapper(contextMapAslist, includeStacktrace,false).readValue(str, ImmutableLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, includeSource, includeContext, includeStacktrace);
         if (includeContext) {
             this.checkMapEntry("MDC.A", "A_Value", compact, str);
@@ -357,16 +358,16 @@ public class YamlLayoutTest {
                 .setIncludeStacktrace(true)
                 .setCharset(StandardCharsets.UTF_8)
                 .build();
-        final Log4jLogEvent expected = Log4jLogEvent.newBuilder() //
+        final var expected = LogEvent.builder() //
                 .setLoggerName("a.B") //
                 .setLoggerFqcn("f.q.c.n") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("M")) //
                 .setThreadName("threadName") //
-                .setTimeMillis(1).build();
+                .setTimeMillis(1).get();
         final String str = layout.toSerializable(expected);
         assertThat(str, containsString("loggerName: \"a.B\""));
-        final Log4jLogEvent actual = new Log4jYamlObjectMapper(false, true, false).readValue(str, Log4jLogEvent.class);
+        final var actual = new Log4jYamlObjectMapper(false, true, false).readValue(str, ImmutableLogEvent.class);
         assertEquals(expected.getLoggerName(), actual.getLoggerName());
         assertEquals(expected, actual);
     }

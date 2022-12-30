@@ -16,6 +16,11 @@
  */
 package org.apache.log4j.builders.appender;
 
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -38,11 +43,6 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
@@ -120,7 +120,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         });
         return createAppender(name, config, layout.get(), filter.get(), append.get(), bufferedIo.get(),
                 bufferSize.get(), immediateFlush.get(), fileName.get(), level.get(), maxSize.get(), maxBackups.get(),
-                config.getComponent(Clock.KEY));
+                config.getInstance(Clock.class));
     }
 
     @Override
@@ -137,7 +137,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         final String maxSize = getProperty(MAX_SIZE_PARAM, DEFAULT_MAX_SIZE);
         final String maxBackups = getProperty(MAX_BACKUP_INDEX, DEFAULT_MAX_BACKUPS);
         return createAppender(name, configuration, layout, filter, append, bufferedIo, bufferSize, immediateFlush,
-                fileName, level, maxSize, maxBackups, configuration.getComponent(Clock.KEY));
+                fileName, level, maxSize, maxBackups, configuration.getInstance(Clock.class));
     }
 
     private Appender createAppender(final String name, final Log4j1Configuration config, final Layout layout,

@@ -14,9 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.core.impl;
+package org.apache.logging.log4j.core;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
@@ -38,21 +37,12 @@ import org.apache.logging.log4j.util.Strings;
  * deserializes a ThrowableProxy, the throwable may not be set, but the throwable's information is preserved in other
  * fields of the proxy like the message and stack trace.
  * </p>
- *
- * <p>
- * TODO: Move this class to org.apache.logging.log4j.core because it is used from LogEvent.
- * </p>
- * <p>
- * TODO: Deserialize: Try to rebuild Throwable if the target exception is in this class loader?
- * </p>
  */
-public class ThrowableProxy implements Serializable {
+public class ThrowableProxy {
 
     private static final char EOL = '\n';
 
     private static final String EOL_STR = String.valueOf(EOL);
-
-    private static final long serialVersionUID = -2752771578252251910L;
 
     private final ThrowableProxy causeProxy;
 

@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.jackson.xml;
 
-import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.jackson.ThrowableProxyWithoutStacktraceMixIn;
-import org.apache.logging.log4j.jackson.XmlConstants;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.apache.logging.log4j.core.ExtendedStackTraceElement;
+import org.apache.logging.log4j.core.ThrowableProxy;
+import org.apache.logging.log4j.jackson.ThrowableProxyWithoutStacktraceMixIn;
+import org.apache.logging.log4j.jackson.XmlConstants;
 
 public abstract class ThrowableProxyWithoutStacktraceXmlMixIn extends ThrowableProxyWithoutStacktraceMixIn {
 

@@ -17,11 +17,10 @@
 
 package org.apache.logging.log4j.jackson;
 
-import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.logging.log4j.core.ExtendedStackTraceElement;
+import org.apache.logging.log4j.core.ThrowableProxy;
 
 /**
  * Mix-in for {@link ThrowableProxy}.

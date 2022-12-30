@@ -384,7 +384,7 @@ public class FileManager extends OutputStreamManager {
             try {
                 FileUtils.makeParentDirs(file);
                 final LoggerContext loggerContext = data.getLoggerContext();
-                final PropertyResolver resolver = loggerContext != null ? loggerContext.getPropertyResolver() : LoggingSystem.propertyResolver();
+                final PropertyResolver resolver = loggerContext != null ? loggerContext.getPropertyResolver() : LoggingSystem.getPropertyResolver();
                 final GarbageFreeConfiguration configuration = new GarbageFreeConfiguration(resolver);
                 final int actualSize = data.bufferedIo ? data.bufferSize : configuration.getEncoderByteBufferSize();
                 final ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[actualSize]);

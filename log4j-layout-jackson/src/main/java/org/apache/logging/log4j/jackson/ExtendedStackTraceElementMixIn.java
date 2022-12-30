@@ -18,14 +18,12 @@ package org.apache.logging.log4j.jackson;
 
 import java.io.Serializable;
 
-import org.apache.logging.log4j.core.impl.ExtendedClassInfo;
-import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.apache.logging.log4j.core.ExtendedStackTraceElement;
+import org.apache.logging.log4j.core.impl.ExtendedClassInfo;
 
 /**
  * Mix-in for {@link ExtendedStackTraceElement}.

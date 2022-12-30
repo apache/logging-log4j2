@@ -21,15 +21,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.ImmutableLogEvent;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
@@ -48,10 +52,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -160,7 +160,7 @@ public class XmlLayoutTest {
     }
 
     private String prepareXMLForStacktraceTests(final boolean stacktraceAsString) {
-        final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
+        final var expected = LogEventFixtures.createLogEvent();
         // @formatter:off
         final AbstractJacksonLayout layout = XmlLayout.newBuilder()
                 .setCompact(true)
@@ -190,7 +190,7 @@ public class XmlLayoutTest {
                 .setAdditionalFields(new KeyValuePair[] { new KeyValuePair("KEY1", "VALUE1"),
                         new KeyValuePair("KEY2", "${java:runtime}"), })
                 .setCharset(StandardCharsets.UTF_8).setConfiguration(ctx.getConfiguration()).build();
-        Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
+        var logEvent = LogEventFixtures.createLogEvent();
         final MutableLogEvent mutableEvent = new MutableLogEvent();
         mutableEvent.initFrom(logEvent);
         final String strLogEvent = layout.toSerializable(logEvent);
@@ -212,7 +212,7 @@ public class XmlLayoutTest {
     private void testAllFeatures(final boolean includeLocationInfo, final boolean compact,
             final boolean includeContextMap, final boolean includeContextStack, final boolean includeStacktrace)
             throws IOException, JsonParseException, JsonMappingException {
-        final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
+        final var expected = LogEventFixtures.createLogEvent();
         // @formatter:off
         final XmlLayout layout = XmlLayout.newBuilder()
                 .setLocationInfo(includeLocationInfo)
@@ -228,7 +228,7 @@ public class XmlLayoutTest {
         assertEquals(!compact, str.contains("\n"), str);
         assertEquals(includeLocationInfo, str.contains("Source"), str);
         assertEquals(includeContextMap, str.contains("ContextMap"), str);
-        final Log4jLogEvent actual = new Log4jXmlObjectMapper().readValue(str, Log4jLogEvent.class);
+        final var actual = new Log4jXmlObjectMapper().readValue(str, ImmutableLogEvent.class);
         LogEventFixtures.assertEqualLogEvents(expected, actual, includeLocationInfo, includeContextMap,
                 includeStacktrace);
         if (includeContextMap) {
@@ -400,13 +400,13 @@ public class XmlLayoutTest {
         final XmlLayout layout = XmlLayout.newBuilder().setLocationInfo(false).setProperties(true).setComplete(true)
                 .setCompact(false).setIncludeStacktrace(true).build();
 
-        final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
+        final var event = LogEvent.builder() //
                 .setLoggerName("a.B") //
                 .setLoggerFqcn("f.q.c.n") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("M")) //
                 .setThreadName("threadName") //
-                .setTimeMillis(1).build();
+                .setTimeMillis(1).get();
         final String str = layout.toSerializable(event);
         assertTrue(str.contains("loggerName=\"a.B\""), str);
     }

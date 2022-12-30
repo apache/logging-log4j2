@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.ImmutableLogEvent;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
@@ -341,14 +341,14 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     private LogEvent prepareEvent(final LogEvent event) {
         LogEvent logEvent = ensureImmutable(event);
         if (logEvent.getMessage() instanceof ReusableMessage) {
-            if (logEvent instanceof Log4jLogEvent) {
-                ((Log4jLogEvent) logEvent).makeMessageImmutable();
+            if (logEvent instanceof ImmutableLogEvent) {
+                ((ImmutableLogEvent) logEvent).freezeMessage();
             } else if (logEvent instanceof MutableLogEvent) {
                 // MutableLogEvents need to be translated into the RingBuffer by the MUTABLE_TRANSLATOR.
                 // That translator calls MutableLogEvent.initFrom to copy the event, which will makeMessageImmutable the message.
                 if (translator != MUTABLE_TRANSLATOR) { // should not happen...
                     // TRANSLATOR expects an immutable LogEvent
-                    logEvent = ((MutableLogEvent) logEvent).createMemento();
+                    logEvent = logEvent.copy();
                 }
             } else { // custom log event, with a ReusableMessage
                 showWarningAboutCustomLogEventWithReusableMessage(logEvent);

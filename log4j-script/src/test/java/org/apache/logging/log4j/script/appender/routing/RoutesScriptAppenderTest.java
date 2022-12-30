@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.script.appender.routing;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -24,7 +28,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.appender.routing.Routes;
 import org.apache.logging.log4j.core.appender.routing.RoutingAppender;
 import org.apache.logging.log4j.core.config.AppenderControl;
-import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
+import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.categories.Scripts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
@@ -36,10 +40,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -140,7 +140,8 @@ public class RoutesScriptAppenderTest {
         final Routes routes = routingAppender.getRoutes();
         Assert.assertNotNull(routes);
         Assert.assertNotNull(routes.getPatternScript());
-        final LogEvent logEvent = DefaultLogEventFactory.newInstance().createEvent("", null, "", Level.ERROR, null,
+        final LogEventFactory factory = loggerContextRule.getConfiguration().getInstance(LogEventFactory.class);
+        final LogEvent logEvent = factory.createEvent("", null, "", Level.ERROR, null,
                 null, null);
         assertEquals("Service2", routes.getPattern(logEvent, new ConcurrentHashMap<>()));
     }

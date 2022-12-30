@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -26,11 +30,6 @@ import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Memory Mapped File Appender.
@@ -79,7 +78,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
                 LOGGER.error("No filename provided for MemoryMappedFileAppender with name " + name);
                 return null;
             }
-            final Layout<? extends Serializable> layout = getOrCreateLayout();
+            final Layout<?> layout = getOrCreateLayout();
             final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(fileName, append, isImmediateFlush(),
                     actualRegionLength, advertiseURI, layout);
             if (manager == null) {
@@ -125,7 +124,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private MemoryMappedFileAppender(final String name, final Layout<? extends Serializable> layout,
+    private MemoryMappedFileAppender(final String name, final Layout<?> layout,
             final Filter filter, final MemoryMappedFileManager manager, final String filename,
             final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser, final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);

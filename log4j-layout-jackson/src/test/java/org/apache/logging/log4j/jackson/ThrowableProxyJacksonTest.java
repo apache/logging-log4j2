@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
-
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.core.ThrowableProxy;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
