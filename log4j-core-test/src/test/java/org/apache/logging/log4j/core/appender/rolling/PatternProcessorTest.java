@@ -14,13 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
@@ -78,6 +78,42 @@ public class PatternProcessorTest {
         // expect Wed, March 5, 2014, 00:00
         final Calendar expected = Calendar.getInstance();
         expected.set(2014, Calendar.MARCH, 5, 0, 0, 0);
+        expected.set(Calendar.MILLISECOND, 0);
+        assertEquals(format(expected.getTimeInMillis()), format(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeHourlyReturnsFirstMinuteOfNextHourDstStart() {
+        // America/Chicago 2014 - DST start - Mar 9 02:00
+        // during winter GMT-6
+        // during summer GMT-5
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}{America/Chicago}.log.gz");
+        final Calendar initial = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"));
+        initial.set(2014, Calendar.MARCH, 9, 1, 31, 59); // Tue, March 9, 2014, 01:31
+        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+
+        // expect Wed, March 9, 2014, 02:00
+        final Calendar expected = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"));
+        expected.set(2014, Calendar.MARCH, 9, 2, 0, 0);
+        expected.set(Calendar.MILLISECOND, 0);
+        assertEquals(format(expected.getTimeInMillis()), format(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeHourlyReturnsFirstMinuteOfHourAfterNextHourDstEnd() {
+        // America/Chicago 2014 - DST end - Nov 2 02:00
+        // during summer GMT-5
+        // during winter GMT-6
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}{America/Chicago}.log.gz");
+        final Calendar initial = Calendar.getInstance(TimeZone.getTimeZone("GMT-5"));
+        initial.set(2014, Calendar.NOVEMBER, 2, 1, 31, 59); // Sun, November 2, 2014, 01:31
+        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+
+        // expect Sun, November 2, 2014, 03:00 (i.e. 1h 29min since initial)
+        final Calendar expected = Calendar.getInstance(TimeZone.getTimeZone("GMT-5"));
+        expected.set(2014, Calendar.NOVEMBER, 2, 3, 0, 0);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(format(expected.getTimeInMillis()), format(actual));
     }
@@ -272,6 +308,168 @@ public class PatternProcessorTest {
             assertEquals(format(expected.getTimeInMillis()), format(actual));
         } finally {
             Locale.setDefault(old);
+        }
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDay() {
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}.log.gz");
+        final Calendar initial = Calendar.getInstance();
+        initial.set(2014, Calendar.MARCH, 4, 2, 31, 59); // Tue, March 4, 2014, 02:31
+        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+
+        // expect Wed, March 5, 2014, 00:00
+        final Calendar expected = Calendar.getInstance();
+        expected.set(2014, Calendar.MARCH, 5, 0, 0, 0);
+        expected.set(Calendar.MILLISECOND, 0);
+        assertEquals(format(expected.getTimeInMillis()), format(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayHonoringTimeZoneOption1() {
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
+        final Calendar initial = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"));
+        initial.set(2014, Calendar.MARCH, 4, 2, 31, 59); // Tue, March 4, 2014, 02:31
+        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+
+        // expect Wed, March 5, 2014, 00:00
+        final Calendar expected = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"));
+        expected.set(2014, Calendar.MARCH, 5, 0, 0, 0);
+        expected.set(Calendar.MILLISECOND, 0);
+        assertEquals(format(expected.getTimeInMillis()), format(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    @ResourceLock(value = Resources.TIME_ZONE)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayHonoringTimeZoneOption2() {
+        TimeZone old = TimeZone.getDefault();
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+10")); // default is ignored if pattern contains timezone
+        try {
+            final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
+            final Calendar initial = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"));
+            initial.set(2014, Calendar.MARCH, 4, 2, 31, 59); // Tue, March 4, 2014, 02:31
+            final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+
+            // expect Wed, March 5, 2014, 00:00
+            final Calendar expected = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"));
+            expected.set(2014, Calendar.MARCH, 5, 0, 0, 0);
+            expected.set(Calendar.MILLISECOND, 0);
+            assertEquals(format(expected.getTimeInMillis()), format(actual));
+        } finally {
+            TimeZone.setDefault(old);
+        }
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    @ResourceLock(value = Resources.TIME_ZONE)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayHonoringTimeZoneOption3() {
+        TimeZone old = TimeZone.getDefault();
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT-10")); // default is ignored if pattern contains timezone
+        try {
+            final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
+            final Calendar initial = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"));
+            initial.set(2014, Calendar.MARCH, 4, 2, 31, 59); // Tue, March 4, 2014, 02:31
+            final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+
+            // expect Wed, March 5, 2014, 00:00
+            final Calendar expected = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"));
+            expected.set(2014, Calendar.MARCH, 5, 0, 0, 0);
+            expected.set(Calendar.MILLISECOND, 0);
+            assertEquals(format(expected.getTimeInMillis()), format(actual));
+        } finally {
+            TimeZone.setDefault(old);
+        }
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayDstJan() {
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
+        final Calendar initial = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"));
+        initial.set(2014, Calendar.JANUARY, 4, 0, 31, 59); // Sat, January 4, 2014, 00:31
+        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+
+        // expect Sun, January 5, 2014, 00:00
+        final Calendar expected = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"));
+        expected.set(2014, Calendar.JANUARY, 5, 0, 0, 0);
+        expected.set(Calendar.MILLISECOND, 0);
+        assertEquals(format(expected.getTimeInMillis()), format(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayDstJun() {
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
+        final Calendar initial = Calendar.getInstance(TimeZone.getTimeZone("GMT-5"));
+        initial.set(2014, Calendar.JUNE, 4, 0, 31, 59); // Wed, March 4, 2014, 00:31
+        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+
+        // expect Thu, March 5, 2014, 00:00
+        final Calendar expected = Calendar.getInstance(TimeZone.getTimeZone("GMT-5"));
+        expected.set(2014, Calendar.JUNE, 5, 0, 0, 0);
+        expected.set(Calendar.MILLISECOND, 0);
+        assertEquals(format(expected.getTimeInMillis()), format(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayDstStart() {
+        // America/Chicago 2014 - DST start - Mar 9 02:00
+        // during winter GMT-6
+        // during summer GMT-5
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
+        final Calendar initial = Calendar.getInstance(TimeZone.getTimeZone("GMT-6"));
+        initial.set(2014, Calendar.MARCH, 9, 0, 31, 59); // Sun, March 9, 2014, 00:31
+        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+
+        // expect Mon, March 10, 2014, 00:00
+        final Calendar expected = Calendar.getInstance(TimeZone.getTimeZone("GMT-5")); // offset changed
+        expected.set(2014, Calendar.MARCH, 10, 0, 0, 0);
+        expected.set(Calendar.MILLISECOND, 0);
+        assertEquals(format(expected.getTimeInMillis()), format(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayDstEnd() {
+        // America/Chicago 2014 - DST end - Nov 2 02:00
+        // during summer GMT-5
+        // during winter GMT-6
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
+        final Calendar initial = Calendar.getInstance(TimeZone.getTimeZone("GMT-5"));
+        initial.set(2014, Calendar.NOVEMBER, 2, 0, 31, 59); // Sun, November 2, 2014, 00:31
+        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+
+        // expect Mon, November 3, 2014, 00:00
+        final Calendar expected = Calendar.getInstance(TimeZone.getTimeZone("GMT-6")); // offset changed
+        expected.set(2014, Calendar.NOVEMBER, 3, 0, 0, 0);
+        expected.set(Calendar.MILLISECOND, 0);
+        assertEquals(format(expected.getTimeInMillis()), format(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    @ResourceLock(value = Resources.TIME_ZONE)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayInGmtIfZoneIsInvalid() {
+        TimeZone old = TimeZone.getDefault();
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT-10")); // default is ignored even if timezone option invalid
+        try {
+            final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{NOTVALID}.log.gz");
+            final Calendar initial = Calendar.getInstance(TimeZone.getTimeZone("GMT+0"));
+            initial.set(2014, Calendar.MARCH, 4, 2, 31, 59); // Tue, March 4, 2014, 02:31
+            final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+
+            // expect Wed, March 5, 2014, 00:00
+            final Calendar expected = Calendar.getInstance(TimeZone.getTimeZone("GMT+0"));
+            expected.set(2014, Calendar.MARCH, 5, 0, 0, 0);
+            expected.set(Calendar.MILLISECOND, 0);
+            assertEquals(format(expected.getTimeInMillis()), format(actual));
+        } finally {
+            TimeZone.setDefault(old);
         }
     }
 }
