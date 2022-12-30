@@ -355,6 +355,7 @@
     <javax-servlet-jsp.version>2.3.3</javax-servlet-jsp.version>
     <jansi.version>2.4.0</jansi.version>
     <java-allocation-instrumenter.version>3.3.0</java-allocation-instrumenter.version>
+    <javadoc.skip>false</javadoc.skip>
     <jconsole.version>1.7.0</jconsole.version>
     <jctools.version>3.3.0</jctools.version>
     <je.version>18.3.12</je.version>
@@ -1247,6 +1248,7 @@
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
             <doclint>none</doclint>
+            <skip>${javadoc.skip}</skip>
           </configuration>
         </plugin>
         <plugin>

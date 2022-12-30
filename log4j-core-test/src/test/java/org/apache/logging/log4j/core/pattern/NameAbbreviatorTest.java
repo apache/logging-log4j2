@@ -26,7 +26,7 @@ import org.junit.runners.Parameterized;
 import static org.junit.Assert.*;
 
 /**
- *
+ *  Unit tests for {@link NameAbbreviator} which abbreviates dot-delimited strings such as logger and class names.
  */
 @RunWith(Parameterized.class)
 public class NameAbbreviatorTest {
@@ -51,7 +51,10 @@ public class NameAbbreviatorTest {
                 { "1.", "o.a.l.l.c.p.NameAbbreviatorTest" },
                 { "1.1.~", "o.a.~.~.~.~.NameAbbreviatorTest" },
                 { "1.1.1.*", "o.a.l.log4j.core.pattern.NameAbbreviatorTest" },
-                { ".", "......NameAbbreviatorTest" }
+                { ".", "......NameAbbreviatorTest" },
+                { "1.2*", "o.a.l.l.c.pattern.NameAbbreviatorTest" },
+                { "1.3*", "o.a.l.l.core.pattern.NameAbbreviatorTest" },
+                { "1.8*", "org.apache.logging.log4j.core.pattern.NameAbbreviatorTest" }
             }
         );
     }
