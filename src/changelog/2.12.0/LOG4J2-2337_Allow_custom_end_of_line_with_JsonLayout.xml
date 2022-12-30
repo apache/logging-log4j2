@@ -18,6 +18,7 @@
 <entry type="added">
   <issue id="LOG4J2-2337" link="https://issues.apache.org/jira/browse/LOG4J2-2337"/>
   <author id="ggregory"/>
-  <author name="Arvind Sahare, Patrice Ferrot"/>
+  <author name="Arvind Sahare"/>
+  <author name="Patrice Ferrot"/>
   <description format="asciidoc">Allow custom end-of-line with JsonLayout.</description>
 </entry>

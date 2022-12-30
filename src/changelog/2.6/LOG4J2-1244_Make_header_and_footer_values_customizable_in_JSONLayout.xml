@@ -18,6 +18,7 @@
 <entry type="added">
   <issue id="LOG4J2-1244" link="https://issues.apache.org/jira/browse/LOG4J2-1244"/>
   <author id="ggregory"/>
-  <author name="Anshu Garg, Remko Popma, Gary Gregory"/>
+  <author id="rpopma"/>
+  <author name="Anshu Garg"/>
   <description format="asciidoc">Make header and footer values customizable in JSONLayout.</description>
 </entry>
