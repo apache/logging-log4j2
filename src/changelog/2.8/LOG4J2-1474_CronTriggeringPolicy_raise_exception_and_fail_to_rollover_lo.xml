@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-1474" link="https://issues.apache.org/jira/browse/LOG4J2-1474"/>
   <author id="ggregory"/>
-  <author name="yin mingjun, Neon"/>
+  <author name="yin mingjun"/>
+  <author id="Neon"/>
   <description format="asciidoc">CronTriggeringPolicy raise exception and fail to rollover log file when evaluateOnStartup is true.</description>
 </entry>
