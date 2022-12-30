@@ -19,13 +19,13 @@ package org.apache.logging.log4j.perf.jmh;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
@@ -76,15 +76,15 @@ public class AbstractStringLayoutStringEncodingBenchmark {
             bytes[i] = (byte)i;
         }
 
-        usAsciiGetBytesLayout = new GetBytesLayout(Charset.forName("US-ASCII"));
-        iso8859_1GetBytesLayout = new GetBytesLayout(Charset.forName("ISO-8859-1"));
-        utf8GetBytesLayout = new GetBytesLayout(Charset.forName("UTF-8"));
-        utf16GetBytesLayout = new GetBytesLayout(Charset.forName("UTF-16"));
+        usAsciiGetBytesLayout = new GetBytesLayout(StandardCharsets.US_ASCII);
+        iso8859_1GetBytesLayout = new GetBytesLayout(StandardCharsets.ISO_8859_1);
+        utf8GetBytesLayout = new GetBytesLayout(StandardCharsets.UTF_8);
+        utf16GetBytesLayout = new GetBytesLayout(StandardCharsets.UTF_16);
 
-        usAsciiEncodeLayout = new EncodeLayout(Charset.forName("US-ASCII"));
-        iso8859_1EncodeLayout = new EncodeLayout(Charset.forName("ISO-8859-1"));
-        utf8EncodeLayout = new EncodeLayout(Charset.forName("UTF-8"));
-        utf16EncodeLayout = new EncodeLayout(Charset.forName("UTF-16"));
+        usAsciiEncodeLayout = new EncodeLayout(StandardCharsets.US_ASCII);
+        iso8859_1EncodeLayout = new EncodeLayout(StandardCharsets.ISO_8859_1);
+        utf8EncodeLayout = new EncodeLayout(StandardCharsets.UTF_8);
+        utf16EncodeLayout = new EncodeLayout(StandardCharsets.UTF_16);
 
         final StringBuilder msg = new StringBuilder();
         msg.append(MESSAGE);
@@ -105,7 +105,7 @@ public class AbstractStringLayoutStringEncodingBenchmark {
         final StackTraceElement location = null;
         final long timestamp = 12345678;
 
-        return Log4jLogEvent.newBuilder() //
+        return LogEvent.builder() //
             .setLoggerName("name(ignored)") //
             .setMarker(marker) //
             .setLoggerFqcn(fqcn) //
@@ -117,7 +117,7 @@ public class AbstractStringLayoutStringEncodingBenchmark {
             .setThreadName(threadName) //
             .setSource(location) //
             .setTimeMillis(timestamp) //
-            .build();
+            .get();
     }
 
     @BenchmarkMode(Mode.Throughput)
