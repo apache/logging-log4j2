@@ -30,7 +30,10 @@
          - "remove" - Removed
     -->
     <release version="2.19.1" date="TBD" description="GA Release 2.19.1">
-      <action issue="LOG4J2-3487" dev="dmessink" type="fix" due-to="Dave Messink">
+      <action issue="LOG4J2-2785" dev="rgoers" type="add" due-to="Markus Spann">
+        Pattern Layout to abbreviate the name of all logger components except the 2 rightmost.
+      </action>
+      <action issue="LOG4J2-3487" dev="rgoers" type="fix" due-to="Dave Messink">
         Correct default to not include location for AsyncRootLoggers
       </action>
       <action issue="LOG4J2-2678" dev="pkarwasz" type="update" due-to="Federico D'Ambrosio">

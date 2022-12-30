@@ -37,6 +37,7 @@
     <projectDir>/log4j-layout-template-json</projectDir>
     <module.name>org.apache.logging.log4j.layout.template.json</module.name>
     <maven.doap.skip>true</maven.doap.skip>
+    <javadoc.skip>true</javadoc.skip>
   </properties>
 
   <dependencies>
