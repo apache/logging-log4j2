@@ -14,8 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.util;
+
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -58,6 +59,10 @@ public final class Closer {
         } catch (final Exception ignored) {
             return false;
         }
+    }
+
+    public static boolean closeAllSilently(final AutoCloseable... instances) {
+        return Stream.of(instances).filter(Closer::closeSilently).count() == instances.length;
     }
 
 }
