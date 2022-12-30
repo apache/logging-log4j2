@@ -17,8 +17,6 @@
 package org.apache.logging.log4j.jpa.appender;
 
 import java.util.Date;
-import java.util.Map;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -34,21 +32,19 @@ import javax.persistence.Transient;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.jpa.appender.AbstractLogEventWrapperEntity;
 import org.apache.logging.log4j.jpa.converter.InstantAttributeConverter;
 import org.apache.logging.log4j.jpa.converter.LevelAttributeConverter;
 import org.apache.logging.log4j.jpa.converter.MessageAttributeConverter;
 import org.apache.logging.log4j.jpa.converter.ThrowableAttributeConverter;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 @Entity
 @Table(name = "jpaBaseLogEntry")
 public class TestBaseEntity extends AbstractLogEventWrapperEntity {
-    private static final long serialVersionUID = 2L;
 
     private long id = 0L;
 

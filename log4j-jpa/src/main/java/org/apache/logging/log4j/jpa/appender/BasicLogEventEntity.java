@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.jpa.appender;
 
-import java.util.Map;
 import javax.persistence.Basic;
 import javax.persistence.Convert;
 import javax.persistence.MappedSuperclass;
@@ -26,9 +25,16 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.jpa.converter.*;
+import org.apache.logging.log4j.jpa.converter.ContextMapAttributeConverter;
+import org.apache.logging.log4j.jpa.converter.ContextStackAttributeConverter;
+import org.apache.logging.log4j.jpa.converter.InstantAttributeConverter;
+import org.apache.logging.log4j.jpa.converter.LevelAttributeConverter;
+import org.apache.logging.log4j.jpa.converter.MarkerAttributeConverter;
+import org.apache.logging.log4j.jpa.converter.MessageAttributeConverter;
+import org.apache.logging.log4j.jpa.converter.StackTraceElementAttributeConverter;
+import org.apache.logging.log4j.jpa.converter.ThrowableAttributeConverter;
 import org.apache.logging.log4j.message.Message;
 
 /**
@@ -60,7 +66,6 @@ import org.apache.logging.log4j.message.Message;
  */
 @MappedSuperclass
 public abstract class BasicLogEventEntity extends AbstractLogEventWrapperEntity {
-    private static final long serialVersionUID = 1L;
 
     /**
      * Instantiates this base class. All concrete implementations must have a constructor matching this constructor's

@@ -19,14 +19,13 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @UsingThreadContextMap
 public class MdcPatternConverterTest {
@@ -42,11 +41,11 @@ public class MdcPatternConverterTest {
     public void testConverter() {
         final Message msg = new SimpleMessage("Hello");
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(null);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(msg) //
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();
@@ -58,11 +57,11 @@ public class MdcPatternConverterTest {
     public void testConverterWithExistingData() {
         final Message msg = new SimpleMessage("Hello");
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(null);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(msg) //
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         sb.append("prefix ");
         converter.format(event, sb);
@@ -76,11 +75,11 @@ public class MdcPatternConverterTest {
         ThreadContext.clearMap();
         final Message msg = new SimpleMessage("Hello");
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(null);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(msg) //
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();
@@ -94,11 +93,11 @@ public class MdcPatternConverterTest {
         ThreadContext.put("foo", "bar");
         final Message msg = new SimpleMessage("Hello");
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(null);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(msg) //
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();
@@ -111,11 +110,11 @@ public class MdcPatternConverterTest {
         final Message msg = new SimpleMessage("Hello");
         final String [] options = new String[] {"object"};
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(msg) //
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();
@@ -128,11 +127,11 @@ public class MdcPatternConverterTest {
         final Message msg = new SimpleMessage("Hello");
         final String [] options = new String[] {"object, subject"};
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(msg) //
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();
@@ -145,11 +144,11 @@ public class MdcPatternConverterTest {
         final Message msg = new SimpleMessage("Hello");
         final String [] options = new String[] {"object, subject"};
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(msg) //
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         sb.append("prefix ");
         converter.format(event, sb);
@@ -163,11 +162,11 @@ public class MdcPatternConverterTest {
         final Message msg = new SimpleMessage("Hello");
         final String [] options = new String[] {"object, notpresent"};
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(msg) //
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();
@@ -181,11 +180,11 @@ public class MdcPatternConverterTest {
         final Message msg = new SimpleMessage("Hello");
         final String [] options = new String[] {"object, subject"};
         final MdcPatternConverter converter = MdcPatternConverter.newInstance(options);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(msg) //
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();
@@ -194,4 +193,3 @@ public class MdcPatternConverterTest {
     }
 
 }
-

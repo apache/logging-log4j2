@@ -30,8 +30,7 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.core.util.UuidUtil;
@@ -48,10 +47,6 @@ import org.apache.logging.log4j.util.Strings;
 public class FlumeEvent extends SimpleEvent implements LogEvent {
 
     static final String GUID = "guId";
-    /**
-     * Generated serial version ID.
-     */
-    private static final long serialVersionUID = -8988674608627854140L;
 
     private static final String DEFAULT_MDC_PREFIX = Strings.EMPTY;
 
@@ -178,7 +173,7 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
 
 	@Override
 	public LogEvent toImmutable() {
-		return Log4jLogEvent.createMemento(this);
+		return copy();
 	}
 
     /**

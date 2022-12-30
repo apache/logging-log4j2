@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.rewrite;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -31,7 +30,7 @@ public class TestRewritePolicy implements RewritePolicy {
 
     @Override
     public LogEvent rewrite(final LogEvent source) {
-        return new Log4jLogEvent.Builder(source).build();
+        return source.copy();
     }
 
     @PluginFactory

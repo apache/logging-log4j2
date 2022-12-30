@@ -24,10 +24,10 @@ import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LocationInfo;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 
 /**
@@ -54,10 +54,9 @@ public class MapRewritePolicy implements RewritePolicy {
     public LoggingEvent rewrite(final LoggingEvent source) {
         Object msg = source.getMessage();
         if (msg instanceof MapMessage || msg instanceof Map) {
-            Map<String, String> props = source.getProperties() != null ? new HashMap<>(source.getProperties())
+            Map<String, String> props = source.getProperties() != null ? new HashMap<>(Cast.cast(source.getProperties()))
                     : new HashMap<>();
-            @SuppressWarnings("unchecked")
-            Map<String, Object> eventProps = msg instanceof Map ? (Map) msg : ((MapMessage) msg).getData();
+            Map<String, Object> eventProps = Cast.cast(msg instanceof Map ? msg : ((MapMessage<?, ?>) msg).getData());
             //
             //   if the map sent in the logging request
             //      has "message" entry, use that as the message body
@@ -78,10 +77,10 @@ public class MapRewritePolicy implements RewritePolicy {
 
             LogEvent event;
             if (source instanceof LogEventAdapter) {
-                event = new Log4jLogEvent.Builder(((LogEventAdapter) source).getEvent())
+                event = LogEvent.builderFrom(((LogEventAdapter) source).getEvent())
                         .setMessage(newMessage)
                         .setContextData(new SortedArrayStringMap(props))
-                        .build();
+                        .toImmutable();
             } else {
                 LocationInfo info = source.getLocationInformation();
                 StackTraceElement element = new StackTraceElement(info.getClassName(), info.getMethodName(),
@@ -89,11 +88,10 @@ public class MapRewritePolicy implements RewritePolicy {
                 Thread thread = getThread(source.getThreadName());
                 long threadId = thread != null ? thread.getId() : 0;
                 int threadPriority = thread != null ? thread.getPriority() : 0;
-                event = Log4jLogEvent.newBuilder()
+                event = LogEvent.builder()
                         .setContextData(new SortedArrayStringMap(props))
                         .setLevel(OptionConverter.convertLevel(source.getLevel()))
                         .setLoggerFqcn(source.getFQNOfLoggerClass())
-                        .setMarker(null)
                         .setMessage(newMessage)
                         .setSource(element)
                         .setLoggerName(source.getLoggerName())
@@ -102,9 +100,7 @@ public class MapRewritePolicy implements RewritePolicy {
                         .setThreadPriority(threadPriority)
                         .setThrown(source.getThrowableInformation().getThrowable())
                         .setTimeMillis(source.getTimeStamp())
-                        .setNanoTime(0)
-                        .setThrownProxy(null)
-                        .build();
+                        .toImmutable();
             }
             return new LogEventAdapter(event);
         }

@@ -14,17 +14,15 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MaxLengthConverterTest {
 
@@ -33,11 +31,11 @@ public class MaxLengthConverterTest {
     @Test
     public void testUnderMaxLength() {
         final Message message = new SimpleMessage("0123456789");
-        final LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = LogEvent.builder()
             .setLoggerName("MyLogger")
             .setLevel(Level.DEBUG)
             .setMessage(message)
-            .build();
+            .get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         assertEquals("0123456789", sb.toString());
@@ -46,11 +44,11 @@ public class MaxLengthConverterTest {
     @Test
     public void testOverMaxLength() {
         final Message message = new SimpleMessage("01234567890123456789");
-        final LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = LogEvent.builder()
             .setLoggerName("MyLogger")
             .setLevel(Level.DEBUG)
             .setMessage(message)
-            .build();
+            .get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         assertEquals("0123456789", sb.toString());
@@ -59,11 +57,11 @@ public class MaxLengthConverterTest {
     @Test
     public void testOverMaxLength21WithEllipsis() {
         final Message message = new SimpleMessage("012345678901234567890123456789");
-        final LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = LogEvent.builder()
             .setLoggerName("MyLogger")
             .setLevel(Level.DEBUG)
             .setMessage(message)
-            .build();
+            .get();
         final StringBuilder sb = new StringBuilder();
         MaxLengthConverter.newInstance(null, new String[]{"%m", "21"}).format(event, sb);
         assertEquals("012345678901234567890...", sb.toString());

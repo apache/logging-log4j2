@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.test.appender;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -31,13 +37,6 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This appender is primarily used for testing. Use in a real environment is discouraged as the List could eventually
@@ -69,7 +68,7 @@ public class ListAppender extends AbstractAppender {
 
     /**
      * CountDownLatch for asynchronous logging tests. Example usage:
-     * 
+     *
      * <pre>
      * &#64;Rule
      * public LoggerContextRule context = new LoggerContextRule("log4j-list.xml");
@@ -121,7 +120,7 @@ public class ListAppender extends AbstractAppender {
         if (layout == null) {
             if (event instanceof MutableLogEvent) {
                 // must take snapshot or subsequent calls to logger.log() will modify this event
-                events.add(((MutableLogEvent) event).createMemento());
+                events.add(event.copy());
             } else {
                 events.add(event);
             }

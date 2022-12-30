@@ -1,4 +1,4 @@
-package org.apache.logging.log4j.core.pattern;/*
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,10 +14,10 @@ package org.apache.logging.log4j.core.pattern;/*
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
@@ -34,8 +34,8 @@ public class HighlightConverterTest {
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);
 
-        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
-                new SimpleMessage("message in a bottle")).build();
+        final LogEvent event = LogEvent.builder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
+                new SimpleMessage("message in a bottle")).get();
         final StringBuilder buffer = new StringBuilder();
         converter.format(event, buffer);
         assertEquals("", buffer.toString());
@@ -47,8 +47,8 @@ public class HighlightConverterTest {
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);
 
-        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
-                new SimpleMessage("message in a bottle")).build();
+        final LogEvent event = LogEvent.builder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
+                new SimpleMessage("message in a bottle")).get();
         final StringBuilder buffer = new StringBuilder();
         converter.format(event, buffer);
         assertEquals("\u001B[32mINFO : message in a bottle\u001B[m", buffer.toString());
@@ -114,8 +114,8 @@ public class HighlightConverterTest {
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);
 
-        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
-                new SimpleMessage("message in a bottle")).build();
+        final LogEvent event = LogEvent.builder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
+                new SimpleMessage("message in a bottle")).get();
         final StringBuilder buffer = new StringBuilder();
         converter.format(event, buffer);
         assertEquals("", buffer.toString());
@@ -127,8 +127,8 @@ public class HighlightConverterTest {
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);
 
-        final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
-                new SimpleMessage("message in a bottle")).build();
+        final LogEvent event = LogEvent.builder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
+                new SimpleMessage("message in a bottle")).get();
         final StringBuilder buffer = new StringBuilder();
         converter.format(event, buffer);
         assertEquals("INFO : message in a bottle", buffer.toString());
@@ -137,9 +137,9 @@ public class HighlightConverterTest {
 
     private CharSequence toFormattedCharSeq(final HighlightConverter converter, final Level level) {
       final StringBuilder sb= new StringBuilder();
-      converter.format(Log4jLogEvent.newBuilder()
+      converter.format(LogEvent.builder()
         .setLevel(level)
-        .build(), sb);
+        .get(), sb);
       return sb;
     }
 }

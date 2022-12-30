@@ -18,7 +18,6 @@ package org.apache.logging.log4j.perf.jmh;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
 import org.apache.logging.log4j.message.Message;
@@ -29,10 +28,8 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
-import java.io.Serializable;
-
 @State(Scope.Thread)
-public class Log4jLogEventBenchmark {
+public class ImmutableLogEventBenchmark {
     private static Message MESSAGE;
     private static Throwable ERROR;
     private static TestClass TESTER;
@@ -52,25 +49,25 @@ public class Log4jLogEventBenchmark {
 
     @Benchmark
     public LogEvent createLogEventWithoutExceptionUsingBuilder() {
-        return Log4jLogEvent.newBuilder()
+        return LogEvent.builder()
                 .setLoggerName("a.b.c")
                 .setLoggerFqcn("a.b.c")
                 .setLevel(Level.INFO)
                 .setMessage(MESSAGE)
                 .setClock(CLOCK)
-                .build();
+                .toImmutable();
     }
 
     @Benchmark
     public LogEvent createLogEventWithExceptionUsingBuilder() {
-        return Log4jLogEvent.newBuilder()
+        return LogEvent.builder()
                 .setLoggerName("a.b.c")
                 .setLoggerFqcn("a.b.c")
                 .setLevel(Level.INFO)
                 .setMessage(MESSAGE)
                 .setThrown(ERROR)
                 .setClock(CLOCK)
-                .build();
+                .toImmutable();
     }
 
     @Benchmark
@@ -79,61 +76,18 @@ public class Log4jLogEventBenchmark {
         return TESTER.getEventSource(this.getClass().getName());
     }
 
-    @Benchmark
-    public Serializable createSerializableLogEventProxyWithoutException(final Blackhole bh) {
-        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
-                .setLoggerName("a.b.c")
-                .setLoggerFqcn("a.b.c")
-                .setLevel(Level.INFO)
-                .setMessage(MESSAGE)
-                .setClock(CLOCK)
-                .build();
-        final Serializable obj = Log4jLogEvent.serialize(event, false);
-        bh.consume(obj);
-        return obj;
-    }
-
-    @Benchmark
-    public Serializable createSerializableLogEventProxyWithoutExceptionWithLocation(final Blackhole bh) {
-        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
-                .setLoggerName("a.b.c")
-                .setLoggerFqcn("a.b.c")
-                .setLevel(Level.INFO)
-                .setMessage(MESSAGE)
-                .setClock(CLOCK)
-                .build();
-        final Serializable obj = Log4jLogEvent.serialize(event, true);
-        bh.consume(obj);
-        return obj;
-    }
-
-    @Benchmark
-    public Serializable createSerializableLogEventProxyWithException(final Blackhole bh) {
-        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
-                .setLoggerName("a.b.c")
-                .setLoggerFqcn("a.b.c")
-                .setLevel(Level.INFO)
-                .setMessage(MESSAGE)
-                .setThrown(ERROR)
-                .setClock(CLOCK)
-                .build();
-        final Serializable obj = Log4jLogEvent.serialize(event, false);
-        bh.consume(obj);
-        return obj;
-    }
-
     private static class TestClass {
         private static final String FQCN = TestClass.class.getName();
 
         public StackTraceElement getEventSource(final String loggerName) {
-            final LogEvent event = Log4jLogEvent.newBuilder()
+            final LogEvent event = LogEvent.builder()
                     .setLoggerName(loggerName)
                     .setLoggerFqcn(FQCN)
                     .setLevel(Level.INFO)
                     .setMessage(MESSAGE)
                     .setClock(CLOCK)
-                    .build();
-            event.setIncludeLocation(true);
+                    .includeLocation(true)
+                    .toImmutable();
             return event.getSource();
         }
     }

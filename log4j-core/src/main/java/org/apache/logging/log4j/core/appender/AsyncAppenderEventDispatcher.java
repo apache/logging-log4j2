@@ -16,21 +16,20 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.AppenderControl;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.util.Log4jThread;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.AppenderControl;
+import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.status.StatusLogger;
+
 class AsyncAppenderEventDispatcher extends Log4jThread {
 
-    private static final LogEvent STOP_EVENT = new Log4jLogEvent();
+    private static final LogEvent STOP_EVENT = LogEvent.builder().toImmutable();
 
     private static final AtomicLong THREAD_COUNTER = new AtomicLong(0);
 

@@ -16,12 +16,20 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.stream.Stream;
+
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.FileUtils;
@@ -33,15 +41,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFileAttributes;
-import java.nio.file.attribute.PosixFilePermissions;
-import java.util.stream.Stream;
 
 import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.jupiter.api.Assertions.*;
@@ -90,10 +89,14 @@ public class FileAppenderPermissionsTest {
             long prevLen = curLen;
             assertEquals(curLen, 0, "File length: " + curLen);
             for (int i = 0; i < 100; ++i) {
-                final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger") //
-                        .setLoggerFqcn(FileAppenderPermissionsTest.class.getName()).setLevel(Level.INFO) //
-                        .setMessage(new SimpleMessage("Test")).setThreadName(this.getClass().getSimpleName()) //
-                        .setTimeMillis(System.currentTimeMillis()).build();
+                final LogEvent event = LogEvent.builder()
+                        .setLoggerName("TestLogger")
+                        .setLoggerFqcn(FileAppenderPermissionsTest.class.getName())
+                        .setLevel(Level.INFO)
+                        .setMessage(new SimpleMessage("Test"))
+                        .setThreadName(this.getClass().getSimpleName())
+                        .setTimeMillis(System.currentTimeMillis())
+                        .get();
                 try {
                     appender.append(event);
                     curLen = file.length();
@@ -147,10 +150,14 @@ public class FileAppenderPermissionsTest {
             long prevLen = curLen;
             assertEquals(curLen, 0, file + " File length: " + curLen);
             for (int i = 0; i < 100; ++i) {
-                final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("TestLogger") //
-                        .setLoggerFqcn(FileAppenderPermissionsTest.class.getName()).setLevel(Level.INFO) //
-                        .setMessage(new SimpleMessage("Test")).setThreadName(this.getClass().getSimpleName()) //
-                        .setTimeMillis(System.currentTimeMillis()).build();
+                final LogEvent event = LogEvent.builder()
+                        .setLoggerName("TestLogger")
+                        .setLoggerFqcn(FileAppenderPermissionsTest.class.getName())
+                        .setLevel(Level.INFO)
+                        .setMessage(new SimpleMessage("Test"))
+                        .setThreadName(this.getClass().getSimpleName())
+                        .setTimeMillis(System.currentTimeMillis())
+                        .get();
                 try {
                     appender.append(event);
                     curLen = file.length();

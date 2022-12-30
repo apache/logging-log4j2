@@ -16,11 +16,12 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -28,8 +29,6 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Factory;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -52,32 +51,35 @@ public class LogEventFactoryTest {
     }
 
     public static class TestLogEventFactory implements LogEventFactory {
-        private final ContextDataInjector injector;
+        private final ContextDataInjector contextDataInjector;
+        private final ContextDataFactory contextDataFactory;
 
-        public TestLogEventFactory(final ContextDataInjector injector) {
-            this.injector = injector;
+        public TestLogEventFactory(final ContextDataInjector contextDataInjector,
+                                   final ContextDataFactory contextDataFactory) {
+            this.contextDataInjector = contextDataInjector;
+            this.contextDataFactory = contextDataFactory;
         }
 
         @Override
         public LogEvent createEvent(final String loggerName, final Marker marker,
                                     final String fqcn, final Level level, final Message data,
                                     final List<Property> properties, final Throwable t) {
-            return Log4jLogEvent.newBuilder()
+            return LogEvent.builder()
                     .setLoggerName("Test")
                     .setMarker(marker)
                     .setLoggerFqcn(fqcn)
                     .setLevel(level)
                     .setMessage(data)
-                    .setContextDataInjector(injector)
-                    .setContextData(injector.injectContextData(properties, ContextDataFactory.createContextData()))
+                    .setContextDataInjector(contextDataInjector)
+                    .setContextDataFactory(contextDataFactory)
+                    .setContextData(properties)
                     .setThrown(t)
                     .build();
         }
     }
 
     @Factory
-    public LogEventFactory logEventFactory(final ContextDataInjector injector) {
-        return new TestLogEventFactory(injector);
+    public LogEventFactory logEventFactory(final ContextDataInjector injector, final ContextDataFactory contextDataFactory) {
+        return new TestLogEventFactory(injector, contextDataFactory);
     }
 }
-

@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +35,6 @@ import org.apache.kafka.common.serialization.Serializer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -47,11 +45,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @Category(Appenders.Kafka.class)
 public class KafkaAppenderTest {
@@ -75,13 +69,13 @@ public class KafkaAppenderTest {
     private static final String LOG_MESSAGE = "Hello, world!";
     private static final String TOPIC_NAME = "kafka-topic";
 
-    private static Log4jLogEvent createLogEvent() {
-        return Log4jLogEvent.newBuilder()
+    private static LogEvent createLogEvent() {
+        return LogEvent.builder()
             .setLoggerName(KafkaAppenderTest.class.getName())
             .setLoggerFqcn(KafkaAppenderTest.class.getName())
             .setLevel(Level.INFO)
             .setMessage(new SimpleMessage(LOG_MESSAGE))
-            .build();
+            .get();
     }
 
     @BeforeClass

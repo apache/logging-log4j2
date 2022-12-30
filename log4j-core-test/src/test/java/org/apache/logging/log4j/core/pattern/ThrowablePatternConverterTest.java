@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
@@ -70,12 +69,12 @@ public class ThrowablePatternConverterTest {
         } catch (final IllegalArgumentException e) {
             parent = e;
         }
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("testLogger") //
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent).get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -91,12 +90,12 @@ public class ThrowablePatternConverterTest {
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("testLogger") //
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent).get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -109,12 +108,12 @@ public class ThrowablePatternConverterTest {
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("testLogger") //
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent).get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -130,12 +129,12 @@ public class ThrowablePatternConverterTest {
         final StackTraceElement top = parent.getStackTrace()[0];
         final int expectedLineNumber = top.getLineNumber();
 
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("testLogger") //
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent).get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -147,12 +146,12 @@ public class ThrowablePatternConverterTest {
         final String[] options = { "short.localizedMessage" };
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable parent = new LocalizedException();
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("testLogger") //
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent).get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -165,12 +164,12 @@ public class ThrowablePatternConverterTest {
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("testLogger") //
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent).get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -183,12 +182,12 @@ public class ThrowablePatternConverterTest {
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("testLogger") //
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent).get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -209,12 +208,12 @@ public class ThrowablePatternConverterTest {
         } catch (final IllegalArgumentException e) {
             parent = e;
         }
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("testLogger") //
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent).get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();
@@ -229,12 +228,12 @@ public class ThrowablePatternConverterTest {
         final ThrowablePatternConverter converter = ThrowablePatternConverter.newInstance(null, options);
         final Throwable cause = new NullPointerException("null pointer");
         final Throwable parent = new IllegalArgumentException("IllegalArgument", cause);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("testLogger") //
                 .setLoggerFqcn(this.getClass().getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("test exception")) //
-                .setThrown(parent).build();
+                .setThrown(parent).get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String result = sb.toString();

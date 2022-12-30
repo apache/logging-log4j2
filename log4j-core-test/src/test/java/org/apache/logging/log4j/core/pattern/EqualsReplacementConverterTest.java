@@ -19,12 +19,12 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class EqualsReplacementConverterTest {
 
@@ -56,11 +56,11 @@ public class EqualsReplacementConverterTest {
     }
 
     private void testReplacement(final String expectedValue, final String[] options) {
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
             .setLoggerName(EqualsReplacementConverterTest.class.getName()) //
             .setLevel(Level.DEBUG) //
             .setMessage(new SimpleMessage(TEST_MESSAGE)) //
-            .build();
+            .get();
         final StringBuilder sb = new StringBuilder();
         final LoggerContext ctx = LoggerContext.getContext();
         final EqualsReplacementConverter converter = EqualsReplacementConverter.newInstance(ctx.getConfiguration(),
@@ -92,11 +92,11 @@ public class EqualsReplacementConverterTest {
     }
 
     private void testParseSubstitution(final String substitution, final String expected) {
-        final LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = LogEvent.builder()
             .setLoggerName(EqualsReplacementConverterTest.class.getName())
             .setLevel(Level.DEBUG)
             .setMessage(new SimpleMessage(TEST_MESSAGE))
-            .build();
+            .get();
         final LoggerContext ctx = LoggerContext.getContext();
         final EqualsReplacementConverter converter = EqualsReplacementConverter.newInstance(ctx.getConfiguration(),
             new String[]{"[%marker]", "[]", substitution});

@@ -16,16 +16,15 @@
  */
 package org.apache.log4j.pattern;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.test.junit.ThreadContextStackRule;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.ThreadContextStackRule;
 import org.junit.Rule;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class Log4j1NdcPatternConverterTest {
 
@@ -60,11 +59,11 @@ public class Log4j1NdcPatternConverterTest {
 
     private void testConverter(final String expected) {
         final Log4j1NdcPatternConverter converter = Log4j1NdcPatternConverter.newInstance(null);
-        final LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = LogEvent.builder()
                 .setLoggerName("MyLogger")
                 .setLevel(Level.DEBUG)
                 .setMessage(new SimpleMessage("Hello"))
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         assertEquals(expected, sb.toString());

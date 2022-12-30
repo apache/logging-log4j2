@@ -21,11 +21,11 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MarkerFilterTest {
 
@@ -43,18 +43,20 @@ public class MarkerFilterTest {
         assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, child, (Object) null, (Throwable) null));
         assertSame(Filter.Result.NEUTRAL, filter.filter(null, null, grandChild, (Object) null, (Throwable) null));
         filter.stop();
-        LogEvent event = Log4jLogEvent.newBuilder() //
+        LogEvent event = LogEvent.builder() //
                 .setMarker(grandChild) //
                 .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("Hello, world!")).build();
+                .setMessage(new SimpleMessage("Hello, world!"))
+                .get();
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
         filter = MarkerFilter.createFilter("Child", null, null);
         filter.start();
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
-        event = Log4jLogEvent.newBuilder() //
+        event = LogEvent.builder() //
                 .setMarker(sibling) //
                 .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("Hello, world!")).build();
+                .setMessage(new SimpleMessage("Hello, world!"))
+                .get();
         assertSame(Filter.Result.DENY, filter.filter(event));
         filter.stop();
     }

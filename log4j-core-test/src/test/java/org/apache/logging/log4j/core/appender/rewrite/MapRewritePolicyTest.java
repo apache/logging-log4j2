@@ -1,49 +1,46 @@
 /*
-* Licensed to the Apache Software Foundation (ASF) under one or more
-* contributor license agreements. See the NOTICE file distributed with
-* this work for additional information regarding copyright ownership.
-* The ASF licenses this file to You under the Apache license, Version 2.0
-* (the "License"); you may not use this file except in compliance with
-* the License. You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the license for the specific language governing permissions and
-* limitations under the license.
-*/
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache license, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
+ */
 package org.apache.logging.log4j.core.appender.rewrite;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.apache.logging.log4j.core.test.hamcrest.MapMatchers.hasSize;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MapRewritePolicyTest {
-    private static final StringMap stringMap = ContextDataFactory.createContextData();
+    private static final StringMap stringMap = new SortedArrayStringMap();
     private static Map<String, String> map = new HashMap<>();
     private static KeyValuePair[] rewrite;
     private static LogEvent logEvent0, logEvent1, logEvent2, logEvent3;
@@ -53,7 +50,7 @@ public class MapRewritePolicyTest {
         stringMap.putValue("test1", "one");
         stringMap.putValue("test2", "two");
         map = stringMap.toMap();
-        logEvent0 = Log4jLogEvent.newBuilder() //
+        logEvent0 = LogEvent.builder() //
                 .setLoggerName("test") //
                 .setContextData(stringMap) //
                 .setLoggerFqcn("MapRewritePolicyTest.setupClass()") //
@@ -62,15 +59,16 @@ public class MapRewritePolicyTest {
                 .setThrown(new RuntimeException("test")) //
                 .setThreadName("none")
                 .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 28))
-                .setTimeMillis(2).build();
+                .setTimeMillis(2)
+                .build();
 
-        logEvent1 = ((Log4jLogEvent) logEvent0).asBuilder() //
+        logEvent1 = LogEvent.builderFrom(logEvent0)
                 .setMessage(new StringMapMessage(map)) //
                 .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 29)) //
                 .build();
 
         final ThreadContextStack stack = new MutableThreadContextStack(new ArrayList<>(map.values()));
-        logEvent2 = ((Log4jLogEvent) logEvent0).asBuilder() //
+        logEvent2 = LogEvent.builderFrom(logEvent0)
                 .setContextStack(stack) //
                 .setMarker(MarkerManager.getMarker("test")) //
                 .setLevel(Level.TRACE) //
@@ -78,7 +76,7 @@ public class MapRewritePolicyTest {
                 .setTimeMillis(20000000) //
                 .setSource(new StackTraceElement("MapRewritePolicyTest", "setupClass", "MapRewritePolicyTest", 30)) //
                 .build();
-        logEvent3 = ((Log4jLogEvent) logEvent0).asBuilder() //
+        logEvent3 = LogEvent.builderFrom(logEvent0)
                 .setContextStack(stack) //
                 .setLevel(Level.ALL) //
                 .setMessage(new StringMapMessage(map)) //
@@ -91,6 +89,7 @@ public class MapRewritePolicyTest {
     @Test
     public void addTest() {
         final MapRewritePolicy addPolicy = MapRewritePolicy.createPolicy("Add", rewrite);
+        assertNotNull(addPolicy);
         LogEvent rewritten = addPolicy.rewrite(logEvent0);
         compareLogEvents(logEvent0, rewritten);
         assertEquals(logEvent0.getMessage(), rewritten.getMessage(), "Simple log message changed");
@@ -111,6 +110,7 @@ public class MapRewritePolicyTest {
     @Test
     public void updateTest() {
         final MapRewritePolicy updatePolicy = MapRewritePolicy.createPolicy("Update", rewrite);
+        assertNotNull(updatePolicy);
         LogEvent rewritten = updatePolicy.rewrite(logEvent0);
         compareLogEvents(logEvent0, rewritten);
         assertEquals(logEvent0.getMessage(), rewritten.getMessage(), "Simple log message changed");
@@ -131,6 +131,7 @@ public class MapRewritePolicyTest {
     @Test
     public void defaultIsAdd() {
         final MapRewritePolicy addPolicy = MapRewritePolicy.createPolicy(null, rewrite);
+        assertNotNull(addPolicy);
         LogEvent rewritten = addPolicy.rewrite(logEvent0);
         compareLogEvents(logEvent0, rewritten);
         assertEquals(logEvent0.getMessage(), rewritten.getMessage(), "Simple log message changed");
@@ -161,7 +162,6 @@ public class MapRewritePolicyTest {
         assertThat("wrong size", updatedMap, hasSize(2));
     }
 
-    @SuppressWarnings("deprecation")
     private void compareLogEvents(final LogEvent orig, final LogEvent changed) {
         // Ensure that everything but the Mapped Data is still the same
         assertEquals(orig.getLoggerName(), changed.getLoggerName(), "LoggerName changed");

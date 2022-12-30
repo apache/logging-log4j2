@@ -39,11 +39,10 @@ import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
@@ -51,6 +50,7 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.util.InternalApi;
 
 /**
  * Appends to one or more Appenders asynchronously. You can configure an AsyncAppender with one or more Appenders and an
@@ -157,7 +157,7 @@ public final class AsyncAppender extends AbstractAppender {
         if (!isStarted()) {
             throw new IllegalStateException("AsyncAppender " + getName() + " is not active");
         }
-        final Log4jLogEvent memento = Log4jLogEvent.createMemento(logEvent, includeLocation);
+        final LogEvent memento = logEvent.copy(includeLocation);
         InternalAsyncUtil.makeMessageImmutable(logEvent.getMessage());
         if (!transfer(memento)) {
             if (blocking) {
@@ -188,6 +188,7 @@ public final class AsyncAppender extends AbstractAppender {
      *
      * @param logEvent the event to log
      */
+    @InternalApi
     public void logMessageInCurrentThread(final LogEvent logEvent) {
         logEvent.setEndOfBatch(queue.isEmpty());
         dispatcher.dispatch(logEvent);
@@ -198,6 +199,7 @@ public final class AsyncAppender extends AbstractAppender {
      *
      * @param logEvent the event to log
      */
+    @InternalApi
     public void logMessageInBackgroundThread(final LogEvent logEvent) {
         try {
             // wait for free slots in the queue
@@ -236,7 +238,7 @@ public final class AsyncAppender extends AbstractAppender {
         }
     }
 
-    @PluginBuilderFactory
+    @Factory
     public static Builder newBuilder() {
         return new Builder();
     }

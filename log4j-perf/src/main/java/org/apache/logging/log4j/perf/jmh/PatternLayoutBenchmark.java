@@ -24,7 +24,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -217,7 +216,7 @@ public class PatternLayoutBenchmark {
         final StackTraceElement location = null;
         final long timestamp = 12345678;
 
-        return Log4jLogEvent.newBuilder() //
+        return LogEvent.builder() //
                 .setLoggerName("name(ignored)") //
                 .setMarker(marker) //
                 .setLoggerFqcn(fqcn) //

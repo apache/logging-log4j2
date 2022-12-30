@@ -16,27 +16,26 @@
  */
 package org.apache.logging.log4j.core.test.layout;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.ThrowableProxy;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
+
+import static org.junit.Assert.*;
 
 public class LogEventFixtures {
 
     /**
      * @return a log event that uses all the bells and whistles, features, nooks and crannies
      */
-    public static Log4jLogEvent createLogEvent() {
+    public static LogEvent createLogEvent() {
         final Marker cMarker = MarkerManager.getMarker("Marker1");
         final Marker pMarker1 = MarkerManager.getMarker("ParentMarker1");
         final Marker pMarker2 = MarkerManager.getMarker("ParentMarker2");
@@ -55,14 +54,15 @@ public class LogEventFixtures {
         ioException.addSuppressed(new IndexOutOfBoundsException("I am suppressed exception 1"));
         ioException.addSuppressed(new IndexOutOfBoundsException("I am suppressed exception 2"));
         final ThrowableProxy throwableProxy = new ThrowableProxy(ioException);
-        final StringMap contextData = ContextDataFactory.createContextData();
+        final StringMap contextData = new SortedArrayStringMap();
         contextData.putValue("MDC.A", "A_Value");
         contextData.putValue("MDC.B", "B_Value");
         final DefaultThreadContextStack contextStack = new DefaultThreadContextStack(true);
         contextStack.clear();
         contextStack.push("stack_msg1");
         contextStack.add("stack_msg2");
-        final Log4jLogEvent expected = Log4jLogEvent.newBuilder() //
+        // validate event?
+        return LogEvent.builder() //
                 .setLoggerName("a.B") //
                 .setMarker(cMarker) //
                 .setLoggerFqcn("f.q.c.n") //
@@ -74,15 +74,14 @@ public class LogEventFixtures {
                 .setContextStack(contextStack) //
                 .setThreadName("MyThreadName") //
                 .setSource(source) //
-                .setTimeMillis(1).build();
-        // validate event?
-        return expected;
+                .setTimeMillis(1)
+                .get();
     }
 
     public static void assertEqualLogEvents(final LogEvent expected, final LogEvent actual, final boolean includeSource,
             final boolean includeContext, final boolean includeStacktrace) {
         assertEquals(expected.getClass(), actual.getClass());
-        assertEquals(includeContext ? expected.getContextData() : ContextDataFactory.createContextData(), actual.getContextData());
+        assertEquals(includeContext ? expected.getContextData() : new SortedArrayStringMap(), actual.getContextData());
         assertEquals(expected.getContextStack(), actual.getContextStack());
         assertEquals(expected.getLevel(), actual.getLevel());
         assertEquals(expected.getLoggerName(), actual.getLoggerName());

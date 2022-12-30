@@ -27,7 +27,6 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.StringMap;
@@ -80,7 +79,7 @@ public class Log4j2AppenderComparisonBenchmark {
         final StackTraceElement location = null;
         final long timestamp = System.currentTimeMillis();
 
-        return Log4jLogEvent.newBuilder() //
+        return LogEvent.builder() //
                 .setLoggerName("name(ignored)") //
                 .setMarker(marker) //
                 .setLoggerFqcn(fqcn) //

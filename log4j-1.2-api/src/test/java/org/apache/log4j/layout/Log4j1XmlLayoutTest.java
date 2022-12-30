@@ -16,16 +16,16 @@
  */
 package org.apache.log4j.layout;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.test.junit.ThreadContextRule;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.ThreadContextRule;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.Rule;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class Log4j1XmlLayoutTest {
 
@@ -36,7 +36,7 @@ public class Log4j1XmlLayoutTest {
     public void testWithoutThrown() {
         final Log4j1XmlLayout layout = Log4j1XmlLayout.createLayout(false, true);
 
-        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = LogEvent.builder()
                 .setLoggerName("a.B")
                 .setLevel(Level.INFO)
                 .setMessage(new SimpleMessage("Hello, World"))
@@ -57,15 +57,15 @@ public class Log4j1XmlLayoutTest {
     public void testWithPropertiesAndLocationInfo() {
         final Log4j1XmlLayout layout = Log4j1XmlLayout.createLayout(true, true);
 
-        final StringMap contextMap = ContextDataFactory.createContextData(2);
+        final StringMap contextMap = new SortedArrayStringMap(2);
         contextMap.putValue("key1", "value1");
         contextMap.putValue("key2", "value2");
-        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = LogEvent.builder()
                 .setLoggerName("a.B")
                 .setLevel(Level.INFO)
                 .setMessage(new SimpleMessage("Hello, World"))
                 .setTimeMillis(System.currentTimeMillis() + 17)
-                .setIncludeLocation(true)
+                .includeLocation(true)
                 .setSource(new StackTraceElement("pack.MyClass", "myMethod", "MyClass.java", 17))
                 .setContextData(contextMap)
                 .build();

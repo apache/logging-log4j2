@@ -16,29 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.net.Protocol;
-import org.apache.logging.log4j.core.test.AvailablePortFinder;
-import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
-import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.jackson.json.Log4jJsonObjectMapper;
-import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,6 +30,29 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.ImmutableLogEvent;
+import org.apache.logging.log4j.core.net.Protocol;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
+import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.jackson.json.Log4jJsonObjectMapper;
+import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -310,7 +310,7 @@ public class SocketAppenderTest {
                     latch.countDown();
                     sock.receive(packet);
                     count.incrementAndGet();
-                    final LogEvent event = objectMapper.readValue(packet.getData(), Log4jLogEvent.class);
+                    final LogEvent event = objectMapper.readValue(packet.getData(), ImmutableLogEvent.class);
                     queue.add(event);
                 }
             } catch (final Throwable e) {
@@ -374,7 +374,7 @@ public class SocketAppenderTest {
                     if (socket != null) {
                         final InputStream is = socket.getInputStream();
                         while (!shutdown) {
-                            final MappingIterator<LogEvent> mappingIterator = objectMapper.readerFor(Log4jLogEvent.class).readValues(is);
+                            final MappingIterator<LogEvent> mappingIterator = objectMapper.readerFor(ImmutableLogEvent.class).readValues(is);
                             while (mappingIterator.hasNextValue()) {
                                 queue.add(mappingIterator.nextValue());
                                 count.incrementAndGet();

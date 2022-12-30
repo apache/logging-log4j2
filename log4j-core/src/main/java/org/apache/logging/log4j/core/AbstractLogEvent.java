@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.message.Message;
@@ -31,8 +30,6 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
  * An abstract log event implementation with default values for all methods. The setters are no-ops.
  */
 public abstract class AbstractLogEvent implements LogEvent {
-
-    private static final long serialVersionUID = 1L;
 
     private volatile MutableInstant instant;
 

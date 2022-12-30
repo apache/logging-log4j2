@@ -42,7 +42,6 @@ import static org.junit.Assert.assertNull;
 public class DatePatternConverterTest {
 
     private static class MyLogEvent extends AbstractLogEvent {
-        private static final long serialVersionUID = 0;
 
         @Override
         public Instant getInstant() {

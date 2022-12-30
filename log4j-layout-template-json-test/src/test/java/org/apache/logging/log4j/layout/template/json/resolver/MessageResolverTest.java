@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
@@ -104,8 +103,7 @@ class MessageResolverTest {
         // Create a log event with a MapMessage.
         final Message mapMessage = new StringMapMessage()
                 .with("key1", "val1");
-        final LogEvent mapMessageLogEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent mapMessageLogEvent = LogEvent.builder()
                 .setMessage(mapMessage)
                 .setTimeMillis(System.currentTimeMillis())
                 .build();
@@ -117,8 +115,7 @@ class MessageResolverTest {
 
         // Create a log event with a SimpleMessage.
         final Message simpleMessage = new SimpleMessage("simple");
-        final LogEvent simpleMessageLogEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent simpleMessageLogEvent = LogEvent.builder()
                 .setMessage(simpleMessage)
                 .setTimeMillis(System.currentTimeMillis())
                 .build();
@@ -137,8 +134,7 @@ class MessageResolverTest {
         final StringMapMessage message = new StringMapMessage();
         message.put("message", "Hello, World!");
         message.put("bottle", "Kickapoo Joy Juice");
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setMessage(message)
                 .build();
 
@@ -173,8 +169,7 @@ class MessageResolverTest {
             put("name", name);
         }};
         final ObjectMessage message = new ObjectMessage(attachment);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setMessage(message)
                 .build();
 
@@ -217,8 +212,7 @@ class MessageResolverTest {
                 .with("key1", "val1")
                 .with("key2", 0xDEADBEEF)
                 .with("key3", Collections.singletonMap("key3.1", "val3.1"));
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setMessage(mapMessage)
                 .setTimeMillis(System.currentTimeMillis())
                 .build();

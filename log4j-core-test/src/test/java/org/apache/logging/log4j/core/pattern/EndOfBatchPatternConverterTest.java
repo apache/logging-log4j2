@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,8 +25,7 @@ public class EndOfBatchPatternConverterTest {
 
     @Test
     public void testConverterTrue() {
-        final LogEvent event = Log4jLogEvent.newBuilder()
-                .setEndOfBatch(true).build();
+        final LogEvent event = LogEvent.builder().endOfBatch(true).get();
         final StringBuilder sb = new StringBuilder();
         final LogEventPatternConverter converter = EndOfBatchPatternConverter.newInstance(null);
         converter.format(event, sb);
@@ -36,8 +34,7 @@ public class EndOfBatchPatternConverterTest {
 
     @Test
     public void testConverterFalse() {
-        final LogEvent event = Log4jLogEvent.newBuilder()
-                .build();
+        final LogEvent event = LogEvent.builder().get();
         final StringBuilder sb = new StringBuilder();
         final LogEventPatternConverter converter = EndOfBatchPatternConverter.newInstance(null);
         converter.format(event, sb);

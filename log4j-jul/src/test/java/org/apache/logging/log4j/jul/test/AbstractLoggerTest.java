@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.ImmutableLogEvent;
 import org.apache.logging.log4j.jul.ApiLogger;
 import org.apache.logging.log4j.jul.LevelTranslator;
 import org.junit.Test;
@@ -75,7 +75,7 @@ public abstract class AbstractLoggerTest {
         final List<LogEvent> events = eventAppender.getEvents();
         assertThat(events).hasSize(1);
         final LogEvent event = events.get(0);
-        assertThat(event).isInstanceOf(Log4jLogEvent.class);
+        assertThat(event).isInstanceOf(ImmutableLogEvent.class);
         assertThat(event.getLevel()).isEqualTo(Level.INFO);
         assertThat(event.getLoggerName()).isEqualTo(LOGGER_NAME);
         assertThat(event.getMessage().getFormattedMessage()).isEqualTo("Informative message here.");
@@ -103,7 +103,7 @@ public abstract class AbstractLoggerTest {
         final List<LogEvent> events = eventAppender.getEvents();
         assertThat(events).hasSize(1);
         final LogEvent event = events.get(0);
-        assertThat(event).isInstanceOf(Log4jLogEvent.class);
+        assertThat(event).isInstanceOf(ImmutableLogEvent.class);
         assertThat(event.getLevel()).isEqualTo(Level.INFO);
         assertThat(event.getLoggerName()).isEqualTo(LOGGER_NAME);
         assertThat(event.getMessage().getFormattedMessage()).isEqualTo("This is not the message you are looking for.");

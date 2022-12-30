@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Tag("async")
 @Tag("sleepy")
@@ -46,11 +46,12 @@ public class AsyncLoggerConfigTest3 {
         }
 
         final Message msg = new ParameterizedMessage("{}", map);
-        Log4jLogEvent event = Log4jLogEvent.newBuilder()
+        LogEvent event = LogEvent.builder()
                 .setLevel(Level.WARN)
                 .setLoggerName(getClass().getName())
                 .setMessage(msg)
-                .setTimeMillis(0).build();
+                .setTimeMillis(0)
+                .get();
 
         for (int i = 0; i < 100; i++) {
             ((AsyncLoggerConfig)((org.apache.logging.log4j.core.Logger) log).get()).callAppenders(event);

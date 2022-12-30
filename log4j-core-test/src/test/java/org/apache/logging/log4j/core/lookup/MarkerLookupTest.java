@@ -20,11 +20,11 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests {@link MarkerLookup}.
@@ -40,23 +40,25 @@ public class MarkerLookupTest {
     @Test
     public void testLookupEventExistant() {
         final Marker marker = MarkerManager.getMarker(markerName);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setMarker(marker) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")).build();
+                .setMessage(new SimpleMessage("Hello, world!"))
+                .get();
         final String value = strLookup.lookup(event, marker.getName());
         assertEquals(markerName, value);
     }
 
     @Test
     public void testLookupEventNonExistant() {
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")).build();
+                .setMessage(new SimpleMessage("Hello, world!"))
+                .get();
         final String value = strLookup.lookup(event, ABSENT_MARKER_NAME);
         assertNull(value);
     }
@@ -64,12 +66,13 @@ public class MarkerLookupTest {
     @Test
     public void testLookupEventNonExistantKey() {
         final Marker marker = MarkerManager.getMarker(markerName);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setMarker(marker) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
                 .setLevel(Level.INFO) //
-                .setMessage(new SimpleMessage("Hello, world!")).build();
+                .setMessage(new SimpleMessage("Hello, world!"))
+                .get();
         final String value = strLookup.lookup(event, ABSENT_MARKER_NAME);
         assertEquals(markerName, value);
     }

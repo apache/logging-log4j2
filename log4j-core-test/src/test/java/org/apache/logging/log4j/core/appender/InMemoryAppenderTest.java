@@ -19,10 +19,9 @@ package org.apache.logging.log4j.core.appender;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.core.test.appender.InMemoryAppender;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
@@ -58,12 +57,12 @@ public class InMemoryAppenderTest {
     }
 
     private void assertMessage(final String string, final InMemoryAppender app, final String header) {
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("TestLogger") //
                 .setLoggerFqcn(InMemoryAppenderTest.class.getName()) //
                 .setLevel(Level.INFO) //
                 .setMessage(new SimpleMessage("Test")) //
-                .build();
+                .get();
         app.start();
         assertTrue(app.isStarted(), "Appender did not start");
         app.append(event);

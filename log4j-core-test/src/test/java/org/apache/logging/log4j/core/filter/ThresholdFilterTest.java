@@ -19,11 +19,11 @@ package org.apache.logging.log4j.core.filter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ThresholdFilterTest {
 
@@ -34,15 +34,15 @@ public class ThresholdFilterTest {
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
         assertSame(Filter.Result.NEUTRAL, filter.filter(null, Level.ERROR, null, (Object) null, (Throwable) null));
-        LogEvent event = Log4jLogEvent.newBuilder() //
+        LogEvent event = LogEvent.builder() //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Test")) //
-                .build();
+                .get();
         assertSame(Filter.Result.DENY, filter.filter(event));
-        event = Log4jLogEvent.newBuilder() //
+        event = LogEvent.builder() //
                 .setLevel(Level.ERROR) //
                 .setMessage(new SimpleMessage("Test")) //
-                .build();
+                .get();
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
     }
 }

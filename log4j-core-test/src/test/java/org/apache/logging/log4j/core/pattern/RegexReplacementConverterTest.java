@@ -20,23 +20,23 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class RegexReplacementConverterTest {
 
     @Test
     public void testReplacement() {
         ThreadContext.put("MyKey", "Apache");
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName(RegexReplacementConverterTest.class.getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("This is a test")) //
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         final LoggerContext ctx = LoggerContext.getContext();
         final String[] options = new String[] {

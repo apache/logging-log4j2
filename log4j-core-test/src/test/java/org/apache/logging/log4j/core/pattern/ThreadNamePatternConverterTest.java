@@ -17,17 +17,16 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ThreadNamePatternConverterTest {
 
     @Test
     public void testConverterAppendsLogEventNanoTimeToStringBuilder() {
-        final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setThreadName("Hello-1").build();
+        final LogEvent event = LogEvent.builder() //
+                .setThreadName("Hello-1").get();
         final StringBuilder sb = new StringBuilder();
         final ThreadNamePatternConverter converter = ThreadNamePatternConverter.newInstance(null);
         converter.format(event, sb);

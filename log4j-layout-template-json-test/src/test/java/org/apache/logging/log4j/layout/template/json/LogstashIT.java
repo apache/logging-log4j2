@@ -16,6 +16,23 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import co.elastic.logging.log4j2.EcsLayout;
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.Level;
@@ -24,7 +41,6 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.SocketAppender;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
@@ -51,23 +67,6 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Execution(ExecutionMode.SAME_THREAD)
 class LogstashIT {
@@ -239,8 +238,7 @@ class LogstashIT {
         final String loggerName = "A";
         final SimpleMessage message1 = new SimpleMessage("line1\nline2\r\nline3");
         final long instantMillis1 = Instant.EPOCH.toEpochMilli();
-        final LogEvent logEvent1 = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent1 = LogEvent.builder()
                 .setLoggerName(loggerName)
                 .setLoggerFqcn(loggerFqcn)
                 .setLevel(level)
@@ -249,8 +247,7 @@ class LogstashIT {
                 .build();
         final SimpleMessage message2 = new SimpleMessage("line4\nline5\r\nline6");
         final long instantMillis2 = instantMillis1 + Duration.ofDays(1).toMillis();
-        final LogEvent logEvent2 = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent2 = LogEvent.builder()
                 .setLoggerName(loggerName)
                 .setLoggerFqcn(loggerFqcn)
                 .setLevel(level)

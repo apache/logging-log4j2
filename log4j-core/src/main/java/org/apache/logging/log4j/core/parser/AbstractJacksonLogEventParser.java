@@ -16,20 +16,21 @@
  */
 package org.apache.logging.log4j.core.parser;
 
+import java.io.IOException;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.ImmutableLogEvent;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-
-import java.io.IOException;
 
 public class AbstractJacksonLogEventParser implements TextLogEventParser {
     private final ObjectReader objectReader;
 
     protected AbstractJacksonLogEventParser(final ObjectMapper objectMapper) {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        this.objectReader = objectMapper.readerFor(Log4jLogEvent.class);
+        this.objectReader = objectMapper.readerFor(ImmutableLogEvent.class);
     }
 
     @Override

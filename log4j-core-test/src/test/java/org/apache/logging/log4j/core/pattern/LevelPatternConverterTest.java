@@ -18,21 +18,20 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LevelPatternConverterTest {
 
     private void testLevelLength(final int length, final String debug, final String warn) {
         final Message msg = new SimpleMessage("Hello");
-        LogEvent event = Log4jLogEvent.newBuilder() //
+        LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
-                .setMessage(msg).build();
+                .setMessage(msg).get();
         final StringBuilder sb = new StringBuilder();
         LevelPatternConverter converter = LevelPatternConverter.newInstance(null);
         converter.format(event, sb);
@@ -42,10 +41,10 @@ public class LevelPatternConverterTest {
         sb.setLength(0);
         converter.format(event, sb);
         assertEquals(debug, sb.toString());
-        event = Log4jLogEvent.newBuilder() //
+        event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.WARN) //
-                .setMessage(msg).build();
+                .setMessage(msg).get();
         sb.setLength(0);
         converter.format(event, sb);
         assertEquals(warn, sb.toString());
@@ -74,10 +73,10 @@ public class LevelPatternConverterTest {
     @Test
     public void testLevelLowerCase() {
         final Message msg = new SimpleMessage("Hello");
-        LogEvent event = Log4jLogEvent.newBuilder() //
+        LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
-                .setMessage(msg).build();
+                .setMessage(msg).get();
         final StringBuilder sb = new StringBuilder();
         LevelPatternConverter converter = LevelPatternConverter.newInstance(null);
         converter.format(event, sb);
@@ -87,10 +86,10 @@ public class LevelPatternConverterTest {
         sb.setLength(0);
         converter.format(event, sb);
         assertEquals("debug", sb.toString());
-        event = Log4jLogEvent.newBuilder() //
+        event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.WARN) //
-                .setMessage(msg).build();
+                .setMessage(msg).get();
         sb.setLength(0);
         converter.format(event, sb);
         assertEquals("warn", sb.toString());
@@ -99,10 +98,10 @@ public class LevelPatternConverterTest {
     @Test
     public void testLevelMap() {
         final Message msg = new SimpleMessage("Hello");
-        LogEvent event = Log4jLogEvent.newBuilder() //
+        LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
-                .setMessage(msg).build();
+                .setMessage(msg).get();
         final StringBuilder sb = new StringBuilder();
         LevelPatternConverter converter = LevelPatternConverter.newInstance(null);
         converter.format(event, sb);
@@ -112,10 +111,10 @@ public class LevelPatternConverterTest {
         sb.setLength(0);
         converter.format(event, sb);
         assertEquals("Debug", sb.toString());
-        event = Log4jLogEvent.newBuilder() //
+        event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.WARN) //
-                .setMessage(msg).build();
+                .setMessage(msg).get();
         sb.setLength(0);
         converter.format(event, sb);
         assertEquals("Warning", sb.toString());
@@ -124,10 +123,10 @@ public class LevelPatternConverterTest {
     @Test
     public void testLevelMapWithLength() {
         final Message msg = new SimpleMessage("Hello");
-        LogEvent event = Log4jLogEvent.newBuilder() //
+        LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
-                .setMessage(msg).build();
+                .setMessage(msg).get();
         final StringBuilder sb = new StringBuilder();
         LevelPatternConverter converter = LevelPatternConverter.newInstance(null);
         converter.format(event, sb);
@@ -137,10 +136,10 @@ public class LevelPatternConverterTest {
         sb.setLength(0);
         converter.format(event, sb);
         assertEquals("DE", sb.toString());
-        event = Log4jLogEvent.newBuilder() //
+        event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.WARN) //
-                .setMessage(msg).build();
+                .setMessage(msg).get();
         sb.setLength(0);
         converter.format(event, sb);
         assertEquals("Warning", sb.toString());
@@ -149,10 +148,10 @@ public class LevelPatternConverterTest {
     @Test
     public void testLevelMapWithLengthAndLowerCase() {
         final Message msg = new SimpleMessage("Hello");
-        LogEvent event = Log4jLogEvent.newBuilder() //
+        LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
-                .setMessage(msg).build();
+                .setMessage(msg).get();
         final StringBuilder sb = new StringBuilder();
         LevelPatternConverter converter = LevelPatternConverter.newInstance(null);
         converter.format(event, sb);
@@ -162,10 +161,10 @@ public class LevelPatternConverterTest {
         sb.setLength(0);
         converter.format(event, sb);
         assertEquals("de", sb.toString());
-        event = Log4jLogEvent.newBuilder() //
+        event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.WARN) //
-                .setMessage(msg).build();
+                .setMessage(msg).get();
         sb.setLength(0);
         converter.format(event, sb);
         assertEquals("Warning", sb.toString());

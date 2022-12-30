@@ -19,12 +19,12 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class VariablesNotEmptyReplacementConverterTest {
 
@@ -59,7 +59,7 @@ public class VariablesNotEmptyReplacementConverterTest {
     }
 
     private void testReplacement(final String tag, final String expectedValue) {
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName(VariablesNotEmptyReplacementConverterTest.class.getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("This is a test")) //

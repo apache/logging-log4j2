@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.message.Message;
-
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.message.Message;
 
 /**
  * <pre>
@@ -47,9 +46,7 @@ public abstract class AbstractLogEventMixIn implements LogEvent {
     public static final String ATTR_THREAD_ID = "threadId";
     public static final String ATTR_THREAD_PRIORITY = "threadPriority";
     public static final String ELT_MESSAGE = "message";
-    public static final String JSON_FILTER_ID = "org.apache.logging.log4j.core.impl.Log4jLogEvent";
-
-    private static final long serialVersionUID = 1L;
+    public static final String JSON_FILTER_ID = "org.apache.logging.log4j.core.impl.ImmutableLogEvent";
 
     @JsonSerialize(using = MessageSerializer.class)
     @JsonDeserialize(using = SimpleMessageDeserializer.class)

@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Filter.Result;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -46,15 +45,15 @@ public class RegexFilterTest {
                 filter.filter(null, Level.DEBUG, null, (Object) "This is a test message", (Throwable) null));
         assertSame(Filter.Result.DENY, filter.filter(null, Level.ERROR, null, (Object) "This is not a test",
                 (Throwable) null));
-        LogEvent event = Log4jLogEvent.newBuilder() //
+        LogEvent event = LogEvent.builder() //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Another test message")) //
-                .build();
+                .get();
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
-        event = Log4jLogEvent.newBuilder() //
+        event = LogEvent.builder() //
                 .setLevel(Level.ERROR) //
                 .setMessage(new SimpleMessage("test")) //
-                .build();
+                .get();
         assertSame(Filter.Result.DENY, filter.filter(event));
         filter = RegexFilter.createFilter(null, null, false, null, null);
         assertNull(filter);

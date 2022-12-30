@@ -118,7 +118,7 @@ public class ListAppender extends AbstractAppender {
         if (layout == null) {
             if (event instanceof MutableLogEvent) {
                 // must take snapshot or subsequent calls to logger.log() will modify this event
-                events.add(((MutableLogEvent) event).createMemento());
+                events.add(event.copy());
             } else {
                 events.add(event);
             }

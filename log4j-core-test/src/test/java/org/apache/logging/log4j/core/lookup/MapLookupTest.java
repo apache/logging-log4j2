@@ -19,12 +19,12 @@ package org.apache.logging.log4j.core.lookup;
 import java.util.HashMap;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests {@link MapLookup}.
@@ -73,7 +73,7 @@ public class MapLookupTest {
       final HashMap<String, String> eventMap = new HashMap<>();
       eventMap.put("A1", "B1");
       final StringMapMessage message = new StringMapMessage(eventMap);
-      final LogEvent event = Log4jLogEvent.newBuilder()
+      final LogEvent event = LogEvent.builder()
                 .setMessage(message)
                 .build();
       final MapLookup lookup = new MapLookup(map);
@@ -88,7 +88,7 @@ public class MapLookupTest {
         final HashMap<String, Object> eventMap = new HashMap<>();
         eventMap.put("A1", 11);
         final MapMessage message = new MapMessage<>(eventMap);
-        final LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = LogEvent.builder()
                 .setMessage(message)
                 .build();
         final MapLookup lookup = new MapLookup(map);
@@ -104,7 +104,7 @@ public class MapLookupTest {
         final HashMap<String, Object> eventMap = new HashMap<>();
         eventMap.put("A", "AEvent");
         final MapMessage message = new MapMessage<>(eventMap);
-        final LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = LogEvent.builder()
                 .setMessage(message)
                 .build();
         final MapLookup lookup = new MapLookup(map);

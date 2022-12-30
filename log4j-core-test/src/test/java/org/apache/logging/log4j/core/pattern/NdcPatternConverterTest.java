@@ -19,13 +19,12 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.test.junit.UsingThreadContextStack;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.UsingThreadContextStack;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @UsingThreadContextStack
 public class NdcPatternConverterTest {
@@ -59,11 +58,11 @@ public class NdcPatternConverterTest {
     private void testConverter(final String expected) {
         final Message msg = new SimpleMessage("Hello");
         final NdcPatternConverter converter = NdcPatternConverter.newInstance(null);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(msg) //
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         converter.format(event, sb);
         final String str = sb.toString();
@@ -71,4 +70,3 @@ public class NdcPatternConverterTest {
     }
 
 }
-

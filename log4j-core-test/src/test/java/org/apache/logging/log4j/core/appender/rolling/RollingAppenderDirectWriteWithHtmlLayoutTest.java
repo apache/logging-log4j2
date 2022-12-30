@@ -16,9 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.IOUtils;
@@ -27,13 +34,6 @@ import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
@@ -78,9 +78,9 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
         try {
             int count = 100;
             for (int i = 0; i < count; ++i) {
-                appender.append(Log4jLogEvent.newBuilder()
+                appender.append(LogEvent.builder()
                         .setMessage(new SimpleMessage("This is test message number " + i))
-                        .build()
+                        .get()
                 );
             }
             appender.getManager().flush();

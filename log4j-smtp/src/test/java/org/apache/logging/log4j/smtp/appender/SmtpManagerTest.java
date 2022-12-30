@@ -16,21 +16,21 @@
  */
 package org.apache.logging.log4j.smtp.appender;
 
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.async.RingBufferLogEvent;
+import org.apache.logging.log4j.core.impl.DefaultContextDataFactory;
+import org.apache.logging.log4j.core.impl.MementoMessage;
+import org.apache.logging.log4j.core.impl.MutableLogEvent;
+import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
+import org.apache.logging.log4j.core.time.internal.SystemClock;
+import org.apache.logging.log4j.message.ReusableMessage;
+import org.apache.logging.log4j.message.ReusableSimpleMessage;
+import org.junit.jupiter.api.Test;
+
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.async.RingBufferLogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.MementoMessage;
-import org.apache.logging.log4j.core.impl.MutableLogEvent;
-import org.apache.logging.log4j.core.time.ClockFactory;
-import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
-import org.apache.logging.log4j.message.ReusableMessage;
-import org.apache.logging.log4j.message.ReusableSimpleMessage;
-import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link SmtpManager}.
@@ -56,15 +56,15 @@ public class SmtpManagerTest {
 
     // LOG4J2-3172: make sure existing protections are not violated
     @Test
-    void testAdd_WhereLog4jLogEventWithReusableMessage() {
-        LogEvent event = new Log4jLogEvent.Builder().setMessage(getReusableMessage("test message")).build();
+    void testAdd_WhereImmutableLogEventWithReusableMessage() {
+        LogEvent event = LogEvent.builder().setMessage(getReusableMessage("test message")).get();
         testAdd(event);
     }
 
     // LOG4J2-3172: make sure existing protections are not violated
     @Test
     void testAdd_WhereMutableLogEvent() {
-        MutableLogEvent event = new MutableLogEvent(new StringBuilder("test message"), null);
+        MutableLogEvent event = new MutableLogEvent(new DefaultContextDataFactory(), new StringBuilder("test message"), null);
         testAdd(event);
     }
 
@@ -72,7 +72,7 @@ public class SmtpManagerTest {
     @Test
     void testAdd_WhereRingBufferLogEvent() {
         RingBufferLogEvent event = new RingBufferLogEvent();
-        event.setValues(null, null, null, null, null, getReusableMessage("test message"), null, null, null, 0, null, 0, null, ClockFactory.getClock(), new DummyNanoClock());
+        event.setValues(null, null, null, null, null, getReusableMessage("test message"), null, null, null, 0, null, 0, null, new SystemClock(), new DummyNanoClock());
         testAdd(event);
     }
 

@@ -16,12 +16,14 @@
  */
 package org.apache.logging.log4j.jackson.json;
 
+import com.fasterxml.jackson.databind.Module.SetupContext;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.ExtendedStackTraceElement;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.ExtendedStackTraceElement;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.jackson.ExtendedStackTraceElementMixIn;
 import org.apache.logging.log4j.jackson.InstantMixIn;
@@ -32,9 +34,6 @@ import org.apache.logging.log4j.jackson.StackTraceElementMixIn;
 import org.apache.logging.log4j.jackson.ThrowableProxyMixIn;
 import org.apache.logging.log4j.jackson.ThrowableProxyWithStacktraceAsStringMixIn;
 import org.apache.logging.log4j.jackson.ThrowableProxyWithoutStacktraceMixIn;
-
-import com.fasterxml.jackson.databind.Module.SetupContext;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
  * Used to set up {@link SetupContext} from different {@link SimpleModule}s.

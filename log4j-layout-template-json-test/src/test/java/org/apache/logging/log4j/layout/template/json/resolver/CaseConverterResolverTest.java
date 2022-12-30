@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -25,11 +24,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.CONFIGURATION;
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.asMap;
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.readJson;
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.usingSerializedLogEventAccessor;
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.writeJson;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -73,8 +68,7 @@ class CaseConverterResolverTest {
         // Create the log event.
         final StringMap contextData = new SortedArrayStringMap();
         contextData.putValue("input", input);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setContextData(contextData)
                 .build();
 
@@ -125,7 +119,7 @@ class CaseConverterResolverTest {
                 .build();
 
         // Create the log event.
-        final LogEvent logEvent = Log4jLogEvent.newBuilder().build();
+        final LogEvent logEvent = LogEvent.builder().get();
 
         // Check the serialized event.
         final boolean failureExpected = Strings.isNotBlank(failureMessage);

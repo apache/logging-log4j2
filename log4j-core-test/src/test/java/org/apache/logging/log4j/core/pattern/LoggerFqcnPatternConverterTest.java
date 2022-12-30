@@ -17,10 +17,9 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LoggerFqcnPatternConverterTest {
 
@@ -28,7 +27,7 @@ public class LoggerFqcnPatternConverterTest {
 
     @Test
     public void testConverter() {
-        final LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = LogEvent.builder()
                 .setLoggerFqcn(FQCN).build();
         final StringBuilder sb = new StringBuilder();
         final LogEventPatternConverter converter = LoggerFqcnPatternConverter.newInstance(null);

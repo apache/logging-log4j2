@@ -21,20 +21,19 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.message.Message;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 public class LogEventEntityTest {
 
     @Test
     public void testToImmutable_AbstractLogEventWrapperEntity() {
         final LogEvent logEvent = new AbstractLogEventWrapperEntity() {
-
-            private static final long serialVersionUID = 2L;
 
             @Override
             public ContextStack getContextStack() {
@@ -111,12 +110,12 @@ public class LogEventEntityTest {
                 return 0;
             }
         };
-        Assert.assertNotSame(logEvent, logEvent.toImmutable());
+        assertNotSame(logEvent, logEvent.toImmutable());
     }
 
     @Test
     public void testToImmutable_TestBaseEntity() {
         final LogEvent logEvent = new TestBaseEntity();
-        Assert.assertNotSame(logEvent, logEvent.toImmutable());
+        assertNotSame(logEvent, logEvent.toImmutable());
     }
 }

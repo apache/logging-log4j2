@@ -16,9 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
@@ -28,9 +30,7 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.logging.log4j.util.Cast;
 
 /**
  * This policy modifies events by replacing or possibly adding keys and values to the MapMessage.
@@ -42,7 +42,7 @@ public final class MapRewritePolicy implements RewritePolicy {
     /**
      * Allow subclasses access to the status logger without creating another instance.
      */
-    protected static final Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Map<String, Object> map;
 
@@ -62,18 +62,18 @@ public final class MapRewritePolicy implements RewritePolicy {
     @Override
     public LogEvent rewrite(final LogEvent source) {
         final Message msg = source.getMessage();
-        if (msg == null || !(msg instanceof MapMessage)) {
+        if (!(msg instanceof MapMessage)) {
             return source;
         }
 
-        @SuppressWarnings("unchecked")
-        final MapMessage<?, Object> mapMsg = (MapMessage<?, Object>) msg;
+        final MapMessage<?, Object> mapMsg = Cast.cast(msg);
         final Map<String, Object> newMap = new HashMap<>(mapMsg.getData());
         switch (mode) {
             case Add: {
                 newMap.putAll(map);
                 break;
             }
+            case Update:
             default: {
                 for (final Map.Entry<String, Object> entry : map.entrySet()) {
                     if (newMap.containsKey(entry.getKey())) {
@@ -83,7 +83,7 @@ public final class MapRewritePolicy implements RewritePolicy {
             }
         }
         final Message message = mapMsg.newInstance(newMap);
-        return new Log4jLogEvent.Builder(source).setMessage(message).build();
+        return LogEvent.builderFrom(source).setMessage(message).toImmutable();
     }
 
     /**
@@ -130,7 +130,7 @@ public final class MapRewritePolicy implements RewritePolicy {
     public static MapRewritePolicy createPolicy(
             @PluginAttribute final String mode,
             @PluginElement("KeyValuePair") final KeyValuePair[] pairs) {
-        Mode op = mode == null ? op = Mode.Add : Mode.valueOf(mode);
+        Mode op = mode == null ? Mode.Add : Mode.valueOf(mode);
         if (pairs == null || pairs.length == 0) {
             LOGGER.error("keys and values must be specified for the MapRewritePolicy");
             return null;

@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
+
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -26,10 +29,6 @@ import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.PatternSyntaxException;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -112,8 +111,7 @@ class ReadOnlyStringMapResolverTest {
         final StringMap contextData = new SortedArrayStringMap();
         contextData.putValue("user:role", "engineer");
         contextData.putValue("user:rank", "senior");
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setContextData(contextData)
                 .build();
 
@@ -136,8 +134,7 @@ class ReadOnlyStringMapResolverTest {
         contextData.putValue(mdcDirectlyAccessedKey, mdcDirectlyAccessedValue);
         final String mdcDirectlyAccessedNullPropertyKey = "mdcKey2";
         contextData.putValue(mdcDirectlyAccessedNullPropertyKey, null);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setMessage(message)
                 .setContextData(contextData)
                 .build();
@@ -161,8 +158,7 @@ class ReadOnlyStringMapResolverTest {
         final String directlyAccessedNullPropertyKey = "mapKey2";
         final Message message = new StringMapMessage()
                 .with(directlyAccessedKey, directlyAccessedValue);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setMessage(message)
                 .build();
 
@@ -220,8 +216,7 @@ class ReadOnlyStringMapResolverTest {
         final String mdcPatternMismatchedKey = "mdcKey2";
         final String mdcPatternMismatchedValue = "mdcValue2";
         contextData.putValue(mdcPatternMismatchedKey, mdcPatternMismatchedValue);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setMessage(message)
                 .setContextData(contextData)
                 .build();
@@ -247,8 +242,7 @@ class ReadOnlyStringMapResolverTest {
         final Message message = new StringMapMessage()
                 .with(patternMatchedKey, patternMatchedValue)
                 .with(patternMismatchedKey, patternMismatchedValue);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setMessage(message)
                 .build();
 
@@ -304,8 +298,7 @@ class ReadOnlyStringMapResolverTest {
         final String mdcPatternMismatchedKey = "mdcKey2";
         final String mdcPatternMismatchedValue = "mdcValue2";
         contextData.putValue(mdcPatternMismatchedKey, mdcPatternMismatchedValue);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setMessage(message)
                 .setContextData(contextData)
                 .build();
@@ -331,8 +324,7 @@ class ReadOnlyStringMapResolverTest {
         final Message message = new StringMapMessage()
                 .with(patternMatchedKey, patternMatchedValue)
                 .with(patternMismatchedKey, patternMismatchedValue);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setMessage(message)
                 .build();
 
@@ -382,8 +374,7 @@ class ReadOnlyStringMapResolverTest {
 
         // Create the log event.
         final StringMapMessage message = new StringMapMessage().with("key1", "val1");
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setMessage(message)
                 .build();
 
@@ -436,8 +427,7 @@ class ReadOnlyStringMapResolverTest {
         final List<Integer> value = Arrays.asList(1, 2);
         final StringMapMessage mapMessage = new StringMapMessage()
                 .with(key, value);
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setMessage(mapMessage)
                 .setTimeMillis(System.currentTimeMillis())
                 .build();

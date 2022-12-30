@@ -18,12 +18,12 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MapPatternConverterTest {
 
@@ -35,7 +35,7 @@ public class MapPatternConverterTest {
         msg.put("verb", "love");
         msg.put("object", "Log4j");
         final MapPatternConverter converter = MapPatternConverter.newInstance(null);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(msg) //
@@ -61,7 +61,7 @@ public class MapPatternConverterTest {
         msg.put("verb", "love");
         msg.put("object", "Log4j");
         final MapPatternConverter converter = MapPatternConverter.newInstance(new String[] {"object"});
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(msg) //
@@ -81,7 +81,7 @@ public class MapPatternConverterTest {
         msg.put("verb", "love");
         msg.put("object", "Log4j");
         final MapPatternConverter converter = MapPatternConverter.newInstance(null, MapMessage.MapFormat.JAVA);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(msg) //

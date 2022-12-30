@@ -17,11 +17,12 @@
 
 package org.apache.logging.log4j.perf.jmh;
 
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
@@ -31,8 +32,6 @@ import org.jctools.queues.MpmcArrayQueue;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-
-import java.util.List;
 
 /**
  * Checks {@link PatternFormatter} performance with various StringBuilder
@@ -64,8 +63,7 @@ public class ThreadLocalVsPoolBenchmark {
         final String messageString = "AB!(%087936DZYXQWEIOP$#^~-=/><nb"; // length=32
         final Message message = new SimpleMessage(messageString);
         final long timestamp = 12345678;
-        return Log4jLogEvent
-                .newBuilder()
+        return LogEvent.builder()
                 .setLoggerName(loggerName)
                 .setLoggerFqcn(loggerFqcn)
                 .setLevel(level)

@@ -17,17 +17,16 @@
 package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class NanoTimePatternConverterTest {
 
     @Test
     public void testConverterAppendsLogEventNanoTimeToStringBuilder() {
-        final LogEvent event = Log4jLogEvent.newBuilder() //
-                .setNanoTime(1234567).build();
+        final LogEvent event = LogEvent.builder() //
+                .setNanoTime(1234567).get();
         final StringBuilder sb = new StringBuilder();
         final NanoTimePatternConverter converter = NanoTimePatternConverter.newInstance(null);
         converter.format(event, sb);

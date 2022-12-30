@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.ThrowableProxy;
 import org.apache.logging.log4j.core.async.InternalAsyncUtil;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.Instant;
@@ -65,7 +64,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     private Object[] parameters;
     private Throwable thrown;
     private ThrowableProxy thrownProxy;
-    private StringMap contextData = ContextDataFactory.createContextData();
+    private StringMap contextData;
     private Marker marker;
     private String loggerFqcn;
     private StackTraceElement source;
@@ -73,24 +72,28 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     transient boolean reserved = false;
 
     public MutableLogEvent() {
-        // messageText and the parameter array are lazily initialized
-        this(null, null);
+        this(new DefaultContextDataFactory());
     }
 
-    public MutableLogEvent(final StringBuilder msgText, final Object[] replacementParameters) {
+    public MutableLogEvent(final ContextDataFactory contextDataFactory) {
+        // messageText and the parameter array are lazily initialized
+        this(contextDataFactory, null, null);
+    }
+
+    public MutableLogEvent(final ContextDataFactory contextDataFactory,
+                           final StringBuilder msgText, final Object[] replacementParameters) {
+        contextData = contextDataFactory.createContextData();
         this.messageText = msgText;
         this.parameters = replacementParameters;
     }
 
     @Override
-    public Log4jLogEvent toImmutable() {
-        return createMemento();
+    public LogEvent toImmutable() {
+        return copy();
     }
 
     /**
      * Initialize the fields of this {@code MutableLogEvent} from another event.
-     * Similar in purpose and usage as {@link org.apache.logging.log4j.core.impl.Log4jLogEvent.LogEventProxy},
-     * but a mutable version.
      * <p>
      * This method is used on async logger ringbuffer slots holding MutableLogEvent objects in each slot.
      * </p>
@@ -376,7 +379,6 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return source;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ReadOnlyStringMap getContextData() {
         return contextData;
@@ -451,50 +453,23 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         this.nanoTime = nanoTime;
     }
 
-    /**
-     * Creates a LogEventProxy that can be serialized.
-     * @return a LogEventProxy.
-     */
-    protected Object writeReplace() {
-        return new Log4jLogEvent.LogEventProxy(this, this.includeLocation);
-    }
-
-    private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
-        throw new InvalidObjectException("Proxy required");
-    }
-
-    /**
-     * Creates and returns a new immutable copy of this {@code MutableLogEvent}.
-     * If {@link #isIncludeLocation()} is true, this will obtain caller location information.
-     *
-     * @return a new immutable copy of the data in this {@code MutableLogEvent}
-     */
-    public Log4jLogEvent createMemento() {
-        return Log4jLogEvent.deserialize(Log4jLogEvent.serialize(this, includeLocation));
-    }
-
-    /**
-     * Initializes the specified {@code Log4jLogEvent.Builder} from this {@code MutableLogEvent}.
-     * @param builder the builder whose fields to populate
-     */
-    public void initializeBuilder(final Log4jLogEvent.Builder builder) {
-        builder.setContextData(contextData) //
-                .setContextStack(contextStack) //
-                .setEndOfBatch(endOfBatch) //
-                .setIncludeLocation(includeLocation) //
+    public void initializeBuilder(final LogEventBuilder builder) {
+        builder.setContextData(contextData)
+                .setContextStack(contextStack)
+                .endOfBatch(endOfBatch)
+                .includeLocation(includeLocation)
                 .setLevel(getLevel()) // ensure non-null
-                .setLoggerFqcn(loggerFqcn) //
-                .setLoggerName(loggerName) //
-                .setMarker(marker) //
+                .setLoggerFqcn(loggerFqcn)
+                .setLoggerName(loggerName)
+                .setMarker(marker)
                 .setMessage(memento()) // ensure non-null & immutable
-                .setNanoTime(nanoTime) //
-                .setSource(source) //
-                .setThreadId(threadId) //
-                .setThreadName(threadName) //
-                .setThreadPriority(threadPriority) //
+                .setNanoTime(nanoTime)
+                .setSource(source)
+                .setThreadId(threadId)
+                .setThreadName(threadName)
+                .setThreadPriority(threadPriority)
                 .setThrown(getThrown()) // may deserialize from thrownProxy
                 .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
-                .setInstant(instant) //
-        ;
+                .setInstant(instant);
     }
 }

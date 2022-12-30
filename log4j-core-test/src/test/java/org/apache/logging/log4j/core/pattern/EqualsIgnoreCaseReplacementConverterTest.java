@@ -19,12 +19,12 @@ package org.apache.logging.log4j.core.pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class EqualsIgnoreCaseReplacementConverterTest {
 
@@ -44,11 +44,11 @@ public class EqualsIgnoreCaseReplacementConverterTest {
     }
 
     private void testReplacement(final String tag, final String expectedValue) {
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName(EqualsIgnoreCaseReplacementConverterTest.class.getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("This is a test")) //
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         final LoggerContext ctx = LoggerContext.getContext();
         final String[] options = new String[] { "aaa[" + tag + "]zzz", "AAA[]ZZZ", expectedValue };

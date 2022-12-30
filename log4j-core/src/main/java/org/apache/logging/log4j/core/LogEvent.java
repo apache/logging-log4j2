@@ -14,32 +14,68 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core;
-
-import java.io.Serializable;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
+import org.apache.logging.log4j.core.impl.LogEventBuilder;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
- * Provides contextual information about a logged message. A LogEvent must be {@link java.io.Serializable} so that it
- * may be transmitted over a network connection. Besides containing a
- * {@link org.apache.logging.log4j.message.Message}, a LogEvent has a corresponding
- * {@link org.apache.logging.log4j.Level} that the message was logged at. If a
- * {@link org.apache.logging.log4j.Marker} was used, then it is included here. The contents of the
- * {@link org.apache.logging.log4j.ThreadContext} at the time of the log call are provided via
- * {@link #getContextData()} and {@link #getContextStack()}. If a {@link java.lang.Throwable} was included in the log
- * call, then it is provided via {@link #getThrown()}. When this class is serialized, the attached Throwable will
- * be wrapped into a {@link org.apache.logging.log4j.core.impl.ThrowableProxy} so that it may be safely serialized
- * and deserialized properly without causing problems if the exception class is not available on the other end.
+ * Provides the context in which a message was emitted by a logger. A LogEvent contains a
+ * {@linkplain #getMessage() message}, {@linkplain #getLevel() level}, optional {@linkplain #getMarker() marker},
+ * optional {@linkplain #getThrown() exception}, and the contents of the {@link ThreadContext}
+ * {@linkplain #getContextData() map} and {@linkplain #getContextStack() stack}.
+ *
+ * <h3>Serializable Deprecation</h3>
+ * <p>In Log4j 2.x, this interface implemented {@code Serializable}. In Log4j 3.x, this is no longer used.
+ * See <a href="https://issues.apache.org/jira/browse/LOG4J2-3228">LOG4J2-3228</a>.</p>
  */
-public interface LogEvent extends Serializable {
+public interface LogEvent {
+
+    /**
+     * Creates a new LogEventBuilder.
+     *
+     * @since 3.0.0
+     */
+    static LogEventBuilder builder() {
+        return new LogEventBuilder();
+    }
+
+    /**
+     * Creates a new LogEventBuilder using an existing LogEvent.
+     *
+     * @param other existing log event to copy data from
+     * @return new LogEventBuilder with copied data
+     * @since 3.0.0
+     */
+    static LogEventBuilder builderFrom(final LogEvent other) {
+        return new LogEventBuilder().copyFrom(other);
+    }
+
+    /**
+     * Returns an immutable copy of this log event.
+     *
+     * @return copy of this
+     * @since 3.0.0
+     */
+    default LogEvent copy() {
+        return builderFrom(this).get();
+    }
+
+    /**
+     * Returns an immutable copy of this log event.
+     *
+     * @param includeLocation whether to calculate the caller location
+     * @return copy of this
+     * @since 3.0.0
+     */
+    default LogEvent copy(final boolean includeLocation) {
+        return builderFrom(this).includeLocation(includeLocation).get();
+    }
 
     /**
      * Returns an immutable version of this log event, which MAY BE a copy of this event.
@@ -139,7 +175,6 @@ public interface LogEvent extends Serializable {
      * Gets the thread name.
      *
      * @return thread name, may be null.
-     * TODO guess this could go into a thread context object too. (RG) Why?
      */
     String getThreadName();
 

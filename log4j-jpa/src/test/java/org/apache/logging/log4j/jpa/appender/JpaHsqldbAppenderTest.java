@@ -21,13 +21,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 
 @Category(Appenders.Jpa.class)
 public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
@@ -109,7 +109,6 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
 
     @SuppressWarnings("unused")
     public static class BadConstructorEntity1 extends TestBaseEntity {
-        private static final long serialVersionUID = 1L;
 
         public BadConstructorEntity1(final LogEvent wrappedEvent) {
             super(wrappedEvent);
@@ -118,7 +117,6 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
 
     @SuppressWarnings("unused")
     public static class BadConstructorEntity2 extends TestBaseEntity {
-        private static final long serialVersionUID = 1L;
 
         public BadConstructorEntity2() {
             super(null);

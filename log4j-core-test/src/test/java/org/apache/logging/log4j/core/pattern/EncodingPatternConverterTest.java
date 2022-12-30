@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
@@ -31,11 +30,11 @@ public class EncodingPatternConverterTest {
 
     @Test
     public void testReplacement() {
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName(EncodingPatternConverterTest.class.getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Test \r\n<div class=\"test\">this</div> & <div class='test'>that</div>"))
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         final LoggerContext ctx = LoggerContext.getContext();
         final String[] options = new String[]{"%msg"};
@@ -50,11 +49,11 @@ public class EncodingPatternConverterTest {
 
     @Test
     public void testJsonEscaping() {
-        final LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = LogEvent.builder()
             .setLoggerName(getClass().getName())
             .setLevel(Level.DEBUG)
             .setMessage(new SimpleMessage("This string contains \"quotes\" and \\ backslash and \u001F control and\nnewline"))
-            .build();
+            .get();
         final String expected = "This string contains \\\"quotes\\\" and \\\\ backslash and \\u001F control and\\nnewline";
         final StringBuilder sb = new StringBuilder();
         final LoggerContext ctx = LoggerContext.getContext();
@@ -69,11 +68,11 @@ public class EncodingPatternConverterTest {
 
     @Test
     public void testCrlfEscaping() {
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName(EncodingPatternConverterTest.class.getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Test \r\n<div class=\"test\">this\r</div> & \n<div class='test'>that</div>"))
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         final LoggerContext ctx = LoggerContext.getContext();
         final String[] options = new String[]{"%msg", "CRLF"};
@@ -88,11 +87,11 @@ public class EncodingPatternConverterTest {
 
     @Test
     public void testXmlEscaping() {
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName(EncodingPatternConverterTest.class.getName()) //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Test \r\n<div class=\"test\">this</div> & <div class='test'>that</div>"))
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         final LoggerContext ctx = LoggerContext.getContext();
         final String[] options = new String[]{"%msg", "XML"};

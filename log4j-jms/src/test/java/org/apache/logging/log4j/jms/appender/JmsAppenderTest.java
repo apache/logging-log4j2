@@ -17,19 +17,9 @@
 
 package org.apache.logging.log4j.jms.appender;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -40,9 +30,8 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.apache.logging.log4j.message.Message;
@@ -54,6 +43,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
 @Category(Appenders.Jms.class)
 public class JmsAppenderTest {
@@ -113,22 +108,22 @@ public class JmsAppenderTest {
         return map;
     }
 
-    private  Log4jLogEvent createLogEvent() {
+    private LogEvent createLogEvent() {
         return createLogEvent(new SimpleMessage(LOG_MESSAGE));
     }
 
-    private Log4jLogEvent createLogEvent(final Message message) {
+    private LogEvent createLogEvent(final Message message) {
         // @formatter:off
-        return Log4jLogEvent.newBuilder()
+        return LogEvent.builder()
             .setLoggerName(JmsAppenderTest.class.getName())
             .setLoggerFqcn(JmsAppenderTest.class.getName())
             .setLevel(Level.INFO)
             .setMessage(message)
-            .build();
+            .get();
         // @formatter:on
     }
 
-    private Log4jLogEvent createMapMessageLogEvent() {
+    private LogEvent createMapMessageLogEvent() {
         final StringMapMessage mapMessage = new StringMapMessage();
         return createLogEvent(mapMessage.with("testMesage", LOG_MESSAGE));
     }

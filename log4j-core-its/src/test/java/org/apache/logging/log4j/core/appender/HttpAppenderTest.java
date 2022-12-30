@@ -23,8 +23,8 @@ import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
@@ -121,13 +121,13 @@ public class HttpAppenderTest {
 
     private static final String LOG_MESSAGE = "Hello, world!";
 
-    private static Log4jLogEvent createLogEvent() {
-        return Log4jLogEvent.newBuilder()
+    private static LogEvent createLogEvent() {
+        return LogEvent.builder()
             .setLoggerName(HttpAppenderTest.class.getName())
             .setLoggerFqcn(HttpAppenderTest.class.getName())
             .setLevel(Level.INFO)
             .setMessage(new SimpleMessage(LOG_MESSAGE))
-            .build();
+            .get();
     }
 
     private final ResponseDefinitionBuilder SUCCESS_RESPONSE = aResponse().withStatus(201)

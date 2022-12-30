@@ -19,13 +19,12 @@ package org.apache.logging.log4j.jackson;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-
 import com.fasterxml.jackson.core.PrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import org.apache.logging.log4j.core.impl.ImmutableLogEvent;
 
 public abstract class AbstractJacksonFactory {
 
@@ -75,7 +74,7 @@ public abstract class AbstractJacksonFactory {
             except.add(getPropertyNameForTimeMillis());
         }
         except.add(this.getPropertyNameForNanoTime());
-        filters.addFilter(Log4jLogEvent.class.getName(), SimpleBeanPropertyFilter.serializeAllExcept(except));
+        filters.addFilter(ImmutableLogEvent.class.getName(), SimpleBeanPropertyFilter.serializeAllExcept(except));
         final ObjectWriter writer = this.newObjectMapper()
                 .writer(compact ? this.newCompactPrinter() : this.newPrettyPrinter());
         return writer.with(filters);

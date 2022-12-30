@@ -16,15 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
@@ -37,10 +28,9 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.test.junit.ThreadContextStackRule;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -52,6 +42,12 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NoSqlDatabaseManagerTest {
@@ -136,7 +132,7 @@ public class NoSqlDatabaseManagerTest {
             manager.connectAndStart();
             then(provider).should().getConnection();
 
-            final LogEvent event = Log4jLogEvent.newBuilder()
+            final LogEvent event = LogEvent.builder()
                 .setLevel(Level.WARN)
                 .setLoggerName("com.foo.NoSQLDbTest.testWriteInternal01")
                 .setMessage(message)
@@ -145,7 +141,7 @@ public class NoSqlDatabaseManagerTest {
                 .setThreadName("MyThread-A")
                 .setThreadPriority(1)
                 .setTimeMillis(1234567890123L)
-                .build();
+                .get();
 
             manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
@@ -204,7 +200,7 @@ public class NoSqlDatabaseManagerTest {
             final ThreadContext.ContextStack stack = ThreadContext.getImmutableStack();
             ThreadContext.clearStack();
 
-            final LogEvent event = Log4jLogEvent.newBuilder()
+            final LogEvent event = LogEvent.builder()
                 .setLevel(Level.DEBUG)
                 .setLoggerName("com.foo.NoSQLDbTest.testWriteInternal02")
                 .setMessage(message)
@@ -215,9 +211,9 @@ public class NoSqlDatabaseManagerTest {
                 .setThreadPriority(1)
                 .setTimeMillis(987654321564L)
                 .setThrown(exception)
-                .setContextData(ContextDataFactory.createContextData(context))
+                .setContextData(new SortedArrayStringMap(context))
                 .setContextStack(stack)
-                .build();
+                .get();
 
             manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());
@@ -303,7 +299,7 @@ public class NoSqlDatabaseManagerTest {
             final ThreadContext.ContextStack stack = ThreadContext.getImmutableStack();
             ThreadContext.clearStack();
 
-            final LogEvent event = Log4jLogEvent.newBuilder()
+            final LogEvent event = LogEvent.builder()
                 .setLevel(Level.DEBUG)
                 .setLoggerName("com.foo.NoSQLDbTest.testWriteInternal02")
                 .setMessage(message)
@@ -316,9 +312,9 @@ public class NoSqlDatabaseManagerTest {
                 .setThreadPriority(1)
                 .setTimeMillis(987654321564L)
                 .setThrown(exception2)
-                .setContextData(ContextDataFactory.createContextData(context))
+                .setContextData(new SortedArrayStringMap(context))
                 .setContextStack(stack)
-                .build();
+                .get();
 
             manager.writeInternal(event, null);
             then(connection).should().insertObject(captor.capture());

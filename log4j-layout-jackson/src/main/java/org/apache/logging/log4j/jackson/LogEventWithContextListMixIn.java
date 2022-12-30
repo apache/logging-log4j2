@@ -16,15 +16,6 @@
  */
 package org.apache.logging.log4j.jackson;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,14 +23,20 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.ThrowableProxy;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 @JsonRootName(XmlConstants.ELT_EVENT)
-@JsonFilter("org.apache.logging.log4j.core.impl.Log4jLogEvent")
+@JsonFilter("org.apache.logging.log4j.core.impl.ImmutableLogEvent")
 @JsonPropertyOrder({ "timeMillis", XmlConstants.ELT_INSTANT, "threadName", "level", "loggerName", "marker", "message", "thrown", XmlConstants.ELT_CONTEXT_MAP,
         JsonConstants.ELT_CONTEXT_STACK, "loggerFQCN", "Source", "endOfBatch" })
 abstract class LogEventWithContextListMixIn implements LogEvent {
-
-    private static final long serialVersionUID = 1L;
 
     @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
     @JsonSerialize(using = ContextDataAsEntryListSerializer.class)

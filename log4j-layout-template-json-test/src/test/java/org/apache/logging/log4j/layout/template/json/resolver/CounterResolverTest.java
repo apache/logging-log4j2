@@ -19,7 +19,6 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 import java.math.BigInteger;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.util.JsonReader;
 import org.junit.jupiter.api.Test;
@@ -141,7 +140,7 @@ class CounterResolverTest {
                 .build();
 
         // Create the log event.
-        final LogEvent logEvent = Log4jLogEvent.newBuilder().build();
+        final LogEvent logEvent = LogEvent.builder().get();
 
         // Check the 1st serialized event.
         final String serializedLogEvent1 = layout.toSerializable(logEvent);

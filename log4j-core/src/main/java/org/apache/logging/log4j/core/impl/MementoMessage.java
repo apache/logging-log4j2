@@ -16,20 +16,20 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-
 import java.util.Arrays;
 
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.InternalApi;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+
 /**
- * <em>Consider this class private.</em>
- *
- * {@link MementoMessage} is intended to be used when we need to make an
+ * {@code MementoMessage} is intended to be used when we need to make an
  * immutable copy of a {@link Message} without forgetting the original
  * {@link Message#getFormat()} and {@link Message#getParameters()} values.
  *
  * @since 3.0
  */
+@InternalApi
 public final class MementoMessage implements Message, StringBuilderFormattable {
 
     private final String formattedMessage;

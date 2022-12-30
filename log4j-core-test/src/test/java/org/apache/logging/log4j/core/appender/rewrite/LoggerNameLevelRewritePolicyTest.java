@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.appender.rewrite;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
@@ -38,31 +37,51 @@ public class LoggerNameLevelRewritePolicyTest {
                 new KeyValuePair("INFO", "DEBUG"),
                 new KeyValuePair("WARN", "INFO") };
         final String loggerNameRewrite = "com.foo.bar";
-        LogEvent logEvent = Log4jLogEvent.newBuilder().setLoggerName(loggerNameRewrite)
-                .setLoggerFqcn("LoggerNameLevelRewritePolicyTest.testUpdate()").setLevel(Level.INFO)
-                .setMessage(new SimpleMessage("Test")).setThrown(new RuntimeException("test")).setThreadName("none")
-                .setTimeMillis(1).build();
+        LogEvent logEvent = LogEvent.builder()
+                .setLoggerName(loggerNameRewrite)
+                .setLoggerFqcn("LoggerNameLevelRewritePolicyTest.testUpdate()")
+                .setLevel(Level.INFO)
+                .setMessage(new SimpleMessage("Test"))
+                .setThrown(new RuntimeException("test"))
+                .setThreadName("none")
+                .setTimeMillis(1)
+                .build();
         final LoggerNameLevelRewritePolicy updatePolicy = LoggerNameLevelRewritePolicy.createPolicy(loggerNameRewrite,
                 rewrite);
         LogEvent rewritten = updatePolicy.rewrite(logEvent);
         assertEquals(Level.DEBUG, rewritten.getLevel());
-        logEvent = Log4jLogEvent.newBuilder().setLoggerName(loggerNameRewrite)
-                .setLoggerFqcn("LoggerNameLevelRewritePolicyTest.testUpdate()").setLevel(Level.WARN)
-                .setMessage(new SimpleMessage("Test")).setThrown(new RuntimeException("test")).setThreadName("none")
-                .setTimeMillis(1).build();
+        logEvent = LogEvent.builder()
+                .setLoggerName(loggerNameRewrite)
+                .setLoggerFqcn("LoggerNameLevelRewritePolicyTest.testUpdate()")
+                .setLevel(Level.WARN)
+                .setMessage(new SimpleMessage("Test"))
+                .setThrown(new RuntimeException("test"))
+                .setThreadName("none")
+                .setTimeMillis(1)
+                .build();
         rewritten = updatePolicy.rewrite(logEvent);
         assertEquals(Level.INFO, rewritten.getLevel());
         final String loggerNameReadOnly = "com.nochange";
-        logEvent = Log4jLogEvent.newBuilder().setLoggerName(loggerNameReadOnly)
-                .setLoggerFqcn("LoggerNameLevelRewritePolicyTest.testUpdate()").setLevel(Level.INFO)
-                .setMessage(new SimpleMessage("Test")).setThrown(new RuntimeException("test")).setThreadName("none")
-                .setTimeMillis(1).build();
+        logEvent = LogEvent.builder()
+                .setLoggerName(loggerNameReadOnly)
+                .setLoggerFqcn("LoggerNameLevelRewritePolicyTest.testUpdate()")
+                .setLevel(Level.INFO)
+                .setMessage(new SimpleMessage("Test"))
+                .setThrown(new RuntimeException("test"))
+                .setThreadName("none")
+                .setTimeMillis(1)
+                .build();
         rewritten = updatePolicy.rewrite(logEvent);
         assertEquals(Level.INFO, rewritten.getLevel());
-        logEvent = Log4jLogEvent.newBuilder().setLoggerName(loggerNameReadOnly)
-                .setLoggerFqcn("LoggerNameLevelRewritePolicyTest.testUpdate()").setLevel(Level.WARN)
-                .setMessage(new SimpleMessage("Test")).setThrown(new RuntimeException("test")).setThreadName("none")
-                .setTimeMillis(1).build();
+        logEvent = LogEvent.builder()
+                .setLoggerName(loggerNameReadOnly)
+                .setLoggerFqcn("LoggerNameLevelRewritePolicyTest.testUpdate()")
+                .setLevel(Level.WARN)
+                .setMessage(new SimpleMessage("Test"))
+                .setThrown(new RuntimeException("test"))
+                .setThreadName("none")
+                .setTimeMillis(1)
+                .build();
         rewritten = updatePolicy.rewrite(logEvent);
         assertEquals(Level.WARN, rewritten.getLevel());
     }

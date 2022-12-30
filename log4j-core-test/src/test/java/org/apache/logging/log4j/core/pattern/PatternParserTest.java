@@ -26,12 +26,11 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
 import org.apache.logging.log4j.core.time.SystemNanoClock;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,11 +93,11 @@ public class PatternParserTest {
     public void testCustomPattern() {
         final List<PatternFormatter> formatters = parser.parse(customPattern);
         assertNotNull(formatters);
-        final StringMap mdc = ContextDataFactory.createContextData();
+        final StringMap mdc = new SortedArrayStringMap();
         mdc.putValue("loginId", "Fred");
         final Throwable t = new Throwable();
         final StackTraceElement[] elements = t.getStackTrace();
-        final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
+        final var event = LogEvent.builder() //
                 .setLoggerName("org.apache.logging.log4j.PatternParserTest") //
                 .setMarker(MarkerManager.getMarker("TEST")) //
                 .setLoggerFqcn(Logger.class.getName()) //
@@ -107,7 +106,7 @@ public class PatternParserTest {
                 .setContextData(mdc) //
                 .setThreadName("Thread1") //
                 .setSource(elements[0])
-                .setTimeMillis(System.currentTimeMillis()).build();
+                .setTimeMillis(System.currentTimeMillis()).get();
         final StringBuilder buf = new StringBuilder();
         for (final PatternFormatter formatter : formatters) {
             formatter.format(event, buf);
@@ -121,7 +120,7 @@ public class PatternParserTest {
     public void testPatternTruncateFromBeginning() {
         final List<PatternFormatter> formatters = parser.parse(patternTruncateFromBeginning);
         assertNotNull(formatters);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("org.apache.logging.log4j.PatternParserTest") //
                 .setLoggerFqcn(Logger.class.getName()) //
                 .setLevel(Level.INFO) //
@@ -142,7 +141,7 @@ public class PatternParserTest {
     public void testPatternTruncateFromEnd() {
         final List<PatternFormatter> formatters = parser.parse(patternTruncateFromEnd);
         assertNotNull(formatters);
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("org.apache.logging.log4j.PatternParserTest") //
                 .setLoggerFqcn(Logger.class.getName()) //
                 .setLevel(Level.INFO) //
@@ -170,7 +169,7 @@ public class PatternParserTest {
         assertNotNull(formatters);
         final Throwable t = new Throwable();
         final StackTraceElement[] elements = t.getStackTrace();
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("a.b.c") //
                 .setLoggerFqcn(Logger.class.getName()) //
                 .setLevel(Level.INFO) //
@@ -205,7 +204,7 @@ public class PatternParserTest {
         assertNotNull(formatters);
         final Throwable t = new Throwable();
         t.getStackTrace();
-        final LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = LogEvent.builder() //
                 .setLoggerName("org.apache.logging.log4j.PatternParserTest") //
                 .setMarker(MarkerManager.getMarker("TEST")) //
                 .setLoggerFqcn(Logger.class.getName()) //
@@ -341,9 +340,9 @@ public class PatternParserTest {
         assertNotNull(formatters);
         assertEquals(1, formatters.size());
 
-        final StringMap mdc = ContextDataFactory.createContextData();
+        final StringMap mdc = new SortedArrayStringMap();
         mdc.putValue("var", "1234");
-        final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
+        final var event = LogEvent.builder() //
             .setContextData(mdc).build();
         final StringBuilder buf = new StringBuilder();
         formatters.get(0).format(event, buf);

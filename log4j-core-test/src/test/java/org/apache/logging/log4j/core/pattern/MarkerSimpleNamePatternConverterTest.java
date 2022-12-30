@@ -20,12 +20,11 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests {@link MarkerSimpleNamePatternConverter}.
@@ -37,8 +36,8 @@ public class MarkerSimpleNamePatternConverterTest {
         final Message msg = new StructuredDataMessage("Test", "This is a test", "Audit");
         final Marker eventMarker = MarkerManager.getMarker("EVENT");
         final Marker auditMarker = MarkerManager.getMarker("AUDIT").setParents(eventMarker);
-        final LogEvent event = Log4jLogEvent.newBuilder().setLoggerName("MyLogger").setMarker(auditMarker)
-                .setLevel(Level.DEBUG).setMessage(msg).build();
+        final LogEvent event = LogEvent.builder().setLoggerName("MyLogger").setMarker(auditMarker)
+                .setLevel(Level.DEBUG).setMessage(msg).get();
         final StringBuilder sb = new StringBuilder();
         final MarkerSimpleNamePatternConverter converter = MarkerSimpleNamePatternConverter.newInstance(null);
         converter.format(event, sb);

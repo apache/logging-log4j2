@@ -16,28 +16,27 @@
  */
 package org.apache.log4j.pattern;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Log4j1MdcPatternConverterTest {
 
     @Test
     public void testConverter0() {
-        final StringMap contextMap = ContextDataFactory.createContextData(0);
+        final StringMap contextMap = new SortedArrayStringMap(0);
         final String expected = "{}";
         test(contextMap, expected, null);
     }
 
     @Test
     public void testConverter1() {
-        final StringMap contextMap = ContextDataFactory.createContextData(1);
+        final StringMap contextMap = new SortedArrayStringMap(1);
         contextMap.putValue("key1", "value1");
         final String expected = "{{key1,value1}}";
         test(contextMap, expected, null);
@@ -45,7 +44,7 @@ public class Log4j1MdcPatternConverterTest {
 
     @Test
     public void testConverter2() {
-        final StringMap contextMap = ContextDataFactory.createContextData(2);
+        final StringMap contextMap = new SortedArrayStringMap(2);
         contextMap.putValue("key1", "value1");
         contextMap.putValue("key2", "value2");
         final String expected = "{{key1,value1}{key2,value2}}";
@@ -54,7 +53,7 @@ public class Log4j1MdcPatternConverterTest {
 
     @Test
     public void testConverterWithKey() {
-        final StringMap contextMap = ContextDataFactory.createContextData(2);
+        final StringMap contextMap = new SortedArrayStringMap(2);
         contextMap.putValue("key1", "value1");
         contextMap.putValue("key2", "value2");
         final String expected = "value1";
@@ -62,12 +61,12 @@ public class Log4j1MdcPatternConverterTest {
     }
 
     private void test(final StringMap contextMap, final String expected, final String[] options) {
-        final LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = LogEvent.builder()
                 .setLoggerName("MyLogger")
                 .setLevel(Level.DEBUG)
                 .setMessage(new SimpleMessage("Hello"))
                 .setContextData(contextMap)
-                .build();
+                .get();
         final StringBuilder sb = new StringBuilder();
         final Log4j1MdcPatternConverter converter = Log4j1MdcPatternConverter.newInstance(options);
         converter.format(event, sb);

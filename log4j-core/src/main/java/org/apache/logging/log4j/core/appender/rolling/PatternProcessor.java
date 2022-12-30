@@ -16,9 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.pattern.ArrayPatternConverter;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
@@ -27,12 +32,6 @@ import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Parses the rollover pattern.
@@ -238,9 +237,9 @@ public class PatternProcessor {
 
     public void updateTime() {
         if (nextFileTime != 0 || !isTimeBased) {
-			prevFileTime = nextFileTime;
-			currentFileTime = 0;
-		}
+            prevFileTime = nextFileTime;
+            currentFileTime = 0;
+        }
     }
 
     private long debugGetNextTime(final long nextTime) {
@@ -293,12 +292,12 @@ public class PatternProcessor {
                                      final Object obj) {
         // LOG4J2-628: we deliberately use System time, not the log4j.Clock time
         // for creating the file name of rolled-over files.
-		LOGGER.debug("Formatting file name. useCurrentTime={}, currentFileTime={}, prevFileTime={}, nextFileTime={}",
-			useCurrentTime, currentFileTime, prevFileTime, nextFileTime);
-		final long time = useCurrentTime ? currentFileTime != 0 ? currentFileTime : System.currentTimeMillis() :
+        LOGGER.debug("Formatting file name. useCurrentTime={}, currentFileTime={}, prevFileTime={}, nextFileTime={}",
+            useCurrentTime, currentFileTime, prevFileTime, nextFileTime);
+        final long time = useCurrentTime ? currentFileTime != 0 ? currentFileTime : System.currentTimeMillis() :
                 prevFileTime != 0 ? prevFileTime : System.currentTimeMillis();
         formatFileName(buf, new Date(time), obj);
-        final LogEvent event = new Log4jLogEvent.Builder().setTimeMillis(time).build();
+        final LogEvent event = LogEvent.builder().setTimeMillis(time).toImmutable();
         final String fileName = subst.replace(event, buf);
         buf.setLength(0);
         buf.append(fileName);

@@ -16,19 +16,20 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.DefaultContextDataFactory;
+import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,6 +47,8 @@ public class DynamicThresholdFilterTest {
                 .setKey("userid")
                 .setPairs(pairs)
                 .setDefaultThreshold(Level.ERROR)
+                .setContextDataFactory(new DefaultContextDataFactory())
+                .setContextDataInjector(new ThreadContextDataInjector.ForDefaultThreadContextMap())
                 .get();
         filter.start();
         assertTrue(filter.isStarted());
@@ -54,9 +57,9 @@ public class DynamicThresholdFilterTest {
         ThreadContext.clearMap();
         ThreadContext.put("userid", "JohnDoe");
         ThreadContext.put("organization", "apache");
-        LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.DEBUG).setMessage(new SimpleMessage("Test")).build();
+        LogEvent event = LogEvent.builder().setLevel(Level.DEBUG).setMessage(new SimpleMessage("Test")).get();
         assertSame(Filter.Result.DENY, filter.filter(event));
-        event = Log4jLogEvent.newBuilder().setLevel(Level.ERROR).setMessage(new SimpleMessage("Test")).build();
+        event = LogEvent.builder().setLevel(Level.ERROR).setMessage(new SimpleMessage("Test")).get();
         assertSame(Filter.Result.NEUTRAL, filter.filter(event));
         ThreadContext.clearMap();
     }
@@ -74,6 +77,8 @@ public class DynamicThresholdFilterTest {
                 .setDefaultThreshold(Level.ERROR)
                 .setOnMatch(Filter.Result.ACCEPT)
                 .setOnMismatch(Filter.Result.NEUTRAL)
+                .setContextDataFactory(new DefaultContextDataFactory())
+                .setContextDataInjector(new ThreadContextDataInjector.ForDefaultThreadContextMap())
                 .get();
         filter.start();
         assertTrue(filter.isStarted());

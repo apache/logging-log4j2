@@ -29,7 +29,11 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.*;
+import org.apache.logging.log4j.core.AbstractLogEvent;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -50,7 +54,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @UsingAnyThreadContext
 public class HtmlLayoutTest {
     private static class MyLogEvent extends AbstractLogEvent {
-        private static final long serialVersionUID = 0;
 
         @Override
         public Instant getInstant() {

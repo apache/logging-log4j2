@@ -16,13 +16,12 @@
  */
 package org.apache.logging.log4j.jackson.xml;
 
-import org.apache.logging.log4j.jackson.ContextDataAsEntryListDeserializer;
-import org.apache.logging.log4j.jackson.XmlConstants;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import org.apache.logging.log4j.jackson.ContextDataAsEntryListDeserializer;
+import org.apache.logging.log4j.jackson.XmlConstants;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * <pre>
@@ -36,8 +35,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  * </pre>
  */
 public abstract class LogEventWithContextListXmlMixIn extends AbstractLogEventXmlMixIn {
-
-    private static final long serialVersionUID = 1L;
 
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
     @JsonSerialize(using = ContextDataAsEntryListXmlSerializer.class)

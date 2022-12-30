@@ -40,24 +40,23 @@ import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.layout.AbstractStringLayout;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.core.util.StringBuilderWriter;
-import org.apache.logging.log4j.jackson.XmlConstants;
-import org.apache.logging.log4j.util.Strings;
-
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.impl.ImmutableLogEvent;
+import org.apache.logging.log4j.core.layout.AbstractStringLayout;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.util.KeyValuePair;
+import org.apache.logging.log4j.core.util.StringBuilderWriter;
+import org.apache.logging.log4j.jackson.XmlConstants;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.util.Strings;
 
 abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
@@ -254,10 +253,10 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
     protected static final String COMPACT_EOL = Strings.EMPTY;
     private static LogEvent convertMutableToLog4jEvent(final LogEvent event) {
-        // TODO Jackson-based layouts have certain filters set up for Log4jLogEvent.
+        // TODO Jackson-based layouts have certain filters set up for ImmutableLogEvent.
         // TODO Need to set up the same filters for MutableLogEvent but don't know how...
         // This is a workaround.
-        return event instanceof Log4jLogEvent ? event : Log4jLogEvent.createMemento(event);
+        return event instanceof ImmutableLogEvent ? event : event.copy();
     }
     private static ResolvableKeyValuePair[] prepareAdditionalFields(final Configuration config,
             final KeyValuePair[] additionalFields) {

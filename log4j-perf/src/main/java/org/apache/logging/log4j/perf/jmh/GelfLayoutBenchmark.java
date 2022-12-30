@@ -24,7 +24,6 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.NullConfiguration;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
@@ -64,7 +63,7 @@ public class GelfLayoutBenchmark {
         final StackTraceElement location = null;
         final long timestamp = 12345678;
 
-        return Log4jLogEvent.newBuilder() //
+        return LogEvent.builder() //
                 .setLoggerName("name(ignored)") //
                 .setMarker(marker) //
                 .setLoggerFqcn(fqcn) //
@@ -76,7 +75,7 @@ public class GelfLayoutBenchmark {
                 .setThreadName(threadName) //
                 .setSource(location) //
                 .setTimeMillis(timestamp) //
-                .build();
+                .get();
     }
 
     Appender appender;

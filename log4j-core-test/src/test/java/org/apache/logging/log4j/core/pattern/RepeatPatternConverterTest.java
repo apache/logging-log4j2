@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
@@ -39,10 +38,10 @@ public class RepeatPatternConverterTest {
         converter.format(null, sb);
         assertEquals(expected, sb.toString());
         sb.setLength(0);
-        LogEvent event = Log4jLogEvent.newBuilder() //
+        LogEvent event = LogEvent.builder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
-                .setMessage(new SimpleMessage("Hello")).build();
+                .setMessage(new SimpleMessage("Hello")).get();
         converter.format(event, sb);
         assertEquals(expected, sb.toString());
     }

@@ -16,14 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
-import org.assertj.core.api.AbstractStringAssert;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
@@ -36,6 +28,13 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
+import org.assertj.core.api.AbstractStringAssert;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -321,8 +320,7 @@ class StackTraceStringResolverTest {
                     .build();
 
             // Create the log event.
-            final LogEvent logEvent = Log4jLogEvent
-                    .newBuilder()
+            final LogEvent logEvent = LogEvent.builder()
                     .setThrown(exception)
                     .build();
 
@@ -392,8 +390,7 @@ class StackTraceStringResolverTest {
 
             // Create the log event.
             Throwable exception = exception1();
-            final LogEvent logEvent = Log4jLogEvent
-                    .newBuilder()
+            final LogEvent logEvent = LogEvent.builder()
                     .setThrown(exception)
                     .build();
 
@@ -537,8 +534,7 @@ class StackTraceStringResolverTest {
                     .build();
 
             // Create the log event.
-            final LogEvent logEvent = Log4jLogEvent
-                    .newBuilder()
+            final LogEvent logEvent = LogEvent.builder()
                     .setThrown(parentError)
                     .build();
 
@@ -598,8 +594,7 @@ class StackTraceStringResolverTest {
     void nonAscii_utf8_method_name_should_get_serialized() {
 
         // Create the log event.
-        final LogEvent logEvent = Log4jLogEvent
-                .newBuilder()
+        final LogEvent logEvent = LogEvent.builder()
                 .setThrown(NonAsciiUtf8MethodNameContainingException.INSTANCE)
                 .build();
 

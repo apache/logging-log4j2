@@ -16,19 +16,18 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.MutableThreadContextStack;
-import org.apache.logging.log4j.spi.ThreadContextStack;
-import org.apache.logging.log4j.util.StringMap;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.ContextDataFactory2;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.spi.MutableThreadContextStack;
+import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.util.StringMap;
 
 final class LogEventFixture {
 
@@ -54,8 +53,7 @@ final class LogEventFixture {
         final String loggerFqcn = "f.q.c.n" + id;
         final String loggerName = "a.B" + id;
         final long nanoTime = timeMillis * 2;
-        return Log4jLogEvent
-                .newBuilder()
+        return LogEvent.builder()
                 .setLoggerName(loggerName)
                 .setLoggerFqcn(loggerFqcn)
                 .setLevel(level)
@@ -114,8 +112,7 @@ final class LogEventFixture {
         final long nanoTime = timeMillis * 2;
 
         // Create the event.
-        return Log4jLogEvent
-                .newBuilder()
+        return LogEvent.builder()
                 .setLoggerName(loggerName)
                 .setLoggerFqcn(loggerFqcn)
                 .setLevel(level)
@@ -134,7 +131,7 @@ final class LogEventFixture {
     }
 
     private static StringMap createContextData(final String id) {
-        final StringMap contextData = ContextDataFactory.createContextData();
+        final StringMap contextData = ContextDataFactory2.createContextData();
         contextData.putValue("MDC.String." + id, "String");
         contextData.putValue("MDC.BigDecimal." + id, BigDecimal.valueOf(Math.PI));
         contextData.putValue("MDC.Integer." + id, 10);
