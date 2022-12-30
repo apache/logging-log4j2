@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -28,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * Test class loading deadlock condition from the LOG4J2-1457
  */
 @Tag("async")
-@SetSystemProperty(key = Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME, value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
+@ContextSelectorType(AsyncLoggerContextSelector.class)
 @SetSystemProperty(key = Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE, value = "128")
 @SetSystemProperty(key = Log4jProperties.CONFIG_LOCATION, value = "AsyncLoggerConsoleTest.xml")
 public class AsyncLoggerClassLoadDeadlockTest {
