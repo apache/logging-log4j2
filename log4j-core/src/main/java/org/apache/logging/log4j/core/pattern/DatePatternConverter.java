@@ -55,6 +55,10 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         public String toPattern() {
             return null;
         }
+
+        public TimeZone getTimeZone() {
+            return TimeZone.getDefault();
+        }
     }
 
     private static final class PatternFormatter extends Formatter {
@@ -85,6 +89,11 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         @Override
         public String toPattern() {
             return fastDateFormat.getPattern();
+        }
+
+        @Override
+        public TimeZone getTimeZone() {
+            return fastDateFormat.getTimeZone();
         }
     }
 
@@ -119,6 +128,11 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         @Override
         public String toPattern() {
             return fixedDateFormat.getFormat();
+        }
+
+        @Override
+        public TimeZone getTimeZone() {
+            return fixedDateFormat.getTimeZone();
         }
     }
 
@@ -356,4 +370,12 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         return formatter.toPattern();
     }
 
+    /**
+     * Gets the timezone used by this date format.
+     *
+     * @return the timezone used by this date format.
+     */
+    public TimeZone getTimeZone() {
+        return formatter.getTimeZone();
+    }
 }
