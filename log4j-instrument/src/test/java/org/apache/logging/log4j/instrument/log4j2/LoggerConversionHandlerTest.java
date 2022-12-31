@@ -59,7 +59,8 @@ public class LoggerConversionHandlerTest {
 
     static Stream<String> testLocationConverter() {
         return Stream.of("testFatal", "testError", "testWarn", "testInfo", "testDebug", "testLog", "testFrames",
-                "testPrintf", "testLogBuilder", "testPassthrough", "testCatchingThrowing");
+                "testPrintf", "testLogBuilder", "testPassthrough", "testCatchingThrowing", "testTraceEntry",
+                "testTraceExit");
     }
 
     @ParameterizedTest

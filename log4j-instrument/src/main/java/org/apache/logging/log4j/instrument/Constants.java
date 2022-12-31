@@ -34,6 +34,7 @@ public class Constants {
 
     // Log4j2 types
     public static final Type ENTRY_MESSAGE_TYPE = Type.getObjectType("org/apache/logging/log4j/message/EntryMessage");
+    public static final Type EXIT_MESSAGE_TYPE = Type.getObjectType("org/apache/logging/log4j/message/ExitMessage");
     public static final Type FLOW_MESSAGE_FACTORY_TYPE = Type
             .getObjectType("org/apache/logging/log4j/message/FlowMessageFactory");
     public static final Type LOG_BUILDER_TYPE = Type.getObjectType("org/apache/logging/log4j/LogBuilder");
@@ -65,6 +66,8 @@ public class Constants {
             Type.getMethodDescriptor(LOG_BUILDER_TYPE, MARKER_TYPE));
     public static final Method WITH_THROWABLE_METHOD = new Method("withThrowable",
             Type.getMethodDescriptor(LOG_BUILDER_TYPE, THROWABLE_TYPE));
+    public static final Method LOG_AND_GET_METHOD = new Method("logAndGet",
+            Type.getMethodDescriptor(MESSAGE_TYPE, SUPPLIER_TYPE));
 
     private Constants() {
         // prevent instantiation

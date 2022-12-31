@@ -25,9 +25,12 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.message.EntryMessage;
+import org.apache.logging.log4j.message.ExitMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.util.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,6 +40,7 @@ public class LoggerConversionHandlerExample {
 
     private static final CharSequence CHAR_SEQUENCE = "(CharSequence)";
     private static final Message MESSAGE = new SimpleMessage("(Message)");
+    private static final EntryMessage ENTRY_MESSAGE = LoggingSystem.getFlowMessageFactory().newEntryMessage(MESSAGE);
     private static final String STRING = "(String)";
     private static final Object OBJECT = "(Object)";
     private static final Object P0 = "(p0)";
@@ -56,7 +60,7 @@ public class LoggerConversionHandlerExample {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private static final int referenceLine = 59;
+    private static final int referenceLine = 63;
 
     public void testFatal(final ListAppender app) {
         app.clear();
@@ -846,7 +850,83 @@ public class LoggerConversionHandlerExample {
         assertLocationEquals(methodName, lineNumber += 3, app);
     }
 
-    private static void assertLocationEquals(final String methodName, final int lineNumber, final ListAppender app) {
+    public void testTraceEntry(final ListAppender app) {
+        app.clear();
+        final String methodName = "testTraceEntry";
+        int lineNumber = referenceLine + 793; // Current line
+        EntryMessage entryMessage = logger.traceEntry();
+        LogEvent event = assertLocationEquals(methodName, ++lineNumber, app);
+        assertThat(event.getMarker()).isEqualTo(AbstractLogger.ENTRY_MARKER);
+        assertThat(entryMessage.getMessage()).isNull();
+
+        entryMessage = logger.traceEntry(MESSAGE);
+        event = assertLocationEquals(methodName, lineNumber += 5, app);
+        assertThat(event.getMarker()).isEqualTo(AbstractLogger.ENTRY_MARKER);
+        assertThat(entryMessage.getMessage()).isEqualTo(MESSAGE);
+
+        entryMessage = logger.traceEntry("param1 = {}", PARRAY);
+        event = assertLocationEquals(methodName, lineNumber += 5, app);
+        assertThat(event.getMarker()).isEqualTo(AbstractLogger.ENTRY_MARKER);
+        assertThat(entryMessage.getFormattedMessage()).isEqualTo("Enter param1 = (...)");
+
+        entryMessage = logger.traceEntry(() -> P0, () -> P1);
+        event = assertLocationEquals(methodName, lineNumber += 5, app);
+        assertThat(event.getMarker()).isEqualTo(AbstractLogger.ENTRY_MARKER);
+        assertThat(entryMessage.getFormattedMessage()).isEqualTo("Enter params((p0), (p1))");
+
+        entryMessage = logger.traceEntry("param1 = {}, param2 = {}", () -> P0, () -> P1);
+        event = assertLocationEquals(methodName, lineNumber += 5, app);
+        assertThat(event.getMarker()).isEqualTo(AbstractLogger.ENTRY_MARKER);
+        assertThat(entryMessage.getFormattedMessage()).isEqualTo("Enter param1 = (p0), param2 = (p1)");
+    }
+
+    public void testTraceExit(final ListAppender app) {
+        app.clear();
+        final String methodName = "testTraceExit";
+        int lineNumber = referenceLine + 823; // Current line
+        logger.traceExit();
+        LogEvent event = assertLocationEquals(methodName, ++lineNumber, app);
+        assertThat(event.getMarker()).isEqualTo(AbstractLogger.EXIT_MARKER);
+        assertThat(event.getMessage()).isInstanceOf(ExitMessage.class);
+        assertThat(event.getMessage().getFormattedMessage()).isEqualTo("Exit");
+
+        logger.traceExit(ENTRY_MESSAGE);
+        event = assertLocationEquals(methodName, lineNumber += 6, app);
+        assertThat(event.getMarker()).isEqualTo(AbstractLogger.EXIT_MARKER);
+        assertThat(event.getMessage()).isInstanceOf(ExitMessage.class);
+        assertThat(event.getMessage().getFormattedMessage()).isEqualTo("Exit (Message)");
+
+        Object result = logger.traceExit(OBJECT);
+        assertThat(result).isSameAs(OBJECT);
+        event = assertLocationEquals(methodName, lineNumber += 6, app);
+        assertThat(event.getMarker()).isEqualTo(AbstractLogger.EXIT_MARKER);
+        assertThat(event.getMessage()).isInstanceOf(ExitMessage.class);
+        assertThat(event.getMessage().getFormattedMessage()).isEqualTo("Exit with((Object))");
+
+        result = logger.traceExit("result = {}", OBJECT);
+        assertThat(result).isSameAs(OBJECT);
+        event = assertLocationEquals(methodName, lineNumber += 7, app);
+        assertThat(event.getMarker()).isEqualTo(AbstractLogger.EXIT_MARKER);
+        assertThat(event.getMessage()).isInstanceOf(ExitMessage.class);
+        assertThat(event.getMessage().getFormattedMessage()).isEqualTo("Exit result = (Object)");
+
+        result = logger.traceExit(MESSAGE, OBJECT);
+        assertThat(result).isSameAs(OBJECT);
+        event = assertLocationEquals(methodName, lineNumber += 7, app);
+        assertThat(event.getMarker()).isEqualTo(AbstractLogger.EXIT_MARKER);
+        assertThat(event.getMessage()).isInstanceOf(ExitMessage.class);
+        assertThat(event.getMessage().getFormattedMessage()).isEqualTo("Exit (Message): (Object)");
+
+        result = logger.traceExit(ENTRY_MESSAGE, OBJECT);
+        assertThat(result).isSameAs(OBJECT);
+        event = assertLocationEquals(methodName, lineNumber += 7, app);
+        assertThat(event.getMarker()).isEqualTo(AbstractLogger.EXIT_MARKER);
+        assertThat(event.getMessage()).isInstanceOf(ExitMessage.class);
+        assertThat(event.getMessage().getFormattedMessage()).isEqualTo("Exit (Message): (Object)");
+    }
+
+    private static LogEvent assertLocationEquals(final String methodName, final int lineNumber,
+            final ListAppender app) {
         final List<LogEvent> events = app.getEvents();
         assertThat(events).hasSize(1);
         final LogEvent event = events.get(0);
@@ -858,5 +938,6 @@ public class LoggerConversionHandlerExample {
         assertThat(location.getFileName()).isEqualTo("LoggerConversionHandlerExample.java");
         assertThat(location.getLineNumber()).isEqualTo(lineNumber);
         app.clear();
+        return event;
     }
 }

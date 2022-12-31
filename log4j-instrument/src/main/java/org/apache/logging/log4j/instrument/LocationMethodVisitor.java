@@ -139,7 +139,7 @@ public class LocationMethodVisitor extends GeneratorAdapter {
 
     public void invokeSupplierLambda(SupplierLambdaType type) {
         invokeDynamic("get",
-                type.getMethodDescriptor(),
+                type.getInvokedMethodDescriptor(),
                 LAMBDA_METAFACTORY_HANDLE,
                 SUPPLIER_OF_OBJECT_TYPE,
                 locationClassVisitor.createLambda(type),

@@ -18,9 +18,14 @@ package org.apache.logging.log4j.instrument;
 
 import org.objectweb.asm.Type;
 
+import static org.apache.logging.log4j.instrument.Constants.ENTRY_MESSAGE_TYPE;
+import static org.apache.logging.log4j.instrument.Constants.LOGGER_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.MESSAGE_SUPPLIER_TYPE;
+import static org.apache.logging.log4j.instrument.Constants.MESSAGE_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.OBJECT_ARRAY_TYPE;
+import static org.apache.logging.log4j.instrument.Constants.OBJECT_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.STRING_TYPE;
+import static org.apache.logging.log4j.instrument.Constants.SUPPLIER_ARRAY_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.SUPPLIER_TYPE;
 
 /**
@@ -29,15 +34,37 @@ import static org.apache.logging.log4j.instrument.Constants.SUPPLIER_TYPE;
  */
 public enum SupplierLambdaType {
     MESSAGE_SUPPLIER(MESSAGE_SUPPLIER_TYPE),
-    FORMATTED_MESSAGE(STRING_TYPE, OBJECT_ARRAY_TYPE);
+    FORMATTED_MESSAGE(STRING_TYPE, OBJECT_ARRAY_TYPE),
+    ENTRY_MESSAGE_MESSAGE(LOGGER_TYPE, MESSAGE_TYPE),
+    ENTRY_MESSAGE_STRING_OBJECTS(LOGGER_TYPE, STRING_TYPE, OBJECT_ARRAY_TYPE),
+    EXIT_MESSAGE_ENTRY_MESSAGE(LOGGER_TYPE, ENTRY_MESSAGE_TYPE),
+    EXIT_MESSAGE_MESSAGE(LOGGER_TYPE, MESSAGE_TYPE),
+    EXIT_MESSAGE_OBJECT_ENTRY_MESSAGE(LOGGER_TYPE, OBJECT_TYPE, ENTRY_MESSAGE_TYPE),
+    EXIT_MESSAGE_OBJECT_MESSAGE(LOGGER_TYPE, OBJECT_TYPE, MESSAGE_TYPE),
+    EXIT_MESSAGE_STRING_OBJECT(LOGGER_TYPE, STRING_TYPE, OBJECT_TYPE),
+    ENTRY_MESSAGE_STRING_SUPPLIERS(LOGGER_TYPE, STRING_TYPE, SUPPLIER_ARRAY_TYPE);
 
-    private final Type methodType;
+    private final Type[] argumentTypes;
 
-    private SupplierLambdaType(final Type... arguments) {
-        this.methodType = Type.getMethodType(SUPPLIER_TYPE, arguments);
+    private SupplierLambdaType(final Type... argumentTypes) {
+        this.argumentTypes = argumentTypes;
     }
 
-    public String getMethodDescriptor() {
-        return methodType.getDescriptor();
+    /**
+     * Returns the descriptor of the invokedynamic call.
+     */
+    public String getInvokedMethodDescriptor() {
+        return Type.getMethodDescriptor(SUPPLIER_TYPE, argumentTypes);
+    }
+
+    /**
+     * Returns the descriptor of the implementation method.
+     */
+    public String getImplementationMethodDescriptor() {
+        return Type.getMethodDescriptor(MESSAGE_TYPE, argumentTypes);
+    }
+
+    public Type[] getArgumentTypes() {
+        return argumentTypes;
     }
 }

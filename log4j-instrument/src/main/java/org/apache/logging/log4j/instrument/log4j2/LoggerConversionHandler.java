@@ -33,11 +33,15 @@ import static org.apache.logging.log4j.instrument.Constants.AT_INFO_METHOD;
 import static org.apache.logging.log4j.instrument.Constants.AT_LEVEL_METHOD;
 import static org.apache.logging.log4j.instrument.Constants.AT_TRACE_METHOD;
 import static org.apache.logging.log4j.instrument.Constants.AT_WARN_METHOD;
+import static org.apache.logging.log4j.instrument.Constants.ENTRY_MESSAGE_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.LEVEL_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.LOGGER_TYPE;
+import static org.apache.logging.log4j.instrument.Constants.LOG_AND_GET_METHOD;
 import static org.apache.logging.log4j.instrument.Constants.LOG_BUILDER_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.MARKER_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.MESSAGE_SUPPLIER_TYPE;
+import static org.apache.logging.log4j.instrument.Constants.MESSAGE_TYPE;
+import static org.apache.logging.log4j.instrument.Constants.OBJECT_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.STRING_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.SUPPLIER_ARRAY_TYPE;
 import static org.apache.logging.log4j.instrument.Constants.SUPPLIER_TYPE;
@@ -49,6 +53,8 @@ public class LoggerConversionHandler implements ClassConversionHandler {
 
     private static final String CATCHING = "Catching";
     private static final String CATCHING_MARKER = "CATCHING_MARKER";
+    private static final String ENTRY_MARKER = "ENTRY_MARKER";
+    private static final String EXIT_MARKER = "EXIT_MARKER";
     private static final String THROWING = "Throwing";
     private static final String THROWING_MARKER = "THROWING_MARKER";
     // Argument list of `LogBuilder.log(String, Supplier...)`
@@ -60,6 +66,7 @@ public class LoggerConversionHandler implements ClassConversionHandler {
     private static final Method LOG_BUILDER_LOG_STRING_METHOD = new Method("log",
             Type.getMethodDescriptor(Type.VOID_TYPE, STRING_TYPE));
     private static final Type ABSTRACT_LOGGER_TYPE = Type.getObjectType("org/apache/logging/log4j/spi/AbstractLogger");
+    private static final Type[] MESSAGE_OBJECT_ARRAY = { MESSAGE_TYPE, OBJECT_TYPE };
 
     @Override
     public String getOwner() {
@@ -138,7 +145,11 @@ public class LoggerConversionHandler implements ClassConversionHandler {
                 mv.invokeInterface(LOGGER_TYPE, new Method(name, descriptor));
                 break;
             case "traceEntry":
+                handleTraceEntry(mv, descriptor);
+                break;
             case "traceExit":
+                handleTraceExit(mv, descriptor);
+                break;
             default:
                 throw new ConversionException("Unsupported method 'org.apache.logging.log4j.Logger#" + name + "'.");
         }
@@ -242,4 +253,90 @@ public class LoggerConversionHandler implements ClassConversionHandler {
         }
     }
 
+    private void handleTraceEntry(LocationMethodVisitor mv, String descriptor) {
+        final Type[] types = Type.getArgumentTypes(descriptor);
+        final int[] vars = new int[types.length];
+        for (int i = vars.length - 1; i >= 0; i--) {
+            vars[i] = mv.nextLocal();
+            mv.storeLocal(vars[i]);
+        }
+        // only Logger on stack
+        mv.dup();
+        final int loggerIdx = mv.nextLocal();
+        mv.storeLocal(loggerIdx, LOGGER_TYPE);
+        mv.invokeInterface(LOGGER_TYPE, AT_TRACE_METHOD);
+        mv.storeLocation();
+        mv.getStatic(ABSTRACT_LOGGER_TYPE, ENTRY_MARKER, MARKER_TYPE);
+        mv.invokeInterface(LOG_BUILDER_TYPE, WITH_MARKER_METHOD);
+        mv.loadLocal(loggerIdx, LOGGER_TYPE);
+        if (types.length == 0) {
+            mv.push((String) null);
+            mv.push((String) null);
+            mv.invokeSupplierLambda(SupplierLambdaType.ENTRY_MESSAGE_STRING_OBJECTS);
+        } else if (types[0].equals(MESSAGE_TYPE)) {
+            mv.loadLocal(vars[0]);
+            mv.invokeSupplierLambda(SupplierLambdaType.ENTRY_MESSAGE_MESSAGE);
+        } else {
+            if (types.length == 1) {
+                mv.push((String) null);
+            }
+            for (int i = 0; i < vars.length; i++) {
+                mv.loadLocal(vars[i]);
+            }
+            final boolean usesSuppliers = types[types.length - 1].equals(SUPPLIER_ARRAY_TYPE);
+            mv.invokeSupplierLambda(usesSuppliers ? SupplierLambdaType.ENTRY_MESSAGE_STRING_SUPPLIERS
+                    : SupplierLambdaType.ENTRY_MESSAGE_STRING_OBJECTS);
+        }
+        mv.invokeInterface(LOG_BUILDER_TYPE, LOG_AND_GET_METHOD);
+    }
+
+    private void handleTraceExit(LocationMethodVisitor mv, String descriptor) {
+        final Type[] types = Type.getArgumentTypes(descriptor);
+        final int[] vars = new int[types.length];
+        for (int i = vars.length - 1; i >= 0; i--) {
+            vars[i] = mv.nextLocal();
+            mv.storeLocal(vars[i]);
+        }
+        // only Logger on stack
+        mv.dup();
+        final int loggerIdx = mv.nextLocal();
+        mv.storeLocal(loggerIdx, LOGGER_TYPE);
+        mv.invokeInterface(LOGGER_TYPE, AT_TRACE_METHOD);
+        mv.storeLocation();
+        mv.getStatic(ABSTRACT_LOGGER_TYPE, EXIT_MARKER, MARKER_TYPE);
+        mv.invokeInterface(LOG_BUILDER_TYPE, WITH_MARKER_METHOD);
+        mv.loadLocal(loggerIdx, LOGGER_TYPE);
+        if (types.length == 0) {
+            mv.push((String) null);
+            mv.push((String) null);
+            mv.invokeSupplierLambda(SupplierLambdaType.EXIT_MESSAGE_STRING_OBJECT);
+        } else if (Arrays.deepEquals(types, MESSAGE_OBJECT_ARRAY)) {
+            // Invert arguments
+            mv.loadLocal(vars[1]);
+            mv.loadLocal(vars[0]);
+            mv.invokeSupplierLambda(SupplierLambdaType.EXIT_MESSAGE_OBJECT_MESSAGE);
+        } else if (ENTRY_MESSAGE_TYPE.equals(types[0])) {
+            final boolean hasResult = types.length == 2;
+            if (hasResult) {
+                mv.loadLocal(vars[1]);
+            }
+            mv.loadLocal(vars[0]);
+            mv.invokeSupplierLambda(hasResult ? SupplierLambdaType.EXIT_MESSAGE_OBJECT_ENTRY_MESSAGE
+                    : SupplierLambdaType.EXIT_MESSAGE_ENTRY_MESSAGE);
+        } else {
+            final boolean hasFormat = STRING_TYPE.equals(types[0]);
+            if (hasFormat) {
+                mv.loadLocal(vars[0]);
+            } else {
+                mv.push((String) null);
+            }
+            mv.loadLocal(vars[hasFormat ? 1 : 0], OBJECT_TYPE);
+            mv.invokeSupplierLambda(SupplierLambdaType.EXIT_MESSAGE_STRING_OBJECT);
+        }
+        mv.invokeInterface(LOG_BUILDER_TYPE, LOG_BUILDER_LOG_SUPPLIER_METHOD);
+        // except void methods traceExit() and traceExit(EntryMessage)
+        if (types.length != 0 && (types.length > 1 || !ENTRY_MESSAGE_TYPE.equals(types[0]))) {
+            mv.loadLocal(vars[vars.length - 1]);
+        }
+    }
 }
