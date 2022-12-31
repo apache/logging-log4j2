@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import org.apache.logging.log4j.layout.template.json.util.RecyclerFactories;
-import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
+import org.apache.logging.log4j.util.RecyclerFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 

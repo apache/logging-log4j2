@@ -14,24 +14,27 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.util;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class DummyRecycler<V> implements Recycler<V> {
+public class ThreadLocalRecyclerFactory implements RecyclerFactory {
 
-    private final Supplier<V> supplier;
+    private static final ThreadLocalRecyclerFactory INSTANCE =
+            new ThreadLocalRecyclerFactory();
 
-    public DummyRecycler(final Supplier<V> supplier) {
-        this.supplier = supplier;
+    private ThreadLocalRecyclerFactory() {}
+
+    public static ThreadLocalRecyclerFactory getInstance() {
+        return INSTANCE;
     }
 
     @Override
-    public V acquire() {
-        return supplier.get();
+    public <V> Recycler<V> create(
+            final Supplier<V> supplier,
+            final Consumer<V> cleaner) {
+        return new ThreadLocalRecycler<>(supplier, cleaner);
     }
-
-    @Override
-    public void release(final V value) {}
 
 }

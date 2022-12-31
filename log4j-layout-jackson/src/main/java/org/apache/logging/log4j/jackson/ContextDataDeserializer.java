@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
  * <em>Consider this class private.</em>
  * </p>
  */
+@InternalApi
 public class ContextDataDeserializer extends StdDeserializer<StringMap> {
 
     private static final long serialVersionUID = 1L;

@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -31,8 +32,11 @@ import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.impl.DefaultContextDataFactory;
 import org.apache.logging.log4j.core.impl.ImmutableLogEvent;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
+import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -558,10 +562,13 @@ public class JsonLayoutTest {
         Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
         try {
             RingBufferLogEvent ringBufferEvent = new RingBufferLogEvent();
+            ContextDataFactory contextDataFactory = new DefaultContextDataFactory();
+            ContextDataInjector contextDataInjector = ThreadContextDataInjector.create(contextDataFactory);
             ringBufferEvent.setValues(
                     null, "a.B", null, "f.q.c.n", Level.DEBUG, message,
                     null, new SortedArrayStringMap(), ThreadContext.EMPTY_STACK, 1L,
-                    "threadName", 1, null, new SystemClock(), new DummyNanoClock());
+                    "threadName", 1, null, new SystemClock(), new DummyNanoClock(),
+                    contextDataFactory, contextDataInjector);
             final String str = layout.toSerializable(ringBufferEvent);
             final String expectedMessage = "Testing " + TestObj.TO_STRING_VALUE;
             assertThat(str, containsString("\"message\":\"" + expectedMessage + '"'));

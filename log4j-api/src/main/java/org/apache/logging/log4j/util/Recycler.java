@@ -14,27 +14,30 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.util;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+/**
+ * Strategy for recycling objects. This is primarily useful for heavyweight objects and buffers.
+ *
+ * @param <V> the recyclable type
+ * @since 3.0.0
+ */
+public interface Recycler<V> {
 
-public class ThreadLocalRecyclerFactory implements RecyclerFactory {
+    /**
+     * Acquires an instance of V. This may either be a fresh instance of V or a recycled instance of V.
+     * Recycled instances will be modified by their cleanup function before being returned.
+     *
+     * @return an instance of V to be used
+     */
+    V acquire();
 
-    private static final ThreadLocalRecyclerFactory INSTANCE =
-            new ThreadLocalRecyclerFactory();
-
-    private ThreadLocalRecyclerFactory() {}
-
-    public static ThreadLocalRecyclerFactory getInstance() {
-        return INSTANCE;
-    }
-
-    @Override
-    public <V> Recycler<V> create(
-            final Supplier<V> supplier,
-            final Consumer<V> cleaner) {
-        return new ThreadLocalRecycler<>(supplier, cleaner);
-    }
+    /**
+     * Releases an instance of V. This allows the instance to be recycled and later reacquired for new
+     * purposes.
+     *
+     * @param value an instance of V no longer being used
+     */
+    void release(V value);
 
 }

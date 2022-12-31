@@ -16,6 +16,20 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CodingErrorAction;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
@@ -26,25 +40,25 @@ import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.core.layout.TextEncoderHelper;
 import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.core.util.StringEncoder;
-import org.apache.logging.log4j.layout.template.json.resolver.*;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactory;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverInterceptor;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverStringSubstitutor;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolvers;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.layout.template.json.util.Recycler;
-import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
+import org.apache.logging.log4j.util.Recycler;
+import org.apache.logging.log4j.util.RecyclerFactory;
 import org.apache.logging.log4j.layout.template.json.util.Uris;
-import org.apache.logging.log4j.plugins.*;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.CodingErrorAction;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @Configurable(elementType = Layout.ELEMENT_TYPE)
 @Plugin
@@ -110,7 +124,7 @@ public class JsonTemplateLayout implements StringLayout {
 
         // Inject resolver factory and interceptor plugins.
         final List<EventResolverFactory> resolverFactories =
-                configuration.getComponent(new @Namespace(EventResolverFactory.CATEGORY) Key<>() {});
+                configuration.getInstance(new @Namespace(EventResolverFactory.CATEGORY) Key<>() {});
         final Map<String, EventResolverFactory> resolverFactoryByName =
                 resolverFactories.stream().collect(
                         Collectors.toMap(EventResolverFactory::getName, Function.identity(), (factory, conflictingFactory) -> {
@@ -120,7 +134,7 @@ public class JsonTemplateLayout implements StringLayout {
                             throw new IllegalArgumentException(message);
                         }, LinkedHashMap::new));
         final List<EventResolverInterceptor> resolverInterceptors =
-                configuration.getComponent(new @Namespace(EventResolverInterceptor.CATEGORY) Key<>() {});
+                configuration.getInstance(new @Namespace(EventResolverInterceptor.CATEGORY) Key<>() {});
         final EventResolverStringSubstitutor substitutor =
                 new EventResolverStringSubstitutor(configuration.getStrSubstitutor());
 

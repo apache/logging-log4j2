@@ -25,6 +25,9 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.util.DummyRecyclerFactory;
+import org.apache.logging.log4j.util.RecyclerFactory;
+import org.apache.logging.log4j.util.ThreadLocalRecyclerFactory;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.jctools.queues.MpmcArrayQueue;
 

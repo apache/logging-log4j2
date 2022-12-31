@@ -14,11 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.util;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Recycling strategy that caches instances in a ThreadLocal value to allow threads to reuse objects. This strategy
+ * may not be appropriate in workloads where units of work are independent of operating system threads such as
+ * reactive streams, coroutines, or virtual threads.
+ *
+ * @param <V> the recyclable type
+ */
 public class ThreadLocalRecycler<V> implements Recycler<V> {
 
     private final Consumer<V> cleaner;
@@ -34,6 +41,7 @@ public class ThreadLocalRecycler<V> implements Recycler<V> {
 
     @Override
     public V acquire() {
+        // TODO(ms): inspired by LOG4J2-2368, this could optionally support recursion detection
         final V value = holder.get();
         cleaner.accept(value);
         return value;

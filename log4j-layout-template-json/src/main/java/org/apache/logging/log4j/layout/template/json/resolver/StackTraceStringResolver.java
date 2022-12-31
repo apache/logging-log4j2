@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.layout.template.json.util.*;
+import org.apache.logging.log4j.util.Recycler;
+import org.apache.logging.log4j.util.RecyclerFactory;
 
 import java.util.List;
 import java.util.function.Supplier;

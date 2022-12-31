@@ -20,13 +20,14 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.ContextDataFactory2;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
 final class LogEventFixture {
@@ -131,12 +132,12 @@ final class LogEventFixture {
     }
 
     private static StringMap createContextData(final String id) {
-        final StringMap contextData = ContextDataFactory2.createContextData();
-        contextData.putValue("MDC.String." + id, "String");
-        contextData.putValue("MDC.BigDecimal." + id, BigDecimal.valueOf(Math.PI));
-        contextData.putValue("MDC.Integer." + id, 10);
-        contextData.putValue("MDC.Long." + id, Long.MAX_VALUE);
-        return contextData;
+        return new SortedArrayStringMap(Map.of(
+                "MDC.String." + id, "String",
+                "MDC.BigDecimal." + id, BigDecimal.valueOf(Math.PI),
+                "MDC.Integer." + id, 10,
+                "MDC.Long." + id, Long.MAX_VALUE
+        ));
     }
 
     private static ThreadContextStack createContextStack(final String id) {

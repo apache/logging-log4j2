@@ -14,12 +14,29 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.util;
 
-public interface Recycler<V> {
+import java.util.function.Supplier;
 
-    V acquire();
+/**
+ * Recycler strategy which doesn't recycle anything; all instances are freshly created.
+ *
+ * @param <V> the recyclable type
+ */
+public class DummyRecycler<V> implements Recycler<V> {
 
-    void release(V value);
+    private final Supplier<V> supplier;
+
+    public DummyRecycler(final Supplier<V> supplier) {
+        this.supplier = supplier;
+    }
+
+    @Override
+    public V acquire() {
+        return supplier.get();
+    }
+
+    @Override
+    public void release(final V value) {}
 
 }

@@ -20,6 +20,8 @@ import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.util.Recycler;
+
 public class QueueingRecycler<V> implements Recycler<V> {
 
     private final Supplier<V> supplier;
