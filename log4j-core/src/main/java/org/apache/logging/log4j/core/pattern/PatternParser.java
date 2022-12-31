@@ -113,7 +113,8 @@ public final class PatternParser {
      * @param expected
      *            The expected base Class of each Converter.
      */
-    public PatternParser(final Configuration config, final String converterKey, final Class<?> expected) {
+    public PatternParser(final Configuration config, final String converterKey,
+                         final Class<? extends PatternConverter> expected) {
         this(config, converterKey, expected, null);
     }
 
@@ -129,22 +130,24 @@ public final class PatternParser {
      * @param filterClass
      *            Filter the returned plugins after calling the plugin manager.
      */
-    public PatternParser(final Configuration config, final String converterKey, final Class<?> expectedClass,
-            final Class<?> filterClass) {
+    public PatternParser(final Configuration config, final String converterKey,
+                         final Class<? extends PatternConverter> expectedClass,
+                         final Class<? extends PatternConverter> filterClass) {
         this.config = config;
         final PluginNamespace plugins;
         final Key<PluginNamespace> pluginCategoryKey = PLUGIN_CATEGORY_KEY.withNamespace(converterKey);
         if (config == null) {
             plugins = DI.createInjector().getInstance(pluginCategoryKey);
         } else {
-            plugins = config.getComponent(pluginCategoryKey);
+            plugins = config.getInstance(pluginCategoryKey);
         }
 
         final Map<String, Class<? extends PatternConverter>> converters = new LinkedHashMap<>();
 
+        final Class<? extends PatternConverter> subclass = expectedClass != null ? expectedClass : PatternConverter.class;
         for (final PluginType<?> type : plugins) {
             try {
-                final Class<? extends PatternConverter> clazz = type.getPluginClass().asSubclass(PatternConverter.class);
+                final Class<? extends PatternConverter> clazz = type.getPluginClass().asSubclass(subclass);
                 if (filterClass != null && !filterClass.isAssignableFrom(clazz)) {
                     continue;
                 }
