@@ -195,8 +195,20 @@ public class Key<T> {
     public final String toString() {
         String string = toString;
         if (string == null) {
-            toString = string = String.format("Key{namespace='%s', name='%s', type=%s, qualifierType=%s}",
-                    namespace, name, type.getTypeName(), qualifierType != null ? qualifierType.getSimpleName() : Strings.EMPTY);
+            final StringBuilder sb = new StringBuilder();
+            if (Strings.isNotEmpty(namespace)) {
+                sb.append("@Namespace(\"").append(namespace).append("\") ");
+            }
+            if (Strings.isNotEmpty(name)) {
+                sb.append("@Named(\"").append(name).append("\") ");
+            }
+            if (qualifierType != null) {
+                sb.append('@').append(qualifierType.getSimpleName()).append(' ');
+            }
+            if (order != 0) {
+                sb.append("@Ordered(").append(order).append(") ");
+            }
+            toString = string = sb.append(type.getTypeName()).toString();
         }
         return string;
     }
@@ -205,6 +217,7 @@ public class Key<T> {
      * Creates a Key for the class.
      */
     public static <T> Key<T> forClass(final Class<T> clazz) {
+        // TODO: this should be able to reuse cached instances
         return builder()
                 .setType(clazz)
                 .setQualifierType(getQualifierType(clazz))
