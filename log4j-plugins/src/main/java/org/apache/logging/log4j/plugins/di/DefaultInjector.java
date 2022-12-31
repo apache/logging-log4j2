@@ -64,11 +64,14 @@ import org.apache.logging.log4j.plugins.validation.Constraint;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidationException;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
+import org.apache.logging.log4j.spi.ClassFactory;
 import org.apache.logging.log4j.spi.InstanceFactory;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util.PropertyResolver;
 import org.apache.logging.log4j.util.ServiceRegistry;
 import org.apache.logging.log4j.util.StringBuilders;
 
@@ -86,7 +89,7 @@ class DefaultInjector implements Injector {
         bindingMap = new BindingMap();
         bindingMap.put(KEY, () -> this);
         bindingMap.put(Key.forClass(InstanceFactory.class), () -> this);
-        scopes.put(Singleton.class, new SingletonScope());
+        scopes.put(Singleton.class, new SimpleScope("SingletonScoped"));
     }
 
     DefaultInjector(final DefaultInjector original) {
@@ -100,6 +103,11 @@ class DefaultInjector implements Injector {
 
     @Override
     public void init() {
+        // bridge into LoggingSystem and set up early bindings before invoking callback services
+        final LoggingSystem system = LoggingSystem.getInstance();
+        system.setInstanceFactory(this);
+        bindingMap.put(Key.forClass(PropertyResolver.class), system::propertyResolver);
+        bindingMap.put(Key.forClass(ClassFactory.class), system::getClassFactory);
         final List<InjectorCallback> callbacks = ServiceRegistry.getInstance()
                 .getServices(InjectorCallback.class, MethodHandles.lookup(), null);
         callbacks.sort(InjectorCallback.COMPARATOR);
@@ -258,7 +266,6 @@ class DefaultInjector implements Injector {
         }
 
         final Class<T> rawType = key.getRawType();
-        final Scope scope = getScopeForType(rawType);
 
         // @Namespace PluginNamespace injection
         if (rawType == PluginNamespace.class && !key.getNamespace().isEmpty()) {
@@ -310,7 +317,7 @@ class DefaultInjector implements Injector {
             injectMembers(key, node, instance, chain, debugLog);
             return instance;
         };
-        return bindingMap.merge(key, scope.get(key, instanceSupplier));
+        return bindingMap.merge(key, getScoped(getScopeType(rawType), key, instanceSupplier));
     }
 
     private Supplier<PluginNamespace> createPluginNamespaceFactory(final Key<PluginNamespace> key) {
@@ -326,7 +333,7 @@ class DefaultInjector implements Injector {
         return namespace.stream()
                 .filter(pluginType -> TypeUtil.isAssignable(type, pluginType.getPluginClass()))
                 .sorted(Comparator.comparing(PluginType::getPluginClass, OrderedComparator.INSTANCE))
-                .map(o -> Cast.cast(o));
+                .map(Cast::cast);
     }
 
     private <T> Stream<T> streamPluginInstancesFromNamespace(final Key<T> key) {
@@ -441,12 +448,10 @@ class DefaultInjector implements Injector {
         if (conflictingConverter != null) {
             final boolean overridable;
             if (converter instanceof Comparable) {
-                @SuppressWarnings("unchecked") final Comparable<TypeConverter<?>> comparableConverter =
-                        (Comparable<TypeConverter<?>>) converter;
+                final Comparable<TypeConverter<?>> comparableConverter = Cast.cast(converter);
                 overridable = comparableConverter.compareTo(conflictingConverter) < 0;
             } else if (conflictingConverter instanceof Comparable) {
-                @SuppressWarnings("unchecked") final Comparable<TypeConverter<?>> comparableConflictingConverter =
-                        (Comparable<TypeConverter<?>>) conflictingConverter;
+                final Comparable<TypeConverter<?>> comparableConflictingConverter = Cast.cast(conflictingConverter);
                 overridable = comparableConflictingConverter.compareTo(converter) > 0;
             } else {
                 overridable = false;
@@ -634,7 +639,7 @@ class DefaultInjector implements Injector {
                     .toArray();
             return Cast.cast(accessor.invokeMethod(method, instance, args));
         };
-        final Supplier<T> factory = getScopeForMethod(method).get(primaryKey, unscoped);
+        final Supplier<T> factory = getScoped(getScopeType(method), primaryKey, unscoped);
         final Collection<String> aliases = Keys.getAliases(method);
         final List<Binding<T>> bindings = new ArrayList<>(1 + aliases.size());
         bindings.add(Binding.bind(primaryKey, factory));
@@ -685,14 +690,21 @@ class DefaultInjector implements Injector {
         return argFactories;
     }
 
-    private Scope getScopeForMethod(final Method method) {
+    private Class<? extends Annotation> getScopeType(final Method method) {
         final Annotation methodScope = AnnotationUtil.getMetaAnnotation(method, ScopeType.class);
-        return methodScope != null ? getScope(methodScope.annotationType()) : getScopeForType(method.getReturnType());
+        return methodScope != null ? methodScope.annotationType() : getScopeType(method.getReturnType());
     }
 
-    private Scope getScopeForType(final Class<?> type) {
+    private Class<? extends Annotation> getScopeType(final Class<?> type) {
         final Annotation scope = AnnotationUtil.getMetaAnnotation(type, ScopeType.class);
-        return scope != null ? getScope(scope.annotationType()) : DefaultScope.INSTANCE;
+        return scope != null ? scope.annotationType() : null;
+    }
+
+    private <T> Supplier<T> getScoped(final Class<? extends Annotation> scopeType, final Key<T> key, final Supplier<T> unscoped) {
+        return () -> {
+            final Scope scope = scopeType != null ? scopes.getOrDefault(scopeType, DefaultScope.INSTANCE) : DefaultScope.INSTANCE;
+            return scope.get(key, unscoped).get();
+        };
     }
 
     private static boolean isCompatibleValidator(
@@ -826,20 +838,6 @@ class DefaultInjector implements Injector {
                 !AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class) &&
                         Stream.of(method.getParameters()).anyMatch(
                                 parameter -> AnnotationUtil.isMetaAnnotationPresent(parameter, QualifierType.class));
-    }
-
-    private static class SingletonScope implements Scope {
-        private final Map<Key<?>, Supplier<?>> singletonProviders = new ConcurrentHashMap<>();
-
-        @Override
-        public <T> Supplier<T> get(final Key<T> key, final Supplier<T> unscoped) {
-            return Cast.cast(singletonProviders.computeIfAbsent(key, ignored -> Lazy.lazy(unscoped)::value));
-        }
-
-        @Override
-        public String toString() {
-            return "[SingletonScope; size=" + singletonProviders.size() + "]";
-        }
     }
 
     private enum DefaultScope implements Scope {

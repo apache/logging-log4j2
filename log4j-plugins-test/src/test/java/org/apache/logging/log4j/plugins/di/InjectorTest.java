@@ -423,15 +423,6 @@ class InjectorTest {
                 .allMatch("bar"::equals);
     }
 
-    static class CustomSingletonScope implements Scope {
-        private final Map<Key<?>, Object> bindings = new ConcurrentHashMap<>();
-
-        @Override
-        public <T> Supplier<T> get(final Key<T> key, final Supplier<T> unscoped) {
-            return () -> Cast.cast(bindings.computeIfAbsent(key, ignored -> unscoped.get()));
-        }
-    }
-
     @Retention(RetentionPolicy.RUNTIME)
     @ScopeType
     @interface CustomSingleton {
@@ -444,9 +435,67 @@ class InjectorTest {
     @Test
     void registerCustomScope() {
         final Injector injector = DI.createInjector();
-        injector.registerScope(CustomSingleton.class, new CustomSingletonScope());
+        injector.registerScope(CustomSingleton.class, new SimpleScope("Custom"));
         final var factory = injector.getFactory(CustomInstance.class);
-        assertThat(factory.get()).isSameAs(factory.get()).isSameAs(injector.getInstance(CustomInstance.class));
+        assertThat(factory.get())
+                .isSameAs(factory.get())
+                .isSameAs(injector.getInstance(CustomInstance.class));
+    }
+
+    @Test
+    void deferredScopeRegistration() {
+        final Injector injector = DI.createInjector();
+        final Supplier<CustomInstance> factory = injector.getFactory(CustomInstance.class);
+        injector.registerScope(CustomSingleton.class, new SimpleScope("Custom"));
+        assertThat(factory.get())
+                .isSameAs(factory.get())
+                .isSameAs(injector.getInstance(CustomInstance.class));
+    }
+
+    static class UnscopedBean {
+    }
+
+    static class ScopedBundle {
+        @Factory
+        @CustomSingleton
+        UnscopedBean scopedBean() {
+            return new UnscopedBean();
+        }
+    }
+
+    @Test
+    void deferredScopeRegistrationBundle() {
+        final Injector injector = DI.createInjector(ScopedBundle.class);
+        final Supplier<UnscopedBean> factory = injector.getFactory(UnscopedBean.class);
+        injector.registerScope(CustomSingleton.class, new SimpleScope("Custom"));
+        assertThat(factory.get())
+                .isSameAs(factory.get())
+                .isSameAs(injector.getInstance(UnscopedBean.class));
+    }
+
+    interface Api {
+    }
+
+    @Singleton
+    static class Impl implements Api {
+    }
+
+    static class CustomScopeBundle {
+        @Factory
+        @CustomSingleton
+        Api api() {
+            return new Impl();
+        }
+    }
+
+    @Test
+    void deferredScopeRegistrationInterfaceBundle() {
+        final Injector injector = DI.createInjector(CustomScopeBundle.class);
+        final Supplier<Api> factory = injector.getFactory(Api.class);
+        injector.registerScope(CustomSingleton.class, new SimpleScope("Custom"));
+        assertThat(factory.get())
+                .isSameAs(factory.get())
+                .isSameAs(injector.getInstance(Api.class));
     }
 
     static class ClassBundle {
