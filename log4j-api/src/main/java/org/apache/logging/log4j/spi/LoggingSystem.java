@@ -78,8 +78,8 @@ public class LoggingSystem {
     private final Lock initializationLock = new ReentrantLock();
     private volatile SystemProvider provider;
     private final PropertyResolver propertyResolver = new DefaultPropertyResolver();
-    private final ClassFactory classFactory = new DefaultClassFactory();
-    private final InstanceFactory instanceFactory = new DefaultInstanceFactory();
+    private final Lazy<ClassFactory> classFactoryLazy = Lazy.relaxed(DefaultClassFactory::new);
+    private final Lazy<InstanceFactory> instanceFactoryLazy = Lazy.relaxed(DefaultInstanceFactory::new);
     private final Lazy<LoggerContextFactory> loggerContextFactoryLazy = Lazy.lazy(() ->
             getProvider().createLoggerContextFactory());
 
@@ -108,8 +108,32 @@ public class LoggingSystem {
         initializationLock.unlock();
     }
 
+    public PropertyResolver propertyResolver() {
+        return propertyResolver;
+    }
+
     public void setLoggerContextFactory(final LoggerContextFactory loggerContextFactory) {
         loggerContextFactoryLazy.set(loggerContextFactory);
+    }
+
+    public LoggerContextFactory getLoggerContextFactory() {
+        return loggerContextFactoryLazy.value();
+    }
+
+    public void setClassFactory(final ClassFactory classFactory) {
+        classFactoryLazy.set(classFactory);
+    }
+
+    public ClassFactory getClassFactory() {
+        return classFactoryLazy.value();
+    }
+
+    public void setInstanceFactory(final InstanceFactory instanceFactory) {
+        instanceFactoryLazy.set(instanceFactory);
+    }
+
+    public InstanceFactory getInstanceFactory() {
+        return instanceFactoryLazy.value();
     }
 
     private SystemProvider getProvider() {
@@ -150,9 +174,9 @@ public class LoggingSystem {
     }
 
     private <T> Optional<T> tryGetInstance(final String className, final Class<T> type) {
-        return classFactory
+        return getClassFactory()
                 .tryGetClass(className, type)
-                .flatMap(instanceFactory::tryGetInstance);
+                .flatMap(getInstanceFactory()::tryGetInstance);
     }
 
     private boolean isThreadLocalsEnabled() {
@@ -167,8 +191,8 @@ public class LoggingSystem {
     }
 
     private boolean isServletClassAvailable() {
-        return classFactory.isClassAvailable("javax.servlet.Servlet") ||
-                classFactory.isClassAvailable("jakarta.servlet.Servlet");
+        return getClassFactory().isClassAvailable("javax.servlet.Servlet") ||
+                getClassFactory().isClassAvailable("jakarta.servlet.Servlet");
     }
 
     private MessageFactory newMessageFactory(final String context) {
@@ -198,8 +222,8 @@ public class LoggingSystem {
      * Gets the current LoggerContextFactory. This may initialize the instance if this is the first time it was
      * requested.
      */
-    public static LoggerContextFactory getLoggerContextFactory() {
-        return getInstance().loggerContextFactoryLazy.value();
+    public static LoggerContextFactory loggerContextFactory() {
+        return getInstance().getLoggerContextFactory();
     }
 
     public static MessageFactory createMessageFactory(final String context) {
@@ -334,7 +358,7 @@ public class LoggingSystem {
                     .flatMap(className -> tryGetInstance(className, LoggerContextFactory.class))
                     .or(() -> Optional.ofNullable(provider)
                             .map(Provider::loadLoggerContextFactory)
-                            .flatMap(instanceFactory::tryGetInstance))
+                            .flatMap(getInstanceFactory()::tryGetInstance))
                     .orElseGet(() -> {
                         LowLevelLogUtil.log("Log4j could not find a logging implementation. " +
                                 "Please add log4j-core dependencies to classpath or module path. " +
@@ -373,7 +397,7 @@ public class LoggingSystem {
                             return new NoOpThreadContextMap();
                         }
                         return Optional.ofNullable(provider.loadThreadContextMap())
-                                .<ThreadContextMap>flatMap(instanceFactory::tryGetInstance)
+                                .<ThreadContextMap>flatMap(getInstanceFactory()::tryGetInstance)
                                 .orElseGet(() -> {
                                     final boolean garbageFreeEnabled = propertyResolver.getBoolean(THREAD_CONTEXT_GARBAGE_FREE_ENABLED);
                                     final boolean inheritableMap = propertyResolver.getBoolean(THREAD_CONTEXT_MAP_INHERITABLE);
