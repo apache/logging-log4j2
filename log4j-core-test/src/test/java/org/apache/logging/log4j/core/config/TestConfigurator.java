@@ -39,9 +39,11 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -92,7 +94,9 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-config.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull(config, "No configuration");
+        Assertions.assertThat(config)
+                .isNotNull()
+                .isInstanceOf(XmlConfiguration.class);
         assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull(map, "Appenders map should not be null.");
@@ -108,7 +112,9 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", null, new File("target/test-classes/log4j2-config.xml").toURI());
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull(config, "No configuration");
+        Assertions.assertThat(config)
+                .isNotNull()
+                .isInstanceOf(XmlConfiguration.class);
         assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull(map, "Appenders map should not be null.");
@@ -127,7 +133,9 @@ public class TestConfigurator {
         ctx = Configurator.initialize(null, source);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull(config, "No configuration");
+        Assertions.assertThat(config)
+                .isNotNull()
+                .isInstanceOf(XmlConfiguration.class);
         assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull(map, "Appenders map should not be null.");
@@ -146,7 +154,9 @@ public class TestConfigurator {
         ctx = Configurator.initialize(null, source);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull(config, "No configuration");
+        Assertions.assertThat(config)
+                .isNotNull()
+                .isInstanceOf(XmlConfiguration.class);
         assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull(map, "Appenders map should not be null.");
@@ -165,7 +175,9 @@ public class TestConfigurator {
         ctx = Configurator.initialize(null, source);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull(config, "No configuration");
+        Assertions.assertThat(config)
+                .isNotNull()
+                .isInstanceOf(XmlConfiguration.class);
         assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull(map, "Appenders map should not be null.");
@@ -181,7 +193,9 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "log4j2-config.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull(config, "No configuration");
+        Assertions.assertThat(config)
+                .isNotNull()
+                .isInstanceOf(XmlConfiguration.class);
         assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull(map, "Appenders map should not be null.");
@@ -198,7 +212,9 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", null);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull(config, "No configuration");
+        Assertions.assertThat(config)
+                .isNotNull()
+                .isInstanceOf(XmlConfiguration.class);
         assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull(map, "Appenders map should not be null.");
@@ -214,7 +230,9 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "classpath:log4j2-config.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull(config, "No configuration");
+        Assertions.assertThat(config)
+                .isNotNull()
+                .isInstanceOf(XmlConfiguration.class);
         assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull(map, "Appenders map should not be null.");
@@ -230,7 +248,9 @@ public class TestConfigurator {
         ctx = Configurator.initialize("Test1", "classloader:log4j2-config.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
-        assertNotNull(config, "No configuration");
+        Assertions.assertThat(config)
+                .isNotNull()
+                .isInstanceOf(XmlConfiguration.class);
         assertEquals(CONFIG_NAME, config.getName(), "Incorrect Configuration.");
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull(map, "Appenders map should not be null.");
