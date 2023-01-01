@@ -290,7 +290,7 @@
     <!-- Dependency versions -->
     <!-- We can use the property names from Spring Boot: -->
     <!--  https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-dependencies/2.7.4/spring-boot-dependencies-2.7.4.pom -->
-    <activemq.version>5.17.2</activemq.version>
+    <activemq.version>5.17.3</activemq.version>
     <assertj.version>3.23.1</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
