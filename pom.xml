@@ -325,7 +325,7 @@
     <commons-pool2.version>2.11.1</commons-pool2.version>
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version> <!-- Version 1.2.16 requires Java 9 -->
     <disruptor.version>3.4.4</disruptor.version>
-    <elasticsearch.version>7.17.6</elasticsearch.version>
+    <elasticsearch.version>7.17.8</elasticsearch.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <embedded-mongo.version>3.5.1</embedded-mongo.version>
     <felix.version>7.0.5</felix.version>
