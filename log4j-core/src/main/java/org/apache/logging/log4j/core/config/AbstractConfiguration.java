@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -28,19 +25,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.Version;
@@ -67,23 +65,21 @@ import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.script.ScriptManagerFactory;
 import org.apache.logging.log4j.core.time.NanoClock;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.core.util.WatcherFactory;
+import org.apache.logging.log4j.plugins.ConfigurationScoped;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.Keys;
+import org.apache.logging.log4j.plugins.di.SimpleScope;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.spi.ClassFactory;
-import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.util.Cast;
-import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.PropertyResolver;
 import org.apache.logging.log4j.util.ServiceRegistry;
@@ -102,11 +98,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Listeners for configuration changes.
      */
     protected final List<ConfigurationListener> listeners = new CopyOnWriteArrayList<>();
-
-    /**
-     * Packages found in configuration "packages" attribute.
-     */
-    protected final List<String> pluginPackages = new ArrayList<>();
 
     /**
      * Core plugins.
@@ -146,7 +137,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private final Interpolator tempLookup;
     private final StrSubstitutor runtimeStrSubstitutor;
     private final StrSubstitutor configurationStrSubstitutor;
-    private LoggerConfig root = new LoggerConfig();
+    private LoggerConfig root;
     private final ConcurrentMap<String, Object> componentMap = new ConcurrentHashMap<>();
     private final ConfigurationSource configurationSource;
     private final ConfigurationScheduler configurationScheduler;
@@ -159,19 +150,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Constructor.
      */
     protected AbstractConfiguration(final LoggerContext loggerContext, final ConfigurationSource configurationSource) {
-        this.loggerContext = new WeakReference<>(loggerContext);
-        // The loggerContext is null for the NullConfiguration class.
-        // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));
+        this.loggerContext = new WeakReference<>(Objects.requireNonNull(loggerContext, "loggerContext is null"));
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
-        if (loggerContext != null) {
-            injector = loggerContext.getInjector();
-            propertyResolver = loggerContext.getPropertyResolver();
-        } else {
-            // for NullConfiguration
-            injector = DI.createInjector();
-            injector.init();
-            propertyResolver = LoggingSystem.getPropertyResolver();
-        }
+        injector = loggerContext.getInjector().copy();
+        injector.registerScope(ConfigurationScoped.class, new SimpleScope(() -> "ConfigurationScoped; name=" + getName()));
+        propertyResolver = loggerContext.getPropertyResolver();
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         interpolatorFactory = injector.getInstance(InterpolatorFactory.class);
         tempLookup = interpolatorFactory.newInterpolator(new PropertiesLookup(properties));
@@ -180,17 +163,16 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         configurationStrSubstitutor = new ConfigurationStrSubstitutor(runtimeStrSubstitutor);
         configurationScheduler = injector.getInstance(ConfigurationScheduler.class);
         watchManager = injector.getInstance(WatchManager.class);
+        root = LoggerConfig.RootLogger.newRootBuilder()
+                .setPropertyResolver(propertyResolver)
+                .setConfig(this)
+                .get();
         setState(State.INITIALIZING);
     }
 
     @Override
     public ConfigurationSource getConfigurationSource() {
         return configurationSource;
-    }
-
-    @Override
-    public List<String> getPluginPackages() {
-        return pluginPackages;
     }
 
     @Override
@@ -258,9 +240,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void initialize() {
         LOGGER.debug("{} initializing configuration {}", Version.getProductString(), this);
-        injector.registerBinding(Configuration.KEY, () -> this);
-        runtimeStrSubstitutor.setConfiguration(this);
-        configurationStrSubstitutor.setConfiguration(this);
+        injector.injectMembers(runtimeStrSubstitutor);
+        injector.injectMembers(configurationStrSubstitutor);
         initializeScriptManager();
         corePlugins = injector.getInstance(Core.PLUGIN_NAMESPACE_KEY);
         final PluginNamespace levelPlugins = injector.getInstance(new @Namespace(Level.CATEGORY) Key<>() {});
@@ -319,10 +300,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private void monitorSource(final Reconfigurable reconfigurable, final ConfigurationSource configSource) {
         if (configSource.getLastModified() > 0) {
             final Source cfgSource = new Source(configSource);
-            final Key<WatcherFactory> key = Key.forClass(WatcherFactory.class);
-            injector.registerBindingIfAbsent(key, Lazy.lazy(() ->
-                    new WatcherFactory(injector.getInstance(Watcher.PLUGIN_CATEGORY_KEY))));
-            final Watcher watcher = injector.getInstance(key)
+            final Watcher watcher = getInstance(WatcherFactory.class)
                     .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
             if (watcher != null) {
                 watchManager.watch(cfgSource, watcher);
@@ -347,7 +325,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             watchManager.start();
         }
         if (hasAsyncLoggers()) {
-            asyncLoggerConfigDisruptor.start();
+            ((LifeCycle) getAsyncLoggerConfigDelegate()).start();
         }
         final Set<LoggerConfig> alreadyStarted = new HashSet<>();
         for (final LoggerConfig logger : loggerConfigs.values()) {
@@ -500,7 +478,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     protected Level getDefaultStatus() {
-        return injector.getInstance(Constants.DEFAULT_STATUS_LEVEL_KEY);
+        return getInstance(Keys.DEFAULT_STATUS_LEVEL_KEY);
     }
 
     protected void createAdvertiser(final String advertiserString, final ConfigurationSource configSource,
@@ -523,20 +501,30 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final String nodeName = advertiserNode.getName();
             final PluginType<?> type = corePlugins.get(nodeName);
             if (type != null) {
-                advertiser = injector.getInstance(type.getPluginClass().asSubclass(Advertiser.class));
+                advertiser = getInstance(type.getPluginClass().asSubclass(Advertiser.class));
                 advertisement = advertiser.advertise(advertiserNode.getAttributes());
             }
         }
     }
 
     @Override
-    public <T> T getComponent(final String componentName) {
-        return Cast.cast(componentMap.get(componentName));
+    public <T> T getInstance(final Class<T> type) {
+        return injector.getInstance(type);
     }
 
     @Override
-    public <T> Supplier<T> getFactory(final Key<T> key) {
-        return injector.getFactory(key);
+    public <T> Optional<T> tryGetInstance(final Class<T> type) {
+        return injector.tryGetInstance(type);
+    }
+
+    @Override
+    public <T> T getInstance(final Key<T> key) {
+        return injector.getInstance(key);
+    }
+
+    @Override
+    public <T> T getComponent(final String componentName) {
+        return Cast.cast(componentMap.get(componentName));
     }
 
     @Override
@@ -654,7 +642,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     protected void doConfigure() {
         injector.registerBinding(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
-        injector.registerBinding(LoggerContext.KEY, this::getLoggerContext);
         processConditionals(rootNode);
         preConfigure(rootNode);
         configurationScheduler.start();
@@ -885,7 +872,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (lc.getName().equals(loggerName)) {
             lc.addAppender(appender, null, null);
         } else {
-            final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
+            final LoggerConfig nlc = LoggerConfig.newBuilder()
+                    .setLoggerName(loggerName)
+                    .setLevel(lc.getLevel())
+                    .setAdditivity(lc.isAdditive())
+                    .setConfig(this)
+                    .get();
             nlc.addAppender(appender, null, null);
             nlc.setParent(lc);
             loggerConfigs.putIfAbsent(loggerName, nlc);
@@ -910,7 +902,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (lc.getName().equals(loggerName)) {
             lc.addFilter(filter);
         } else {
-            final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
+            final LoggerConfig nlc = LoggerConfig.newBuilder()
+                    .setLoggerName(loggerName)
+                    .setLevel(lc.getLevel())
+                    .setAdditivity(lc.isAdditive())
+                    .setConfig(this)
+                    .get();
             nlc.addFilter(filter);
             nlc.setParent(lc);
             loggerConfigs.putIfAbsent(loggerName, nlc);
@@ -935,7 +932,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         if (lc.getName().equals(loggerName)) {
             lc.setAdditive(additive);
         } else {
-            final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), additive);
+            final LoggerConfig nlc = LoggerConfig.newBuilder()
+                    .setLoggerName(loggerName)
+                    .setLevel(lc.getLevel())
+                    .setAdditivity(additive)
+                    .setConfig(this)
+                    .get();
             nlc.setParent(lc);
             loggerConfigs.putIfAbsent(loggerName, nlc);
             setParents();
@@ -1061,6 +1063,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         } else {
             stringSubstitutionStrategy = str -> runtimeStrSubstitutor.replace(event, str);
         }
+        // TODO(ms): try removing copy() call here
         final Injector injector = this.injector.copy().registerBinding(Keys.SUBSTITUTOR_KEY, () -> stringSubstitutionStrategy);
         injector.configure(node);
     }
@@ -1072,24 +1075,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     public Object createPluginObject(final Node node) {
         if (this.getState().equals(State.INITIALIZING)) {
+            // TODO(ms): try removing copy() call here
             final Injector injector =
                     this.injector.copy().registerBinding(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
             return injector.configure(node);
         }
         LOGGER.warn("Plugin Object creation is not allowed after initialization");
         return null;
-    }
-
-    /**
-     * This method is used by Arbiters to create specific children.
-     * @param type The PluginType.
-     * @param node The Node.
-     * @return The created object or null;
-     * @deprecated use {@link #createPluginObject(Node)}
-     */
-    @Deprecated
-    public Object createPluginObject(final PluginType<?> type, final Node node) {
-        return createPluginObject(node);
     }
 
     private void setParents() {
@@ -1112,23 +1104,9 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
     }
 
-    /**
-     * Reads an InputStream using buffered reads into a byte array buffer. The given InputStream will remain open after
-     * invocation of this method.
-     *
-     * @param is the InputStream to read into a byte array buffer.
-     * @return a byte array of the InputStream contents.
-     * @throws IOException if the {@code read} method of the provided InputStream throws this exception.
-     * @deprecated use {@link InputStream#readAllBytes()}
-     */
-    @Deprecated(since = "3.0.0")
-    protected static byte[] toByteArray(final InputStream is) throws IOException {
-        return is.readAllBytes();
-    }
-
     @Override
     public NanoClock getNanoClock() {
-        return injector.getInstance(NanoClock.class);
+        return getInstance(NanoClock.class);
     }
 
     @Override

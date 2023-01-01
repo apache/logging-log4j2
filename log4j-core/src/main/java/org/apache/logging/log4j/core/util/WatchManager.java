@@ -34,8 +34,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
+import org.apache.logging.log4j.plugins.ConfigurationScoped;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ServiceRegistry;
 
@@ -45,7 +45,7 @@ import org.apache.logging.log4j.util.ServiceRegistry;
  * @see FileWatcher
  * @see ConfigurationScheduler
  */
-@Singleton
+@ConfigurationScoped
 public class WatchManager extends AbstractLifeCycle {
 
     private static final class ConfigurationMonitor {

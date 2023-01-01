@@ -72,6 +72,8 @@ import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.PropertyResolver;
+import org.apache.logging.log4j.util.RecyclerFactories;
+import org.apache.logging.log4j.util.RecyclerFactory;
 import org.apache.logging.log4j.util.ServiceRegistry;
 import org.apache.logging.log4j.util.StringBuilders;
 
@@ -441,6 +443,7 @@ class DefaultInjector implements Injector {
         registerTypeConverter(Short.class, Short::valueOf);
         registerTypeAlias(Short.class, Short.TYPE);
         registerTypeConverter(String.class, s -> s);
+        registerTypeConverter(RecyclerFactory.class, RecyclerFactories::ofSpec);
     }
 
     private TypeConverter<?> registerTypeConverter(final Type type, final TypeConverter<?> converter) {

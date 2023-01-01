@@ -14,18 +14,23 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.plugins;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@FunctionalInterface
-public interface RecyclerFactory {
-
-    default <V> Recycler<V> create(final Supplier<V> supplier) {
-        return create(supplier, ignored -> {});
-    }
-
-    <V> Recycler<V> create(Supplier<V> supplier, Consumer<V> cleaner);
-
+/**
+ * Scope type where provided instances are singletons within a particular {@code Configuration}. Fresh instances
+ * are provided for each lifecycle of a configuration.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Documented
+@Inherited
+@ScopeType
+public @interface ConfigurationScoped {
 }

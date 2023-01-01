@@ -72,19 +72,12 @@ public class Log4jProperties {
 
     @Deprecated // should use DI bindings
     public static final String THREAD_CONTEXT_DATA_CLASS_NAME = "log4j2.*.ThreadContext.contextData";
-    @Deprecated // should use DI bindings
-    public static final String THREAD_CONTEXT_DATA_INJECTOR_CLASS_NAME = "log4j2.*.ThreadContext.contextDataInjector";
 
     public static final String JMX_ENABLED = "log4j2.*.JMX.enabled";
     public static final String JMX_NOTIFY_ASYNC = "log4j2.*.JMX.notifyAsync";
 
-    @Deprecated // should use DI bindings
-    public static final String TRANSPORT_SECURITY_AUTHORIZATION_PROVIDER_CLASS_NAME = "log4j2.*.TransportSecurity.authorizationProvider";
-
     public static final String TRANSPORT_SECURITY_BASIC_USERNAME = "log4j2.*.TransportSecurity.basicUsername";
     public static final String TRANSPORT_SECURITY_BASIC_PASSWORD = "log4j2.*.TransportSecurity.basicPassword";
-    @Deprecated // should use DI bindings
-    public static final String TRANSPORT_SECURITY_PASSWORD_DECRYPTOR_CLASS_NAME = "log4j2.*.TransportSecurity.passwordDecryptor";
 
     public static final String TRANSPORT_SECURITY_TRUST_STORE_LOCATION = "log4j2.*.TransportSecurity.trustStoreLocation";
     public static final String TRANSPORT_SECURITY_TRUST_STORE_PASSWORD = "log4j2.*.TransportSecurity.trustStorePassword";

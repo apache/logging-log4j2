@@ -33,7 +33,7 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
-        return new BasicConfiguration();
+        return new BasicConfiguration(loggerContext);
     }
 
     @Override
@@ -50,8 +50,8 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
 
         private static final String DEFAULT_LEVEL = "org.apache.logging.log4j.level";
 
-        public BasicConfiguration() {
-            super(null, ConfigurationSource.NULL_SOURCE);
+        public BasicConfiguration(final LoggerContext loggerContext) {
+            super(loggerContext, ConfigurationSource.NULL_SOURCE);
 
             final LoggerConfig root = getRootLogger();
             final String name = System.getProperty(DEFAULT_LEVEL);

@@ -21,11 +21,6 @@ import java.security.PrivilegedAction;
 
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.InjectorCallback;
-import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.spi.ClassFactory;
-import org.apache.logging.log4j.spi.DefaultClassFactory;
-import org.apache.logging.log4j.spi.LoggingSystem;
-import org.apache.logging.log4j.util.PropertyResolver;
 
 public class DefaultCallback implements InjectorCallback {
     @Override
@@ -39,9 +34,7 @@ public class DefaultCallback implements InjectorCallback {
         } else {
             injector.setReflectionAccessor(object -> object.setAccessible(true));
         }
-        injector.registerBinding(Key.forClass(PropertyResolver.class), LoggingSystem::getPropertyResolver)
-                .registerBinding(Key.forClass(ClassFactory.class), DefaultClassFactory::new)
-                .registerBundle(DefaultBundle.class);
+        injector.registerBundle(DefaultBundle.class);
     }
 
     @Override

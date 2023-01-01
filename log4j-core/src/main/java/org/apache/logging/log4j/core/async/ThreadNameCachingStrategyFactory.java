@@ -21,13 +21,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.plugins.ContextScoped;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PropertyResolver;
 
-@Singleton
+@ContextScoped
 public class ThreadNameCachingStrategyFactory implements Supplier<ThreadNameCachingStrategy> {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     static final ThreadNameCachingStrategy DEFAULT_STRATEGY =

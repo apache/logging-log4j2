@@ -26,9 +26,13 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.core.util.StringEncoder;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.util.Recycler;
+import org.apache.logging.log4j.util.RecyclerFactories;
+import org.apache.logging.log4j.util.RecyclerFactory;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
@@ -52,6 +56,8 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         @PluginElement("headerSerializer")
         private Serializer headerSerializer;
 
+        private RecyclerFactory recyclerFactory;
+
         public Charset getCharset() {
             return charset;
         }
@@ -62,6 +68,16 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
         public Serializer getHeaderSerializer() {
             return headerSerializer;
+        }
+
+        public RecyclerFactory getRecyclerFactory() {
+            if (recyclerFactory == null) {
+                final Configuration configuration = getConfiguration();
+                recyclerFactory = configuration != null
+                        ? configuration.getInstance(RecyclerFactory.class)
+                        : RecyclerFactories.ofSpec(null);
+            }
+            return recyclerFactory;
         }
 
         public B setCharset(final Charset charset) {
@@ -79,6 +95,11 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
             return asBuilder();
         }
 
+        @Inject
+        public B setRecyclerFactory(final RecyclerFactory recyclerFactory) {
+            this.recyclerFactory = recyclerFactory;
+            return asBuilder();
+        }
     }
 
     public interface Serializer extends Serializer2 {
@@ -107,38 +128,18 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
     /**
      * Default length for new StringBuilder instances: {@value} .
      */
+    // TODO(ms): this could be configurable
     protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
 
     protected static final int MAX_STRING_BUILDER_SIZE = Math.max(DEFAULT_STRING_BUILDER_SIZE,
             GarbageFreeConfiguration.getDefaultConfiguration().getLayoutStringBuilderMaxSize());
-
-    private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
-
-    /**
-     * Returns a {@code StringBuilder} that this Layout implementation can use to write the formatted log event to.
-     *
-     * @return a {@code StringBuilder}
-     */
-    protected static StringBuilder getStringBuilder() {
-        if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-2368
-            // Recursive logging may clobber the cached StringBuilder.
-            return new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-        }
-        StringBuilder result = threadLocal.get();
-        if (result == null) {
-            result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-            threadLocal.set(result);
-        }
-        trimToMaxSize(result);
-        result.setLength(0);
-        return result;
-    }
 
     protected static void trimToMaxSize(final StringBuilder stringBuilder) {
         StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_SIZE);
     }
 
     private Encoder<StringBuilder> textEncoder;
+
     /**
      * The charset for the formatted message.
      */
@@ -148,8 +149,10 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
 
     private final Serializer headerSerializer;
 
+    private final Recycler<StringBuilder> recycler;
+
     protected AbstractStringLayout(final Charset charset) {
-        this(charset, (byte[]) null, (byte[]) null);
+        this(charset, null, null);
     }
 
     /**
@@ -160,11 +163,25 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      * @param footer the footer bytes
      */
     protected AbstractStringLayout(final Charset aCharset, final byte[] header, final byte[] footer) {
+        this(aCharset, header, footer, null);
+    }
+
+    protected AbstractStringLayout(final Charset aCharset, final byte[] header, final byte[] footer,
+                                   final RecyclerFactory recyclerFactory) {
         super(null, header, footer);
         this.headerSerializer = null;
         this.footerSerializer = null;
-        this.charset = aCharset == null ? StandardCharsets.UTF_8 : aCharset;
-        textEncoder = GarbageFreeConfiguration.getDefaultConfiguration().isDirectEncodersEnabled() ? new StringBuilderEncoder(charset) : null;
+        this.charset = aCharset != null ? aCharset : StandardCharsets.UTF_8;
+        final GarbageFreeConfiguration gfConfig = GarbageFreeConfiguration.getDefaultConfiguration();
+        textEncoder = gfConfig.isDirectEncodersEnabled() ? new StringBuilderEncoder(charset) : null;
+        final RecyclerFactory factory = recyclerFactory != null ? recyclerFactory : RecyclerFactories.ofSpec(null);
+        recycler = factory.create(
+                () -> new StringBuilder(DEFAULT_STRING_BUILDER_SIZE),
+                buf -> {
+                    StringBuilders.trimToMaxSize(buf, gfConfig.getLayoutStringBuilderMaxSize());
+                    buf.setLength(0);
+                }
+        );
     }
 
     /**
@@ -177,11 +194,54 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
      */
     protected AbstractStringLayout(final Configuration config, final Charset aCharset,
             final Serializer headerSerializer, final Serializer footerSerializer) {
+        this(config, aCharset, headerSerializer, footerSerializer, null);
+    }
+
+    protected AbstractStringLayout(final Configuration config, final Charset aCharset,
+                                   final Serializer headerSerializer, final Serializer footerSerializer,
+                                   final RecyclerFactory recyclerFactory) {
         super(config, null, null);
         this.headerSerializer = headerSerializer;
         this.footerSerializer = footerSerializer;
         this.charset = aCharset == null ? StandardCharsets.UTF_8 : aCharset;
-        textEncoder = GarbageFreeConfiguration.getDefaultConfiguration().isDirectEncodersEnabled() ? new StringBuilderEncoder(charset) : null;
+        final GarbageFreeConfiguration gfConfig = config != null
+                ? config.getInstance(GarbageFreeConfiguration.class)
+                : GarbageFreeConfiguration.getDefaultConfiguration();
+        textEncoder = gfConfig.isDirectEncodersEnabled()
+                ? new StringBuilderEncoder(charset)
+                : null;
+        final RecyclerFactory factory;
+        if (recyclerFactory != null) {
+            factory = recyclerFactory;
+        } else if (config != null) {
+            factory = config.getInstance(RecyclerFactory.class);
+        } else {
+            factory = RecyclerFactories.ofSpec(null);
+        }
+        recycler = factory.create(
+                () -> new StringBuilder(DEFAULT_STRING_BUILDER_SIZE),
+                buf -> {
+                    StringBuilders.trimToMaxSize(buf, gfConfig.getLayoutStringBuilderMaxSize());
+                    buf.setLength(0);
+                }
+        );
+    }
+
+    /**
+     * Returns a {@code StringBuilder} that this Layout implementation can use to write the formatted log event to.
+     *
+     * @return a {@code StringBuilder}
+     */
+    protected StringBuilder getStringBuilder() {
+        if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-2368
+            // Recursive logging may clobber the cached StringBuilder.
+            return new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
+        }
+        return recycler.acquire();
+    }
+
+    protected void recycleStringBuilder(final StringBuilder builder) {
+        recycler.release(builder);
     }
 
     protected byte[] getBytes(final String s) {

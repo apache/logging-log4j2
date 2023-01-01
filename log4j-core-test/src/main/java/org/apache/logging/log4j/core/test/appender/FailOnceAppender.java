@@ -16,21 +16,20 @@
  */
 package org.apache.logging.log4j.core.test.appender;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * An {@link Appender} that fails on the first use and works for the rest.
@@ -74,11 +73,8 @@ public class FailOnceAppender extends AbstractAppender {
     }
 
     @PluginFactory
-    public static FailOnceAppender createAppender(
-        @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name,
-        @PluginAttribute("throwableClassName") final String throwableClassName) {
-        final Supplier<Throwable> throwableSupplier = createThrowableSupplier(name, throwableClassName);
-        return new FailOnceAppender(name, throwableSupplier);
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     private static Supplier<Throwable> createThrowableSupplier(
@@ -109,6 +105,24 @@ public class FailOnceAppender extends AbstractAppender {
     @SuppressWarnings("deprecation")
     private static void stopCurrentThread() {
         Thread.currentThread().stop();
+    }
+
+    public static class Builder extends AbstractAppender.Builder<Builder> implements Supplier<FailOnceAppender> {
+        private String throwableClassName;
+
+        public String getThrowableClassName() {
+            return throwableClassName;
+        }
+
+        public Builder setThrowableClassName(@PluginAttribute final String throwableClassName) {
+            this.throwableClassName = throwableClassName;
+            return this;
+        }
+
+        @Override
+        public FailOnceAppender get() {
+            return new FailOnceAppender(getName(), createThrowableSupplier(getName(), getThrowableClassName()));
+        }
     }
 
     public enum ThrowableClassName {;

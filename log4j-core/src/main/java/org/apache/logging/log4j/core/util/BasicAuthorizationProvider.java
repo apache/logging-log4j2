@@ -22,13 +22,16 @@ import java.util.Base64;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.plugins.ContextScoped;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertyResolver;
-import org.apache.logging.log4j.util.ReflectionUtil;
 
 /**
  * Provides the Basic Authorization header to a request.
  */
+@ContextScoped
 public class BasicAuthorizationProvider implements AuthorizationProvider {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -36,17 +39,14 @@ public class BasicAuthorizationProvider implements AuthorizationProvider {
 
     private String authString = null;
 
-    public BasicAuthorizationProvider(final PropertyResolver resolver) {
+    @Inject
+    public BasicAuthorizationProvider(final PropertyResolver resolver, final Injector injector) {
         final String user = resolver.getString(Log4jProperties.TRANSPORT_SECURITY_BASIC_USERNAME).orElse(null);
         final String pass = resolver.getString(Log4jProperties.TRANSPORT_SECURITY_BASIC_PASSWORD)
-                .map(password -> resolver.getString(Log4jProperties.TRANSPORT_SECURITY_PASSWORD_DECRYPTOR_CLASS_NAME)
-                        .map(className -> {
-                            // FIXME(ms): this should use a binding instead
+                .map(password -> injector.tryGetInstance(PasswordDecryptor.class)
+                        .map(passwordDecryptor -> {
                             try {
-                                final Class<? extends PasswordDecryptor> klass = Class.forName(className)
-                                        .asSubclass(PasswordDecryptor.class);
-                                final PasswordDecryptor decryptor = ReflectionUtil.instantiate(klass);
-                                return decryptor.decryptPassword(password);
+                                return passwordDecryptor.decryptPassword(password);
                             } catch (final Exception e) {
                                 LOGGER.warn("Unable to decrypt password", e);
                                 return null;

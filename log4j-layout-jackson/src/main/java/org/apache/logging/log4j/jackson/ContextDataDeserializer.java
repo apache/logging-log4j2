@@ -1,4 +1,3 @@
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -20,14 +19,15 @@ package org.apache.logging.log4j.jackson;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.util.StringMap;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.impl.DefaultContextDataFactory;
+import org.apache.logging.log4j.util.InternalApi;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
  * <p>
@@ -38,6 +38,8 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 public class ContextDataDeserializer extends StdDeserializer<StringMap> {
 
     private static final long serialVersionUID = 1L;
+
+    private final ContextDataFactory contextDataFactory = new DefaultContextDataFactory();
 
     ContextDataDeserializer() {
         super(Map.class);
@@ -52,7 +54,7 @@ public class ContextDataDeserializer extends StdDeserializer<StringMap> {
 //        if (tok != JsonToken.START_OBJECT) {
 //            throw new IOException("Expected data to start with an Object");
 //        }
-        final StringMap contextData = ContextDataFactory.createContextData();
+        final StringMap contextData = contextDataFactory.createContextData();
         // Iterate over object fields:
         while (jp.nextToken() != JsonToken.END_OBJECT) {
             final String fieldName = jp.getCurrentName();

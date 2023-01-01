@@ -29,6 +29,8 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
+import org.apache.logging.log4j.spi.CopyOnWrite;
+import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.ServiceRegistry;
@@ -39,14 +41,13 @@ import org.apache.logging.log4j.util.StringMap;
  * {@code ThreadContext} map implementations into a {@code StringMap}. In the case of duplicate keys,
  * thread context values overwrite configuration {@code Property} values.
  * <p>
- * These are the default {@code ContextDataInjector} objects returned by the {@link ContextDataInjectorFactory}.
+ * These are the default {@code ContextDataInjector} objects returned by the {@link DefaultBundle}.
  * </p>
  *
  * @see org.apache.logging.log4j.ThreadContext
  * @see Property
  * @see ReadOnlyStringMap
  * @see ContextDataInjector
- * @see ContextDataInjectorFactory
  * @since 2.7
  */
 public class ThreadContextDataInjector {
@@ -58,15 +59,6 @@ public class ThreadContextDataInjector {
             new ConcurrentLinkedDeque<>();
 
     private static final List<ContextDataProvider> SERVICE_PROVIDERS = getServiceProviders();
-
-    /**
-     * Previously this method allowed ContextDataProviders to be loaded eagerly, now they
-     * are loaded when this class is initialized.
-     *
-     * @deprecated no-op
-     */
-    @Deprecated
-    public static void initServiceProviders() {}
 
     private static List<ContextDataProvider> getServiceProviders() {
         final List<ContextDataProvider> providers = new ArrayList<>();
@@ -80,6 +72,20 @@ public class ThreadContextDataInjector {
         return Collections.unmodifiableList(providers);
     }
 
+    public static ContextDataInjector create(final ContextDataFactory factory) {
+        final ReadOnlyThreadContextMap threadContextMap = ThreadContext.getThreadContextMap();
+
+        // note: map may be null (if legacy custom ThreadContextMap was installed by user)
+        if (threadContextMap instanceof DefaultThreadContextMap || threadContextMap == null) {
+            // for non StringMap-based context maps
+            return new ThreadContextDataInjector.ForDefaultThreadContextMap(factory);
+        }
+        if (threadContextMap instanceof CopyOnWrite) {
+            return new ThreadContextDataInjector.ForCopyOnWriteThreadContextMap(factory);
+        }
+        return new ThreadContextDataInjector.ForGarbageFreeThreadContextMap();
+    }
+
 
     /**
      * Default {@code ContextDataInjector} for the legacy {@code Map<String, String>}-based ThreadContext (which is
@@ -90,8 +96,14 @@ public class ThreadContextDataInjector {
     public static class ForDefaultThreadContextMap implements ContextDataInjector {
 
         private final List<ContextDataProvider> providers;
+        private final ContextDataFactory factory;
 
         public ForDefaultThreadContextMap() {
+            this(new DefaultContextDataFactory());
+        }
+
+        public ForDefaultThreadContextMap(final ContextDataFactory factory) {
+            this.factory = factory;
             providers = getProviders();
         }
 
@@ -124,24 +136,23 @@ public class ThreadContextDataInjector {
             if ((props == null || props.isEmpty())) {
                 // this will replace the LogEvent's context data with the returned instance.
                 // NOTE: must mark as frozen or downstream components may attempt to modify (UnsupportedOperationEx)
-                return copy.isEmpty() ? ContextDataFactory.emptyFrozenContextData() : frozenStringMap(copy);
+                return copy.isEmpty() ? factory.emptyFrozenContextData() : frozenStringMap(copy);
             }
             // If the list of Properties is non-empty we need to combine the properties and the ThreadContext
             // data. Note that we cannot reuse the specified StringMap: some Loggers may have properties defined
             // and others not, so the LogEvent's context data may have been replaced with an immutable copy from
             // the ThreadContext - this will throw an UnsupportedOperationException if we try to modify it.
             final StringMap result = new JdkMapAdapterStringMap(new HashMap<>(copy));
-            for (int i = 0; i < props.size(); i++) {
-                final Property prop = props.get(i);
+            props.forEach(prop -> {
                 if (!copy.containsKey(prop.getName())) {
                     result.putValue(prop.getName(), prop.getValue());
                 }
-            }
+            });
             result.freeze();
             return result;
         }
 
-        private static JdkMapAdapterStringMap frozenStringMap(final Map<String, String> copy) {
+        private JdkMapAdapterStringMap frozenStringMap(final Map<String, String> copy) {
             final JdkMapAdapterStringMap result = new JdkMapAdapterStringMap(copy);
             result.freeze();
             return result;
@@ -155,7 +166,7 @@ public class ThreadContextDataInjector {
             }
             // note: default ThreadContextMap is null
             final Map<String, String> copy = ThreadContext.getImmutableContext();
-            return copy.isEmpty() ? ContextDataFactory.emptyFrozenContextData() : new JdkMapAdapterStringMap(copy);
+            return copy.isEmpty() ? factory.emptyFrozenContextData() : new JdkMapAdapterStringMap(copy);
         }
     }
 
@@ -186,9 +197,7 @@ public class ThreadContextDataInjector {
             // StringMap. We cannot return the ThreadContext's internal data structure because it may be modified later
             // and such modifications should not be reflected in the log event.
             copyProperties(props, reusable);
-            for (int i = 0; i < providers.size(); ++i) {
-                reusable.putAll(providers.get(i).supplyStringMap());
-            }
+            providers.forEach(provider -> reusable.putAll(provider.supplyStringMap()));
             return reusable;
         }
 
@@ -203,18 +212,24 @@ public class ThreadContextDataInjector {
      * StringMap-based data structure.
      * <p>
      * If there are no configuration properties, this injector will return the thread context's internal data
-     * structure. Otherwise the configuration properties are combined with the thread context key-value pairs into the
+     * structure. Otherwise, the configuration properties are combined with the thread context key-value pairs into the
      * specified reusable StringMap.
      */
     public static class ForCopyOnWriteThreadContextMap implements ContextDataInjector {
         private final List<ContextDataProvider> providers;
+        private final ContextDataFactory factory;
 
         public ForCopyOnWriteThreadContextMap() {
+            this(new DefaultContextDataFactory());
+        }
+
+        public ForCopyOnWriteThreadContextMap(final ContextDataFactory factory) {
+            this.factory = factory;
             this.providers = getProviders();
         }
         /**
          * If there are no configuration properties, this injector will return the thread context's internal data
-         * structure. Otherwise the configuration properties are combined with the thread context key-value pairs into the
+         * structure. Otherwise, the configuration properties are combined with the thread context key-value pairs into the
          * specified reusable StringMap.
          *
          * @param props list of configuration properties, may be {@code null}
@@ -239,7 +254,7 @@ public class ThreadContextDataInjector {
             // data. Note that we cannot reuse the specified StringMap: some Loggers may have properties defined
             // and others not, so the LogEvent's context data may have been replaced with an immutable copy from
             // the ThreadContext - this will throw an UnsupportedOperationException if we try to modify it.
-            final StringMap result = ContextDataFactory.createContextData(count);
+            final StringMap result = factory.createContextData(count);
             copyProperties(props, result);
             for (final StringMap map : maps) {
                 result.putAll(map);
@@ -261,10 +276,7 @@ public class ThreadContextDataInjector {
      */
     public static void copyProperties(final List<Property> properties, final StringMap result) {
         if (properties != null) {
-            for (int i = 0; i < properties.size(); i++) {
-                final Property prop = properties.get(i);
-                result.putValue(prop.getName(), prop.getValue());
-            }
+            properties.forEach(property -> result.putValue(property.getName(), property.getValue()));
         }
     }
 

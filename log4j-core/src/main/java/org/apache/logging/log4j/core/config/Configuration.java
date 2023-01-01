@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -37,6 +36,7 @@ import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.spi.InstanceFactory;
 import org.apache.logging.log4j.util.PropertyResolver;
 
 /**
@@ -47,7 +47,7 @@ import org.apache.logging.log4j.util.PropertyResolver;
  *
  * @see AbstractConfiguration
  */
-public interface Configuration extends Filterable {
+public interface Configuration extends Filterable, InstanceFactory {
 
     /** Injection key for the current Configuration. */
     Key<Configuration> KEY = new Key<>() {};
@@ -101,14 +101,6 @@ public interface Configuration extends Filterable {
 
     void removeLogger(final String name);
 
-    /**
-     * Returns the list of packages to scan for plugins for this Configuration.
-     *
-     * @return the list of plugin packages.
-     * @since 2.1
-     */
-    List<String> getPluginPackages();
-
     Map<String, String> getProperties();
 
     PropertyResolver getPropertyResolver();
@@ -136,13 +128,9 @@ public interface Configuration extends Filterable {
 
     void createConfiguration(Node node, LogEvent event);
 
+    <T> T getInstance(Key<T> key);
+
     <T> T getComponent(String name);
-
-    <T> Supplier<T> getFactory(Key<T> key);
-
-    default <T> T getComponent(Key<T> key) {
-        return getFactory(key).get();
-    }
 
     void addComponent(String name, Object object);
 
@@ -226,7 +214,7 @@ public interface Configuration extends Filterable {
     void setNanoClock(NanoClock nanoClock);
 
     /**
-     * Gets the logger context.
+     * Gets the logger context. This may be {@code null} if the context was already garbage-collected.
      *
      * @return the logger context.
      */

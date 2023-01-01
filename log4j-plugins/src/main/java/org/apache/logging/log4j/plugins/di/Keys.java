@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
@@ -43,6 +44,8 @@ public final class Keys {
     private Keys() {
         throw new IllegalStateException("Utility class");
     }
+
+    public static final Key<Level> DEFAULT_STATUS_LEVEL_KEY = new @Named("StatusLogger") Key<>() {};
 
     public static final String SUBSTITUTOR_NAME = "StringSubstitutor";
     public static final Key<Function<String, String>> SUBSTITUTOR_KEY = new @Named(SUBSTITUTOR_NAME) Key<>() {};
@@ -143,7 +146,11 @@ public final class Keys {
     }
 
     private static Optional<String> getSpecifiedName(final AnnotatedElement element) {
-        for (final Annotation annotation : element.getAnnotations()) {
+        return getSpecifiedName(List.of(element.getAnnotations()));
+    }
+
+    public static Optional<String> getSpecifiedName(final Collection<Annotation> annotations) {
+        for (final Annotation annotation : annotations) {
             final Optional<String> name = getSpecifiedNameForAnnotation(annotation);
             if (name.isPresent()) {
                 return name;
@@ -170,8 +177,8 @@ public final class Keys {
     }
 
     private static <A extends Annotation> Collection<String> getAliasesForAnnotation(final A annotation) {
-        @SuppressWarnings("unchecked") final var providerType = (Class<AnnotatedElementAliasesProvider<A>>)
-                annotation.annotationType().getAnnotation(AliasesProvider.class).value();
+        final Class<AnnotatedElementAliasesProvider<A>> providerType =
+                Cast.cast(annotation.annotationType().getAnnotation(AliasesProvider.class).value());
         final AnnotatedElementAliasesProvider<A> provider = ReflectionUtil.instantiate(providerType);
         return provider.getAliases(annotation);
     }

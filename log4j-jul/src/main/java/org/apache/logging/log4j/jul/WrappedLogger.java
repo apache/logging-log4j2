@@ -33,7 +33,7 @@ class WrappedLogger extends ExtendedLoggerWrapper {
     private static final String FQCN = ApiLogger.class.getName();
 
     WrappedLogger(final ExtendedLogger logger) {
-        super(logger, logger.getName(), logger.getMessageFactory());
+        super(logger, logger.getName(), logger.getMessageFactory(), logger.getFlowMessageFactory());
     }
 
     @Override

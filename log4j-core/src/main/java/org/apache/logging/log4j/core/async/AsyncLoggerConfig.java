@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter;
@@ -26,16 +30,12 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
-import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.util.PropertyResolver;
 import org.apache.logging.log4j.util.Strings;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Asynchronous Logger object that is created via configuration and can be
@@ -80,11 +80,13 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
         @Override
         public LoggerConfig build() {
+            final Configuration configuration = Objects.requireNonNull(getConfig(), "No Configuration provided");
             final String name = getLoggerName().equals(ROOT) ? Strings.EMPTY : getLoggerName();
             LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
-                    getConfig());
+                    configuration);
             return new AsyncLoggerConfig(name, container.refs,getFilter(), container.level, isAdditivity(),
-                    getProperties(), getConfig(), includeLocation(getIncludeLocation()), getLogEventFactory());
+                    getProperties(), configuration, includeLocation(getIncludeLocation()), getLogEventFactory(),
+                    getPropertyResolver());
         }
     }
 
@@ -93,9 +95,10 @@ public class AsyncLoggerConfig extends LoggerConfig {
             final List<AppenderRef> appenders, final Filter filter,
             final Level level, final boolean additive,
             final Property[] properties, final Configuration config,
-            final boolean includeLocation, final LogEventFactory logEventFactory) {
+            final boolean includeLocation, final LogEventFactory logEventFactory,
+            final PropertyResolver propertyResolver) {
         super(name, appenders, filter, level, additive, properties, config,
-                includeLocation, logEventFactory);
+                includeLocation, logEventFactory, propertyResolver);
         delegate = config.getAsyncLoggerConfigDelegate();
         delegate.setLogEventFactory(getLogEventFactory());
     }
@@ -211,76 +214,6 @@ public class AsyncLoggerConfig extends LoggerConfig {
         return delegate.createRingBufferAdmin(contextName, getName());
     }
 
-    /**
-     * Factory method to create a LoggerConfig.
-     *
-     * @param additivity True if additive, false otherwise.
-     * @param levelName The Level to be associated with the Logger.
-     * @param loggerName The name of the Logger.
-     * @param includeLocation "true" if location should be passed downstream
-     * @param refs An array of Appender names.
-     * @param properties Properties to pass to the Logger.
-     * @param config The Configuration.
-     * @param filter A Filter.
-     * @return A new LoggerConfig.
-     * @deprecated use {@link #createLogger(boolean, Level, String, String, AppenderRef[], Property[], Configuration, Filter)}
-     */
-    @Deprecated
-    public static LoggerConfig createLogger(
-            final String additivity,
-            final String levelName,
-            final String loggerName,
-            final String includeLocation,
-            final AppenderRef[] refs,
-            final Property[] properties,
-            final Configuration config,
-            final Filter filter) {
-        if (loggerName == null) {
-            LOGGER.error("Loggers cannot be configured without a name");
-            return null;
-        }
-
-        final List<AppenderRef> appenderRefs = Arrays.asList(refs);
-        Level level;
-        try {
-            level = Level.toLevel(levelName, Level.ERROR);
-        } catch (final Exception ex) {
-            LOGGER.error(
-                    "Invalid Log level specified: {}. Defaulting to Error",
-                    levelName);
-            level = Level.ERROR;
-        }
-        final String name = loggerName.equals(LoggerConfig.ROOT) ? Strings.EMPTY : loggerName;
-        final boolean additive = Booleans.parseBoolean(additivity, true);
-
-        return new AsyncLoggerConfig(name, appenderRefs, filter, level,
-                additive, properties, config, includeLocation(includeLocation),
-                config.getComponent(LogEventFactory.KEY));
-    }
-
-    /**
-     * Factory method to create a LoggerConfig.
-     *
-     * @param additivity True if additive, false otherwise.
-     * @param level The Level to be associated with the Logger.
-     * @param loggerName The name of the Logger.
-     * @param includeLocation "true" if location should be passed downstream
-     * @param refs An array of Appender names.
-     * @param properties Properties to pass to the Logger.
-     * @param config The Configuration.
-     * @param filter A Filter.
-     * @return A new LoggerConfig.
-     * @since 3.0
-     */
-    @Deprecated
-    public static LoggerConfig createLogger(
-            final boolean additivity, final Level level, final String loggerName, final String includeLocation,
-            final AppenderRef[] refs, final Property[] properties, final Configuration config, final Filter filter) {
-        final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
-        return new AsyncLoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
-                includeLocation(includeLocation), config.getComponent(LogEventFactory.KEY));
-    }
-
     // Note: for asynchronous loggers, includeLocation default is FALSE
     protected static boolean includeLocation(final String includeLocationConfigValue) {
         return Boolean.parseBoolean(includeLocationConfigValue);
@@ -291,34 +224,30 @@ public class AsyncLoggerConfig extends LoggerConfig {
      */
     @Configurable(printObject = true)
     @Plugin("asyncRoot")
-    public static class RootLogger extends LoggerConfig {
+    public static class RootLogger extends AsyncLoggerConfig {
+        private RootLogger(final List<AppenderRef> appenders, final Filter filter,
+                           final Level level, final boolean additive, final Property[] properties,
+                           final Configuration config, final boolean includeLocation,
+                           final LogEventFactory logEventFactory, final PropertyResolver propertyResolver) {
+            super(LogManager.ROOT_LOGGER_NAME, appenders, filter, level, additive, properties,
+                    config, includeLocation, logEventFactory, propertyResolver);
+        }
 
         @PluginFactory
         public static <B extends Builder<B>> B newAsyncRootBuilder() {
             return new Builder<B>().asBuilder();
         }
 
-        public static class Builder<B extends Builder<B>> extends RootLogger.Builder<B> {
+        public static class Builder<B extends Builder<B>> extends LoggerConfig.RootLogger.Builder<B> {
 
             @Override
             public LoggerConfig build() {
                 LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
                         getConfig());
-                return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME, container.refs, getFilter(), container.level,
-                        isAdditivity(), getProperties(), getConfig(),
-                        AsyncLoggerConfig.includeLocation(getIncludeLocation()), getLogEventFactory());
+                return new AsyncLoggerConfig.RootLogger(container.refs, getFilter(), container.level,
+                        isAdditivity(), getProperties(), getConfig(), includeLocation(getIncludeLocation()),
+                        getLogEventFactory(), getPropertyResolver());
             }
-        }
-
-        @Deprecated
-        public static LoggerConfig createLogger(final String additivity, final Level level, final String includeLocation,
-                final AppenderRef[] refs, final Property[] properties, final Configuration config, final Filter filter) {
-            final List<AppenderRef> appenderRefs = Arrays.asList(refs);
-            final Level actualLevel = level == null ? Level.ERROR : level;
-            final boolean additive = Booleans.parseBoolean(additivity, true);
-            return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, actualLevel, additive,
-                    properties, config, AsyncLoggerConfig.includeLocation(includeLocation),
-                    config.getComponent(LogEventFactory.KEY));
         }
     }
 }

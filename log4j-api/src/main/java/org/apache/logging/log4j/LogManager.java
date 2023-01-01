@@ -364,7 +364,7 @@ public class LogManager {
      * @return The LoggerContextFactory.
      */
     public static LoggerContextFactory getFactory() {
-        return LoggingSystem.getLoggerContextFactory();
+        return LoggingSystem.loggerContextFactory();
     }
 
     /**

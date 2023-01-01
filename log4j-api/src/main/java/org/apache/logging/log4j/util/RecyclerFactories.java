@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -25,10 +25,8 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.util.DummyRecyclerFactory;
-import org.apache.logging.log4j.util.RecyclerFactory;
-import org.apache.logging.log4j.util.ThreadLocalRecyclerFactory;
-import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.spi.InstanceFactory;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.jctools.queues.MpmcArrayQueue;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
@@ -37,21 +35,46 @@ public final class RecyclerFactories {
 
     private RecyclerFactories() {}
 
-    private static final String JCTOOLS_QUEUE_CLASS_SUPPLIER_PATH =
-            "org.jctools.queues.MpmcArrayQueue.new";
+    private static final String JCTOOLS_FACTORY_CLASS_NAME =
+            RecyclerFactories.class.getName() + "$MpmcArrayQueueFactory";
 
-    private static final boolean JCTOOLS_QUEUE_CLASS_AVAILABLE =
-            isJctoolsQueueClassAvailable();
+    private interface QueueFactory {
+        <V> Queue<V> create(final int capacity);
+    }
 
-    private static boolean isJctoolsQueueClassAvailable() {
-        try {
-            final String className = JCTOOLS_QUEUE_CLASS_SUPPLIER_PATH
-                    .replaceAll("\\.new$", "");
-            LoaderUtil.loadClass(className);
-            return true;
-        } catch (final ClassNotFoundException ignored) {
-            return false;
+    private static class ArrayBlockingQueueFactory implements QueueFactory {
+        @Override
+        public <V> Queue<V> create(final int capacity) {
+            return new ArrayBlockingQueue<>(capacity);
         }
+    }
+
+    @SuppressWarnings("unused") // loaded via reflection to check for presence of JCTools
+    private static class MpmcArrayQueueFactory implements QueueFactory {
+        @Override
+        public <V> Queue<V> create(final int capacity) {
+            return new MpmcArrayQueue<>(capacity);
+        }
+    }
+
+    private static <V> Supplier<Queue<V>> getQueueSupplier(final int capacity) {
+
+        final ClassLoader classLoader = RecyclerFactories.class.getClassLoader();
+        Class<? extends QueueFactory> factoryClass;
+        try {
+            // try to load RecyclerFactories.MpmcArrayQueueFactory; a linkage error should occur if JCTools is unavailable
+            factoryClass = classLoader.loadClass(JCTOOLS_FACTORY_CLASS_NAME)
+                    .asSubclass(QueueFactory.class);
+        } catch (final ClassNotFoundException | LinkageError ignored) {
+            factoryClass = ArrayBlockingQueueFactory.class;
+        }
+
+        final LoggingSystem system = LoggingSystem.getInstance();
+        final InstanceFactory instanceFactory = system.getInstanceFactory();
+        final QueueFactory queueFactory = instanceFactory.getInstance(factoryClass);
+
+        return () -> queueFactory.create(capacity);
+
     }
 
     public static RecyclerFactory ofSpec(final String recyclerFactorySpec) {
@@ -66,11 +89,7 @@ public final class RecyclerFactories {
             if (isThreadLocalsEnabled()) {
                 return ThreadLocalRecyclerFactory.getInstance();
             } else {
-                final Supplier<Queue<Object>> queueSupplier =
-                        JCTOOLS_QUEUE_CLASS_AVAILABLE
-                                ? () -> new MpmcArrayQueue<>(defaultCapacity)
-                                : () -> new ArrayBlockingQueue<>(defaultCapacity);
-                return new QueueingRecyclerFactory(queueSupplier);
+                return new QueueingRecyclerFactory(getQueueSupplier(defaultCapacity));
             }
         }
 
@@ -116,9 +135,7 @@ public final class RecyclerFactories {
         final StringParameterParser.Value supplierValue = parsedValues.get("supplier");
         final String supplierPath;
         if (supplierValue == null || supplierValue instanceof StringParameterParser.NullValue) {
-            supplierPath = JCTOOLS_QUEUE_CLASS_AVAILABLE
-                    ? JCTOOLS_QUEUE_CLASS_SUPPLIER_PATH
-                    : "java.util.concurrent.ArrayBlockingQueue.new";
+            supplierPath = null;
         } else {
             supplierPath = supplierValue.toString();
         }
@@ -139,6 +156,9 @@ public final class RecyclerFactories {
         }
 
         // Execute the read spec.
+        if (supplierPath == null) {
+            return new QueueingRecyclerFactory(getQueueSupplier(capacity));
+        }
         return createRecyclerFactory(queueFactorySpec, supplierPath, capacity);
 
     }

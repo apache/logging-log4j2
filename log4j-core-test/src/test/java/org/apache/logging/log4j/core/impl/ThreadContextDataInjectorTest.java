@@ -21,7 +21,6 @@ import java.util.concurrent.ExecutionException;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
-import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -37,7 +36,6 @@ import org.junit.runners.Parameterized.Parameters;
 import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.apache.logging.log4j.ThreadContext.getThreadContextMap;
-import static org.apache.logging.log4j.core.impl.ContextDataInjectorFactory.createInjector;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -77,7 +75,7 @@ public class ThreadContextDataInjectorTest {
                    (readOnlythreadContextMap == null) ? null : readOnlythreadContextMap.getClass().getName(),
                    is(equalTo(readOnlythreadContextMapClassName)));
 
-        ContextDataInjector contextDataInjector = createInjector();
+        ContextDataInjector contextDataInjector = ThreadContextDataInjector.create(new DefaultContextDataFactory());
         StringMap stringMap = contextDataInjector.injectContextData(null, new SortedArrayStringMap());
 
         assertThat("thread context map", ThreadContext.getContext(), allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));

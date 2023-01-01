@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.ArrayBlockingQueueFactory;
 import org.apache.logging.log4j.core.async.AsyncQueueFullMessageUtil;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
+import org.apache.logging.log4j.core.async.AsyncQueueFullPolicyFactory;
 import org.apache.logging.log4j.core.async.BlockingQueueFactory;
 import org.apache.logging.log4j.core.async.DiscardingAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
@@ -339,6 +340,9 @@ public final class AsyncAppender extends AbstractAppender {
 
         @Override
         public AsyncAppender build() {
+            if (asyncQueueFullPolicySupplier == null) {
+                asyncQueueFullPolicySupplier = configuration.getInstance(AsyncQueueFullPolicyFactory.class);
+            }
             return new AsyncAppender(name, getFilter(), appenderRefs, errorRef, bufferSize, blocking, ignoreExceptions,
                 shutdownTimeout, configuration, includeLocation, blockingQueueFactory, getPropertyArray(),
                     asyncQueueFullPolicySupplier);

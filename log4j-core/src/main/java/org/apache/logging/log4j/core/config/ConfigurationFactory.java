@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.Injector;
@@ -113,14 +112,8 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      */
     private static final String CLASS_PATH_SCHEME = "classpath";
 
-    protected StrSubstitutor substitutor;
     protected PropertyResolver propertyResolver;
     protected ConfigurationResolver configurationResolver;
-
-    @Inject
-    public void setSubstitutor(final StrSubstitutor substitutor) {
-        this.substitutor = substitutor;
-    }
 
     @Inject
     public void setPropertyResolver(final PropertyResolver resolver) {

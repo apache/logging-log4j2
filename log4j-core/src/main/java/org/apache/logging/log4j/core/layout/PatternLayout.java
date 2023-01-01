@@ -26,20 +26,24 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.core.pattern.RegexReplacement;
+import org.apache.logging.log4j.core.util.GarbageFreeConfiguration;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.Recycler;
+import org.apache.logging.log4j.util.RecyclerFactories;
+import org.apache.logging.log4j.util.RecyclerFactory;
+import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -89,27 +93,29 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Constructs a PatternLayout using the supplied conversion pattern.
      *
-     * @param config The Configuration.
-     * @param replace The regular expression to match.
-     * @param eventPattern conversion pattern.
-     * @param patternSelector The PatternSelector.
-     * @param charset The character set.
+     * @param config                The Configuration.
+     * @param recyclerFactory       the recycler factory to use for StringBuilder instances
+     * @param replace               The regular expression to match.
+     * @param eventPattern          conversion pattern.
+     * @param patternSelector       The PatternSelector.
+     * @param charset               The character set.
      * @param alwaysWriteExceptions Whether or not exceptions should always be handled in this pattern (if {@code true},
-     *                         exceptions will be written even if the pattern does not specify so).
-     * @param disableAnsi
-     *            If {@code "true"}, do not output ANSI escape codes
-     * @param noConsoleNoAnsi
-     *            If {@code "true"} (default) and {@link System#console()} is null, do not output ANSI escape codes
-     * @param headerPattern header conversion pattern.
-     * @param footerPattern footer conversion pattern.
+     *                              exceptions will be written even if the pattern does not specify so).
+     * @param disableAnsi           If {@code "true"}, do not output ANSI escape codes
+     * @param noConsoleNoAnsi       If {@code "true"} (default) and {@link System#console()} is null, do not output ANSI escape codes
+     * @param headerPattern         header conversion pattern.
+     * @param footerPattern         footer conversion pattern.
      */
-    private PatternLayout(final Configuration config, final RegexReplacement replace, final String eventPattern,
-            final PatternSelector patternSelector, final Charset charset, final boolean alwaysWriteExceptions,
-            final boolean disableAnsi, final boolean noConsoleNoAnsi, final String headerPattern,
-            final String footerPattern) {
+    private PatternLayout(final Configuration config, final RecyclerFactory recyclerFactory,
+                          final RegexReplacement replace, final String eventPattern,
+                          final PatternSelector patternSelector, final Charset charset,
+                          final boolean alwaysWriteExceptions, final boolean disableAnsi,
+                          final boolean noConsoleNoAnsi, final String headerPattern,
+                          final String footerPattern) {
         super(config, charset,
                 newSerializerBuilder()
                         .setConfiguration(config)
+                        .setRecyclerFactory(recyclerFactory)
                         .setReplace(replace)
                         .setPatternSelector(patternSelector)
                         .setAlwaysWriteExceptions(alwaysWriteExceptions)
@@ -119,6 +125,7 @@ public final class PatternLayout extends AbstractStringLayout {
                         .build(),
                 newSerializerBuilder()
                         .setConfiguration(config)
+                        .setRecyclerFactory(recyclerFactory)
                         .setReplace(replace)
                         .setPatternSelector(patternSelector)
                         .setAlwaysWriteExceptions(alwaysWriteExceptions)
@@ -130,6 +137,7 @@ public final class PatternLayout extends AbstractStringLayout {
         this.patternSelector = patternSelector;
         this.eventSerializer = newSerializerBuilder()
                 .setConfiguration(config)
+                .setRecyclerFactory(recyclerFactory)
                 .setReplace(replace)
                 .setPatternSelector(patternSelector)
                 .setAlwaysWriteExceptions(alwaysWriteExceptions)
@@ -170,11 +178,10 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     @Override
     public Map<String, String> getContentFormat() {
-        final Map<String, String> result = new HashMap<>();
-        result.put("structured", "false");
-        result.put("formatType", "conversion");
-        result.put("format", conversionPattern);
-        return result;
+        return Map.of(
+                "structured", "false",
+                "formatType", "conversion",
+                "format", conversionPattern);
     }
 
     /**
@@ -194,10 +201,14 @@ public final class PatternLayout extends AbstractStringLayout {
 
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
-        final StringBuilder text = toText(eventSerializer, event, getStringBuilder());
-        final Encoder<StringBuilder> encoder = getStringBuilderEncoder();
-        encoder.encode(text, destination);
-        trimToMaxSize(text);
+        final StringBuilder buf = getStringBuilder();
+        try {
+            final StringBuilder text = toText(eventSerializer, event, buf);
+            final Encoder<StringBuilder> encoder = getStringBuilderEncoder();
+            encoder.encode(text, destination);
+        } finally {
+            recycleStringBuilder(buf);
+        }
     }
 
     /**
@@ -239,9 +250,11 @@ public final class PatternLayout extends AbstractStringLayout {
 
     private static final class NoFormatPatternSerializer implements PatternSerializer {
 
+        private final Recycler<StringBuilder> recycler;
         private final LogEventPatternConverter[] converters;
 
-        private NoFormatPatternSerializer(final PatternFormatter[] formatters) {
+        private NoFormatPatternSerializer(final Recycler<StringBuilder> recycler, final PatternFormatter[] formatters) {
+            this.recycler = recycler;
             this.converters = new LogEventPatternConverter[formatters.length];
             for (int i = 0; i < formatters.length; i++) {
                 converters[i] = formatters[i].getConverter();
@@ -250,11 +263,11 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder sb = getStringBuilder();
+            final StringBuilder sb = recycler.acquire();
             try {
                 return toSerializable(event, sb).toString();
             } finally {
-                trimToMaxSize(sb);
+                recycler.release(sb);
             }
         }
 
@@ -284,19 +297,21 @@ public final class PatternLayout extends AbstractStringLayout {
 
     private static final class PatternFormatterPatternSerializer implements PatternSerializer {
 
+        private final Recycler<StringBuilder> recycler;
         private final PatternFormatter[] formatters;
 
-        private PatternFormatterPatternSerializer(final PatternFormatter[] formatters) {
+        private PatternFormatterPatternSerializer(final Recycler<StringBuilder> recycler, final PatternFormatter[] formatters) {
+            this.recycler = recycler;
             this.formatters = formatters;
         }
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder sb = getStringBuilder();
+            final StringBuilder sb = recycler.acquire();
             try {
                 return toSerializable(event, sb).toString();
             } finally {
-                trimToMaxSize(sb);
+                recycler.release(sb);
             }
         }
 
@@ -319,21 +334,25 @@ public final class PatternLayout extends AbstractStringLayout {
 
     private static final class PatternSerializerWithReplacement implements Serializer, Serializer2 {
 
+        private final Recycler<StringBuilder> recycler;
         private final PatternSerializer delegate;
         private final RegexReplacement replace;
 
-        private PatternSerializerWithReplacement(final PatternSerializer delegate, final RegexReplacement replace) {
+        private PatternSerializerWithReplacement(final Recycler<StringBuilder> recycler,
+                                                 final PatternSerializer delegate,
+                                                 final RegexReplacement replace) {
+            this.recycler = recycler;
             this.delegate = delegate;
             this.replace = replace;
         }
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder sb = getStringBuilder();
+            final StringBuilder sb = recycler.acquire();
             try {
                 return toSerializable(event, sb).toString();
             } finally {
-                trimToMaxSize(sb);
+                recycler.release(sb);
             }
         }
 
@@ -368,6 +387,7 @@ public final class PatternLayout extends AbstractStringLayout {
     public static class SerializerBuilder implements org.apache.logging.log4j.plugins.util.Builder<Serializer> {
 
         private Configuration configuration;
+        private RecyclerFactory recyclerFactory;
         private RegexReplacement replace;
         private String pattern;
         private String defaultPattern;
@@ -381,6 +401,21 @@ public final class PatternLayout extends AbstractStringLayout {
             if (Strings.isEmpty(pattern) && Strings.isEmpty(defaultPattern)) {
                 return null;
             }
+            if (recyclerFactory == null) {
+                recyclerFactory = configuration != null
+                        ? configuration.getInstance(RecyclerFactory.class)
+                        : RecyclerFactories.ofSpec(null);
+            }
+            final GarbageFreeConfiguration gfConfig = configuration != null
+                    ? configuration.getInstance(GarbageFreeConfiguration.class)
+                    : GarbageFreeConfiguration.getDefaultConfiguration();
+            final Recycler<StringBuilder> recycler = recyclerFactory.create(
+                    () -> new StringBuilder(DEFAULT_STRING_BUILDER_SIZE),
+                    buf -> {
+                        StringBuilders.trimToMaxSize(buf, gfConfig.getLayoutStringBuilderMaxSize());
+                        buf.setLength(0);
+                    }
+            );
             if (patternSelector == null) {
                 try {
                     final PatternParser parser = createPatternParser(configuration);
@@ -396,18 +431,23 @@ public final class PatternLayout extends AbstractStringLayout {
                         }
                     }
                     PatternSerializer serializer = hasFormattingInfo
-                            ? new PatternFormatterPatternSerializer(formatters)
-                            : new NoFormatPatternSerializer(formatters);
-                    return replace == null ? serializer : new PatternSerializerWithReplacement(serializer, replace);
+                            ? new PatternFormatterPatternSerializer(recycler, formatters)
+                            : new NoFormatPatternSerializer(recycler, formatters);
+                    return replace == null ? serializer : new PatternSerializerWithReplacement(recycler, serializer, replace);
                 } catch (final RuntimeException ex) {
                     throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
                 }
             }
-            return new PatternSelectorSerializer(patternSelector, replace);
+            return new PatternSelectorSerializer(recycler, patternSelector, replace);
         }
 
         public SerializerBuilder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
+            return this;
+        }
+
+        public SerializerBuilder setRecyclerFactory(final RecyclerFactory recyclerFactory) {
+            this.recyclerFactory = recyclerFactory;
             return this;
         }
 
@@ -450,22 +490,26 @@ public final class PatternLayout extends AbstractStringLayout {
 
     private static final class PatternSelectorSerializer implements Serializer, Serializer2 {
 
+        private final Recycler<StringBuilder> recycler;
         private final PatternSelector patternSelector;
         private final RegexReplacement replace;
 
-        private PatternSelectorSerializer(final PatternSelector patternSelector, final RegexReplacement replace) {
+        private PatternSelectorSerializer(final Recycler<StringBuilder> recycler,
+                                          final PatternSelector patternSelector,
+                                          final RegexReplacement replace) {
             super();
+            this.recycler = recycler;
             this.patternSelector = patternSelector;
             this.replace = replace;
         }
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder sb = getStringBuilder();
+            final StringBuilder sb = recycler.acquire();
             try {
                 return toSerializable(event, sb).toString();
             } finally {
-                trimToMaxSize(sb);
+                recycler.release(sb);
             }
         }
 
@@ -490,26 +534,8 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public String toString() {
-            final StringBuilder builder = new StringBuilder();
-            builder.append(super.toString());
-            builder.append("[patternSelector=");
-            builder.append(patternSelector);
-            builder.append(", replace=");
-            builder.append(replace);
-            builder.append("]");
-            return builder.toString();
+            return super.toString() + "[patternSelector=" + patternSelector + ", replace=" + replace + "]";
         }
-    }
-
-    /**
-     * Creates a PatternLayout using the default options. These options include using UTF-8, the default conversion
-     * pattern, exceptions being written, and with ANSI escape codes.
-     *
-     * @return the PatternLayout.
-     * @see #DEFAULT_CONVERSION_PATTERN Default conversion pattern
-     */
-    public static PatternLayout createDefaultLayout() {
-        return newBuilder().build();
     }
 
     /**
@@ -546,8 +572,9 @@ public final class PatternLayout extends AbstractStringLayout {
         @PluginElement("PatternSelector")
         private PatternSelector patternSelector;
 
-        @PluginConfiguration
         private Configuration configuration;
+
+        private RecyclerFactory recyclerFactory;
 
         @PluginElement("Replace")
         private RegexReplacement regexReplacement;
@@ -560,7 +587,7 @@ public final class PatternLayout extends AbstractStringLayout {
         private boolean alwaysWriteExceptions = true;
 
         @PluginBuilderAttribute
-        private boolean disableAnsi = !useAnsiEscapeCodes();
+        private Boolean disableAnsi;
 
         @PluginBuilderAttribute
         private boolean noConsoleNoAnsi;
@@ -574,10 +601,19 @@ public final class PatternLayout extends AbstractStringLayout {
         private Builder() {
         }
 
-        private boolean useAnsiEscapeCodes() {
-            final boolean isPlatformSupportsAnsi = !Constants.isWindows();
-            final boolean isJansiRequested = LoggingSystem.getPropertyResolver().getBoolean(Log4jProperties.JANSI_ENABLED);
-            return isPlatformSupportsAnsi || isJansiRequested;
+        private Configuration getConfiguration() {
+            if (configuration == null) {
+                configuration = new DefaultConfiguration();
+            }
+            return configuration;
+        }
+
+        private boolean isDisableAnsi() {
+            if (disableAnsi != null) {
+                return disableAnsi;
+            }
+            final boolean enableJansi = getConfiguration().getPropertyResolver().getBoolean(Log4jProperties.JANSI_ENABLED);
+            return !enableJansi && Constants.isWindows();
         }
 
         /**
@@ -602,8 +638,16 @@ public final class PatternLayout extends AbstractStringLayout {
          * @param configuration
          *        The Configuration. Some Converters require access to the Interpolator.
          */
+        @Inject
         public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
+            return this;
+        }
+
+
+        @Inject
+        public Builder setRecyclerFactory(final RecyclerFactory recyclerFactory) {
+            this.recyclerFactory = recyclerFactory;
             return this;
         }
 
@@ -676,12 +720,12 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public PatternLayout build() {
-            // fall back to DefaultConfiguration
-            if (configuration == null) {
-                configuration = new DefaultConfiguration();
+            final Configuration config = getConfiguration();
+            if (recyclerFactory == null) {
+                recyclerFactory = config.getInstance(RecyclerFactory.class);
             }
-            return new PatternLayout(configuration, regexReplacement, pattern, patternSelector, charset,
-                alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi, header, footer);
+            return new PatternLayout(config, recyclerFactory, regexReplacement, pattern, patternSelector,
+                    charset, alwaysWriteExceptions, isDisableAnsi(), noConsoleNoAnsi, header, footer);
         }
     }
 

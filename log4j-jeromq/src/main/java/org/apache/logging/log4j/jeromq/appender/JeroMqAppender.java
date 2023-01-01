@@ -26,7 +26,9 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -85,6 +87,7 @@ public final class JeroMqAppender extends AbstractAppender {
             // @formatter:off
             @Required(message = "No name provided for JeroMqAppender") @PluginAttribute final String name,
             @PluginElement Layout<?> layout,
+            @PluginConfiguration final Configuration configuration,
             @PluginElement final Filter filter,
             @PluginElement final Property[] properties,
             // Super attributes
@@ -113,7 +116,7 @@ public final class JeroMqAppender extends AbstractAppender {
             // @formatter:on
     ) {
         if (layout == null) {
-            layout = PatternLayout.createDefaultLayout();
+            layout = PatternLayout.createDefaultLayout(configuration);
         }
         List<String> endpoints;
         if (properties == null) {

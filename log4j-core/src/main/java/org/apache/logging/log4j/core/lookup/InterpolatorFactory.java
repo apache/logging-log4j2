@@ -14,9 +14,25 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.lookup;
 
-public interface InterpolatorFactory {
-    Interpolator newInterpolator(final StrLookup defaultLookup);
+import java.util.Map;
+import java.util.function.Supplier;
+
+import org.apache.logging.log4j.plugins.ContextScoped;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Namespace;
+
+@ContextScoped
+public class InterpolatorFactory {
+    private final Map<String, Supplier<StrLookup>> strLookupPlugins;
+
+    @Inject
+    public InterpolatorFactory(@Namespace(StrLookup.CATEGORY) final Map<String, Supplier<StrLookup>> strLookupPlugins) {
+        this.strLookupPlugins = strLookupPlugins;
+    }
+
+    public Interpolator newInterpolator(final StrLookup defaultLookup) {
+        return new Interpolator(defaultLookup, strLookupPlugins);
+    }
 }

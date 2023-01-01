@@ -14,23 +14,24 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
-import org.apache.logging.log4j.util.RecyclerFactory;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
- * The default string (i.e., recycler factory spec) to {@link RecyclerFactory} type converter.
+ * Scope type where provided instances are singletons within a particular {@link LoggerContext}.
  */
-@TypeConverters
-@Plugin
-public final class RecyclerFactoryConverter implements TypeConverter<RecyclerFactory> {
-
-    @Override
-    public RecyclerFactory convert(final String recyclerFactorySpec) {
-        return RecyclerFactories.ofSpec(recyclerFactorySpec);
-    }
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Documented
+@Inherited
+@ScopeType
+public @interface ContextScoped {
 }

@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.plugins.ContextScoped;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.spi.ClassFactory;
 import org.apache.logging.log4j.spi.InstanceFactory;
@@ -47,6 +48,7 @@ import org.apache.logging.log4j.util.PropertyResolver;
  *
  * @since 2.6
  */
+@ContextScoped
 public class AsyncQueueFullPolicyFactory implements Supplier<AsyncQueueFullPolicy> {
     static final String PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER = "Default";
     static final String PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER = "Discard";

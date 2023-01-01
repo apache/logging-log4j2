@@ -16,17 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.core.time.ClockFactory;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
@@ -34,6 +23,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * PathCondition that accepts paths that are older than the specified duration.
@@ -50,7 +49,7 @@ public final class IfLastModified implements PathCondition {
     private IfLastModified(final Duration age, final PathCondition[] nestedConditions, final Clock clock) {
         this.age = Objects.requireNonNull(age, "age");
         this.nestedConditions = PathCondition.copy(nestedConditions);
-        this.clock = clock;
+        this.clock = Objects.requireNonNull(clock, "clock");
     }
 
     public Duration getAge() {
@@ -98,18 +97,6 @@ public final class IfLastModified implements PathCondition {
         return "IfLastModified(age=" + age + nested + ")";
     }
 
-    /**
-     * Create an IfLastModified condition.
-     *
-     * @param age The path age that is accepted by this condition. Must be a valid Duration.
-     * @param nestedConditions nested conditions to evaluate if this condition accepts a path
-     * @return An IfLastModified condition.
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static IfLastModified createAgeCondition(final Duration age, final PathCondition... nestedConditions) {
-        return newBuilder().setAge(age).setNestedConditions(nestedConditions).get();
-    }
-
     @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
@@ -138,9 +125,6 @@ public final class IfLastModified implements PathCondition {
 
         @Override
         public IfLastModified get() {
-            if (clock == null) {
-                clock = ClockFactory.getClock();
-            }
             return new IfLastModified(age, nestedConditions, clock);
         }
     }

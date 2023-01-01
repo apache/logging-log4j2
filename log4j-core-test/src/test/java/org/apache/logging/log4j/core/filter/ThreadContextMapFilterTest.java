@@ -18,7 +18,11 @@ package org.apache.logging.log4j.core.filter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.impl.DefaultContextDataFactory;
+import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +36,14 @@ public class ThreadContextMapFilterTest {
         ThreadContext.put("organization", "Apache");
         final KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("userid", "JohnDoe"),
                                                     new KeyValuePair("organization", "Apache")};
-        ThreadContextMapFilter filter = ThreadContextMapFilter.createFilter(pairs, "and", null, null);
+        ContextDataFactory contextDataFactory = new DefaultContextDataFactory();
+        ContextDataInjector contextDataInjector = ThreadContextDataInjector.create(contextDataFactory);
+        ThreadContextMapFilter filter = ThreadContextMapFilter.newBuilder()
+                .setPairs(pairs)
+                .setOperator("and")
+                .setContextDataFactory(contextDataFactory)
+                .setContextDataInjector(contextDataInjector)
+                .get();
         assertNotNull(filter);
         filter.start();
         assertTrue(filter.isStarted());
@@ -44,7 +55,12 @@ public class ThreadContextMapFilterTest {
         ThreadContext.put("organization", "ASF");
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
         ThreadContext.clearMap();
-        filter = ThreadContextMapFilter.createFilter(pairs, "or", null, null);
+        filter = ThreadContextMapFilter.newBuilder()
+                .setPairs(pairs)
+                .setOperator("or")
+                .setContextDataFactory(contextDataFactory)
+                .setContextDataInjector(contextDataInjector)
+                .get();
         assertNotNull(filter);
         filter.start();
         assertTrue(filter.isStarted());
@@ -56,7 +72,11 @@ public class ThreadContextMapFilterTest {
         ThreadContext.remove("organization");
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
         final KeyValuePair[] single = new KeyValuePair[] {new KeyValuePair("userid", "testuser")};
-        filter = ThreadContextMapFilter.createFilter(single, null, null, null);
+        filter = ThreadContextMapFilter.newBuilder()
+                .setPairs(single)
+                .setContextDataFactory(contextDataFactory)
+                .setContextDataInjector(contextDataInjector)
+                .get();
         assertNotNull(filter);
         filter.start();
         assertTrue(filter.isStarted());

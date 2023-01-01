@@ -30,7 +30,8 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.core.impl.DefaultContextDataFactory;
+import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -55,19 +56,19 @@ import org.apache.logging.log4j.util.StringMap;
 @PerformanceSensitive("allocation")
 public class ThreadContextMapFilter extends MapFilter {
 
-    private final ContextDataInjector injector;
+    private final ContextDataInjector contextDataInjector;
     private final String key;
     private final String value;
 
     private final boolean useMap;
 
     public ThreadContextMapFilter(
-            final Map<String, List<String>> pairs, final boolean oper, final Result onMatch,
-            final Result onMismatch, final ContextDataInjector injector) {
+            final Map<String, List<String>> pairs, final boolean oper, final Result onMatch, final Result onMismatch,
+            final ContextDataInjector contextDataInjector, final ContextDataFactory contextDataFactory) {
         super(pairs, oper, onMatch, onMismatch);
         // ContextDataFactory looks up a property. The Spring PropertySource may log which will cause recursion.
         // By initializing the ContextDataFactory here recursion will be prevented.
-        StringMap map = ContextDataFactory.createContextData();
+        StringMap map = contextDataFactory.createContextData();
         LOGGER.debug("Successfully initialized ContextDataFactory by retrieving the context data with {} entries",
                 map.size());
         if (pairs.size() == 1) {
@@ -87,7 +88,7 @@ public class ThreadContextMapFilter extends MapFilter {
             this.value = null;
             this.useMap = true;
         }
-        this.injector = injector;
+        this.contextDataInjector = contextDataInjector;
     }
 
     @Override
@@ -130,7 +131,7 @@ public class ThreadContextMapFilter extends MapFilter {
     }
 
     private ReadOnlyStringMap currentContextData() {
-        return injector.rawContextData();
+        return contextDataInjector.rawContextData();
     }
 
     @Override
@@ -211,6 +212,7 @@ public class ThreadContextMapFilter extends MapFilter {
         private KeyValuePair[] pairs;
         private String operator;
         private ContextDataInjector contextDataInjector;
+        private ContextDataFactory contextDataFactory;
 
         public Builder setPairs(@Required @PluginElement final KeyValuePair[] pairs) {
             this.pairs = pairs;
@@ -228,11 +230,23 @@ public class ThreadContextMapFilter extends MapFilter {
             return this;
         }
 
+        @Inject
+        public Builder setContextDataFactory(final ContextDataFactory contextDataFactory) {
+            this.contextDataFactory = contextDataFactory;
+            return this;
+        }
+
         @Override
         public ThreadContextMapFilter get() {
             if (pairs == null || pairs.length == 0) {
                 LOGGER.error("key and value pairs must be specified for the ThreadContextMapFilter");
                 return null;
+            }
+            if (contextDataFactory == null) {
+                contextDataFactory = new DefaultContextDataFactory();
+            }
+            if (contextDataInjector == null) {
+                contextDataInjector = ThreadContextDataInjector.create(contextDataFactory);
             }
             final Map<String, List<String>> map = new HashMap<>();
             for (final KeyValuePair pair : pairs) {
@@ -260,7 +274,8 @@ public class ThreadContextMapFilter extends MapFilter {
                 return null;
             }
             final boolean isAnd = operator == null || !operator.equalsIgnoreCase("or");
-            return new ThreadContextMapFilter(map, isAnd, getOnMatch(), getOnMismatch(), contextDataInjector);
+            return new ThreadContextMapFilter(map, isAnd, getOnMatch(), getOnMismatch(),
+                    contextDataInjector, contextDataFactory);
         }
     }
 
@@ -269,15 +284,4 @@ public class ThreadContextMapFilter extends MapFilter {
         return new Builder();
     }
 
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static ThreadContextMapFilter createFilter(
-            final KeyValuePair[] pairs, final String operator, final Result onMatch, final Result onMismatch) {
-        return newBuilder()
-                .setPairs(pairs)
-                .setOperator(operator)
-                .setOnMatch(onMatch)
-                .setOnMismatch(onMismatch)
-                .setContextDataInjector(ContextDataInjectorFactory.createInjector())
-                .get();
-    }
 }

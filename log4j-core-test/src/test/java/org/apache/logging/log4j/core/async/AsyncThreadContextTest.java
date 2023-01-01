@@ -25,15 +25,14 @@ import java.net.URI;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.junit.LoggingTestConfiguration;
+import org.apache.logging.log4j.core.test.junit.LoggingTestContext;
 import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
@@ -126,15 +125,15 @@ public class AsyncThreadContextTest {
     }
 
     static void doTestAsyncLogWritesToLog(final ContextImpl contextImpl, final Mode asyncMode, final Class<?> testClass) throws Exception {
-        final Injector injector = DI.createInjector();
-        injector.registerBinding(ContextSelector.KEY, injector.getFactory(asyncMode.contextSelectorType));
-        injector.init();
-        final Log4jContextFactory factory = injector.getInstance(Log4jContextFactory.class);
-        final String fqcn = testClass.getName();
-        final ClassLoader classLoader = testClass.getClassLoader();
-        final String name = contextImpl.toString() + ' ' + asyncMode;
+        final LoggingTestContext testContext = new LoggingTestConfiguration()
+                .setContextName(contextImpl.name() + ' ' + asyncMode.name())
+                .setClassLoader(testClass.getClassLoader())
+                .setBootstrap(true)
+                .setConfigUri(asyncMode.configUri)
+                .build();
+        testContext.init(injector -> injector.registerBinding(ContextSelector.KEY, injector.getFactory(asyncMode.contextSelectorType)));
         contextImpl.init();
-        final LoggerContext context = factory.getContext(fqcn, classLoader, null, false, asyncMode.configUri, name);
+        final LoggerContext context = testContext.getLoggerContext();
         runTest(context, contextImpl, asyncMode);
     }
 

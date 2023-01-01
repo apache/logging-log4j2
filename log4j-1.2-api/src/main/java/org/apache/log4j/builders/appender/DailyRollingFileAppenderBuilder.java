@@ -16,6 +16,11 @@
  */
 package org.apache.log4j.builders.appender;
 
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -37,11 +42,6 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
@@ -115,7 +115,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         });
         return createAppender(name, layout.get(), filter.get(), fileName.get(), append.get(), immediateFlush.get(),
                 level.get(), bufferedIo.get(), bufferSize.get(), datePattern.get(), config,
-                config.getComponent(Clock.KEY));
+                config.getInstance(Clock.class));
     }
 
     @Override
@@ -131,7 +131,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         final int bufferSize = getIntegerProperty(BUFFER_SIZE_PARAM, 8192);
         final String datePattern = getProperty(DATE_PATTERN_PARAM, DEFAULT_DATE_PATTERN);
         return createAppender(name, layout, filter, fileName, append, immediateFlush, level, bufferedIo, bufferSize,
-                datePattern, configuration, configuration.getComponent(Clock.KEY));
+                datePattern, configuration, configuration.getInstance(Clock.class));
     }
 
     private <T extends Log4j1Configuration> Appender createAppender(final String name, final Layout layout,

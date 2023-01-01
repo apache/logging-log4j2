@@ -27,6 +27,6 @@ module org.apache.logging.log4j.layout.template.json {
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.plugins;
     requires org.apache.logging.log4j.core;
-    requires org.jctools.core;
+    requires static org.jctools.core;
 
 }

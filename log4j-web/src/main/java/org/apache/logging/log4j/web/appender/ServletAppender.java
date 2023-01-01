@@ -58,7 +58,7 @@ public class ServletAppender extends AbstractAppender {
 			}
 			Layout<?> layout = getLayout();
 			if (layout == null) {
-				layout = PatternLayout.createDefaultLayout();
+                layout = PatternLayout.createDefaultLayout(WebLoggerContextUtils.getWebLoggerContext(servletContext).getConfiguration());
 			} else if (!(layout instanceof AbstractStringLayout)) {
 				LOGGER.error("Layout must be a StringLayout to log to ServletContext");
 				return null;

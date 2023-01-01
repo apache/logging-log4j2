@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.net.SocketAddress;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -96,6 +97,8 @@ public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager
         @PluginBuilderAttribute
         private boolean useClockForTimestampGenerator;
 
+        private Clock clock;
+
         /**
          * Number of LogEvents to buffer before writing. Can be used with or without batch statements.
          */
@@ -103,7 +106,7 @@ public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager
         private int bufferSize;
 
         /**
-         * Whether or not to use batch statements when inserting records.
+         * Whether to use batch statements when inserting records.
          */
         @PluginBuilderAttribute
         private boolean batched;
@@ -159,6 +162,12 @@ public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager
             return asBuilder();
         }
 
+        @Inject
+        public B setClock(final Clock clock) {
+            this.clock = clock;
+            return asBuilder();
+        }
+
         public B setBufferSize(final int bufferSize) {
             this.bufferSize = bufferSize;
             return asBuilder();
@@ -177,8 +186,8 @@ public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager
         @Override
         public CassandraAppender build() {
             final CassandraManager manager = CassandraManager.getManager(getName(), contactPoints, columns, useTls,
-                clusterName, keyspace, table, username, password, useClockForTimestampGenerator, bufferSize, batched,
-                batchType);
+                clusterName, keyspace, table, username, password, useClockForTimestampGenerator, clock, bufferSize,
+                batched, batchType);
             return new CassandraAppender(getName(), getFilter(), isIgnoreExceptions(), getPropertyArray(), manager);
         }
 

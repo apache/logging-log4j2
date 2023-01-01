@@ -39,6 +39,7 @@ module org.apache.logging.log4j {
     exports org.apache.logging.log4j.util;
 
     requires static org.osgi.framework;
+    requires static org.jctools.core;
     uses org.apache.logging.log4j.spi.Provider;
     uses PropertySource;
     uses org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;

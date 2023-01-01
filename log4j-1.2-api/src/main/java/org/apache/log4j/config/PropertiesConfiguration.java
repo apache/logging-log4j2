@@ -368,7 +368,12 @@ public class PropertiesConfiguration extends Log4j1Configuration {
                 LoggerConfig loggerConfig = getLogger(loggerName);
                 if (loggerConfig == null) {
                     final boolean additivity = getAdditivityForLogger(props, loggerName);
-                    loggerConfig = new LoggerConfig(loggerName, org.apache.logging.log4j.Level.ERROR, additivity);
+                    loggerConfig = LoggerConfig.newBuilder()
+                            .setLoggerName(loggerName)
+                            .setLevel(org.apache.logging.log4j.Level.ERROR)
+                            .setAdditivity(additivity)
+                            .setConfig(this)
+                            .get();
                     addLogger(loggerName, loggerConfig);
                 }
                 parseLogger(props, loggerConfig, key, loggerName, value);

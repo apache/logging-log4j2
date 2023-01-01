@@ -16,10 +16,7 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
-import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
@@ -60,8 +57,6 @@ public final class Constants {
      * Property name for the default status (internal log4j logging) level to use if not specified in configuration.
      */
     public static final String LOG4J_DEFAULT_STATUS_LEVEL = Log4jProperties.STATUS_DEFAULT_LEVEL;
-
-    public static final Key<Level> DEFAULT_STATUS_LEVEL_KEY = new @Named("StatusLogger") Key<>() {};
 
     /**
      * JNDI context name string literal.

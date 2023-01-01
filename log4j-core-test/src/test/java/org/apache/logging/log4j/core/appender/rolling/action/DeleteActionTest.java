@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.nio.file.FileSystems;
@@ -25,8 +24,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 
-import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,7 +45,7 @@ public class DeleteActionTest {
 
     private static DeleteAction create(final String path, final boolean followLinks, final int maxDepth, final boolean testMode,
             final PathCondition[] conditions) {
-        final Configuration config = new BasicConfigurationFactory.BasicConfiguration();
+        final Configuration config = new BasicConfigurationFactory.BasicConfiguration(LoggerContext.getContext());
         return DeleteAction.createDeleteAction(path, followLinks, maxDepth, testMode, null, conditions,
                 null, config);
     }

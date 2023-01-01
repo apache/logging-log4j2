@@ -17,11 +17,14 @@
 package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.plugins.ContextScoped;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.PropertyResolver;
 
+@ContextScoped
 public class GarbageFreeConfiguration {
     private static final Lazy<GarbageFreeConfiguration> DEFAULT_INSTANCE =
             Lazy.relaxed(() -> new GarbageFreeConfiguration(LoggingSystem.getPropertyResolver()));
@@ -32,6 +35,7 @@ public class GarbageFreeConfiguration {
 
     private final PropertyResolver propertyResolver;
 
+    @Inject
     public GarbageFreeConfiguration(final PropertyResolver propertyResolver) {
         this.propertyResolver = propertyResolver;
     }

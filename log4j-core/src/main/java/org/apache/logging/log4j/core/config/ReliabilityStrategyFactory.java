@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.plugins.ContextScoped;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.spi.ClassFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertyResolver;
@@ -26,7 +26,7 @@ import org.apache.logging.log4j.util.PropertyResolver;
 /**
  * Factory for ReliabilityStrategies.
  */
-@Singleton
+@ContextScoped
 public final class ReliabilityStrategyFactory {
     private final PropertyResolver propertyResolver;
     private final ClassFactory classFactory;

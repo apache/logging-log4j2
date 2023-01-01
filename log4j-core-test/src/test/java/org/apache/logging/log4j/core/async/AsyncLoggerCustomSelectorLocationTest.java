@@ -22,6 +22,7 @@ import java.io.FileReader;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,7 +74,8 @@ public class AsyncLoggerCustomSelectorLocationTest {
 
     @Singleton
     public static final class CustomAsyncContextSelector implements ContextSelector {
-        private static final LoggerContext CONTEXT = new AsyncLoggerContext("AsyncDefault");
+        private static final LoggerContext CONTEXT = AsyncLoggerContext.newBuilder().setName("AsyncDefault").get();
+
         @Override
         public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
             return CONTEXT;
@@ -86,7 +88,7 @@ public class AsyncLoggerCustomSelectorLocationTest {
 
         @Override
         public LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader, final boolean currentContext,
-                                        final URI configLocation, final Injector injector) {
+                                        final URI configLocation, final Consumer<Injector> configurer) {
             return CONTEXT;
         }
 

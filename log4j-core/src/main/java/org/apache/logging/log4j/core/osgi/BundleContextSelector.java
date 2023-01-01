@@ -151,7 +151,11 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
         final String name = Objects.requireNonNull(bundle, "No Bundle provided").getSymbolicName();
         final AtomicReference<WeakReference<LoggerContext>> ref = contextMap.get(name);
         if (ref == null) {
-            final LoggerContext context = new LoggerContext(name, bundle, configLocation);
+            final LoggerContext context = LoggerContext.newBuilder()
+                    .setName(name)
+                    .setExternalContext(bundle)
+                    .setConfigLocation(configLocation)
+                    .get();
             contextMap.putIfAbsent(name,
                 new AtomicReference<>(new WeakReference<>(context)));
             return contextMap.get(name).get().get();
@@ -159,7 +163,11 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
         final WeakReference<LoggerContext> r = ref.get();
         final LoggerContext ctx = r.get();
         if (ctx == null) {
-            final LoggerContext context = new LoggerContext(name, bundle, configLocation);
+            final LoggerContext context = LoggerContext.newBuilder()
+                    .setName(name)
+                    .setExternalContext(bundle)
+                    .setConfigLocation(configLocation)
+                    .get();
             ref.compareAndSet(r, new WeakReference<>(context));
             return ref.get().get();
         }

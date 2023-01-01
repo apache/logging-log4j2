@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.appender;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.appender.InMemoryAppender;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -29,9 +31,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryAppenderTest {
 
+    private final Configuration configuration = new DefaultConfiguration();
+
     @Test
     public void testAppender() {
-        final Layout<String> layout = PatternLayout.createDefaultLayout();
+        final Layout<String> layout = PatternLayout.createDefaultLayout(configuration);
         final boolean writeHeader = true;
         final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader, null);
         final String expectedHeader = null;
@@ -40,7 +44,10 @@ public class InMemoryAppenderTest {
 
     @Test
     public void testHeaderRequested() {
-        final PatternLayout layout = PatternLayout.newBuilder().setHeader("HEADERHEADER").build();
+        final PatternLayout layout = PatternLayout.newBuilder()
+                .setConfiguration(configuration)
+                .setHeader("HEADERHEADER")
+                .build();
         final boolean writeHeader = true;
         final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader, null);
         final String expectedHeader = "HEADERHEADER";
@@ -49,7 +56,10 @@ public class InMemoryAppenderTest {
 
     @Test
     public void testHeaderSuppressed() {
-        final PatternLayout layout = PatternLayout.newBuilder().setHeader("HEADERHEADER").build();
+        final PatternLayout layout = PatternLayout.newBuilder()
+                .setConfiguration(configuration)
+                .setHeader("HEADERHEADER")
+                .build();
         final boolean writeHeader = false;
         final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader, null);
         final String expectedHeader = null;

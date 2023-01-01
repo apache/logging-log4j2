@@ -19,25 +19,29 @@ package org.apache.logging.log4j.core.impl;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the ContextDataFactory class.
  */
 public class ContextDataFactoryTest {
+    private final ContextDataFactory contextDataFactory = new DefaultContextDataFactory();
+
     @Test
     public void noArgReturnsSortedArrayStringMapIfNoPropertySpecified() throws Exception {
-        assertTrue(ContextDataFactory.createContextData() instanceof SortedArrayStringMap);
+
+        assertTrue(contextDataFactory.createContextData() instanceof SortedArrayStringMap);
     }
 
     @Test
     public void intArgReturnsSortedArrayStringMapIfNoPropertySpecified() throws Exception {
-        assertTrue(ContextDataFactory.createContextData(2) instanceof SortedArrayStringMap);
+        assertTrue(contextDataFactory.createContextData(2) instanceof SortedArrayStringMap);
     }
 
     @Test
     public void intArgSetsCapacityIfNoPropertySpecified() throws Exception {
-        final SortedArrayStringMap actual = (SortedArrayStringMap) ContextDataFactory.createContextData(2);
+        final SortedArrayStringMap actual = (SortedArrayStringMap) contextDataFactory.createContextData(2);
         assertEquals(2, actual.getThreshold());
     }
 }

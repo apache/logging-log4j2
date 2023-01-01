@@ -34,7 +34,6 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.server.Server;
@@ -46,7 +45,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -108,17 +106,19 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
     }
 
     @Test
-    @SetSystemProperty(key = Log4jProperties.CONFIG_ALLOWED_PROTOCOLS, value = "http")
-    @SetSystemProperty(key = Log4jProperties.TRANSPORT_SECURITY_BASIC_USERNAME, value = "log4j")
-    @SetSystemProperty(key = Log4jProperties.TRANSPORT_SECURITY_BASIC_PASSWORD, value = "log4j")
     public void filterTest() throws Exception {
-        System.setProperty(Log4jProperties.CONFIG_LOCATION, "http://localhost:" + port + "/testConfig.json");
+        String contextName = getClass().getSimpleName();
+        String configLocation = "http://localhost:" + port + "/testConfig.json";
+        System.setProperty("log4j2.HttpThreadContextMapFilterTest.Configuration.location", configLocation);
+        System.setProperty("log4j2.HttpThreadContextMapFilterTest.Configuration.allowedProtocols", "http");
+        System.setProperty("log4j2.HttpThreadContextMapFilterTest.Configuration.TransportSecurity.basicUsername", "log4j");
+        System.setProperty("log4j2.HttpThreadContextMapFilterTest.Configuration.TransportSecurity.basicPassword", "log4j");
         ThreadContext.put("loginId", "rgoers");
         Path source = new File("target/test-classes/emptyConfig.json").toPath();
         Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
         long fileTime = targetFile.lastModified() - 2000;
         assertTrue(targetFile.setLastModified(fileTime));
-        loggerContext = Configurator.initialize(null, CONFIG);
+        loggerContext = Configurator.initialize(contextName, CONFIG);
         assertNotNull(loggerContext);
         Appender app = loggerContext.getConfiguration().getAppender("List");
         assertNotNull(app);

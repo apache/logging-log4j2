@@ -14,21 +14,22 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
-
-import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.DoubleQuotedStringValue;
-import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.NullValue;
-import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.StringValue;
-import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Value;
-import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+package org.apache.logging.log4j.util;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.logging.log4j.util.StringParameterParser;
+import org.apache.logging.log4j.util.StringParameterParser.DoubleQuotedStringValue;
+import org.apache.logging.log4j.util.StringParameterParser.NullValue;
+import org.apache.logging.log4j.util.StringParameterParser.StringValue;
+import org.apache.logging.log4j.util.StringParameterParser.Value;
+import org.apache.logging.log4j.util.StringParameterParser.Values;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("DoubleBraceInitialization")
 class StringParameterParserTest {

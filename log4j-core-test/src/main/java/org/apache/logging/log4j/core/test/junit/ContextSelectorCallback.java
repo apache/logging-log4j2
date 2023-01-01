@@ -29,6 +29,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 public class ContextSelectorCallback implements BeforeAllCallback, AfterAllCallback {
     @Override
     public void beforeAll(final ExtensionContext context) throws Exception {
+        // FIXME: should use LoggerContextTestHolder
         AnnotationSupport.findAnnotation(context.getTestClass(), ContextSelectorType.class)
                 .map(ContextSelectorType::value)
                 .ifPresent(contextSelectorClass -> {

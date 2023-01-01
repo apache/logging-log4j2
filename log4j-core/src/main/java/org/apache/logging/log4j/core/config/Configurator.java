@@ -408,7 +408,12 @@ public final class Configurator {
         LoggerConfig loggerConfig = config.getLoggerConfig(loggerName);
         if (!loggerName.equals(loggerConfig.getName())) {
             // TODO Should additivity be inherited?
-            loggerConfig = new LoggerConfig(loggerName, level, true);
+            loggerConfig = LoggerConfig.newBuilder()
+                    .setLoggerName(loggerName)
+                    .setLevel(level)
+                    .setAdditivity(true)
+                    .setConfig(config)
+                    .get();
             config.addLogger(loggerName, loggerConfig);
             loggerConfig.setLevel(level);
             set = true;

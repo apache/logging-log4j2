@@ -16,19 +16,11 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import java.lang.reflect.Method;
-import java.net.URI;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.LoggerContextAccessor;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.impl.Log4jContextFactory;
-import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.test.junit.TypeBasedParameterResolver;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -44,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> implements BeforeAllCallback,
         BeforeEachCallback, AfterEachCallback {
-    private static final String FQCN = LoggerContextResolver.class.getName();
     private static final Namespace BASE_NAMESPACE = Namespace.create(LoggerContext.class);
 
     public LoggerContextResolver() {
@@ -76,6 +67,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), LoggerContextSource.class)
                 .ifPresent(source -> {
                     final LoggerContext loggerContext = setUpLoggerContext(source, context);
+                    // TODO(ms): refactor this into LoggerTestContext
                     if (source.reconfigure() == ReconfigurationPolicy.BEFORE_EACH) {
                         loggerContext.reconfigure();
                     }
@@ -111,63 +103,23 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     }
 
     private static LoggerContext setUpLoggerContext(final LoggerContextSource source, final ExtensionContext extensionContext) {
-        final Injector injector = extensionContext.getTestInstance().map(DI::createInjector).orElseGet(DI::createInjector);
-        injector.init();
-        final LoggingSystem system = LoggingSystem.getInstance();
-        final Log4jContextFactory loggerContextFactory;
-        if (source.bootstrap()) {
-            loggerContextFactory = injector.getInstance(Log4jContextFactory.class);
-            system.setLoggerContextFactory(loggerContextFactory);
-        } else {
-            loggerContextFactory = (Log4jContextFactory) LoggingSystem.getLoggerContextFactory();
-        }
-        final Class<?> testClass = extensionContext.getRequiredTestClass();
-        final ClassLoader classLoader = testClass.getClassLoader();
-        final String configLocation = source.value();
-        final URI configUri;
-        if (source.v1config()) {
-            System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, configLocation);
-            configUri = null; // handled by system property
-        } else {
-            configUri = configLocation.isEmpty() ? null : NetUtils.toURI(configLocation);
-        }
-        final String contextName = Optional.of(source.name())
-                .filter(name -> !name.isEmpty())
-                .or(() -> extensionContext.getTestMethod().map(Method::getName))
-                .orElseGet(testClass::getSimpleName);
-        final LoggerContext context = loggerContextFactory.getContext(FQCN, classLoader, false, configUri, contextName, injector);
-        assertNotNull(context, () -> "No LoggerContext created for " + testClass + " and config file " + configLocation);
+        final LoggingTestContext context = new LoggingTestConfiguration()
+                .setBootstrap(source.bootstrap())
+                .setConfigurationLocation(source.value())
+                .setContextName(source.name())
+                .setReconfigurationPolicy(source.reconfigure())
+                .setTimeout(source.timeout(), source.unit())
+                .setV1Config(source.v1config())
+                .setClassLoader(extensionContext.getRequiredTestClass().getClassLoader())
+                .build();
+        final Consumer<Injector> configurer = extensionContext.getTestInstance()
+                .map(instance -> (Consumer<Injector>) injector -> injector.registerBundle(instance))
+                .orElse(null);
+        context.init(configurer);
         final Store store = getTestStore(extensionContext);
         store.put(ReconfigurationPolicy.class, source.reconfigure());
-        store.put(LoggerContextAccessor.class, new ContextHolder(context, source.timeout(), source.unit()));
-        return context;
-    }
-
-    private static class ContextHolder implements Store.CloseableResource, LoggerContextAccessor {
-        private final LoggerContext context;
-        private final long shutdownTimeout;
-        private final TimeUnit unit;
-
-        private ContextHolder(final LoggerContext context, final long shutdownTimeout, final TimeUnit unit) {
-            this.context = context;
-            this.shutdownTimeout = shutdownTimeout;
-            this.unit = unit;
-        }
-
-        @Override
-        public LoggerContext getLoggerContext() {
-            return context;
-        }
-
-        @Override
-        public void close() throws Throwable {
-            try {
-                context.stop(shutdownTimeout, unit);
-            } finally {
-                System.clearProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL);
-                System.clearProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY);
-            }
-        }
+        store.put(LoggerContextAccessor.class, context);
+        return context.getLoggerContext();
     }
 
 }

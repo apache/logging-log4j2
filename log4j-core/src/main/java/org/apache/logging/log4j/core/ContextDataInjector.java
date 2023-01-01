@@ -16,14 +16,13 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.List;
+
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
-
-import java.util.List;
 
 /**
  * Responsible for initializing the context data of LogEvents. Context data is data that is set by the application to be
@@ -35,11 +34,12 @@ import java.util.List;
  * </p><p>
  * In some asynchronous models, work may be delegated to several threads, while conceptually this work shares the same
  * context. In such models, storing context data in {@code ThreadLocal} variables is not convenient or desirable.
- * Users can configure the {@code ContextDataInjectorFactory} to provide custom {@code ContextDataInjector} objects,
+ * Users can configure the {@code Supplier&lt;ContextDataInjector&gt;} binding to provide custom
+ * {@code ContextDataInjector} objects,
  * in order to initialize log events with context data from any arbitrary context.
  * </p><p>
- * When providing a custom {@code ContextDataInjector}, be aware that the {@code ContextDataInjectorFactory} may be
- * invoked multiple times and the various components in Log4j that need access to context data may each have their own
+ * When providing a custom {@code ContextDataInjector}, be aware that the instance may be created
+ * multiple times and the various components in Log4j that need access to context data may each have their own
  * instance of {@code ContextDataInjector}.
  * This includes the object(s) that populate log events, but also various lookups and filters that look at
  * context data to determine whether an event should be logged.
@@ -50,7 +50,6 @@ import java.util.List;
  *
  * @see StringMap
  * @see ReadOnlyStringMap
- * @see ContextDataInjectorFactory
  * @see org.apache.logging.log4j.ThreadContext
  * @see ThreadContextDataInjector
  * @since 2.7

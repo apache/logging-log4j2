@@ -38,6 +38,7 @@ import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -72,6 +73,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private final Clock clock; // not reconfigurable
     private final ContextDataInjector contextDataInjector; // not reconfigurable
+    private final ContextDataFactory contextDataFactory; // not reconfigurable
 
     private final ThreadLocal<RingBufferLogEventTranslator> threadLocalTranslator = new ThreadLocal<>();
     private final AsyncLoggerDisruptor loggerDisruptor;
@@ -88,8 +90,8 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
      * @param messageFactory message factory of this logger
      * @param loggerDisruptor helper class that logging can be delegated to. This object owns the Disruptor.
      */
-    public AsyncLogger(final LoggerContext context, final String name, final MessageFactory messageFactory,
-            final AsyncLoggerDisruptor loggerDisruptor) {
+    AsyncLogger(final LoggerContext context, final String name, final MessageFactory messageFactory,
+                final AsyncLoggerDisruptor loggerDisruptor) {
         super(context, name, messageFactory);
         this.loggerDisruptor = loggerDisruptor;
         final Injector injector = context.getInjector();
@@ -98,6 +100,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         nanoClock = injector.getInstance(NanoClock.KEY);
         clock = injector.getInstance(Clock.KEY);
         contextDataInjector = injector.getInstance(ContextDataInjector.KEY);
+        contextDataFactory = injector.getInstance(ContextDataFactory.class);
     }
 
     /*
@@ -138,7 +141,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         getTranslatorType().log(fqcn, location, level, marker, message, throwable);
     }
 
-    abstract class TranslatorType {
+    abstract static class TranslatorType {
 
         abstract void log(final String fqcn, final StackTraceElement location, final Level level, final Marker marker,
                           final Message message, final Throwable thrown);
@@ -275,8 +278,8 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             location,
             clock, //
             nanoClock, //
-            contextDataInjector
-        );
+            contextDataInjector,
+            contextDataFactory);
     }
 
     private void initTranslator(final RingBufferLogEventTranslator translator, final String fqcn,
@@ -293,8 +296,8 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 calcLocationIfRequested(fqcn), //
                 clock, //
                 nanoClock, //
-                contextDataInjector
-        );
+                contextDataInjector,
+                contextDataFactory);
     }
 
     private void initTranslatorThreadValues(final RingBufferLogEventTranslator translator) {
@@ -416,12 +419,15 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
         final Thread currentThread = Thread.currentThread();
         final String threadName = threadNameCachingStrategy.getThreadName();
-        event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown,
-                // config properties are taken care of in the EventHandler thread
-                // in the AsyncLogger#actualAsyncLog method
-                contextDataInjector.injectContextData(null, (StringMap) event.getContextData()),
+        final ReadOnlyStringMap contextData = event.getContextData();
+        final StringMap reusable = contextData != null ? (StringMap) contextData : contextDataFactory.createContextData();
+
+        // config properties are taken care of in the EventHandler thread
+        // in the AsyncLogger#actualAsyncLog method
+        final StringMap mutableContextData = contextDataInjector.injectContextData(null, reusable);
+        event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown, mutableContextData,
                 contextStack, currentThread.getId(), threadName, currentThread.getPriority(), location,
-                clock, nanoClock);
+                clock, nanoClock, contextDataFactory, contextDataInjector);
     }
 
     /**
@@ -509,10 +515,10 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         event.setContextData(contextData);
     }
 
-    private static StringMap getContextData(final RingBufferLogEvent event) {
+    private StringMap getContextData(final RingBufferLogEvent event) {
         final StringMap contextData = (StringMap) event.getContextData();
         if (contextData.isFrozen()) {
-            final StringMap temp = ContextDataFactory.createContextData();
+            final StringMap temp = contextDataFactory.createContextData();
             temp.putAll(contextData);
             return temp;
         }

@@ -89,14 +89,17 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
 
         public Layout<?> getOrCreateLayout() {
             if (layout == null) {
-                return PatternLayout.createDefaultLayout();
+                return PatternLayout.createDefaultLayout(configuration);
             }
             return layout;
         }
 
         public Layout<?> getOrCreateLayout(final Charset charset) {
             if (layout == null) {
-                return PatternLayout.newBuilder().setCharset(charset).build();
+                layout = PatternLayout.newBuilder()
+                        .setConfiguration(configuration)
+                        .setCharset(charset)
+                        .build();
             }
             return layout;
         }

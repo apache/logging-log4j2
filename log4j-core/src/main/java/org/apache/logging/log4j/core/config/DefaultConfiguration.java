@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
 
 /**
@@ -45,7 +46,11 @@ public class DefaultConfiguration extends AbstractConfiguration {
      * Constructor to create the default configuration.
      */
     public DefaultConfiguration() {
-        super(null, ConfigurationSource.NULL_SOURCE);
+        this(LoggerContext.getContext());
+    }
+
+    public DefaultConfiguration(final LoggerContext loggerContext) {
+        super(loggerContext, ConfigurationSource.NULL_SOURCE);
         setToDefault();
     }
 

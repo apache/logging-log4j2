@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.util.internal.LastModifiedSource;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
-import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -55,7 +54,7 @@ public class HttpWatcher extends AbstractWatcher {
             final List<ConfigurationListener> configurationListeners, final long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
         this.lastModifiedMillis = lastModifiedMillis;
-        this.httpSourceLoader = configuration.getComponent(Key.forClass(HttpSourceLoader.class));
+        this.httpSourceLoader = configuration.getInstance(HttpSourceLoader.class);
     }
 
     @Override

@@ -87,7 +87,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private long shutdownTimeoutMillis;
     private String advertiser;
     private LoggerContext loggerContext;
-    private String name;
+    private String name = "Constructed";
 
     public static void formatXml(final Source source, final Result result)
             throws TransformerConfigurationException, TransformerFactoryConfigurationError, TransformerException {
@@ -185,6 +185,9 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         try {
             if (source == null) {
                 source = ConfigurationSource.NULL_SOURCE;
+            }
+            if (loggerContext == null) {
+                loggerContext = LoggerContext.newBuilder().setName(name).get();
             }
             final Constructor<T> constructor = clazz.getConstructor(LoggerContext.class, ConfigurationSource.class, Component.class);
             configuration = constructor.newInstance(loggerContext, source, root);

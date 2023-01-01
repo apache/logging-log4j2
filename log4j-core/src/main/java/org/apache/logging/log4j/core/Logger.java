@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -44,10 +45,6 @@ import org.apache.logging.log4j.util.Supplier;
  * Appenders} associated with this Logger. Note that access to these underlying objects is provided primarily for use in
  * unit tests or bridging legacy Log4j 1.x code. Future versions of this class may or may not include the various
  * methods that are noted as not being part of the public API.
- *
- * TODO All the isEnabled methods could be pushed into a filter interface. Not sure of the utility of having isEnabled
- * be able to examine the message pattern and parameters. (RG) Moving the isEnabled methods out of Logger noticeably
- * impacts performance. The message pattern and parameters are required so that they can be used in global filters.
  */
 public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
 
@@ -58,7 +55,6 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
      */
     protected volatile PrivateConfig privateConfig;
 
-    // FIXME: ditto to the above
     private final LoggerContext context;
 
     /**
@@ -69,7 +65,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
      * @param name The name of the Logger.
      */
     protected Logger(final LoggerContext context, final String name, final MessageFactory messageFactory) {
-        super(name, messageFactory);
+        super(name, messageFactory, context.getFlowMessageFactory());
         this.context = context;
         privateConfig = new PrivateConfig(context.getConfiguration(), this);
     }

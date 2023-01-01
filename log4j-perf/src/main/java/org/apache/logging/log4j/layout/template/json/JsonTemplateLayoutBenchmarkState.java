@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 import co.elastic.logging.log4j2.EcsLayout;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -27,13 +31,9 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
-import org.apache.logging.log4j.util.ThreadLocalRecyclerFactory;
+import org.apache.logging.log4j.util.RecyclerFactories;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @State(Scope.Thread)
 public class JsonTemplateLayoutBenchmarkState {
@@ -85,7 +85,7 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:JsonLayout.json")
-                .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
+                .setRecyclerFactory(RecyclerFactories.ofSpec(null))
                 .build();
     }
 
@@ -103,7 +103,7 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:EcsLayout.json")
-                .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
+                .setRecyclerFactory(RecyclerFactories.ofSpec(null))
                 .setEventTemplateAdditionalFields(additionalFields)
                 .build();
     }
@@ -114,7 +114,7 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:GelfLayout.json")
-                .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
+                .setRecyclerFactory(RecyclerFactories.ofSpec(null))
                 .setEventTemplateAdditionalFields(
                         new EventTemplateAdditionalField[]{
                                 // Adding "host" as a constant rather than using

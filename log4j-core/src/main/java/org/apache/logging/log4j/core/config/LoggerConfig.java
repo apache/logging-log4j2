@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -30,16 +32,13 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContext;
-import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.properties.PropertiesConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
+import org.apache.logging.log4j.core.impl.SimpleLogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Inject;
@@ -48,8 +47,8 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertyResolver;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -64,15 +63,15 @@ public class LoggerConfig extends AbstractFilterable {
 
     public static final String ROOT = "root";
 
-    private List<AppenderRef> appenderRefs = new ArrayList<>();
+    private final List<AppenderRef> appenderRefs;
     private final AppenderControlArraySet appenders = new AppenderControlArraySet();
     private final String name;
     private LogEventFactory logEventFactory;
     private Level level;
-    private boolean additive = true;
-    private boolean includeLocation = true;
+    private boolean additive;
+    private final boolean includeLocation;
     private LoggerConfig parent;
-    private Map<Property, Boolean> propertiesMap;
+    private final PropertyResolver propertyResolver;
     private final List<Property> properties;
     private final boolean propertiesRequireLookup;
     private final Configuration config;
@@ -103,12 +102,13 @@ public class LoggerConfig extends AbstractFilterable {
         private Configuration config;
         private Filter filter;
         private LogEventFactory logEventFactory;
+        private PropertyResolver propertyResolver;
 
         public boolean isAdditivity() {
             return additivity == null || additivity;
         }
 
-        public B withAdditivity(boolean additivity) {
+        public B setAdditivity(boolean additivity) {
             this.additivity = additivity;
             return asBuilder();
         }
@@ -117,7 +117,7 @@ public class LoggerConfig extends AbstractFilterable {
             return level;
         }
 
-        public B withLevel(@PluginAttribute Level level) {
+        public B setLevel(@PluginAttribute Level level) {
             this.level = level;
             return asBuilder();
         }
@@ -126,7 +126,7 @@ public class LoggerConfig extends AbstractFilterable {
             return levelAndRefs;
         }
 
-        public B withLevelAndRefs(@PluginAttribute String levelAndRefs) {
+        public B setLevelAndRefs(@PluginAttribute String levelAndRefs) {
             this.levelAndRefs = levelAndRefs;
             return asBuilder();
         }
@@ -135,7 +135,7 @@ public class LoggerConfig extends AbstractFilterable {
             return loggerName;
         }
 
-        public B withLoggerName(
+        public B setLoggerName(
                 @Required(message = "Loggers cannot be configured without a name") @PluginAttribute String name) {
             this.loggerName = name;
             return asBuilder();
@@ -145,7 +145,7 @@ public class LoggerConfig extends AbstractFilterable {
             return includeLocation;
         }
 
-        public B withIncludeLocation(@PluginAttribute String includeLocation) {
+        public B setIncludeLocation(@PluginAttribute String includeLocation) {
             this.includeLocation = includeLocation;
             return asBuilder();
         }
@@ -154,7 +154,7 @@ public class LoggerConfig extends AbstractFilterable {
             return refs;
         }
 
-        public B withRefs(@PluginElement AppenderRef[] refs) {
+        public B setRefs(@PluginElement AppenderRef[] refs) {
             this.refs = refs;
             return asBuilder();
         }
@@ -163,7 +163,7 @@ public class LoggerConfig extends AbstractFilterable {
             return properties;
         }
 
-        public B withProperties(@PluginElement Property[] properties) {
+        public B setProperties(@PluginElement Property[] properties) {
             this.properties = properties;
             return asBuilder();
         }
@@ -172,7 +172,7 @@ public class LoggerConfig extends AbstractFilterable {
             return config;
         }
 
-        public B withConfig(@PluginConfiguration Configuration config) {
+        public B setConfig(@PluginConfiguration Configuration config) {
             this.config = config;
             return asBuilder();
         }
@@ -181,12 +181,15 @@ public class LoggerConfig extends AbstractFilterable {
             return filter;
         }
 
-        public B withFilter(@PluginElement Filter filter) {
+        public B setFilter(@PluginElement Filter filter) {
             this.filter = filter;
             return asBuilder();
         }
 
         public LogEventFactory getLogEventFactory() {
+            if (logEventFactory == null) {
+                logEventFactory = config.getInstance(LogEventFactory.KEY);
+            }
             return logEventFactory;
         }
 
@@ -196,56 +199,39 @@ public class LoggerConfig extends AbstractFilterable {
             return asBuilder();
         }
 
+        public PropertyResolver getPropertyResolver() {
+            if (propertyResolver == null) {
+                propertyResolver = config.getPropertyResolver();
+            }
+            return propertyResolver;
+        }
+
+        @Inject
+        public B setPropertyResolver(final PropertyResolver propertyResolver) {
+            this.propertyResolver = propertyResolver;
+            return asBuilder();
+        }
+
         @Override
         public LoggerConfig build() {
+            final Configuration configuration = Objects.requireNonNull(config, "No Configuration provided");
             final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
-            LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
-            boolean useLocation = includeLocation(includeLocation, config);
-            return new LoggerConfig(name, container.refs, filter, container.level, isAdditivity(), properties, config,
-                    useLocation, logEventFactory);
+            LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, configuration);
+            boolean useLocation = includeLocation(includeLocation, configuration);
+            return new LoggerConfig(name, container.refs, filter, container.level, isAdditivity(), properties,
+                    configuration, useLocation, getLogEventFactory(), getPropertyResolver());
         }
 
-        @SuppressWarnings("unchecked")
         public B asBuilder() {
-            return (B) this;
+            return Cast.cast(this);
         }
-    }
-
-    /**
-     * Default constructor.
-     */
-    public LoggerConfig() {
-        this.logEventFactory = DefaultLogEventFactory.newInstance();
-        this.level = Level.ERROR;
-        this.name = Strings.EMPTY;
-        this.properties = null;
-        this.propertiesRequireLookup = false;
-        this.config = null;
-        this.reliabilityStrategy = new DefaultReliabilityStrategy(this);
-    }
-
-    /**
-     * Constructor that sets the name, level and additive values.
-     *
-     * @param name The Logger name.
-     * @param level The Level.
-     * @param additive true if the Logger is additive, false otherwise.
-     */
-    public LoggerConfig(final String name, final Level level, final boolean additive) {
-        this.logEventFactory = DefaultLogEventFactory.newInstance();
-        this.name = name;
-        this.level = level;
-        this.additive = additive;
-        this.properties = null;
-        this.propertiesRequireLookup = false;
-        this.config = null;
-        this.reliabilityStrategy = new DefaultReliabilityStrategy(this);
     }
 
     protected LoggerConfig(
             final String name, final List<AppenderRef> appenders, final Filter filter,
             final Level level, final boolean additive, final Property[] properties, final Configuration config,
-            final boolean includeLocation, final LogEventFactory logEventFactory) {
+            final boolean includeLocation, final LogEventFactory logEventFactory,
+            final PropertyResolver propertyResolver) {
         super(filter, null);
         this.logEventFactory = logEventFactory;
         this.name = name;
@@ -253,14 +239,15 @@ public class LoggerConfig extends AbstractFilterable {
         this.level = level;
         this.additive = additive;
         this.includeLocation = includeLocation;
-        this.config = config;
+        this.config = Objects.requireNonNull(config, "No Configuration provided");
+        this.propertyResolver = propertyResolver;
         if (properties != null && properties.length > 0) {
             this.properties = List.of(properties.clone());
         } else {
             this.properties = null;
         }
         this.propertiesRequireLookup = containsPropertyRequiringLookup(properties);
-        this.reliabilityStrategy = config.getComponent(Key.forClass(ReliabilityStrategyFactory.class))
+        this.reliabilityStrategy = config.getInstance(ReliabilityStrategyFactory.class)
                 .getReliabilityStrategy(this);
     }
 
@@ -462,7 +449,7 @@ public class LoggerConfig extends AbstractFilterable {
     }
 
     public PropertyResolver getPropertyResolver() {
-        return config.getPropertyResolver();
+        return propertyResolver;
     }
 
     /**
@@ -541,21 +528,20 @@ public class LoggerConfig extends AbstractFilterable {
             final Throwable t,
             final List<Property> props) {
         List<Property> results = new ArrayList<>(props.size());
-        final LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = LogEvent.builder()
                 .setMessage(data)
                 .setMarker(marker)
                 .setLevel(level)
                 .setLoggerName(loggerName)
                 .setLoggerFqcn(fqcn)
                 .setThrown(t)
-                .build();
-        for (int i = 0; i < props.size(); i++) {
-            final Property prop = props.get(i);
+                .get();
+        props.forEach(prop -> {
             final String value = prop.isValueNeedsLookup() // since LOG4J2-1575
                     ? config.getStrSubstitutor().replace(event, prop.getValue()) //
                     : prop.getValue();
             results.add(Property.createProperty(prop.getName(), value));
-        }
+        });
         return results;
     }
 
@@ -643,29 +629,6 @@ public class LoggerConfig extends AbstractFilterable {
         return Strings.isEmpty(name) ? ROOT : name;
     }
 
-    /**
-     * Factory method to create a LoggerConfig.
-     *
-     * @param additivity true if additive, false otherwise.
-     * @param level The Level to be associated with the Logger.
-     * @param loggerName The name of the Logger.
-     * @param includeLocation whether location should be passed downstream
-     * @param refs An array of Appender names.
-     * @param properties Properties to pass to the Logger.
-     * @param config The Configuration.
-     * @param filter A Filter.
-     * @return A new LoggerConfig.
-     * @since 2.6
-     */
-    @Deprecated
-    public static LoggerConfig createLogger(
-            final boolean additivity, final Level level, final String loggerName, final String includeLocation,
-            final AppenderRef[] refs, final Property[] properties, final Configuration config, final Filter filter) {
-        final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
-        return new LoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
-            includeLocation(includeLocation, config), config.getComponent(LogEventFactory.KEY));
-    }
-
     // Note: for asynchronous loggers, includeLocation default is FALSE,
     // for synchronous loggers, includeLocation default is TRUE.
     protected static boolean includeLocation(final String includeLocationConfigValue, final Configuration configuration) {
@@ -676,9 +639,6 @@ public class LoggerConfig extends AbstractFilterable {
             }
             if (context != null) {
                 return !(context instanceof AsyncLoggerContext);
-            } else {
-                // FIXME: this should check if the ContextSelector binding is AsyncLoggerContextSelector
-                return !AsyncLoggerContextSelector.isSelected();
             }
         }
         return Boolean.parseBoolean(includeLocationConfigValue);
@@ -694,6 +654,13 @@ public class LoggerConfig extends AbstractFilterable {
     @Configurable(printObject = true)
     @Plugin(ROOT)
     public static class RootLogger extends LoggerConfig {
+        private RootLogger(final List<AppenderRef> appenders, final Filter filter, final Level level,
+                           final boolean additive, final Property[] properties, final Configuration config,
+                           final boolean includeLocation, final LogEventFactory logEventFactory,
+                           final PropertyResolver propertyResolver) {
+            super(LogManager.ROOT_LOGGER_NAME, appenders, filter, level, additive, properties, config,
+                    includeLocation, logEventFactory, propertyResolver);
+        }
 
         @PluginFactory
         public static <B extends Builder<B>> B newRootBuilder() {
@@ -718,12 +685,13 @@ public class LoggerConfig extends AbstractFilterable {
             private Configuration config;
             private Filter filter;
             private LogEventFactory logEventFactory;
+            private PropertyResolver propertyResolver;
 
             public boolean isAdditivity() {
                 return additivity;
             }
 
-            public B withAdditivity(@PluginAttribute boolean additivity) {
+            public B setAdditivity(@PluginAttribute boolean additivity) {
                 this.additivity = additivity;
                 return asBuilder();
             }
@@ -732,7 +700,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return level;
             }
 
-            public B withLevel(@PluginAttribute Level level) {
+            public B setLevel(@PluginAttribute Level level) {
                 this.level = level;
                 return asBuilder();
             }
@@ -741,7 +709,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return levelAndRefs;
             }
 
-            public B withLevelAndRefs(@PluginAttribute String levelAndRefs) {
+            public B setLevelAndRefs(@PluginAttribute String levelAndRefs) {
                 this.levelAndRefs = levelAndRefs;
                 return asBuilder();
             }
@@ -750,7 +718,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return includeLocation;
             }
 
-            public B withIncludeLocation(@PluginAttribute String includeLocation) {
+            public B setIncludeLocation(@PluginAttribute String includeLocation) {
                 this.includeLocation = includeLocation;
                 return asBuilder();
             }
@@ -759,7 +727,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return refs;
             }
 
-            public B withRefs(@PluginElement AppenderRef[] refs) {
+            public B setRefs(@PluginElement AppenderRef[] refs) {
                 this.refs = refs;
                 return asBuilder();
             }
@@ -768,7 +736,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return properties;
             }
 
-            public B withProperties(@PluginElement Property[] properties) {
+            public B setProperties(@PluginElement Property[] properties) {
                 this.properties = properties;
                 return asBuilder();
             }
@@ -777,7 +745,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return config;
             }
 
-            public B withConfig(@PluginConfiguration Configuration config) {
+            public B setConfig(@PluginConfiguration Configuration config) {
                 this.config = config;
                 return asBuilder();
             }
@@ -786,46 +754,48 @@ public class LoggerConfig extends AbstractFilterable {
                 return filter;
             }
 
-            public B withFilter(@PluginElement Filter filter) {
+            public B setFilter(@PluginElement Filter filter) {
                 this.filter = filter;
                 return asBuilder();
             }
 
             public LogEventFactory getLogEventFactory() {
+                if (logEventFactory == null) {
+                    logEventFactory = config.getInstance(LogEventFactory.class);
+                }
                 return logEventFactory;
             }
 
             @Inject
-            public B withLogEventFactory(final LogEventFactory logEventFactory) {
+            public B setLogEventFactory(final LogEventFactory logEventFactory) {
                 this.logEventFactory = logEventFactory;
+                return asBuilder();
+            }
+
+            public PropertyResolver getPropertyResolver() {
+                if (propertyResolver == null) {
+                    propertyResolver = config.getPropertyResolver();
+                }
+                return propertyResolver;
+            }
+
+            @Inject
+            public B setPropertyResolver(final PropertyResolver propertyResolver) {
+                this.propertyResolver = propertyResolver;
                 return asBuilder();
             }
 
             @Override
             public LoggerConfig build() {
-                LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
-                return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, container.refs, filter, container.level,
-                        additivity, properties, config, includeLocation(includeLocation, config), logEventFactory);
+                final Configuration configuration = Objects.requireNonNull(config, "No Configuration provided");
+                LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, configuration);
+                return new RootLogger(container.refs, filter, container.level, additivity, properties, configuration,
+                        includeLocation(includeLocation, configuration), getLogEventFactory(), getPropertyResolver());
             }
 
-            @SuppressWarnings("unchecked")
             public B asBuilder() {
-                return (B) this;
+                return Cast.cast(this);
             }
-        }
-
-
-        @Deprecated
-        public static LoggerConfig createLogger(
-                final String additivity, final Level level, final String includeLocation, final AppenderRef[] refs,
-                final Property[] properties, final Configuration config, final Filter filter) {
-            final List<AppenderRef> appenderRefs = Arrays.asList(refs);
-            final Level actualLevel = level == null ? Level.ERROR : level;
-            final boolean additive = Booleans.parseBoolean(additivity, true);
-
-            return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, actualLevel, additive,
-                    properties, config, includeLocation(includeLocation, config),
-                    config.getComponent(LogEventFactory.KEY));
         }
     }
 

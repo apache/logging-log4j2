@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.test.appender.FailOnceAppender;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,7 +38,7 @@ public class AppenderControlArraySetTest {
     }
 
     private AppenderControl createControl(final String name) {
-        final Appender appender = FailOnceAppender.createAppender(name, null);
+        final Appender appender = FailOnceAppender.newBuilder().setName(name).get();
         return new AppenderControl(appender, Level.INFO, null);
     }
 

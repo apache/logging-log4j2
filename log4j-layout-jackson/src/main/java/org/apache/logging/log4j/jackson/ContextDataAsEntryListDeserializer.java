@@ -20,23 +20,27 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.util.StringMap;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.impl.DefaultContextDataFactory;
+import org.apache.logging.log4j.util.InternalApi;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
  * <p>
  * <em>Consider this class private.</em>
  * </p>
  */
+@InternalApi
 public class ContextDataAsEntryListDeserializer extends StdDeserializer<StringMap> {
 
     private static final long serialVersionUID = 1L;
+
+    private final ContextDataFactory contextDataFactory = new DefaultContextDataFactory();
 
     ContextDataAsEntryListDeserializer() {
         super(Map.class);
@@ -48,7 +52,7 @@ public class ContextDataAsEntryListDeserializer extends StdDeserializer<StringMa
         final List<MapEntry> list = jp.readValueAs(new TypeReference<List<MapEntry>>() {
             // do nothing
         });
-        final StringMap contextData = ContextDataFactory.createContextData();
+        final StringMap contextData = contextDataFactory.createContextData();
         for (final MapEntry mapEntry : list) {
             contextData.putValue(mapEntry.getKey(), mapEntry.getValue());
         }

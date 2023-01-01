@@ -16,25 +16,16 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.util.Map;
-import java.util.function.Supplier;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicyFactory;
-import org.apache.logging.log4j.core.async.ThreadNameCachingStrategyFactory;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.DefaultConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultLoggerContextNamingStrategy;
 import org.apache.logging.log4j.core.config.LoggerContextNamingStrategy;
 import org.apache.logging.log4j.core.config.composite.DefaultMergeStrategy;
 import org.apache.logging.log4j.core.config.composite.MergeStrategy;
-import org.apache.logging.log4j.core.lookup.Interpolator;
 import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
-import org.apache.logging.log4j.core.lookup.StrLookup;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
@@ -53,35 +44,34 @@ import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.SingletonFactory;
 import org.apache.logging.log4j.plugins.condition.ConditionalOnProperty;
 import org.apache.logging.log4j.plugins.di.InjectException;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.ClassFactory;
-import org.apache.logging.log4j.spi.CopyOnWrite;
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertyResolver;
+import org.apache.logging.log4j.util.RecyclerFactories;
+import org.apache.logging.log4j.util.RecyclerFactory;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 /**
- * Contains default bindings for Log4j including support for {@link PropertyResolver}-based configuration.
+ * Contains default bindings for Log4j.
  *
  * @see Log4jProperties
  * @see ContextSelector
  * @see ShutdownCallbackRegistry
  * @see Clock
  * @see NanoClock
- * @see ConfigurationFactory
  * @see MergeStrategy
- * @see InterpolatorFactory
  * @see ContextDataInjector
+ * @see ContextDataFactory
  * @see LogEventFactory
  * @see StrSubstitutor
+ * @see AsyncQueueFullPolicy
+ * @see AuthorizationProvider
  */
 public class DefaultBundle {
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -98,6 +88,7 @@ public class DefaultBundle {
     }
 
     @SingletonFactory
+    @Ordered(Integer.MIN_VALUE)
     public LoggerContextNamingStrategy defaultLoggerContextNamingStrategy() {
         return new DefaultLoggerContextNamingStrategy();
     }
@@ -109,9 +100,10 @@ public class DefaultBundle {
         return newInstanceOfProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME, ContextSelector.class);
     }
 
-    @SingletonFactory
-    public ContextSelector defaultContextSelector(final LoggerContextNamingStrategy namingStrategy) {
-        return new ClassLoaderContextSelector(injector, propertyResolver, namingStrategy);
+    @Factory
+    @Ordered(Integer.MIN_VALUE)
+    public ContextSelector defaultContextSelector(final ClassLoaderContextSelector contextSelector) {
+        return contextSelector;
     }
 
     @ConditionalOnProperty(name = Log4jProperties.SHUTDOWN_CALLBACK_REGISTRY_CLASS_NAME)
@@ -121,134 +113,71 @@ public class DefaultBundle {
         return newInstanceOfProperty(Log4jProperties.SHUTDOWN_CALLBACK_REGISTRY_CLASS_NAME, ShutdownCallbackRegistry.class);
     }
 
-    @SingletonFactory
-    public ShutdownCallbackRegistry defaultShutdownCallbackRegistry() {
-        return new DefaultShutdownCallbackRegistry();
+    @Factory
+    @Ordered(Integer.MIN_VALUE)
+    public ShutdownCallbackRegistry defaultShutdownCallbackRegistry(final DefaultShutdownCallbackRegistry registry) {
+        return registry;
     }
 
     @ConditionalOnProperty(name = Log4jProperties.CONFIG_CLOCK, value = "SystemClock")
-    @SingletonFactory
+    @Factory
     @Ordered(200)
     public Clock systemClock() {
         return logSupportedPrecision(new SystemClock());
     }
 
     @ConditionalOnProperty(name = Log4jProperties.CONFIG_CLOCK, value = "SystemMillisClock")
-    @SingletonFactory
+    @Factory
     @Ordered(200)
     public Clock systemMillisClock() {
         return logSupportedPrecision(new SystemMillisClock());
     }
 
     @ConditionalOnProperty(name = Log4jProperties.CONFIG_CLOCK, value = "CachedClock")
-    @SingletonFactory
+    @Factory
     @Ordered(200)
     public Clock cachedClock() {
         return logSupportedPrecision(CachedClock.instance());
     }
 
     @ConditionalOnProperty(name = Log4jProperties.CONFIG_CLOCK, value = "org.apache.logging.log4j.core.time.internal.CachedClock")
-    @SingletonFactory
+    @Factory
     @Ordered(200)
     public Clock cachedClockFqcn() {
         return logSupportedPrecision(CachedClock.instance());
     }
 
     @ConditionalOnProperty(name = Log4jProperties.CONFIG_CLOCK, value = "CoarseCachedClock")
-    @SingletonFactory
+    @Factory
     @Ordered(200)
     public Clock coarseCachedClock() {
         return logSupportedPrecision(CoarseCachedClock.instance());
     }
 
     @ConditionalOnProperty(name = Log4jProperties.CONFIG_CLOCK, value = "org.apache.logging.log4j.core.time.internal.CoarseCachedClock")
-    @SingletonFactory
+    @Factory
     @Ordered(200)
     public Clock coarseCachedClockFqcn() {
         return logSupportedPrecision(CoarseCachedClock.instance());
     }
 
     @ConditionalOnProperty(name = Log4jProperties.CONFIG_CLOCK)
-    @SingletonFactory
+    @Factory
     @Ordered(100)
     public Clock systemPropertyClock() throws ClassNotFoundException {
         return logSupportedPrecision(newInstanceOfProperty(Log4jProperties.CONFIG_CLOCK, Clock.class));
     }
 
-    @SingletonFactory
+    @Factory
+    @Ordered(Integer.MIN_VALUE)
     public Clock defaultClock() {
         return new SystemClock();
     }
 
-    @SingletonFactory
+    @Factory
+    @Ordered(Integer.MIN_VALUE)
     public NanoClock defaultNanoClock() {
         return new DummyNanoClock();
-    }
-
-    @ConditionalOnProperty(name = Log4jProperties.THREAD_CONTEXT_DATA_INJECTOR_CLASS_NAME)
-    @Factory
-    @Ordered(100)
-    public ContextDataInjector systemPropertyContextDataInjector() throws ClassNotFoundException {
-        return newInstanceOfProperty(Log4jProperties.THREAD_CONTEXT_DATA_INJECTOR_CLASS_NAME, ContextDataInjector.class);
-    }
-
-    @Factory
-    public ContextDataInjector defaultContextDataInjector() {
-        final ReadOnlyThreadContextMap threadContextMap = ThreadContext.getThreadContextMap();
-
-        // note: map may be null (if legacy custom ThreadContextMap was installed by user)
-        if (threadContextMap instanceof DefaultThreadContextMap || threadContextMap == null) {
-            // for non StringMap-based context maps
-            return new ThreadContextDataInjector.ForDefaultThreadContextMap();
-        }
-        if (threadContextMap instanceof CopyOnWrite) {
-            return new ThreadContextDataInjector.ForCopyOnWriteThreadContextMap();
-        }
-        return new ThreadContextDataInjector.ForGarbageFreeThreadContextMap();
-    }
-
-    @ConditionalOnProperty(name = Log4jProperties.LOG_EVENT_FACTORY_CLASS_NAME)
-    @SingletonFactory
-    @Ordered(100)
-    public LogEventFactory systemPropertyLogEventFactory() throws ClassNotFoundException {
-        return newInstanceOfProperty(Log4jProperties.LOG_EVENT_FACTORY_CLASS_NAME, LogEventFactory.class);
-    }
-
-    @SingletonFactory
-    public LogEventFactory defaultLogEventFactory(
-            final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock,
-            final ThreadNameCachingStrategyFactory factory) {
-        return isThreadLocalsEnabled(propertyResolver) ?
-                new ReusableLogEventFactory(injector, clock, nanoClock, factory) :
-                new DefaultLogEventFactory(injector, clock, nanoClock);
-    }
-
-    @SingletonFactory
-    public InterpolatorFactory interpolatorFactory(
-            @Namespace(StrLookup.CATEGORY) final Map<String, Supplier<StrLookup>> strLookupPlugins) {
-        return defaultLookup -> new Interpolator(defaultLookup, strLookupPlugins);
-    }
-
-    @SingletonFactory
-    public StrSubstitutor strSubstitutor(final InterpolatorFactory factory) {
-        return new StrSubstitutor(factory.newInterpolator(null));
-    }
-
-    @SingletonFactory
-    public ConfigurationFactory configurationFactory(final DefaultConfigurationFactory factory) {
-        return factory;
-    }
-
-    @ConditionalOnProperty(name = Log4jProperties.CONFIG_MERGE_STRATEGY_CLASS_NAME)
-    @SingletonFactory
-    @Ordered(100)
-    public MergeStrategy systemPropertyMergeStrategy() throws ClassNotFoundException {
-        return newInstanceOfProperty(Log4jProperties.CONFIG_MERGE_STRATEGY_CLASS_NAME, MergeStrategy.class);
-    }
-
-    @SingletonFactory
-    public MergeStrategy defaultMergeStrategy() {
-        return new DefaultMergeStrategy();
     }
 
     @ConditionalOnProperty(name = Log4jProperties.STATUS_DEFAULT_LEVEL)
@@ -261,18 +190,60 @@ public class DefaultBundle {
 
     @SingletonFactory
     @Named("StatusLogger")
+    @Ordered(Integer.MIN_VALUE)
     public Level defaultStatusLevel() {
         return Level.ERROR;
     }
 
     @Factory
+    @Ordered(Integer.MIN_VALUE)
+    public MergeStrategy defaultMergeStrategy(final DefaultMergeStrategy strategy) {
+        return strategy;
+    }
+
+    @Factory
+    @Ordered(Integer.MIN_VALUE)
+    public ContextDataFactory defaultContextDataFactory() {
+        return new DefaultContextDataFactory();
+    }
+
+    @Factory
+    @Ordered(Integer.MIN_VALUE)
+    public ContextDataInjector defaultContextDataInjector(final ContextDataFactory factory) {
+        return ThreadContextDataInjector.create(factory);
+    }
+
+    @Factory
+    @Ordered(Integer.MIN_VALUE)
+    public LogEventFactory defaultLogEventFactory(final Injector injector, final PropertyResolver resolver) {
+        final Class<? extends LogEventFactory> factoryClass = isThreadLocalsEnabled(resolver)
+                ? ReusableLogEventFactory.class
+                : DefaultLogEventFactory.class;
+        return injector.getInstance(factoryClass);
+    }
+
+    @Factory
+    @Ordered(Integer.MIN_VALUE)
     public AsyncQueueFullPolicy asyncQueueFullPolicy(final AsyncQueueFullPolicyFactory factory) {
         return factory.get();
     }
 
     @Factory
-    public AuthorizationProvider defaultAuthorizationProvider() {
-        return new BasicAuthorizationProvider(propertyResolver);
+    @Ordered(Integer.MIN_VALUE)
+    public AuthorizationProvider defaultAuthorizationProvider(final BasicAuthorizationProvider provider) {
+        return provider;
+    }
+
+    @Factory
+    @Ordered(Integer.MIN_VALUE)
+    public StrSubstitutor strSubstitutor(final InterpolatorFactory factory) {
+        return new StrSubstitutor(factory.newInterpolator(null));
+    }
+
+    @Factory
+    @Ordered(Integer.MIN_VALUE)
+    public RecyclerFactory defaultRecyclerFactory() {
+        return RecyclerFactories.ofSpec(null);
     }
 
     private <T> T newInstanceOfProperty(final String propertyName, final Class<T> supertype) throws ClassNotFoundException {

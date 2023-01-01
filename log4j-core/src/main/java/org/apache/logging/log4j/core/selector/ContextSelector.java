@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.plugins.di.Injector;
@@ -139,9 +140,8 @@ public interface ContextSelector {
         return lc;
     }
 
-
     LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader, final boolean currentContext,
-                             final URI configLocation, final Injector injector);
+                             final URI configLocation, final Consumer<Injector> configurer);
 
     /**
      * Returns a List of all the available LoggerContexts.

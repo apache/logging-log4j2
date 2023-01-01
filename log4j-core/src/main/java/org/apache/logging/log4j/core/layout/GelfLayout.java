@@ -16,6 +16,20 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPOutputStream;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -40,20 +54,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.TriConsumer;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * Lays out events in the Graylog Extended Log Format (GELF) 1.1.
@@ -511,8 +511,14 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public byte[] toByteArray(final LogEvent event) {
-        final StringBuilder text = toText(event, getStringBuilder(), false);
-        final byte[] bytes = getBytes(text.toString());
+        final StringBuilder buf = getStringBuilder();
+        final byte[] bytes;
+        try {
+            final StringBuilder text = toText(event, buf, false);
+            bytes = getBytes(text.toString());
+        } finally {
+            recycleStringBuilder(buf);
+        }
         return compressionType != CompressionType.OFF && bytes.length > compressionThreshold ? compress(bytes) : bytes;
     }
 
@@ -522,9 +528,14 @@ public final class GelfLayout extends AbstractStringLayout {
             super.encode(event, destination);
             return;
         }
-        final StringBuilder text = toText(event, getStringBuilder(), true);
-        final Encoder<StringBuilder> helper = getStringBuilderEncoder();
-        helper.encode(text, destination);
+        final StringBuilder buf = getStringBuilder();
+        try {
+            final StringBuilder text = toText(event, buf, true);
+            final Encoder<StringBuilder> helper = getStringBuilderEncoder();
+            helper.encode(text, destination);
+        } finally {
+            recycleStringBuilder(buf);
+        }
     }
 
     @Override
@@ -551,8 +562,13 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder text = toText(event, getStringBuilder(), false);
-        return text.toString();
+        final StringBuilder buf = getStringBuilder();
+        try {
+            final StringBuilder text = toText(event, buf, false);
+            return text.toString();
+        } finally {
+            recycleStringBuilder(buf);
+        }
     }
 
     private StringBuilder toText(final LogEvent event, final StringBuilder builder, final boolean gcFree) {
@@ -667,6 +683,7 @@ public final class GelfLayout extends AbstractStringLayout {
         }
     }
 
+    // TODO(ms): replace with Recycler
     private static final ThreadLocal<StringBuilder> messageStringBuilder = new ThreadLocal<>();
 
     private static StringBuilder getMessageStringBuilder() {

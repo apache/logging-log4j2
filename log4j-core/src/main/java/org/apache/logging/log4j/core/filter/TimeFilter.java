@@ -23,6 +23,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Level;
@@ -31,7 +32,6 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Inject;
@@ -87,6 +87,7 @@ public final class TimeFilter extends AbstractFilter {
         this.startTime = start;
         this.endTime = end;
         this.timeZone = timeZone;
+        this.clock = Objects.requireNonNull(clock);
         this.start = ZonedDateTime.of(now, startTime, timeZone).withEarlierOffsetAtOverlap().toInstant().toEpochMilli();
         long endMillis = ZonedDateTime.of(now, endTime, timeZone).withEarlierOffsetAtOverlap().toInstant().toEpochMilli();
         if (end.isBefore(start)) {
@@ -101,7 +102,6 @@ public final class TimeFilter extends AbstractFilter {
             endMillis -= difference;
         }
         this.end = endMillis;
-        this.clock = clock;
     }
 
     private TimeFilter(
@@ -243,33 +243,6 @@ public final class TimeFilter extends AbstractFilter {
         return sb.toString();
     }
 
-    /**
-     * Creates a TimeFilter.
-     * @param start The start time.
-     * @param end The end time.
-     * @param tz timezone.
-     * @param match Action to perform if the time matches.
-     * @param mismatch Action to perform if the action does not match.
-     * @return A TimeFilter.
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static TimeFilter createFilter(
-            final String start, final String end, final String tz, final Result match, final Result mismatch) {
-        final Builder builder = newBuilder()
-                .setStart(start)
-                .setEnd(end);
-        if (tz != null) {
-            builder.setTimezone(ZoneId.of(tz));
-        }
-        if (match != null) {
-            builder.setOnMatch(match);
-        }
-        if (mismatch != null) {
-            builder.setOnMismatch(mismatch);
-        }
-        return builder.get();
-    }
-
     private static LocalTime parseTimestamp(final String timestamp, final LocalTime defaultValue) {
         if (timestamp == null) {
             return defaultValue;
@@ -320,9 +293,6 @@ public final class TimeFilter extends AbstractFilter {
         public TimeFilter get() {
             final LocalTime startTime = parseTimestamp(start, LocalTime.MIN);
             final LocalTime endTime = parseTimestamp(end, LocalTime.MAX);
-            if (clock == null) {
-                clock = ClockFactory.getClock();
-            }
             return new TimeFilter(startTime, endTime, timezone, getOnMatch(), getOnMismatch(), clock);
         }
     }

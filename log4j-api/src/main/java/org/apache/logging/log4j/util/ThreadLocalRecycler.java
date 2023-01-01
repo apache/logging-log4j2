@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -28,26 +29,57 @@ import java.util.function.Supplier;
  */
 public class ThreadLocalRecycler<V> implements Recycler<V> {
 
+    private final Supplier<V> supplier;
     private final Consumer<V> cleaner;
 
     private final ThreadLocal<V> holder;
+    private final boolean referenceCountingEnabled;
+    private final ThreadLocal<AtomicInteger> activeReferenceCount = ThreadLocal.withInitial(AtomicInteger::new);
 
     public ThreadLocalRecycler(
             final Supplier<V> supplier,
             final Consumer<V> cleaner) {
+        this(supplier, cleaner, false);
+    }
+
+    public ThreadLocalRecycler(
+            final Supplier<V> supplier,
+            final Consumer<V> cleaner,
+            final boolean referenceCountingEnabled) {
+        this.supplier = supplier;
         this.cleaner = cleaner;
         this.holder = ThreadLocal.withInitial(supplier);
+        this.referenceCountingEnabled = referenceCountingEnabled;
     }
 
     @Override
     public V acquire() {
-        // TODO(ms): inspired by LOG4J2-2368, this could optionally support recursion detection
-        final V value = holder.get();
+        final V value;
+        if (referenceCountingEnabled) {
+            final AtomicInteger count = activeReferenceCount.get();
+            if (count.compareAndSet(0, 1)) {
+                value = holder.get();
+            } else {
+                count.incrementAndGet();
+                value = supplier.get();
+            }
+        } else {
+            value = holder.get();
+        }
         cleaner.accept(value);
         return value;
     }
 
     @Override
-    public void release(final V value) {}
+    public void release(final V value) {
+        if (referenceCountingEnabled) {
+            activeReferenceCount.get().decrementAndGet();
+        }
+    }
+
+    // Visible for testing
+    int getActiveReferenceCount() {
+        return activeReferenceCount.get().get();
+    }
 
 }

@@ -17,23 +17,35 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.util.Closer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@Category(AsyncLoggers.class)
+@Tag("async")
 public class AsyncLoggerContextTest {
+
+    private AsyncLoggerContext asyncLoggerContext;
+    private LoggerContext loggerContext;
+
+    @BeforeEach
+    void setUp() {
+        asyncLoggerContext = AsyncLoggerContext.newBuilder().setName("a").get();
+        loggerContext = LoggerContext.newBuilder().setName("a").get();
+    }
+
+    @AfterEach
+    void tearDown() {
+        Closer.closeAllSilently(loggerContext, asyncLoggerContext);
+    }
 
     @Test
     public void testNewInstanceReturnsAsyncLogger() {
-        final Logger logger = new AsyncLoggerContext("a").newInstance(
-                new LoggerContext("a"), "a", null);
-        assertTrue(logger instanceof AsyncLogger);
-
-        CoreLoggerContexts.stopLoggerContext(); // stop async thread
+        final Logger logger = asyncLoggerContext.newInstance(loggerContext, "a", null);
+        assertThat(logger).isInstanceOf(AsyncLogger.class);
     }
 }

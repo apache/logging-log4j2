@@ -31,8 +31,8 @@ import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.plugins.ContextScoped;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.InternalApi;
 import org.apache.logging.log4j.util.PropertyResolver;
@@ -41,7 +41,7 @@ import org.apache.logging.log4j.util.PropertyResolver;
  * Constructs an HTTPURLConnection. This class should be considered to be internal
  */
 @InternalApi
-@Singleton
+@ContextScoped
 public class UrlConnectionFactory {
 
     private static final int DEFAULT_TIMEOUT = (int) TimeUnit.MINUTES.toMillis(1);

@@ -19,13 +19,16 @@ package org.apache.logging.log4j.core.selector;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.plugins.ContextScoped;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.SimpleScope;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
@@ -99,8 +102,11 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
 
     @Override
     public LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader,
-                                    final boolean currentContext, final URI configLocation, final Injector injector) {
-        // not useful to override the injector in a singleton context
+                                    final boolean currentContext, final URI configLocation,
+                                    final Consumer<Injector> configurer) {
+        if (configurer != null) {
+            configurer.accept(injector);
+        }
         return getContext(fqcn, loader, currentContext, configLocation);
     }
 
@@ -122,6 +128,12 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
     }
 
     protected LoggerContext createContext() {
-        return new LoggerContext("Default", null, (URI) null, injector, propertyResolver);
+        final Injector loggerContextInjector = injector.copy();
+        loggerContextInjector.registerScope(ContextScoped.class, new SimpleScope("LoggerContext; name=Default"));
+        return LoggerContext.newBuilder()
+                .setName("Default")
+                .setInjector(loggerContextInjector)
+                .setPropertyResolver(propertyResolver)
+                .get();
     }
 }

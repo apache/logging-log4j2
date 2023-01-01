@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.test.junit;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
@@ -25,18 +26,14 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.LoggerContextAccessor;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.CleanFiles;
 import org.apache.logging.log4j.test.junit.CleanFolders;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.Cast;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -59,14 +56,11 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
         return new LoggerContextRule(config, 10, TimeUnit.SECONDS);
     }
 
-    private static final String SYS_PROP_KEY_CLASS_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#ClassName";
-    private static final String SYS_PROP_KEY_DISPLAY_NAME = "org.apache.logging.log4j.junit.LoggerContextRule#DisplayName";
+    private final LoggingTestConfiguration configuration;
     private final String configurationLocation;
     private LoggerContext loggerContext;
     private Class<? extends ContextSelector> contextSelectorClass;
     private String testClassName;
-    private final long shutdownTimeout;
-    private final TimeUnit shutdownTimeUnit;
 
     /**
      * Constructs a new LoggerContextRule without a configuration file.
@@ -100,10 +94,13 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
 
     public LoggerContextRule(final String configurationLocation, final Class<? extends ContextSelector> contextSelectorClass,
             final long shutdownTimeout, final TimeUnit shutdownTimeUnit) {
+        configuration = new LoggingTestConfiguration()
+                .setConfigurationLocation(configurationLocation)
+                .setTimeout(shutdownTimeout, shutdownTimeUnit)
+                // TODO(ms): can support ReconfigurationPolicy if we allow reuse of the context like in LoggerContextResolver
+                .setBootstrap(true);
         this.configurationLocation = configurationLocation;
         this.contextSelectorClass = contextSelectorClass;
-        this.shutdownTimeout = shutdownTimeout;
-        this.shutdownTimeUnit = shutdownTimeUnit;
     }
 
     public LoggerContextRule(final String configurationLocation, final int shutdownTimeout, final TimeUnit shutdownTimeUnit) {
@@ -116,45 +113,29 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
         if (System.getProperties().containsKey("EBUG")) {
             StatusLogger.getLogger().setLevel(Level.DEBUG);
         }
+        configuration.setClassLoader(description.getTestClass().getClassLoader())
+                .setContextName(Keys.getSpecifiedName(description.getAnnotations()).orElse(description.getMethodName()));
         testClassName = description.getClassName();
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                System.setProperty(SYS_PROP_KEY_CLASS_NAME, description.getClassName());
-                final String displayName = description.getDisplayName();
-                System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, displayName);
-                final Injector injector = DI.createInjector();
+                final Consumer<Injector> configurer;
                 if (contextSelectorClass != null) {
-                    injector.registerBinding(ContextSelector.KEY, injector.getFactory(contextSelectorClass));
-                }
-                injector.init();
-                final Log4jContextFactory factory = injector.getInstance(Log4jContextFactory.class);
-                LoggingSystem.getInstance().setLoggerContextFactory(factory);
-                final String fqcn = getClass().getName();
-                final ClassLoader classLoader = description.getTestClass().getClassLoader();
-
-                if (Strings.isBlank(configurationLocation)) {
-                    loggerContext = factory.getContext(fqcn, classLoader, false, null, displayName, injector);
-                } else if (configurationLocation.contains(",")) {
-                    loggerContext = factory.getContext(fqcn, classLoader, null, false, NetUtils.toURIs(configurationLocation),
-                            displayName);
+                    configurer = injector -> injector
+                            .registerBinding(ContextSelector.KEY, injector.getFactory(contextSelectorClass));
                 } else {
-                    loggerContext = factory.getContext(fqcn, classLoader, false, NetUtils.toURI(configurationLocation),
-                            displayName, injector);
+                    configurer = null;
                 }
-                assertNotNull("Error initializing LoggerContext", loggerContext);
+                final LoggingTestContext context = configuration.build();
+                context.init(configurer);
+                loggerContext = context.getLoggerContext();
                 try {
                     base.evaluate();
                 } finally {
-                    if (!Configurator.shutdown(loggerContext, shutdownTimeout, shutdownTimeUnit)) {
-                        StatusLogger.getLogger().error("Logger context {} did not shutdown completely after {} {}.",
-                                loggerContext.getName(), shutdownTimeout, shutdownTimeUnit);
-                    }
+                    context.close();
                     loggerContext = null;
                     contextSelectorClass = null;
                     StatusLogger.getLogger().reset();
-                    System.clearProperty(SYS_PROP_KEY_CLASS_NAME);
-                    System.clearProperty(SYS_PROP_KEY_DISPLAY_NAME);
                 }
             }
         };
@@ -168,9 +149,8 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
      *            the name of the Appender to look up.
      * @return the named Appender or {@code null} if it wasn't defined in the configuration.
      */
-    @SuppressWarnings("unchecked") // Assume the call site knows what it is doing.
      public <T extends Appender> T getAppender(final String name) {
-         return (T) getConfiguration().getAppenders().get(name);
+         return Cast.cast(getConfiguration().getAppenders().get(name));
      }
 
     /**

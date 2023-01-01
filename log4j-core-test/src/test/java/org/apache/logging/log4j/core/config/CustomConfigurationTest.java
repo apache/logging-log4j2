@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,12 +27,14 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
+import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.apache.logging.log4j.util.PropertyResolver;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
@@ -81,9 +82,13 @@ public class CustomConfigurationTest {
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
         final AppenderRef[] refs = new AppenderRef[] {ref};
-
-        final LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, "org.apache.logging.log4j",
-            "true", refs, null, config, null );
+        final LoggerConfig loggerConfig = LoggerConfig.newBuilder()
+                .setLevel(Level.INFO)
+                .setLoggerName("org.apache.logging.log4j")
+                .setIncludeLocation("true")
+                .setRefs(refs)
+                .setConfig(config)
+                .build();
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("org.apache.logging.log4j", loggerConfig);
         ctx.updateLoggers();

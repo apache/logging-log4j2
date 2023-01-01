@@ -27,12 +27,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @InternalApi
 public final class StackLocatorUtil {
-    private static StackLocator stackLocator = null;
+    private static final StackLocator stackLocator = StackLocator.getInstance();
     private static volatile boolean errorLogged;
-
-    static {
-        stackLocator = StackLocator.getInstance();
-    }
 
     private StackLocatorUtil() {
     }

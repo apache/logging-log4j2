@@ -77,7 +77,11 @@ public class WriterAppenderTest {
         final LoggerContext context = LoggerContext.getContext(false);
         final Configuration config = context.getConfiguration();
         final PatternLayout layout = PatternLayout.createDefaultLayout(config);
-        final Appender appender = WriterAppender.createAppender(layout, null, writer, writerName, false, true);
+        final Appender appender = WriterAppender.newBuilder()
+                .setName(writerName)
+                .setLayout(layout)
+                .setTarget(writer)
+                .build();
         appender.start();
         config.addAppender(appender);
         ConfigurationTestUtils.updateLoggers(appender, config);

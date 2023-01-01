@@ -14,18 +14,18 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.test.junit;
+
+import java.lang.reflect.Parameter;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
-
-import java.lang.reflect.Parameter;
 
 import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
 
@@ -52,9 +52,14 @@ class AppenderResolver implements ParameterResolver {
         if (name.isEmpty()) {
             throw new ParameterResolutionException("No named annotation present after checking earlier");
         }
-        final Appender appender = loggerContext.getConfiguration().getAppender(name);
+        final String contextName = loggerContext.getName();
+        final Configuration configuration = loggerContext.getConfiguration();
+        final String configName = configuration.getName();
+        final Appender appender = configuration.getAppender(name);
         if (appender == null) {
-            throw new ParameterResolutionException("No appender named " + name);
+            final String error = String.format("No appender found for name '%s' in config='%s' and context='%s'",
+                    name, configName, contextName);
+            throw new ParameterResolutionException(error);
         }
         return appender;
     }

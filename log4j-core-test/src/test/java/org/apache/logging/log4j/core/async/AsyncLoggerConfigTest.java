@@ -23,7 +23,7 @@ import java.io.FileReader;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.AppenderRef;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
@@ -64,15 +64,18 @@ public class AsyncLoggerConfigTest {
 
     @Test
     public void testIncludeLocationDefaultsToFalse() {
-        final LoggerConfig rootLoggerConfig =
-                AsyncLoggerConfig.RootLogger.createLogger(
-                        null, Level.INFO, null, new AppenderRef[0], null, new DefaultConfiguration(), null);
+        Configuration configuration = new DefaultConfiguration();
+        final LoggerConfig rootLoggerConfig = AsyncLoggerConfig.RootLogger.newAsyncRootBuilder()
+                .setConfig(configuration)
+                .setLevel(Level.INFO)
+                .build();
         assertFalse(rootLoggerConfig.isIncludeLocation(), "Include location should default to false for async loggers");
 
-        final LoggerConfig loggerConfig =
-                AsyncLoggerConfig.createLogger(
-                        false, Level.INFO, "com.foo.Bar", null, new AppenderRef[0], null, new DefaultConfiguration(),
-                        null);
+        final LoggerConfig loggerConfig = AsyncLoggerConfig.newAsyncBuilder()
+                .setConfig(configuration)
+                .setLevel(Level.INFO)
+                .setLoggerName("com.foo.Bar")
+                .build();
         assertFalse(loggerConfig.isIncludeLocation(), "Include location should default to false for async loggers");
     }
 }

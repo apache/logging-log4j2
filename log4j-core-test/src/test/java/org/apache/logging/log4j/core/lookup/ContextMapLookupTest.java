@@ -21,6 +21,7 @@ import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -59,7 +60,7 @@ public class ContextMapLookupTest {
     @Test
     public void testLookup() {
         ThreadContext.put(TESTKEY, TESTVAL);
-        final StrLookup lookup = new ContextMapLookup();
+        final StrLookup lookup = new ContextMapLookup(() -> context.getLoggerContext().getInstance(ContextDataInjector.class));
         String value = lookup.lookup(TESTKEY);
         assertEquals(TESTVAL, value);
         value = lookup.lookup("BadKey");

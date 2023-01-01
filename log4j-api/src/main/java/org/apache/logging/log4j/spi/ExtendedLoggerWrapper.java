@@ -18,6 +18,7 @@ package org.apache.logging.log4j.spi;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -35,14 +36,29 @@ public class ExtendedLoggerWrapper extends AbstractLogger {
     protected final ExtendedLogger logger;
 
     /**
-     * Constructor that wraps and existing Logger.
+     * Constructor that wraps an existing Logger.
      *
      * @param logger The Logger to wrap.
      * @param name The name of the Logger.
-     * @param messageFactory TODO
+     * @param messageFactory the MessageFactory to use
      */
     public ExtendedLoggerWrapper(final ExtendedLogger logger, final String name, final MessageFactory messageFactory) {
         super(name, messageFactory);
+        this.logger = logger;
+    }
+
+    /**
+     * Constructor that wraps an existing Logger.
+     *
+     * @param logger the Logger to wrap
+     * @param name the name of the Logger
+     * @param messageFactory the MessageFactory to use
+     * @param flowMessageFactory the FlowMessageFactory to use
+     * @since 3.0.0
+     */
+    public ExtendedLoggerWrapper(final ExtendedLogger logger, final String name, final MessageFactory messageFactory,
+                                 final FlowMessageFactory flowMessageFactory) {
+        super(name, messageFactory, flowMessageFactory);
         this.logger = logger;
     }
 

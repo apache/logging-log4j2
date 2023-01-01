@@ -24,18 +24,20 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
+import org.apache.logging.log4j.core.config.ConfigurationProvider;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
@@ -46,10 +48,13 @@ import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.plugins.ContextScoped;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.plugins.di.SimpleScope;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
@@ -71,25 +76,164 @@ public class LoggerContext extends AbstractLifeCycle
         implements org.apache.logging.log4j.spi.LoggerContext, AutoCloseable, Terminable, ConfigurationListener,
         LoggerContextShutdownEnabled {
 
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder implements Supplier<LoggerContext> {
+        private String name;
+        private String key;
+        private Object externalContext;
+        private URI configLocation;
+        private Injector injector;
+        private PropertyResolver propertyResolver;
+        private MessageFactory messageFactory;
+        private FlowMessageFactory flowMessageFactory;
+
+        public String getName() {
+            return name;
+        }
+
+        public Builder setName(final String name) {
+            this.name = Objects.requireNonNull(name);
+            return this;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public Builder setKey(final String key) {
+            this.key = key;
+            return this;
+        }
+
+        public Object getExternalContext() {
+            return externalContext;
+        }
+
+        public Builder setExternalContext(final Object externalContext) {
+            this.externalContext = Objects.requireNonNull(externalContext);
+            return this;
+        }
+
+        public URI getConfigLocation() {
+            return configLocation;
+        }
+
+        public Builder setConfigLocation(final String configLocation) {
+            if (configLocation != null) {
+                this.configLocation = new File(configLocation).toURI();
+            }
+            return this;
+        }
+
+        public Builder setConfigLocation(final URI configLocation) {
+            if (configLocation != null) {
+                this.configLocation = configLocation;
+            }
+            return this;
+        }
+
+        /**
+         * Gets the Injector to use in the built LoggerContext. If no injector is specified, then a new injector is
+         * created and then {@linkplain Injector#init() initialized}.
+         *
+         * @return the initialized injector
+         */
+        public Injector getInjector() {
+            if (injector == null) {
+                injector = DI.createInjector();
+                injector.registerScope(ContextScoped.class, new SimpleScope(() -> "LoggerContext; name=" + getName()));
+                injector.init();
+            }
+            return injector;
+        }
+
+        /**
+         * Sets the Injector to use in the built LoggerContext.
+         * @param injector the initialized injector to use
+         * @return
+         */
+        public Builder setInjector(final Injector injector) {
+            this.injector = injector;
+            return this;
+        }
+
+        /**
+         * Gets the PropertyResolver to use in the built LoggerContext. If no property resolver is specified,
+         * then a {@link ContextPropertyResolver} is created from the
+         * {@linkplain LoggingSystem#getPropertyResolver() default resolver} and {@linkplain #getName() this name}.
+         */
+        public PropertyResolver getPropertyResolver() {
+            if (propertyResolver == null) {
+                propertyResolver = new ContextPropertyResolver(LoggingSystem.getPropertyResolver(), getName());
+            }
+            return propertyResolver;
+        }
+
+        /**
+         * Sets the PropertyResolver to use in the built LoggerContext. If no property resolver is specified,
+         * a {@link ContextPropertyResolver} will be created using {@link #getName()} as the context name and
+         * the {@linkplain LoggingSystem#getPropertyResolver() default property resolver} as the delegate.
+         */
+        public Builder setPropertyResolver(final PropertyResolver propertyResolver) {
+            this.propertyResolver = propertyResolver;
+            return this;
+        }
+
+        public MessageFactory getMessageFactory() {
+            if (messageFactory == null) {
+                messageFactory = LoggingSystem.createMessageFactory(getName());
+            }
+            return messageFactory;
+        }
+
+        public Builder setMessageFactory(final MessageFactory messageFactory) {
+            this.messageFactory = messageFactory;
+            return this;
+        }
+
+        public FlowMessageFactory getFlowMessageFactory() {
+            if (flowMessageFactory == null) {
+                flowMessageFactory = LoggingSystem.createFlowMessageFactory(getName());
+            }
+            return flowMessageFactory;
+        }
+
+        public Builder setFlowMessageFactory(final FlowMessageFactory flowMessageFactory) {
+            this.flowMessageFactory = flowMessageFactory;
+            return this;
+        }
+
+        @Override
+        public LoggerContext get() {
+            return new LoggerContext(getName(), getKey(), getExternalContext(), getConfigLocation(), getInjector(),
+                    getPropertyResolver(), getMessageFactory(), getFlowMessageFactory());
+        }
+    }
+
     /**
      * Property name of the property change event fired if the configuration is changed.
      */
     public static final String PROPERTY_CONFIG = "config";
     public static final Key<LoggerContext> KEY = new Key<>() {};
 
-    private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
-
     private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
     private volatile List<LoggerContextShutdownAware> listeners;
     private final Injector injector;
     private final PropertyResolver propertyResolver;
+    private final MessageFactory messageFactory;
+    private final FlowMessageFactory flowMessageFactory;
 
     /**
      * The Configuration is volatile to guarantee that initialization of the Configuration has completed before the
      * reference is updated.
      */
-    private volatile Configuration configuration = new DefaultConfiguration();
+    private volatile Configuration configuration;
+    // cached instance of NullConfiguration for switching to during shutdown
+    private final Configuration nullConfiguration;
     private static final String EXTERNAL_CONTEXT_KEY = "__EXTERNAL_CONTEXT_KEY__";
     private final ConcurrentMap<String, Object> externalMap = new ConcurrentHashMap<>();
     private String contextName;
@@ -99,111 +243,30 @@ public class LoggerContext extends AbstractLifeCycle
 
     private final Lock configLock = new ReentrantLock();
 
-    /**
-     * Constructor taking only a name.
-     *
-     * @param name The context name.
-     */
-    public LoggerContext(final String name) {
-        this(name, null, (URI) null);
-    }
-
-    /**
-     * Constructor taking a name and a reference to an external context.
-     *
-     * @param name The context name.
-     * @param externalContext The external context.
-     */
-    public LoggerContext(final String name, final Object externalContext) {
-        this(name, externalContext, (URI) null);
-    }
-
-    /**
-     * Constructor taking a name, external context and a configuration URI.
-     *
-     * @param name The context name.
-     * @param externalContext The external context.
-     * @param configLocation The location of the configuration as a URI.
-     */
-    public LoggerContext(final String name, final Object externalContext, final URI configLocation) {
-        this(name, externalContext, configLocation, DI.createInjector(), LoggingSystem.getPropertyResolver());
-        this.injector.init();
-        final var ref = new WeakReference<>(this);
-        this.injector.registerBindingIfAbsent(KEY, ref::get);
-    }
-
-    /**
-     * Constructs a LoggerContext with a name, external context, configuration URI, an Injector, and a PropertyResolver.
-     *
-     * @param name context name
-     * @param externalContext external context or null
-     * @param configLocation location of configuration as a URI or null
-     * @param injector initialized Injector instance
-     * @param resolver main property resolver
-     */
-    public LoggerContext(final String name, final Object externalContext, final URI configLocation,
-                         final Injector injector, final PropertyResolver resolver) {
-        this.contextName = Objects.requireNonNull(name, "No LoggerContext name specified");
-        Objects.requireNonNull(injector, "No Injector provided");
-        Objects.requireNonNull(resolver, "No PropertyResolver provided");
+    protected LoggerContext(final String contextName, final String contextKey, final Object externalContext,
+                            final URI configLocation, final Injector injector, final PropertyResolver propertyResolver,
+                            final MessageFactory messageFactory, final FlowMessageFactory flowMessageFactory) {
+        this.contextName = contextName;
+        this.contextKey = contextKey;
         if (externalContext != null) {
             externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
         }
         this.configLocation = configLocation;
-        this.injector = injector.copy();
-        this.propertyResolver = new ContextPropertyResolver(resolver, name);
-        this.injector.registerBinding(Key.forClass(PropertyResolver.class), this::getPropertyResolver);
+        this.injector = injector;
+        this.propertyResolver = propertyResolver;
+        this.messageFactory = messageFactory;
+        this.flowMessageFactory = flowMessageFactory;
+        var ref = new WeakReference<>(this);
+        injector.registerBinding(KEY, ref::get)
+                .registerBinding(Key.forClass(PropertyResolver.class), this::getPropertyResolver)
+                .registerBinding(Configuration.KEY, this::getConfiguration)
+                .registerBinding(Key.forClass(MessageFactory.class), this::getMessageFactory)
+                .registerBinding(Key.forClass(FlowMessageFactory.class), this::getFlowMessageFactory);
+        this.configuration = new DefaultConfiguration(this);
+        this.nullConfiguration = new NullConfiguration(this);
     }
 
-    /**
-     * Constructor taking a name external context and a configuration location String. The location must be resolvable
-     * to a File.
-     *
-     * @param name The configuration location.
-     * @param externalContext The external context.
-     * @param configLocation The configuration location.
-     */
-    public LoggerContext(final String name, final Object externalContext, final String configLocation) {
-        this(name, externalContext, configLocation, DI.createInjector(), LoggingSystem.getPropertyResolver());
-        this.injector.init();
-    }
-
-    /**
-     * Constructs a LoggerContext with a name, external context, configuration location string, and an Injector.
-     * The location must be resolvable to a File.
-     *
-     * @param name context name
-     * @param externalContext external context or null
-     * @param configLocation configuration location
-     * @param injector initialized Injector instance
-     * @param resolver main property resolver
-     */
-    public LoggerContext(final String name, final Object externalContext, final String configLocation,
-                         final Injector injector, final PropertyResolver resolver) {
-        this.contextName = Objects.requireNonNull(name, "No LoggerContext name specified");
-        Objects.requireNonNull(injector, "No Injector provided");
-        Objects.requireNonNull(resolver, "No PropertyResolver provided");
-        if (externalContext != null) {
-            externalMap.put(EXTERNAL_CONTEXT_KEY, externalContext);
-        }
-        if (configLocation != null) {
-            URI uri;
-            try {
-                uri = new File(configLocation).toURI();
-            } catch (final Exception ex) {
-                uri = null;
-            }
-            this.configLocation = uri;
-        } else {
-            this.configLocation = null;
-        }
-        this.injector = injector.copy();
-        final var ref = new WeakReference<>(this);
-        this.injector.registerBindingIfAbsent(KEY, ref::get);
-        this.propertyResolver = new ContextPropertyResolver(resolver, name);
-        this.injector.registerBinding(Key.forClass(PropertyResolver.class), this::getPropertyResolver);
-    }
-
+    @Override
     public void addShutdownListener(final LoggerContextShutdownAware listener) {
         if (listeners == null) {
             synchronized(this) {
@@ -215,6 +278,7 @@ public class LoggerContext extends AbstractLifeCycle
         listeners.add(listener);
     }
 
+    @Override
     public List<LoggerContextShutdownAware> getListeners() {
         return listeners;
     }
@@ -419,7 +483,7 @@ public class LoggerContext extends AbstractLifeCycle
                 shutdownCallback = null;
             }
             final Configuration prev = configuration;
-            configuration = NULL_CONFIGURATION;
+            configuration = nullConfiguration;
             updateLoggers();
             prev.stop(timeout, timeUnit);
             externalMap.clear();
@@ -582,6 +646,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @return the LoggerRegistry.
      * @since 2.17.2
      */
+    @Override
     public LoggerRegistry<Logger> getLoggerRegistry() {
         return loggerRegistry;
     }
@@ -598,6 +663,24 @@ public class LoggerContext extends AbstractLifeCycle
 
     public PropertyResolver getPropertyResolver() {
         return propertyResolver;
+    }
+
+    public MessageFactory getMessageFactory() {
+        return messageFactory;
+    }
+
+    public FlowMessageFactory getFlowMessageFactory() {
+        return flowMessageFactory;
+    }
+
+    @Override
+    public <T> T getInstance(final Class<T> type) {
+        return injector.getInstance(type);
+    }
+
+    @Override
+    public <T> Optional<T> tryGetInstance(final Class<T> type) {
+        return injector.tryGetInstance(type);
     }
 
     /**
@@ -757,7 +840,7 @@ public class LoggerContext extends AbstractLifeCycle
         LOGGER.debug("Reconfiguration started for {} at URI {} with optional ClassLoader: {}",
                 this, configURI, cl);
         final Configuration instance =
-                injector.getInstance(ConfigurationFactory.KEY).getConfiguration(this, contextName, configURI, cl);
+                getInstance(ConfigurationProvider.class).getConfiguration(contextName, configURI, cl);
         if (instance == null) {
             LOGGER.error("Reconfiguration failed: No configuration found for '{}' at '{}' in '{}'", contextName, configURI, cl);
         } else {

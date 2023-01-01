@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.smtp.appender;
 
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.DefaultContextDataFactory;
 import org.apache.logging.log4j.core.impl.MementoMessage;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
+import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
 import org.apache.logging.log4j.message.ReusableMessage;
@@ -72,7 +75,9 @@ public class SmtpManagerTest {
     @Test
     void testAdd_WhereRingBufferLogEvent() {
         RingBufferLogEvent event = new RingBufferLogEvent();
-        event.setValues(null, null, null, null, null, getReusableMessage("test message"), null, null, null, 0, null, 0, null, new SystemClock(), new DummyNanoClock());
+        ContextDataFactory contextDataFactory = new DefaultContextDataFactory();
+        ContextDataInjector contextDataInjector = ThreadContextDataInjector.create(contextDataFactory);
+        event.setValues(null, null, null, null, null, getReusableMessage("test message"), null, null, null, 0, null, 0, null, new SystemClock(), new DummyNanoClock(), contextDataFactory, contextDataInjector);
         testAdd(event);
     }
 

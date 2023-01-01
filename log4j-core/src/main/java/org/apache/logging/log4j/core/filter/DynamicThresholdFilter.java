@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.core.impl.DefaultContextDataFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -45,37 +45,13 @@ import org.apache.logging.log4j.util.StringMap;
 
 /**
  * Compares against a log level that is associated with a context value. By default the context is the
- * {@link ThreadContext}, but users may {@linkplain ContextDataInjectorFactory configure} a custom
+ * {@link ThreadContext}, but users may {@linkplain ContextDataInjector configure} a custom
  * {@link ContextDataInjector} which obtains context data from some other source.
  */
 @Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
 @Plugin
 @PerformanceSensitive("allocation")
 public final class DynamicThresholdFilter extends AbstractFilter {
-
-    /**
-     * Creates a DynamicThresholdFilter.
-     * @param key The name of the key to compare.
-     * @param pairs An array of value and Level pairs.
-     * @param defaultThreshold The default Level.
-     * @param onMatch The action to perform if a match occurs.
-     * @param onMismatch The action to perform if no match occurs.
-     * @return The DynamicThresholdFilter.
-     * @deprecated use {@link Builder}
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static DynamicThresholdFilter createFilter(
-            final String key, final KeyValuePair[] pairs, final Level defaultThreshold, final Result onMatch,
-            final Result onMismatch) {
-        return newBuilder()
-                .setKey(key)
-                .setPairs(pairs)
-                .setDefaultThreshold(defaultThreshold)
-                .setOnMatch(onMatch)
-                .setOnMismatch(onMismatch)
-                .setContextDataInjector(ContextDataInjectorFactory.createInjector())
-                .get();
-    }
 
     @PluginFactory
     public static Builder newBuilder() {
@@ -87,6 +63,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         private KeyValuePair[] pairs;
         private Level defaultThreshold;
         private ContextDataInjector contextDataInjector;
+        private ContextDataFactory contextDataFactory;
 
         public Builder setKey(@PluginAttribute final String key) {
             this.key = key;
@@ -109,39 +86,47 @@ public final class DynamicThresholdFilter extends AbstractFilter {
             return this;
         }
 
+        @Inject
+        public Builder setContextDataFactory(final ContextDataFactory contextDataFactory) {
+            this.contextDataFactory = contextDataFactory;
+            return this;
+        }
+
         @Override
         public DynamicThresholdFilter get() {
-            if (contextDataInjector == null) {
-                contextDataInjector = ContextDataInjectorFactory.createInjector();
+            Objects.requireNonNull(contextDataInjector, "No ContextDataInjector set");
+            if (contextDataFactory == null) {
+                contextDataFactory = new DefaultContextDataFactory();
             }
             if (defaultThreshold == null) {
                 defaultThreshold = Level.ERROR;
             }
             final Map<String, Level> map =
                     Stream.of(pairs).collect(Collectors.toMap(KeyValuePair::getKey, pair -> Level.toLevel(pair.getValue())));
-            return new DynamicThresholdFilter(key, map, defaultThreshold, getOnMatch(), getOnMismatch(), contextDataInjector);
+            return new DynamicThresholdFilter(key, map, defaultThreshold, getOnMatch(), getOnMismatch(), contextDataInjector, contextDataFactory);
         }
     }
 
     private final Level defaultThreshold;
     private final String key;
-    private final ContextDataInjector injector;
+    private final ContextDataInjector contextDataInjector;
     private final Map<String, Level> levelMap;
 
     private DynamicThresholdFilter(
             final String key, final Map<String, Level> pairs, final Level defaultLevel,
-            final Result onMatch, final Result onMismatch, final ContextDataInjector injector) {
+            final Result onMatch, final Result onMismatch,
+            final ContextDataInjector contextDataInjector, final ContextDataFactory contextDataFactory) {
         super(onMatch, onMismatch);
         // ContextDataFactory looks up a property. The Spring PropertySource may log which will cause recursion.
         // By initializing the ContextDataFactory here recursion will be prevented.
-        StringMap map = ContextDataFactory.createContextData();
+        StringMap map = contextDataFactory.createContextData();
         LOGGER.debug("Successfully initialized ContextDataFactory by retrieving the context data with {} entries",
                 map.size());
         Objects.requireNonNull(key, "key cannot be null");
         this.key = key;
         this.levelMap = pairs;
         this.defaultThreshold = defaultLevel;
-        this.injector = injector;
+        this.contextDataInjector = contextDataInjector;
     }
 
     @Override
@@ -217,7 +202,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
     }
 
     private ReadOnlyStringMap currentContextData() {
-        return injector.rawContextData();
+        return contextDataInjector.rawContextData();
     }
 
     @Override

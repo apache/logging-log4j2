@@ -16,7 +16,10 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import com.google.common.collect.ImmutableList;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
@@ -24,9 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 import static org.junit.Assert.assertEquals;
 
@@ -69,7 +70,7 @@ public class NestedLoggerConfigTest {
 
     private Configuration loadConfiguration(String resourcePath) throws IOException {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
-            Configuration configuration = new XmlConfiguration(new LoggerContext("test"), new ConfigurationSource(in));
+            Configuration configuration = new XmlConfiguration(LoggerContext.newBuilder().setName("test").get(), new ConfigurationSource(in));
             configuration.initialize();
             configuration.start();
             return configuration;

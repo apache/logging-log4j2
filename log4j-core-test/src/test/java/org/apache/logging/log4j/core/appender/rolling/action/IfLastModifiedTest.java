@@ -14,13 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.core.test.appender.rolling.action.DummyFileAttributes;
-import org.junit.jupiter.api.Test;
-
 import java.nio.file.attribute.FileTime;
+
+import org.apache.logging.log4j.core.test.appender.rolling.action.DummyFileAttributes;
+import org.apache.logging.log4j.core.time.internal.SystemClock;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,15 +29,19 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class IfLastModifiedTest {
 
+    private static IfLastModified.Builder builder() {
+        return IfLastModified.newBuilder().setClock(new SystemClock());
+    }
+
     @Test
     public void testGetDurationReturnsConstructorValue() {
-        final IfLastModified filter = IfLastModified.newBuilder().setAge(Duration.parse("P7D")).get();
+        final IfLastModified filter = builder().setAge(Duration.parse("P7D")).get();
         assertEquals(0, filter.getAge().compareTo(Duration.parse("P7D")));
     }
 
     @Test
     public void testAcceptsIfFileAgeEqualToDuration() {
-        final IfLastModified filter = IfLastModified.newBuilder().setAge(Duration.parse("PT33S")).get();
+        final IfLastModified filter = builder().setAge(Duration.parse("PT33S")).get();
         final DummyFileAttributes attrs = new DummyFileAttributes();
         final long age = 33 * 1000;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - age);
@@ -46,7 +50,7 @@ public class IfLastModifiedTest {
 
     @Test
     public void testAcceptsIfFileAgeExceedsDuration() {
-        final IfLastModified filter = IfLastModified.newBuilder().setAge(Duration.parse("PT33S")).get();
+        final IfLastModified filter = builder().setAge(Duration.parse("PT33S")).get();
         final DummyFileAttributes attrs = new DummyFileAttributes();
         final long age = 33 * 1000 + 5;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - age);
@@ -55,7 +59,7 @@ public class IfLastModifiedTest {
 
     @Test
     public void testDoesNotAcceptIfFileAgeLessThanDuration() {
-        final IfLastModified filter = IfLastModified.newBuilder().setAge(Duration.parse("PT33S")).get();
+        final IfLastModified filter = builder().setAge(Duration.parse("PT33S")).get();
         final DummyFileAttributes attrs = new DummyFileAttributes();
         final long age = 33 * 1000 - 5;
         attrs.lastModified = FileTime.fromMillis(System.currentTimeMillis() - age);
@@ -65,7 +69,7 @@ public class IfLastModifiedTest {
     @Test
     public void testAcceptCallsNestedConditionsOnlyIfPathAccepted() {
         final CountingCondition counter = new CountingCondition(true);
-        final IfLastModified filter = IfLastModified.newBuilder()
+        final IfLastModified filter = builder()
                 .setAge(Duration.parse("PT33S"))
                 .setNestedConditions(counter)
                 .get();
@@ -93,7 +97,7 @@ public class IfLastModifiedTest {
     @Test
     public void testBeforeTreeWalk() {
         final CountingCondition counter = new CountingCondition(true);
-        final IfLastModified filter = IfLastModified.newBuilder()
+        final IfLastModified filter = builder()
                 .setAge(Duration.parse("PT33S"))
                 .setNestedConditions(counter, counter, counter)
                 .get();

@@ -17,8 +17,10 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.EntryMessage;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
 
@@ -1685,6 +1687,16 @@ public interface Logger {
      * @return the message factory, as an instance of {@link MessageFactory}
      */
     <MF extends MessageFactory> MF getMessageFactory();
+
+    /**
+     * Gets the flow message factory used to create trace messages for entry and exit.
+     *
+     * @return the flow message factory or null if unknown
+     * @since 3.0.0
+     */
+    default FlowMessageFactory getFlowMessageFactory() {
+        return null;
+    }
 
     /**
      * Gets the logger name.

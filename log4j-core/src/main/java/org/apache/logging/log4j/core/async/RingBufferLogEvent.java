@@ -16,17 +16,18 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.ThrowableProxy;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.DefaultContextDataFactory;
+import org.apache.logging.log4j.core.impl.LogEventBuilder;
 import org.apache.logging.log4j.core.impl.MementoMessage;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
@@ -39,11 +40,10 @@ import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
-
-import com.lmax.disruptor.EventFactory;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
@@ -53,22 +53,8 @@ import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
  */
 public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequence, ParameterVisitable {
 
-    /** The {@code EventFactory} for {@code RingBufferLogEvent}s. */
-    public static final Factory FACTORY = new Factory();
-
     private static final long serialVersionUID = 8462119088943934758L;
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
-
-    /**
-     * Creates the events that will be put in the RingBuffer.
-     */
-    private static class Factory implements EventFactory<RingBufferLogEvent> {
-
-        @Override
-        public RingBufferLogEvent newInstance() {
-            return new RingBufferLogEvent();
-        }
-    }
 
     private boolean populated;
     private int threadPriority;
@@ -87,19 +73,23 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
     private Object[] parameters;
     private transient Throwable thrown;
     private ThrowableProxy thrownProxy;
-    private StringMap contextData = ContextDataFactory.createContextData();
+    private StringMap contextData;
     private Marker marker;
     private String fqcn;
     private StackTraceElement location;
     private ContextStack contextStack;
 
     private transient AsyncLogger asyncLogger;
+    private transient ContextDataInjector contextDataInjector;
+    private transient ContextDataFactory contextDataFactory;
+
 
     public void setValues(final AsyncLogger anAsyncLogger, final String aLoggerName, final Marker aMarker,
                           final String theFqcn, final Level aLevel, final Message msg, final Throwable aThrowable,
                           final StringMap mutableContextData, final ContextStack aContextStack, final long threadId,
                           final String threadName, final int threadPriority, final StackTraceElement aLocation,
-                          final Clock clock, final NanoClock nanoClock) {
+                          final Clock clock, final NanoClock nanoClock, final ContextDataFactory factory,
+                          final ContextDataInjector injector) {
         this.threadPriority = threadPriority;
         this.threadId = threadId;
         this.level = aLevel;
@@ -116,6 +106,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.contextData = mutableContextData;
         this.contextStack = aContextStack;
         this.asyncLogger = anAsyncLogger;
+        this.contextDataFactory = factory;
+        this.contextDataInjector = injector;
         this.populated = true;
     }
 
@@ -346,9 +338,13 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         return this.thrownProxy;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ReadOnlyStringMap getContextData() {
+        if (contextData == null) {
+            contextData = contextDataFactory != null
+                    ? contextDataFactory.createContextData()
+                    : new SortedArrayStringMap();
+        }
         return contextData;
     }
 
@@ -437,44 +433,36 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         }
     }
 
-    private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
-        getThrownProxy(); // initialize the ThrowableProxy before serializing
-        out.defaultWriteObject();
-    }
-
     /**
      * Creates and returns a new immutable copy of this {@code RingBufferLogEvent}.
      *
      * @return a new immutable copy of the data in this {@code RingBufferLogEvent}
      */
     public LogEvent createMemento() {
-        return new Log4jLogEvent.Builder(this).build();
-
+        return LogEvent.builderFrom(this).toImmutable();
     }
 
-    /**
-     * Initializes the specified {@code Log4jLogEvent.Builder} from this {@code RingBufferLogEvent}.
-     * @param builder the builder whose fields to populate
-     */
-    public void initializeBuilder(final Log4jLogEvent.Builder builder) {
-        builder.setContextData(contextData) //
-                .setContextStack(contextStack) //
-                .setEndOfBatch(endOfBatch) //
-                .setIncludeLocation(includeLocation) //
+    public void initializeBuilder(final LogEventBuilder builder) {
+        builder
+                .setContextDataFactory(contextDataFactory)
+                .setContextDataInjector(contextDataInjector)
+                .setContextData(contextData)
+                .setContextStack(contextStack)
+                .endOfBatch(endOfBatch)
+                .includeLocation(includeLocation)
                 .setLevel(getLevel()) // ensure non-null
-                .setLoggerFqcn(fqcn) //
-                .setLoggerName(loggerName) //
-                .setMarker(marker) //
+                .setLoggerFqcn(fqcn)
+                .setLoggerName(loggerName)
+                .setMarker(marker)
                 .setMessage(memento()) // ensure non-null & immutable
-                .setNanoTime(nanoTime) //
-                .setSource(location) //
-                .setThreadId(threadId) //
-                .setThreadName(threadName) //
-                .setThreadPriority(threadPriority) //
+                .setNanoTime(nanoTime)
+                .setSource(location)
+                .setThreadId(threadId)
+                .setThreadName(threadName)
+                .setThreadPriority(threadPriority)
                 .setThrown(getThrown()) // may deserialize from thrownProxy
                 .setThrownProxy(thrownProxy) // avoid unnecessarily creating thrownProxy
-                .setInstant(instant) //
-        ;
+                .setInstant(instant);
     }
 
 }

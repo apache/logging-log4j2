@@ -17,15 +17,16 @@
 package org.apache.logging.log4j.core.async;
 
 import java.net.URI;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.LoggerContextNamingStrategy;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
+import org.apache.logging.log4j.plugins.ContextScoped;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.plugins.di.SimpleScope;
 import org.apache.logging.log4j.util.PropertyResolver;
 
 /**
@@ -36,19 +37,6 @@ import org.apache.logging.log4j.util.PropertyResolver;
 @Singleton
 public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
 
-    /**
-     * Returns {@code true} if the user specified this selector as the Log4jContextSelector, to make all loggers
-     * asynchronous.
-     *
-     * @return {@code true} if all loggers are asynchronous, {@code false} otherwise.
-     */
-    @Deprecated(forRemoval = true)
-    public static boolean isSelected() {
-        // FIXME(ms): this should check Injector bindings
-        return AsyncLoggerContextSelector.class.getName().equals(
-                PropertiesUtil.getProperties().getStringProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME));
-    }
-
     @Inject
     public AsyncLoggerContextSelector(final Injector injector, final PropertyResolver resolver,
                                       final LoggerContextNamingStrategy namingStrategy) {
@@ -56,11 +44,18 @@ public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
     }
 
     @Override
-    protected LoggerContext createContext(final String key, final String name, final URI configLocation, final Injector injector) {
-        final AsyncLoggerContext context = new AsyncLoggerContext(name, null, configLocation,
-                injector != null ? injector : this.injector, propertyResolver);
-        context.setKey(key);
-        return context;
+    protected LoggerContext createContext(final String key, final String name, final URI configLocation, final Consumer<Injector> configurer) {
+        final Injector loggerContextInjector = injector.copy();
+        loggerContextInjector.registerScope(ContextScoped.class, new SimpleScope("AsyncLoggerContext; name=" + name));
+        if (configurer != null) {
+            configurer.accept(loggerContextInjector);
+        }
+        return AsyncLoggerContext.newBuilder()
+                .setKey(key)
+                .setName(name)
+                .setConfigLocation(configLocation)
+                .setInjector(loggerContextInjector)
+                .get();
     }
 
     @Override

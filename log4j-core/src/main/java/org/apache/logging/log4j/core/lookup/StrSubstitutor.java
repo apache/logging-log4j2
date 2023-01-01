@@ -28,6 +28,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -1517,6 +1518,7 @@ public class StrSubstitutor implements ConfigurationAware {
     }
 
     @Override
+    @Inject
     public void setConfiguration(final Configuration configuration) {
         this.configuration = configuration;
         if (this.variableResolver instanceof ConfigurationAware) {

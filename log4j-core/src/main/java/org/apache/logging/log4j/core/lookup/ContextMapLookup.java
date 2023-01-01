@@ -16,23 +16,30 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * Looks up keys from the context. By default this is the {@link ThreadContext}, but users may
- * {@linkplain ContextDataInjectorFactory configure} a custom {@link ContextDataInjector} which obtains context data
+ * {@linkplain ContextDataInjector configure} a custom {@link ContextDataInjector} which obtains context data
  * from some other source.
  */
 @Lookup
 @Plugin("ctx")
 public class ContextMapLookup implements StrLookup {
 
-    private final ContextDataInjector injector = ContextDataInjectorFactory.createInjector();
+    private final Supplier<ContextDataInjector> injectorSupplier;
+
+    @Inject
+    public ContextMapLookup(final Supplier<ContextDataInjector> injectorSupplier) {
+        this.injectorSupplier = injectorSupplier;
+    }
 
     /**
      * Looks up the value from the ThreadContext Map.
@@ -45,7 +52,7 @@ public class ContextMapLookup implements StrLookup {
     }
 
     private ReadOnlyStringMap currentContextData() {
-        return injector.rawContextData();
+        return injectorSupplier.get().rawContextData();
     }
 
     /**

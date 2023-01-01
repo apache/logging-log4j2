@@ -16,13 +16,15 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.util.Optional;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.MessageFactory;
 
 /**
  * Anchor point for logging implementations.
  */
-public interface LoggerContext {
+public interface LoggerContext extends InstanceFactory {
 
     /**
      * Empty array.
@@ -162,5 +164,15 @@ public interface LoggerContext {
      */
     default boolean removeObject(final String key, final Object value) {
         return false;
+    }
+
+    @Override
+    default <T> T getInstance(final Class<T> type) {
+        return LoggingSystem.getInstance().getInstanceFactory().getInstance(type);
+    }
+
+    @Override
+    default <T> Optional<T> tryGetInstance(final Class<T> type) {
+        return LoggingSystem.getInstance().getInstanceFactory().tryGetInstance(type);
     }
 }

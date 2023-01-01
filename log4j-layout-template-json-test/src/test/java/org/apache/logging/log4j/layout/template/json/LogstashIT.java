@@ -44,9 +44,9 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
-import org.apache.logging.log4j.layout.template.json.util.ThreadLocalRecyclerFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.RecyclerFactories;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.elasticsearch.ElasticsearchStatusException;
@@ -122,7 +122,7 @@ class LogstashIT {
             .setConfiguration(CONFIGURATION)
             .setCharset(CHARSET)
             .setEventTemplateUri("classpath:EcsLayout.json")
-            .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
+            .setRecyclerFactory(RecyclerFactories.ofSpec(null))
             .setEventTemplateAdditionalFields(
                     new EventTemplateAdditionalField[]{
                             EventTemplateAdditionalField

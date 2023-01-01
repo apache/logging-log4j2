@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.core.LoggerContext;
@@ -124,7 +123,7 @@ public class CronTriggeringPolicyTest {
 
         try (RollingFileManager fileManager = RollingFileManager.getFileManager("target/testcmd3.log",
                 "target/testcmd3.log.%d{yyyy-MM-dd}", true, true, triggerPolicy, rolloverStrategy, null,
-                PatternLayout.createDefaultLayout(), 0, true, false, null, null, null, configuration)) {
+                PatternLayout.createDefaultLayout(configuration), 0, true, false, null, null, null, configuration)) {
             assertNotNull(fileManager);
             // trigger rollover
             fileManager.initialize();

@@ -28,11 +28,13 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
+import org.apache.logging.log4j.plugins.ConfigurationScoped;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  *
  */
+@ConfigurationScoped
 public class ConfigurationScheduler extends AbstractLifeCycle {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

@@ -560,7 +560,12 @@ public class XmlConfiguration extends Log4j1Configuration {
         boolean additivity = OptionConverter.toBoolean(subst(loggerElement.getAttribute(ADDITIVITY_ATTR)), true);
         LoggerConfig loggerConfig = getLogger(catName);
         if (loggerConfig == null) {
-            loggerConfig = new LoggerConfig(catName, org.apache.logging.log4j.Level.ERROR, additivity);
+            loggerConfig = LoggerConfig.newBuilder()
+                    .setLoggerName(catName)
+                    .setLevel(org.apache.logging.log4j.Level.ERROR)
+                    .setAdditivity(additivity)
+                    .setConfig(this)
+                    .get();
             addLogger(catName, loggerConfig);
         } else {
             loggerConfig.setAdditive(additivity);

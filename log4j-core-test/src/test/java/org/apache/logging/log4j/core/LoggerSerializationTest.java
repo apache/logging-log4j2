@@ -26,7 +26,7 @@ public class LoggerSerializationTest extends AbstractSerializationTest {
 
     @Parameters
     protected Stream<Object> data() {
-        return Stream.of(new LoggerContext("").getLogger("", null),
+        return Stream.of(LoggerContext.newBuilder().setName("").get().getLogger("", null),
                 LogManager.getRootLogger(),
                 LogManager.getLogger(),
                 LogManager.getLogger("test"));

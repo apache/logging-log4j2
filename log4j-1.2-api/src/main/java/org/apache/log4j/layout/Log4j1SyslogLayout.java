@@ -191,7 +191,9 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
 
         buf.append(message);
         // TODO: splitting message into 1024 byte chunks?
-        return buf.toString();
+        final String result = buf.toString();
+        recycleStringBuilder(buf);
+        return result;
     }
 
     /**

@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.core.LoggerContext;
@@ -89,7 +90,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 @Singleton
 public class JndiContextSelector implements NamedContextSelector {
 
-    private static final LoggerContext CONTEXT = new LoggerContext("Default");
+    private static final LoggerContext CONTEXT = LoggerContext.newBuilder().setName("Default").get();
 
     private static final ConcurrentMap<String, LoggerContext> CONTEXT_MAP =
         new ConcurrentHashMap<>();
@@ -150,7 +151,7 @@ public class JndiContextSelector implements NamedContextSelector {
 
     @Override
     public LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader, final boolean currentContext,
-                                    final URI configLocation, final Injector injector) {
+                                    final URI configLocation, final Consumer<Injector> configurer) {
         throw new UnsupportedOperationException();
     }
 
@@ -172,7 +173,11 @@ public class JndiContextSelector implements NamedContextSelector {
             return null;
         }
         if (!CONTEXT_MAP.containsKey(name)) {
-            final LoggerContext ctx = new LoggerContext(name, externalContext, configLocation);
+            final LoggerContext ctx = LoggerContext.newBuilder()
+                    .setName(name)
+                    .setExternalContext(externalContext)
+                    .setConfigLocation(configLocation)
+                    .get();
             CONTEXT_MAP.putIfAbsent(name, ctx);
         }
         return CONTEXT_MAP.get(name);

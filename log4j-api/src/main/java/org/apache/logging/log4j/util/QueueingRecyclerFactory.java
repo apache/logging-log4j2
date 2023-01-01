@@ -14,50 +14,26 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.util;
 
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.util.Recycler;
+public class QueueingRecyclerFactory implements RecyclerFactory {
 
-public class QueueingRecycler<V> implements Recycler<V> {
+    private final Supplier<Queue<Object>> queueSupplier;
 
-    private final Supplier<V> supplier;
+    public QueueingRecyclerFactory(final Supplier<Queue<Object>> queueSupplier) {
+        this.queueSupplier = queueSupplier;
+    }
 
-    private final Consumer<V> cleaner;
-
-    private final Queue<V> queue;
-
-    public QueueingRecycler(
+    @Override
+    public <V> Recycler<V> create(
             final Supplier<V> supplier,
-            final Consumer<V> cleaner,
-            final Queue<V> queue) {
-        this.supplier = supplier;
-        this.cleaner = cleaner;
-        this.queue = queue;
-    }
-
-    // Visible for tests.
-    Queue<V> getQueue() {
-        return queue;
-    }
-
-    @Override
-    public V acquire() {
-        final V value = queue.poll();
-        if (value == null) {
-            return supplier.get();
-        } else {
-            cleaner.accept(value);
-            return value;
-        }
-    }
-
-    @Override
-    public void release(final V value) {
-        queue.offer(value);
+            final Consumer<V> cleaner) {
+        final Queue<V> queue = Cast.cast(queueSupplier.get());
+        return new QueueingRecycler<>(supplier, cleaner, queue);
     }
 
 }

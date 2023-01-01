@@ -16,24 +16,23 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.StringMap;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.StringMap;
 
 /**
  * This policy modifies events by replacing or possibly adding keys and values to the MapMessage.
@@ -47,15 +46,18 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
+    private final ContextDataFactory contextDataFactory;
+    private final StrSubstitutor strSubstitutor;
     private final Map<Property, Boolean> properties;
 
-    private final Configuration config;
 
-    private PropertiesRewritePolicy(final Configuration config, final List<Property> props) {
-        this.config = config;
+    private PropertiesRewritePolicy(final ContextDataFactory contextDataFactory, final StrSubstitutor strSubstitutor,
+                                    final List<Property> props) {
+        this.contextDataFactory = contextDataFactory;
+        this.strSubstitutor = strSubstitutor;
         this.properties = new HashMap<>(props.size());
         for (final Property property : props) {
-            final Boolean interpolate = Boolean.valueOf(property.getValue().contains("${"));
+            final boolean interpolate = property.getValue().contains("${");
             properties.put(property, interpolate);
         }
     }
@@ -68,14 +70,16 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
      */
     @Override
     public LogEvent rewrite(final LogEvent source) {
-        final StringMap newContextData = ContextDataFactory.createContextData(source.getContextData());
+        final StringMap newContextData = contextDataFactory.createContextData(source.getContextData());
         for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
             final Property prop = entry.getKey();
-            newContextData.putValue(prop.getName(), entry.getValue().booleanValue() ?
-                config.getStrSubstitutor().replace(prop.getValue()) : prop.getValue());
+            newContextData.putValue(prop.getName(), entry.getValue() ?
+                strSubstitutor.replace(prop.getValue()) : prop.getValue());
         }
 
-        return new Log4jLogEvent.Builder(source).setContextData(newContextData).build();
+        return LogEvent.builderFrom(source)
+                .setContextData(newContextData)
+                .build();
     }
 
     @Override
@@ -95,20 +99,48 @@ public final class PropertiesRewritePolicy implements RewritePolicy {
         return sb.toString();
     }
 
-    /**
-     * Creates a PropertiesRewritePolicy.
-     * @param config The Configuration.
-     * @param props key/value pairs for the new keys and values.
-     * @return The PropertiesRewritePolicy.
-     */
-    @PluginFactory
-    public static PropertiesRewritePolicy createPolicy(@PluginConfiguration final Configuration config,
-                                                @PluginElement("Properties") final Property[] props) {
-        if (props == null || props.length == 0) {
-            LOGGER.error("Properties must be specified for the PropertiesRewritePolicy");
-            return null;
+    @Factory
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder implements Supplier<PropertiesRewritePolicy> {
+        private ContextDataFactory contextDataFactory;
+        private StrSubstitutor strSubstitutor;
+        private List<Property> properties;
+
+        public ContextDataFactory getContextDataFactory() {
+            return contextDataFactory;
         }
-        final List<Property> properties = Arrays.asList(props);
-        return new PropertiesRewritePolicy(config, properties);
+
+        @Inject
+        public Builder setContextDataFactory(final ContextDataFactory contextDataFactory) {
+            this.contextDataFactory = contextDataFactory;
+            return this;
+        }
+
+        public StrSubstitutor getStrSubstitutor() {
+            return strSubstitutor;
+        }
+
+        @Inject
+        public Builder setStrSubstitutor(final StrSubstitutor strSubstitutor) {
+            this.strSubstitutor = strSubstitutor;
+            return this;
+        }
+
+        public List<Property> getProperties() {
+            return properties;
+        }
+
+        public Builder setProperties(@PluginElement("Properties") final Property[] props) {
+            properties = List.of(props);
+            return this;
+        }
+
+        @Override
+        public PropertiesRewritePolicy get() {
+            return new PropertiesRewritePolicy(contextDataFactory, strSubstitutor, properties);
+        }
     }
 }

@@ -23,15 +23,15 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import javax.persistence.PersistenceException;
 
-import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.util.Strings;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
+import org.apache.logging.log4j.core.impl.DefaultContextDataFactory;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.StringMap;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * A JPA 2.1 attribute converter for {@link ReadOnlyStringMap}s in
@@ -43,7 +43,19 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 @Converter(autoApply = false)
 public class ContextDataJsonAttributeConverter implements AttributeConverter<ReadOnlyStringMap, String> {
-    static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private final ContextDataFactory contextDataFactory;
+    private final ObjectMapper objectMapper;
+
+    public ContextDataJsonAttributeConverter() {
+        contextDataFactory = new DefaultContextDataFactory();
+        objectMapper = new ObjectMapper();
+    }
+
+    public ContextDataJsonAttributeConverter(final ContextDataFactory contextDataFactory,
+                                             final ObjectMapper objectMapper) {
+        this.contextDataFactory = contextDataFactory;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public String convertToDatabaseColumn(final ReadOnlyStringMap contextData) {
@@ -52,13 +64,13 @@ public class ContextDataJsonAttributeConverter implements AttributeConverter<Rea
         }
 
         try {
-            final JsonNodeFactory factory = OBJECT_MAPPER.getNodeFactory();
+            final JsonNodeFactory factory = objectMapper.getNodeFactory();
             final ObjectNode root = factory.objectNode();
             contextData.forEach((key, value) -> {
                 // we will cheat here and write the toString of the Object... meh, but ok.
                 root.put(key, String.valueOf(value));
             });
-            return OBJECT_MAPPER.writeValueAsString(root);
+            return objectMapper.writeValueAsString(root);
         } catch (final Exception e) {
             throw new PersistenceException("Failed to convert contextData to JSON string.", e);
         }
@@ -70,8 +82,8 @@ public class ContextDataJsonAttributeConverter implements AttributeConverter<Rea
             return null;
         }
         try {
-            final StringMap result = ContextDataFactory.createContextData();
-            final ObjectNode root = (ObjectNode) OBJECT_MAPPER.readTree(s);
+            final StringMap result = contextDataFactory.createContextData();
+            final ObjectNode root = (ObjectNode) objectMapper.readTree(s);
             final Iterator<Map.Entry<String, JsonNode>> entries = root.fields();
             while (entries.hasNext()) {
                 final Map.Entry<String, JsonNode> entry = entries.next();

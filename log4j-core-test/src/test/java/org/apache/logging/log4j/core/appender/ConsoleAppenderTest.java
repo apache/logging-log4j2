@@ -16,11 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
@@ -31,9 +34,6 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -41,7 +41,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atLeastOnce;
 
 @ExtendWith(MockitoExtension.class)
-@SetSystemProperty(key = "log4j.skipJansi", value = "true")
+@SetSystemProperty(key = Log4jProperties.JANSI_ENABLED, value = "false")
 public class ConsoleAppenderTest {
 
     ByteArrayOutputStream baos;
@@ -80,12 +80,12 @@ public class ConsoleAppenderTest {
             app.start();
             assertTrue(app.isStarted(), "Appender did not start");
 
-            final LogEvent event = Log4jLogEvent.newBuilder() //
+            final LogEvent event = LogEvent.builder() //
                     .setLoggerName("TestLogger") //
                     .setLoggerFqcn(ConsoleAppenderTest.class.getName()) //
                     .setLevel(Level.INFO) //
                     .setMessage(new SimpleMessage("Test")) //
-                    .build();
+                    .get();
             app.append(event);
 
             app.stop();
@@ -113,12 +113,12 @@ public class ConsoleAppenderTest {
         assertEquals(target, app.getTarget());
         app.start();
         try {
-            final LogEvent event = Log4jLogEvent.newBuilder() //
+            final LogEvent event = LogEvent.builder() //
                     .setLoggerName("TestLogger") //
                     .setLoggerFqcn(ConsoleAppenderTest.class.getName()) //
                     .setLevel(Level.INFO) //
                     .setMessage(new SimpleMessage("Test")) //
-                    .build();
+                    .get();
 
             assertTrue(app.isStarted(), "Appender did not start");
             systemSetter.systemSet(new PrintStream(baos));

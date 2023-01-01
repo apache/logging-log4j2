@@ -78,13 +78,16 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         final StringBuilder text = getStringBuilder();
         formatTo(event, text);
         getStringBuilderEncoder().encode(text, destination);
+        recycleStringBuilder(text);
     }
 
     @Override
     public String toSerializable(final LogEvent event) {
         final StringBuilder text = getStringBuilder();
         formatTo(event, text);
-        return text.toString();
+        final String result = text.toString();
+        recycleStringBuilder(text);
+        return result;
     }
 
     private void formatTo(final LogEvent event, final StringBuilder buf) {

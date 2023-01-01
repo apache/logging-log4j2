@@ -53,7 +53,11 @@ public class OutputStreamAppenderTest {
         final LoggerContext context = LoggerContext.getContext(false);
         final Configuration config = context.getConfiguration();
         final PatternLayout layout = PatternLayout.createDefaultLayout(config);
-        final Appender appender = OutputStreamAppender.createAppender(layout, null, outputStream, outputStreamName, false, true);
+        final Appender appender = OutputStreamAppender.newBuilder()
+                .setName(outputStreamName)
+                .setTarget(outputStream)
+                .setLayout(layout)
+                .build();
         appender.start();
         config.addAppender(appender);
         ConfigurationTestUtils.updateLoggers(appender, config);

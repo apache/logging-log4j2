@@ -113,7 +113,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param name the logger name
      */
     public AbstractLogger(final String name) {
-        this(name, LoggingSystem.getMessageFactory());
+        this(name, null);
     }
 
     /**
@@ -123,9 +123,21 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * @param messageFactory the message factory, if null then use the default message factory.
      */
     public AbstractLogger(final String name, final MessageFactory messageFactory) {
+        this(name, messageFactory, null);
+    }
+
+    /**
+     * Creates a new named logger with a particular {@link MessageFactory} and {@link FlowMessageFactory}.
+     *
+     * @param name the logger name
+     * @param messageFactory the message factory to use or null to use the default message factory
+     * @param flowMessageFactory the flow message factory to use or null to use the default flow message factory
+     * @since 3.0.0
+     */
+    public AbstractLogger(final String name, final MessageFactory messageFactory, final FlowMessageFactory flowMessageFactory) {
         this.name = name;
         this.messageFactory = messageFactory == null ? LoggingSystem.getMessageFactory() : messageFactory;
-        this.flowMessageFactory = LoggingSystem.getFlowMessageFactory();
+        this.flowMessageFactory = flowMessageFactory == null ? LoggingSystem.getFlowMessageFactory() : flowMessageFactory;
         this.logBuilder = new LocalLogBuilder(this);
     }
 
@@ -1121,6 +1133,11 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     }
 
     @Override
+    public FlowMessageFactory getFlowMessageFactory() {
+        return flowMessageFactory;
+    }
+
+    @Override
     public String getName() {
         return name;
     }
@@ -2011,7 +2028,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
     }
 
-    @PerformanceSensitive
+    @PerformanceSensitive("MaxInlineSize")
     // NOTE: This is a hot method. Current implementation compiles to 30 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
     private void logMessageSafely(final String fqcn, final Level level, final Marker marker, final Message msg,
@@ -2024,7 +2041,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
     }
 
-    @PerformanceSensitive
+    @PerformanceSensitive("MaxInlineSize")
     // NOTE: This is a hot method. Current implementation compiles to 33 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
     private void logMessageTrackRecursion(final String fqcn,
@@ -2070,7 +2087,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         return getRecursionDepthHolder()[0];
     }
 
-    @PerformanceSensitive
+    @PerformanceSensitive("MaxInlineSize")
     // NOTE: This is a hot method. Current implementation compiles to 27 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
     private void tryLogMessage(final String fqcn,
@@ -2087,7 +2104,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         }
     }
 
-    @PerformanceSensitive
+    @PerformanceSensitive("MaxInlineSize")
     // NOTE: This is a hot method. Current implementation compiles to 15 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
     private StackTraceElement getLocation(final String fqcn) {

@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.mutable.KeyValuePairConfig;
+import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.internal.HttpResponse;
 import org.apache.logging.log4j.core.util.internal.HttpSourceLoader;
@@ -74,6 +75,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
     private final List<FilterConfigUpdateListener> listeners = new ArrayList<>();
     private ScheduledFuture<?> future = null;
     private final ContextDataInjector contextDataInjector;
+    private final ContextDataFactory contextDataFactory;
     private final HttpSourceLoader httpSourceLoader;
 
     private MutableThreadContextMapFilter(final Filter filter,
@@ -83,6 +85,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                                           final Result onMismatch,
                                           final Configuration configuration,
                                           final ContextDataInjector contextDataInjector,
+                                          final ContextDataFactory contextDataFactory,
                                           final HttpSourceLoader httpSourceLoader) {
         super(onMatch, onMismatch);
         this.filter = filter;
@@ -90,6 +93,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
         this.source = source;
         this.scheduler = configuration.getScheduler();
         this.contextDataInjector = contextDataInjector;
+        this.contextDataFactory = contextDataFactory;
         this.httpSourceLoader = httpSourceLoader;
     }
 
@@ -218,6 +222,8 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
 
         private ContextDataInjector contextDataInjector;
 
+        private ContextDataFactory contextDataFactory;
+
         // HttpSourceLoader is not exported, so let's keep it hidden
         @Inject
         private HttpSourceLoader httpSourceLoader;
@@ -259,12 +265,18 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
             return this;
         }
 
+        @Inject
+        public Builder setContextDataFactory(final ContextDataFactory contextDataFactory) {
+            this.contextDataFactory = contextDataFactory;
+            return this;
+        }
+
         @Override
         public MutableThreadContextMapFilter build() {
             final LastModifiedSource source = getSource(configLocation);
             if (source == null) {
                 return new MutableThreadContextMapFilter(new NoOpFilter(), null, 0,
-                        getOnMatch(), getOnMismatch(), configuration, contextDataInjector, httpSourceLoader);
+                        getOnMatch(), getOnMismatch(), configuration, contextDataInjector, contextDataFactory, httpSourceLoader);
             }
             Filter filter;
             if (pollInterval <= 0) {
@@ -277,6 +289,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                                 .setOnMatch(getOnMatch())
                                 .setOnMismatch(getOnMismatch())
                                 .setContextDataInjector(contextDataInjector)
+                                .setContextDataFactory(contextDataFactory)
                                 .get();
                     } else {
                         filter = new NoOpFilter();
@@ -294,8 +307,8 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
             if (pollInterval > 0) {
                 configuration.getScheduler().incrementScheduledItems();
             }
-            return new MutableThreadContextMapFilter(filter, source, pollInterval,
-                    getOnMatch(), getOnMismatch(), configuration, contextDataInjector, httpSourceLoader);
+            return new MutableThreadContextMapFilter(filter, source, pollInterval, getOnMatch(), getOnMismatch(),
+                    configuration, contextDataInjector, contextDataFactory, httpSourceLoader);
         }
     }
 
@@ -311,6 +324,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                         .setOnMatch(getOnMatch())
                         .setOnMismatch(getOnMismatch())
                         .setContextDataInjector(contextDataInjector)
+                        .setContextDataFactory(contextDataFactory)
                         .get();
                 LOGGER.info("Filter configuration was updated: {}", filter.toString());
                 for (FilterConfigUpdateListener listener : listeners) {

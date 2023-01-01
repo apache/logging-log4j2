@@ -49,13 +49,11 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
         private boolean follow = false;
 
-        private final Layout<?> layout = PatternLayout.createDefaultLayout();
-
         private OutputStream target;
 
         @Override
         public OutputStreamAppender build() {
-
+            final Layout<?> layout = getOrCreateLayout();
             return new OutputStreamAppender(getName(), layout, getFilter(), getManager(target, follow, layout), isIgnoreExceptions(), getPropertyArray());
         }
 
@@ -115,39 +113,6 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
     }
 
     private static final OutputStreamManagerFactory factory = new OutputStreamManagerFactory();
-
-    /**
-     * Creates an OutputStream Appender.
-     *
-     * @param layout
-     *            The layout to use or null to get the default layout.
-     * @param filter
-     *            The Filter or null.
-     * @param target
-     *            an output stream.
-     * @param follow
-     *            If true will follow changes to the underlying output stream.
-     *            Use false as the default.
-     * @param name
-     *            The name of the Appender (required).
-     * @param ignore
-     *            If {@code "true"} (default) exceptions encountered when
-     *            appending events are logged; otherwise they are propagated to
-     *            the caller. Use true as the default.
-     * @return The ConsoleAppender.
-     */
-    @PluginFactory
-    public static OutputStreamAppender createAppender(Layout<?> layout, final Filter filter,
-            final OutputStream target, final String name, final boolean follow, final boolean ignore) {
-        if (name == null) {
-            LOGGER.error("No name provided for OutputStreamAppender");
-            return null;
-        }
-        if (layout == null) {
-            layout = PatternLayout.createDefaultLayout();
-        }
-        return new OutputStreamAppender(name, layout, filter, getManager(target, follow, layout), ignore, null);
-    }
 
     private static OutputStreamManager getManager(final OutputStream target, final boolean follow,
             final Layout<?> layout) {

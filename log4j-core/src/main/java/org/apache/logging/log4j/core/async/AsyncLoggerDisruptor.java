@@ -28,9 +28,6 @@ import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.spi.ClassFactory;
-import org.apache.logging.log4j.util.PropertyResolver;
 
 import com.lmax.disruptor.EventTranslatorVararg;
 import com.lmax.disruptor.ExceptionHandler;
@@ -64,14 +61,13 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
     private AsyncQueueFullPolicy asyncQueueFullPolicy;
     private WaitStrategy waitStrategy;
 
-    AsyncLoggerDisruptor(final AsyncLoggerContext context) {
-        final PropertyResolver resolver = context.getPropertyResolver();
-        final Injector injector = context.getInjector();
-        final ClassFactory classFactory = injector.getInstance(ClassFactory.class);
-        this.contextName = context.getName();
-        this.configuration = new DisruptorConfiguration(resolver, classFactory, injector);
-        this.asyncQueueFullPolicySupplier = new AsyncQueueFullPolicyFactory(resolver, classFactory, injector);
-        this.waitStrategyFactorySupplier = () -> context.getConfiguration().getAsyncWaitStrategyFactory();
+    AsyncLoggerDisruptor(final String contextName, final DisruptorConfiguration configuration,
+                         final Supplier<AsyncQueueFullPolicy> asyncQueueFullPolicySupplier,
+                         final Supplier<AsyncWaitStrategyFactory> waitStrategyFactorySupplier) {
+        this.contextName = contextName;
+        this.configuration = configuration;
+        this.asyncQueueFullPolicySupplier = asyncQueueFullPolicySupplier;
+        this.waitStrategyFactorySupplier = waitStrategyFactorySupplier;
     }
 
     // package-protected for testing
@@ -124,7 +120,7 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         };
         asyncQueueFullPolicy = asyncQueueFullPolicySupplier.get();
 
-        disruptor = new Disruptor<>(RingBufferLogEvent.FACTORY, ringBufferSize, threadFactory, ProducerType.MULTI,
+        disruptor = new Disruptor<>(RingBufferLogEvent::new, ringBufferSize, threadFactory, ProducerType.MULTI,
                 waitStrategy);
 
         final ExceptionHandler<RingBufferLogEvent> errorHandler = configuration.getAsyncLoggerExceptionHandler();

@@ -18,14 +18,17 @@ package org.apache.logging.log4j.cassandra;
 
 import com.datastax.driver.core.TimestampGenerator;
 import org.apache.logging.log4j.core.time.Clock;
-import org.apache.logging.log4j.core.time.ClockFactory;
 
 /**
  * A {@link TimestampGenerator} implementation using the configured {@link Clock}.
  */
 public class ClockTimestampGenerator implements TimestampGenerator {
 
-    private final Clock clock = ClockFactory.getClock();
+    private final Clock clock;
+
+    public ClockTimestampGenerator(final Clock clock) {
+        this.clock = clock;
+    }
 
     @Override
     public long next() {

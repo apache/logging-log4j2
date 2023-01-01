@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config.composite;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +28,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
-import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
@@ -56,7 +54,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
         super(configurations.get(0).getLoggerContext(), ConfigurationSource.COMPOSITE_SOURCE);
         rootNode = configurations.get(0).getRootNode();
         this.configurations = configurations;
-        mergeStrategy = getComponent(MergeStrategy.KEY);
+        mergeStrategy = getInstance(MergeStrategy.class);
         for (final AbstractConfiguration config : configurations) {
             mergeStrategy.mergeRootProperties(rootNode, config);
         }

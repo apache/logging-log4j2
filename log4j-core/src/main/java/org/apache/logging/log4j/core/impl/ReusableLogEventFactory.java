@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.ContextScoped;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -36,18 +37,23 @@ import org.apache.logging.log4j.util.StringMap;
  * Garbage-free LogEventFactory that reuses a single mutable log event.
  * @since 2.6
  */
+@ContextScoped
 public class ReusableLogEventFactory implements LogEventFactory {
-    private static final ThreadLocal<MutableLogEvent> mutableLogEventThreadLocal = new ThreadLocal<>();
+    // TODO(ms): migrate to Recycler<MutableLogEvent>
+    private final ThreadLocal<MutableLogEvent> mutableLogEventThreadLocal = new ThreadLocal<>();
 
-    private final ContextDataInjector injector;
+    private final ContextDataInjector contextDataInjector;
+    private final ContextDataFactory contextDataFactory;
     private final Clock clock;
     private final NanoClock nanoClock;
     private final ThreadNameCachingStrategyFactory factory;
 
     @Inject
-    public ReusableLogEventFactory(final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock,
-                                   final ThreadNameCachingStrategyFactory factory) {
-        this.injector = injector;
+    public ReusableLogEventFactory(
+            final ContextDataInjector contextDataInjector, final ContextDataFactory contextDataFactory,
+            final Clock clock, final NanoClock nanoClock, final ThreadNameCachingStrategyFactory factory) {
+        this.contextDataInjector = contextDataInjector;
+        this.contextDataFactory = contextDataFactory;
         this.clock = clock;
         this.nanoClock = nanoClock;
         this.factory = factory;
@@ -101,7 +107,7 @@ public class ReusableLogEventFactory implements LogEventFactory {
         result.initTime(clock, nanoClock);
         result.setThrown(t);
         result.setSource(location);
-        result.setContextData(injector.injectContextData(properties, (StringMap) result.getContextData()));
+        result.setContextData(contextDataInjector.injectContextData(properties, (StringMap) result.getContextData()));
         result.setContextStack(ThreadContext.getDepth() == 0 ? ThreadContext.EMPTY_STACK : ThreadContext.cloneStack());// mutable copy
 
         if (factory.get() == ThreadNameCachingStrategy.UNCACHED) {
@@ -111,13 +117,13 @@ public class ReusableLogEventFactory implements LogEventFactory {
         return result;
     }
 
-    private static MutableLogEvent getOrCreateMutableLogEvent() {
+    private MutableLogEvent getOrCreateMutableLogEvent() {
         MutableLogEvent result = mutableLogEventThreadLocal.get();
         return result == null || result.reserved ? createInstance(result) : result;
     }
 
-    private static MutableLogEvent createInstance(MutableLogEvent existing) {
-        MutableLogEvent result = new MutableLogEvent();
+    private MutableLogEvent createInstance(MutableLogEvent existing) {
+        MutableLogEvent result = new MutableLogEvent(contextDataFactory);
 
         // usually no need to re-initialize thread-specific fields since the event is stored in a ThreadLocal
         result.setThreadId(Thread.currentThread().getId());
