@@ -97,6 +97,8 @@ public final class StringBuilders {
             stringBuilder.append(((Float) obj).floatValue());
         } else if (obj instanceof Byte) {
             stringBuilder.append(((Byte) obj).byteValue());
+        } else if (obj instanceof java.sql.Time || obj instanceof java.time.temporal.Temporal) {
+            stringBuilder.append(obj);
         } else {
             return false;
         }
