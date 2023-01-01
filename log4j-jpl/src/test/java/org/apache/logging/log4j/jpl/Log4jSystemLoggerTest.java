@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.ImmutableLogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.After;
 import org.junit.Before;
@@ -92,7 +92,7 @@ public class Log4jSystemLoggerTest {
         final List<LogEvent> events = eventAppender.getEvents();
         assertThat(events, hasSize(1));
         final LogEvent event = events.get(0);
-        assertThat(event, instanceOf(Log4jLogEvent.class));
+        assertThat(event, instanceOf(ImmutableLogEvent.class));
         assertEquals(Level.INFO, event.getLevel());
         assertEquals(LOGGER_NAME, event.getLoggerName());
         assertEquals("Hello, World!", event.getMessage().getFormattedMessage());
@@ -106,7 +106,7 @@ public class Log4jSystemLoggerTest {
         final List<LogEvent> events = eventAppender.getEvents();
         assertThat(events, hasSize(1));
         final LogEvent event = events.get(0);
-        assertThat(event, instanceOf(Log4jLogEvent.class));
+        assertThat(event, instanceOf(ImmutableLogEvent.class));
         assertEquals(Level.INFO, event.getLevel());
         assertEquals(LOGGER_NAME, event.getLoggerName());
         assertEquals("Hello, World!", event.getMessage().getFormattedMessage());
