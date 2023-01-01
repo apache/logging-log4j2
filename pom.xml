@@ -340,7 +340,7 @@
     <jconsole.version>1.7.0</jconsole.version>
     <jctools.version>3.3.0</jctools.version>
     <je.version>18.3.12</je.version>
-    <jeromq.version>0.5.2</jeromq.version>
+    <jeromq.version>0.5.3</jeromq.version>
     <jetty.version>9.4.49.v20220914</jetty.version>
     <jmdns.version>3.5.8</jmdns.version>
     <jmh.version>1.35</jmh.version>
