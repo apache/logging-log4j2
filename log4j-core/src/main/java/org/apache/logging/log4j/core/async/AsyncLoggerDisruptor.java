@@ -18,16 +18,9 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
-import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
-import org.apache.logging.log4j.core.util.Log4jThreadFactory;
-import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.message.Message;
 
 import com.lmax.disruptor.EventTranslatorVararg;
 import com.lmax.disruptor.ExceptionHandler;
@@ -36,6 +29,14 @@ import com.lmax.disruptor.TimeoutException;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
+import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.message.Message;
 
 /**
  * Helper class for async loggers: AsyncLoggerDisruptor handles the mechanics of working with the LMAX Disruptor, and
@@ -47,8 +48,7 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
     private static final int SLEEP_MILLIS_BETWEEN_DRAIN_ATTEMPTS = 50;
     private static final int MAX_DRAIN_ATTEMPTS_BEFORE_SHUTDOWN = 200;
 
-    // TODO(ms): migrate to Lock API for better GraalVM performance
-    private final Object queueFullEnqueueLock = new Object();
+    private final Lock queueFullEnqueueLock = new ReentrantLock();
 
     private volatile Disruptor<RingBufferLogEvent> disruptor;
     private String contextName;
@@ -247,8 +247,11 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
             // Avoiding this and using an older reference could result in adding a log event to the disruptor after it
             // was shut down, which could cause the publishEvent method to hang and never return.
             if (synchronizeEnqueueWhenQueueFull()) {
-                synchronized (queueFullEnqueueLock) {
+                queueFullEnqueueLock.lock();
+                try {
                     disruptor.publishEvent(translator);
+                } finally {
+                    queueFullEnqueueLock.unlock();
                 }
             } else {
                 disruptor.publishEvent(translator);
@@ -273,7 +276,8 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
             // Avoiding this and using an older reference could result in adding a log event to the disruptor after it
             // was shut down, which could cause the publishEvent method to hang and never return.
             if (synchronizeEnqueueWhenQueueFull()) {
-                synchronized (queueFullEnqueueLock) {
+                queueFullEnqueueLock.lock();
+                try {
                     disruptor.getRingBuffer().publishEvent(translator,
                             asyncLogger, // asyncLogger: 0
                             location, // location: 1
@@ -282,6 +286,8 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
                             marker, // 4
                             msg, // 5
                             thrown); // 6
+                } finally {
+                    queueFullEnqueueLock.unlock();
                 }
             } else {
                 disruptor.getRingBuffer().publishEvent(translator,

@@ -18,8 +18,20 @@ package org.apache.logging.log4j.core.async;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
+import com.lmax.disruptor.EventFactory;
+import com.lmax.disruptor.EventTranslatorTwoArg;
+import com.lmax.disruptor.ExceptionHandler;
+import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.Sequence;
+import com.lmax.disruptor.SequenceReportingEventHandler;
+import com.lmax.disruptor.TimeoutException;
+import com.lmax.disruptor.WaitStrategy;
+import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.dsl.ProducerType;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
@@ -35,17 +47,6 @@ import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.spi.ClassFactory;
 import org.apache.logging.log4j.spi.InstanceFactory;
 import org.apache.logging.log4j.util.PropertyResolver;
-
-import com.lmax.disruptor.EventFactory;
-import com.lmax.disruptor.EventTranslatorTwoArg;
-import com.lmax.disruptor.ExceptionHandler;
-import com.lmax.disruptor.RingBuffer;
-import com.lmax.disruptor.Sequence;
-import com.lmax.disruptor.SequenceReportingEventHandler;
-import com.lmax.disruptor.TimeoutException;
-import com.lmax.disruptor.WaitStrategy;
-import com.lmax.disruptor.dsl.Disruptor;
-import com.lmax.disruptor.dsl.ProducerType;
 
 /**
  * Helper class decoupling the {@code AsyncLoggerConfig} class from the LMAX Disruptor library.
@@ -175,8 +176,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     private final AsyncWaitStrategyFactory asyncWaitStrategyFactory;
     private WaitStrategy waitStrategy;
 
-    // TODO(ms): migrate to Lock API for better GraalVM performance
-    private final Object queueFullEnqueueLock = new Object();
+    private final Lock queueFullEnqueueLock = new ReentrantLock();
 
     public AsyncLoggerConfigDisruptor(final PropertyResolver propertyResolver,
                                       final ClassFactory classFactory,
@@ -373,8 +373,11 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
 
     private void enqueue(final LogEvent logEvent, final AsyncLoggerConfig asyncLoggerConfig) {
         if (synchronizeEnqueueWhenQueueFull()) {
-            synchronized (queueFullEnqueueLock) {
+            queueFullEnqueueLock.lock();
+            try {
                 disruptor.getRingBuffer().publishEvent(translator, logEvent, asyncLoggerConfig);
+            } finally {
+                queueFullEnqueueLock.unlock();
             }
         } else {
             disruptor.getRingBuffer().publishEvent(translator, logEvent, asyncLoggerConfig);
