@@ -1689,14 +1689,12 @@ public interface Logger {
     <MF extends MessageFactory> MF getMessageFactory();
 
     /**
-     * Gets the flow message factory used to create trace messages for entry and exit.
+     * Gets the flow message factory used to convert messages into flow messages.
      *
-     * @return the flow message factory or null if unknown
-     * @since 3.0.0
+     * @return the flow message factory, as an instance of {@link FlowMessageFactory}.
+     * @since 2.20
      */
-    default FlowMessageFactory getFlowMessageFactory() {
-        return null;
-    }
+    FlowMessageFactory getFlowMessageFactory();
 
     /**
      * Gets the logger name.

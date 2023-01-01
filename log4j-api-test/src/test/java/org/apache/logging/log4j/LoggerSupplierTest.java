@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
+
 import org.apache.logging.log4j.message.FormattedMessage;
 import org.apache.logging.log4j.message.JsonMessage;
 import org.apache.logging.log4j.message.LocalizedMessage;
@@ -34,10 +38,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -173,14 +173,14 @@ public class LoggerSupplierTest {
         String entry = results.get(0);
         assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter").contains("RUNNABLE", "Title of ...", getClass().getName());
     }
-    
+
     @BeforeEach
     public void setup() {
         results.clear();
         defaultLocale = Locale.getDefault(Locale.Category.FORMAT);
         Locale.setDefault(Locale.Category.FORMAT, java.util.Locale.US);
     }
-    
+
     @AfterEach
     public void tearDown() {
         Locale.setDefault(Locale.Category.FORMAT, defaultLocale);
