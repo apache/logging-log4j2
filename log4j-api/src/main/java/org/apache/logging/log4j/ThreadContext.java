@@ -188,9 +188,8 @@ public final class ThreadContext {
             return context;
         }
         final ThreadContext newContext = new ThreadContext();
-        return INSTANCE.compareAndExchangeRelease(null, newContext) == null
-                ? newContext
-                : (ThreadContext) INSTANCE.getAcquire();
+        final ThreadContext witness = (ThreadContext) INSTANCE.compareAndExchangeRelease(null, newContext);
+        return witness == null ? newContext : witness;
     }
 
     /**
