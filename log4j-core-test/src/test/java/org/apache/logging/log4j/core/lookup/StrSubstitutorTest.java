@@ -21,9 +21,12 @@ import java.util.Map;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,11 +48,20 @@ public class StrSubstitutorTest {
         System.clearProperty(TESTKEY);
     }
 
+    private InterpolatorFactory interpolatorFactory;
+
+    @BeforeEach
+    void setUp() {
+        final Injector injector = DI.createInjector();
+        injector.init();
+        interpolatorFactory = injector.getInstance(InterpolatorFactory.class);
+    }
+
     @Test
     public void testLookup() {
         final Map<String, String> map = new HashMap<>();
         map.put(TESTKEY, TESTVAL);
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         ThreadContext.put(TESTKEY, TESTVAL);
         String value = subst.replace("${TestKey}-${ctx:TestKey}-${sys:TestKey}");
@@ -164,7 +176,7 @@ public class StrSubstitutorTest {
     public void testDefault() {
         final Map<String, String> map = new HashMap<>();
         map.put(TESTKEY, TESTVAL);
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         ThreadContext.put(TESTKEY, TESTVAL);
         //String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
@@ -176,7 +188,7 @@ public class StrSubstitutorTest {
     public void testDefaultReferencesLookupValue() {
         final Map<String, String> map = new HashMap<>();
         map.put(TESTKEY, "${java:version}");
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(false);
         final String value = subst.replace("${sys:TestKey1:-${ctx:TestKey}}");
@@ -185,7 +197,7 @@ public class StrSubstitutorTest {
 
     @Test
     public void testInfiniteSubstitutionOnString() {
-        final StrLookup lookup = new Interpolator(new MapLookup(new HashMap<>()));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(new HashMap<>()));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(true);
         String infiniteSubstitution = "${${::-${::-$${::-j}}}}";
@@ -194,7 +206,7 @@ public class StrSubstitutorTest {
 
     @Test
     public void testInfiniteSubstitutionOnStringBuilder() {
-        final StrLookup lookup = new Interpolator(new MapLookup(new HashMap<>()));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(new HashMap<>()));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(true);
         String infiniteSubstitution = "${${::-${::-$${::-j}}}}";
@@ -206,7 +218,7 @@ public class StrSubstitutorTest {
         final Map<String, String> map = new HashMap<>();
         map.put("first", "${ctx:first}");
         map.put("second", "secondValue");
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(true);
         assertEquals("${ctx:first} and secondValue", subst.replace("${ctx:first} and ${ctx:second}"));
@@ -216,7 +228,7 @@ public class StrSubstitutorTest {
     public void testRecursiveWithDefault() {
         final Map<String, String> map = new HashMap<>();
         map.put("first", "${ctx:first:-default}");
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(true);
         assertEquals("default", subst.replace("${ctx:first}"));
@@ -226,7 +238,7 @@ public class StrSubstitutorTest {
     public void testRecursiveWithRecursiveDefault() {
         final Map<String, String> map = new HashMap<>();
         map.put("first", "${ctx:first:-${ctx:first}}");
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(true);
         assertEquals("${ctx:first}", subst.replace("${ctx:first}"));
@@ -236,7 +248,7 @@ public class StrSubstitutorTest {
     public void testNestedSelfReferenceWithRecursiveEvaluation() {
         final Map<String, String> map = new HashMap<>();
         map.put("first", "${${ctx:first}}");
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(true);
         assertEquals("${${ctx:first}}", subst.replace("${ctx:first}"));
@@ -246,7 +258,7 @@ public class StrSubstitutorTest {
     public void testRandomWithRecursiveDefault() {
         final Map<String, String> map = new HashMap<>();
         map.put("first", "${env:RANDOM:-${ctx:first}}");
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(true);
         assertEquals("${ctx:first}", subst.replace("${ctx:first}"));
@@ -257,7 +269,7 @@ public class StrSubstitutorTest {
         final Map<String, String> map = new HashMap<>();
         map.put("first", "${java:version}");
         map.put("second", "${java:runtime}");
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(false);
         assertEquals("${java:version}", subst.replace("${ctx:first:-${ctx:second}}"));
@@ -267,7 +279,7 @@ public class StrSubstitutorTest {
     public void testNoRecursiveEvaluationWithDepthOne() {
         final Map<String, String> map = new HashMap<>();
         map.put("first", "${java:version}");
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(false);
         assertEquals("${java:version}", subst.replace("${ctx:first}"));
@@ -277,7 +289,7 @@ public class StrSubstitutorTest {
     public void testLookupsNestedWithoutRecursiveEvaluation() {
         final Map<String, String> map = new HashMap<>();
         map.put("first", "${java:version}");
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(false);
         assertEquals("${java:version}", subst.replace("${${lower:C}t${lower:X}:first}"));
@@ -308,7 +320,7 @@ public class StrSubstitutorTest {
     public void testTopLevelLookupsWithoutRecursiveEvaluation() {
         final Map<String, String> map = new HashMap<>();
         map.put("key", "VaLuE");
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(false);
         assertEquals("value", subst.replace("${lower:${ctx:key}}"));
@@ -318,7 +330,7 @@ public class StrSubstitutorTest {
     public void testTopLevelLookupsWithoutRecursiveEvaluation_doubleLower() {
         final Map<String, String> map = new HashMap<>();
         map.put("key", "VaLuE");
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(false);
         assertEquals("value", subst.replace("${lower:${lower:${ctx:key}}}"));
@@ -328,7 +340,7 @@ public class StrSubstitutorTest {
     public void testTopLevelLookupsWithoutRecursiveEvaluationAndDefaultValueLookup() {
         final Map<String, String> map = new HashMap<>();
         map.put("key2", "TWO");
-        final StrLookup lookup = new Interpolator(new MapLookup(map));
+        final StrLookup lookup = interpolatorFactory.newInterpolator(new MapLookup(map));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(false);
         assertEquals("two", subst.replace("${lower:${ctx:key1:-${ctx:key2}}}"));
