@@ -19,8 +19,9 @@ package org.apache.logging.log4j.core.appender.rolling;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.appender.RollingRandomAccessFileAppender;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.NullConfiguration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ public class CronTriggeringPolicyTest {
 
     private static final String CRON_EXPRESSION = "0 0 0 * * ?";
 
-    private NullConfiguration configuration;
+    private Configuration configuration;
 
     // TODO Need a CleanRegexFiles("testcmd.\\.log\\..*");
     // @Rule
@@ -40,7 +41,7 @@ public class CronTriggeringPolicyTest {
 
     @BeforeEach
     public void before() {
-        configuration = new NullConfiguration();
+        configuration = new DefaultConfiguration();
     }
 
     private CronTriggeringPolicy createPolicy() {
