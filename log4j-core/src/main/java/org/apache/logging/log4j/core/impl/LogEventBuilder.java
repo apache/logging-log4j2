@@ -167,6 +167,9 @@ public class LogEventBuilder implements LogEvent, Builder<LogEvent> {
     }
 
     public ContextDataInjector getContextDataInjector() {
+        if (contextDataInjector == null) {
+            contextDataInjector = ThreadContextDataInjector.create(getContextDataFactory());
+        }
         return contextDataInjector;
     }
 
@@ -190,7 +193,7 @@ public class LogEventBuilder implements LogEvent, Builder<LogEvent> {
     @Override
     public StringMap getContextData() {
         if (contextData == null) {
-            contextData = getContextDataFactory().createContextData();
+            contextData = getContextDataInjector().injectContextData(null, getContextDataFactory().createContextData());
         }
         return contextData;
     }
@@ -201,12 +204,7 @@ public class LogEventBuilder implements LogEvent, Builder<LogEvent> {
     }
 
     public LogEventBuilder setContextData(final List<Property> properties) {
-        if (contextDataInjector != null) {
-            contextData = contextDataInjector.injectContextData(properties, getContextData());
-        } else {
-            contextData = getContextDataFactory().createContextData(properties.size());
-            properties.forEach(property -> contextData.putValue(property.getName(), property.getValue()));
-        }
+        contextData = getContextDataInjector().injectContextData(properties, getContextDataFactory().createContextData());
         return this;
     }
 
@@ -347,10 +345,10 @@ public class LogEventBuilder implements LogEvent, Builder<LogEvent> {
             } else {
                 final StringMap data = this.contextData;
                 if (data == null) {
-                    this.contextData = contextDataFactory.createContextData();
+                    this.contextData = getContextDataFactory().createContextData();
                 } else {
                     if (data.isFrozen()) {
-                        this.contextData = contextDataFactory.createContextData();
+                        this.contextData = getContextDataFactory().createContextData();
                     } else {
                         data.clear();
                     }

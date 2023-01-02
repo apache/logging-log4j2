@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.plugins.Inject;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class LogEventFactoryTest {
 
     @Test
-    @LoggerContextSource(value = "log4j2-config.xml")
+    @LoggerContextSource(value = "log4j2-config.xml", bootstrap = true)
     public void testEvent(@Named("List") final ListAppender app, final LoggerContext context) {
         final org.apache.logging.log4j.Logger logger = context.getLogger("org.apache.test.LogEventFactory");
         logger.error("error message");
@@ -54,6 +55,7 @@ public class LogEventFactoryTest {
         private final ContextDataInjector contextDataInjector;
         private final ContextDataFactory contextDataFactory;
 
+        @Inject
         public TestLogEventFactory(final ContextDataInjector contextDataInjector,
                                    final ContextDataFactory contextDataFactory) {
             this.contextDataInjector = contextDataInjector;
@@ -79,7 +81,7 @@ public class LogEventFactoryTest {
     }
 
     @Factory
-    public LogEventFactory logEventFactory(final ContextDataInjector injector, final ContextDataFactory contextDataFactory) {
-        return new TestLogEventFactory(injector, contextDataFactory);
+    public LogEventFactory logEventFactory(final TestLogEventFactory factory) {
+        return factory;
     }
 }
