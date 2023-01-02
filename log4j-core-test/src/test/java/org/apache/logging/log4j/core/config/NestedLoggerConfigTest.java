@@ -17,17 +17,13 @@
 package org.apache.logging.log4j.core.config;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
+import org.apache.logging.log4j.core.test.junit.LoggingTestContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import com.google.common.collect.ImmutableList;
 
 import static org.junit.Assert.assertEquals;
 
@@ -39,7 +35,7 @@ public class NestedLoggerConfigTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static List<String> data() throws IOException {
-        return ImmutableList.of("logger-config/LoggerConfig/", "logger-config/AsyncLoggerConfig/");
+        return List.of("logger-config/LoggerConfig/", "logger-config/AsyncLoggerConfig/");
     }
 
     private final String prefix;
@@ -49,31 +45,34 @@ public class NestedLoggerConfigTest {
     }
 
     @Test
-    public void testInheritParentDefaultLevel() throws IOException {
-        Configuration configuration = loadConfiguration(prefix + "default-level.xml");
+    public void testInheritParentDefaultLevel() {
+        final LoggingTestContext testContext = loadConfiguration(prefix + "default-level.xml");
+        Configuration configuration = testContext.getLoggerContext().getConfiguration();
         try {
             assertEquals(Level.ERROR, configuration.getLoggerConfig("com.foo").getLevel());
         } finally {
-            configuration.stop();
+            testContext.close();
         }
     }
 
     @Test
-    public void testInheritParentLevel() throws IOException {
-        Configuration configuration = loadConfiguration(prefix + "inherit-level.xml");
+    public void testInheritParentLevel() {
+        final LoggingTestContext testContext = loadConfiguration(prefix + "inherit-level.xml");
+        Configuration configuration = testContext.getLoggerContext().getConfiguration();
         try {
             assertEquals(Level.TRACE, configuration.getLoggerConfig("com.foo").getLevel());
         } finally {
-            configuration.stop();
+            testContext.close();
         }
     }
 
-    private Configuration loadConfiguration(String resourcePath) throws IOException {
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
-            Configuration configuration = new XmlConfiguration(LoggerContext.newBuilder().setName("test").get(), new ConfigurationSource(in));
-            configuration.initialize();
-            configuration.start();
-            return configuration;
-        }
+    private LoggingTestContext loadConfiguration(String resourcePath) {
+        final LoggingTestContext testContext = LoggingTestContext.configurer()
+                .setContextName("test")
+                .setConfigurationLocation("classpath:" + resourcePath)
+                .setClassLoader(getClass().getClassLoader())
+                .build();
+        testContext.init(null);
+        return testContext;
     }
 }
