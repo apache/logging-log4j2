@@ -22,6 +22,7 @@ module org.apache.logging.log4j.jpl {
     requires transitive org.apache.logging.log4j.core;
     requires org.apache.logging.log4j.core.test;
     requires org.hamcrest;
+    requires junit;
 
     provides java.lang.System.LoggerFinder with org.apache.logging.log4j.jpl.Log4jSystemLoggerFinder;
 }

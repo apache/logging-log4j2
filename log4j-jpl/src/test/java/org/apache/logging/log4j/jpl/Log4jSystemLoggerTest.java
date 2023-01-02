@@ -79,7 +79,7 @@ public class Log4jSystemLoggerTest {
         final List<LogEvent> events = eventAppender.getEvents();
         assertThat(events, hasSize(1));
         final LogEvent event = events.get(0);
-        assertThat(event, instanceOf(Log4jLogEvent.class));
+        assertThat(event, instanceOf(ImmutableLogEvent.class));
         assertEquals(Level.INFO, event.getLevel());
         assertEquals(LOGGER_NAME, event.getLoggerName());
         assertEquals("Informative message here.", event.getMessage().getFormattedMessage());
