@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,8 +28,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-
-import com.lmax.disruptor.dsl.Disruptor;
+import org.opentest4j.AssertionFailedError;
 
 /**
  * Tests queue full scenarios abstract superclass.
@@ -84,7 +82,7 @@ public abstract class QueueFullAbstractTest {
         }
     }
 
-    static Stack transform(final List<LogEvent> logEvents) {
+    static Stack<String> transform(final List<LogEvent> logEvents) {
         final List<String> filtered = new ArrayList<>(logEvents.size());
         for (LogEvent event : logEvents) {
             filtered.add(event.getMessage().getFormattedMessage());
@@ -97,33 +95,17 @@ public abstract class QueueFullAbstractTest {
 
     static long asyncRemainingCapacity(Logger logger) {
         if (logger instanceof AsyncLogger) {
-            try {
-                Field f = field(AsyncLogger.class, "loggerDisruptor");
-                return ((AsyncLoggerDisruptor) f.get(logger)).getDisruptor().getRingBuffer().remainingCapacity();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        } else {
-            LoggerConfig loggerConfig = ((org.apache.logging.log4j.core.Logger) logger).get();
-            if (loggerConfig instanceof AsyncLoggerConfig) {
-                try {
-                    Object delegate = field(AsyncLoggerConfig.class, "delegate").get(loggerConfig);
-                    return ((Disruptor) field(AsyncLoggerConfigDisruptor.class, "disruptor").get(delegate)).getRingBuffer().remainingCapacity();
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-            } else {
-                Appender async = loggerConfig.getAppenders().get("async");
-                if (async instanceof AsyncAppender) {
-                    return ((AsyncAppender) async).getQueueCapacity();
-                }
-            }
+            return ((AsyncLogger) logger).getAsyncLoggerDisruptor().getDisruptor().getRingBuffer().remainingCapacity();
         }
-        throw new IllegalStateException("Neither Async Loggers nor AsyncAppender are configured");
-    }
-    private static Field field(Class<?> c, String name) throws NoSuchFieldException {
-        Field f = c.getDeclaredField(name);
-        f.setAccessible(true);
-        return f;
+        LoggerConfig loggerConfig = ((org.apache.logging.log4j.core.Logger) logger).get();
+        if (loggerConfig instanceof AsyncLoggerConfig) {
+            final AsyncLoggerConfigDelegate delegate = ((AsyncLoggerConfig) loggerConfig).getAsyncLoggerConfigDelegate();
+            return ((AsyncLoggerConfigDisruptor) delegate).getDisruptor().getRingBuffer().remainingCapacity();
+        }
+        Appender async = loggerConfig.getAppenders().get("async");
+        if (async instanceof AsyncAppender) {
+            return ((AsyncAppender) async).getQueueCapacity();
+        }
+        throw new AssertionFailedError("Neither Async Loggers nor AsyncAppender are configured");
     }
 }

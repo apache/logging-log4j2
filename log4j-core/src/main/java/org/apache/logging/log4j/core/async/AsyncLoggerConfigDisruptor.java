@@ -192,6 +192,11 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
         return waitStrategy;
     }
 
+    // package-protected for testing
+    Disruptor<Log4jEventWrapper> getDisruptor() {
+        return disruptor;
+    }
+
     // called from AsyncLoggerConfig constructor
     @Override
     public void setLogEventFactory(final LogEventFactory logEventFactory) {
