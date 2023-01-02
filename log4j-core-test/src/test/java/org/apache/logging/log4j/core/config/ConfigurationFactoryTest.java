@@ -14,21 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,8 +24,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import static org.apache.logging.log4j.util.Unbox.box;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @CleanUpFiles({
         "target/test-xml.log",
@@ -62,32 +63,39 @@ class ConfigurationFactoryTest {
         final Configuration configuration = context.getConfiguration();
         final Map<String, Appender> appenders = configuration.getAppenders();
         // these used to be separate tests
-        assertAll(() -> assertNotNull(appenders),
-                () -> assertEquals(3, appenders.size()),
-                () -> assertNotNull(configuration.getLoggerContext()),
-                () -> assertEquals(configuration.getRootLogger(), configuration.getLoggerConfig(Strings.EMPTY)),
-                () -> assertThrows(NullPointerException.class, () -> configuration.getLoggerConfig(null)));
+        assertAll(
+                () -> assertThat(appenders)
+                        .isNotNull()
+                        .hasSize(3),
+                () -> assertThat(configuration.getLoggerContext())
+                        .isNotNull(),
+                () -> assertThat(configuration.getRootLogger())
+                        .isEqualTo(configuration.getLoggerConfig(Strings.EMPTY)),
+                () -> assertThatThrownBy(() -> configuration.getLoggerConfig(null))
+                        .isInstanceOf(NullPointerException.class)
+        );
 
         final Logger logger = context.getLogger(LOGGER_NAME);
-        assertEquals(Level.DEBUG, logger.getLevel());
+        assertThat(logger.getLevel()).isEqualTo(Level.DEBUG);
+        assertThat(logger.filterCount()).isEqualTo(1);
 
-        assertEquals(1, logger.filterCount());
         final Iterator<Filter> filterIterator = logger.getFilters();
-        assertTrue(filterIterator.hasNext());
-        assertTrue(filterIterator.next() instanceof ThreadContextMapFilter);
+        assertThat(filterIterator).hasNext();
+        assertThat(filterIterator.next()).isInstanceOf(ThreadContextMapFilter.class);
 
         final Appender appender = appenders.get(APPENDER_NAME);
-        assertTrue(appender instanceof ConsoleAppender);
-        assertEquals(APPENDER_NAME, appender.getName());
+        assertThat(appender).isInstanceOf(ConsoleAppender.class);
+        assertThat(appender.getName()).isEqualTo(APPENDER_NAME);
     }
 
     static void checkFileLogger(final LoggerContext context, final Path logFile) throws IOException {
         final long currentThreadId = Thread.currentThread().getId();
         final Logger logger = context.getLogger(FILE_LOGGER_NAME);
         logger.debug("Greetings from ConfigurationFactoryTest in thread#{}", box(currentThreadId));
+        assertThat(logFile).exists();
         final List<String> lines = Files.readAllLines(logFile);
-        assertEquals(1, lines.size());
-        assertTrue(lines.get(0).endsWith(Long.toString(currentThreadId)));
+        assertThat(lines).hasSize(1);
+        assertThat(lines.get(0)).endsWith(Long.toString(currentThreadId));
     }
 
     @Test

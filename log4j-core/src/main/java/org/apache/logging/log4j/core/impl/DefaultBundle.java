@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.ContextDataInjector;
@@ -224,8 +226,8 @@ public class DefaultBundle {
 
     @Factory
     @Ordered(Integer.MIN_VALUE)
-    public AsyncQueueFullPolicy asyncQueueFullPolicy(final AsyncQueueFullPolicyFactory factory) {
-        return factory.get();
+    public Supplier<AsyncQueueFullPolicy> defaultAsyncQueueFullPolicyFactory(final AsyncQueueFullPolicyFactory factory) {
+        return factory;
     }
 
     @Factory
@@ -236,7 +238,7 @@ public class DefaultBundle {
 
     @Factory
     @Ordered(Integer.MIN_VALUE)
-    public StrSubstitutor strSubstitutor(final InterpolatorFactory factory) {
+    public StrSubstitutor defaultStrSubstitutor(final InterpolatorFactory factory) {
         return new StrSubstitutor(factory.newInterpolator(null));
     }
 

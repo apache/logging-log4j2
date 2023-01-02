@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.LoggerContextNamingStrategy;
@@ -74,10 +73,9 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             final Injector loggerContextInjector = injector.copy();
             final String contextName = defaultContextName();
             loggerContextInjector.registerScope(ContextScoped.class, new SimpleScope("LoggerContext; name=" + contextName));
-            return LoggerContext.newBuilder()
-                    .setName(contextName)
-                    .setInjector(loggerContextInjector)
-                    .get();
+            final LoggerContext.Builder builder = LoggerContext.newBuilder().setName(contextName);
+            loggerContextInjector.injectMembers(builder);
+            return builder.get();
         });
         this.namingStrategy = namingStrategy;
     }
@@ -154,6 +152,31 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     @Override
+    public LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader,
+                                    final boolean currentContext, final URI configLocation) {
+        if (currentContext) {
+            final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
+            if (ctx != null) {
+                return ctx;
+            }
+            return getDefault();
+        }
+        if (loader != null) {
+            return locateContext(loader, null, configLocation, name);
+        }
+        final Class<?> clazz = StackLocatorUtil.getCallerClass(fqcn);
+        if (clazz != null) {
+            final ClassLoader classLoader = clazz.getClassLoader();
+            return locateContext(classLoader, null, configLocation, name);
+        }
+        final LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
+        if (lc != null) {
+            return lc;
+        }
+        return getDefault();
+    }
+
+    @Override
     public LoggerContext getContext(
             final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
             final boolean currentContext, final URI configLocation) {
@@ -166,37 +189,12 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
         }
         final String name = namingStrategy.getName(configLocation, loader, null, entry);
         if (loader != null) {
-            return locateContext(loader, entry, configLocation, name, null);
+            return locateContext(loader, entry, configLocation, name);
         }
         final Class<?> clazz = StackLocatorUtil.getCallerClass(fqcn);
         if (clazz != null) {
             final ClassLoader classLoader = clazz.getClassLoader();
-            return locateContext(classLoader, entry, configLocation, name, null);
-        }
-        final LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
-        if (lc != null) {
-            return lc;
-        }
-        return getDefault();
-    }
-
-    @Override
-    public LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader,
-                                    final boolean currentContext, final URI configLocation, final Consumer<Injector> configurer) {
-        if (currentContext) {
-            final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
-            if (ctx != null) {
-                return ctx;
-            }
-            return getDefault();
-        }
-        if (loader != null) {
-            return locateContext(loader, null, configLocation, name, configurer);
-        }
-        final Class<?> clazz = StackLocatorUtil.getCallerClass(fqcn);
-        if (clazz != null) {
-            final ClassLoader classLoader = clazz.getClassLoader();
-            return locateContext(classLoader, null, configLocation, name, configurer);
+            return locateContext(classLoader, entry, configLocation, name);
         }
         final LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
         if (lc != null) {
@@ -236,7 +234,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
 
     private LoggerContext locateContext(
             final ClassLoader loaderOrNull, final Map.Entry<String, Object> entry,
-            final URI configLocation, final String name, final Consumer<Injector> configurer) {
+            final URI configLocation, final String name) {
         // LOG4J2-477: class loader may be null
         final ClassLoader loader = loaderOrNull != null ? loaderOrNull : ClassLoader.getSystemClassLoader();
         final String key = toContextMapKey(loader);
@@ -274,7 +272,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
                     } */
                 }
             }
-            final LoggerContext ctx = createContext(key, name, configLocation, configurer);
+            final LoggerContext ctx = createContext(key, name, configLocation);
             if (entry != null) {
                 ctx.putObject(entry.getKey(), entry.getValue());
             }
@@ -301,7 +299,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             }
             return ctx;
         }
-        ctx = createContext(key, name, configLocation, configurer);
+        ctx = createContext(key, name, configLocation);
         if (entry != null) {
             ctx.putObject(entry.getKey(), entry.getValue());
         }
@@ -311,18 +309,15 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
         return ctx;
     }
 
-    protected LoggerContext createContext(final String key, final String name, final URI configLocation, final Consumer<Injector> configurer) {
+    protected LoggerContext createContext(final String key, final String name, final URI configLocation) {
         final Injector loggerContextInjector = injector.copy();
         loggerContextInjector.registerScope(ContextScoped.class, new SimpleScope("LoggerContext; name=" + name));
-        if (configurer != null) {
-            configurer.accept(loggerContextInjector);
-        }
-        return LoggerContext.newBuilder()
+        final LoggerContext.Builder builder = LoggerContext.newBuilder()
                 .setKey(key)
                 .setName(name)
-                .setConfigLocation(configLocation)
-                .setInjector(loggerContextInjector)
-                .get();
+                .setConfigLocation(configLocation);
+        loggerContextInjector.injectMembers(builder);
+        return builder.get();
     }
 
     protected String toContextMapKey(final ClassLoader loader) {

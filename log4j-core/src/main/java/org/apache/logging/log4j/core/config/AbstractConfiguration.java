@@ -154,6 +154,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
         injector = loggerContext.getInjector().copy();
         injector.registerScope(ConfigurationScoped.class, new SimpleScope(() -> "ConfigurationScoped; name=" + getName()));
+        injector.registerBinding(KEY, () -> this);
         propertyResolver = loggerContext.getPropertyResolver();
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         interpolatorFactory = injector.getInstance(InterpolatorFactory.class);
@@ -223,8 +224,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // lazily instantiate only when requested by AsyncLoggers:
         // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
         if (asyncLoggerConfigDisruptor == null) {
-            asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor(propertyResolver,
-                    injector.getInstance(ClassFactory.class), injector, asyncWaitStrategyFactory);
+            asyncLoggerConfigDisruptor = injector.getInstance(AsyncLoggerConfigDisruptor.class);
         }
         return asyncLoggerConfigDisruptor;
     }

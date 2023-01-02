@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.Collection;
@@ -51,6 +50,7 @@ import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.plugins.ContextScoped;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
@@ -62,6 +62,7 @@ import org.apache.logging.log4j.spi.LoggerContextShutdownEnabled;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Terminable;
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.ContextPropertyResolver;
 import org.apache.logging.log4j.util.PropertyResolver;
 
@@ -80,7 +81,7 @@ public class LoggerContext extends AbstractLifeCycle
         return new Builder();
     }
 
-    public static class Builder implements Supplier<LoggerContext> {
+    public static class GenericBuilder<B extends GenericBuilder<B>> {
         private String name;
         private String key;
         private Object externalContext;
@@ -90,49 +91,53 @@ public class LoggerContext extends AbstractLifeCycle
         private MessageFactory messageFactory;
         private FlowMessageFactory flowMessageFactory;
 
+        public B asBuilder() {
+            return Cast.cast(this);
+        }
+
         public String getName() {
             return name;
         }
 
-        public Builder setName(final String name) {
+        public B setName(final String name) {
             this.name = Objects.requireNonNull(name);
-            return this;
+            return asBuilder();
         }
 
         public String getKey() {
             return key;
         }
 
-        public Builder setKey(final String key) {
+        public B setKey(final String key) {
             this.key = key;
-            return this;
+            return asBuilder();
         }
 
         public Object getExternalContext() {
             return externalContext;
         }
 
-        public Builder setExternalContext(final Object externalContext) {
+        public B setExternalContext(final Object externalContext) {
             this.externalContext = Objects.requireNonNull(externalContext);
-            return this;
+            return asBuilder();
         }
 
         public URI getConfigLocation() {
             return configLocation;
         }
 
-        public Builder setConfigLocation(final String configLocation) {
+        public B setConfigLocation(final String configLocation) {
             if (configLocation != null) {
-                this.configLocation = new File(configLocation).toURI();
+                this.configLocation = NetUtils.toURI(configLocation);
             }
-            return this;
+            return asBuilder();
         }
 
-        public Builder setConfigLocation(final URI configLocation) {
+        public B setConfigLocation(final URI configLocation) {
             if (configLocation != null) {
                 this.configLocation = configLocation;
             }
-            return this;
+            return asBuilder();
         }
 
         /**
@@ -153,11 +158,12 @@ public class LoggerContext extends AbstractLifeCycle
         /**
          * Sets the Injector to use in the built LoggerContext.
          * @param injector the initialized injector to use
-         * @return
+         * @return this
          */
-        public Builder setInjector(final Injector injector) {
+        @Inject
+        public B setInjector(final Injector injector) {
             this.injector = injector;
-            return this;
+            return asBuilder();
         }
 
         /**
@@ -177,9 +183,10 @@ public class LoggerContext extends AbstractLifeCycle
          * a {@link ContextPropertyResolver} will be created using {@link #getName()} as the context name and
          * the {@linkplain LoggingSystem#getPropertyResolver() default property resolver} as the delegate.
          */
-        public Builder setPropertyResolver(final PropertyResolver propertyResolver) {
+        @Inject
+        public B setPropertyResolver(final PropertyResolver propertyResolver) {
             this.propertyResolver = propertyResolver;
-            return this;
+            return asBuilder();
         }
 
         public MessageFactory getMessageFactory() {
@@ -189,9 +196,9 @@ public class LoggerContext extends AbstractLifeCycle
             return messageFactory;
         }
 
-        public Builder setMessageFactory(final MessageFactory messageFactory) {
+        public B setMessageFactory(final MessageFactory messageFactory) {
             this.messageFactory = messageFactory;
-            return this;
+            return asBuilder();
         }
 
         public FlowMessageFactory getFlowMessageFactory() {
@@ -201,11 +208,13 @@ public class LoggerContext extends AbstractLifeCycle
             return flowMessageFactory;
         }
 
-        public Builder setFlowMessageFactory(final FlowMessageFactory flowMessageFactory) {
+        public B setFlowMessageFactory(final FlowMessageFactory flowMessageFactory) {
             this.flowMessageFactory = flowMessageFactory;
-            return this;
+            return asBuilder();
         }
+    }
 
+    public static class Builder extends GenericBuilder<Builder> implements Supplier<LoggerContext> {
         @Override
         public LoggerContext get() {
             return new LoggerContext(getName(), getKey(), getExternalContext(), getConfigLocation(), getInjector(),
@@ -259,9 +268,7 @@ public class LoggerContext extends AbstractLifeCycle
         var ref = new WeakReference<>(this);
         injector.registerBinding(KEY, ref::get)
                 .registerBinding(Key.forClass(PropertyResolver.class), this::getPropertyResolver)
-                .registerBinding(Configuration.KEY, this::getConfiguration)
-                .registerBinding(Key.forClass(MessageFactory.class), this::getMessageFactory)
-                .registerBinding(Key.forClass(FlowMessageFactory.class), this::getFlowMessageFactory);
+                .registerBinding(Configuration.KEY, this::getConfiguration);
         this.configuration = new DefaultConfiguration(this);
         this.nullConfiguration = new NullConfiguration(this);
     }
@@ -764,6 +771,7 @@ public class LoggerContext extends AbstractLifeCycle
 
             final ConcurrentMap<String, String> map = config.getComponent(Configuration.CONTEXT_PROPERTIES);
 
+            // TODO(ms): adding the hostName variable should be optional
             try { // LOG4J2-719 network access may throw android.os.NetworkOnMainThreadException
                 // LOG4J2-2808 don't block unless necessary
                 map.computeIfAbsent("hostName", s -> NetUtils.getLocalHostname());

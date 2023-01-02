@@ -20,10 +20,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.spi.ClassFactory;
 import org.apache.logging.log4j.spi.InstanceFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.InternalApi;
 import org.apache.logging.log4j.util.PropertyResolver;
 
 import com.lmax.disruptor.ExceptionHandler;
@@ -34,7 +36,8 @@ import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 /**
  * Utility methods for getting Disruptor related configuration.
  */
-class DisruptorConfiguration {
+@InternalApi
+public class DisruptorConfiguration {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int RINGBUFFER_MIN_SIZE = 128;
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
@@ -44,6 +47,7 @@ class DisruptorConfiguration {
     private final ClassFactory classFactory;
     private final InstanceFactory instanceFactory;
 
+    @Inject
     DisruptorConfiguration(final PropertyResolver resolver, final ClassFactory classFactory, final InstanceFactory instanceFactory) {
         propertyResolver = resolver;
         this.classFactory = classFactory;
@@ -87,6 +91,7 @@ class DisruptorConfiguration {
                 && !(Thread.currentThread() instanceof Log4jThread);
     }
 
+    // TODO(ms): default bindings for LMAX classes should go in a conditionally-loaded bundle class similar to ConditionalOnClass
     ExceptionHandler<RingBufferLogEvent> getAsyncLoggerExceptionHandler() {
         return propertyResolver.getString(Log4jProperties.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME)
                 .flatMap(className -> classFactory.tryGetClass(className, ExceptionHandler.class))

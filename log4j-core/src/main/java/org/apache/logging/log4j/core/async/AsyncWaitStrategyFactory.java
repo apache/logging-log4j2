@@ -14,8 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.async;
+
+import org.apache.logging.log4j.plugins.di.Key;
 
 import com.lmax.disruptor.WaitStrategy;
 
@@ -26,6 +27,8 @@ import com.lmax.disruptor.WaitStrategy;
  * @since 2.17.3
  */
 public interface AsyncWaitStrategyFactory {
+    Key<AsyncWaitStrategyFactory> KEY = new Key<>() {};
+
     /**
      * Creates and returns a non-null implementation of the LMAX Disruptor's WaitStrategy interface.
      * This WaitStrategy will be used by Log4j Async Loggers and Async LoggerConfigs.

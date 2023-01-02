@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.MessageFactory;
@@ -32,8 +34,13 @@ public class NullLoggerContext extends LoggerContext {
     }
 
     public static NullLoggerContext getInstance() {
-        final Builder builder = newBuilder();
-        return new NullLoggerContext(builder.getInjector(), builder.getPropertyResolver(),
-                builder.getMessageFactory(), builder.getFlowMessageFactory());
+        return new Builder().get();
+    }
+
+    private static class Builder extends GenericBuilder<Builder> implements Supplier<NullLoggerContext> {
+        @Override
+        public NullLoggerContext get() {
+            return new NullLoggerContext(getInjector(), getPropertyResolver(), getMessageFactory(), getFlowMessageFactory());
+        }
     }
 }

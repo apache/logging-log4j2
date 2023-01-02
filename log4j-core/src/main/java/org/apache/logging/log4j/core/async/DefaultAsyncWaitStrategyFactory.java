@@ -66,7 +66,6 @@ class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory {
                 LOGGER.trace("DefaultAsyncWaitStrategyFactory creating BusySpinWaitStrategy");
                 return new BusySpinWaitStrategy();
             case "TIMEOUT":
-                return createDefaultWaitStrategy(propertyName);
             default:
                 return createDefaultWaitStrategy(propertyName);
         }
@@ -80,9 +79,9 @@ class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory {
     }
 
     private static String getFullPropertyKey(final String strategyKey, final String additionalKey) {
-        if (strategyKey.startsWith("log4j2.*.AsyncLogger.")) {
+        if (strategyKey.startsWith("AsyncLogger.")) {
             return "log4j2.*.AsyncLogger." + additionalKey;
-        } else if (strategyKey.startsWith("log4j2.*.AsyncLoggerConfig.")) {
+        } else if (strategyKey.startsWith("AsyncLoggerConfig.")) {
             return "log4j2.*.AsyncLoggerConfig." + additionalKey;
         }
         return strategyKey + additionalKey;

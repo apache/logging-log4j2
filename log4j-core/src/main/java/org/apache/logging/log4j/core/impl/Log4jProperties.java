@@ -28,16 +28,11 @@ public class Log4jProperties {
     @Deprecated // should use DI bindings
     public static final String CONTEXT_SELECTOR_CLASS_NAME = "log4j2.*.LoggerContext.contextSelector";
 
-    @Deprecated // should use DI bindings
-    public static final String LOG_EVENT_FACTORY_CLASS_NAME = "log4j2.*.LoggerContext.logEventFactory";
-
     public static final String STATUS_DEFAULT_LEVEL = "log4j2.*.StatusLogger.defaultStatusLevel";
 
     public static final String CONFIG_DEFAULT_LEVEL = "log4j2.*.Configuration.level";
     @Deprecated // should use DI bindings
     public static final String CONFIG_CLOCK = "log4j2.*.Configuration.clock";
-    @Deprecated // should use DI bindings
-    public static final String CONFIG_MERGE_STRATEGY_CLASS_NAME = "log4j2.*.Configuration.mergeStrategy";
     @Deprecated // should use DI bindings
     public static final String CONFIG_RELIABILITY_STRATEGY = "log4j2.*.Configuration.reliabilityStrategy";
     public static final String CONFIG_RELIABILITY_STRATEGY_AWAIT_UNCONDITIONALLY_MILLIS = "log4j2.*.Configuration.reliabilityStrategyAwaitUnconditionallyMillis";

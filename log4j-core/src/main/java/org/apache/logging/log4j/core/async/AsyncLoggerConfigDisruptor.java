@@ -16,22 +16,13 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.Optional;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
-import com.lmax.disruptor.EventFactory;
-import com.lmax.disruptor.EventTranslatorTwoArg;
-import com.lmax.disruptor.ExceptionHandler;
-import com.lmax.disruptor.RingBuffer;
-import com.lmax.disruptor.Sequence;
-import com.lmax.disruptor.SequenceReportingEventHandler;
-import com.lmax.disruptor.TimeoutException;
-import com.lmax.disruptor.WaitStrategy;
-import com.lmax.disruptor.dsl.Disruptor;
-import com.lmax.disruptor.dsl.ProducerType;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
@@ -44,9 +35,18 @@ import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.ReusableMessage;
-import org.apache.logging.log4j.spi.ClassFactory;
-import org.apache.logging.log4j.spi.InstanceFactory;
-import org.apache.logging.log4j.util.PropertyResolver;
+import org.apache.logging.log4j.plugins.Inject;
+
+import com.lmax.disruptor.EventFactory;
+import com.lmax.disruptor.EventTranslatorTwoArg;
+import com.lmax.disruptor.ExceptionHandler;
+import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.Sequence;
+import com.lmax.disruptor.SequenceReportingEventHandler;
+import com.lmax.disruptor.TimeoutException;
+import com.lmax.disruptor.WaitStrategy;
+import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.dsl.ProducerType;
 
 /**
  * Helper class decoupling the {@code AsyncLoggerConfig} class from the LMAX Disruptor library.
@@ -178,13 +178,13 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
 
     private final Lock queueFullEnqueueLock = new ReentrantLock();
 
-    public AsyncLoggerConfigDisruptor(final PropertyResolver propertyResolver,
-                                      final ClassFactory classFactory,
-                                      final InstanceFactory instanceFactory,
-                                      final AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
-        this.configuration = new DisruptorConfiguration(propertyResolver, classFactory, instanceFactory);
-        this.asyncQueueFullPolicySupplier = new AsyncQueueFullPolicyFactory(propertyResolver, classFactory, instanceFactory);
-        this.asyncWaitStrategyFactory = asyncWaitStrategyFactory; // may be null
+    @Inject
+    public AsyncLoggerConfigDisruptor(final DisruptorConfiguration configuration,
+                                      final Supplier<AsyncQueueFullPolicy> asyncQueueFullPolicySupplier,
+                                      final Optional<AsyncWaitStrategyFactory> optionalAsyncWaitStrategyFactory) {
+        this.configuration = configuration;
+        this.asyncQueueFullPolicySupplier = asyncQueueFullPolicySupplier;
+        this.asyncWaitStrategyFactory = optionalAsyncWaitStrategyFactory.orElse(null);
     }
 
     // package-protected for testing

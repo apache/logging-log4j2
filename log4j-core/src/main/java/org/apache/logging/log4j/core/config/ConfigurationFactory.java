@@ -82,8 +82,6 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     public static final Key<ConfigurationFactory> KEY = new Key<>() {};
 
-    public static final Key<PluginNamespace> PLUGIN_CATEGORY_KEY = new @Namespace(NAMESPACE) Key<>() {};
-
     /**
      * Allows subclasses access to the status logger without creating another instance.
      */

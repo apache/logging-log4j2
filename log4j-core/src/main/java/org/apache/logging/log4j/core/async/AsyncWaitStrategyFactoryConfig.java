@@ -16,16 +16,20 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.spi.ClassFactory;
+import org.apache.logging.log4j.spi.InstanceFactory;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.Objects;
+import org.apache.logging.log4j.util.Cast;
 
 /**
  * This class allows users to configure the factory used to create
@@ -42,9 +46,14 @@ public class AsyncWaitStrategyFactoryConfig {
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
     private final String factoryClassName;
+    private final ClassFactory classFactory;
+    private final InstanceFactory instanceFactory;
 
-    public AsyncWaitStrategyFactoryConfig(final String factoryClassName) {
+    public AsyncWaitStrategyFactoryConfig(final String factoryClassName, final ClassFactory classFactory,
+                                          final InstanceFactory instanceFactory) {
         this.factoryClassName = Objects.requireNonNull(factoryClassName, "factoryClassName");
+        this.classFactory = classFactory;
+        this.instanceFactory = instanceFactory;
     }
 
     @PluginFactory
@@ -59,45 +68,65 @@ public class AsyncWaitStrategyFactoryConfig {
      *            The type to build
      */
     public static class Builder<B extends AsyncWaitStrategyFactoryConfig.Builder<B>>
-            implements org.apache.logging.log4j.core.util.Builder<AsyncWaitStrategyFactoryConfig> {
+            implements org.apache.logging.log4j.plugins.util.Builder<AsyncWaitStrategyFactoryConfig> {
 
-        @PluginBuilderAttribute("class")
-        @Required(message = "AsyncWaitStrategyFactory cannot be configured without a factory class name")
+
         private String factoryClassName;
+        private ClassFactory classFactory;
+        private InstanceFactory instanceFactory;
 
         public String getFactoryClassName() {
             return factoryClassName;
         }
 
-        public B withFactoryClassName(String className) {
+        @Inject
+        public B setFactoryClassName(
+                @PluginBuilderAttribute("class")
+                @Required(message = "AsyncWaitStrategyFactory cannot be configured without a factory class name")
+                String className) {
             this.factoryClassName = className;
+            return asBuilder();
+        }
+
+        public ClassFactory getClassFactory() {
+            if (classFactory == null) {
+                classFactory = LoggingSystem.getInstance().getClassFactory();
+            }
+            return classFactory;
+        }
+
+        @Inject
+        public B setClassFactory(final ClassFactory classFactory) {
+            this.classFactory = classFactory;
+            return asBuilder();
+        }
+
+        public InstanceFactory getInstanceFactory() {
+            if (instanceFactory == null) {
+                return LoggingSystem.getInstance().getInstanceFactory();
+            }
+            return instanceFactory;
+        }
+
+        @Inject
+        public B setInstanceFactory(final InstanceFactory instanceFactory) {
+            this.instanceFactory = instanceFactory;
             return asBuilder();
         }
 
         @Override
         public AsyncWaitStrategyFactoryConfig build() {
-            return new AsyncWaitStrategyFactoryConfig(factoryClassName);
+            return new AsyncWaitStrategyFactoryConfig(getFactoryClassName(), getClassFactory(), getInstanceFactory());
         }
 
-        @SuppressWarnings("unchecked")
         public B asBuilder() {
-            return (B) this;
+            return Cast.cast(this);
         }
     }
 
     public AsyncWaitStrategyFactory createWaitStrategyFactory() {
-        try {
-            @SuppressWarnings("unchecked")
-            final Class<? extends AsyncWaitStrategyFactory> klass = (Class<? extends AsyncWaitStrategyFactory>) Loader.loadClass(factoryClassName);
-            if (AsyncWaitStrategyFactory.class.isAssignableFrom(klass)) {
-                return klass.newInstance();
-            }
-            LOGGER.error("Ignoring factory '{}': it is not assignable to AsyncWaitStrategyFactory", factoryClassName);
-            return null;
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            LOGGER.info("Invalid implementation class name value: error creating AsyncWaitStrategyFactory {}: {}", factoryClassName, e);
-            return null;
-        }
-
+        return classFactory.tryGetClass(factoryClassName, AsyncWaitStrategyFactory.class)
+                .flatMap(instanceFactory::tryGetInstance)
+                .orElse(null);
     }
 }

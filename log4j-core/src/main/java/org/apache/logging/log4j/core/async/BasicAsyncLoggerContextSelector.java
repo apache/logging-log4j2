@@ -42,7 +42,7 @@ public class BasicAsyncLoggerContextSelector extends BasicContextSelector {
     protected LoggerContext createContext() {
         final Injector loggerContextInjector = injector.copy();
         loggerContextInjector.registerScope(ContextScoped.class, new SimpleScope("LoggerContext; name=AsyncDefault"));
-        return AsyncLoggerContext.newBuilder()
+        return AsyncLoggerContext.newAsyncBuilder()
                 .setName("AsyncDefault")
                 .setInjector(loggerContextInjector)
                 .setPropertyResolver(propertyResolver)

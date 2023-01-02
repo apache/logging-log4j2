@@ -34,7 +34,7 @@ public class AsyncLoggerContextTest {
 
     @BeforeEach
     void setUp() {
-        asyncLoggerContext = AsyncLoggerContext.newBuilder().setName("a").get();
+        asyncLoggerContext = AsyncLoggerContext.newAsyncBuilder().setName("a").get();
         loggerContext = LoggerContext.newBuilder().setName("a").get();
     }
 

@@ -22,7 +22,6 @@ import java.io.FileReader;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +31,6 @@ import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.plugins.Singleton;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -74,7 +72,7 @@ public class AsyncLoggerCustomSelectorLocationTest {
 
     @Singleton
     public static final class CustomAsyncContextSelector implements ContextSelector {
-        private static final LoggerContext CONTEXT = AsyncLoggerContext.newBuilder().setName("AsyncDefault").get();
+        private static final LoggerContext CONTEXT = AsyncLoggerContext.newAsyncBuilder().setName("AsyncDefault").get();
 
         @Override
         public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
@@ -87,8 +85,7 @@ public class AsyncLoggerCustomSelectorLocationTest {
         }
 
         @Override
-        public LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader, final boolean currentContext,
-                                        final URI configLocation, final Consumer<Injector> configurer) {
+        public LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
             return CONTEXT;
         }
 
