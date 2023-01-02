@@ -125,10 +125,8 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
     protected LoggerContext createContext() {
         final Injector loggerContextInjector = injector.copy();
         loggerContextInjector.registerScope(ContextScoped.class, new SimpleScope("LoggerContext; name=Default"));
-        return LoggerContext.newBuilder()
-                .setName("Default")
-                .setInjector(loggerContextInjector)
-                .setPropertyResolver(propertyResolver)
-                .get();
+        final LoggerContext.Builder builder = LoggerContext.newBuilder().setName("Default");
+        loggerContextInjector.injectMembers(builder);
+        return builder.get();
     }
 }
