@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.Level;
@@ -29,7 +24,6 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.ThrowableProxy;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.DefaultContextDataFactory;
 import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
@@ -40,7 +34,6 @@ import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
-import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -147,46 +140,6 @@ public class RingBufferLogEventTest {
                 nanoClock, contextDataFactory, contextDataInjector);
         assertEquals(123, evt.getTimeMillis());
         assertEquals(456, evt.getInstant().getNanoOfMillisecond());
-    }
-
-    @SuppressWarnings("BanSerializableRead")
-    @Test
-    public void testSerializationDeserialization() throws IOException, ClassNotFoundException {
-        final RingBufferLogEvent evt = new RingBufferLogEvent();
-        final String loggerName = "logger.name";
-        final Marker marker = null;
-        final String fqcn = "f.q.c.n";
-        final Level level = Level.TRACE;
-        final Message data = new SimpleMessage("message");
-        final Throwable t = new InternalError("not a real error");
-        final ContextStack contextStack = null;
-        final String threadName = "main";
-        final StackTraceElement location = null;
-        evt.setValues(null, loggerName, marker, fqcn, level, data, t, (StringMap) evt.getContextData(),
-                contextStack, -1, threadName, -1, location,
-                new FixedPreciseClock(12345, 678),
-                nanoClock, contextDataFactory, contextDataInjector);
-        ((StringMap) evt.getContextData()).putValue("key", "value");
-
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final ObjectOutputStream out = new ObjectOutputStream(baos);
-        out.writeObject(evt);
-
-        final ObjectInputStream in = new FilteredObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        final RingBufferLogEvent other = (RingBufferLogEvent) in.readObject();
-        assertEquals(loggerName, other.getLoggerName());
-        assertEquals(marker, other.getMarker());
-        assertEquals(fqcn, other.getLoggerFqcn());
-        assertEquals(level, other.getLevel());
-        assertEquals(data, other.getMessage());
-        assertNull(other.getThrown(), "null after serialization");
-        assertEquals(new ThrowableProxy(t), other.getThrownProxy());
-        assertEquals(evt.getContextData(), other.getContextData());
-        assertEquals(contextStack, other.getContextStack());
-        assertEquals(threadName, other.getThreadName());
-        assertEquals(location, other.getSource());
-        assertEquals(12345, other.getTimeMillis());
-        assertEquals(678, other.getInstant().getNanoOfMillisecond());
     }
 
     @Test
