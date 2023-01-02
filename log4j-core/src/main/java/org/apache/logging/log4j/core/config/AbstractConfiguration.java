@@ -78,7 +78,6 @@ import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.di.SimpleScope;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.spi.ClassFactory;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.PropertyResolver;
@@ -154,7 +153,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
         injector = loggerContext.getInjector().copy();
         injector.registerScope(ConfigurationScoped.class, new SimpleScope(() -> "ConfigurationScoped; name=" + getName()));
-        injector.registerBinding(KEY, () -> this);
         propertyResolver = loggerContext.getPropertyResolver();
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         interpolatorFactory = injector.getInstance(InterpolatorFactory.class);
