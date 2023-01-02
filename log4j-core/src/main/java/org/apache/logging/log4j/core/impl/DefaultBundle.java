@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.util.function.Supplier;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicyFactory;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.DefaultConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultLoggerContextNamingStrategy;
 import org.apache.logging.log4j.core.config.LoggerContextNamingStrategy;
 import org.apache.logging.log4j.core.config.composite.DefaultMergeStrategy;
@@ -74,6 +74,9 @@ import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
  * @see StrSubstitutor
  * @see AsyncQueueFullPolicy
  * @see AuthorizationProvider
+ * @see RecyclerFactory
+ * @see RecyclerFactories
+ * @see ConfigurationFactory
  */
 public class DefaultBundle {
     private static final Logger LOGGER = StatusLogger.getLogger();
@@ -226,8 +229,8 @@ public class DefaultBundle {
 
     @Factory
     @Ordered(Integer.MIN_VALUE)
-    public Supplier<AsyncQueueFullPolicy> defaultAsyncQueueFullPolicyFactory(final AsyncQueueFullPolicyFactory factory) {
-        return factory;
+    public AsyncQueueFullPolicy defaultAsyncQueueFullPolicy(final AsyncQueueFullPolicyFactory factory) {
+        return factory.get();
     }
 
     @Factory
@@ -246,6 +249,12 @@ public class DefaultBundle {
     @Ordered(Integer.MIN_VALUE)
     public RecyclerFactory defaultRecyclerFactory() {
         return RecyclerFactories.ofSpec(null);
+    }
+
+    @Factory
+    @Ordered(Integer.MIN_VALUE)
+    public ConfigurationFactory defaultConfigurationFactory(final DefaultConfigurationFactory factory) {
+        return factory;
     }
 
     private <T> T newInstanceOfProperty(final String propertyName, final Class<T> supertype) throws ClassNotFoundException {

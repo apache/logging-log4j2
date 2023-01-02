@@ -912,7 +912,7 @@ public class LoggerContext extends AbstractLifeCycle
     public synchronized void onChange(final Reconfigurable reconfigurable) {
         final long startMillis = System.currentTimeMillis();
         LOGGER.debug("Reconfiguration started for context {} ({})", contextName, this);
-        initApiModule();
+        ThreadContext.init();
         final Configuration newConfig = reconfigurable.reconfigure();
         if (newConfig != null) {
             setConfiguration(newConfig);
@@ -927,10 +927,6 @@ public class LoggerContext extends AbstractLifeCycle
     @Override
     public String toString() {
         return "LoggerContext[" + contextName + "]";
-    }
-
-    private void initApiModule() {
-        ThreadContext.init();
     }
 
     // LOG4J2-151: changed visibility from private to protected

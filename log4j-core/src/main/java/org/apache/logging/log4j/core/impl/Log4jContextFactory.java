@@ -28,7 +28,7 @@ import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationProvider;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.LoggerContextNamingStrategy;
@@ -142,7 +142,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (source != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final Configuration config = ctx.getInstance(ConfigurationProvider.class).getConfiguration(source);
+                final Configuration config = ctx.getInstance(ConfigurationFactory.class).getConfiguration(ctx, source);
                 LOGGER.debug("Starting {} from configuration {}", ctx, source);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
@@ -205,7 +205,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
             if (configLocation != null || name != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
                 final Configuration config =
-                        ctx.getInstance(ConfigurationProvider.class).getConfiguration(name, configLocation);
+                        ctx.getInstance(ConfigurationFactory.class).getConfiguration(ctx, name, configLocation);
                 LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
@@ -226,7 +226,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
             if (configLocation != null || name != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
                 final Configuration config =
-                        ctx.getInstance(ConfigurationProvider.class).getConfiguration(name, configLocation, loader);
+                        ctx.getInstance(ConfigurationFactory.class).getConfiguration(ctx, name, configLocation, loader);
                 LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
@@ -250,8 +250,8 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 if (configurer != null) {
                     configurer.accept(injector);
                 }
-                final ConfigurationProvider provider = injector.getInstance(ConfigurationProvider.class);
-                final Configuration config = provider.getConfiguration(name, configLocation, loader);
+                final Configuration config =
+                        ctx.getInstance(ConfigurationFactory.class).getConfiguration(ctx, name, configLocation, loader);
                 LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();
@@ -278,7 +278,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 final List<AbstractConfiguration> configurations = new ArrayList<>(configLocations.size());
                 for (final URI configLocation : configLocations) {
                     final Configuration currentReadConfiguration =
-                            ctx.getInstance(ConfigurationProvider.class).getConfiguration(name, configLocation);
+                            ctx.getInstance(ConfigurationFactory.class).getConfiguration(ctx, name, configLocation);
                     if (currentReadConfiguration != null) {
                         if (currentReadConfiguration instanceof DefaultConfiguration) {
                             LOGGER.warn("Unable to locate configuration {}, ignoring", configLocation.toString());

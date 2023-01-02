@@ -39,7 +39,8 @@ import org.apache.logging.log4j.util.PropertyResolver;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Provides configuration instances for configuration sources using an appropriate {@link ConfigurationFactory}.
+ * Provides configuration instances for configuration sources using an appropriate {@link ConfigurationFactory} plugin.
+ * Useful as a basis for a dynamic implementation of ConfigurationFactory.
  *
  * @since 3.0.0
  */
@@ -110,7 +111,7 @@ public class ConfigurationProvider {
                 final String[] types = factory.getSupportedTypes();
                 if (types != null) {
                     for (final String type : types) {
-                        if (type.equals(ALL_TYPES)) {
+                        if (type.equals(ALL_TYPES) || configLocationStr != null && configLocationStr.endsWith(type)) {
                             final Configuration config = factory.getConfiguration(loggerContext, name, null);
                             if (config != null) {
                                 return config;
