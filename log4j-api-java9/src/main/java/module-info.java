@@ -20,6 +20,7 @@ import org.apache.logging.log4j.util.SystemPropertiesPropertySource;
 
 module org.apache.logging.log4j {
     requires java.base;
+    requires static java.sql;
 
     exports org.apache.logging.log4j;
     exports org.apache.logging.log4j.message;

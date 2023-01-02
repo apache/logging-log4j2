@@ -30,6 +30,9 @@
          - "remove" - Removed
     -->
     <release version="2.19.1" date="TBD" description="GA Release 2.19.1">
+      <action issue="LOG4J2-2297" dev="rgoers" type="fix">
+        Allow java.sql.Time objects to format properly in MapMessages.
+      </action>
       <action issue="LOG4J2-2785" dev="rgoers" type="add" due-to="Markus Spann">
         Pattern Layout to abbreviate the name of all logger components except the 2 rightmost.
       </action>

@@ -16,11 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.sql.Time;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,7 +62,8 @@ final class ParameterFormatter {
     private static final char DELIM_STOP = '}';
     private static final char ESCAPE_CHAR = '\\';
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+            .withZone(ZoneId.systemDefault());
 
     private ParameterFormatter() {
     }
@@ -489,10 +486,10 @@ final class ParameterFormatter {
     }
 
     private static boolean appendDate(final Object o, final StringBuilder str) {
-        if (o instanceof Time || !(o instanceof Date)) {
+        if (!(o instanceof Date)) {
             return false;
         }
-        str.append(ZonedDateTime.ofInstant(((Date) o).toInstant(), ZoneId.systemDefault()).format(DATE_FORMATTER));
+        str.append(DATE_FORMATTER.format(((Date) o).toInstant()));
         return true;
     }
 
