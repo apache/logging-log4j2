@@ -16,34 +16,28 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.impl.Log4jContextFactory;
+import java.util.function.Consumer;
+
 import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-public class ContextSelectorCallback implements BeforeAllCallback, AfterAllCallback {
+class ContextSelectorCallback implements BeforeAllCallback {
     @Override
     public void beforeAll(final ExtensionContext context) throws Exception {
-        // FIXME: should use LoggerContextTestHolder
         AnnotationSupport.findAnnotation(context.getTestClass(), ContextSelectorType.class)
                 .map(ContextSelectorType::value)
                 .ifPresent(contextSelectorClass -> {
-                    final Injector injector = DI.createInjector();
-                    injector.registerBinding(ContextSelector.KEY, injector.getFactory(contextSelectorClass));
-                    injector.init();
-                    final Log4jContextFactory factory = injector.getInstance(Log4jContextFactory.class);
-                    LogManager.setFactory(factory);
+                    final LoggingTestContext testContext = LoggingTestContext.configurer()
+                            .setBootstrap(true)
+                            .setContextName(context.getRequiredTestClass().getSimpleName())
+                            .build();
+                    final Consumer<Injector> configurer = injector ->
+                            injector.registerBinding(ContextSelector.KEY, injector.getFactory(contextSelectorClass));
+                    testContext.init(configurer);
+                    LoggerContextResolver.setTestContext(context, testContext);
                 });
-    }
-
-    @Override
-    public void afterAll(final ExtensionContext context) throws Exception {
-        AnnotationSupport.findAnnotation(context.getTestClass(), ContextSelectorType.class)
-                .ifPresent(ignored -> LogManager.setFactory(null));
     }
 }

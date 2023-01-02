@@ -35,9 +35,10 @@ class ConfigurationResolver extends TypeBasedParameterResolver<Configuration> {
     public Configuration resolveParameter(
             ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         final LoggerContext loggerContext = getLoggerContext(extensionContext);
-        if (loggerContext == null) {
-            throw new ParameterResolutionException("No LoggerContext defined");
+        final Configuration configuration = loggerContext.getConfiguration();
+        if (configuration == null) {
+            throw new ParameterResolutionException("No Configuration defined");
         }
-        return loggerContext.getConfiguration();
+        return configuration;
     }
 }

@@ -38,6 +38,7 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.opentest4j.AssertionFailedError;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -56,7 +57,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
         return new LoggerContextRule(config, 10, TimeUnit.SECONDS);
     }
 
-    private final LoggingTestConfiguration configuration;
+    private final LoggingTestContext.Configurer configurer;
     private final String configurationLocation;
     private LoggerContext loggerContext;
     private Class<? extends ContextSelector> contextSelectorClass;
@@ -94,7 +95,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
 
     public LoggerContextRule(final String configurationLocation, final Class<? extends ContextSelector> contextSelectorClass,
             final long shutdownTimeout, final TimeUnit shutdownTimeUnit) {
-        configuration = new LoggingTestConfiguration()
+        configurer = LoggingTestContext.configurer()
                 .setConfigurationLocation(configurationLocation)
                 .setTimeout(shutdownTimeout, shutdownTimeUnit)
                 // TODO(ms): can support ReconfigurationPolicy if we allow reuse of the context like in LoggerContextResolver
@@ -113,26 +114,26 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
         if (System.getProperties().containsKey("EBUG")) {
             StatusLogger.getLogger().setLevel(Level.DEBUG);
         }
-        configuration.setClassLoader(description.getTestClass().getClassLoader())
-                .setContextName(Keys.getSpecifiedName(description.getAnnotations()).orElse(description.getMethodName()));
+        final LoggingTestContext testContext = configurer.setClassLoader(description.getTestClass().getClassLoader())
+                .setContextName(Keys.getSpecifiedName(description.getAnnotations()).orElse(description.getMethodName()))
+                .build();
         testClassName = description.getClassName();
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                final Consumer<Injector> configurer;
+                final Consumer<Injector> injectorConsumer;
                 if (contextSelectorClass != null) {
-                    configurer = injector -> injector
+                    injectorConsumer = injector -> injector
                             .registerBinding(ContextSelector.KEY, injector.getFactory(contextSelectorClass));
                 } else {
-                    configurer = null;
+                    injectorConsumer = null;
                 }
-                final LoggingTestContext context = configuration.build();
-                context.init(configurer);
-                loggerContext = context.getLoggerContext();
+                testContext.init(injectorConsumer);
+                loggerContext = testContext.getLoggerContext();
                 try {
                     base.evaluate();
                 } finally {
-                    context.close();
+                    testContext.close();
                     loggerContext = null;
                     contextSelectorClass = null;
                     StatusLogger.getLogger().reset();
@@ -210,7 +211,7 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
         if (appender instanceof ListAppender) {
             return (ListAppender) appender;
         }
-        throw new AssertionError("No ListAppender named " + name + " found.");
+        throw new AssertionFailedError("No ListAppender named " + name + " found.");
     }
 
     /**

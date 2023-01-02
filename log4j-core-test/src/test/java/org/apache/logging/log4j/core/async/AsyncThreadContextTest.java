@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.junit.LoggingTestConfiguration;
 import org.apache.logging.log4j.core.test.junit.LoggingTestContext;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
@@ -125,7 +124,7 @@ public class AsyncThreadContextTest {
     }
 
     static void doTestAsyncLogWritesToLog(final ContextImpl contextImpl, final Mode asyncMode, final Class<?> testClass) throws Exception {
-        final LoggingTestContext testContext = new LoggingTestConfiguration()
+        final LoggingTestContext testContext = LoggingTestContext.configurer()
                 .setContextName(contextImpl.name() + ' ' + asyncMode.name())
                 .setClassLoader(testClass.getClassLoader())
                 .setBootstrap(true)

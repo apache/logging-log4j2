@@ -242,12 +242,16 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         final String contextName = Objects.requireNonNullElse(name, namingStrategySupplier.get()
                 .getName(configLocation, loader, null, null));
         final LoggerContext ctx = getSelector()
-                .getContext(fqcn, contextName, loader, currentContext, configLocation, configurer);
+                .getContext(fqcn, contextName, loader, currentContext, configLocation);
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (configLocation != null || name != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final Configuration config =
-                        ctx.getInstance(ConfigurationProvider.class).getConfiguration(name, configLocation, loader);
+                final Injector injector = ctx.getInjector();
+                if (configurer != null) {
+                    configurer.accept(injector);
+                }
+                final ConfigurationProvider provider = injector.getInstance(ConfigurationProvider.class);
+                final Configuration config = provider.getConfiguration(name, configLocation, loader);
                 LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
                 ctx.start(config);
                 ContextAnchor.THREAD_CONTEXT.remove();

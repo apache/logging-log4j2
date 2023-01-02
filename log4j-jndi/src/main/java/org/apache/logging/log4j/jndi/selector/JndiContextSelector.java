@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.core.LoggerContext;
@@ -32,7 +31,6 @@ import org.apache.logging.log4j.core.selector.NamedContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.jndi.JndiManager;
 import org.apache.logging.log4j.plugins.Singleton;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -150,9 +148,13 @@ public class JndiContextSelector implements NamedContextSelector {
     }
 
     @Override
-    public LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader, final boolean currentContext,
-                                    final URI configLocation, final Consumer<Injector> configurer) {
-        throw new UnsupportedOperationException();
+    public LoggerContext getContext(final String fqcn, final String name, final ClassLoader loader,
+                                    final boolean currentContext, final URI configLocation) {
+        final LoggerContext lc = ContextAnchor.THREAD_CONTEXT.get();
+        if (lc != null) {
+            return lc;
+        }
+        return locateContext(name, null, configLocation);
     }
 
     private String getContextName() {

@@ -14,8 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.test.junit;
+
+import java.lang.reflect.Parameter;
 
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -24,8 +25,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
-
-import java.lang.reflect.Parameter;
 
 import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
 
@@ -40,9 +39,6 @@ class LoggerResolver implements ParameterResolver {
     public Logger resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
         final LoggerContext loggerContext = getLoggerContext(extensionContext);
-        if (loggerContext == null) {
-            throw new ParameterResolutionException("No LoggerContext defined");
-        }
         final String loggerName;
         final Parameter parameter = parameterContext.getParameter();
         if (Keys.hasName(parameter)) {
@@ -50,6 +46,10 @@ class LoggerResolver implements ParameterResolver {
         } else {
             loggerName = extensionContext.getRequiredTestClass().getCanonicalName();
         }
-        return loggerContext.getLogger(loggerName);
+        final Logger logger = loggerContext.getLogger(loggerName);
+        if (logger == null) {
+            throw new ParameterResolutionException("No Logger defined; name=" + loggerName);
+        }
+        return logger;
     }
 }

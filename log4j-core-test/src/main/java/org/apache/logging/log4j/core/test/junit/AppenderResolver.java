@@ -45,9 +45,6 @@ class AppenderResolver implements ParameterResolver {
     public Object resolveParameter(
             ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         final LoggerContext loggerContext = getLoggerContext(extensionContext);
-        if (loggerContext == null) {
-            throw new ParameterResolutionException("No LoggerContext defined");
-        }
         final String name = Keys.getName(parameterContext.getParameter());
         if (name.isEmpty()) {
             throw new ParameterResolutionException("No named annotation present after checking earlier");

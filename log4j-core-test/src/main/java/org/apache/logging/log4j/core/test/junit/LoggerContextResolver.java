@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.test.junit;
 import java.util.function.Consumer;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.LoggerContextAccessor;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.test.junit.TypeBasedParameterResolver;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -27,16 +26,13 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
-import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> implements BeforeAllCallback,
         BeforeEachCallback, AfterEachCallback {
-    private static final Namespace BASE_NAMESPACE = Namespace.create(LoggerContext.class);
+    private static final Namespace NAMESPACE = Namespace.create(LoggingTestContext.class);
 
     public LoggerContextResolver() {
         super(LoggerContext.class);
@@ -46,31 +42,20 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     public void beforeAll(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
         AnnotationSupport.findAnnotation(testClass, LoggerContextSource.class)
-                .ifPresent(testSource -> setUpLoggerContext(testSource, context));
+                .ifPresent(testSource -> initializeTestContext(testSource, context));
     }
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        final Class<?> testClass = context.getRequiredTestClass();
-        if (AnnotationSupport.isAnnotated(testClass, LoggerContextSource.class)) {
-            final Store testClassStore = context.getStore(BASE_NAMESPACE.append(testClass));
-            final LoggerContextAccessor accessor = testClassStore.get(LoggerContextAccessor.class, LoggerContextAccessor.class);
-            if (accessor == null) {
-                throw new IllegalStateException(
-                        "Specified @LoggerContextSource but no LoggerContext found for test class " +
-                                testClass.getCanonicalName());
-            }
-            if (testClassStore.get(ReconfigurationPolicy.class, ReconfigurationPolicy.class) == ReconfigurationPolicy.BEFORE_EACH) {
-                accessor.getLoggerContext().reconfigure();
-            }
+        if (AnnotationSupport.isAnnotated(context.getRequiredTestClass(), LoggerContextSource.class)) {
+            final LoggingTestContext testContext = getTestContext(context);
+            testContext.beforeEachTest();
         }
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), LoggerContextSource.class)
                 .ifPresent(source -> {
-                    final LoggerContext loggerContext = setUpLoggerContext(source, context);
-                    // TODO(ms): refactor this into LoggerTestContext
-                    if (source.reconfigure() == ReconfigurationPolicy.BEFORE_EACH) {
-                        loggerContext.reconfigure();
-                    }
+                    initializeTestContext(source, context);
+                    final LoggingTestContext testContext = getTestContext(context);
+                    testContext.beforeEachTest();
                 });
     }
 
@@ -78,10 +63,8 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     public void afterEach(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
         if (AnnotationSupport.isAnnotated(testClass, LoggerContextSource.class)) {
-            final Store testClassStore = getTestStore(context);
-            if (testClassStore.get(ReconfigurationPolicy.class, ReconfigurationPolicy.class) == ReconfigurationPolicy.AFTER_EACH) {
-                testClassStore.get(LoggerContextAccessor.class, LoggerContextAccessor.class).getLoggerContext().reconfigure();
-            }
+            final LoggingTestContext testContext = getTestContext(context);
+            testContext.afterEachTest();
         }
     }
 
@@ -91,19 +74,8 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         return getLoggerContext(extensionContext);
     }
 
-    static LoggerContext getLoggerContext(ExtensionContext context) {
-        final Store store = getTestStore(context);
-        final LoggerContextAccessor accessor = store.get(LoggerContextAccessor.class, LoggerContextAccessor.class);
-        assertNotNull(accessor);
-        return accessor.getLoggerContext();
-    }
-
-    private static Store getTestStore(final ExtensionContext context) {
-        return context.getStore(BASE_NAMESPACE.append(context.getRequiredTestClass()));
-    }
-
-    private static LoggerContext setUpLoggerContext(final LoggerContextSource source, final ExtensionContext extensionContext) {
-        final LoggingTestContext context = new LoggingTestConfiguration()
+    private static void initializeTestContext(final LoggerContextSource source, final ExtensionContext extensionContext) {
+        final LoggingTestContext context = LoggingTestContext.configurer()
                 .setBootstrap(source.bootstrap())
                 .setConfigurationLocation(source.value())
                 .setContextName(source.name())
@@ -116,10 +88,28 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
                 .map(instance -> (Consumer<Injector>) injector -> injector.registerBundle(instance))
                 .orElse(null);
         context.init(configurer);
-        final Store store = getTestStore(extensionContext);
-        store.put(ReconfigurationPolicy.class, source.reconfigure());
-        store.put(LoggerContextAccessor.class, context);
-        return context.getLoggerContext();
+        setTestContext(extensionContext, context);
+    }
+
+    static void setTestContext(final ExtensionContext context, final LoggingTestContext testContext) {
+        context.getStore(NAMESPACE).put(LoggingTestContext.class, testContext);
+    }
+
+    static LoggingTestContext getTestContext(final ExtensionContext context) {
+        final LoggingTestContext testContext = context.getStore(NAMESPACE).get(LoggingTestContext.class, LoggingTestContext.class);
+        if (testContext == null) {
+            throw new ParameterResolutionException("No LoggingTestContext defined");
+        }
+        return testContext;
+    }
+
+    static LoggerContext getLoggerContext(ExtensionContext context) {
+        final LoggingTestContext testContext = getTestContext(context);
+        final LoggerContext loggerContext = testContext.getLoggerContext();
+        if (loggerContext == null) {
+            throw new ParameterResolutionException("No LoggerContext defined");
+        }
+        return loggerContext;
     }
 
 }
