@@ -67,10 +67,10 @@ public class LoggingTestContext implements ExtensionContext.Store.CloseableResou
         final Log4jContextFactory factory;
         if (bootstrap) {
             final Injector injector = DI.createInjector();
+            injector.init();
             if (configurer != null) {
                 configurer.accept(injector);
             }
-            injector.init();
             factory = injector.getInstance(Log4jContextFactory.class);
             LogManager.setFactory(factory);
         } else {
