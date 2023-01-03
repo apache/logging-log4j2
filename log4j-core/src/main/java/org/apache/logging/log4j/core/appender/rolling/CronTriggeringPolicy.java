@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.text.ParseException;
+import java.util.Date;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
@@ -27,11 +32,6 @@ import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.text.ParseException;
-import java.util.Date;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Rolls a file over based on a cron schedule.
@@ -148,7 +148,7 @@ public final class CronTriggeringPolicy extends AbstractTriggeringPolicy {
 
     private void rollover() {
         Date rollTime = future != null ? future.getFireTime() : new Date();
-		manager.rollover(cronExpression.getPrevFireTime(rollTime).getTime(), lastRollDate.getTime());
+        manager.rollover(cronExpression.getPrevFireTime(rollTime).getTime(), lastRollDate.getTime());
         if (future != null) {
             lastRollDate = future.getFireTime();
         }

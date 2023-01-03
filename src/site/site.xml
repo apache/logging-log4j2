@@ -215,6 +215,7 @@
         <item name="Dynamic Threshold" href="/manual/filters.html#DynamicThresholdFilter"/>
         <item name="Map" href="/manual/filters.html#MapFilter"/>
         <item name="Marker" href="/manual/filters.html#MarkerFilter"/>
+        <item name="Mutable Thread Context Map" href="/manual/filters.html#MutableThreadContextMapFilter"/>
         <item name="Regex" href="/manual/filters.html#RegexFilter"/>
         <item name="Script" href="/manual/filters.html#Script"/>
         <item name="Structured Data" href="/manual/filters.html#StructuredDataFilter"/>
