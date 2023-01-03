@@ -29,7 +29,10 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.19.1" date="TBD" description="GA Release 2.19.1">
+    <release version="2.20.0" date="TBD" description="GA Release 2.20.0">
+      <action issue="LOG4J2-3357" dev="rgoers" type="fix">
+        Use time trigger was expected to fire instead of current time.
+      </action>
       <action issue="LOG4J2-2297" dev="rgoers" type="fix">
         Allow java.sql.Time objects to format properly in MapMessages.
       </action>
