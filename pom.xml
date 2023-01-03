@@ -1465,6 +1465,7 @@
             <exclude>**/rabbitmq.config</exclude>
             <exclude>**/MANIFEST.MF</exclude>
             <exclude>.surefire-*</exclude>
+            <exclude>src/changelog/**</exclude>
           </excludes>
         </configuration>
         <executions>

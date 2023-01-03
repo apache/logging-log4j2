@@ -1,0 +1,8 @@
+<entry type="fixed">
+  <issue id="LOG4J2-1631" link="https://issues.apache.org/jira/browse/LOG4J2-1631"/>
+  <author id="pkarwasz"/>
+  <author name="Danas Mikelinskas"/>
+  <description format="asciidoc">
+    Add support for timezones in `RollingFileAppender` date pattern.
+  </description>
+</entry>
