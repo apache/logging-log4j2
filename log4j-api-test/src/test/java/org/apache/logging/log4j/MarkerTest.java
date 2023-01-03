@@ -60,7 +60,7 @@ public class MarkerTest {
         existing.setParents(parent);
         assertTrue(existing.hasParents());
     }
-    
+
     @Test
     public void testMarker() {
         // root (level 1)

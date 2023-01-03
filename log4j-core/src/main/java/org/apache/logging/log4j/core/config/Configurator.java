@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.net.URI;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,12 +31,6 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Initializes and configure the Logging system. This class provides several ways to construct a LoggerContext using
@@ -116,20 +115,8 @@ public final class Configurator {
         if (Strings.isBlank(configLocation)) {
             return initialize(name, loader, (URI) null, externalContext);
         }
-        if (configLocation.contains(",")) {
-            final String[] parts = configLocation.split(",");
-            String scheme = null;
-            final List<URI> uris = new ArrayList<>(parts.length);
-            for (final String part : parts) {
-                final URI uri = NetUtils.toURI(scheme != null ? scheme + ":" + part.trim() : part.trim());
-                if (scheme == null && uri.getScheme() != null) {
-                    scheme = uri.getScheme();
-                }
-                uris.add(uri);
-            }
-            return initialize(name, loader, uris, externalContext);
-        }
-        return initialize(name, loader, NetUtils.toURI(configLocation), externalContext);
+        return configLocation.contains(",") ? initialize(name, loader, NetUtils.toURIs(configLocation), externalContext) :
+                initialize(name, loader, NetUtils.toURI(configLocation), externalContext);
     }
 
     /**
@@ -340,7 +327,7 @@ public final class Configurator {
         setLevel(LoggerContext.getContext(StackLocatorUtil.getCallerClassLoader(2), false, null), logger.getName(), level);
         return logger;
     }
-    
+
     /**
      * Sets a logger's level.
      *
@@ -350,9 +337,11 @@ public final class Configurator {
      *            the new level
      */
     public static void setLevel(final Class<?> clazz, final Level level) {
-        setLevel(LoggerContext.getContext(StackLocatorUtil.getCallerClassLoader(2), false, null), clazz.getName(), level);
+        final String canonicalName = clazz.getCanonicalName();
+        setLevel(LoggerContext.getContext(StackLocatorUtil.getCallerClassLoader(2), false, null),
+                canonicalName != null ? canonicalName : clazz.getName(), level);
     }
-    
+
     private static boolean setLevel(final LoggerConfig loggerConfig, final Level level) {
         final boolean set = !loggerConfig.getLevel().equals(level);
         if (set) {

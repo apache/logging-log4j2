@@ -25,8 +25,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -161,6 +163,20 @@ public final class NetUtils {
                 return new File(path).toURI();
             }
         }
+    }
+
+    public static List<URI> toURIs(final String path) {
+        final String[] parts = path.split(",");
+        String scheme = null;
+        final List<URI> uris = new ArrayList<>(parts.length);
+        for (final String part : parts) {
+            final URI uri = NetUtils.toURI(scheme != null ? scheme + ":" + part.trim() : part.trim());
+            if (scheme == null && uri.getScheme() != null) {
+                scheme = uri.getScheme();
+            }
+            uris.add(uri);
+        }
+        return uris;
     }
 
 }

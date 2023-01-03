@@ -277,6 +277,7 @@
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
     <spotbugs-maven-plugin.version>4.7.2.1</spotbugs-maven-plugin.version>
+    <spotless-maven-plugin.version>2.27.2</spotless-maven-plugin.version>
     <!-- surefire.plugin.version 2.18 yields http://jira.codehaus.org/browse/SUREFIRE-1121, which is fixed in 2.18.1 -->
     <!-- surefire.plugin.version 2.19 yields https://issues.apache.org/jira/browse/SUREFIRE-1193. -->
     <!-- all versions after 2.13 yield https://issues.apache.org/jira/browse/SUREFIRE-720 -->
@@ -335,6 +336,7 @@
     <javax-servlet-jsp.version>2.3.3</javax-servlet-jsp.version>
     <jansi.version>2.4.0</jansi.version>
     <java-allocation-instrumenter.version>3.3.0</java-allocation-instrumenter.version>
+    <javadoc.skip>false</javadoc.skip>
     <jconsole.version>1.7.0</jconsole.version>
     <jctools.version>3.3.0</jctools.version>
     <je.version>18.3.12</je.version>
@@ -1227,6 +1229,7 @@
             Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
             <doclint>none</doclint>
+            <skip>${javadoc.skip}</skip>
           </configuration>
         </plugin>
         <plugin>
@@ -1290,6 +1293,33 @@
             <fork>true</fork>
             <effort>Default</effort>
             <threshold>Normal</threshold>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>com.diffplug.spotless</groupId>
+          <artifactId>spotless-maven-plugin</artifactId>
+          <version>${spotless-maven-plugin.version}</version>
+          <configuration>
+            <!-- Check last 32 commits -->
+            <ratchetFrom>HEAD~31</ratchetFrom>
+            <java>
+              <licenseHeader>
+                <file>${log4jParentDir}/checkstyle-header.txt</file>
+              </licenseHeader>
+
+              <!-- Whitespace -->
+              <trimTrailingWhitespace/>
+              <endWithNewline/>
+              <indent>
+                <spaces>true</spaces>
+                <spacesPerTab>4</spacesPerTab>
+              </indent>
+
+              <!-- Imports -->
+              <importOrder>
+                <order>java,org,com,\#</order>
+              </importOrder>
+            </java>
           </configuration>
         </plugin>
       </plugins>
@@ -1528,6 +1558,18 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-spotless</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

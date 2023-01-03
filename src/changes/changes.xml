@@ -29,12 +29,33 @@
          - "update" - Change
          - "remove" - Removed
     -->
-    <release version="2.19.1" date="TBD" description="GA Release 2.19.1">
+    <release version="2.20.0" date="TBD" description="GA Release 2.20.0">
       <action issue="LOG4J2-3627" dev="vy" type="fix" due-to="Thorsten Heit">
         PatternLayout: %xEx{ [ "short" | depth ] } not working
+      </action>  
+      <action issue="LOG4J2-3357" dev="rgoers" type="fix">
+        Use time trigger was expected to fire instead of current time.
+      </action>
+      <action issue="LOG4J2-2297" dev="rgoers" type="fix">
+        Allow java.sql.Time objects to format properly in MapMessages.
+      </action>
+      <action issue="LOG4J2-2785" dev="rgoers" type="add" due-to="Markus Spann">
+        Pattern Layout to abbreviate the name of all logger components except the 2 rightmost.
+      </action>
+      <action issue="LOG4J2-3644" dev="rgoers" type="update">
+        Deprecate support for package scanning for plugins.
+      </action>
+      <action issue="LOG4J2-3487" dev="rgoers" type="fix" due-to="Dave Messink">
+        Correct default to not include location for AsyncRootLoggers
       </action>
       <action issue="LOG4J2-2678" dev="pkarwasz" type="update" due-to="Federico D'Ambrosio">
         Add LogEvent timestamp to ProducerRecord in KafkaAppender.
+      </action>
+      <action issue="LOG4J2-3631" dev="pkarwasz" type="fix" due-to="Jeff Thomas">
+        Fix `Configurator#setLevel` for internal classes.
+      </action>
+      <action issue="LOG4J2-3634" dev="pkarwasz" type="fix" due-to="Marcel Koch">
+        Fix level propagation in `Log4jBridgeHandler`.
       </action>
     </release>
     <release version="2.19.0" date="2022-09-09" description="GA Release 2.19.0">

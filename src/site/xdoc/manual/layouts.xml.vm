@@ -855,7 +855,10 @@ WARN  [main]: Message 2</pre>
                 <p>When the precision specifier is an integer value, it reduces the size of the logger name.
                   If the number is positive, the layout prints the corresponding number of rightmost logger
                   name components. If negative, the layout removes the corresponding number of leftmost logger
-                  name components.
+                  name components. If the precision contains periods then the number before the first period
+                  identifies the length to be printed from items that precede tokens in the rest of the pattern.
+                  If the number after the first period is followed by an asterisk it indicates how many of the
+                  rightmost tokens will be printed in full. See the table below for abbreviation examples.
                 </p>
                 <p>
                    If the precision contains any non-integer characters, then the layout abbreviates the name
@@ -912,6 +915,26 @@ WARN  [main]: Message 2</pre>
                     <td>%c{.}</td>
                     <td>org.apache.${break}commons.test.${break}Foo</td>
                     <td>....Foo</td>
+                  </tr>
+                  <tr>
+                    <td>%c{1.1.1.*}</td>
+                    <td>org.apache.${break}commons.test.${break}Foo</td>
+                    <td>o.a.c.test.Foo</td>
+                  </tr>
+                  <tr>
+                    <td>%c{1.2.*}</td>
+                    <td>org.apache.${break}commons.test.${break}Foo</td>
+                    <td>o.a.c.test.Foo</td>
+                  </tr>
+                  <tr>
+                    <td>%c{1.3.*}</td>
+                    <td>org.apache.${break}commons.test.${break}Foo</td>
+                    <td>o.a.commons.test.Foo</td>
+                  </tr>
+                  <tr>
+                    <td>%c{1.8.*}</td>
+                    <td>org.apache.${break}commons.test.${break}Foo</td>
+                    <td>org.apache.commons.test.Foo</td>
                   </tr>
                 </table>
               </td>

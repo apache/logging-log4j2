@@ -172,14 +172,14 @@ public class LoggerSupplierTest {
         String entry = results.get(0);
         assertThat(entry).startsWith("ENTER[ FLOW ] TRACE Enter").contains("RUNNABLE", "Title of ...", getClass().getName());
     }
-    
+
     @BeforeEach
     public void setup() {
         results.clear();
         defaultLocale = Locale.getDefault(Locale.Category.FORMAT);
         Locale.setDefault(Locale.Category.FORMAT, java.util.Locale.US);
     }
-    
+
     @AfterEach
     public void tearDown() {
         Locale.setDefault(Locale.Category.FORMAT, defaultLocale);

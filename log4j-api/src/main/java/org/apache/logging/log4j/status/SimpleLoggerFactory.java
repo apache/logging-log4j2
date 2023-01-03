@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.status;
 
+import java.io.PrintStream;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
 import org.apache.logging.log4j.util.Strings;
-
-import java.io.PrintStream;
 
 /**
  * {@link org.apache.logging.log4j.simple.SimpleLogger} factory to be used by {@link StatusLogger} and {@link StatusConsoleListener}.
