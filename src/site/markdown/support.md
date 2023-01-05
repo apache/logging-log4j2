@@ -49,6 +49,7 @@ projects, we cannot recommend any particular individual for any specific issue.
 * [Ralph Goers](https://github.com/rgoers)
 * [Volkan Yazıcı](https://github.com/vy)
 * [Carter Kozak](https://github.com/carterkozak)
+* [Piotr P. Karwasz](https://github.com/ppkarwasz)
 
 ## Third-party commercial support
 
@@ -60,4 +61,3 @@ The following aims to be a list of all commercial support services involving one
 ### Tidelift
 
 Some Log4j maintainers receive funding from Tidelift for their maintenance efforts. See [the Tidelift website](https://tidelift.com) for details.
-
