@@ -15,9 +15,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<entry type="fixed">
-  <issue id="LOG4J2-3631" link="https://issues.apache.org/jira/browse/LOG4J2-3631"/>
-  <author id="pkarwasz"/>
-  <author name="Jeff Thomas"/>
-  <description format="asciidoc">Fix `Configurator#setLevel` for internal classes</description>
+<entry type="added">
+  <issue id="LOG4J2-2785" link="https://issues.apache.org/jira/browse/LOG4J2-2785"/>
+  <author id="rgoers"/>
+  <author name="Markus Spann"/>
+  <description format="asciidoc">Add `PatternLayout` support for abbreviating the name of all logger components except the 2 rightmost</description>
 </entry>

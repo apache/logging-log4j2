@@ -15,8 +15,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<entry type="changed">
-  <issue id="LOG4J2-3628" link="https://issues.apache.org/jira/browse/LOG4J2-3628"/>
-  <author id="vy"/>
-  <description format="asciidoc">Replaced `maven-changes-plugin` with a custom changelog implementation</description>
+<entry type="fixed">
+  <issue id="LOG4J2-2297" link="https://issues.apache.org/jira/browse/LOG4J2-2297"/>
+  <author id="rgoers"/>
+  <description format="asciidoc">Fix `java.sql.Time` object formatting in `MapMessage`</description>
 </entry>
