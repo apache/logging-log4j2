@@ -1538,10 +1538,10 @@
           <includeProjectDependencies>false</includeProjectDependencies>
           <includePluginDependencies>true</includePluginDependencies>
           <executableDependency>
-            <groupId>org.apache.logging.log4j.tools</groupId>
+            <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-changelog</artifactId>
           </executableDependency>
-          <mainClass>org.apache.logging.log4j.tools.changelog.exporter.ChangelogExporter</mainClass>
+          <mainClass>org.apache.logging.log4j.changelog.exporter.ChangelogExporter</mainClass>
           <systemProperties>
             <systemProperty>
               <key>log4j.changelog.directory</key>
@@ -1555,7 +1555,7 @@
         </configuration>
         <dependencies>
           <dependency>
-            <groupId>org.apache.logging.log4j.tools</groupId>
+            <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-changelog</artifactId>
             <version>${log4j-tools.version}</version>
           </dependency>
@@ -1837,10 +1837,10 @@
               <includeProjectDependencies>false</includeProjectDependencies>
               <includePluginDependencies>true</includePluginDependencies>
               <executableDependency>
-                <groupId>org.apache.logging.log4j.tools</groupId>
+                <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-changelog</artifactId>
               </executableDependency>
-              <mainClass>org.apache.logging.log4j.tools.changelog.releaser.ChangelogReleaser</mainClass>
+              <mainClass>org.apache.logging.log4j.changelog.releaser.ChangelogReleaser</mainClass>
               <systemProperties>
                 <systemProperty>
                   <key>log4j.changelog.directory</key>
@@ -1854,7 +1854,7 @@
             </configuration>
             <dependencies>
               <dependency>
-                <groupId>org.apache.logging.log4j.tools</groupId>
+                <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-changelog</artifactId>
                 <version>${log4j-tools.version}</version>
               </dependency>
