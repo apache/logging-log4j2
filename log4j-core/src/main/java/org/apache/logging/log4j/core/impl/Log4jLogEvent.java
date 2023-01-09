@@ -29,22 +29,25 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
-import org.apache.logging.log4j.core.util.*;
-import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.util.ClockFactory;
+import org.apache.logging.log4j.core.util.DummyNanoClock;
+import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -945,7 +948,7 @@ public class Log4jLogEvent implements LogEvent {
             this.thrownProxy = event.thrownProxy;
             this.contextData = event.contextData;
             this.contextStack = event.contextStack;
-            this.source = includeLocation ? event.getSource() : null;
+            this.source = includeLocation ? event.getSource() : event.source;
             this.threadId = event.getThreadId();
             this.threadName = event.getThreadName();
             this.threadPriority = event.getThreadPriority();
@@ -970,7 +973,8 @@ public class Log4jLogEvent implements LogEvent {
             this.thrownProxy = event.getThrownProxy();
             this.contextData = memento(event.getContextData());
             this.contextStack = event.getContextStack();
-            this.source = includeLocation ? event.getSource() : null;
+            this.source = includeLocation ? event.getSource()
+                    : event instanceof MutableLogEvent ? ((MutableLogEvent) event).source : null;
             this.threadId = event.getThreadId();
             this.threadName = event.getThreadName();
             this.threadPriority = event.getThreadPriority();

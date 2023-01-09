@@ -26,10 +26,17 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.InternalAsyncUtil;
-import org.apache.logging.log4j.core.util.*;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.message.*;
+import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.NanoClock;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ParameterConsumer;
+import org.apache.logging.log4j.message.ParameterVisitable;
+import org.apache.logging.log4j.message.ReusableMessage;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -62,7 +69,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     private StringMap contextData = ContextDataFactory.createContextData();
     private Marker marker;
     private String loggerFqcn;
-    private StackTraceElement source;
+    StackTraceElement source;
     private ThreadContext.ContextStack contextStack;
     transient boolean reserved = false;
 

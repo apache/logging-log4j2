@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.impl;
 
 import java.io.ByteArrayInputStream;
@@ -33,13 +32,14 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.util.FilteredObjectInputStream;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -359,6 +359,16 @@ public class MutableLogEventTest {
         assertEquals(0, evt2.getNanoTime());
     }
 
+    @Test
+    public void testPreservesLocation() {
+        final StackTraceElement source = new RuntimeException().getStackTrace()[0];
+        final MutableLogEvent mutable = new MutableLogEvent();
+        mutable.setSource(source);
+        mutable.setIncludeLocation(false);
+        final Log4jLogEvent immutable = mutable.toImmutable();
+        assertThat(immutable.getSource()).isEqualTo(source);
+    }
+
     private byte[] serialize(final MutableLogEvent event) throws IOException {
         final ByteArrayOutputStream arr = new ByteArrayOutputStream();
         final ObjectOutputStream out = new ObjectOutputStream(arr);
@@ -373,6 +383,5 @@ public class MutableLogEventTest {
         final Log4jLogEvent result = (Log4jLogEvent) in.readObject();
         return result;
     }
-
 
 }
