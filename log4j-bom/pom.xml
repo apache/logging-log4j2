@@ -238,12 +238,6 @@
         <artifactId>log4j-layout-template-json-test</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- Liquibase adapter -->
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-liquibase</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <!-- MongoDB 3 Appender Plugin -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>

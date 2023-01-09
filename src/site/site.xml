@@ -324,7 +324,6 @@
       <item name="MongoDB4 appender" href="log4j-mongodb4.html"/>
       <item name="Cassandra appender" href="log4j-cassandra.html"/>
       <item name="IO Streams" href="log4j-iostreams.html"/>
-      <item name="Liquibase Binding" href="log4j-liquibase.html"/>
       <item name="Docker Support" href="log4j-docker.html"/>
       <item name="Kubernetes Support" href="log4j-kubernetes.html"/>
       <item name="Log4j Spring Boot" href="log4j-spring-boot.html"/>

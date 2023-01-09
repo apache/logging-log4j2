@@ -251,7 +251,6 @@
     <module>log4j-layout-jackson-yaml</module>
     <module>log4j-layout-template-json</module>
     <module>log4j-layout-template-json-test</module>
-    <module>log4j-liquibase</module>
     <module>log4j-mongodb3</module>
     <module>log4j-mongodb4</module>
     <module>log4j-osgi</module>
@@ -444,8 +443,6 @@
     <kafka.version>1.1.1</kafka.version>
     <kubernetes-client.version>5.12.4</kubernetes-client.version>
     <lightcouch.version>0.2.0</lightcouch.version>
-    <!-- Liquibase 3.6.0 to 4.3.2 breaks binary compatibility: -->
-    <liquibase.version>3.5.5</liquibase.version>
     <log4j.version>1.2.17</log4j.version>
     <log4j2-custom-layout.version>1.1.0</log4j2-custom-layout.version>
     <log4j2-ecs-layout.version>1.5.0</log4j2-ecs-layout.version>
@@ -1066,12 +1063,6 @@
         <groupId>org.lightcouch</groupId>
         <artifactId>lightcouch</artifactId>
         <version>${lightcouch.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.liquibase</groupId>
-        <artifactId>liquibase-core</artifactId>
-        <version>${liquibase.version}</version>
       </dependency>
 
       <dependency>
