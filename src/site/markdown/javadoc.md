@@ -47,7 +47,6 @@ Component | Description
 [Log4j Web Application Support](log4j-web/apidocs/index.html) | Additional classes that enable multiple configurations within a Servlet Container.
 [Log4j CouchDB Support](log4j-couchdb/apidocs/index.html) | Additional Appender for CouchDB.
 [Log4j JDBC DBCP 2](log4j-jdbc-dbcp2/apidocs/index.html) | Connection source for the JDBC Appender using Apache Commons DBCP2.
-[Log4j Liquibase Binding](log4j-liquibase/apidocs/index.html) | The Apache Log4j Liquibase binding to Log4j 2 Core.
 [Log4j MongoDB 3 Support](log4j-mongodb3/apidocs/index.html) | Additional Appender for MongoDB using the version 3 driver.
 [Log4j MongoDB 4 Support](log4j-mongodb4/apidocs/index.html) | Additional Appender for MongoDB using the version 4 driver.
 [Log4j Cassandra Support](log4j-cassandra/apidocs/index.html) | Additional Appender for Cassandra.
