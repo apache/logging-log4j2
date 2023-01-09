@@ -1655,6 +1655,19 @@
               <goal>check</goal>
             </goals>
           </execution>
+          <execution>
+            <id>apply-spotless</id>
+            <goals>
+              <goal>apply</goal>
+            </goals>
+            <phase>process-sources</phase>
+          </execution><execution>
+          <id>apply-spotless-test</id>
+          <goals>
+            <goal>apply</goal>
+          </goals>
+          <phase>process-test-sources</phase>
+        </execution>
         </executions>
       </plugin>
       <plugin>
