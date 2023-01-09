@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.layout.template.json.util.Recycler;
-
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.LockSupport;
 import java.util.function.Consumer;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+import org.apache.logging.log4j.util.Recycler;
 
 /**
  * Resolves a number from an internal counter.

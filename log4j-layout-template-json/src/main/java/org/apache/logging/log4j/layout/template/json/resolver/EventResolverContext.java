@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
-import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
-import org.apache.logging.log4j.util.Strings;
-
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+import org.apache.logging.log4j.util.RecyclerFactory;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * {@link TemplateResolverContext} specialized for {@link LogEvent}s.

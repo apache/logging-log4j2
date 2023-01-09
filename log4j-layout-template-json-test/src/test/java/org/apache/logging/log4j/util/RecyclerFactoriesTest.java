@@ -14,7 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.util;
+
+import java.lang.reflect.Field;
+import java.util.ArrayDeque;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -23,13 +27,10 @@ import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.util.*;
 import org.assertj.core.api.Assertions;
 import org.jctools.queues.MpmcArrayQueue;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Field;
-import java.util.ArrayDeque;
-import java.util.concurrent.ArrayBlockingQueue;
 
 class RecyclerFactoriesTest {
 

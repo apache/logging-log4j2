@@ -14,32 +14,48 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.util;
 
+import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class ThreadLocalRecycler<V> implements Recycler<V> {
+public class QueueingRecycler<V> implements Recycler<V> {
+
+    private final Supplier<V> supplier;
 
     private final Consumer<V> cleaner;
 
-    private final ThreadLocal<V> holder;
+    private final Queue<V> queue;
 
-    public ThreadLocalRecycler(
+    public QueueingRecycler(
             final Supplier<V> supplier,
-            final Consumer<V> cleaner) {
+            final Consumer<V> cleaner,
+            final Queue<V> queue) {
+        this.supplier = supplier;
         this.cleaner = cleaner;
-        this.holder = ThreadLocal.withInitial(supplier);
+        this.queue = queue;
+    }
+
+    // Visible for tests.
+    Queue<V> getQueue() {
+        return queue;
     }
 
     @Override
     public V acquire() {
-        final V value = holder.get();
-        cleaner.accept(value);
-        return value;
+        final V value = queue.poll();
+        if (value == null) {
+            return supplier.get();
+        } else {
+            cleaner.accept(value);
+            return value;
+        }
     }
 
     @Override
-    public void release(final V value) {}
+    public void release(final V value) {
+        queue.offer(value);
+    }
 
 }

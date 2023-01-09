@@ -16,13 +16,15 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.layout.template.json.util.*;
-
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.layout.template.json.util.*;
+import org.apache.logging.log4j.util.Recycler;
+import org.apache.logging.log4j.util.RecyclerFactory;
 
 /**
  * Exception stack trace to JSON string resolver used by {@link ExceptionResolver}.

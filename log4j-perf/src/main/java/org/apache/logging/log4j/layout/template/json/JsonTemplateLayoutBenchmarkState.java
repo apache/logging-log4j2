@@ -16,7 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import co.elastic.logging.log4j2.EcsLayout;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -27,13 +30,11 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
-import org.apache.logging.log4j.layout.template.json.util.ThreadLocalRecyclerFactory;
+import org.apache.logging.log4j.util.ThreadLocalRecyclerFactory;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import co.elastic.logging.log4j2.EcsLayout;
 
 @State(Scope.Thread)
 public class JsonTemplateLayoutBenchmarkState {

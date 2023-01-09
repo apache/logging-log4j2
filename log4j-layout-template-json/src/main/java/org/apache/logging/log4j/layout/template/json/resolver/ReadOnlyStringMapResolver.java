@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.layout.template.json.util.Recycler;
-import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.TriConsumer;
-
 import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.Recycler;
+import org.apache.logging.log4j.util.RecyclerFactory;
+import org.apache.logging.log4j.util.TriConsumer;
 
 /**
  * {@link ReadOnlyStringMap} resolver.

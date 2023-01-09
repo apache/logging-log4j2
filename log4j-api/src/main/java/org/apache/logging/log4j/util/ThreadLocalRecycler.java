@@ -14,27 +14,39 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.util;
 
-import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class QueueingRecyclerFactory implements RecyclerFactory {
+/**
+ * Recycling strategy that caches instances in a ThreadLocal value to allow threads to reuse objects. This strategy
+ * may not be appropriate in workloads where units of work are independent of operating system threads such as
+ * reactive streams, coroutines, or virtual threads.
+ *
+ * @param <V> the recyclable type
+ */
+public class ThreadLocalRecycler<V> implements Recycler<V> {
 
-    private final Supplier<Queue<Object>> queueSupplier;
+    private final Consumer<V> cleaner;
 
-    public QueueingRecyclerFactory(final Supplier<Queue<Object>> queueSupplier) {
-        this.queueSupplier = queueSupplier;
+    private final ThreadLocal<V> holder;
+
+    public ThreadLocalRecycler(
+            final Supplier<V> supplier,
+            final Consumer<V> cleaner) {
+        this.cleaner = cleaner;
+        this.holder = ThreadLocal.withInitial(supplier);
     }
 
     @Override
-    public <V> Recycler<V> create(
-            final Supplier<V> supplier,
-            final Consumer<V> cleaner) {
-        @SuppressWarnings("unchecked")
-        final Queue<V> queue = (Queue<V>) queueSupplier.get();
-        return new QueueingRecycler<>(supplier, cleaner, queue);
+    public V acquire() {
+        final V value = holder.get();
+        cleaner.accept(value);
+        return value;
     }
+
+    @Override
+    public void release(final V value) {}
 
 }

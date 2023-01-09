@@ -38,8 +38,12 @@ module org.apache.logging.log4j {
     exports org.apache.logging.log4j.status;
     exports org.apache.logging.log4j.util;
 
+    // optional support for formatting SQL date/time classes in messages properly
     requires static java.sql;
+    // optional support for running in an OSGi environment
     requires static org.osgi.framework;
+    // optional support for using JCTools in a Recycler
+    requires static org.jctools.core;
     uses org.apache.logging.log4j.spi.Provider;
     uses PropertySource;
     uses org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
