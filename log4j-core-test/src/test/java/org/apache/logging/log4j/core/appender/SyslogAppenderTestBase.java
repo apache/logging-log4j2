@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +38,9 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public abstract class SyslogAppenderTestBase {
     protected static final String line1 =
@@ -154,7 +155,7 @@ public abstract class SyslogAppenderTestBase {
     }
 
     protected void validate(final SyslogAppender syslogAppender) {
-        final Layout<? extends Serializable> layout = syslogAppender.getLayout();
+        final Layout<?> layout = syslogAppender.getLayout();
         if (layout instanceof SyslogLayout) {
             validate((SyslogLayout) layout);
         } else if (layout instanceof Rfc5424Layout) {

@@ -69,4 +69,13 @@ public interface ReusableMessage extends Message, StringBuilderFormattable {
      * @return an immutable snapshot of this message
      */
     Message memento();
+
+    /**
+     * Resets the object to a clean state.
+     *
+     * @since 3.0.0
+     */
+    default void clear() {
+        // do nothing by default
+    }
 }

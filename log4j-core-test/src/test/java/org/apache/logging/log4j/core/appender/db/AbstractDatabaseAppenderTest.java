@@ -16,17 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Filter;
@@ -36,6 +25,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractDatabaseAppenderTest {
@@ -71,12 +69,12 @@ public class AbstractDatabaseAppenderTest {
 
         appender.append(event1);
         then(manager).should().isBuffered();
-        then(manager).should().writeThrough(same(event1), (Serializable) isNull());
+        then(manager).should().writeThrough(same(event1));
         reset(manager);
 
         appender.append(event2);
         then(manager).should().isBuffered();
-        then(manager).should().writeThrough(same(event2), (Serializable) isNull());
+        then(manager).should().writeThrough(same(event2));
         reset(manager);
     }
 

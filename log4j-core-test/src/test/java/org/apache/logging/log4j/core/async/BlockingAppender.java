@@ -16,25 +16,23 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Appender that can be halted and resumed, for testing queue-full scenarios.
@@ -60,7 +58,7 @@ public class BlockingAppender extends AbstractAppender {
         // may be a reusable event, make a copy, don't keep a reference to the original event
         List<LogEvent> events = logEvents;
         if (events != null) {
-            events.add(Log4jLogEvent.createMemento(event));
+            events.add(event.toImmutable());
         }
 
         if (countDownLatch == null) {
@@ -79,7 +77,7 @@ public class BlockingAppender extends AbstractAppender {
             @PluginAttribute
             @Required(message = "No name provided for HangingAppender")
             final String name,
-            @PluginElement final Layout<? extends Serializable> layout,
+            @PluginElement final Layout<?> layout,
             @PluginElement final Filter filter) {
         return new BlockingAppender(name);
     }

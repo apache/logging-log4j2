@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.Level;
@@ -83,14 +81,12 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     }
 
     @Override
-    public Log4jLogEvent toImmutable() {
-        return createMemento();
+    public LogEvent toImmutable() {
+        return toMemento();
     }
 
     /**
      * Initialize the fields of this {@code MutableLogEvent} from another event.
-     * Similar in purpose and usage as {@link org.apache.logging.log4j.core.impl.Log4jLogEvent.LogEventProxy},
-     * but a mutable version.
      * <p>
      * This method is used on async logger ringbuffer slots holding MutableLogEvent objects in each slot.
      * </p>
@@ -376,7 +372,6 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return source;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ReadOnlyStringMap getContextData() {
         return contextData;
@@ -449,28 +444,6 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
 
     public void setNanoTime(final long nanoTime) {
         this.nanoTime = nanoTime;
-    }
-
-    /**
-     * Creates a LogEventProxy that can be serialized.
-     * @return a LogEventProxy.
-     */
-    protected Object writeReplace() {
-        return new Log4jLogEvent.LogEventProxy(this, this.includeLocation);
-    }
-
-    private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
-        throw new InvalidObjectException("Proxy required");
-    }
-
-    /**
-     * Creates and returns a new immutable copy of this {@code MutableLogEvent}.
-     * If {@link #isIncludeLocation()} is true, this will obtain caller location information.
-     *
-     * @return a new immutable copy of the data in this {@code MutableLogEvent}
-     */
-    public Log4jLogEvent createMemento() {
-        return Log4jLogEvent.deserialize(Log4jLogEvent.serialize(this, includeLocation));
     }
 
     /**

@@ -59,7 +59,6 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
 
     private static class AbstractFlowMessage implements FlowMessage, StringBuilderFormattable {
 
-        private static final long serialVersionUID = 1L;
         private final Message message;
         private final String text;
 

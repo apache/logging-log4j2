@@ -16,10 +16,7 @@
  */
 package org.apache.logging.log4j.perf.jmh.jpa;
 
-import java.util.Map;
-
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,13 +25,11 @@ import javax.persistence.Table;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.jpa.appender.BasicLogEventEntity;
-import org.apache.logging.log4j.jpa.converter.ContextMapJsonAttributeConverter;
 
 @Entity
 @Table(name = "jpaBasicLogEntry")
 @SuppressWarnings("unused")
 public class TestBasicEntity extends BasicLogEventEntity {
-    private static final long serialVersionUID = 1L;
 
     private long id = 0L;
 

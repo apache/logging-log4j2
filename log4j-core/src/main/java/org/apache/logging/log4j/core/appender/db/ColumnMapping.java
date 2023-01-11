@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
+import java.util.Date;
+import java.util.Locale;
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -34,10 +38,6 @@ import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
-
-import java.util.Date;
-import java.util.Locale;
-import java.util.function.Supplier;
 
 /**
  * A configuration element for specifying a database column name mapping.
@@ -96,7 +96,7 @@ public class ColumnMapping {
                 || ReadOnlyStringMap.class.isAssignableFrom(type)
                 || ThreadContextMap.class.isAssignableFrom(type)
                 || ThreadContextStack.class.isAssignableFrom(type))) {
-                LOGGER.error("No 'layout' or 'literal' value specified and type ({}) is not compatible with ThreadContextMap, ThreadContextStack, or java.util.Date for the mapping", type, this);
+                LOGGER.error("No 'layout' or 'literal' value specified and type ({}) is not compatible with ThreadContextMap, ThreadContextStack, or java.util.Date for the mapping {}", type, this);
                 return null;
             }
             if (literal != null && parameter != null) {

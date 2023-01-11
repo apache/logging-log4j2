@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.test.junit.Resources;
-import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
+import java.util.List;
+
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ObjectMessage;
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -26,17 +26,21 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.junit.Resources;
+import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @StatusLoggerLevel("WARN")
 @ResourceLock(value = Resources.MARKER_MANAGER, mode = ResourceAccessMode.READ)
@@ -1182,7 +1186,6 @@ public class AbstractLoggerTest {
     }
 
     private static class ThrowableExpectingLogger extends AbstractLogger {
-        private static final long serialVersionUID = -7218195998038685039L;
         private final boolean expectingThrowables;
 
         ThrowableExpectingLogger(final boolean expectingThrowables) {
@@ -1289,7 +1292,6 @@ public class AbstractLoggerTest {
     }
 
     private static class ThrowableMessage implements Message {
-        private static final long serialVersionUID = 1L;
         private final Throwable throwable;
 
         public ThrowableMessage(final Throwable throwable) {

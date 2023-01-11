@@ -29,8 +29,6 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
-import java.io.Serializable;
-
 @State(Scope.Thread)
 public class Log4jLogEventBenchmark {
     private static Message MESSAGE;
@@ -77,49 +75,6 @@ public class Log4jLogEventBenchmark {
     public StackTraceElement getSourceLocationOfLogEvent() {
 
         return TESTER.getEventSource(this.getClass().getName());
-    }
-
-    @Benchmark
-    public Serializable createSerializableLogEventProxyWithoutException(final Blackhole bh) {
-        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
-                .setLoggerName("a.b.c")
-                .setLoggerFqcn("a.b.c")
-                .setLevel(Level.INFO)
-                .setMessage(MESSAGE)
-                .setClock(CLOCK)
-                .build();
-        final Serializable obj = Log4jLogEvent.serialize(event, false);
-        bh.consume(obj);
-        return obj;
-    }
-
-    @Benchmark
-    public Serializable createSerializableLogEventProxyWithoutExceptionWithLocation(final Blackhole bh) {
-        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
-                .setLoggerName("a.b.c")
-                .setLoggerFqcn("a.b.c")
-                .setLevel(Level.INFO)
-                .setMessage(MESSAGE)
-                .setClock(CLOCK)
-                .build();
-        final Serializable obj = Log4jLogEvent.serialize(event, true);
-        bh.consume(obj);
-        return obj;
-    }
-
-    @Benchmark
-    public Serializable createSerializableLogEventProxyWithException(final Blackhole bh) {
-        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
-                .setLoggerName("a.b.c")
-                .setLoggerFqcn("a.b.c")
-                .setLevel(Level.INFO)
-                .setMessage(MESSAGE)
-                .setThrown(ERROR)
-                .setClock(CLOCK)
-                .build();
-        final Serializable obj = Log4jLogEvent.serialize(event, false);
-        bh.consume(obj);
-        return obj;
     }
 
     private static class TestClass {

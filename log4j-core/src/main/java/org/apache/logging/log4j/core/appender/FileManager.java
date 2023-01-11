@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
@@ -66,7 +65,7 @@ public class FileManager extends OutputStreamManager {
      * @since 2.9
      */
     protected FileManager(final LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,
-            final boolean createOnDemand, final String advertiseURI, final Layout<? extends Serializable> layout,
+            final boolean createOnDemand, final String advertiseURI, final Layout<?> layout,
             final String filePermissions, final String fileOwner, final String fileGroup, final boolean writeHeader,
             final ByteBuffer buffer) {
         super(loggerContext, os, fileName, createOnDemand, layout, writeHeader, buffer);
@@ -122,7 +121,7 @@ public class FileManager extends OutputStreamManager {
      */
     public static FileManager getFileManager(final String fileName, final boolean append, boolean locking,
             final boolean bufferedIo, final boolean createOnDemand, final String advertiseUri,
-            final Layout<? extends Serializable> layout,
+            final Layout<?> layout,
             final int bufferSize, final String filePermissions, final String fileOwner, final String fileGroup,
             final Configuration configuration) {
 
@@ -329,7 +328,7 @@ public class FileManager extends OutputStreamManager {
         private final int bufferSize;
         private final boolean createOnDemand;
         private final String advertiseURI;
-        private final Layout<? extends Serializable> layout;
+        private final Layout<?> layout;
         private final String filePermissions;
         private final String fileOwner;
         private final String fileGroup;
@@ -349,7 +348,7 @@ public class FileManager extends OutputStreamManager {
          * @param configuration the configuration
          */
         public FactoryData(final boolean append, final boolean locking, final boolean bufferedIo, final int bufferSize,
-                final boolean createOnDemand, final String advertiseURI, final Layout<? extends Serializable> layout,
+                final boolean createOnDemand, final String advertiseURI, final Layout<?> layout,
                 final String filePermissions, final String fileOwner, final String fileGroup,
                 final Configuration configuration) {
             super(configuration);

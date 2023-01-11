@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.nio.charset.Charset;
@@ -97,13 +96,13 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
     }
 
-    private ConsoleAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
+    private ConsoleAppender(final String name, final Layout<?> layout, final Filter filter,
             final OutputStreamManager manager, final boolean ignoreExceptions, final Target target, final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, true, properties, manager);
         this.target = target;
     }
 
-    public static ConsoleAppender createDefaultAppenderForLayout(final Layout<? extends Serializable> layout) {
+    public static ConsoleAppender createDefaultAppenderForLayout(final Layout<?> layout) {
         // this method cannot use the builder class without introducing an infinite loop due to DefaultConfiguration
         return new ConsoleAppender("DefaultConsole-" + COUNT.incrementAndGet(), layout, null,
                 getDefaultManager(DEFAULT_TARGET, false, false, layout), true, DEFAULT_TARGET, null);
@@ -151,14 +150,14 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             if (follow && direct) {
                 throw new IllegalArgumentException("Cannot use both follow and direct on ConsoleAppender '" + getName() + "'");
             }
-            final Layout<? extends Serializable> layout = getOrCreateLayout(target.getDefaultCharset());
+            final Layout<?> layout = getOrCreateLayout(target.getDefaultCharset());
             return new ConsoleAppender(getName(), layout, getFilter(), getManager(target, follow, direct, layout),
                     isIgnoreExceptions(), target, getPropertyArray());
         }
     }
 
     private static OutputStreamManager getDefaultManager(final Target target, final boolean follow, final boolean direct,
-            final Layout<? extends Serializable> layout) {
+            final Layout<?> layout) {
         final OutputStream os = getOutputStream(follow, direct, target);
 
         // LOG4J2-1176 DefaultConfiguration should not share OutputStreamManager instances to avoid memory leaks.
@@ -167,7 +166,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     private static OutputStreamManager getManager(final Target target, final boolean follow, final boolean direct,
-            final Layout<? extends Serializable> layout) {
+            final Layout<?> layout) {
         final OutputStream os = getOutputStream(follow, direct, target);
         final String managerName = target.name() + '.' + follow + '.' + direct;
         return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
@@ -283,7 +282,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     private static class FactoryData {
         private final OutputStream os;
         private final String name;
-        private final Layout<? extends Serializable> layout;
+        private final Layout<?> layout;
 
         /**
          * Constructor.
@@ -292,7 +291,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
          * @param type The name of the target.
          * @param layout A Serializable layout
          */
-        public FactoryData(final OutputStream os, final String type, final Layout<? extends Serializable> layout) {
+        public FactoryData(final OutputStream os, final String type, final Layout<?> layout) {
             this.os = os;
             this.name = type;
             this.layout = layout;

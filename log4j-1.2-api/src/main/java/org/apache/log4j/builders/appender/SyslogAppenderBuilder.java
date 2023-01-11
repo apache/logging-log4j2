@@ -16,6 +16,11 @@
  */
 package org.apache.log4j.builders.appender;
 
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -36,15 +41,12 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
 
-import java.io.Serializable;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
 import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.*;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build a File Appender
@@ -141,7 +143,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         final AtomicReference<String> host = new AtomicReference<>();
         final AtomicInteger port = new AtomicInteger();
         resolveSyslogHost(syslogHost, host, port);
-        final org.apache.logging.log4j.core.Layout<? extends Serializable> messageLayout = LayoutAdapter.adapt(layout);
+        final org.apache.logging.log4j.core.Layout<?> messageLayout = LayoutAdapter.adapt(layout);
         final Log4j1SyslogLayout appenderLayout = Log4j1SyslogLayout.newBuilder()
                 .setHeader(header)
                 .setFacility(Facility.toFacility(facility))

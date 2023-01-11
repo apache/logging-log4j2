@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.spi;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.LoggingException;
@@ -34,6 +29,7 @@ import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
@@ -44,7 +40,7 @@ import org.apache.logging.log4j.util.Supplier;
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
  */
-public abstract class AbstractLogger implements ExtendedLogger, Serializable {
+public abstract class AbstractLogger implements ExtendedLogger {
     // Implementation note: many methods in this class are tuned for performance. MODIFY WITH CARE!
     // Specifically, try to keep the hot methods to 35 bytecodes or less:
     // this is within the MaxInlineSize threshold on Java 7 and Java 8 Hotspot and makes these methods
@@ -79,8 +75,6 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
      * Marker for catching exceptions.
      */
     public static final Marker CATCHING_MARKER = MarkerManager.getMarker("CATCHING").setParents(EXCEPTION_MARKER);
-
-    private static final long serialVersionUID = 2L;
 
     private static final String FQCN = AbstractLogger.class.getName();
     private static final String THROWING = "Throwing";
@@ -1073,10 +1067,9 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
         logIfEnabled(FQCN, Level.FATAL, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <MF extends MessageFactory> MF getMessageFactory() {
-        return (MF) messageFactory;
+        return Cast.cast(messageFactory);
     }
 
     @Override
@@ -2773,17 +2766,6 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
     private DefaultLogBuilder getLogBuilder(final Level level) {
         final DefaultLogBuilder builder = logBuilder.get();
         return Constants.isThreadLocalsEnabled() && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
-    }
-
-    private void readObject (final ObjectInputStream s) throws ClassNotFoundException, IOException {
-        s.defaultReadObject( );
-        try {
-            final Field f = this.getClass().getDeclaredField("logBuilder");
-            f.setAccessible(true);
-            f.set(this, new LocalLogBuilder(this));
-        } catch (final NoSuchFieldException | IllegalAccessException ex) {
-            StatusLogger.getLogger().warn("Unable to initialize LogBuilder");
-        }
     }
 
     private static class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {

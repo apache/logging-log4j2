@@ -282,4 +282,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         return getBytes(toSerializable(event));
     }
 
+    @Override
+    public abstract String toSerializable(LogEvent event);
 }

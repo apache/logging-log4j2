@@ -16,24 +16,11 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.StreamCorruptedException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * <em>Consider this class private.</em>
@@ -58,13 +45,13 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * @since 2.7
  */
+@InternalApi
 public class SortedArrayStringMap implements IndexedStringMap {
 
     /**
      * The default initial capacity.
      */
     private static final int DEFAULT_INITIAL_CAPACITY = 4;
-    private static final long serialVersionUID = -5748905872274478116L;
     private static final int HASHVAL = 31;
 
     private static final TriConsumer<String, Object, StringMap> PUT_ALL = (key, value, contextData) -> contextData.putValue(key, value);
@@ -75,48 +62,13 @@ public class SortedArrayStringMap implements IndexedStringMap {
     private static final String[] EMPTY = Strings.EMPTY_ARRAY;
     private static final String FROZEN = "Frozen collection cannot be modified";
 
-    private transient String[] keys = EMPTY;
-    private transient Object[] values = EMPTY;
+    private String[] keys = EMPTY;
+    private Object[] values = EMPTY;
 
     /**
      * The number of key-value mappings contained in this map.
      */
-    private transient int size;
-
-    private static final Method setObjectInputFilter;
-    private static final Method getObjectInputFilter;
-    private static final Method newObjectInputFilter;
-
-    static {
-        Method[] methods = ObjectInputStream.class.getMethods();
-        Method setMethod = null;
-        Method getMethod = null;
-        for (final Method method : methods) {
-            if (method.getName().equals("setObjectInputFilter")) {
-                setMethod = method;
-            } else if (method.getName().equals("getObjectInputFilter")) {
-                getMethod = method;
-            }
-        }
-        Method newMethod = null;
-        try {
-            if (setMethod != null) {
-                final Class<?> clazz = Class.forName("org.apache.logging.log4j.internal.DefaultObjectInputFilter");
-                methods = clazz.getMethods();
-                for (final Method method : methods) {
-                    if (method.getName().equals("newInstance") && Modifier.isStatic(method.getModifiers())) {
-                        newMethod = method;
-                        break;
-                    }
-                }
-            }
-        } catch (final ClassNotFoundException ex) {
-            // Ignore the exception
-        }
-        newObjectInputFilter = newMethod;
-        setObjectInputFilter = setMethod;
-        getObjectInputFilter = getMethod;
-    }
+    private int size;
 
     /**
      * The next size value at which to resize (capacity * load factor).
@@ -126,7 +78,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
     // table will be created when inflated.
     private int threshold;
     private boolean immutable;
-    private transient boolean iterating;
+    private boolean iterating;
 
     public SortedArrayStringMap() {
         this(DEFAULT_INITIAL_CAPACITY);
@@ -503,86 +455,6 @@ public class SortedArrayStringMap implements IndexedStringMap {
     }
 
     /**
-     * Save the state of the {@code SortedArrayStringMap} instance to a stream (i.e.,
-     * serialize it).
-     *
-     * @param s The ObjectOutputStream.
-     * @throws IOException if there is an error serializing the object to the stream.
-     *
-     * @serialData The <i>capacity</i> of the SortedArrayStringMap (the length of the
-     *             bucket array) is emitted (int), followed by the
-     *             <i>size</i> (an int, the number of key-value
-     *             mappings), followed by the key (Object) and value (Object)
-     *             for each key-value mapping.  The key-value mappings are
-     *             emitted in no particular order.
-     */
-    private void writeObject(final java.io.ObjectOutputStream s) throws IOException {
-        // Write out the threshold, and any hidden stuff
-        s.defaultWriteObject();
-
-        // Write out number of buckets
-        if (keys == EMPTY) {
-            s.writeInt(ceilingNextPowerOfTwo(threshold));
-        } else {
-            s.writeInt(keys.length);
-        }
-
-        // Write out size (number of Mappings)
-        s.writeInt(size);
-
-        // Write out keys and values (alternating)
-        if (size > 0) {
-            for (int i = 0; i < size; i++) {
-                s.writeObject(keys[i]);
-                try {
-                    s.writeObject(marshall(values[i]));
-                } catch (final Exception e) {
-                    handleSerializationException(e, i, keys[i]);
-                    s.writeObject(null);
-                }
-            }
-        }
-    }
-
-    private static byte[] marshall(final Object obj) throws IOException {
-        if (obj == null) {
-            return null;
-        }
-        final ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        try (final ObjectOutputStream oos = new ObjectOutputStream(bout)) {
-            oos.writeObject(obj);
-            oos.flush();
-            return bout.toByteArray();
-        }
-    }
-
-    @SuppressWarnings("BanSerializableRead")
-    private static Object unmarshall(final byte[] data, final ObjectInputStream inputStream)
-            throws IOException, ClassNotFoundException {
-        final ByteArrayInputStream bin = new ByteArrayInputStream(data);
-        Collection<String> allowedClasses = null;
-        final ObjectInputStream ois;
-        if (inputStream instanceof FilteredObjectInputStream) {
-            allowedClasses = ((FilteredObjectInputStream) inputStream).getAllowedClasses();
-            ois = new FilteredObjectInputStream(bin, allowedClasses);
-        } else {
-            try {
-                final Object obj = getObjectInputFilter.invoke(inputStream);
-                final Object filter = newObjectInputFilter.invoke(null, obj);
-                ois = new ObjectInputStream(bin);
-                setObjectInputFilter.invoke(ois, filter);
-            } catch (final IllegalAccessException | InvocationTargetException ex) {
-                throw new StreamCorruptedException("Unable to set ObjectInputFilter on stream");
-            }
-        }
-        try {
-            return ois.readObject();
-        } finally {
-            ois.close();
-        }
-    }
-
-    /**
      * Calculate the next power of 2, greater than or equal to x.
      * <p>
      * From Hacker's Delight, Chapter 3, Harry S. Warren Jr.
@@ -595,58 +467,4 @@ public class SortedArrayStringMap implements IndexedStringMap {
         return 1 << (BITS_PER_INT - Integer.numberOfLeadingZeros(x - 1));
     }
 
-    /**
-     * Reconstitute the {@code SortedArrayStringMap} instance from a stream (i.e.,
-     * deserialize it).
-     * @param s The ObjectInputStream.
-     * @throws IOException If there is an error reading the input stream.
-     * @throws ClassNotFoundException if the class to be instantiated could not be found.
-     */
-    private void readObject(final java.io.ObjectInputStream s)  throws IOException, ClassNotFoundException {
-        if (!(s instanceof FilteredObjectInputStream) && setObjectInputFilter == null) {
-            throw new IllegalArgumentException("readObject requires a FilteredObjectInputStream or an ObjectInputStream that accepts an ObjectInputFilter");
-        }
-        // Read in the threshold (ignored), and any hidden stuff
-        s.defaultReadObject();
-
-        // set other fields that need values
-        keys = EMPTY;
-        values = EMPTY;
-
-        // Read in number of buckets
-        final int capacity = s.readInt();
-        if (capacity < 0) {
-            throw new InvalidObjectException("Illegal capacity: " + capacity);
-        }
-
-        // Read number of mappings
-        final int mappings = s.readInt();
-        if (mappings < 0) {
-            throw new InvalidObjectException("Illegal mappings count: " + mappings);
-        }
-
-        // allocate the bucket array;
-        if (mappings > 0) {
-            inflateTable(capacity);
-        } else {
-            threshold = capacity;
-        }
-
-        // Read the keys and values, and put the mappings in the arrays
-        for (int i = 0; i < mappings; i++) {
-            keys[i] = (String) s.readObject();
-            try {
-                final byte[] marshalledObject = (byte[]) s.readObject();
-                values[i] = marshalledObject == null ? null : unmarshall(marshalledObject, s);
-            } catch (final Exception | LinkageError error) {
-                handleSerializationException(error, i, keys[i]);
-                values[i] = null;
-            }
-        }
-        size = mappings;
-    }
-
-    private void handleSerializationException(final Throwable t, final int i, final String key) {
-        StatusLogger.getLogger().warn("Ignoring {} for key[{}] ('{}')", String.valueOf(t), i, keys[i]);
-    }
 }

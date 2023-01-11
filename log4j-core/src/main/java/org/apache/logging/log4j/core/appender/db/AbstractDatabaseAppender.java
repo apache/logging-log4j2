@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.db;
 
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -63,7 +62,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      * @param manager The matching {@link AbstractDatabaseManager} implementation.
      */
     protected AbstractDatabaseAppender(final String name, final Filter filter,
-              final Layout<? extends Serializable> layout, final boolean ignoreExceptions, final Property[] properties, final T manager) {
+              final Layout<?> layout, final boolean ignoreExceptions, final Property[] properties, final T manager) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }
@@ -72,7 +71,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
     public final void append(final LogEvent event) {
         this.readLock.lock();
         try {
-            this.getManager().write(event, toSerializable(event));
+            this.getManager().write(event);
         } catch (final LoggingException e) {
             LOGGER.error("Unable to write to database [{}] for appender [{}].", this.getManager().getName(),
                     this.getName(), e);

@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -24,11 +28,6 @@ import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * File Appender.
@@ -74,7 +73,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
                 LOGGER.error("No filename provided for RandomAccessFileAppender with name {}", name);
                 return null;
             }
-            final Layout<? extends Serializable> layout = getOrCreateLayout();
+            final Layout<?> layout = getOrCreateLayout();
             final boolean immediateFlush = isImmediateFlush();
             final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(fileName, append,
                     immediateFlush, getBufferSize(), advertiseURI, layout, null);
@@ -112,7 +111,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private RandomAccessFileAppender(final String name, final Layout<? extends Serializable> layout,
+    private RandomAccessFileAppender(final String name, final Layout<?> layout,
             final Filter filter, final RandomAccessFileManager manager, final String filename,
             final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {
 

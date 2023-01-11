@@ -68,7 +68,6 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
     public static final float DEFAULT_LOAD_FACTOR = .75f;
 
     private static final String FROZEN = "Frozen collection cannot be modified";
-    private static final long serialVersionUID = -1486744623338827187L;
 
     /** The array of keys. */
     protected transient K[] keys;

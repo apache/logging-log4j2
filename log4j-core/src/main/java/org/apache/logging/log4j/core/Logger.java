@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -44,14 +42,8 @@ import org.apache.logging.log4j.util.Supplier;
  * Appenders} associated with this Logger. Note that access to these underlying objects is provided primarily for use in
  * unit tests or bridging legacy Log4j 1.x code. Future versions of this class may or may not include the various
  * methods that are noted as not being part of the public API.
- *
- * TODO All the isEnabled methods could be pushed into a filter interface. Not sure of the utility of having isEnabled
- * be able to examine the message pattern and parameters. (RG) Moving the isEnabled methods out of Logger noticeably
- * impacts performance. The message pattern and parameters are required so that they can be used in global filters.
  */
 public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
-
-    private static final long serialVersionUID = 1L;
 
     /**
      * Config should be consistent across threads.
@@ -72,10 +64,6 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         super(name, messageFactory);
         this.context = context;
         privateConfig = new PrivateConfig(context.getConfiguration(), this);
-    }
-
-    protected Object writeReplace() throws ObjectStreamException {
-        return new LoggerProxy(getName(), getMessageFactory());
     }
 
     /**
@@ -634,28 +622,6 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
             builder.append(logger);
             builder.append("]");
             return builder.toString();
-        }
-    }
-
-    /**
-     * Serialization proxy class for Logger. Since the LoggerContext and config information can be reconstructed on the
-     * fly, the only information needed for a Logger are what's available in AbstractLogger.
-     *
-     * @since 2.5
-     */
-    protected static class LoggerProxy implements Serializable {
-        private static final long serialVersionUID = 1L;
-
-        private final String name;
-        private final MessageFactory messageFactory;
-
-        public LoggerProxy(final String name, final MessageFactory messageFactory) {
-            this.name = name;
-            this.messageFactory = messageFactory;
-        }
-
-        protected Object readResolve() throws ObjectStreamException {
-            return new Logger(LoggerContext.getContext(), name, messageFactory);
         }
     }
 

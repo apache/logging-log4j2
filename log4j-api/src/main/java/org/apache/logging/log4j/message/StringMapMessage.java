@@ -29,8 +29,6 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 @AsynchronouslyFormattable
 public class StringMapMessage extends MapMessage<StringMapMessage, String> {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * Constructs a new instance.
      */
