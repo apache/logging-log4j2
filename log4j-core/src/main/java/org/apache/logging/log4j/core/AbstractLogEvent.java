@@ -32,8 +32,6 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
  */
 public abstract class AbstractLogEvent implements LogEvent {
 
-    private static final long serialVersionUID = 1L;
-
     private volatile MutableInstant instant;
 
     /**

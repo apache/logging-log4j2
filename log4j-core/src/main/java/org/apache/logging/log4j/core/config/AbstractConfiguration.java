@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.config;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -742,7 +741,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected void setToDefault() {
         // LOG4J2-1176 facilitate memory leak investigation
         setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
-        final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
+        final Layout<?> layout = PatternLayout.newBuilder()
                 .setPattern(DefaultConfiguration.DEFAULT_PATTERN)
                 .setConfiguration(this)
                 .build();

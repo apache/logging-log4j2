@@ -18,18 +18,13 @@ package org.apache.logging.log4j.message;
 
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 /**
  * The simplest possible implementation of Message. It just returns the String given as the constructor argument.
  */
 public class SimpleMessage implements Message, StringBuilderFormattable, CharSequence {
-    private static final long serialVersionUID = -8398002534962715992L;
 
     private String message;
-    private transient CharSequence charSequence;
+    private final CharSequence charSequence;
 
     /**
      * Basic constructor.
@@ -67,7 +62,7 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
 
     @Override
     public void formatTo(final StringBuilder buffer) {
-	buffer.append(message != null ? message : charSequence);
+    buffer.append(message != null ? message : charSequence);
     }
 
     /**
@@ -141,13 +136,4 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
     }
 
 
-    private void writeObject(final ObjectOutputStream out) throws IOException {
-        getFormattedMessage(); // initialize the message:String field
-        out.defaultWriteObject();
-    }
-
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        charSequence = message;
-    }
 }

@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
 /**
@@ -29,21 +26,19 @@ import java.util.Arrays;
  * <p>
  * {@code logger.debug(new ObjectArrayMessage(1, 2, "Bob"));}
  * </p>
- * 
+ *
  * @since 2.4
  */
 public final class ObjectArrayMessage implements Message {
 
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
-    private static final long serialVersionUID = -5903272448334166185L;
-
     private transient Object[] array;
     private transient String arrayString;
 
     /**
      * Creates the ObjectMessage.
-     * 
+     *
      * @param obj
      *            The Object to format.
      */
@@ -70,7 +65,7 @@ public final class ObjectArrayMessage implements Message {
 
     /**
      * Returns the object formatted using its toString method.
-     * 
+     *
      * @return the String representation of the object.
      */
     @Override
@@ -80,7 +75,7 @@ public final class ObjectArrayMessage implements Message {
 
     /**
      * Returns the formatted object message.
-     * 
+     *
      * @return the formatted object message.
      */
     @Override
@@ -94,7 +89,7 @@ public final class ObjectArrayMessage implements Message {
 
     /**
      * Returns the object as if it were a parameter.
-     * 
+     *
      * @return The object.
      */
     @Override
@@ -117,18 +112,9 @@ public final class ObjectArrayMessage implements Message {
         return Arrays.hashCode(array);
     }
 
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        array = (Object[]) in.readObject();
-    }
-
     @Override
     public String toString() {
         return getFormattedMessage();
     }
 
-    private void writeObject(final ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        out.writeObject(array);
-    }
 }

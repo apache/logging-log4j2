@@ -16,25 +16,6 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.StringLayout;
-import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.appender.ManagerFactory;
-import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
-import org.apache.logging.log4j.core.appender.db.ColumnMapping;
-import org.apache.logging.log4j.core.appender.db.DbAppenderLoggingException;
-import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.core.util.Log4jThread;
-import org.apache.logging.log4j.jdbc.convert.DateTypeConverter;
-import org.apache.logging.log4j.message.MapMessage;
-import org.apache.logging.log4j.spi.ThreadContextMap;
-import org.apache.logging.log4j.spi.ThreadContextStack;
-import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.Strings;
-
-import java.io.Serializable;
 import java.io.StringReader;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -56,6 +37,25 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.StringLayout;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
+import org.apache.logging.log4j.core.appender.db.ColumnMapping;
+import org.apache.logging.log4j.core.appender.db.DbAppenderLoggingException;
+import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.jdbc.convert.DateTypeConverter;
+import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.spi.ThreadContextMap;
+import org.apache.logging.log4j.spi.ThreadContextStack;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.util.Strings;
+
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JDBC.
  */
@@ -74,7 +74,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         private final long reconnectIntervalMillis;
         private final boolean truncateStrings;
 
-        protected FactoryData(final int bufferSize, final Layout<? extends Serializable> layout,
+        protected FactoryData(final int bufferSize, final Layout<?> layout,
                 final ConnectionSource connectionSource, final String tableName, final ColumnConfig[] columnConfigs,
                 final ColumnMapping[] columnMappings, final boolean immediateFail, final long reconnectIntervalMillis,
                 final boolean truncateStrings) {
@@ -390,7 +390,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * @return a new or existing JDBC manager as applicable.
      */
     public static JdbcDatabaseManager getManager(final String name, final int bufferSize,
-            final Layout<? extends Serializable> layout, final ConnectionSource connectionSource,
+            final Layout<?> layout, final ConnectionSource connectionSource,
             final String tableName, final ColumnConfig[] columnConfigs, final ColumnMapping[] columnMappings,
             final boolean immediateFail, final long reconnectIntervalMillis, final boolean truncateStrings) {
         return getManager(name, new FactoryData(bufferSize, layout, connectionSource, tableName, columnConfigs,
@@ -726,7 +726,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void writeInternal(final LogEvent event, final Serializable serializable) {
+    protected void writeInternal(final LogEvent event) {
         StringReader reader = null;
         try {
             if (!this.isRunning() || this.connection == null || this.connection.isClosed() || this.statement == null
@@ -737,8 +737,9 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             }
             // Clear in case there are leftovers.
             statement.clearParameters();
-            if (serializable instanceof MapMessage) {
-                setFields((MapMessage<?, ?>) serializable);
+            Message message = event.getMessage();
+            if (message instanceof MapMessage<?, ?>) {
+                setFields((MapMessage<?, ?>) message);
             }
             int j = 1; // JDBC indices start at 1
             for (final ColumnMapping mapping : this.factoryData.columnMappings) {
@@ -812,18 +813,18 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void writeThrough(final LogEvent event, final Serializable serializable) {
+    protected void writeThrough(final LogEvent event) {
         this.connectAndStart();
         try {
             try {
-                this.writeInternal(event, serializable);
+                this.writeInternal(event);
             } finally {
                 this.commitAndClose();
             }
         } catch (final DbAppenderLoggingException e) {
             reconnectOn(e);
             try {
-                this.writeInternal(event, serializable);
+                this.writeInternal(event);
             } finally {
                 this.commitAndClose();
             }

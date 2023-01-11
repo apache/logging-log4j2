@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.jms.appender;
 
 import java.io.Serializable;
@@ -32,6 +31,7 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.naming.NamingException;
 
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
@@ -344,34 +344,29 @@ public class JmsManager extends AbstractManager {
         return jndiManager.lookup(configuration.getDestinationName());
     }
 
-    /**
-     * Creates a TextMessage, MapMessage, or ObjectMessage from a Serializable object.
-     * <p>
-     * For instance, when using a text-based {@link org.apache.logging.log4j.core.Layout} such as
-     * {@link org.apache.logging.log4j.core.layout.PatternLayout}, the {@link org.apache.logging.log4j.core.LogEvent}
-     * message will be serialized to a String.
-     * </p>
-     * <p>
-     * When using a layout such as {@link org.apache.logging.log4j.core.layout.MessageLayout} and the LogEvent message
-     * is a Log4j MapMessage, the message will be serialized as a JMS MapMessage.
-     * </p>
-     *
-     * @param object
-     *            The LogEvent or String message to wrap.
-     * @return A new JMS message containing the provided object.
-     * @throws JMSException if an error occurs.
-     */
-    public Message createMessage(final Serializable object) throws JMSException {
-        if (object instanceof String) {
-            return this.session.createTextMessage((String) object);
-        } else if (object instanceof org.apache.logging.log4j.message.MapMessage) {
-            return map((org.apache.logging.log4j.message.MapMessage<?, ?>) object, this.session.createMapMessage());
+    private void createMessageAndSend(final LogEvent event, final Layout<?> layout) throws JMSException {
+        final var eventMessage = event.getMessage();
+        final Message message;
+        if (eventMessage instanceof org.apache.logging.log4j.message.MapMessage<?, ?>) {
+            message = map((org.apache.logging.log4j.message.MapMessage<?, ?>) eventMessage, session.createMapMessage());
+        } else if (layout != null) {
+            Object serializedObject = layout.toSerializable(event);
+            if (serializedObject instanceof org.apache.logging.log4j.message.MapMessage<?, ?>) {
+                message = map((org.apache.logging.log4j.message.MapMessage<?, ?>) serializedObject, session.createMapMessage());
+            } else if (serializedObject instanceof byte[]) {
+                var bytesMessage = session.createBytesMessage();
+                bytesMessage.writeBytes(layout.toByteArray(event));
+                message = bytesMessage;
+            } else if (serializedObject instanceof String) {
+                message = session.createTextMessage((String) serializedObject);
+            } else if (serializedObject instanceof Serializable) {
+                message = session.createObjectMessage((Serializable) serializedObject);
+            } else {
+                throw new UnsupportedOperationException("Cannot create a JMS message for " + eventMessage.getClass());
+            }
+        } else {
+            throw new UnsupportedOperationException("Unable to create a JMS message without a layout defined");
         }
-        return this.session.createObjectMessage(object);
-    }
-
-    private void createMessageAndSend(final LogEvent event, final Serializable serializable) throws JMSException {
-        final Message message = createMessage(serializable);
         message.setJMSTimestamp(event.getTimeMillis());
         messageProducer.send(message);
     }
@@ -453,7 +448,7 @@ public class JmsManager extends AbstractManager {
         return closed && this.jndiManager.stop(timeout, timeUnit);
     }
 
-    void send(final LogEvent event, final Serializable serializable) {
+    void send(final LogEvent event, final Layout<?> layout) {
         if (messageProducer == null) {
             if (reconnector != null && !configuration.isImmediateFail()) {
                 reconnector.latch();
@@ -465,7 +460,7 @@ public class JmsManager extends AbstractManager {
         }
         synchronized (this) {
             try {
-                createMessageAndSend(event, serializable);
+                createMessageAndSend(event, layout);
             } catch (final JMSException causeEx) {
                 if (configuration.isRetry() && reconnector == null) {
                     reconnector = createReconnector();
@@ -480,7 +475,7 @@ public class JmsManager extends AbstractManager {
                                 String.format("JMS exception sending to %s for %s", getName(), configuration), causeEx);
                     }
                     try {
-                        createMessageAndSend(event, serializable);
+                        createMessageAndSend(event, layout);
                     } catch (final JMSException e) {
                         throw new AppenderLoggingException(
                                 String.format("Error sending to %s after reestablishing JMS connection for %s", getName(),

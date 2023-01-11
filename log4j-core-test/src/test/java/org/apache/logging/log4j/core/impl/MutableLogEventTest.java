@@ -14,14 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.Level;
@@ -33,14 +27,21 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.util.FilteredObjectInputStream;
+import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the MutableLogEvent class.
@@ -143,7 +144,7 @@ public class MutableLogEventTest {
         assertEquals("msg in a bottle", memento.getFormattedMessage(), "formatted");
         assertArrayEquals(new String[] {"bottle"}, memento.getParameters(), "parameters");
 
-        Message eventMementoMessage = mutable.createMemento().getMessage();
+        Message eventMementoMessage = mutable.toMemento().getMessage();
         assertEquals("msg in a {}", eventMementoMessage.getFormat(), "format");
         assertEquals("msg in a bottle", eventMementoMessage.getFormattedMessage(), "formatted");
         assertArrayEquals(new String[] {"bottle"}, eventMementoMessage.getParameters(), "parameters");
@@ -270,108 +271,5 @@ public class MutableLogEventTest {
         assertNotNull(mutable.getThreadName(), "tname");
         assertNotEquals(0, mutable.getThreadPriority(), "tpriority");
     }
-
-    @Test
-    public void testJavaIoSerializable() throws Exception {
-        final MutableLogEvent evt = new MutableLogEvent();
-        evt.setContextData(CONTEXT_DATA);
-        evt.setContextStack(STACK);
-        evt.setEndOfBatch(true);
-        evt.setIncludeLocation(true);
-        evt.setLevel(Level.WARN);
-        evt.setLoggerFqcn(getClass().getName());
-        evt.setLoggerName("loggername");
-        evt.setMarker(MarkerManager.getMarker("marked man"));
-        //evt.setMessage(new ParameterizedMessage("message in a {}", "bottle")); // TODO ParameterizedMessage serialization
-        evt.setMessage(new SimpleMessage("peace for all"));
-        evt.setNanoTime(1234);
-        evt.setThreadId(987);
-        evt.setThreadName("ito");
-        evt.setThreadPriority(9);
-        evt.setTimeMillis(56789);
-
-        final byte[] binary = serialize(evt);
-        final Log4jLogEvent evt2 = deserialize(binary);
-
-        assertEquals(evt.getTimeMillis(), evt2.getTimeMillis());
-        assertEquals(evt.getLoggerFqcn(), evt2.getLoggerFqcn());
-        assertEquals(evt.getLevel(), evt2.getLevel());
-        assertEquals(evt.getLoggerName(), evt2.getLoggerName());
-        assertEquals(evt.getMarker(), evt2.getMarker());
-        assertEquals(evt.getContextData(), evt2.getContextData());
-        assertEquals(evt.getContextStack(), evt2.getContextStack());
-        assertEquals(evt.getMessage(), evt2.getMessage());
-        assertNotNull(evt2.getSource());
-        assertEquals(evt.getSource(), evt2.getSource());
-        assertEquals(evt.getThreadName(), evt2.getThreadName());
-        assertNull(evt2.getThrown());
-        assertNull(evt2.getThrownProxy());
-        assertEquals(evt.isEndOfBatch(), evt2.isEndOfBatch());
-        assertEquals(evt.isIncludeLocation(), evt2.isIncludeLocation());
-
-        assertNotEquals(evt.getNanoTime(), evt2.getNanoTime()); // nano time is transient in log4j log event
-        assertEquals(0, evt2.getNanoTime());
-    }
-
-    @Test
-    public void testJavaIoSerializableWithThrown() throws Exception {
-        final MutableLogEvent evt = new MutableLogEvent();
-        evt.setContextData(CONTEXT_DATA);
-        evt.setContextStack(STACK);
-        evt.setEndOfBatch(true);
-        evt.setIncludeLocation(true);
-        evt.setLevel(Level.WARN);
-        evt.setLoggerFqcn(getClass().getName());
-        evt.setLoggerName("loggername");
-        evt.setMarker(MarkerManager.getMarker("marked man"));
-        //evt.setMessage(new ParameterizedMessage("message in a {}", "bottle")); // TODO ParameterizedMessage serialization
-        evt.setMessage(new SimpleMessage("peace for all"));
-        evt.setNanoTime(1234);
-        evt.setThreadId(987);
-        evt.setThreadName("ito");
-        evt.setThreadPriority(9);
-        evt.setThrown(new Exception());
-        evt.setTimeMillis(56789);
-
-        final byte[] binary = serialize(evt);
-        final Log4jLogEvent evt2 = deserialize(binary);
-
-        assertEquals(evt.getTimeMillis(), evt2.getTimeMillis());
-        assertEquals(evt.getLoggerFqcn(), evt2.getLoggerFqcn());
-        assertEquals(evt.getLevel(), evt2.getLevel());
-        assertEquals(evt.getLoggerName(), evt2.getLoggerName());
-        assertEquals(evt.getMarker(), evt2.getMarker());
-        assertEquals(evt.getContextData(), evt2.getContextData());
-        assertEquals(evt.getContextStack(), evt2.getContextStack());
-        assertEquals(evt.getMessage(), evt2.getMessage());
-        assertNotNull(evt2.getSource());
-        assertEquals(evt.getSource(), evt2.getSource());
-        assertEquals(evt.getThreadName(), evt2.getThreadName());
-        assertNull(evt2.getThrown());
-        assertNotNull(evt2.getThrownProxy());
-        assertEquals(evt.getThrownProxy(), evt2.getThrownProxy());
-        assertEquals(evt.isEndOfBatch(), evt2.isEndOfBatch());
-        assertEquals(evt.isIncludeLocation(), evt2.isIncludeLocation());
-
-        assertNotEquals(evt.getNanoTime(), evt2.getNanoTime()); // nano time is transient in log4j log event
-        assertEquals(0, evt2.getNanoTime());
-    }
-
-    private byte[] serialize(final MutableLogEvent event) throws IOException {
-        final ByteArrayOutputStream arr = new ByteArrayOutputStream();
-        final ObjectOutputStream out = new ObjectOutputStream(arr);
-        out.writeObject(event);
-        return arr.toByteArray();
-    }
-
-    @SuppressWarnings("BanSerializableRead")
-    private Log4jLogEvent deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
-        final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
-        final ObjectInputStream in = useObjectInputStream ? new ObjectInputStream(inArr) :
-                new FilteredObjectInputStream(inArr);
-        final Log4jLogEvent result = (Log4jLogEvent) in.readObject();
-        return result;
-    }
-
 
 }

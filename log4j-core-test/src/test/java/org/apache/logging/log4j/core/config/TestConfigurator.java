@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,20 +46,21 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import static org.apache.logging.log4j.core.test.hamcrest.MapMatchers.hasSize;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.theInstance;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("functional")
 @StatusLoggerLevel("OFF")
@@ -309,7 +319,7 @@ public class TestConfigurator {
         assertThat(map, hasSize(greaterThan(0)));
         assertThat("No ListAppender named List2", map, hasKey("List2"));
         final Appender app = map.get("List2");
-        final Layout<? extends Serializable> layout = app.getLayout();
+        final Layout<?> layout = app.getLayout();
         assertNotNull(layout, "Appender List2 does not have a Layout");
         assertThat("Appender List2 is not configured with a PatternLayout", layout, instanceOf(PatternLayout.class));
         final String pattern = ((PatternLayout) layout).getConversionPattern();

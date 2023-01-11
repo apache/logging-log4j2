@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.time;
 
-import java.io.Serializable;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
@@ -25,14 +24,18 @@ import java.time.temporal.TemporalQuery;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.temporal.ValueRange;
 
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
-import static java.time.temporal.ChronoField.*;
+import static java.time.temporal.ChronoField.INSTANT_SECONDS;
+import static java.time.temporal.ChronoField.MICRO_OF_SECOND;
+import static java.time.temporal.ChronoField.MILLI_OF_SECOND;
+import static java.time.temporal.ChronoField.NANO_OF_SECOND;
 import static java.time.temporal.ChronoUnit.NANOS;
 
 /**
- * An instantaneous point on the time line, used for high-precision log event timestamps.
- * Modeled on <a href="https://docs.oracle.com/javase/9/docs/api/index.html?java/time/class-use/Instant.html">java.time.Instant</a>,
+ * An instantaneous point on the timeline, used for high-precision log event timestamps.
+ * Modeled on {@link java.time.Instant},
  * except that this version is mutable to prevent allocating temporary objects that need to be garbage-collected later.
  * <p>
  * Instances of this class are <em>not</em> thread-safe and should not be shared between threads.
@@ -41,9 +44,8 @@ import static java.time.temporal.ChronoUnit.NANOS;
  * @since 2.11.0
  */
 @PerformanceSensitive("allocation")
-public class MutableInstant implements Instant, Serializable, TemporalAccessor {
+public class MutableInstant implements Instant, TemporalAccessor {
 
-    private static final long serialVersionUID = 1L;
     private static final int MILLIS_PER_SECOND = 1000;
     private static final int NANOS_PER_MILLI = 1000_000;
     private static final int NANOS_PER_SECOND = MILLIS_PER_SECOND * NANOS_PER_MILLI;
@@ -182,7 +184,7 @@ public class MutableInstant implements Instant, Serializable, TemporalAccessor {
     @Override
     public <R> R query(final TemporalQuery<R> query) {
         if (query == TemporalQueries.precision()) {
-            return (R) NANOS;
+            return Cast.cast(NANOS);
         }
         // inline TemporalAccessor.super.query(query) as an optimization
         if (query == TemporalQueries.chronology() ||

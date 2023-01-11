@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.config;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -62,7 +61,7 @@ public class CustomConfigurationTest {
                 break;
             }
         }
-        final Layout<? extends Serializable> layout = PatternLayout.newBuilder()
+        final Layout<?> layout = PatternLayout.newBuilder()
             .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
             .setConfiguration(config)
             .build();

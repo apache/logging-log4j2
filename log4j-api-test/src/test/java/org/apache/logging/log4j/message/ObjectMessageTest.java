@@ -16,14 +16,10 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-
 import org.apache.logging.log4j.test.junit.Mutable;
-import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests {@link ObjectMessage}.
@@ -66,36 +62,6 @@ public class ObjectMessageTest {
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
         assertEquals("abc", actual, "Should use initial param value");
-    }
-
-    @Test
-    public void testSerializeWithSerializableParam() {
-        final BigDecimal big = BigDecimal.valueOf(123.456);
-        final ObjectMessage msg = new ObjectMessage(big);
-        final ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
-        assertEquals(msg, other);
-    }
-
-    @Test
-    public void testDeserializeNonSerializableParamEqualIfToStringSame() {
-        class NonSerializable {
-            @Override
-            public boolean equals(final Object other) {
-                return other instanceof NonSerializable; // a very lenient equals()
-            }
-
-            @Override
-            public int hashCode() {
-                return NonSerializable.class.hashCode();
-            }
-        }
-        final NonSerializable nonSerializable = new NonSerializable();
-        assertFalse(nonSerializable instanceof Serializable);
-        final ObjectMessage msg = new ObjectMessage(nonSerializable);
-        final ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
-
-        assertEquals(msg, other);
-        assertEquals(other, msg);
     }
 
     @Test

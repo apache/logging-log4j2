@@ -30,21 +30,20 @@ import org.apache.logging.log4j.util.StringBuilders;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableParameterizedMessage implements ReusableMessage, ParameterVisitable, Clearable {
+public class ReusableParameterizedMessage implements ReusableMessage, ParameterVisitable {
 
     private static final int MIN_BUILDER_SIZE = 512;
     private static final int MAX_PARMS = 10;
-    private static final long serialVersionUID = 7800075879295123856L;
-    private transient ThreadLocal<StringBuilder> buffer; // non-static: LOG4J2-1583
+    private ThreadLocal<StringBuilder> buffer; // non-static: LOG4J2-1583
 
     private String messagePattern;
     private int argCount;
     private int usedCount;
     private final int[] indices = new int[256];
-    private transient Object[] varargs;
-    private transient Object[] params = new Object[MAX_PARMS];
-    private transient Throwable throwable;
-    transient boolean reserved = false; // LOG4J2-1583 prevent scrambled logs with nested logging calls
+    private Object[] varargs;
+    private Object[] params = new Object[MAX_PARMS];
+    private Throwable throwable;
+    boolean reserved = false; // LOG4J2-1583 prevent scrambled logs with nested logging calls
 
     /**
      * Creates a reusable message.

@@ -16,35 +16,20 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
 
 /**
- * Lays out a {@linkplain LogEvent} in different formats.
+ * Converts {@link LogEvent} instances into different layouts of data. A layout typically encodes into either
+ * a {@link String} or {@code byte[]}. Since version 2.6, layouts implement {@link Encoder Encoder&lt;LogEvent&gt;}
+ * to support direct encoding of a log event into a {@link ByteBufferDestination} without creating temporary
+ * intermediary objects. Since version 3.0.0, layouts no longer reference the legacy Java serialization API.
  *
- * The formats are:
- * <ul>
- * <li>
- * {@code byte[]}</li>
- * <li>
- * an implementer of {@linkplain Serializable}, like {@code byte[]}</li>
- * <li>
- * {@linkplain String}</li>
- * <li>
- * {@linkplain LogEvent}</li>
- * </ul>
- * <p>
- * Since 2.6, Layouts can {@linkplain Encoder#encode(Object, ByteBufferDestination) encode} a {@code LogEvent} directly
- * to a {@link ByteBufferDestination} without creating temporary intermediary objects.
- * </p>
- *
- * @param <T>
- *            The {@link Serializable} type returned by {@link #toSerializable(LogEvent)}
+ * @param <T> the resulting type of data this layout produces such as byte[] or String
  */
-public interface Layout<T extends Serializable> extends Encoder<LogEvent> {
+public interface Layout<T> extends Encoder<LogEvent> {
 
     /**
      * Main {@linkplain org.apache.logging.log4j.plugins.Configurable#elementType() plugin element type} for
@@ -75,7 +60,7 @@ public interface Layout<T extends Serializable> extends Encoder<LogEvent> {
     byte[] toByteArray(LogEvent event);
 
     /**
-     * Formats the event as an Object that can be serialized.
+     * Formats the event as an Object that can be serialized such as {@code byte[]} or {@code String}.
      *
      * @param event The Logging Event.
      * @return The formatted event.

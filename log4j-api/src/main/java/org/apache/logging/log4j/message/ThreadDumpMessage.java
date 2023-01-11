@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,16 +30,14 @@ import org.apache.logging.log4j.util.Strings;
  */
 @AsynchronouslyFormattable
 public class ThreadDumpMessage implements Message, StringBuilderFormattable {
-    private static final long serialVersionUID = -1103400781608841088L;
     private static final Lazy<ThreadInfoFactory> FACTORY = Lazy.lazy(() -> {
         final var services = ServiceRegistry.getInstance()
                 .getServices(ThreadInfoFactory.class, MethodHandles.lookup(), null);
         return services.isEmpty() ? new BasicThreadInfoFactory() : services.get(0);
     });
 
-    private volatile Map<ThreadInformation, StackTraceElement[]> threads;
+    private final Map<ThreadInformation, StackTraceElement[]> threads;
     private final String title;
-    private String formattedMessage;
 
     /**
      * Generate a ThreadDumpMessage with a title.
@@ -51,11 +46,6 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     public ThreadDumpMessage(final String title) {
         this.title = title == null ? Strings.EMPTY : title;
         threads = FACTORY.get().createThreadInfo();
-    }
-
-    private ThreadDumpMessage(final String formattedMsg, final String title) {
-        this.formattedMessage = formattedMsg;
-        this.title = title == null ? Strings.EMPTY : title;
     }
 
     @Override
@@ -69,9 +59,6 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
      */
     @Override
     public String getFormattedMessage() {
-        if (formattedMessage != null) {
-            return formattedMessage;
-        }
         final StringBuilder sb = new StringBuilder(255);
         formatTo(sb);
         return sb.toString();
@@ -108,42 +95,6 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     @Override
     public Object[] getParameters() {
         return null;
-    }
-
-        /**
-     * Creates a ThreadDumpMessageProxy that can be serialized.
-     * @return a ThreadDumpMessageProxy.
-     */
-    protected Object writeReplace() {
-        return new ThreadDumpMessageProxy(this);
-    }
-
-    private void readObject(final ObjectInputStream stream)
-        throws InvalidObjectException {
-        throw new InvalidObjectException("Proxy required");
-    }
-
-    /**
-     * Proxy pattern used to serialize the ThreadDumpMessage.
-     */
-    private static class ThreadDumpMessageProxy implements Serializable {
-
-        private static final long serialVersionUID = -3476620450287648269L;
-        private final String formattedMsg;
-        private final String title;
-
-        ThreadDumpMessageProxy(final ThreadDumpMessage msg) {
-            this.formattedMsg = msg.getFormattedMessage();
-            this.title = msg.title;
-        }
-
-        /**
-         * Returns a ThreadDumpMessage using the data in the proxy.
-         * @return a ThreadDumpMessage.
-         */
-        protected Object readResolve() {
-            return new ThreadDumpMessage(formattedMsg, title);
-        }
     }
 
     /**

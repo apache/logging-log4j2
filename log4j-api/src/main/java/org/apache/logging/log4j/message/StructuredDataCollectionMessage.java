@@ -27,7 +27,6 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  */
 public class StructuredDataCollectionMessage implements StringBuilderFormattable,
         MessageCollectionMessage<StructuredDataMessage> {
-    private static final long serialVersionUID = 5725337076388822924L;
 
     private final List<StructuredDataMessage> structuredDataMessageList;
 

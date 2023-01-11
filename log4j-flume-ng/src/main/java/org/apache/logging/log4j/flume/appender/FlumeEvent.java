@@ -30,7 +30,6 @@ import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.util.Patterns;
@@ -48,10 +47,6 @@ import org.apache.logging.log4j.util.Strings;
 public class FlumeEvent extends SimpleEvent implements LogEvent {
 
     static final String GUID = "guId";
-    /**
-     * Generated serial version ID.
-     */
-    private static final long serialVersionUID = -8988674608627854140L;
 
     private static final String DEFAULT_MDC_PREFIX = Strings.EMPTY;
 
@@ -134,10 +129,10 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         final Message message = event.getMessage();
         if (message instanceof MapMessage) {
             // Add the guid to the Map so that it can be included in the Layout.
-        	@SuppressWarnings("unchecked")
+            @SuppressWarnings("unchecked")
             final
-			MapMessage<?, String> stringMapMessage = (MapMessage<?, String>) message;
-        	stringMapMessage.put(GUID, guid);
+            MapMessage<?, String> stringMapMessage = (MapMessage<?, String>) message;
+            stringMapMessage.put(GUID, guid);
             if (message instanceof StructuredDataMessage) {
                 addStructuredData(eventPrefix, headers, (StructuredDataMessage) message);
             }
@@ -176,10 +171,10 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         context.putAll(map);
     }
 
-	@Override
-	public LogEvent toImmutable() {
-		return Log4jLogEvent.createMemento(this);
-	}
+    @Override
+    public LogEvent toImmutable() {
+        return toMemento();
+    }
 
     /**
      * Set the body in the event.

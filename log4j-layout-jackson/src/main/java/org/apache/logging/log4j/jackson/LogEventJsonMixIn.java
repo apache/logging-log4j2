@@ -57,8 +57,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 public abstract class LogEventJsonMixIn /* extends AbstractLogEventMixIn */ implements LogEvent {
 
-    private static final long serialVersionUID = 1L;
-
     @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
     @JsonSerialize(using = ContextDataSerializer.class)
     @JsonDeserialize(using = ContextDataDeserializer.class)

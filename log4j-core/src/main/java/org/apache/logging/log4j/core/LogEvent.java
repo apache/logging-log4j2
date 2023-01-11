@@ -14,32 +14,30 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core;
-
-import java.io.Serializable;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.impl.MementoLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
- * Provides contextual information about a logged message. A LogEvent must be {@link java.io.Serializable} so that it
- * may be transmitted over a network connection. Besides containing a
+ * Provides contextual information about a logged message. Besides containing a
  * {@link org.apache.logging.log4j.message.Message}, a LogEvent has a corresponding
  * {@link org.apache.logging.log4j.Level} that the message was logged at. If a
  * {@link org.apache.logging.log4j.Marker} was used, then it is included here. The contents of the
  * {@link org.apache.logging.log4j.ThreadContext} at the time of the log call are provided via
  * {@link #getContextData()} and {@link #getContextStack()}. If a {@link java.lang.Throwable} was included in the log
- * call, then it is provided via {@link #getThrown()}. When this class is serialized, the attached Throwable will
- * be wrapped into a {@link org.apache.logging.log4j.core.impl.ThrowableProxy} so that it may be safely serialized
- * and deserialized properly without causing problems if the exception class is not available on the other end.
+ * call, then it is provided via {@link #getThrown()}. When this class is
+ * {@linkplain org.apache.logging.log4j.core.layout.Encoder encoded}, the attached Throwable will
+ * be wrapped into a {@link org.apache.logging.log4j.core.impl.ThrowableProxy} so that it may be safely encoded
+ * and decoded properly without requiring the same exception classes to be present on all ends.
  */
-public interface LogEvent extends Serializable {
+public interface LogEvent {
 
     /**
      * Returns an immutable version of this log event, which MAY BE a copy of this event.
@@ -47,6 +45,20 @@ public interface LogEvent extends Serializable {
      * @return an immutable version of this log event
      */
     LogEvent toImmutable();
+
+    /**
+     * Returns a copy of this log event.
+     */
+    default LogEvent toMemento() {
+        return new MementoLogEvent(this);
+    }
+
+    /**
+     * Returns a copy of this log event and overrides the {@code includeLocation} option.
+     */
+    default LogEvent toMemento(final boolean includeLocation) {
+        return new MementoLogEvent(this, includeLocation);
+    }
 
     /**
      * Returns the {@code ReadOnlyStringMap} object holding context data key-value pairs.
@@ -139,7 +151,6 @@ public interface LogEvent extends Serializable {
      * Gets the thread name.
      *
      * @return thread name, may be null.
-     * TODO guess this could go into a thread context object too. (RG) Why?
      */
     String getThreadName();
 

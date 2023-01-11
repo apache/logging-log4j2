@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Locale;
 
 import org.apache.logging.log4j.test.junit.Mutable;
@@ -29,7 +24,8 @@ import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class StringFormattedMessageTest {
@@ -113,23 +109,6 @@ public class StringFormattedMessageTest {
         assertEquals("Test message abc", actual, "Should use initial param value");
     }
 
-    @SuppressWarnings("BanSerializableRead")
-    @Test
-    public void testSerialization() throws IOException, ClassNotFoundException {
-        final StringFormattedMessage expected = new StringFormattedMessage("Msg", "a", "b", "c");
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (final ObjectOutputStream out = new ObjectOutputStream(baos)) {
-            out.writeObject(expected);
-        }
-        final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        final ObjectInputStream in = new ObjectInputStream(bais);
-        final StringFormattedMessage actual = (StringFormattedMessage) in.readObject();
-        assertEquals(expected, actual);
-        assertEquals(expected.getFormat(), actual.getFormat());
-        assertEquals(expected.getFormattedMessage(), actual.getFormattedMessage());
-        assertArrayEquals(expected.getParameters(), actual.getParameters());
-    }
-    
     @Test
     public void testPercentInMessageNoArgs() {
         // LOG4J2-3458 LocalizedMessage causes a lot of noise on the console
@@ -149,5 +128,5 @@ public class StringFormattedMessageTest {
         final StringFormattedMessage msg = new StringFormattedMessage("C:/Program%20Files/Some%20Company/Some%20Product%20Name/", new Object[] {});
         assertEquals("C:/Program%20Files/Some%20Company/Some%20Product%20Name/", msg.getFormattedMessage());
     }
-    
+
 }

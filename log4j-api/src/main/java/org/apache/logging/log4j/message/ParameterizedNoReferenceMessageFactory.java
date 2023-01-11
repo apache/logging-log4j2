@@ -18,8 +18,6 @@ package org.apache.logging.log4j.message;
 
 import org.apache.logging.log4j.status.StatusLogger;
 
-import java.io.Serializable;
-
 /**
  * Creates {@link FormattedMessage} instances for {@link MessageFactory} methods.
  * <p>
@@ -39,8 +37,7 @@ import java.io.Serializable;
  * through {@link #newMessage(String, Object...)}.
  * </p>
  */
-public final class ParameterizedNoReferenceMessageFactory implements MessageFactory, Serializable {
-    private static final long serialVersionUID = 5027639245636870500L;
+public final class ParameterizedNoReferenceMessageFactory implements MessageFactory {
 
     /**
      * Message implementation that only keeps a reference to the error text and the error (if any), not to the
@@ -48,7 +45,6 @@ public final class ParameterizedNoReferenceMessageFactory implements MessageFact
      * @since 2.6
      */
     static class StatusMessage implements Message {
-        private static final long serialVersionUID = 4199272162767841280L;
         private final String formattedMessage;
         private final Throwable throwable;
 

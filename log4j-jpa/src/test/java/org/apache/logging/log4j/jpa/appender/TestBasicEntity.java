@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.LogEvent;
 @Table(name = "jpaBasicLogEntry")
 @SuppressWarnings("unused")
 public class TestBasicEntity extends BasicLogEventEntity {
-    private static final long serialVersionUID = 2L;
 
     private long id = 0L;
 

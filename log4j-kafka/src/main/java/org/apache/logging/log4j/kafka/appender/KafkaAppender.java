@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.kafka.appender;
 
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -69,7 +68,7 @@ public final class KafkaAppender extends AbstractAppender {
         @SuppressWarnings("resource")
         @Override
         public KafkaAppender build() {
-            final Layout<? extends Serializable> layout = getLayout();
+            final Layout<?> layout = getLayout();
             if (layout == null) {
                 AbstractLifeCycle.LOGGER.error("No layout provided for KafkaAppender");
                 return null;
@@ -155,7 +154,7 @@ public final class KafkaAppender extends AbstractAppender {
 
     private final KafkaManager manager;
 
-    private KafkaAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
+    private KafkaAppender(final String name, final Layout<?> layout, final Filter filter,
             final boolean ignoreExceptions, final KafkaManager manager, final Property[] properties,
             final int retryCount) {
         super(name, filter, layout, ignoreExceptions, properties);

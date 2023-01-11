@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -64,15 +65,13 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      */
     public static final String ERROR_SUFFIX = ParameterFormatter.ERROR_SUFFIX;
 
-    private static final long serialVersionUID = -665975803997290697L;
-
     private static final int HASHVAL = 31;
 
     // storing JDK classes in ThreadLocals does not cause memory leaks in web apps, so this is okay
     private static final ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
 
     private String messagePattern;
-    private transient Object[] argArray;
+    private final Object[] argArray;
 
     private String formattedMessage;
     private transient Throwable throwable;
@@ -227,27 +226,17 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        final ParameterizedMessage that = (ParameterizedMessage) o;
-
-        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
-            return false;
-        }
-        return Arrays.equals(this.argArray, that.argArray);
-        //if (throwable != null ? !throwable.equals(that.throwable) : that.throwable != null) return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ParameterizedMessage that = (ParameterizedMessage) o;
+        return Objects.equals(messagePattern, that.messagePattern) && Arrays.equals(argArray, that.argArray);
     }
 
     @Override
     public int hashCode() {
-        int result = messagePattern != null ? messagePattern.hashCode() : 0;
-        result = HASHVAL * result + (argArray != null ? Arrays.hashCode(argArray) : 0);
+        int result = Objects.hash(messagePattern);
+        result = HASHVAL * result + Arrays.hashCode(argArray);
         return result;
     }
 

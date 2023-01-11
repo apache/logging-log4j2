@@ -68,8 +68,6 @@ public abstract class AbstractLogEventXmlMixIn extends AbstractLogEventMixIn {
 
     public static final String ELT_THROWN = "Thrown";
 
-    private static final long serialVersionUID = 1L;
-
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
     @JsonSerialize(using = ContextDataAsEntryListXmlSerializer.class)
     @JsonDeserialize(using = ContextDataAsEntryListDeserializer.class)
