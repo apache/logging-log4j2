@@ -2751,13 +2751,19 @@ public abstract class AbstractLogger implements ExtendedLogger {
     @Override
     public LogBuilder atLevel(final Level level) {
         if (isEnabled(level)) {
-            return getLogBuilder(level).reset(this, level);
+            return getLogBuilder(level);
         }
         return LogBuilder.NOOP;
     }
 
-    private DefaultLogBuilder getLogBuilder(final Level level) {
-        final DefaultLogBuilder builder = logBuilder.get();
-        return Constants.isThreadLocalsEnabled() && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
+    /**
+     * Returns a log builder that logs at the specified level.
+     *
+     * @since 2.20.0
+     */
+    protected LogBuilder getLogBuilder(Level level) {
+        DefaultLogBuilder builder = logBuilder.get();
+        return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder.reset(this, level)
+                : new DefaultLogBuilder(this, level);
     }
 }
