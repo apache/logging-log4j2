@@ -17,13 +17,23 @@
   -->
 <configuration>
 
+  <turboFilter class="ch.qos.logback.classic.turbo.DynamicThresholdFilter">
+    <OnHigherOrEqual>ACCEPT</OnHigherOrEqual>
+    <Key>callerId</Key>
+    <DefaultThreshold>INFO</DefaultThreshold>
+    <MDCValueLevelPair>
+      <value>Log4j2</value>
+      <level>TRACE</level>
+    </MDCValueLevelPair>
+  </turboFilter>
+
   <appender name="LIST" class="ch.qos.logback.core.testUtil.StringListAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
-      <Pattern>%X{TestYear}%msg</Pattern>
+      <Pattern>%msg</Pattern>
     </layout>
   </appender>
 
-  <root level="trace">
+  <root level="INFO">
     <appender-ref ref="LIST" />
   </root>
 </configuration>

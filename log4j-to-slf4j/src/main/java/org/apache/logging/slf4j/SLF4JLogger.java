@@ -17,17 +17,28 @@
 package org.apache.logging.slf4j;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.util.Constants;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
 public class SLF4JLogger extends AbstractLogger {
 
     private static final long serialVersionUID = 1L;
+    /**
+     * Logback supports turbo filters, that can override the logger's level.
+     * Therefore we can never return a no-op builder.
+     */
+    private static final boolean LAZY_LEVEL_CHECK = "ch.qos.logback.classic.LoggerContext"
+            .equals(LoggerFactory.getILoggerFactory().getClass().getName());
+    private static final ThreadLocal<SLF4JLogBuilder> logBuilder = ThreadLocal.withInitial(SLF4JLogBuilder::new);
+
     private final org.slf4j.Logger logger;
     private final LocationAwareLogger locationAwareLogger;
 
@@ -256,4 +267,49 @@ public class SLF4JLogger extends AbstractLogger {
         }
     }
 
+    @Override
+    public LogBuilder atTrace() {
+        return atLevel(Level.TRACE);
+    }
+
+    @Override
+    public LogBuilder atDebug() {
+        return atLevel(Level.DEBUG);
+    }
+
+    @Override
+    public LogBuilder atInfo() {
+        return atLevel(Level.INFO);
+    }
+
+    @Override
+    public LogBuilder atWarn() {
+        return atLevel(Level.WARN);
+    }
+
+    @Override
+    public LogBuilder atError() {
+        return atLevel(Level.ERROR);
+    }
+
+    @Override
+    public LogBuilder atFatal() {
+        return atLevel(Level.TRACE);
+    }
+
+    @Override
+    protected LogBuilder getLogBuilder(Level level) {
+        SLF4JLogBuilder builder = logBuilder.get();
+        return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder.reset(this, level)
+                : new SLF4JLogBuilder(this, level);
+    }
+
+    @Override
+    public LogBuilder atLevel(Level level) {
+        // TODO: wrap SLF4J 2.x LoggingEventBuilder
+        if (LAZY_LEVEL_CHECK) {
+            return getLogBuilder(level);
+        }
+        return super.atLevel(level);
+    }
 }
