@@ -16,24 +16,11 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogBuilder;
-import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.internal.DefaultLogBuilder;
-import org.apache.logging.log4j.message.EntryMessage;
-import org.apache.logging.log4j.message.FlowMessageFactory;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.StringFormattedMessage;
+import org.apache.logging.log4j.message.*;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Cast;
-import org.apache.logging.log4j.util.LambdaUtil;
-import org.apache.logging.log4j.util.MessageSupplier;
-import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.StackLocatorUtil;
-import org.apache.logging.log4j.util.Supplier;
+import org.apache.logging.log4j.util.*;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
@@ -83,8 +70,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
     private final FlowMessageFactory flowMessageFactory;
     private static final ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
     protected final Recycler<LogBuilder> recycler = LoggingSystem.getRecyclerFactory()
-            .create(() -> new DefaultLogBuilder(this));
-
+            .create(() -> new DefaultLogBuilder(this, null));
 
     /**
      * Creates a new logger named after this class (or subclass).
@@ -1974,7 +1960,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             logMessageTrackRecursion(fqcn, level, marker, msg, throwable);
         } finally {
             // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
-            messageFactory.recycle(msg);
+            ReusableMessageFactory.release(msg);
         }
     }
 
@@ -2739,8 +2725,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
      */
     @Override
     public LogBuilder always() {
-        final DefaultLogBuilder builder = (DefaultLogBuilder) recycler.acquire();
-        return builder.atLevel(Level.OFF);
+        return getLogBuilder(Level.OFF);
     }
 
     /**
@@ -2751,11 +2736,19 @@ public abstract class AbstractLogger implements ExtendedLogger {
     @Override
     public LogBuilder atLevel(final Level level) {
         if (isEnabled(level)) {
-            final DefaultLogBuilder builder = (DefaultLogBuilder) recycler.acquire();
-            return builder.atLevel(level);
-        } else {
-            return LogBuilder.NOOP;
+            return getLogBuilder(level);
         }
+        return LogBuilder.NOOP;
+    }
+
+    /**
+     * Returns a log builder that logs at the specified level.
+     *
+     * @since 2.20.0
+     */
+    protected LogBuilder getLogBuilder(Level level) {
+        DefaultLogBuilder builder = (DefaultLogBuilder) recycler.acquire();
+        return builder.reset(this, level);
     }
 
 }

@@ -346,6 +346,16 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         privateConfig.config.setLoggerAdditive(this, additive);
     }
 
+    @Override
+    public LogBuilder atLevel(Level level) {
+        // A global filter might accept messages less specific than level.
+        // Therefore we return always a functional builder.
+        if (privateConfig.hasFilter()) {
+            return getLogBuilder(level);
+        }
+        return super.atLevel(level);
+    }
+
     /**
      * Associates this Logger with a new Configuration. This method is not
      * exposed through the public API.

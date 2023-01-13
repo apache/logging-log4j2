@@ -23,6 +23,9 @@ import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.spi.Recycler;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
@@ -30,6 +33,15 @@ import org.slf4j.spi.LocationAwareLogger;
  *
  */
 public class SLF4JLogger extends AbstractLogger {
+
+    /**
+     * Logback supports turbo filters, that can override the logger's level.
+     * Therefore we can never return a no-op builder.
+     */
+    private static final boolean LAZY_LEVEL_CHECK = "ch.qos.logback.classic.LoggerContext"
+            .equals(LoggerFactory.getILoggerFactory().getClass().getName());
+    private static final Recycler<SLF4JLogBuilder> logBuilderRecycler =
+            LoggingSystem.getRecyclerFactory().create(SLF4JLogBuilder::new);
 
     private final org.slf4j.Logger logger;
     private final LocationAwareLogger locationAwareLogger;
@@ -260,11 +272,6 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
-    public LogBuilder always() {
-        return atLevel(Level.OFF);
-    }
-
-    @Override
     public LogBuilder atTrace() {
         return atLevel(Level.TRACE);
     }
@@ -292,6 +299,21 @@ public class SLF4JLogger extends AbstractLogger {
     @Override
     public LogBuilder atFatal() {
         return atLevel(Level.TRACE);
+    }
+
+    @Override
+    protected LogBuilder getLogBuilder(Level level) {
+        SLF4JLogBuilder builder = logBuilderRecycler.acquire();
+        return builder.reset(this, level);
+    }
+
+    @Override
+    public LogBuilder atLevel(Level level) {
+        // TODO: wrap SLF4J 2.x LoggingEventBuilder
+        if (LAZY_LEVEL_CHECK) {
+            return getLogBuilder(level);
+        }
+        return super.atLevel(level);
     }
 
 }

@@ -43,7 +43,7 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Message EMPTY_MESSAGE = new SimpleMessage(Strings.EMPTY);
 
-    private final ExtendedLogger logger;
+    private ExtendedLogger logger;
     private Level level;
     private Marker marker;
     private Throwable throwable;
@@ -51,9 +51,14 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
     private final long threadId;
     private String fqcn = FQCN;
 
-    public DefaultLogBuilder(final ExtendedLogger logger) {
+    public DefaultLogBuilder(final ExtendedLogger logger, final Level level) {
         this.logger = logger;
+        this.level = level;
         this.threadId = Thread.currentThread().getId();
+    }
+
+    public DefaultLogBuilder() {
+        this(null, null);
     }
 
     @Override
@@ -61,9 +66,17 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
         this.fqcn = fqcn;
     }
 
-    @InternalApi
-    public LogBuilder atLevel(final Level level) {
+    /**
+     * This method should be considered internal. It is used to reset the LogBuilder for a new log message.
+     * @param level The logging level for this event.
+     * @return This LogBuilder instance.
+     */
+    public LogBuilder reset(ExtendedLogger logger, Level level) {
+        this.logger = logger;
         this.level = level;
+        this.marker = null;
+        this.throwable = null;
+        this.location = null;
         return this;
     }
 
