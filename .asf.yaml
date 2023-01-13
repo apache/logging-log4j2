@@ -25,8 +25,10 @@ github:
   description: "Apache Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture."
   homepage: https://logging.apache.org/log4j/2.x/
   # enable GitHub Issues and Projects
-  issues: true
-  projects: true
+  features:
+    issues: true
+    projects: true
+  del_branch_on_merge: true
   # and enable support for our old Jira instance
   autolink_jira:
     - LOG4J2
