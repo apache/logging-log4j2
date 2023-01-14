@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.spi;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -25,10 +26,12 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Log4j's internal representation of throwables.
  */
-public class ThrowableInformation {
+public class ThrowableInformation implements Serializable {
 
-    private Throwable throwable;
-    private Category category;
+    static final long serialVersionUID = -4748765566864322735L;
+
+    private transient Throwable throwable;
+    private transient Category category;
     private String[] rep;
     private static final Method TO_STRING_LIST;
 

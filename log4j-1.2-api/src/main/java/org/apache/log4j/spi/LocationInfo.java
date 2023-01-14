@@ -16,6 +16,7 @@
  */
 package org.apache.log4j.spi;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -23,13 +24,15 @@ import java.util.Objects;
  *
  * @since 0.8.3
  */
-public class LocationInfo {
+public class LocationInfo implements Serializable {
 
     /**
      * When location information is not available the constant <code>NA</code> is returned. Current value of this string
      * constant is <b>?</b>.
      */
     public final static String NA = "?";
+
+    static final long serialVersionUID = -1325822038990805636L;
 
     private final StackTraceElement stackTraceElement;
 
