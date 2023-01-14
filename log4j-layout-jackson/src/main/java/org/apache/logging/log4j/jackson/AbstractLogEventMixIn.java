@@ -49,8 +49,6 @@ public abstract class AbstractLogEventMixIn implements LogEvent {
     public static final String ELT_MESSAGE = "message";
     public static final String JSON_FILTER_ID = "org.apache.logging.log4j.core.impl.Log4jLogEvent";
 
-    private static final long serialVersionUID = 1L;
-
     @JsonSerialize(using = MessageSerializer.class)
     @JsonDeserialize(using = SimpleMessageDeserializer.class)
     @Override

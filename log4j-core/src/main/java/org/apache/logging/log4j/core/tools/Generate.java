@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.tools;
 
 import java.io.PrintStream;
@@ -56,7 +55,6 @@ public final class Generate {
             String imports() {
                 //@formatter:off
                 return ""
-                        + "import java.io.Serializable;%n"
                         + "import org.apache.logging.log4j.Level;%n"
                         + "import org.apache.logging.log4j.LogManager;%n"
                         + "import org.apache.logging.log4j.Logger;%n"
@@ -80,8 +78,7 @@ public final class Generate {
                         + " * %s%n"
                         + " * <p>Compatible with Log4j 2.6 or higher.</p>%n"
                         + " */%n"
-                        + "public final class %s implements Serializable {%n"
-                        + "    private static final long serialVersionUID = " + System.nanoTime() + "L;%n"
+                        + "public final class %s {%n"
                         + "    private final ExtendedLoggerWrapper logger;%n"
                         + "%n";
                 //@formatter:on

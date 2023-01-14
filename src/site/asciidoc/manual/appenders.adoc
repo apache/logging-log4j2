@@ -1214,7 +1214,7 @@ public class ConnectionFactory {
 
 This appender is link:messages.html#MapMessage[`MapMessage`]-aware.
 
-The following configuration uses a `MessageLayout` to indicate that the
+The following configuration uses no layout to indicate that the
 Appender should match the keys of a `MapMessage` to the names of
 `ColumnMapping`s when setting the values of the Appender's SQL INSERT
 statement. This let you insert rows for custom values in a database
@@ -1233,7 +1233,6 @@ table based on a Log4j `MapMessage` instead of values from `LogEvent`s.
       <ColumnMapping name="Id" />
       <ColumnMapping name="ColumnA" />
       <ColumnMapping name="ColumnB" />
-      <MessageLayout />
     </Jdbc>
   </Appenders>
 

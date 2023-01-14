@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.core.time.internal.format;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -74,14 +71,7 @@ import java.util.regex.Pattern;
  * @since Apache Commons Lang 3.2
  * @see FastDatePrinter
  */
-public class FastDateParser implements DateParser, Serializable {
-
-    /**
-     * Required for serialization support.
-     *
-     * @see java.io.Serializable
-     */
-    private static final long serialVersionUID = 3L;
+public class FastDateParser implements DateParser {
 
     static final Locale JAPANESE_IMPERIAL = new Locale("ja","JP","JP");
 
@@ -328,20 +318,6 @@ public class FastDateParser implements DateParser, Serializable {
 
     // Serializing
     //-----------------------------------------------------------------------
-    /**
-     * Create the object after serialization. This implementation reinitializes the
-     * transient properties.
-     *
-     * @param in ObjectInputStream from which the object is being deserialized.
-     * @throws IOException if there is an IO issue.
-     * @throws ClassNotFoundException if a class cannot be found.
-     */
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-
-        final Calendar definingCalendar = Calendar.getInstance(timeZone, locale);
-        init(definingCalendar);
-    }
 
     /* (non-Javadoc)
      * @see org.apache.commons.lang3.time.DateParser#parseObject(java.lang.String)

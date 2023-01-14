@@ -16,6 +16,9 @@
  */
 package org.apache.log4j.builders;
 
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -28,9 +31,6 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.xml.XmlConfiguration.*;
@@ -77,7 +77,7 @@ public class Log4j2ListAppenderBuilder extends AbstractBuilder implements Append
     }
 
     private Appender createAppender(String name, Layout layout, Filter filter) {
-        final org.apache.logging.log4j.core.Layout<?> log4j2Layout = LayoutAdapter.adapt(layout);
+        final org.apache.logging.log4j.core.Layout log4j2Layout = LayoutAdapter.adapt(layout);
         return AppenderWrapper.adapt(
                 ListAppender.newBuilder()
                         .setName(name)

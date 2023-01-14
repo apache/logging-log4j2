@@ -21,8 +21,8 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.core.test.appender.InMemoryAppender;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +32,7 @@ public class InMemoryAppenderTest {
 
     @Test
     public void testAppender() {
-        final Layout<String> layout = PatternLayout.createDefaultLayout();
+        final Layout layout = PatternLayout.createDefaultLayout();
         final boolean writeHeader = true;
         final InMemoryAppender app = new InMemoryAppender("test", layout, null, false, writeHeader, null);
         final String expectedHeader = null;

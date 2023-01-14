@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -23,18 +26,12 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.logging.log4j.util.Cast;
 
 /**
  * Abstract base class for Layouts.
- *
- * @param <T>
- *            The Class that the Layout will format the LogEvent into.
  */
-public abstract class AbstractLayout<T extends Serializable> implements Layout<T> {
+public abstract class AbstractLayout implements Layout {
 
     /**
      * Subclasses can extend this abstract Builder.
@@ -52,9 +49,8 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
         @PluginBuilderAttribute
         private byte[] header;
 
-        @SuppressWarnings("unchecked")
         public B asBuilder() {
-            return (B) this;
+            return Cast.cast(this);
         }
 
         public Configuration getConfiguration() {

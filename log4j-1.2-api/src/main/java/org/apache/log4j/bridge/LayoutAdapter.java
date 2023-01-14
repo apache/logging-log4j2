@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 /**
  * Class Description goes here.
  */
-public class LayoutAdapter implements org.apache.logging.log4j.core.Layout<String> {
+public class LayoutAdapter implements org.apache.logging.log4j.core.Layout {
     private final Layout layout;
 
     /**
@@ -34,11 +34,11 @@ public class LayoutAdapter implements org.apache.logging.log4j.core.Layout<Strin
      * the result of
      * {@link LayoutWrapper#adapt(org.apache.logging.log4j.core.Layout)} should
      * return the original Log4j 2.x layout.
-     * 
+     *
      * @param layout a Log4j 1.x layout
      * @return a Log4j 2.x layout or {@code null} if the parameter is {@code null}
      */
-    public static org.apache.logging.log4j.core.Layout<?> adapt(Layout layout) {
+    public static org.apache.logging.log4j.core.Layout adapt(Layout layout) {
         if (layout instanceof LayoutWrapper) {
             return ((LayoutWrapper) layout).getLayout();
         }

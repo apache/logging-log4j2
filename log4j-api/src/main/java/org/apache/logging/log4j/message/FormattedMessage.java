@@ -16,34 +16,30 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.text.Format;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
- * Handles messages that contain a format String. Dynamically determines if the format conforms to
- * MessageFormat or String.format and if not then uses ParameterizedMessage to format.
+ * Handles messages that contain a format String. This converts each message into a {@link MessageFormatMessage},
+ * {@link StringFormattedMessage}, or {@link ParameterizedMessage} if the {@linkplain #getFormat() format}
+ * conforms to {@link MessageFormat}, {@link String#format(String, Object...)}, or anything else respectively.
  */
 public class FormattedMessage implements Message {
 
-    private static final long serialVersionUID = -665975803997290697L;
-    private static final int HASHVAL = 31;
     private static final String FORMAT_SPECIFIER = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";
     private static final Pattern MSG_PATTERN = Pattern.compile(FORMAT_SPECIFIER);
 
-    private String messagePattern;
-    private transient Object[] argArray;
-    private String[] stringArgs;
-    private transient String formattedMessage;
+    private final String messagePattern;
+    private final Object[] argArray;
+    private String formattedMessage;
     private final Throwable throwable;
     private Message message;
     private final Locale locale;
-    
+
     /**
      * Constructs with a locale, a pattern and a single parameter.
      * @param locale The locale
@@ -134,22 +130,12 @@ public class FormattedMessage implements Message {
         this.throwable = throwable;
     }
 
-
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        final FormattedMessage that = (FormattedMessage) o;
-
-        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
-            return false;
-        }
-        return Arrays.equals(stringArgs, that.stringArgs);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FormattedMessage that = (FormattedMessage) o;
+        return Objects.equals(messagePattern, that.messagePattern) && Arrays.equals(argArray, that.argArray);
     }
 
     /**
@@ -180,7 +166,7 @@ public class FormattedMessage implements Message {
         try {
             final MessageFormat format = new MessageFormat(msgPattern);
             final Format[] formats = format.getFormats();
-            if (formats != null && formats.length > 0) {
+            if (formats.length > 0) {
                 return new MessageFormatMessage(locale, msgPattern, args);
             }
         } catch (final Exception ignored) {
@@ -202,10 +188,7 @@ public class FormattedMessage implements Message {
      */
     @Override
     public Object[] getParameters() {
-        if (argArray != null) {
-            return argArray;
-        }
-        return stringArgs;
+        return argArray;
     }
 
     @Override
@@ -219,23 +202,11 @@ public class FormattedMessage implements Message {
         return message.getThrowable();
     }
 
-
     @Override
     public int hashCode() {
-        int result = messagePattern != null ? messagePattern.hashCode() : 0;
-        result = HASHVAL * result + (stringArgs != null ? Arrays.hashCode(stringArgs) : 0);
+        int result = Objects.hash(messagePattern);
+        result = 31 * result + Arrays.hashCode(argArray);
         return result;
-    }
-
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        formattedMessage = in.readUTF();
-        messagePattern = in.readUTF();
-        final int length = in.readInt();
-        stringArgs = new String[length];
-        for (int i = 0; i < length; ++i) {
-            stringArgs[i] = in.readUTF();
-        }
     }
 
     @Override
@@ -243,19 +214,4 @@ public class FormattedMessage implements Message {
         return getFormattedMessage();
     }
 
-    private void writeObject(final ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        getFormattedMessage();
-        out.writeUTF(formattedMessage);
-        out.writeUTF(messagePattern);
-        out.writeInt(argArray.length);
-        stringArgs = new String[argArray.length];
-        int i = 0;
-        for (final Object obj : argArray) {
-            final String string = String.valueOf(obj);
-            stringArgs[i] = string;
-            out.writeUTF(string);
-            ++i;
-        }
-    }
 }

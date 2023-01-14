@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.time.internal.format;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.FieldPosition;
@@ -81,7 +80,7 @@ import org.apache.logging.log4j.core.util.Throwables;
  * @since Apache Commons Lang 3.2
  * @see FastDateParser
  */
-public class FastDatePrinter implements DatePrinter, Serializable {
+public class FastDatePrinter implements DatePrinter {
     // A lot of the speed in this class comes from caching, but some comes
     // from the special int to StringBuffer conversion.
     //
@@ -93,13 +92,6 @@ public class FastDatePrinter implements DatePrinter, Serializable {
     // Note that Integer.toString() is not called, the conversion is simply
     // taking the value and adding (mathematically) the ASCII value for '0'.
     // So, don't change this code! It works and is very fast.
-
-    /**
-     * Required for serialization support.
-     *
-     * @see java.io.Serializable
-     */
-    private static final long serialVersionUID = 1L;
 
     /**
      * FULL locale dependent date or time style.
@@ -587,7 +579,7 @@ public class FastDatePrinter implements DatePrinter, Serializable {
      */
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof FastDatePrinter == false) {
+        if (!(obj instanceof FastDatePrinter)) {
             return false;
         }
         final FastDatePrinter other = (FastDatePrinter) obj;
@@ -614,21 +606,6 @@ public class FastDatePrinter implements DatePrinter, Serializable {
     @Override
     public String toString() {
         return "FastDatePrinter[" + mPattern + "," + mLocale + "," + mTimeZone.getID() + "]";
-    }
-
-    // Serializing
-    //-----------------------------------------------------------------------
-    /**
-     * Create the object after serialization. This implementation reinitializes the
-     * transient properties.
-     *
-     * @param in ObjectInputStream from which the object is being deserialized.
-     * @throws IOException if there is an IO issue.
-     * @throws ClassNotFoundException if a class cannot be found.
-     */
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        init();
     }
 
     /**
@@ -722,7 +699,7 @@ public class FastDatePrinter implements DatePrinter, Serializable {
      * <p>Inner class defining a rule.</p>
      */
     private interface Rule {
-        
+
         Rule[] EMPTY_ARRAY = {};
 
         /**

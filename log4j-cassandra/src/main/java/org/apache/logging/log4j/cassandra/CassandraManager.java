@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.cassandra;
 
-import com.datastax.driver.core.BatchStatement;
-import com.datastax.driver.core.BoundStatement;
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.PreparedStatement;
-import com.datastax.driver.core.Session;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
@@ -32,11 +32,11 @@ import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
 
-import java.io.Serializable;
-import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.datastax.driver.core.BatchStatement;
+import com.datastax.driver.core.BoundStatement;
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.PreparedStatement;
+import com.datastax.driver.core.Session;
 
 /**
  * Manager for a Cassandra appender instance.
@@ -87,7 +87,7 @@ public class CassandraManager extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void writeInternal(final LogEvent event, final Serializable serializable) {
+    protected void writeInternal(final LogEvent event) {
         for (int i = 0; i < columnMappings.size(); i++) {
             final ColumnMapping columnMapping = columnMappings.get(i);
             if (ThreadContextMap.class.isAssignableFrom(columnMapping.getType())

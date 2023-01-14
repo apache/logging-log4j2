@@ -167,7 +167,7 @@ public class SmtpManager extends AbstractManager {
      * @param layout The layout for formatting the events.
      * @param appendEvent The event that triggered the send.
      */
-    public void sendEvents(final Layout<?> layout, final LogEvent appendEvent) {
+    public void sendEvents(final Layout layout, final LogEvent appendEvent) {
         if (message == null) {
             connect(appendEvent);
         }
@@ -198,13 +198,13 @@ public class SmtpManager extends AbstractManager {
     }
 
     protected byte[] formatContentToBytes(final LogEvent[] priorEvents, final LogEvent appendEvent,
-                                          final Layout<?> layout) throws IOException {
+                                          final Layout layout) throws IOException {
         final ByteArrayOutputStream raw = new ByteArrayOutputStream();
         writeContent(priorEvents, appendEvent, layout, raw);
         return raw.toByteArray();
     }
 
-    private void writeContent(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout,
+    private void writeContent(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout layout,
                               final ByteArrayOutputStream out)
         throws IOException {
         writeHeader(layout, out);
@@ -212,14 +212,14 @@ public class SmtpManager extends AbstractManager {
         writeFooter(layout, out);
     }
 
-    protected void writeHeader(final Layout<?> layout, final OutputStream out) throws IOException {
+    protected void writeHeader(final Layout layout, final OutputStream out) throws IOException {
         final byte[] header = layout.getHeader();
         if (header != null) {
             out.write(header);
         }
     }
 
-    protected void writeBuffer(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout<?> layout,
+    protected void writeBuffer(final LogEvent[] priorEvents, final LogEvent appendEvent, final Layout layout,
                                final OutputStream out) throws IOException {
         for (final LogEvent priorEvent : priorEvents) {
             final byte[] bytes = layout.toByteArray(priorEvent);
@@ -230,7 +230,7 @@ public class SmtpManager extends AbstractManager {
         out.write(bytes);
     }
 
-    protected void writeFooter(final Layout<?> layout, final OutputStream out) throws IOException {
+    protected void writeFooter(final Layout layout, final OutputStream out) throws IOException {
         final byte[] footer = layout.getFooter();
         if (footer != null) {
             out.write(footer);

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.List;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -26,8 +28,6 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.plugins.Factory;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -69,7 +69,6 @@ public class TimestampMessageTest {
     }
 
     static class TimeMsg extends SimpleMessage implements TimestampMessage {
-        private static final long serialVersionUID = 1L;
         private final long timestamp;
 
         public TimeMsg(final String msg, final long timestamp) {

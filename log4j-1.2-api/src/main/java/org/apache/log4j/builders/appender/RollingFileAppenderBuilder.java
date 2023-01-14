@@ -16,6 +16,11 @@
  */
 package org.apache.log4j.builders.appender;
 
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -38,11 +43,6 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
@@ -144,7 +144,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
             final Filter filter, final boolean append, final boolean bufferedIo, final int bufferSize,
             boolean immediateFlush, final String fileName, final String level, final String maxSize,
             final String maxBackups, final Clock clock) {
-        org.apache.logging.log4j.core.Layout<?> fileLayout = LayoutAdapter.adapt(layout);
+        org.apache.logging.log4j.core.Layout fileLayout = LayoutAdapter.adapt(layout);
         if (!bufferedIo) {
             immediateFlush = false;
         }

@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @UsingAnyThreadContext
 public class PatternLayoutTest {
     public static class FauxLogger {
-        public String formatEvent(final LogEvent event, final Layout<?> layout) {
+        public String formatEvent(final LogEvent event, final Layout layout) {
             return new String(layout.toByteArray(event));
         }
     }

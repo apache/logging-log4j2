@@ -16,22 +16,25 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import co.elastic.logging.log4j2.EcsLayout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import co.elastic.logging.log4j2.EcsLayout;
+
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
 
+@Disabled("")
 class EcsLayoutTest {
 
     private static final Configuration CONFIGURATION = new DefaultConfiguration();

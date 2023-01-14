@@ -18,21 +18,18 @@ package org.apache.logging.log4j.status;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.Message;
 
-import static org.apache.logging.log4j.util.Chars.*;
+import static org.apache.logging.log4j.util.Chars.SPACE;
 
 /**
  * The Status data.
  */
-public class StatusData implements Serializable {
-
-    private static final long serialVersionUID = -4341916115118014017L;
+public class StatusData {
 
     private final long timestamp;
     private final StackTraceElement caller;
@@ -138,7 +135,7 @@ public class StatusData implements Serializable {
             sb.append(SPACE);
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             t.printStackTrace(new PrintStream(baos));
-            sb.append(baos.toString());
+            sb.append(baos);
         }
         return sb.toString();
     }

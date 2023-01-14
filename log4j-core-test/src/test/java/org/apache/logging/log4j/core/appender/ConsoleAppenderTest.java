@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,9 +33,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.SetSystemProperty;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -74,7 +74,7 @@ public class ConsoleAppenderTest {
     private void testConsoleStreamManagerDoesNotClose(final PrintStream ps, final Target targetName, final SystemSetter systemSetter) {
         try {
             systemSetter.systemSet(psMock);
-            final Layout<String> layout = PatternLayout.newBuilder().setAlwaysWriteExceptions(true).build();
+            final Layout layout = PatternLayout.newBuilder().setAlwaysWriteExceptions(true).build();
             final ConsoleAppender app = ConsoleAppender.newBuilder().setLayout(layout).setTarget(targetName)
                     .setName("Console").setIgnoreExceptions(false).build();
             app.start();

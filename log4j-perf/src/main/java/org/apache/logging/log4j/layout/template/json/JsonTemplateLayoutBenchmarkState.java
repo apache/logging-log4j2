@@ -16,7 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import co.elastic.logging.log4j2.EcsLayout;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -31,9 +34,7 @@ import org.apache.logging.log4j.layout.template.json.util.ThreadLocalRecyclerFac
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import co.elastic.logging.log4j2.EcsLayout;
 
 @State(Scope.Thread)
 public class JsonTemplateLayoutBenchmarkState {
@@ -46,19 +47,19 @@ public class JsonTemplateLayoutBenchmarkState {
 
     private final ByteBufferDestination byteBufferDestination;
 
-    private final Layout<?> jtl4JsonLayout;
+    private final Layout jtl4JsonLayout;
 
-    private final Layout<?> jtl4EcsLayout;
+    private final Layout jtl4EcsLayout;
 
-    private final Layout<?> jtl4GelfLayout;
+    private final Layout jtl4GelfLayout;
 
-    private final Layout<?> defaultJsonLayout;
+    private final Layout defaultJsonLayout;
 
-    private final Layout<?> customJsonLayout;
+    private final Layout customJsonLayout;
 
-    private final Layout<?> ecsLayout;
+    private final Layout ecsLayout;
 
-    private final Layout<?> gelfLayout;
+    private final Layout gelfLayout;
 
     private final List<LogEvent> fullLogEvents;
 
@@ -177,31 +178,31 @@ public class JsonTemplateLayoutBenchmarkState {
         return byteBufferDestination;
     }
 
-    Layout<?> getJtl4JsonLayout() {
+    Layout getJtl4JsonLayout() {
         return jtl4JsonLayout;
     }
 
-    Layout<?> getJtl4EcsLayout() {
+    Layout getJtl4EcsLayout() {
         return jtl4EcsLayout;
     }
 
-    Layout<?> getJtl4GelfLayout() {
+    Layout getJtl4GelfLayout() {
         return jtl4GelfLayout;
     }
 
-    Layout<?> getDefaultJsonLayout() {
+    Layout getDefaultJsonLayout() {
         return defaultJsonLayout;
     }
 
-    Layout<?> getCustomJsonLayout() {
+    Layout getCustomJsonLayout() {
         return customJsonLayout;
     }
 
-    Layout<?> getEcsLayout() {
+    Layout getEcsLayout() {
         return ecsLayout;
     }
 
-    Layout<?> getGelfLayout() {
+    Layout getGelfLayout() {
         return gelfLayout;
     }
 

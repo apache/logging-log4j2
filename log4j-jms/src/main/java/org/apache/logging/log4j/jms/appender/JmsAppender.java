@@ -14,8 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.jms.appender;
+
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+import javax.jms.JMSException;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -32,11 +35,6 @@ import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import javax.jms.JMSException;
-import java.io.Serializable;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Generic JMS Appender plugin for both queues and topics. This Appender replaces the previous split ones. However,
@@ -113,10 +111,6 @@ public class JmsAppender extends AbstractAppender {
             }
             if (actualJmsManager == null) {
                 // JmsManagerFactory has already logged an ERROR.
-                return null;
-            }
-            if (getLayout() == null) {
-                LOGGER.error("No layout provided for JmsAppender");
                 return null;
             }
             try {
@@ -219,7 +213,7 @@ public class JmsAppender extends AbstractAppender {
      * @throws JMSException
      *             not thrown as of 2.9 but retained in the signature for compatibility, will be removed in 3.0.
      */
-    protected JmsAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+    protected JmsAppender(final String name, final Filter filter, final Layout layout,
             final boolean ignoreExceptions, Property[] properties, final JmsManager manager) throws JMSException {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
@@ -227,7 +221,7 @@ public class JmsAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        this.manager.send(event, toSerializable(event));
+        this.manager.send(event, getLayout());
     }
 
     public JmsManager getManager() {

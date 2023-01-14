@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.jpa.appender;
 
 import org.apache.logging.log4j.Level;
@@ -33,8 +32,6 @@ public class LogEventEntityTest {
     @Test
     public void testToImmutable_AbstractLogEventWrapperEntity() {
         final LogEvent logEvent = new AbstractLogEventWrapperEntity() {
-
-            private static final long serialVersionUID = 2L;
 
             @Override
             public ContextStack getContextStack() {

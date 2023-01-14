@@ -28,7 +28,7 @@ public abstract class AbstractLogger {
     private final MutableLogEvent reusedLogEvent = new MutableLogEvent();
     protected DemoAppender appender = new DemoAppender(createLayout());
 
-    protected abstract Layout<?> createLayout();
+    protected abstract Layout createLayout();
 
     protected void log(final Message message) {
         callAppenders(createLogEvent(message));

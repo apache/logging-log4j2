@@ -62,8 +62,6 @@ public class ParameterizedMessage implements Message {
      */
     public static final String ERROR_SUFFIX = "!!!]";
 
-    private static final long serialVersionUID = -665975803997290697L;
-
     private static final int HASHVAL = 31;
 
     private static final char DELIM_START = '{';

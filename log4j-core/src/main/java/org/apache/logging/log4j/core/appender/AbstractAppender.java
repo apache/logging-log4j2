@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
@@ -27,13 +26,13 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
 /**
  * Abstract base class for Appenders. Although Appenders do not have to extend this class, doing so will simplify their
@@ -52,7 +51,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         private boolean ignoreExceptions = true;
 
         @PluginElement("Layout")
-        private Layout<? extends Serializable> layout;
+        private Layout layout;
 
         @PluginBuilderAttribute
         @Required(message = "No appender name provided")
@@ -69,7 +68,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return ignoreExceptions;
         }
 
-        public Layout<? extends Serializable> getLayout() {
+        public Layout getLayout() {
             return layout;
         }
 
@@ -83,19 +82,19 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return asBuilder();
         }
 
-        public B setLayout(final Layout<? extends Serializable> layout) {
+        public B setLayout(final Layout layout) {
             this.layout = layout;
             return asBuilder();
         }
 
-        public Layout<? extends Serializable> getOrCreateLayout() {
+        public Layout getOrCreateLayout() {
             if (layout == null) {
                 return PatternLayout.createDefaultLayout();
             }
             return layout;
         }
 
-        public Layout<? extends Serializable> getOrCreateLayout(final Charset charset) {
+        public Layout getOrCreateLayout(final Charset charset) {
             if (layout == null) {
                 return PatternLayout.newBuilder().setCharset(charset).build();
             }
@@ -115,7 +114,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
 
     private final String name;
     private final boolean ignoreExceptions;
-    private final Layout<? extends Serializable> layout;
+    private final Layout layout;
     private ErrorHandler handler = new DefaultErrorHandler(this);
 
     /**
@@ -128,7 +127,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      *            then passed to the application.
      * @param properties Optional properties
      */
-    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+    protected AbstractAppender(final String name, final Filter filter, final Layout layout,
             final boolean ignoreExceptions, final Property[] properties) {
         super(filter, properties);
         this.name = Objects.requireNonNull(name, "name");
@@ -145,7 +144,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      * @deprecated Use {@link #AbstractAppender(String, Filter, Layout, boolean, Property[])}.
      */
     @Deprecated
-    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
+    protected AbstractAppender(final String name, final Filter filter, final Layout layout) {
         this(name, filter, layout, true, Property.EMPTY_ARRAY);
     }
 
@@ -160,7 +159,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      * @deprecated Use {@link #AbstractAppender(String, Filter, Layout, boolean, Property[])}
      */
     @Deprecated
-    protected AbstractAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+    protected AbstractAppender(final String name, final Filter filter, final Layout layout,
             final boolean ignoreExceptions) {
         this(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
     }
@@ -226,7 +225,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      * @return The Layout used to format the event.
      */
     @Override
-    public Layout<? extends Serializable> getLayout() {
+    public Layout getLayout() {
         return layout;
     }
 
@@ -267,17 +266,6 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return;
         }
         this.handler = handler;
-    }
-
-    /**
-     * Serializes the given event using the appender's layout if present.
-     *
-     * @param event
-     *            the event to serialize.
-     * @return the serialized event or null if no layout is present.
-     */
-    protected Serializable toSerializable(final LogEvent event) {
-        return layout != null ? layout.toSerializable(event) : null;
     }
 
     @Override

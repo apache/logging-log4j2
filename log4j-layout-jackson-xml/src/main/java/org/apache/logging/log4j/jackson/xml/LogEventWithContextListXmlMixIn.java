@@ -37,8 +37,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  */
 public abstract class LogEventWithContextListXmlMixIn extends AbstractLogEventXmlMixIn {
 
-    private static final long serialVersionUID = 1L;
-
     @JacksonXmlProperty(namespace = XmlConstants.XML_NAMESPACE, localName = XmlConstants.ELT_CONTEXT_MAP)
     @JsonSerialize(using = ContextDataAsEntryListXmlSerializer.class)
     @JsonDeserialize(using = ContextDataAsEntryListDeserializer.class)

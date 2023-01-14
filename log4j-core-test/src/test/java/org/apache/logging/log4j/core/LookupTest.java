@@ -18,8 +18,8 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +29,7 @@ public class LookupTest {
 
     @Test
     public void testHostname(@Named final ConsoleAppender console) {
-        final Layout<?> layout = console.getLayout();
+        final Layout layout = console.getLayout();
         assertNotNull(layout, "No Layout");
         assertTrue(layout instanceof PatternLayout, "Layout is not a PatternLayout");
         final String pattern = ((PatternLayout) layout).getConversionPattern();

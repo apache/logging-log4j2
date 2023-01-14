@@ -16,13 +16,6 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -40,6 +33,12 @@ import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.Test;
 
+import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationTest {
 
     private static final String SUFFIX = ".properties";
@@ -53,7 +52,7 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
         return configuration;
     }
 
-    private Layout<?> testConsole(final String configResource) throws Exception {
+    private Layout testConsole(final String configResource) throws Exception {
         final Configuration configuration = getConfiguration(configResource);
         final String name = "Console";
         final ConsoleAppender appender = configuration.getAppender(name);
@@ -113,9 +112,9 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
 
     @Override
     @Test
-	public void testNullAppender() throws Exception {
+    public void testNullAppender() throws Exception {
         super.testNullAppender();
-	}
+    }
 
     @Override
     @Test
@@ -166,7 +165,7 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
             assertEquals(Level.DEBUG, rootLogger.getLevel());
             final Appender appender = config.getAppender("Console");
             assertTrue(appender instanceof ConsoleAppender);
-            final Layout<? extends Serializable> layout = appender.getLayout();
+            final Layout layout = appender.getLayout();
             assertTrue(layout instanceof PatternLayout);
             assertEquals("%v1Level - %m%n", ((PatternLayout)layout).getConversionPattern());
             // No filter support

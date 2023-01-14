@@ -32,7 +32,6 @@ import org.apache.logging.log4j.util.TriConsumer;
  * Provides a read-only {@code StringMap} view of a {@code Map<String, String>}.
  */
 public class JdkMapAdapterStringMap implements StringMap {
-    private static final long serialVersionUID = -7348247784983193612L;
     private static final String FROZEN = "Frozen collection cannot be modified";
     private static final Comparator<? super String> NULL_FIRST_COMPARATOR = (Comparator<String>) (left, right) -> {
         if (left == null) {

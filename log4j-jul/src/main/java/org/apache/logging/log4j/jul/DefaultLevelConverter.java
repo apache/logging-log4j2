@@ -14,10 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.jul;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,8 +37,7 @@ import org.apache.logging.log4j.Level;
  */
 public class DefaultLevelConverter implements LevelConverter {
 
-    static final class JulLevelComparator implements Comparator<java.util.logging.Level>, Serializable {
-        private static final long serialVersionUID = 1L;
+    static final class JulLevelComparator implements Comparator<java.util.logging.Level> {
         @Override
         public int compare(final java.util.logging.Level level1, final java.util.logging.Level level2) {
             return Integer.compare(level1.intValue(), level2.intValue());

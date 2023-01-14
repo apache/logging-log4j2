@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.zip.Deflater;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -33,12 +38,6 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.zip.Deflater;
 
 /**
  * An appender that writes to files and can roll over at intervals.
@@ -139,7 +138,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
                 return null;
             }
 
-            final Layout<? extends Serializable> layout = getOrCreateLayout();
+            final Layout layout = getOrCreateLayout();
             final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, append,
                     isBufferedIo, policy, strategy, advertiseUri, layout, bufferSize, isImmediateFlush(),
                     createOnDemand, filePermissions, fileOwner, fileGroup, getConfiguration());
@@ -268,9 +267,9 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private RollingFileAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final RollingFileManager manager, final String fileName, final String filePattern,
-            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {
+    private RollingFileAppender(final String name, final Layout layout, final Filter filter,
+                                final RollingFileManager manager, final String fileName, final String filePattern,
+                                final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, null, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());

@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.Level;
@@ -54,9 +53,8 @@ import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequence, ParameterVisitable {
 
     /** The {@code EventFactory} for {@code RingBufferLogEvent}s. */
-    public static final Factory FACTORY = new Factory();
+    public static final EventFactory<RingBufferLogEvent> FACTORY = new Factory();
 
-    private static final long serialVersionUID = 8462119088943934758L;
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
 
     /**
@@ -129,7 +127,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
 
     @Override
     public LogEvent toImmutable() {
-        return createMemento();
+        return toMemento();
     }
 
     private void setMessage(final Message msg) {
@@ -346,7 +344,6 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         return this.thrownProxy;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ReadOnlyStringMap getContextData() {
         return contextData;
@@ -435,21 +432,6 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
             messageText = null;
             parameters = null;
         }
-    }
-
-    private void writeObject(final java.io.ObjectOutputStream out) throws IOException {
-        getThrownProxy(); // initialize the ThrowableProxy before serializing
-        out.defaultWriteObject();
-    }
-
-    /**
-     * Creates and returns a new immutable copy of this {@code RingBufferLogEvent}.
-     *
-     * @return a new immutable copy of the data in this {@code RingBufferLogEvent}
-     */
-    public LogEvent createMemento() {
-        return new Log4jLogEvent.Builder(this).build();
-
     }
 
     /**

@@ -26,12 +26,11 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.AbstractLogEvent;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.jpa.converter.ContextDataAttributeConverter;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
  * <p>
@@ -71,7 +70,6 @@ import org.apache.logging.log4j.message.Message;
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class AbstractLogEventWrapperEntity implements LogEvent {
-    private static final long serialVersionUID = 1L;
 
     private final LogEvent wrappedEvent;
 
@@ -100,7 +98,7 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
 
     @Override
     public LogEvent toImmutable() {
-        return Log4jLogEvent.createMemento(this);
+        return toMemento();
     }
 
     /**
@@ -338,7 +336,6 @@ public abstract class AbstractLogEventWrapperEntity implements LogEvent {
      */
     private static class NullLogEvent extends AbstractLogEvent {
 
-        private static final long serialVersionUID = 1L;
         // Inherits everything
     }
 }

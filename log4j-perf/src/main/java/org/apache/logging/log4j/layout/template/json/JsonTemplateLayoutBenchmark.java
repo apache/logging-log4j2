@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.nio.ByteBuffer;
+import java.util.List;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.openjdk.jmh.annotations.Benchmark;
-
-import java.nio.ByteBuffer;
-import java.util.List;
 
 /**
  * Benchmark suite for various JSON layouts.
@@ -172,7 +172,7 @@ public class JsonTemplateLayoutBenchmark {
 
     private static int benchmark(
             final JsonTemplateLayoutBenchmarkState state,
-            final Layout<?> layout,
+            final Layout layout,
             final List<LogEvent> logEvents) {
         final int logEventIndex = state.nextLogEventIndex();
         final LogEvent logEvent = logEvents.get(logEventIndex);
@@ -180,7 +180,7 @@ public class JsonTemplateLayoutBenchmark {
     }
 
     private static int benchmark(
-            final Layout<?> layout,
+            final Layout layout,
             final LogEvent logEvent,
             final ByteBufferDestination destination) {
         final ByteBuffer byteBuffer = destination.getByteBuffer();
