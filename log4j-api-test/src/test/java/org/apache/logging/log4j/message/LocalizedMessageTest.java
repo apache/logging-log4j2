@@ -16,15 +16,13 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.commons.lang3.SerializationUtils;
+import java.util.Locale;
+
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import java.io.Serializable;
-import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -34,30 +32,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class LocalizedMessageTest {
 
-    private <T extends Serializable> T roundtrip(final T msg) {
-        return SerializationUtils.roundtrip(msg);
-    }
-
     @Test
     public void testMessageFormat() {
         final LocalizedMessage msg = new LocalizedMessage("MF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
         assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
-    }
-
-    @Test
-    public void testSerializationMessageFormat() {
-        final LocalizedMessage msg = new LocalizedMessage("MF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
-        assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
-        final LocalizedMessage msg2 = roundtrip(msg);
-        assertEquals("This is test number 1 with string argument Test.", msg2.getFormattedMessage());
-    }
-
-    @Test
-    public void testSerializationStringFormat() {
-        final LocalizedMessage msg = new LocalizedMessage("SF", new Locale("en", "US"), "msg1", new Object[] { "1", "Test" });
-        assertEquals("This is test number 1 with string argument Test.", msg.getFormattedMessage());
-        final LocalizedMessage msg2 = roundtrip(msg);
-        assertEquals("This is test number 1 with string argument Test.", msg2.getFormattedMessage());
     }
 
     @Test
@@ -90,8 +68,8 @@ public class LocalizedMessageTest {
         final String actual = msg.getFormattedMessage();
         assertEquals("Test message abc", actual, "Should use initial param value");
     }
-	
-	@Test
+
+    @Test
     @ResourceLock(Resources.LOCALE)
     public void testMessageUsingBaseName() { // LOG4J2-2850
         final Locale defaultLocale = Locale.getDefault();

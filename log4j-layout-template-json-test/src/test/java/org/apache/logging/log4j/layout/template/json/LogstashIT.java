@@ -372,7 +372,7 @@ class LogstashIT {
 
     private static <K> Map<K, Object> appendAndCollect(
             final List<LogEvent> logEvents,
-            final Layout<?> layout,
+            final Layout layout,
             final int port,
             final Function<Map<String, Object>, K> keyMapper,
             final Set<String> excludedKeys) throws IOException {
@@ -449,7 +449,7 @@ class LogstashIT {
     }
 
     private static SocketAppender createStartedAppender(
-            final Layout<?> layout,
+            final Layout layout,
             final int port) {
         LOGGER.info("creating the appender");
         final SocketAppender appender = SocketAppender

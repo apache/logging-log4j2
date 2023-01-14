@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.spi.Recycler;
 import org.apache.logging.log4j.spi.RecyclerFactories;
 import org.apache.logging.log4j.spi.RecyclerFactory;
@@ -34,14 +32,12 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public final class ReusableMessageFactory implements MessageFactory, Serializable {
+public final class ReusableMessageFactory implements MessageFactory {
 
     /**
      * Instance of ReusableMessageFactory..
      */
     public static final ReusableMessageFactory INSTANCE = new ReusableMessageFactory();
-
-    private static final long serialVersionUID = -8970940216592525651L;
 
     private final Recycler<ReusableParameterizedMessage> parameterizedMessageRecycler;
     private final Recycler<ReusableSimpleMessage> simpleMessageRecycler;
@@ -65,14 +61,17 @@ public final class ReusableMessageFactory implements MessageFactory, Serializabl
     }
 
     /**
-     * Invokes {@link Clearable#clear()} when possible.
+     * Invokes {@link ReusableMessage#clear()} when possible.
      * This flag is used internally to verify that a reusable message is no longer in use and
      * can be reused.
      * @param message the message to make available again
      * @since 2.7
      */
+    @SuppressWarnings("deprecation")
     public static void release(final Message message) { // LOG4J2-1583
-        if (message instanceof Clearable) {
+        if (message instanceof ReusableMessage) {
+            ((ReusableMessage) message).clear();
+        } else if (message instanceof Clearable) {
             ((Clearable) message).clear();
         }
     }

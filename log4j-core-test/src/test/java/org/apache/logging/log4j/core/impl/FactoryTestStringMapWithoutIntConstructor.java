@@ -27,7 +27,6 @@ import org.apache.logging.log4j.util.TriConsumer;
  * Dummy implementation of the StringMap interface for testing.
  */
 public class FactoryTestStringMapWithoutIntConstructor implements StringMap {
-    private static final long serialVersionUID = -3239395494628445052L;
     int initialCapacity;
 
     public FactoryTestStringMapWithoutIntConstructor() {

@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -28,11 +26,10 @@ import org.apache.logging.log4j.util.Strings;
  *
  * @since 2.6
  */
-public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializable {
+public class DefaultFlowMessageFactory implements FlowMessageFactory {
 
     private static final String EXIT_DEFAULT_PREFIX = "Exit";
     private static final String ENTRY_DEFAULT_PREFIX = "Enter";
-    private static final long serialVersionUID = 8578655591131397576L;
 
     private final String entryText;
     private final String exitText;
@@ -59,7 +56,6 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
 
     private static class AbstractFlowMessage implements FlowMessage, StringBuilderFormattable {
 
-        private static final long serialVersionUID = 1L;
         private final Message message;
         private final String text;
 
@@ -122,8 +118,6 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
 
     private static final class SimpleEntryMessage extends AbstractFlowMessage implements EntryMessage {
 
-        private static final long serialVersionUID = 1L;
-
         SimpleEntryMessage(final String entryText, final Message message) {
             super(entryText, message);
         }
@@ -131,8 +125,6 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     }
 
     private static final class SimpleExitMessage extends AbstractFlowMessage implements ExitMessage {
-
-        private static final long serialVersionUID = 1L;
 
         private final Object result;
         private final boolean isVoid;

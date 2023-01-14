@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender;
 
 import java.util.Objects;
@@ -40,5 +39,5 @@ public abstract class HttpManager extends AbstractManager {
         // This default implementation does nothing
     }
 
-    public abstract void send(Layout<?> layout, LogEvent event) throws Exception;
+    public abstract void send(Layout layout, LogEvent event) throws Exception;
 }

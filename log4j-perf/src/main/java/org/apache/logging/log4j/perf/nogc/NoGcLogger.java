@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.perf.nogc;
 
-import org.apache.logging.log4j.core.Layout;
-
 import java.nio.charset.StandardCharsets;
+
+import org.apache.logging.log4j.core.Layout;
 
 /**
  * Logger with unrolled varargs, cached Message and NoGcLayout.
@@ -27,7 +27,7 @@ public class NoGcLogger extends AbstractLogger {
     private final NoGcMessage reusedMessage = new NoGcMessage();
 
     @Override
-    protected Layout<?> createLayout() {
+    protected Layout createLayout() {
         return new NoGcLayout(StandardCharsets.UTF_8);
     }
 

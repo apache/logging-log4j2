@@ -75,14 +75,6 @@ import java.util.TimeZone;
 public class FastDateFormat extends Format implements DateParser, DatePrinter {
 
     /**
-     * Required for serialization support.
-     *
-     * @see java.io.Serializable
-     */
-    @SuppressWarnings("unused")
-    private static final long serialVersionUID = 2L;
-
-    /**
      * FULL locale dependent date or time style.
      */
     public static final int FULL = DateFormat.FULL;

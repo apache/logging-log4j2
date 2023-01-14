@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 
@@ -29,10 +24,8 @@ import org.apache.logging.log4j.util.StringBuilders;
  */
 public class ObjectMessage implements Message, StringBuilderFormattable {
 
-    private static final long serialVersionUID = -5903272448334166185L;
-
-    private transient Object obj;
-    private transient String objectString;
+    private final Object obj;
+    private String objectString;
 
     /**
      * Creates the ObjectMessage.
@@ -106,7 +99,7 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
         }
 
         final ObjectMessage that = (ObjectMessage) o;
-        return obj == null ? that.obj == null : equalObjectsOrStrings(obj, that.obj);
+        return equalObjectsOrStrings(obj, that.obj);
     }
 
     private boolean equalObjectsOrStrings(final Object left, final Object right) {
@@ -115,26 +108,12 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
 
     @Override
     public int hashCode() {
-        return obj != null ? obj.hashCode() : 0;
+        return obj.hashCode();
     }
 
     @Override
     public String toString() {
         return getFormattedMessage();
-    }
-
-    private void writeObject(final ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        if (obj instanceof Serializable) {
-            out.writeObject(obj);
-        } else {
-            out.writeObject(String.valueOf(obj));
-        }
-    }
-
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        obj = in.readObject();
     }
 
     /**

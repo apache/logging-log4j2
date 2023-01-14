@@ -41,7 +41,7 @@ import org.apache.logging.log4j.util.Strings;
  * performance: all characters are simply cast to bytes.
  * </p>
  */
-public abstract class AbstractStringLayout extends AbstractLayout<String> implements StringLayout {
+public abstract class AbstractStringLayout extends AbstractLayout implements StringLayout {
 
     public abstract static class Builder<B extends Builder<B>> extends AbstractLayout.Builder<B> {
 
@@ -282,4 +282,6 @@ public abstract class AbstractStringLayout extends AbstractLayout<String> implem
         return getBytes(toSerializable(event));
     }
 
+    @Override
+    public abstract String toSerializable(LogEvent event);
 }

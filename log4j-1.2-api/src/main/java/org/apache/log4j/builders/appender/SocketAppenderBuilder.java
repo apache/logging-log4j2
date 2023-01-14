@@ -16,6 +16,11 @@
  */
 package org.apache.log4j.builders.appender;
 
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -31,11 +36,6 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
@@ -69,7 +69,7 @@ public class SocketAppenderBuilder extends AbstractBuilder implements AppenderBu
 
     private <T extends Log4j1Configuration> Appender createAppender(final String name, final String host, final int port, final Layout layout,
         final Filter filter, final String level, final boolean immediateFlush, final int reconnectDelayMillis, final T configuration) {
-        org.apache.logging.log4j.core.Layout<?> actualLayout = LayoutAdapter.adapt(layout);
+        org.apache.logging.log4j.core.Layout actualLayout = LayoutAdapter.adapt(layout);
         final org.apache.logging.log4j.core.Filter actualFilter = buildFilters(level, filter);
         // @formatter:off
         return AppenderWrapper.adapt(SocketAppender.newBuilder()

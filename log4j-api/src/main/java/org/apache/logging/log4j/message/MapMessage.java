@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.util.BiConsumer;
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
@@ -51,8 +52,6 @@ import org.apache.logging.log4j.util.TriConsumer;
 @PerformanceSensitive("allocation")
 @AsynchronouslyFormattable
 public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStringBuilderFormattable {
-
-    private static final long serialVersionUID = -5031471831131487120L;
 
     /**
      * When set as the format specifier causes the Map to be formatted as XML.
@@ -156,12 +155,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * Returns the message data as an unmodifiable Map.
      * @return the message data as an unmodifiable map.
      */
-    @SuppressWarnings("unchecked")
     public Map<String, V> getData() {
         final TreeMap<String, V> result = new TreeMap<>(); // returned map must be sorted
         for (int i = 0; i < data.size(); i++) {
             // The Eclipse compiler does not need the typecast to V, but the Oracle compiler sure does.
-            result.put(data.getKeyAt(i), (V) data.getValueAt(i));
+            result.put(data.getKeyAt(i), data.getValueAt(i));
         }
         return Collections.unmodifiableMap(result);
     }
@@ -458,9 +456,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @param map The Map.
      * @return A new MapMessage
      */
-    @SuppressWarnings("unchecked")
     public M newInstance(final Map<String, V> map) {
-        return (M) new MapMessage<>(map);
+        return Cast.cast(new MapMessage<>(map));
     }
 
     @Override
@@ -624,12 +621,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @return this object
      * @since 2.9
      */
-    @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final boolean value) {
         final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
-        return (M) this;
+        return Cast.cast(this);
     }
 
     /**
@@ -639,12 +635,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @return this object
      * @since 2.9
      */
-    @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final byte value) {
         final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
-        return (M) this;
+        return Cast.cast(this);
     }
 
     /**
@@ -654,12 +649,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @return this object
      * @since 2.9
      */
-    @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final char value) {
         final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
-        return (M) this;
+        return Cast.cast(this);
     }
 
 
@@ -670,12 +664,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @return this object
      * @since 2.9
      */
-    @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final double value) {
         final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
-        return (M) this;
+        return Cast.cast(this);
     }
 
     /**
@@ -685,12 +678,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @return this object
      * @since 2.9
      */
-    @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final float value) {
         final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
-        return (M) this;
+        return Cast.cast(this);
     }
 
     /**
@@ -700,12 +692,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @return this object
      * @since 2.9
      */
-    @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final int value) {
         final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
-        return (M) this;
+        return Cast.cast(this);
     }
 
     /**
@@ -715,12 +706,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @return this object
      * @since 2.9
      */
-    @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final long value) {
         final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
-        return (M) this;
+        return Cast.cast(this);
     }
 
     /**
@@ -730,12 +720,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @return this object
      * @since 2.9
      */
-    @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final Object value) {
         final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
-        return (M) this;
+        return Cast.cast(this);
     }
 
     /**
@@ -745,12 +734,11 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @return this object
      * @since 2.9
      */
-    @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final short value) {
         final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
-        return (M) this;
+        return Cast.cast(this);
     }
 
     /**
@@ -759,11 +747,10 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @param value The value of the data item.
      * @return {@code this}
      */
-    @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final String value) {
         final String key = toKey(candidateKey);
         put(key, value);
-        return (M) this;
+        return Cast.cast(this);
     }
 
 }

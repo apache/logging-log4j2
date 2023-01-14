@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class JsonMessage implements Message {
 
-    private static final long serialVersionUID = 1L;
     private static final ObjectMapper mapper = new ObjectMapper();
     private final Object object;
 

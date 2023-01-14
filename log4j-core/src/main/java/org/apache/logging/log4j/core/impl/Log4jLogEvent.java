@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.io.IOException;
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.rmi.MarshalledObject;
 import java.util.Objects;
 
 import org.apache.logging.log4j.Level;
@@ -37,7 +32,6 @@ import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
-import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -49,15 +43,13 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class Log4jLogEvent implements LogEvent {
 
-    private static final long serialVersionUID = -8393305700508709443L;
-
     private final String loggerFqcn;
     private final Marker marker;
     private final Level level;
     private final String loggerName;
     private Message message;
     private final MutableInstant instant = new MutableInstant();
-    private final transient Throwable thrown;
+    private final Throwable thrown;
     private ThrowableProxy thrownProxy;
     private final StringMap contextData;
     private final ThreadContext.ContextStack contextStack;
@@ -68,7 +60,7 @@ public class Log4jLogEvent implements LogEvent {
     private boolean includeLocation;
     private boolean endOfBatch = false;
     /** @since Log4J 2.4 */
-    private final transient long nanoTime;
+    private final long nanoTime;
 
     /** LogEvent Builder helper class. */
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<LogEvent> {
@@ -535,83 +527,6 @@ public class Log4jLogEvent implements LogEvent {
         return nanoTime;
     }
 
-    /**
-     * Creates a LogEventProxy that can be serialized.
-     * @return a LogEventProxy.
-     */
-    protected Object writeReplace() {
-        getThrownProxy(); // ensure ThrowableProxy is initialized
-        return new LogEventProxy(this, this.includeLocation);
-    }
-
-    /**
-     * Take a snapshot of the specified {@code LogEvent}.
-     *
-     * @param event the event to take a snapshot of
-     * @param includeLocation if true, this method will obtain caller location information
-     * @return snapshot of the event as a {@code Serializable} object
-     * @see #deserialize(Serializable)
-     * @see #serialize(Log4jLogEvent, boolean)
-     */
-    public static Serializable serialize(final LogEvent event, final boolean includeLocation) {
-        if (event instanceof Log4jLogEvent) {
-            event.getThrownProxy(); // ensure ThrowableProxy is initialized
-            return new LogEventProxy((Log4jLogEvent) event, includeLocation);
-        }
-        return new LogEventProxy(event, includeLocation);
-    }
-
-    /**
-     * Take a snapshot of the specified {@code Log4jLogEvent}.
-     *
-     * @param event the event to take a snapshot of
-     * @param includeLocation if true, this method will obtain caller location information
-     * @return snapshot of the event as a {@code Serializable} object
-     * @see #deserialize(Serializable)
-     * @see #serialize(LogEvent, boolean)
-     */
-    public static Serializable serialize(final Log4jLogEvent event, final boolean includeLocation) {
-        event.getThrownProxy(); // ensure ThrowableProxy is initialized
-        return new LogEventProxy(event, includeLocation);
-    }
-
-    public static boolean canDeserialize(final Serializable event) {
-        return event instanceof LogEventProxy;
-    }
-
-    public static Log4jLogEvent deserialize(final Serializable event) {
-        Objects.requireNonNull(event, "Event cannot be null");
-        if (event instanceof LogEventProxy) {
-            final LogEventProxy proxy = (LogEventProxy) event;
-            final Log4jLogEvent result = new Log4jLogEvent(proxy.loggerName, proxy.marker,
-                    proxy.loggerFQCN, proxy.level, proxy.message,
-                    proxy.thrown, proxy.thrownProxy, proxy.contextData, proxy.contextStack, proxy.threadId,
-                    proxy.threadName, proxy.threadPriority, proxy.source, proxy.timeMillis, proxy.nanoOfMillisecond,
-                    proxy.nanoTime);
-            result.setEndOfBatch(proxy.isEndOfBatch);
-            result.setIncludeLocation(proxy.isLocationRequired);
-            return result;
-        }
-        throw new IllegalArgumentException("Event is not a serialized LogEvent: " + event.toString());
-    }
-
-    private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
-        throw new InvalidObjectException("Proxy required");
-    }
-
-    public static LogEvent createMemento(final LogEvent logEvent) {
-        return new Log4jLogEvent.Builder(logEvent).build();
-    }
-
-    /**
-     * Creates and returns a new immutable copy of this {@code Log4jLogEvent}.
-     *
-     * @return a new immutable copy of the data in this {@code Log4jLogEvent}
-     */
-    public static Log4jLogEvent createMemento(final LogEvent event, final boolean includeLocation) {
-        return deserialize(serialize(event, includeLocation));
-    }
-
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
@@ -712,135 +627,4 @@ public class Log4jLogEvent implements LogEvent {
         return result;
     }
 
-    /**
-     * Proxy pattern used to serialize the LogEvent.
-     */
-    static class LogEventProxy implements Serializable {
-
-        private static final long serialVersionUID = -8634075037355293699L;
-        private final String loggerFQCN;
-        private final Marker marker;
-        private final Level level;
-        private final String loggerName;
-        // transient since 2.8
-        private final transient Message message;
-        /** since 2.8 */
-        private MarshalledObject<Message> marshalledMessage;
-        /** since 2.8 */
-        private String messageString;
-        private final long timeMillis;
-        /** since 2.11 */
-        private final int nanoOfMillisecond;
-        private final transient Throwable thrown;
-        private final ThrowableProxy thrownProxy;
-        /** @since 2.7 */
-        private final StringMap contextData;
-        private final ThreadContext.ContextStack contextStack;
-        /** @since 2.6 */
-        private final long threadId;
-        private final String threadName;
-        /** @since 2.6 */
-        private final int threadPriority;
-        private final StackTraceElement source;
-        private final boolean isLocationRequired;
-        private final boolean isEndOfBatch;
-        /** @since 2.4 */
-        private final transient long nanoTime;
-
-        public LogEventProxy(final Log4jLogEvent event, final boolean includeLocation) {
-            this.loggerFQCN = event.loggerFqcn;
-            this.marker = event.marker;
-            this.level = event.level;
-            this.loggerName = event.loggerName;
-            this.message = event.message instanceof ReusableMessage
-                    ? memento((ReusableMessage) event.message)
-                    : event.message;
-            this.timeMillis = event.instant.getEpochMillisecond();
-            this.nanoOfMillisecond = event.instant.getNanoOfMillisecond();
-            this.thrown = event.thrown;
-            this.thrownProxy = event.thrownProxy;
-            this.contextData = event.contextData;
-            this.contextStack = event.contextStack;
-            this.source = includeLocation ? event.getSource() : null;
-            this.threadId = event.getThreadId();
-            this.threadName = event.getThreadName();
-            this.threadPriority = event.getThreadPriority();
-            this.isLocationRequired = includeLocation;
-            this.isEndOfBatch = event.endOfBatch;
-            this.nanoTime = event.nanoTime;
-        }
-
-        public LogEventProxy(final LogEvent event, final boolean includeLocation) {
-            this.loggerFQCN = event.getLoggerFqcn();
-            this.marker = event.getMarker();
-            this.level = event.getLevel();
-            this.loggerName = event.getLoggerName();
-
-            final Message temp = event.getMessage();
-            message = temp instanceof ReusableMessage
-                    ? memento((ReusableMessage) temp)
-                    : temp;
-            this.timeMillis = event.getInstant().getEpochMillisecond();
-            this.nanoOfMillisecond = event.getInstant().getNanoOfMillisecond();
-            this.thrown = event.getThrown();
-            this.thrownProxy = event.getThrownProxy();
-            this.contextData = memento(event.getContextData());
-            this.contextStack = event.getContextStack();
-            this.source = includeLocation ? event.getSource() : null;
-            this.threadId = event.getThreadId();
-            this.threadName = event.getThreadName();
-            this.threadPriority = event.getThreadPriority();
-            this.isLocationRequired = includeLocation;
-            this.isEndOfBatch = event.isEndOfBatch();
-            this.nanoTime = event.getNanoTime();
-        }
-
-        private static Message memento(final ReusableMessage message) {
-            return message.memento();
-        }
-
-        private static StringMap memento(final ReadOnlyStringMap data) {
-            final StringMap result = ContextDataFactory.createContextData();
-            result.putAll(data);
-            return result;
-        }
-
-        private static MarshalledObject<Message> marshall(final Message msg) {
-            try {
-                return new MarshalledObject<>(msg);
-            } catch (final Exception ex) {
-                return null;
-            }
-        }
-
-        private void writeObject(final java.io.ObjectOutputStream s) throws IOException {
-            this.messageString = message.getFormattedMessage();
-            this.marshalledMessage = marshall(message);
-            s.defaultWriteObject();
-        }
-
-        /**
-         * Returns a Log4jLogEvent using the data in the proxy.
-         * @return Log4jLogEvent.
-         */
-        protected Object readResolve() {
-            final Log4jLogEvent result = new Log4jLogEvent(loggerName, marker, loggerFQCN, level, message(), thrown,
-                    thrownProxy, contextData, contextStack, threadId, threadName, threadPriority, source, timeMillis,
-                    nanoOfMillisecond, nanoTime);
-            result.setEndOfBatch(isEndOfBatch);
-            result.setIncludeLocation(isLocationRequired);
-            return result;
-        }
-
-        private Message message() {
-            if (marshalledMessage != null) {
-                try {
-                    return marshalledMessage.get();
-                } catch (final Exception ex) {
-                    // ignore me
-                }
-            }
-            return new SimpleMessage(messageString);
-        }
-    }
 }

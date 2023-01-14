@@ -16,6 +16,10 @@
  */
 package org.apache.log4j.builders.appender;
 
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.AppenderWrapper;
@@ -31,10 +35,6 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
@@ -128,7 +128,7 @@ public class ConsoleAppenderBuilder extends AbstractBuilder implements AppenderB
 
     private <T extends Log4j1Configuration> Appender createAppender(final String name, final Layout layout, final Filter filter,
             final String level, final String target, final boolean immediateFlush, final boolean follow, final T configuration) {
-        org.apache.logging.log4j.core.Layout<?> consoleLayout = LayoutAdapter.adapt(layout);
+        org.apache.logging.log4j.core.Layout consoleLayout = LayoutAdapter.adapt(layout);
 
         final org.apache.logging.log4j.core.Filter consoleFilter = buildFilters(level, filter);
         final ConsoleAppender.Target consoleTarget = SYSTEM_ERR.equals(target)

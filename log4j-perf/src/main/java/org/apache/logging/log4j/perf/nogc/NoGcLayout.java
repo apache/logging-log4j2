@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.perf.nogc;
 
+import java.nio.charset.Charset;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
@@ -23,10 +26,6 @@ import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.core.layout.StringBuilderEncoder;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
-
-import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.util.Map;
 
 /**
  * Layout that does not allocate temp objects.
@@ -36,7 +35,7 @@ import java.util.Map;
  * For this demo we cannot
  * </p>
  */
-public class NoGcLayout implements Layout<Serializable>, Encoder<LogEvent> {
+public class NoGcLayout implements Layout, Encoder<LogEvent> {
     private final StringBuilder cachedStringBuilder = new StringBuilder(2048);
     private final PatternSerializer2 serializer = new PatternSerializer2();
     private final StringBuilderEncoder cachedHelper;
@@ -118,7 +117,7 @@ public class NoGcLayout implements Layout<Serializable>, Encoder<LogEvent> {
     }
 
     @Override
-    public Serializable toSerializable(final LogEvent event) {
+    public String toSerializable(final LogEvent event) {
         return null;
     }
 

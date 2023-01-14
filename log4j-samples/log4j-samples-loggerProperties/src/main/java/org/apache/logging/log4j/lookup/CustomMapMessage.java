@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.lookup;
 
+import java.util.Map;
+
 import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.StringMapMessage;
-
-import java.util.Map;
 
 /**
  *
@@ -27,7 +27,6 @@ import java.util.Map;
 @AsynchronouslyFormattable
 public class CustomMapMessage extends StringMapMessage {
 
-    private static final long serialVersionUID = 1L;
     private final String message;
 
     public CustomMapMessage(final String msg, final Map<String, String> map) {

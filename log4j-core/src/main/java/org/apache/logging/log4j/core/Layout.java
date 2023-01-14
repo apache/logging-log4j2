@@ -16,35 +16,21 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
 
 /**
- * Lays out a {@linkplain LogEvent} in different formats.
- *
- * The formats are:
- * <ul>
- * <li>
- * {@code byte[]}</li>
- * <li>
- * an implementer of {@linkplain Serializable}, like {@code byte[]}</li>
- * <li>
- * {@linkplain String}</li>
- * <li>
- * {@linkplain LogEvent}</li>
- * </ul>
- * <p>
- * Since 2.6, Layouts can {@linkplain Encoder#encode(Object, ByteBufferDestination) encode} a {@code LogEvent} directly
- * to a {@link ByteBufferDestination} without creating temporary intermediary objects.
- * </p>
- *
- * @param <T>
- *            The {@link Serializable} type returned by {@link #toSerializable(LogEvent)}
+ * Converts {@link LogEvent} instances into different layouts of data. A layout typically encodes into either
+ * a {@link String} or {@code byte[]}. Since version 2.6, layouts implement {@link Encoder Encoder&lt;LogEvent&gt;}
+ * to support direct encoding of a log event into a {@link ByteBufferDestination} without creating temporary
+ * intermediary objects. Since version 3.0.0, layouts no longer reference the legacy Java serialization API
+ * and are limited to strings or bytes.
  */
-public interface Layout<T extends Serializable> extends Encoder<LogEvent> {
+public interface Layout extends Encoder<LogEvent> {
 
     /**
      * Main {@linkplain org.apache.logging.log4j.plugins.Configurable#elementType() plugin element type} for
@@ -67,7 +53,7 @@ public interface Layout<T extends Serializable> extends Encoder<LogEvent> {
     byte[] getHeader();
 
     /**
-     * Formats the event suitable for display.
+     * Formats the event into bytes. This should use the configured character set.
      *
      * @param event The Logging Event.
      * @return The formatted event.
@@ -75,12 +61,19 @@ public interface Layout<T extends Serializable> extends Encoder<LogEvent> {
     byte[] toByteArray(LogEvent event);
 
     /**
-     * Formats the event as an Object that can be serialized.
+     * Returns the character set used for encoding log events.
+     */
+    default Charset getCharset() {
+        return StandardCharsets.UTF_8;
+    }
+
+    /**
+     * Serializes the log event into a String.
      *
      * @param event The Logging Event.
      * @return The formatted event.
      */
-    T toSerializable(LogEvent event);
+    String toSerializable(LogEvent event);
 
     /**
      * Returns the content type output by this layout. The base class returns "text/plain".

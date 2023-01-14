@@ -50,8 +50,6 @@ import org.apache.logging.log4j.util.LowLevelLogUtil;
  */
 public final class StatusLogger extends AbstractLogger {
 
-    private static final long serialVersionUID = 2L;
-
     private static final String NOT_AVAIL = "?";
 
     private static final StatusLogger STATUS_LOGGER = StatusLoggerFactory.getInstance().createStatusLogger();
@@ -66,14 +64,10 @@ public final class StatusLogger extends AbstractLogger {
 
     private final Collection<StatusListener> listeners = new CopyOnWriteArrayList<>();
 
-    @SuppressWarnings("NonSerializableFieldInSerializableClass")
-    // ReentrantReadWriteLock is Serializable
     private final ReadWriteLock listenersLock = new ReentrantReadWriteLock();
 
     private final Queue<StatusData> messages;
 
-    @SuppressWarnings("NonSerializableFieldInSerializableClass")
-    // ReentrantLock is Serializable
     private final Lock msgLock = new ReentrantLock();
 
     private int listenersLevel;

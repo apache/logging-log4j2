@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,7 +52,7 @@ public interface PropertySource {
 
     /**
      * Returns the list of all property names.
-     * 
+     *
      * @return list of property names
      */
     default Collection<String> getPropertyNames() {
@@ -97,8 +96,7 @@ public interface PropertySource {
      *
      * @since 2.10.0
      */
-    class Comparator implements java.util.Comparator<PropertySource>, Serializable {
-        private static final long serialVersionUID = 1L;
+    class Comparator implements java.util.Comparator<PropertySource> {
 
         @Override
         public int compare(final PropertySource o1, final PropertySource o2) {

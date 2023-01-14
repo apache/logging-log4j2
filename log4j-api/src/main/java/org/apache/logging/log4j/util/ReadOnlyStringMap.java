@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -24,8 +23,8 @@ import java.util.Map;
  *
  * @since 2.7
  */
-public interface ReadOnlyStringMap extends Serializable {
-    
+public interface ReadOnlyStringMap {
+
     /**
      * Returns a non-{@code null} mutable {@code Map<String, String>} containing a snapshot of this data structure.
      *

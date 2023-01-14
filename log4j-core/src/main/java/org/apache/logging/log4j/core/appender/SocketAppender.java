@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -37,11 +41,6 @@ import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * An Appender that delivers events over socket connections. Supports both TCP and UDP.
@@ -197,7 +196,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         public SocketAppender build() {
             boolean immediateFlush = isImmediateFlush();
             final boolean bufferedIo = isBufferedIo();
-            final Layout<? extends Serializable> layout = getLayout();
+            final Layout layout = getLayout();
             if (layout == null) {
                 AbstractLifeCycle.LOGGER.error("No layout provided for SocketAppender");
                 return null;
@@ -231,9 +230,9 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
     private final Object advertisement;
     private final Advertiser advertiser;
 
-    protected SocketAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
-            final AbstractSocketManager manager, final boolean ignoreExceptions, final boolean immediateFlush,
-            final Advertiser advertiser) {
+    protected SocketAppender(final String name, final Layout layout, final Filter filter,
+                             final AbstractSocketManager manager, final boolean ignoreExceptions, final boolean immediateFlush,
+                             final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, null, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
@@ -266,7 +265,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      */
     protected static AbstractSocketManager createSocketManager(final String name, Protocol protocol, final String host,
             final int port, final int connectTimeoutMillis, final SslConfiguration sslConfig,
-            final int reconnectDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
+            final int reconnectDelayMillis, final boolean immediateFail, final Layout layout,
             final int bufferSize, final SocketOptions socketOptions) {
         if (protocol == Protocol.TCP && sslConfig != null) {
             // Upgrade TCP to SSL if an SSL config is specified.

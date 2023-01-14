@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,11 +35,6 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public final class TestHelpers {
 
@@ -51,7 +51,7 @@ public final class TestHelpers {
     @SuppressWarnings("unchecked")
     static Map<String, Object> serializeUsingLayout(
             final LogEvent logEvent,
-            final Layout<String> layout) {
+            final Layout layout) {
         final String json = layout.toSerializable(logEvent);
         return (Map<String, Object>) JsonReader.read(json);
     }
@@ -70,7 +70,7 @@ public final class TestHelpers {
     }
 
     public static void usingSerializedLogEventAccessor(
-            final Layout<String> layout,
+            final Layout layout,
             final LogEvent logEvent,
             final Consumer<MapAccessor> accessorConsumer) {
         final String serializedLogEventJson = layout.toSerializable(logEvent);

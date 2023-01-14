@@ -1,10 +1,10 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
  * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import java.io.Serializable;
 import java.io.Writer;
 
 /**
@@ -34,9 +33,8 @@ import java.io.Writer;
  * <li>Pick up Javadoc updates from revision 1722253.</li>
  * <ol>
  */
-public class StringBuilderWriter extends Writer implements Serializable {
+public class StringBuilderWriter extends Writer {
 
-    private static final long serialVersionUID = -146927496096066153L;
     private final StringBuilder builder;
 
     /**

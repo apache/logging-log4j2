@@ -47,19 +47,19 @@ public class JsonTemplateLayoutBenchmarkState {
 
     private final ByteBufferDestination byteBufferDestination;
 
-    private final Layout<?> jtl4JsonLayout;
+    private final Layout jtl4JsonLayout;
 
-    private final Layout<?> jtl4EcsLayout;
+    private final Layout jtl4EcsLayout;
 
-    private final Layout<?> jtl4GelfLayout;
+    private final Layout jtl4GelfLayout;
 
-    private final Layout<?> defaultJsonLayout;
+    private final Layout defaultJsonLayout;
 
-    private final Layout<?> customJsonLayout;
+    private final Layout customJsonLayout;
 
-    private final Layout<?> ecsLayout;
+    private final Layout ecsLayout;
 
-    private final Layout<?> gelfLayout;
+    private final Layout gelfLayout;
 
     private final List<LogEvent> fullLogEvents;
 
@@ -178,31 +178,31 @@ public class JsonTemplateLayoutBenchmarkState {
         return byteBufferDestination;
     }
 
-    Layout<?> getJtl4JsonLayout() {
+    Layout getJtl4JsonLayout() {
         return jtl4JsonLayout;
     }
 
-    Layout<?> getJtl4EcsLayout() {
+    Layout getJtl4EcsLayout() {
         return jtl4EcsLayout;
     }
 
-    Layout<?> getJtl4GelfLayout() {
+    Layout getJtl4GelfLayout() {
         return jtl4GelfLayout;
     }
 
-    Layout<?> getDefaultJsonLayout() {
+    Layout getDefaultJsonLayout() {
         return defaultJsonLayout;
     }
 
-    Layout<?> getCustomJsonLayout() {
+    Layout getCustomJsonLayout() {
         return customJsonLayout;
     }
 
-    Layout<?> getEcsLayout() {
+    Layout getEcsLayout() {
         return ecsLayout;
     }
 
-    Layout<?> getGelfLayout() {
+    Layout getGelfLayout() {
         return gelfLayout;
     }
 
