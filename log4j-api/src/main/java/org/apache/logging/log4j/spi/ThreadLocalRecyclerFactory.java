@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.spi;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -42,28 +45,43 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
         return new ThreadLocalRecycler<>(supplier, cleaner);
     }
 
-    private static class ThreadLocalRecycler<V> implements Recycler<V> {
+    // Visible for testing
+    static class ThreadLocalRecycler<V> implements Recycler<V> {
+
+        private final Supplier<V> supplier;
 
         private final Consumer<V> cleaner;
 
-        private final ThreadLocal<V> holder;
+        private final ThreadLocal<Queue<V>> holder;
 
         private ThreadLocalRecycler(
                 final Supplier<V> supplier,
                 final Consumer<V> cleaner) {
+            this.supplier = supplier;
             this.cleaner = cleaner;
-            this.holder = ThreadLocal.withInitial(supplier);
+            this.holder = ThreadLocal.withInitial(ArrayDeque::new);
         }
 
         @Override
         public V acquire() {
-            final V value = holder.get();
+            final Queue<V> queue = holder.get();
+            final V value = queue.poll();
+            if (value == null) {
+                return supplier.get();
+            }
             cleaner.accept(value);
             return value;
         }
 
         @Override
-        public void release(final V value) {}
+        public void release(final V value) {
+            holder.get().offer(value);
+        }
+
+        // Visible for testing
+        Queue<V> getQueue() {
+            return holder.get();
+        }
 
     }
 }

@@ -18,6 +18,9 @@ package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
 
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerFactories;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
@@ -27,6 +30,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @see ReusableSimpleMessage
  * @see ReusableObjectMessage
  * @see ReusableParameterizedMessage
+ * @see Recycler
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
@@ -38,42 +42,26 @@ public final class ReusableMessageFactory implements MessageFactory, Serializabl
     public static final ReusableMessageFactory INSTANCE = new ReusableMessageFactory();
 
     private static final long serialVersionUID = -8970940216592525651L;
-    private static final ThreadLocal<ReusableParameterizedMessage> threadLocalParameterized = new ThreadLocal<>();
-    private static final ThreadLocal<ReusableSimpleMessage> threadLocalSimpleMessage = new ThreadLocal<>();
-    private static final ThreadLocal<ReusableObjectMessage> threadLocalObjectMessage = new ThreadLocal<>();
+
+    private final Recycler<ReusableParameterizedMessage> parameterizedMessageRecycler;
+    private final Recycler<ReusableSimpleMessage> simpleMessageRecycler;
+    private final Recycler<ReusableObjectMessage> objectMessageRecycler;
 
     /**
-     * Constructs a message factory.
+     * Constructs a message factory using the default {@link RecyclerFactory}.
      */
     public ReusableMessageFactory() {
+        this(RecyclerFactories.ofSpec(null));
+    }
+
+    public ReusableMessageFactory(final RecyclerFactory recyclerFactory) {
         super();
-    }
-
-    private static ReusableParameterizedMessage getParameterized() {
-        ReusableParameterizedMessage result = threadLocalParameterized.get();
-        if (result == null) {
-            result = new ReusableParameterizedMessage();
-            threadLocalParameterized.set(result);
-        }
-        return result.reserved ? new ReusableParameterizedMessage().reserve() : result.reserve();
-    }
-
-    private static ReusableSimpleMessage getSimple() {
-        ReusableSimpleMessage result = threadLocalSimpleMessage.get();
-        if (result == null) {
-            result = new ReusableSimpleMessage();
-            threadLocalSimpleMessage.set(result);
-        }
-        return result;
-    }
-
-    private static ReusableObjectMessage getObject() {
-        ReusableObjectMessage result = threadLocalObjectMessage.get();
-        if (result == null) {
-            result = new ReusableObjectMessage();
-            threadLocalObjectMessage.set(result);
-        }
-        return result;
+        parameterizedMessageRecycler = recyclerFactory
+                .create(ReusableParameterizedMessage::new, ReusableParameterizedMessage::clear);
+        simpleMessageRecycler = recyclerFactory
+                .create(ReusableSimpleMessage::new, ReusableSimpleMessage::clear);
+        objectMessageRecycler = recyclerFactory
+                .create(ReusableObjectMessage::new, ReusableObjectMessage::clear);
     }
 
     /**
@@ -90,8 +78,20 @@ public final class ReusableMessageFactory implements MessageFactory, Serializabl
     }
 
     @Override
+    public void recycle(final Message message) {
+        // related to LOG4J2-1583 and nested log messages clobbering each other. recycle messages today!
+        if (message instanceof ReusableParameterizedMessage) {
+            parameterizedMessageRecycler.release((ReusableParameterizedMessage) message);
+        } else if (message instanceof ReusableObjectMessage) {
+            objectMessageRecycler.release((ReusableObjectMessage) message);
+        } else if (message instanceof ReusableSimpleMessage) {
+            simpleMessageRecycler.release((ReusableSimpleMessage) message);
+        }
+    }
+
+    @Override
     public Message newMessage(final CharSequence charSequence) {
-        final ReusableSimpleMessage result = getSimple();
+        final ReusableSimpleMessage result = simpleMessageRecycler.acquire();
         result.set(charSequence);
         return result;
     }
@@ -107,64 +107,64 @@ public final class ReusableMessageFactory implements MessageFactory, Serializabl
      */
     @Override
     public Message newMessage(final String message, final Object... params) {
-        return getParameterized().set(message, params);
+        return parameterizedMessageRecycler.acquire().set(message, params);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0) {
-        return getParameterized().set(message, p0);
+        return parameterizedMessageRecycler.acquire().set(message, p0);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1) {
-        return getParameterized().set(message, p0, p1);
+        return parameterizedMessageRecycler.acquire().set(message, p0, p1);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2) {
-        return getParameterized().set(message, p0, p1, p2);
+        return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2,
             final Object p3) {
-        return getParameterized().set(message, p0, p1, p2, p3);
+        return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4) {
-        return getParameterized().set(message, p0, p1, p2, p3, p4);
+        return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3, p4);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5) {
-        return getParameterized().set(message, p0, p1, p2, p3, p4, p5);
+        return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6) {
-        return getParameterized().set(message, p0, p1, p2, p3, p4, p5, p6);
+        return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7) {
-        return getParameterized().set(message, p0, p1, p2, p3, p4, p5, p6, p7);
+        return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
-        return getParameterized().set(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
+        return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
     public Message newMessage(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
             final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
-        return getParameterized().set(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+        return parameterizedMessageRecycler.acquire().set(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
     /**
@@ -177,7 +177,7 @@ public final class ReusableMessageFactory implements MessageFactory, Serializabl
      */
     @Override
     public Message newMessage(final String message) {
-        final ReusableSimpleMessage result = getSimple();
+        final ReusableSimpleMessage result = simpleMessageRecycler.acquire();
         result.set(message);
         return result;
     }
@@ -193,7 +193,7 @@ public final class ReusableMessageFactory implements MessageFactory, Serializabl
      */
     @Override
     public Message newMessage(final Object message) {
-        final ReusableObjectMessage result = getObject();
+        final ReusableObjectMessage result = objectMessageRecycler.acquire();
         result.set(message);
         return result;
     }

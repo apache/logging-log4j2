@@ -1950,7 +1950,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             handleLogMessageException(ex, fqcn, message);
         } finally {
             decrementRecursionDepth();
-            ReusableMessageFactory.release(message);
+            messageFactory.recycle(message);
         }
     }
 
@@ -1984,7 +1984,7 @@ public abstract class AbstractLogger implements ExtendedLogger, Serializable {
             logMessageTrackRecursion(fqcn, level, marker, msg, throwable);
         } finally {
             // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
-            ReusableMessageFactory.release(msg);
+            messageFactory.recycle(msg);
         }
     }
 

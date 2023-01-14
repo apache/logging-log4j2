@@ -236,4 +236,17 @@ public interface MessageFactory {
                                final Object p6, final Object p7, final Object p8, final Object p9) {
         return newMessage(message, new Object[] { p0, p1, p2, p3, p4, p5, p6, p7, p8, p9 });
     }
+
+    /**
+     * Recycles a message back for potential reuse or cleanup.
+     *
+     * @since 3.0.0
+     * @see org.apache.logging.log4j.spi.Recycler
+     */
+    default void recycle(Message message) {
+        // by default, we'll delegate to the old API for compatibility
+        if (message instanceof Clearable) {
+            ((Clearable) message).clear();
+        }
+    }
 }

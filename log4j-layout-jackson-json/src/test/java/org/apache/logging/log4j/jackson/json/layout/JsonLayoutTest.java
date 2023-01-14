@@ -521,7 +521,8 @@ public class JsonLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setIncludeStacktrace(true)
                 .build();
-        Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
+        final ReusableMessageFactory factory = ReusableMessageFactory.INSTANCE;
+        Message message = factory.newMessage("Testing {}", new TestObj());
         try {
             final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
                     .setLoggerName("a.B")
@@ -538,7 +539,7 @@ public class JsonLayoutTest {
             final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
             assertEquals(expectedMessage, actual.getMessage().getFormattedMessage());
         } finally {
-            ReusableMessageFactory.release(message);
+            factory.recycle(message);
         }
     }
 
@@ -556,7 +557,8 @@ public class JsonLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setIncludeStacktrace(true)
                 .build();
-        Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
+        final ReusableMessageFactory factory = ReusableMessageFactory.INSTANCE;
+        Message message = factory.newMessage("Testing {}", new TestObj());
         try {
             RingBufferLogEvent ringBufferEvent = new RingBufferLogEvent();
             ringBufferEvent.setValues(
@@ -569,7 +571,7 @@ public class JsonLayoutTest {
             final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
             assertEquals(expectedMessage, actual.getMessage().getFormattedMessage());
         } finally {
-            ReusableMessageFactory.release(message);
+            factory.recycle(message);
         }
     }
 
