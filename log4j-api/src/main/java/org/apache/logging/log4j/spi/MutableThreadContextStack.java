@@ -30,8 +30,6 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
  */
 public class MutableThreadContextStack implements ThreadContextStack, StringBuilderFormattable {
 
-    private static final long serialVersionUID = 50505011L;
-
     /**
      * The underlying list (never null).
      */
@@ -42,7 +40,7 @@ public class MutableThreadContextStack implements ThreadContextStack, StringBuil
      * Constructs an empty MutableThreadContextStack.
      */
     public MutableThreadContextStack() {
-        this(new ArrayList<String>());
+        this(new ArrayList<>());
     }
 
     /**

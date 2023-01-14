@@ -56,7 +56,7 @@ public class ServletAppender extends AbstractAppender {
                 LOGGER.error("No servlet context is available");
                 return null;
             }
-            Layout<?> layout = getLayout();
+            Layout layout = getLayout();
             if (layout == null) {
                 layout = PatternLayout.createDefaultLayout();
             } else if (!(layout instanceof AbstractStringLayout)) {
@@ -92,8 +92,8 @@ public class ServletAppender extends AbstractAppender {
     private final ServletContext servletContext;
     private final boolean logThrowables;
 
-    private ServletAppender(final String name, final Layout<?> layout, final Filter filter,
-            final ServletContext servletContext, final boolean ignoreExceptions, final boolean logThrowables) {
+    private ServletAppender(final String name, final Layout layout, final Filter filter,
+                            final ServletContext servletContext, final boolean ignoreExceptions, final boolean logThrowables) {
         super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
         this.servletContext = servletContext;
         this.logThrowables = logThrowables;
@@ -120,8 +120,8 @@ public class ServletAppender extends AbstractAppender {
      * @deprecated Use {@link #newBuilder()}.
      */
     @Deprecated
-    public static ServletAppender createAppender(final Layout<?> layout, final Filter filter,
-            final String name, final boolean ignoreExceptions) {
+    public static ServletAppender createAppender(final Layout layout, final Filter filter,
+                                                 final String name, final boolean ignoreExceptions) {
         // @formatter:off
         return newBuilder().setFilter(filter).setIgnoreExceptions(ignoreExceptions).setLayout(layout).setName(name)
                 .build();

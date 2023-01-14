@@ -73,8 +73,8 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     private long mappingOffset;
 
     protected MemoryMappedFileManager(final RandomAccessFile file, final String fileName, final OutputStream os,
-            final boolean immediateFlush, final long position, final int regionLength, final String advertiseURI,
-            final Layout<?> layout, final boolean writeHeader) throws IOException {
+                                      final boolean immediateFlush, final long position, final int regionLength, final String advertiseURI,
+                                      final Layout layout, final boolean writeHeader) throws IOException {
         super(os, fileName, layout, writeHeader, ByteBuffer.wrap(new byte[0]));
         this.immediateFlush = immediateFlush;
         this.randomAccessFile = Objects.requireNonNull(file, "RandomAccessFile");
@@ -98,7 +98,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
      */
     public static MemoryMappedFileManager getFileManager(final String fileName, final boolean append,
             final boolean immediateFlush, final int regionLength, final String advertiseURI,
-            final Layout<?> layout) {
+            final Layout layout) {
         return narrow(MemoryMappedFileManager.class, getManager(fileName, new FactoryData(append, immediateFlush,
                 regionLength, advertiseURI, layout), FACTORY));
     }
@@ -300,7 +300,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         private final boolean immediateFlush;
         private final int regionLength;
         private final String advertiseURI;
-        private final Layout<?> layout;
+        private final Layout layout;
 
         /**
          * Constructor.
@@ -312,7 +312,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
          * @param layout The layout.
          */
         public FactoryData(final boolean append, final boolean immediateFlush, final int regionLength,
-                final String advertiseURI, final Layout<?> layout) {
+                final String advertiseURI, final Layout layout) {
             this.append = append;
             this.immediateFlush = immediateFlush;
             this.regionLength = regionLength;

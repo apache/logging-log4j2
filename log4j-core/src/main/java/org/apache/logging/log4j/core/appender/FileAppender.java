@@ -88,7 +88,7 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             if (!bufferedIo && bufferSize > 0) {
                 LOGGER.warn("The bufferSize is set to {} but bufferedIo is false: {}", bufferSize, bufferedIo);
             }
-            final Layout<?> layout = getOrCreateLayout();
+            final Layout layout = getOrCreateLayout();
 
             final FileManager manager = FileManager.getFileManager(fileName, append, locking, bufferedIo, createOnDemand,
                     advertiseUri, layout, bufferSize, filePermissions, fileOwner, fileGroup, getConfiguration());
@@ -194,9 +194,9 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
     private final Object advertisement;
 
-    private FileAppender(final String name, final Layout<?> layout, final Filter filter,
-            final FileManager manager, final String filename, final boolean ignoreExceptions,
-            final boolean immediateFlush, final Advertiser advertiser, final Property[] properties) {
+    private FileAppender(final String name, final Layout layout, final Filter filter,
+                         final FileManager manager, final String filename, final boolean ignoreExceptions,
+                         final boolean immediateFlush, final Advertiser advertiser, final Property[] properties) {
 
         super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);
         if (advertiser != null) {

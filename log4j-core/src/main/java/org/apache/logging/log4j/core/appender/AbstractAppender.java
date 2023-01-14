@@ -51,7 +51,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         private boolean ignoreExceptions = true;
 
         @PluginElement("Layout")
-        private Layout<?> layout;
+        private Layout layout;
 
         @PluginBuilderAttribute
         @Required(message = "No appender name provided")
@@ -68,7 +68,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return ignoreExceptions;
         }
 
-        public Layout<?> getLayout() {
+        public Layout getLayout() {
             return layout;
         }
 
@@ -82,19 +82,19 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
             return asBuilder();
         }
 
-        public B setLayout(final Layout<?> layout) {
+        public B setLayout(final Layout layout) {
             this.layout = layout;
             return asBuilder();
         }
 
-        public Layout<?> getOrCreateLayout() {
+        public Layout getOrCreateLayout() {
             if (layout == null) {
                 return PatternLayout.createDefaultLayout();
             }
             return layout;
         }
 
-        public Layout<?> getOrCreateLayout(final Charset charset) {
+        public Layout getOrCreateLayout(final Charset charset) {
             if (layout == null) {
                 return PatternLayout.newBuilder().setCharset(charset).build();
             }
@@ -114,7 +114,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
 
     private final String name;
     private final boolean ignoreExceptions;
-    private final Layout<?> layout;
+    private final Layout layout;
     private ErrorHandler handler = new DefaultErrorHandler(this);
 
     /**
@@ -127,7 +127,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      *            then passed to the application.
      * @param properties Optional properties
      */
-    protected AbstractAppender(final String name, final Filter filter, final Layout<?> layout,
+    protected AbstractAppender(final String name, final Filter filter, final Layout layout,
             final boolean ignoreExceptions, final Property[] properties) {
         super(filter, properties);
         this.name = Objects.requireNonNull(name, "name");
@@ -144,7 +144,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      * @deprecated Use {@link #AbstractAppender(String, Filter, Layout, boolean, Property[])}.
      */
     @Deprecated
-    protected AbstractAppender(final String name, final Filter filter, final Layout<?> layout) {
+    protected AbstractAppender(final String name, final Filter filter, final Layout layout) {
         this(name, filter, layout, true, Property.EMPTY_ARRAY);
     }
 
@@ -159,7 +159,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      * @deprecated Use {@link #AbstractAppender(String, Filter, Layout, boolean, Property[])}
      */
     @Deprecated
-    protected AbstractAppender(final String name, final Filter filter, final Layout<?> layout,
+    protected AbstractAppender(final String name, final Filter filter, final Layout layout,
             final boolean ignoreExceptions) {
         this(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
     }
@@ -225,7 +225,7 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
      * @return The Layout used to format the event.
      */
     @Override
-    public Layout<?> getLayout() {
+    public Layout getLayout() {
         return layout;
     }
 

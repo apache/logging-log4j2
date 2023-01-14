@@ -30,11 +30,8 @@ import org.apache.logging.log4j.util.Cast;
 
 /**
  * Abstract base class for Layouts.
- *
- * @param <T>
- *            The Class that the Layout will format the LogEvent into.
  */
-public abstract class AbstractLayout<T> implements Layout<T> {
+public abstract class AbstractLayout implements Layout {
 
     /**
      * Subclasses can extend this abstract Builder.

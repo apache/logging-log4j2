@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -25,9 +24,8 @@ import java.util.Objects;
  *
  * @since 2.1
  */
-public class OrderComparator implements Comparator<Class<?>>, Serializable {
+public class OrderComparator implements Comparator<Class<?>> {
 
-    private static final long serialVersionUID = 1L;
     private static final Comparator<Class<?>> INSTANCE = new OrderComparator();
 
     /**

@@ -62,7 +62,7 @@ public final class JeroMqAppender extends AbstractAppender {
     private int sendRcFalse;
     private int sendRcTrue;
 
-    private JeroMqAppender(final String name, final Filter filter, final Layout<?> layout,
+    private JeroMqAppender(final String name, final Filter filter, final Layout layout,
             final boolean ignoreExceptions, final List<String> endpoints, final long affinity, final long backlog,
             final boolean delayAttachOnConnect, final byte[] identity, final boolean ipv4Only, final long linger,
             final long maxMsgSize, final long rcvHwm, final long receiveBufferSize, final int receiveTimeOut,
@@ -83,7 +83,7 @@ public final class JeroMqAppender extends AbstractAppender {
     public static JeroMqAppender createAppender(
             // @formatter:off
             @Required(message = "No name provided for JeroMqAppender") @PluginAttribute final String name,
-            @PluginElement Layout<?> layout,
+            @PluginElement Layout layout,
             @PluginElement final Filter filter,
             @PluginElement final Property[] properties,
             // Super attributes
@@ -138,7 +138,7 @@ public final class JeroMqAppender extends AbstractAppender {
 
     @Override
     public synchronized void append(final LogEvent event) {
-        final Layout<?> layout = getLayout();
+        final Layout layout = getLayout();
         final byte[] formattedMessage = layout.toByteArray(event);
         if (manager.send(getLayout().toByteArray(event))) {
             sendRcTrue++;

@@ -73,7 +73,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
                 LOGGER.error("No filename provided for RandomAccessFileAppender with name {}", name);
                 return null;
             }
-            final Layout<?> layout = getOrCreateLayout();
+            final Layout layout = getOrCreateLayout();
             final boolean immediateFlush = isImmediateFlush();
             final RandomAccessFileManager manager = RandomAccessFileManager.getFileManager(fileName, append,
                     immediateFlush, getBufferSize(), advertiseURI, layout, null);
@@ -111,7 +111,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private RandomAccessFileAppender(final String name, final Layout<?> layout,
+    private RandomAccessFileAppender(final String name, final Layout layout,
             final Filter filter, final RandomAccessFileManager manager, final String filename,
             final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {
 

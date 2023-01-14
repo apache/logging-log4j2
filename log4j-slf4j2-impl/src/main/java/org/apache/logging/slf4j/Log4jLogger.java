@@ -16,13 +16,7 @@
  */
 package org.apache.logging.slf4j;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
@@ -30,19 +24,17 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.slf4j.Marker;
 import org.slf4j.spi.LocationAwareLogger;
 import org.slf4j.spi.LoggingEventBuilder;
-import org.slf4j.spi.NOPLoggingEventBuilder;
 
 /**
  * SLF4J logger implementation that uses Log4j.
  */
-public class Log4jLogger implements LocationAwareLogger, Serializable {
+public class Log4jLogger implements LocationAwareLogger {
 
     public static final String FQCN = Log4jLogger.class.getName();
 
-    private static final long serialVersionUID = 7869000638091304316L;
-    private transient ExtendedLogger logger;
+    private final ExtendedLogger logger;
     private final String name;
-    private transient Log4jMarkerFactory markerFactory;
+    private final Log4jMarkerFactory markerFactory;
 
     public Log4jLogger(final Log4jMarkerFactory markerFactory, final ExtendedLogger logger, final String name) {
         this.markerFactory = markerFactory;
@@ -373,25 +365,6 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
     @Override
     public String getName() {
         return name;
-    }
-
-    /**
-     * Always treat de-serialization as a full-blown constructor, by validating the final state of
-     * the de-serialized object.
-     */
-    private void readObject(final ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
-        // always perform the default de-serialization first
-        aInputStream.defaultReadObject();
-        logger = LogManager.getContext().getLogger(name);
-        markerFactory = ((Log4jLoggerFactory) org.slf4j.LoggerFactory.getILoggerFactory()).getMarkerFactory();
-    }
-
-    /**
-     * This is the default implementation of writeObject. Customise if necessary.
-     */
-    private void writeObject(final ObjectOutputStream aOutputStream) throws IOException {
-        // perform the default serialization for all non-transient, non-static fields
-        aOutputStream.defaultWriteObject();
     }
 
     private static Level getLevel(final int i) {

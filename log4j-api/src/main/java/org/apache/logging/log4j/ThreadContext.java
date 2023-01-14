@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j;
 
-import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,10 +48,6 @@ public final class ThreadContext {
      * An empty read-only ThreadContextStack.
      */
     private static class EmptyThreadContextStack extends AbstractCollection<String> implements ThreadContextStack {
-
-        private static final long serialVersionUID = 1L;
-
-        private static final Iterator<String> EMPTY_ITERATOR = new EmptyIterator<>();
 
         @Override
         public String pop() {
@@ -133,7 +128,7 @@ public final class ThreadContext {
 
         @Override
         public Iterator<String> iterator() {
-            return EMPTY_ITERATOR;
+            return Collections.emptyIterator();
         }
 
         @Override
@@ -529,7 +524,7 @@ public final class ThreadContext {
     /**
      * The ThreadContext Stack interface.
      */
-    public interface ContextStack extends Serializable, Collection<String> {
+    public interface ContextStack extends Collection<String> {
 
         /**
          * Returns the element at the top of the stack.

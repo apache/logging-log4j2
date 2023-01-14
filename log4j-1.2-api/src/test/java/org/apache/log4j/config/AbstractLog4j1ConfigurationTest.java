@@ -16,12 +16,6 @@
  */
 package org.apache.log4j.config;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
@@ -68,6 +62,12 @@ import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 public abstract class AbstractLog4j1ConfigurationTest {
 
     abstract Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException;
@@ -102,7 +102,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
         assertEquals(expected.getConversionPattern(), actual.getConversionPattern());
     }
 
-    private Layout<?> testConsole(final String configResource) throws Exception {
+    private Layout testConsole(final String configResource) throws Exception {
         final Configuration configuration = getConfiguration(configResource);
         final String name = "Console";
         final ConsoleAppender appender = configuration.getAppender(name);
@@ -252,7 +252,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
         }
     }
 
-    private Layout<?> testFile(final String configResource) throws Exception {
+    private Layout testFile(final String configResource) throws Exception {
         final Configuration configuration = getConfiguration(configResource);
         final FileAppender appender = configuration.getAppender("File");
         assertNotNull(appender);
@@ -335,7 +335,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
         return (OutputStream) getOutputStream.invoke(manager);
     }
 
-    private Layout<?> testLayout(final Configuration config, final String appenderName) {
+    private Layout testLayout(final Configuration config, final String appenderName) {
         final ConsoleAppender appender = config.getAppender(appenderName);
         assertNotNull("Missing appender '" + appenderName + "' in configuration " + config.getConfigurationSource(), appender);
         return appender.getLayout();
@@ -402,7 +402,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
 
     /**
      * Checks a hierarchy of filters.
-     * 
+     *
      * @param filter
      * @return the number of filters
      */
@@ -424,7 +424,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
 
     /**
      * Checks a hierarchy of filters.
-     * 
+     *
      * @param filter
      * @return the number of filters
      */
@@ -508,7 +508,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
             assertEquals(Level.INFO, thresholdFilter.getLevel());
             assertEquals(Filter.Result.NEUTRAL, thresholdFilter.getOnMatch());
             assertEquals(Filter.Result.DENY, thresholdFilter.getOnMismatch());
-            
+
             final Logger logger = LogManager.getLogger(PropertiesConfigurationTest.class);
             // List appender
             final Appender appender = config.getAppender("LIST");

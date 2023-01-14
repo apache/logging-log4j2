@@ -69,7 +69,7 @@ public interface Appender extends LifeCycle {
      *
      * @return the Layout for this Appender or {@code null} if none is configured.
      */
-    Layout<?> getLayout();
+    Layout getLayout();
 
     /**
      * Some Appenders need to propagate exceptions back to the application. When {@code ignoreExceptions} is

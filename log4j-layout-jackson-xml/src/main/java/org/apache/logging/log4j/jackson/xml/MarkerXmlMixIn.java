@@ -60,7 +60,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 @JsonDeserialize(as = org.apache.logging.log4j.MarkerManager.Log4jMarker.class)
 abstract class MarkerXmlMixIn extends MarkerMixIn {
     public static final String ATTR_NAME = "name";
-    private static final long serialVersionUID = 1L;
 
     @JsonCreator
     protected MarkerXmlMixIn(@JsonProperty(ATTR_NAME) final String name) {

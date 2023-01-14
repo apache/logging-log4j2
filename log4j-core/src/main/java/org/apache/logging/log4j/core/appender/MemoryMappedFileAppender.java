@@ -78,7 +78,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
                 LOGGER.error("No filename provided for MemoryMappedFileAppender with name " + name);
                 return null;
             }
-            final Layout<?> layout = getOrCreateLayout();
+            final Layout layout = getOrCreateLayout();
             final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(fileName, append, isImmediateFlush(),
                     actualRegionLength, advertiseURI, layout);
             if (manager == null) {
@@ -124,7 +124,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private MemoryMappedFileAppender(final String name, final Layout<?> layout,
+    private MemoryMappedFileAppender(final String name, final Layout layout,
             final Filter filter, final MemoryMappedFileManager manager, final String filename,
             final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser, final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, properties, manager);

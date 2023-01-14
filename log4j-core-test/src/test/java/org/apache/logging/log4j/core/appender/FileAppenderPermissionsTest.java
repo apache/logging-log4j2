@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.stream.Stream;
+
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
@@ -33,15 +42,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFileAttributes;
-import java.nio.file.attribute.PosixFilePermissions;
-import java.util.stream.Stream;
 
 import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.jupiter.api.Assertions.*;
@@ -67,7 +67,7 @@ public class FileAppenderPermissionsTest {
             throws Exception {
         final File file = new File(DIR, "AppenderTest-" + fileIndex + ".log");
         final Path path = file.toPath();
-        final Layout<String> layout = PatternLayout.newBuilder().setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+        final Layout layout = PatternLayout.newBuilder().setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
@@ -124,7 +124,7 @@ public class FileAppenderPermissionsTest {
         final String group = findAGroup(user);
         assertNotNull(group);
 
-        final Layout<String> layout = PatternLayout.newBuilder().setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
+        final Layout layout = PatternLayout.newBuilder().setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
                 .build();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()

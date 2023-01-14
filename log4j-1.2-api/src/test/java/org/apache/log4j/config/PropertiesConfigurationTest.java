@@ -298,7 +298,7 @@ public class PropertiesConfigurationTest extends AbstractLog4j1ConfigurationTest
             assertEquals(Level.DEBUG, rootLogger.getLevel());
             final Appender appender = config.getAppender("Console");
             assertTrue(appender instanceof ConsoleAppender);
-            final Layout<?> layout = appender.getLayout();
+            final Layout layout = appender.getLayout();
             assertTrue(layout instanceof PatternLayout);
             assertEquals("%v1Level - %m%n", ((PatternLayout)layout).getConversionPattern());
             final Filter filter = ((Filterable) appender).getFilter();

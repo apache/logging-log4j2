@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
@@ -25,7 +24,6 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.logging.log4j.core.Layout;
@@ -75,7 +73,7 @@ public class HttpURLConnectionManager extends HttpManager {
     }
 
     @Override
-    public void send(final Layout<?> layout, final LogEvent event) throws IOException {
+    public void send(final Layout layout, final LogEvent event) throws IOException {
         final HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
         urlConnection.setAllowUserInteraction(false);
         urlConnection.setDoOutput(true);

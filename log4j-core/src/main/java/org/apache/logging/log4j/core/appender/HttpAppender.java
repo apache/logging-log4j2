@@ -151,7 +151,7 @@ public final class HttpAppender extends AbstractAppender {
 
     private final HttpManager manager;
 
-    private HttpAppender(final String name, final Layout<?> layout, final Filter filter,
+    private HttpAppender(final String name, final Layout layout, final Filter filter,
                          final boolean ignoreExceptions, final HttpManager manager, final Property[] properties) {
         super(name, filter, layout, ignoreExceptions, properties);
         Objects.requireNonNull(layout, "layout");

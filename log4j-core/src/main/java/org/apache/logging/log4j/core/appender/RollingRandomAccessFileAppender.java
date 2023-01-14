@@ -121,7 +121,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
                 return null;
             }
 
-            final Layout<?> layout = getOrCreateLayout();
+            final Layout layout = getOrCreateLayout();
 
             final boolean immediateFlush = isImmediateFlush();
             final int bufferSize = getBufferSize();
@@ -196,7 +196,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
     private final Object advertisement;
     private final Advertiser advertiser;
 
-    private RollingRandomAccessFileAppender(final String name, final Layout<?> layout,
+    private RollingRandomAccessFileAppender(final String name, final Layout layout,
             final Filter filter, final RollingRandomAccessFileManager manager, final String fileName,
             final String filePattern, final boolean ignoreExceptions,
             final boolean immediateFlush, final int bufferSize, final Advertiser advertiser) {

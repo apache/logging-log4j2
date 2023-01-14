@@ -77,7 +77,7 @@ public class BlockingAppender extends AbstractAppender {
             @PluginAttribute
             @Required(message = "No name provided for HangingAppender")
             final String name,
-            @PluginElement final Layout<?> layout,
+            @PluginElement final Layout layout,
             @PluginElement final Filter filter) {
         return new BlockingAppender(name);
     }

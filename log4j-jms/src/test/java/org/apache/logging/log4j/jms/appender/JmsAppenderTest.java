@@ -14,22 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.jms.appender;
-
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -40,9 +29,9 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.apache.logging.log4j.message.Message;
@@ -54,6 +43,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.RuleChain;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 
 @Category(Appenders.Jms.class)
 public class JmsAppenderTest {
@@ -97,20 +95,19 @@ public class JmsAppenderTest {
         given(session.createProducer(eq(destination))).willReturn(messageProducer);
         given(session.createProducer(eq(destinationMl))).willReturn(messageProducerMl);
         given(session.createTextMessage(anyString())).willReturn(textMessage);
-        given(session.createObjectMessage(isA(Serializable.class))).willReturn(objectMessage);
         given(session.createMapMessage()).willReturn(mapMessage);
     }
 
     private Map<String, Object> createBindings() {
-        final ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
-        map.put(CONNECTION_FACTORY_NAME, connectionFactory);
-        map.put(DESTINATION_NAME, destination);
-        map.put(DESTINATION_NAME_ML, destinationMl);
-        map.put(QUEUE_FACTORY_NAME, connectionFactory);
-        map.put(QUEUE_NAME, destination);
-        map.put(TOPIC_FACTORY_NAME, connectionFactory);
-        map.put(TOPIC_NAME, destination);
-        return map;
+        return Map.of(
+                CONNECTION_FACTORY_NAME, connectionFactory,
+                DESTINATION_NAME, destination,
+                DESTINATION_NAME_ML, destinationMl,
+                QUEUE_FACTORY_NAME, connectionFactory,
+                QUEUE_NAME, destination,
+                TOPIC_FACTORY_NAME, connectionFactory,
+                TOPIC_NAME, destination
+        );
     }
 
     private  Log4jLogEvent createLogEvent() {

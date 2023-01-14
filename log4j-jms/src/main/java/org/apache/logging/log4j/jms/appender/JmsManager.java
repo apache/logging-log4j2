@@ -344,26 +344,13 @@ public class JmsManager extends AbstractManager {
         return jndiManager.lookup(configuration.getDestinationName());
     }
 
-    private void createMessageAndSend(final LogEvent event, final Layout<?> layout) throws JMSException {
+    private void createMessageAndSend(final LogEvent event, final Layout layout) throws JMSException {
         final var eventMessage = event.getMessage();
         final Message message;
         if (eventMessage instanceof org.apache.logging.log4j.message.MapMessage<?, ?>) {
             message = map((org.apache.logging.log4j.message.MapMessage<?, ?>) eventMessage, session.createMapMessage());
         } else if (layout != null) {
-            Object serializedObject = layout.toSerializable(event);
-            if (serializedObject instanceof org.apache.logging.log4j.message.MapMessage<?, ?>) {
-                message = map((org.apache.logging.log4j.message.MapMessage<?, ?>) serializedObject, session.createMapMessage());
-            } else if (serializedObject instanceof byte[]) {
-                var bytesMessage = session.createBytesMessage();
-                bytesMessage.writeBytes(layout.toByteArray(event));
-                message = bytesMessage;
-            } else if (serializedObject instanceof String) {
-                message = session.createTextMessage((String) serializedObject);
-            } else if (serializedObject instanceof Serializable) {
-                message = session.createObjectMessage((Serializable) serializedObject);
-            } else {
-                throw new UnsupportedOperationException("Cannot create a JMS message for " + eventMessage.getClass());
-            }
+            message = session.createTextMessage(layout.toSerializable(event));
         } else {
             throw new UnsupportedOperationException("Unable to create a JMS message without a layout defined");
         }
@@ -448,7 +435,7 @@ public class JmsManager extends AbstractManager {
         return closed && this.jndiManager.stop(timeout, timeUnit);
     }
 
-    void send(final LogEvent event, final Layout<?> layout) {
+    void send(final LogEvent event, final Layout layout) {
         if (messageProducer == null) {
             if (reconnector != null && !configuration.isImmediateFail()) {
                 reconnector.latch();

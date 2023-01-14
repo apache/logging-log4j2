@@ -62,7 +62,7 @@ public final class SmtpAppender extends AbstractAppender {
     /** The SMTP Manager */
     private final SmtpManager manager;
 
-    private SmtpAppender(final String name, final Filter filter, final Layout<?> layout, final boolean ignoreExceptions,
+    private SmtpAppender(final String name, final Filter filter, final Layout layout, final boolean ignoreExceptions,
                          Property[] properties, final SmtpManager manager) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
@@ -234,7 +234,7 @@ public final class SmtpAppender extends AbstractAppender {
          * {@linkplain HtmlLayout#createDefaultLayout() default HTML layout}.
          */
         @Override
-        public Builder setLayout(final Layout<?> layout) {
+        public Builder setLayout(final Layout layout) {
             return super.setLayout(layout);
         }
 
@@ -281,7 +281,7 @@ public final class SmtpAppender extends AbstractAppender {
                                               final String smtpHost, final String smtpPortStr,
                                               final String smtpUsername, final String smtpPassword,
                                               final String smtpDebug, final String bufferSizeStr,
-                                              Layout<?> layout, Filter filter,
+                                              Layout layout, Filter filter,
                                               final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for SmtpAppender");

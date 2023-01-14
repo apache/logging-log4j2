@@ -741,7 +741,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     protected void setToDefault() {
         // LOG4J2-1176 facilitate memory leak investigation
         setName(DefaultConfiguration.DEFAULT_NAME + "@" + Integer.toHexString(hashCode()));
-        final Layout<?> layout = PatternLayout.newBuilder()
+        final Layout layout = PatternLayout.newBuilder()
                 .setPattern(DefaultConfiguration.DEFAULT_PATTERN)
                 .setConfiguration(this)
                 .build();

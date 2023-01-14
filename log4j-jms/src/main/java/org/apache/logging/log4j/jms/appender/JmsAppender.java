@@ -113,10 +113,6 @@ public class JmsAppender extends AbstractAppender {
                 // JmsManagerFactory has already logged an ERROR.
                 return null;
             }
-            if (getLayout() == null) {
-                LOGGER.error("No layout provided for JmsAppender");
-                return null;
-            }
             try {
                 return new JmsAppender(getName(), getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(), actualJmsManager);
             } catch (final JMSException e) {
@@ -217,7 +213,7 @@ public class JmsAppender extends AbstractAppender {
      * @throws JMSException
      *             not thrown as of 2.9 but retained in the signature for compatibility, will be removed in 3.0.
      */
-    protected JmsAppender(final String name, final Filter filter, final Layout<?> layout,
+    protected JmsAppender(final String name, final Filter filter, final Layout layout,
             final boolean ignoreExceptions, Property[] properties, final JmsManager manager) throws JMSException {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;

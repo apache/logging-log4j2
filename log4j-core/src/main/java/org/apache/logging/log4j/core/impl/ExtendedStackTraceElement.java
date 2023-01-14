@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 import org.apache.logging.log4j.util.Strings;
@@ -33,11 +31,9 @@ import org.apache.logging.log4j.util.Strings;
  * <li>version</li>
  * </ul>
  */
-public final class ExtendedStackTraceElement implements Serializable {
+public final class ExtendedStackTraceElement {
 
     static final ExtendedStackTraceElement[] EMPTY_ARRAY = {};
-
-    private static final long serialVersionUID = -2171069569241280505L;
 
     private final ExtendedClassInfo extraClassInfo;
 

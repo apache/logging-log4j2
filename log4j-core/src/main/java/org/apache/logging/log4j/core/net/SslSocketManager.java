@@ -53,9 +53,9 @@ public class SslSocketManager extends TcpSocketManager {
    * @param bufferSize The buffer size.
    */
   public SslSocketManager(final String name, final OutputStream os, final Socket sock,
-          final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
-          final int connectTimeoutMillis, final int reconnectionDelayMillis, final boolean immediateFail,
-          final Layout<?> layout, final int bufferSize, final SocketOptions socketOptions) {
+                          final SslConfiguration sslConfig, final InetAddress inetAddress, final String host, final int port,
+                          final int connectTimeoutMillis, final int reconnectionDelayMillis, final boolean immediateFail,
+                          final Layout layout, final int bufferSize, final SocketOptions socketOptions) {
       super(name, os, sock, inetAddress, host, port, connectTimeoutMillis, reconnectionDelayMillis, immediateFail, layout, bufferSize, socketOptions);
       this.sslConfig = sslConfig;
   }
@@ -64,8 +64,8 @@ public class SslSocketManager extends TcpSocketManager {
         protected SslConfiguration sslConfiguration;
 
         public SslFactoryData(final SslConfiguration sslConfiguration, final String host, final int port,
-                final int connectTimeoutMillis, final int reconnectDelayMillis, final boolean immediateFail,
-                final Layout<?> layout, final int bufferSize, final SocketOptions socketOptions) {
+                              final int connectTimeoutMillis, final int reconnectDelayMillis, final boolean immediateFail,
+                              final Layout layout, final int bufferSize, final SocketOptions socketOptions) {
             super(host, port, connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize,
                     socketOptions);
             this.sslConfiguration = sslConfiguration;
@@ -81,8 +81,8 @@ public class SslSocketManager extends TcpSocketManager {
     }
 
     public static SslSocketManager getSocketManager(final SslConfiguration sslConfig, final String host, int port,
-            final int connectTimeoutMillis, int reconnectDelayMillis, final boolean immediateFail,
-            final Layout<?> layout, final int bufferSize, final SocketOptions socketOptions) {
+                                                    final int connectTimeoutMillis, int reconnectDelayMillis, final boolean immediateFail,
+                                                    final Layout layout, final int bufferSize, final SocketOptions socketOptions) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
         }
