@@ -22,11 +22,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -139,10 +142,12 @@ public class HighlightConverterTest {
     }
 
     @Test
-    public void testNoAnsiEmpty() {
+    @UsingStatusListener
+    public void testNoAnsiEmpty(ListStatusListener listener) {
         final String[] options = {"", PatternParser.DISABLE_ANSI + "=true"};
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);
+        assertThat(listener.findStatusData(Level.WARN)).isEmpty();
 
         final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
                 new SimpleMessage("message in a bottle")).build();
@@ -152,10 +157,12 @@ public class HighlightConverterTest {
     }
 
     @Test
-    public void testNoAnsiNonEmpty() {
+    @UsingStatusListener
+    public void testNoAnsiNonEmpty(ListStatusListener listener) {
         final String[] options = {"%-5level: %msg", PatternParser.DISABLE_ANSI + "=true"};
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);
+        assertThat(listener.findStatusData(Level.WARN)).isEmpty();
 
         final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).setLoggerName("a.b.c").setMessage(
                 new SimpleMessage("message in a bottle")).build();

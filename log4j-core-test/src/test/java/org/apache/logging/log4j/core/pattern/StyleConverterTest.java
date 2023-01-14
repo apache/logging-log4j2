@@ -27,13 +27,17 @@ import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -82,5 +86,19 @@ public class StyleConverterTest {
         final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.INFO).build();
         converter.format(event, sb);
         assertEquals(escape + "Hello!" + AnsiEscape.getDefaultStyle(), sb.toString());
+    }
+
+    @Test
+    @UsingStatusListener
+    public void testNoAnsiNoWarnings(ListStatusListener listener) {
+        StyleConverter converter = StyleConverter.newInstance(null, new String[] { "", "disableAnsi=true" });
+        assertThat(converter).isNotNull();
+        converter = StyleConverter.newInstance(null, new String[] { "", "noConsoleNoAnsi=true" });
+        assertThat(converter).isNotNull();
+        converter = StyleConverter.newInstance(null, new String[] { "", "INVALID_STYLE" });
+        assertThat(converter).isNotNull();
+        assertThat(listener.findStatusData(Level.WARN)).hasSize(1)
+                .extracting(data -> data.getMessage().getFormattedMessage())
+                .containsExactly("The style attribute INVALID_STYLE is incorrect.");
     }
 }
