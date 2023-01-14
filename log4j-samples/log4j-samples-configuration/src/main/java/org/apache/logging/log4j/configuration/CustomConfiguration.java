@@ -60,7 +60,7 @@ public class CustomConfiguration extends AbstractConfiguration {
         super(loggerContext, source);
 
         setName(CONFIG_NAME);
-        final Layout<?> layout = PatternLayout.newBuilder()
+        final Layout layout = PatternLayout.newBuilder()
                 .setPattern(DEFAULT_PATTERN)
                 .setConfiguration(this)
                 .build();

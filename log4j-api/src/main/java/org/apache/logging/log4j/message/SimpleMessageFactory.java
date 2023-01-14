@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.Serializable;
-
 /**
  * Creates {@link FormattedMessage} instances for {@link MessageFactory} methods.
  * <p>
@@ -36,16 +34,15 @@ import java.io.Serializable;
  * <p>
  * This class implements all {@link MessageFactory} methods.
  * </p>
- * 
+ *
  * @since 2.5
  */
-public final class SimpleMessageFactory implements MessageFactory, Serializable {
+public final class SimpleMessageFactory implements MessageFactory {
 
     /**
      * Instance of StringFormatterMessageFactory.
      */
     public static final SimpleMessageFactory INSTANCE = new SimpleMessageFactory();
-    private static final long serialVersionUID = 4418995198790088516L;
 
     /**
      * Creates {@link StringFormattedMessage} instances.

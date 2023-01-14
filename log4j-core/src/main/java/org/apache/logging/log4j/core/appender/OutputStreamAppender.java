@@ -50,7 +50,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
         private boolean follow = false;
 
-        private final Layout<?> layout = PatternLayout.createDefaultLayout();
+        private final Layout layout = PatternLayout.createDefaultLayout();
 
         private OutputStream target;
 
@@ -74,7 +74,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
      * Holds data to pass to factory method.
      */
     private static class FactoryData {
-        private final Layout<?> layout;
+        private final Layout layout;
         private final String name;
         private final OutputStream os;
 
@@ -86,9 +86,9 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
          * @param type
          *            The name of the target.
          * @param layout
-         *            A Serializable layout
+         *            A layout
          */
-        public FactoryData(final OutputStream os, final String type, final Layout<?> layout) {
+        public FactoryData(final OutputStream os, final String type, final Layout layout) {
             this.os = os;
             this.name = type;
             this.layout = layout;
@@ -138,8 +138,8 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
      * @return The ConsoleAppender.
      */
     @PluginFactory
-    public static OutputStreamAppender createAppender(Layout<?> layout, final Filter filter,
-            final OutputStream target, final String name, final boolean follow, final boolean ignore) {
+    public static OutputStreamAppender createAppender(Layout layout, final Filter filter,
+                                                      final OutputStream target, final String name, final boolean follow, final boolean ignore) {
         if (name == null) {
             LOGGER.error("No name provided for OutputStreamAppender");
             return null;
@@ -151,7 +151,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
     }
 
     private static OutputStreamManager getManager(final OutputStream target, final boolean follow,
-            final Layout<?> layout) {
+            final Layout layout) {
         final OutputStream os = target == null ? NullOutputStream.getInstance() : new CloseShieldOutputStream(target);
         final OutputStream targetRef = target == null ? os : target;
         final String managerName = targetRef.getClass().getName() + "@" + Integer.toHexString(targetRef.hashCode())
@@ -164,8 +164,8 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
         return new Builder<B>().asBuilder();
     }
 
-    private OutputStreamAppender(final String name, final Layout<?> layout, final Filter filter,
-            final OutputStreamManager manager, final boolean ignoreExceptions, final Property[] properties) {
+    private OutputStreamAppender(final String name, final Layout layout, final Filter filter,
+                                 final OutputStreamManager manager, final boolean ignoreExceptions, final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, true, null, manager);
     }
 

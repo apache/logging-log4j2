@@ -62,7 +62,7 @@ public class HangingAppender extends AbstractAppender {
             @PluginAttribute final long delay,
             @PluginAttribute final long startupDelay,
             @PluginAttribute final long shutdownDelay,
-            @PluginElement final Layout<?> layout,
+            @PluginElement final Layout layout,
             @PluginElement final Filter filter) {
         return new HangingAppender(name, delay, startupDelay, shutdownDelay);
     }

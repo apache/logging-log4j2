@@ -155,7 +155,7 @@ public abstract class SyslogAppenderTestBase {
     }
 
     protected void validate(final SyslogAppender syslogAppender) {
-        final Layout<?> layout = syslogAppender.getLayout();
+        final Layout layout = syslogAppender.getLayout();
         if (layout instanceof SyslogLayout) {
             validate((SyslogLayout) layout);
         } else if (layout instanceof Rfc5424Layout) {

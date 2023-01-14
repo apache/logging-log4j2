@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.jcl;
 
-import java.io.Serializable;
-
 import org.apache.commons.logging.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.spi.ExtendedLogger;
@@ -25,9 +23,8 @@ import org.apache.logging.log4j.spi.ExtendedLogger;
 /**
  *
  */
-public class Log4jLog implements Log, Serializable {
+public class Log4jLog implements Log {
 
-    private static final long serialVersionUID = 1L;
     private static final String FQCN = Log4jLog.class.getName();
 
     private final ExtendedLogger logger;

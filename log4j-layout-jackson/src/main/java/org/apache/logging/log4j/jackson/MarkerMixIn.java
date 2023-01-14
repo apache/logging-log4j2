@@ -53,7 +53,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 // @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 @JsonDeserialize(as = org.apache.logging.log4j.MarkerManager.Log4jMarker.class)
 public abstract class MarkerMixIn implements Marker {
-    private static final long serialVersionUID = 1L;
 
     @JsonCreator
     public MarkerMixIn(@JsonProperty("name") final String name) {

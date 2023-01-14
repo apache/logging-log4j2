@@ -68,7 +68,7 @@ public final class KafkaAppender extends AbstractAppender {
         @SuppressWarnings("resource")
         @Override
         public KafkaAppender build() {
-            final Layout<?> layout = getLayout();
+            final Layout layout = getLayout();
             if (layout == null) {
                 AbstractLifeCycle.LOGGER.error("No layout provided for KafkaAppender");
                 return null;
@@ -154,9 +154,9 @@ public final class KafkaAppender extends AbstractAppender {
 
     private final KafkaManager manager;
 
-    private KafkaAppender(final String name, final Layout<?> layout, final Filter filter,
-            final boolean ignoreExceptions, final KafkaManager manager, final Property[] properties,
-            final int retryCount) {
+    private KafkaAppender(final String name, final Layout layout, final Filter filter,
+                          final boolean ignoreExceptions, final KafkaManager manager, final Property[] properties,
+                          final int retryCount) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = Objects.requireNonNull(manager, "manager");
         this.retryCount = retryCount;

@@ -141,7 +141,7 @@ public class ScriptAppenderSelector extends AbstractAppender {
         return new Builder();
     }
 
-    private ScriptAppenderSelector(final String name, final Filter filter, final Layout<?> layout) {
+    private ScriptAppenderSelector(final String name, final Filter filter, final Layout layout) {
         super(name, filter, layout, true, Property.EMPTY_ARRAY);
     }
 

@@ -114,7 +114,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
 
     private final String description;
 
-    private NoSqlAppender(final String name, final Filter filter, final Layout<?> layout,
+    private NoSqlAppender(final String name, final Filter filter, final Layout layout,
             final boolean ignoreExceptions, final Property[] properties, final NoSqlDatabaseManager<?> manager) {
         super(name, filter, layout, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";

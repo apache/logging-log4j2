@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.Serializable;
 import java.util.ResourceBundle;
 
 /**
@@ -29,11 +28,9 @@ import java.util.ResourceBundle;
  * through {@link #newMessage(String, Object...)}.
  * </p>
  */
-public class LocalizedMessageFactory implements MessageFactory, Serializable {
-    private static final long serialVersionUID = -1996295808703146741L;
+public class LocalizedMessageFactory implements MessageFactory {
 
-    // FIXME: cannot use ResourceBundle name for serialization until Java 8
-    private transient final ResourceBundle resourceBundle;
+    private final ResourceBundle resourceBundle;
     private final String baseName;
 
     public LocalizedMessageFactory(final ResourceBundle resourceBundle) {
@@ -74,7 +71,7 @@ public class LocalizedMessageFactory implements MessageFactory, Serializable {
         }
         return new LocalizedMessage(resourceBundle, key);
     }
-    
+
     /**
      * Creates {@link LocalizedMessage} instances.
      *

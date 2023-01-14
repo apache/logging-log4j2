@@ -62,7 +62,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      * @param manager The matching {@link AbstractDatabaseManager} implementation.
      */
     protected AbstractDatabaseAppender(final String name, final Filter filter,
-              final Layout<?> layout, final boolean ignoreExceptions, final Property[] properties, final T manager) {
+                                       final Layout layout, final boolean ignoreExceptions, final Property[] properties, final T manager) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }
@@ -92,7 +92,7 @@ public abstract class AbstractDatabaseAppender<T extends AbstractDatabaseManager
      * @return {@code null}.
      */
     @Override
-    public final Layout<LogEvent> getLayout() {
+    public final Layout getLayout() {
         return null;
     }
 

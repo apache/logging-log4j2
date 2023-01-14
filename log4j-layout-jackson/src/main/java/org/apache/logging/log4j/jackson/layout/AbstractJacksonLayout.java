@@ -326,8 +326,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
     /**
      * Formats a {@link org.apache.logging.log4j.core.LogEvent}.
      *
-     * @param event
-     *            The LogEvent.
+     * @param event The LogEvent.
      * @return The XML representation of the LogEvent.
      */
     @Override

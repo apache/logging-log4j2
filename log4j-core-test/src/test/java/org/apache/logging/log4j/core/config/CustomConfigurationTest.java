@@ -61,7 +61,7 @@ public class CustomConfigurationTest {
                 break;
             }
         }
-        final Layout<?> layout = PatternLayout.newBuilder()
+        final Layout layout = PatternLayout.newBuilder()
             .setPattern(PatternLayout.SIMPLE_CONVERSION_PATTERN)
             .setConfiguration(config)
             .build();

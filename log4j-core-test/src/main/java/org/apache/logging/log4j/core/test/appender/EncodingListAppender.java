@@ -36,7 +36,7 @@ public class EncodingListAppender extends ListAppender {
         super(name);
     }
 
-    public EncodingListAppender(final String name, final Filter filter, final Layout<?> layout,
+    public EncodingListAppender(final String name, final Filter filter, final Layout layout,
             final boolean newline, final boolean raw) {
         super(name, filter, layout, newline, raw);
     }
@@ -68,7 +68,7 @@ public class EncodingListAppender extends ListAppender {
 
     @Override
     public synchronized void append(final LogEvent event) {
-        final Layout<?> layout = getLayout();
+        final Layout layout = getLayout();
         if (layout == null) {
             events.add(event);
         } else {

@@ -14,21 +14,17 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.layout;
+
+import java.io.ObjectStreamException;
 
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
-import java.io.ObjectStreamException;
-import java.io.Serializable;
-
 /**
  * PatternMatch configuration item.
- *
- * @since 2.4.1 implements {@link Serializable}
  */
 @Configurable(printObject = true)
 @Plugin
@@ -73,9 +69,7 @@ public final class PatternMatch {
         return new Builder();
     }
 
-    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<PatternMatch>, Serializable {
-
-        private static final long serialVersionUID = 1L;
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<PatternMatch> {
 
         @PluginBuilderAttribute
         private String key;

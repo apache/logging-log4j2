@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.perf.util;
 
+import java.nio.ByteBuffer;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 import org.apache.logging.log4j.core.util.Constants;
-
-import java.nio.ByteBuffer;
 
 /**
  * Demo Appender that does not do any I/O.
@@ -34,7 +34,7 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
 
     public long checksum;
 
-    public DemoAppender(final Layout<?> layout) {
+    public DemoAppender(final Layout layout) {
         super("demo", null, layout, true, Property.EMPTY_ARRAY);
     }
 

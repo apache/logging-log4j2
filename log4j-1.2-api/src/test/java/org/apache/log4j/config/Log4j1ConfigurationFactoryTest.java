@@ -52,7 +52,7 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
         return configuration;
     }
 
-    private Layout<?> testConsole(final String configResource) throws Exception {
+    private Layout testConsole(final String configResource) throws Exception {
         final Configuration configuration = getConfiguration(configResource);
         final String name = "Console";
         final ConsoleAppender appender = configuration.getAppender(name);
@@ -165,7 +165,7 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
             assertEquals(Level.DEBUG, rootLogger.getLevel());
             final Appender appender = config.getAppender("Console");
             assertTrue(appender instanceof ConsoleAppender);
-            final Layout<?> layout = appender.getLayout();
+            final Layout layout = appender.getLayout();
             assertTrue(layout instanceof PatternLayout);
             assertEquals("%v1Level - %m%n", ((PatternLayout)layout).getConversionPattern());
             // No filter support

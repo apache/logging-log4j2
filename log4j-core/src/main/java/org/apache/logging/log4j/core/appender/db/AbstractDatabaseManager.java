@@ -36,7 +36,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      */
     protected abstract static class AbstractFactoryData {
         private final int bufferSize;
-        private final Layout<?> layout;
+        private final Layout layout;
 
         /**
          * Constructs the base factory data.
@@ -44,7 +44,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
          * @param bufferSize The size of the buffer.
          * @param layout The appender-level layout
          */
-        protected AbstractFactoryData(final int bufferSize, final Layout<?> layout) {
+        protected AbstractFactoryData(final int bufferSize, final Layout layout) {
             this.bufferSize = bufferSize;
             this.layout = layout;
         }
@@ -63,7 +63,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
          *
          * @return the layout.
          */
-        public Layout<?> getLayout() {
+        public Layout getLayout() {
             return layout;
         }
     }
@@ -89,7 +89,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     private final ArrayList<LogEvent> buffer;
 
     private final int bufferSize;
-    private final Layout<?> layout;
+    private final Layout layout;
     private boolean running;
     /**
      * Instantiates the base manager.
@@ -110,7 +110,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * @param layout the Appender-level layout.
      * @param bufferSize The size of the log event buffer.
      */
-    protected AbstractDatabaseManager(final String name, final int bufferSize, final Layout<?> layout) {
+    protected AbstractDatabaseManager(final String name, final int bufferSize, final Layout layout) {
         super(null, name);
         this.bufferSize = bufferSize;
         this.buffer = new ArrayList<>(bufferSize + 1);
@@ -251,7 +251,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
         }
     }
 
-    protected Layout<?> getLayout() {
+    protected Layout getLayout() {
         return layout;
     }
 

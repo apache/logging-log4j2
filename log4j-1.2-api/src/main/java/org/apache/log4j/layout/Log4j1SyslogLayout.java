@@ -75,7 +75,7 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
         private boolean header;
 
         @PluginElement("Layout")
-        private Layout<?> messageLayout;
+        private Layout messageLayout;
 
         @Override
         public Log4j1SyslogLayout build() {
@@ -98,7 +98,7 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
             return header;
         }
 
-        public Layout<?> getMessageLayout() {
+        public Layout getMessageLayout() {
             return messageLayout;
         }
 
@@ -117,7 +117,7 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
             return asBuilder();
         }
 
-        public B setMessageLayout(final Layout<?> messageLayout) {
+        public B setMessageLayout(final Layout messageLayout) {
             this.messageLayout = messageLayout;
             return asBuilder();
         }

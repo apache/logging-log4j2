@@ -16,6 +16,16 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.io.File;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -35,16 +45,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Tag;
-
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Performs reconfiguration whilst logging.
@@ -140,7 +140,7 @@ public class ReconfigurationDeadlockTest {
         private TestAppender(
                 final String name,
                 final Filter filter,
-                final Layout<?> layout,
+                final Layout layout,
                 final boolean ignoreExceptions) {
             super(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
             this.logger = LogManager.getRootLogger();
@@ -150,7 +150,7 @@ public class ReconfigurationDeadlockTest {
         public static TestAppender createAppender(
                 @PluginAttribute("name") @Required(message = "A name for the Appender must be specified") final String name,
                 @PluginAttribute("ignoreExceptions") final boolean ignore,
-                @PluginElement("Layout") final Layout<?> layout,
+                @PluginElement("Layout") final Layout layout,
                 @PluginElement("Filter") final Filter filter) {
             return new TestAppender(name, filter, layout, ignore);
         }

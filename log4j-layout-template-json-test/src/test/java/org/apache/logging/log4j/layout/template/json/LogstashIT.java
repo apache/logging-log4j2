@@ -16,7 +16,23 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import co.elastic.logging.log4j2.EcsLayout;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.http.HttpHost;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -52,22 +68,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import co.elastic.logging.log4j2.EcsLayout;
 
 @Execution(ExecutionMode.SAME_THREAD)
 class LogstashIT {
@@ -371,7 +372,7 @@ class LogstashIT {
 
     private static <K> Map<K, Object> appendAndCollect(
             final List<LogEvent> logEvents,
-            final Layout<?> layout,
+            final Layout layout,
             final int port,
             final Function<Map<String, Object>, K> keyMapper,
             final Set<String> excludedKeys) throws IOException {
@@ -448,7 +449,7 @@ class LogstashIT {
     }
 
     private static SocketAppender createStartedAppender(
-            final Layout<?> layout,
+            final Layout layout,
             final int port) {
         LOGGER.info("creating the appender");
         final SocketAppender appender = SocketAppender

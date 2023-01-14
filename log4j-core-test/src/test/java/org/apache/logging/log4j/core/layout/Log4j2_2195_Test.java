@@ -47,7 +47,7 @@ public class Log4j2_2195_Test {
         assertFalse(logEvent.contains("org.junit"), "\"org.junit\" should not be here");
         assertFalse(logEvent.contains("org.eclipse"), "\"org.eclipse\" should not be here");
         //
-        Layout<?> layout = listAppender.getLayout();
+        Layout layout = listAppender.getLayout();
         PatternLayout pLayout = (PatternLayout) layout;
         assertNotNull(pLayout);
         Serializer eventSerializer = pLayout.getEventSerializer();

@@ -196,7 +196,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
         public SocketAppender build() {
             boolean immediateFlush = isImmediateFlush();
             final boolean bufferedIo = isBufferedIo();
-            final Layout<?> layout = getLayout();
+            final Layout layout = getLayout();
             if (layout == null) {
                 AbstractLifeCycle.LOGGER.error("No layout provided for SocketAppender");
                 return null;
@@ -230,9 +230,9 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
     private final Object advertisement;
     private final Advertiser advertiser;
 
-    protected SocketAppender(final String name, final Layout<?> layout, final Filter filter,
-            final AbstractSocketManager manager, final boolean ignoreExceptions, final boolean immediateFlush,
-            final Advertiser advertiser) {
+    protected SocketAppender(final String name, final Layout layout, final Filter filter,
+                             final AbstractSocketManager manager, final boolean ignoreExceptions, final boolean immediateFlush,
+                             final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, null, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());
@@ -265,7 +265,7 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
      */
     protected static AbstractSocketManager createSocketManager(final String name, Protocol protocol, final String host,
             final int port, final int connectTimeoutMillis, final SslConfiguration sslConfig,
-            final int reconnectDelayMillis, final boolean immediateFail, final Layout<?> layout,
+            final int reconnectDelayMillis, final boolean immediateFail, final Layout layout,
             final int bufferSize, final SocketOptions socketOptions) {
         if (protocol == Protocol.TCP && sslConfig != null) {
             // Upgrade TCP to SSL if an SSL config is specified.

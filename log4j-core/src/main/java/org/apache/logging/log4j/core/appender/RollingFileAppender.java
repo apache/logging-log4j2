@@ -138,7 +138,7 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
                 return null;
             }
 
-            final Layout<?> layout = getOrCreateLayout();
+            final Layout layout = getOrCreateLayout();
             final RollingFileManager manager = RollingFileManager.getFileManager(fileName, filePattern, append,
                     isBufferedIo, policy, strategy, advertiseUri, layout, bufferSize, isImmediateFlush(),
                     createOnDemand, filePermissions, fileOwner, fileGroup, getConfiguration());
@@ -267,9 +267,9 @@ public final class RollingFileAppender extends AbstractOutputStreamAppender<Roll
     private Object advertisement;
     private final Advertiser advertiser;
 
-    private RollingFileAppender(final String name, final Layout<?> layout, final Filter filter,
-            final RollingFileManager manager, final String fileName, final String filePattern,
-            final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {
+    private RollingFileAppender(final String name, final Layout layout, final Filter filter,
+                                final RollingFileManager manager, final String fileName, final String filePattern,
+                                final boolean ignoreExceptions, final boolean immediateFlush, final Advertiser advertiser) {
         super(name, layout, filter, ignoreExceptions, immediateFlush, null, manager);
         if (advertiser != null) {
             final Map<String, String> configuration = new HashMap<>(layout.getContentFormat());

@@ -1,29 +1,28 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
-
 package org.apache.log4j;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
 import org.apache.log4j.util.SerializationTestHelper;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -32,76 +31,6 @@ import org.junit.Test;
  * @since 1.2.12
  */
 public class LevelTest {
-
-    /**
-     * Serialize Level.INFO and check against witness.
-     *
-     * @throws Exception if exception during test.
-     */
-    @Test
-    public void testSerializeINFO() throws Exception {
-        final int[] skip = new int[]{};
-        SerializationTestHelper.assertSerializationEquals(
-            "target/test-classes/witness/serialization/info.bin",
-            Level.INFO, skip, Integer.MAX_VALUE);
-    }
-
-    /**
-     * Deserialize witness and see if resolved to Level.INFO.
-     *
-     * @throws Exception if exception during test.
-     */
-    @Test
-    public void testDeserializeINFO() throws Exception {
-        final Object obj =
-            SerializationTestHelper.deserializeStream(
-                "target/test-classes/witness/serialization/info.bin");
-        assertTrue(obj instanceof Level);
-        final Level info = (Level) obj;
-        assertEquals("INFO", info.toString());
-        //
-        //  JDK 1.1 doesn't support readResolve necessary for the assertion
-        if (!System.getProperty("java.version").startsWith("1.1.")) {
-            assertTrue(obj == Level.INFO);
-        }
-    }
-
-    /**
-     * Tests that a custom level can be serialized and deserialized
-     * and is not resolved to a stock level.
-     *
-     * @throws Exception if exception during test.
-     */
-    @Test
-    public void testCustomLevelSerialization() throws Exception {
-        final CustomLevel custom = new CustomLevel();
-        final Object obj = SerializationTestHelper.serializeClone(custom);
-        assertTrue(obj instanceof CustomLevel);
-
-        final CustomLevel clone = (CustomLevel) obj;
-        assertEquals(Level.INFO.level, clone.level);
-        assertEquals(Level.INFO.levelStr, clone.levelStr);
-        assertEquals(Level.INFO.syslogEquivalent, clone.syslogEquivalent);
-    }
-
-    /**
-     * Custom level to check that custom levels are
-     * serializable, but not resolved to a plain Level.
-     */
-    private static class CustomLevel extends Level {
-        /**
-         * Generated serial version ID.
-         */
-        private static final long serialVersionUID = -6931920872225831135L;
-
-        /**
-         * Create an instance of CustomLevel.
-         */
-        public CustomLevel() {
-            super(
-                Level.INFO.level, Level.INFO.levelStr, Level.INFO.syslogEquivalent);
-        }
-    }
 
     /**
      * Tests Level.TRACE_INT.
@@ -282,4 +211,3 @@ public class LevelTest {
 
 
 }
-

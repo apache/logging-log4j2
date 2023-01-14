@@ -74,7 +74,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         private final long reconnectIntervalMillis;
         private final boolean truncateStrings;
 
-        protected FactoryData(final int bufferSize, final Layout<?> layout,
+        protected FactoryData(final int bufferSize, final Layout layout,
                 final ConnectionSource connectionSource, final String tableName, final ColumnConfig[] columnConfigs,
                 final ColumnMapping[] columnMappings, final boolean immediateFail, final long reconnectIntervalMillis,
                 final boolean truncateStrings) {
@@ -390,9 +390,9 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      * @return a new or existing JDBC manager as applicable.
      */
     public static JdbcDatabaseManager getManager(final String name, final int bufferSize,
-            final Layout<?> layout, final ConnectionSource connectionSource,
-            final String tableName, final ColumnConfig[] columnConfigs, final ColumnMapping[] columnMappings,
-            final boolean immediateFail, final long reconnectIntervalMillis, final boolean truncateStrings) {
+                                                 final Layout layout, final ConnectionSource connectionSource,
+                                                 final String tableName, final ColumnConfig[] columnConfigs, final ColumnMapping[] columnMappings,
+                                                 final boolean immediateFail, final long reconnectIntervalMillis, final boolean truncateStrings) {
         return getManager(name, new FactoryData(bufferSize, layout, connectionSource, tableName, columnConfigs,
                 columnMappings, immediateFail, reconnectIntervalMillis, truncateStrings), getFactory());
     }

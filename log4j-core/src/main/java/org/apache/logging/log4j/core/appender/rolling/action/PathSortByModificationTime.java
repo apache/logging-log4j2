@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import org.apache.logging.log4j.plugins.Configurable;
@@ -22,16 +21,12 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
-import java.io.Serializable;
-
 /**
  * {@link PathSorter} that sorts path by their LastModified attribute.
  */
 @Configurable(printObject = true)
 @Plugin("SortByModificationTime")
-public class PathSortByModificationTime implements PathSorter, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class PathSortByModificationTime implements PathSorter {
 
     private final boolean recentFirst;
     private final int multiplier;

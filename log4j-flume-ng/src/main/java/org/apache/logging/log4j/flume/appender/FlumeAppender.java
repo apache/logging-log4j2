@@ -78,7 +78,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         }
     }
 
-    private FlumeAppender(final String name, final Filter filter, final Layout<?> layout,
+    private FlumeAppender(final String name, final Filter filter, final Layout layout,
             final boolean ignoreExceptions, final String includes, final String excludes, final String required,
             final String mdcPrefix, final String eventPrefix, final boolean compress, final FlumeEventFactory factory,
             final Property[] properties, final AbstractFlumeManager manager) {
@@ -211,7 +211,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
             @PluginAttribute final String batchSize,
             @PluginAttribute final String lockTimeoutRetries,
             @PluginElement final FlumeEventFactory factory,
-            @PluginElement Layout<?> layout,
+            @PluginElement Layout layout,
             @PluginElement final Filter filter,
             final Injector injector) {
 

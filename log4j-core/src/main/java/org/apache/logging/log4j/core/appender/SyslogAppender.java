@@ -109,7 +109,7 @@ public class SyslogAppender extends SocketAppender {
             final SslConfiguration sslConfiguration = getSslConfiguration();
             final boolean useTlsMessageFormat = sslConfiguration != null || protocol == Protocol.SSL;
             final Configuration configuration = getConfiguration();
-            Layout<?> layout = getLayout();
+            Layout layout = getLayout();
             if (layout == null) {
                 layout = RFC5424.equalsIgnoreCase(format)
                         ? new Rfc5424Layout.Rfc5424LayoutBuilder()
@@ -326,7 +326,7 @@ public class SyslogAppender extends SocketAppender {
 
     protected static final String RFC5424 = "RFC5424";
 
-    protected SyslogAppender(final String name, final Layout<?> layout, final Filter filter,
+    protected SyslogAppender(final String name, final Layout layout, final Filter filter,
                              final boolean ignoreExceptions, final boolean immediateFlush,
                              final AbstractSocketManager manager, final Advertiser advertiser) {
         super(name, layout, filter, manager, ignoreExceptions, immediateFlush, advertiser);

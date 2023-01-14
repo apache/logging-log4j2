@@ -91,7 +91,7 @@ public class RollingFileManager extends FileManager {
     protected RollingFileManager(final LoggerContext loggerContext, final String fileName, final String pattern, final OutputStream os,
             final boolean append, final boolean createOnDemand, final long size, final long initialTime,
             final TriggeringPolicy triggeringPolicy, final RolloverStrategy rolloverStrategy,
-            final String advertiseURI, final Layout<?> layout,
+            final String advertiseURI, final Layout layout,
             final String filePermissions, final String fileOwner, final String fileGroup,
             final boolean writeHeader, final ByteBuffer buffer) {
         super(loggerContext, fileName != null ? fileName : pattern, os, append, false, createOnDemand,
@@ -148,11 +148,11 @@ public class RollingFileManager extends FileManager {
      * @return A RollingFileManager.
      */
     public static RollingFileManager getFileManager(final String fileName, final String pattern, final boolean append,
-            final boolean bufferedIO, final TriggeringPolicy policy, final RolloverStrategy strategy,
-            final String advertiseURI, final Layout<?> layout, final int bufferSize,
-            final boolean immediateFlush, final boolean createOnDemand,
-            final String filePermissions, final String fileOwner, final String fileGroup,
-            final Configuration configuration) {
+                                                    final boolean bufferedIO, final TriggeringPolicy policy, final RolloverStrategy strategy,
+                                                    final String advertiseURI, final Layout layout, final int bufferSize,
+                                                    final boolean immediateFlush, final boolean createOnDemand,
+                                                    final String filePermissions, final String fileOwner, final String fileGroup,
+                                                    final Configuration configuration) {
 
         if (strategy instanceof DirectWriteRolloverStrategy && fileName != null) {
             LOGGER.error("The fileName attribute must not be specified with the DirectWriteRolloverStrategy");
@@ -547,7 +547,7 @@ public class RollingFileManager extends FileManager {
         private final TriggeringPolicy policy;
         private final RolloverStrategy strategy;
         private final String advertiseURI;
-        private final Layout<?> layout;
+        private final Layout layout;
         private final String filePermissions;
         private final String fileOwner;
         private final String fileGroup;
@@ -568,10 +568,10 @@ public class RollingFileManager extends FileManager {
          * @param configuration The configuration
          */
         public FactoryData(final String fileName, final String pattern, final boolean append, final boolean bufferedIO,
-                final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
-                final Layout<?> layout, final int bufferSize, final boolean immediateFlush,
-                final boolean createOnDemand, final String filePermissions, final String fileOwner, final String fileGroup,
-                final Configuration configuration) {
+                           final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
+                           final Layout layout, final int bufferSize, final boolean immediateFlush,
+                           final boolean createOnDemand, final String filePermissions, final String fileOwner, final String fileGroup,
+                           final Configuration configuration) {
             super(configuration);
             this.fileName = fileName;
             this.pattern = pattern;

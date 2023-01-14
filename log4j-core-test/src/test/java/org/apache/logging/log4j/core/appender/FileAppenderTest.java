@@ -16,6 +16,20 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,20 +44,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -74,7 +74,7 @@ public class FileAppenderTest {
     @ParameterizedTest
     @ValueSource(booleans = { false, true })
     public void testLazyCreate(final boolean createOnDemand) throws Exception {
-        final Layout<String> layout = createPatternLayout();
+        final Layout layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
             .setFileName(FILE_NAME)
@@ -106,7 +106,7 @@ public class FileAppenderTest {
     @ParameterizedTest
     @ValueSource(booleans = { false, true })
     public void testSmallestBufferSize(final boolean createOnDemand) throws Exception {
-        final Layout<String> layout = createPatternLayout();
+        final Layout layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
             .setFileName(FILE_NAME)
@@ -227,7 +227,7 @@ public class FileAppenderTest {
 
     private static void writer(final boolean locking, final int logEventCount, final String name, final boolean createOnDemand,
             final boolean concurrent) throws Exception {
-        final Layout<String> layout = createPatternLayout();
+        final Layout layout = createPatternLayout();
         // @formatter:off
         final FileAppender appender = FileAppender.newBuilder()
             .setFileName(FILE_NAME)

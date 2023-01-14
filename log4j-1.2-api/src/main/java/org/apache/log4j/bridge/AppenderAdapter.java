@@ -74,7 +74,7 @@ public class AppenderAdapter {
 
     public class Adapter extends AbstractAppender {
 
-        protected Adapter(final String name, final Filter filter, final Layout<?> layout,
+        protected Adapter(final String name, final Filter filter, final Layout layout,
             final boolean ignoreExceptions, final Property[] properties) {
             super(name, filter, layout, ignoreExceptions, properties);
         }
