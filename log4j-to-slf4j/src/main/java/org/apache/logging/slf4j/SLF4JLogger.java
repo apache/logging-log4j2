@@ -268,6 +268,11 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
+    public LogBuilder always() {
+        return atLevel(Level.OFF);
+    }
+
+    @Override
     public LogBuilder atTrace() {
         return atLevel(Level.TRACE);
     }

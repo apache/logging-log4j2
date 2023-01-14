@@ -14,18 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.osgi.tests;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.ops4j.pax.exam.CoreOptions.junitBundles;
-import static org.ops4j.pax.exam.CoreOptions.linkBundle;
-import static org.ops4j.pax.exam.CoreOptions.options;
 
 import java.util.Optional;
 import java.util.stream.Stream;
-
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
@@ -40,6 +32,12 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.ops4j.pax.exam.CoreOptions.junitBundles;
+import static org.ops4j.pax.exam.CoreOptions.linkBundle;
+import static org.ops4j.pax.exam.CoreOptions.options;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -59,7 +57,7 @@ public class SLF4JProviderTest {
                 junitBundles());
     }
 
-    @Test
+    @Test(timeout = 10_000L)
     public void testSlf4jFactoryResolves() {
         final Optional<Bundle> slf4jBundle = Stream.of(context.getBundles())
                 .filter(b -> "org.apache.logging.log4j.to-slf4j".equals(b.getSymbolicName()))
