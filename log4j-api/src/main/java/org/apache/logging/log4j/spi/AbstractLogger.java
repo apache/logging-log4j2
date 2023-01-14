@@ -108,7 +108,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     private final MessageFactory2 messageFactory;
     private final FlowMessageFactory flowMessageFactory;
     private static final ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
-    private final transient ThreadLocal<DefaultLogBuilder> logBuilder;
+    private static final ThreadLocal<DefaultLogBuilder> logBuilder = ThreadLocal.withInitial(DefaultLogBuilder::new);
 
     /**
      * Creates a new logger named after this class (or subclass).
@@ -118,7 +118,6 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         this.name = canonicalName != null ? canonicalName : getClass().getName();
         this.messageFactory = createDefaultMessageFactory();
         this.flowMessageFactory = createDefaultFlowMessageFactory();
-        this.logBuilder = new LocalLogBuilder(this);
     }
 
     /**
@@ -140,7 +139,6 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         this.name = name;
         this.messageFactory = messageFactory == null ? createDefaultMessageFactory() : narrow(messageFactory);
         this.flowMessageFactory = createDefaultFlowMessageFactory();
-        this.logBuilder = new LocalLogBuilder(this);
     }
 
     /**
@@ -2872,11 +2870,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      */
     @Override
     public LogBuilder always() {
-        DefaultLogBuilder builder = logBuilder.get();
-        if (builder.isInUse()) {
-            return new DefaultLogBuilder(this);
-        }
-        return builder.reset(Level.OFF);
+        return getLogBuilder(Level.OFF);
     }
 
     /**
@@ -2887,7 +2881,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     @Override
     public LogBuilder atLevel(Level level) {
         if (isEnabled(level)) {
-            return getLogBuilder(level).reset(level);
+            return getLogBuilder(level).reset(this, level);
         }
         return LogBuilder.NOOP;
     }
@@ -2897,26 +2891,4 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
     }
 
-    private void readObject (final ObjectInputStream s) throws ClassNotFoundException, IOException {
-        s.defaultReadObject( );
-        try {
-            Field f = this.getClass().getDeclaredField("logBuilder");
-            f.setAccessible(true);
-            f.set(this, new LocalLogBuilder(this));
-        } catch (NoSuchFieldException | IllegalAccessException ex) {
-            StatusLogger.getLogger().warn("Unable to initialize LogBuilder");
-        }
-    }
-
-    private class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {
-        private AbstractLogger logger;
-        LocalLogBuilder(AbstractLogger logger) {
-            this.logger = logger;
-        }
-
-        @Override
-        protected DefaultLogBuilder initialValue() {
-            return new DefaultLogBuilder(logger);
-        }
-    }
 }
