@@ -450,6 +450,10 @@ public enum AnsiEscape {
         boolean first = true;
         for (final String name : names) {
             try {
+                // GitHub Issue #1202
+                if (name.startsWith(PatternParser.DISABLE_ANSI) || name.startsWith(PatternParser.NO_CONSOLE_NO_ANSI)) {
+                    continue;
+                }
                 if (!first) {
                     sb.append(AnsiEscape.SEPARATOR.getCode());
                 }
