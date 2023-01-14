@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.spi;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -23,30 +23,47 @@ import java.util.function.Supplier;
  * Recycling strategy that caches instances in a ThreadLocal value to allow threads to reuse objects. This strategy
  * may not be appropriate in workloads where units of work are independent of operating system threads such as
  * reactive streams, coroutines, or virtual threads.
- *
- * @param <V> the recyclable type
  */
-public class ThreadLocalRecycler<V> implements Recycler<V> {
+public class ThreadLocalRecyclerFactory implements RecyclerFactory {
 
-    private final Consumer<V> cleaner;
+    private static final ThreadLocalRecyclerFactory INSTANCE =
+            new ThreadLocalRecyclerFactory();
 
-    private final ThreadLocal<V> holder;
+    private ThreadLocalRecyclerFactory() {}
 
-    public ThreadLocalRecycler(
+    public static ThreadLocalRecyclerFactory getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public <V> Recycler<V> create(
             final Supplier<V> supplier,
             final Consumer<V> cleaner) {
-        this.cleaner = cleaner;
-        this.holder = ThreadLocal.withInitial(supplier);
+        return new ThreadLocalRecycler<>(supplier, cleaner);
     }
 
-    @Override
-    public V acquire() {
-        final V value = holder.get();
-        cleaner.accept(value);
-        return value;
+    private static class ThreadLocalRecycler<V> implements Recycler<V> {
+
+        private final Consumer<V> cleaner;
+
+        private final ThreadLocal<V> holder;
+
+        private ThreadLocalRecycler(
+                final Supplier<V> supplier,
+                final Consumer<V> cleaner) {
+            this.cleaner = cleaner;
+            this.holder = ThreadLocal.withInitial(supplier);
+        }
+
+        @Override
+        public V acquire() {
+            final V value = holder.get();
+            cleaner.accept(value);
+            return value;
+        }
+
+        @Override
+        public void release(final V value) {}
+
     }
-
-    @Override
-    public void release(final V value) {}
-
 }

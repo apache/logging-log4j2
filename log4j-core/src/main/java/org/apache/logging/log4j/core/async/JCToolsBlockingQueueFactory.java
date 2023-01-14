@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.Collection;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
+
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.jctools.queues.MpscArrayQueue;
-
-import java.util.Collection;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.LockSupport;
 
 /**
  * Factory for creating instances of BlockingQueues backed by JCTools {@link MpscArrayQueue}.
@@ -34,7 +34,7 @@ import java.util.concurrent.locks.LockSupport;
  */
 @Configurable(elementType = BlockingQueueFactory.ELEMENT_TYPE, printObject = true)
 @Plugin("JCToolsBlockingQueue")
-public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
+public class JCToolsBlockingQueueFactory implements BlockingQueueFactory {
 
     private final WaitStrategy waitStrategy;
 
@@ -43,14 +43,14 @@ public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
     }
 
     @Override
-    public BlockingQueue<E> create(final int capacity) {
+    public <E> BlockingQueue<E> create(final int capacity) {
         return new MpscBlockingQueue<>(capacity, waitStrategy);
     }
 
     @PluginFactory
-    public static <E> JCToolsBlockingQueueFactory<E> createFactory(
+    public static JCToolsBlockingQueueFactory createFactory(
         @PluginAttribute(defaultString = "PARK") final WaitStrategy waitStrategy) {
-        return new JCToolsBlockingQueueFactory<>(waitStrategy);
+        return new JCToolsBlockingQueueFactory(waitStrategy);
     }
 
     /**

@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.layout.template.json.util.*;
-import org.apache.logging.log4j.util.Recycler;
-import org.apache.logging.log4j.util.RecyclerFactory;
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 
 /**
  * Exception stack trace to JSON string resolver used by {@link ExceptionResolver}.

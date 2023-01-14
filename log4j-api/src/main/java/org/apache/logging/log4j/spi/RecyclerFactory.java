@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.spi;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;

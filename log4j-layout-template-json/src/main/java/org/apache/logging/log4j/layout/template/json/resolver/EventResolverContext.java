@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.util.RecyclerFactory;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.Strings;
 
 /**

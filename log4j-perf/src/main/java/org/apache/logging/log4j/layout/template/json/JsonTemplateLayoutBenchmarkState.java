@@ -30,7 +30,7 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
-import org.apache.logging.log4j.util.ThreadLocalRecyclerFactory;
+import org.apache.logging.log4j.spi.ThreadLocalRecyclerFactory;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 

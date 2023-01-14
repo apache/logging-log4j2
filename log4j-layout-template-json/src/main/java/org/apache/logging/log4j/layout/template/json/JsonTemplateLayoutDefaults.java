@@ -21,10 +21,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.apache.logging.log4j.spi.RecyclerFactories;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util.RecyclerFactories;
-import org.apache.logging.log4j.util.RecyclerFactory;
 
 public final class JsonTemplateLayoutDefaults {
 

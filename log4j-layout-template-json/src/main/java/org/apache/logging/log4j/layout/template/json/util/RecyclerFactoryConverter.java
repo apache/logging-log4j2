@@ -19,8 +19,8 @@ package org.apache.logging.log4j.layout.template.json.util;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.convert.TypeConverters;
-import org.apache.logging.log4j.util.RecyclerFactories;
-import org.apache.logging.log4j.util.RecyclerFactory;
+import org.apache.logging.log4j.spi.RecyclerFactories;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 
 /**
  * The default string (i.e., recycler factory spec) to {@link RecyclerFactory} type converter.

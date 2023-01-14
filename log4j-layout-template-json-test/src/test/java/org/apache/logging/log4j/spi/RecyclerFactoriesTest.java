@@ -14,7 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.spi;
 
 import java.lang.reflect.Field;
 import java.util.ArrayDeque;
@@ -27,7 +27,6 @@ import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.util.*;
 import org.assertj.core.api.Assertions;
 import org.jctools.queues.MpmcArrayQueue;
 import org.junit.jupiter.api.Test;
@@ -80,9 +79,9 @@ class RecyclerFactoriesTest {
                     queueingRecyclerFactory.create(Object::new);
             Assertions
                     .assertThat(recycler)
-                    .isInstanceOf(QueueingRecycler.class);
-            final QueueingRecycler<Object> queueingRecycler =
-                    (QueueingRecycler<Object>) recycler;
+                    .isInstanceOf(QueueingRecyclerFactory.QueueingRecycler.class);
+            final QueueingRecyclerFactory.QueueingRecycler<Object> queueingRecycler =
+                    (QueueingRecyclerFactory.QueueingRecycler<Object>) recycler;
             Assertions
                     .assertThat(queueingRecycler.getQueue())
                     .isInstanceOf(ArrayDeque.class);
@@ -112,9 +111,9 @@ class RecyclerFactoriesTest {
                     queueingRecyclerFactory.create(Object::new);
             Assertions
                     .assertThat(recycler)
-                    .isInstanceOf(QueueingRecycler.class);
-            final QueueingRecycler<Object> queueingRecycler =
-                    (QueueingRecycler<Object>) recycler;
+                    .isInstanceOf(QueueingRecyclerFactory.QueueingRecycler.class);
+            final QueueingRecyclerFactory.QueueingRecycler<Object> queueingRecycler =
+                    (QueueingRecyclerFactory.QueueingRecycler<Object>) recycler;
             Assertions
                     .assertThat(queueingRecycler.getQueue())
                     .isInstanceOf(ArrayBlockingQueue.class);
@@ -133,7 +132,7 @@ class RecyclerFactoriesTest {
         final JsonTemplateLayout layout = (JsonTemplateLayout) appender.getLayout();
         final Field field = JsonTemplateLayout.class.getDeclaredField("contextRecycler");
         field.setAccessible(true);
-        final QueueingRecycler<?> contextRecycler = (QueueingRecycler<?>) field.get(layout);
+        final QueueingRecyclerFactory.QueueingRecycler<?> contextRecycler = (QueueingRecyclerFactory.QueueingRecycler<?>) field.get(layout);
         final MpmcArrayQueue<?> queue = (MpmcArrayQueue<?>) contextRecycler.getQueue();
         Assertions.assertThat(queue.capacity()).isEqualTo(512);
     }

@@ -23,9 +23,9 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.Recycler;
-import org.apache.logging.log4j.util.RecyclerFactory;
 import org.apache.logging.log4j.util.TriConsumer;
 
 /**

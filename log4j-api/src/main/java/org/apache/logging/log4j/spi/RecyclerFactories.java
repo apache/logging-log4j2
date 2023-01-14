@@ -14,18 +14,22 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util;
-
-import org.jctools.queues.MpmcArrayQueue;
+package org.apache.logging.log4j.spi;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.function.Supplier;
+
+import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.LoaderUtil;
+import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.util.StringParameterParser;
+import org.jctools.queues.MpmcArrayQueue;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
@@ -55,7 +59,73 @@ public final class RecyclerFactories {
         }
     }
 
-    private static <V> Supplier<Queue<V>> getQueueSupplier(final int capacity) {
+    private static class ConstructedQueueFactory implements QueueFactory {
+        private final String queueFactorySpec;
+        private final Constructor<?> constructor;
+
+        private ConstructedQueueFactory(final String queueFactorySpec, final Constructor<?> constructor) {
+            this.queueFactorySpec = queueFactorySpec;
+            this.constructor = constructor;
+        }
+
+        @Override
+        public <V> Queue<V> create(final int capacity) {
+            final Constructor<Queue<V>> typedConstructor = Cast.cast(constructor);
+            try {
+                return typedConstructor.newInstance(capacity);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(
+                        "recycler queue construction failed for factory: " +
+                                queueFactorySpec, e.getCause());
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(
+                        "recycler queue construction failed for factory: " +
+                                queueFactorySpec, e);
+            }
+        }
+    }
+
+    private static class MethodProvidedQueueFactory implements QueueFactory {
+        private final String queueFactorySpec;
+        private final Method method;
+
+        private MethodProvidedQueueFactory(final String queueFactorySpec, final Method method) {
+            this.queueFactorySpec = queueFactorySpec;
+            this.method = method;
+        }
+
+        @Override
+        public <V> Queue<V> create(final int capacity) {
+            try {
+                return Cast.cast(method.invoke(null, capacity));
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(
+                        "recycler queue construction failed for factory: " +
+                                queueFactorySpec, e.getCause());
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(
+                        "recycler queue construction failed for factory: " +
+                                queueFactorySpec, e);
+            }
+        }
+    }
+
+    private static class QueueFactorySupplier implements QueueSupplier {
+        private final QueueFactory queueFactory;
+        private final int capacity;
+
+        private QueueFactorySupplier(final QueueFactory queueFactory, final int capacity) {
+            this.queueFactory = queueFactory;
+            this.capacity = capacity;
+        }
+
+        @Override
+        public <E> Queue<E> create() {
+            return queueFactory.create(capacity);
+        }
+    }
+
+    private static QueueSupplier getQueueSupplier(final int capacity) {
         final ClassLoader classLoader = RecyclerFactories.class.getClassLoader();
         Class<? extends QueueFactory> factoryClass;
         try {
@@ -66,7 +136,7 @@ public final class RecyclerFactories {
             factoryClass = ArrayBlockingQueueFactory.class;
         }
         final QueueFactory queueFactory = ReflectionUtil.instantiate(factoryClass);
-        return () -> queueFactory.create(capacity);
+        return new QueueFactorySupplier(queueFactory, capacity);
     }
 
     public static RecyclerFactory ofSpec(final String recyclerFactorySpec) {
@@ -169,39 +239,17 @@ public final class RecyclerFactories {
         final String supplierMethodName = supplierPath.substring(supplierPathSplitterIndex + 1);
         try {
             final Class<?> supplierClass = LoaderUtil.loadClass(supplierClassName);
-            final Supplier<Queue<Object>> queueSupplier;
+            final QueueFactory queueFactory;
             if ("new".equals(supplierMethodName)) {
                 final Constructor<?> supplierCtor =
                         supplierClass.getDeclaredConstructor(int.class);
-                queueSupplier = () -> {
-                    try {
-                        @SuppressWarnings("unchecked")
-                        final Queue<Object> typedQueue =
-                                (Queue<Object>) supplierCtor.newInstance(capacity);
-                        return typedQueue;
-                    } catch (final Exception error) {
-                        throw new RuntimeException(
-                                "recycler queue construction failed for factory: " +
-                                        queueFactorySpec, error);
-                    }
-                };
+                queueFactory = new ConstructedQueueFactory(queueFactorySpec, supplierCtor);
             } else {
                 final Method supplierMethod =
                         supplierClass.getMethod(supplierMethodName, int.class);
-                queueSupplier = () -> {
-                    try {
-                        @SuppressWarnings("unchecked")
-                        final Queue<Object> typedQueue =
-                                (Queue<Object>) supplierMethod.invoke(null, capacity);
-                        return typedQueue;
-                    } catch (final Exception error) {
-                        throw new RuntimeException(
-                                "recycler queue construction failed for factory: " +
-                                        queueFactorySpec, error);
-                    }
-                };
+                queueFactory = new MethodProvidedQueueFactory(queueFactorySpec, supplierMethod);
             }
-            return new QueueingRecyclerFactory(queueSupplier);
+            return new QueueingRecyclerFactory(new QueueFactorySupplier(queueFactory, capacity));
         } catch (final Exception error) {
             throw new RuntimeException(
                     "failed executing queueing recycler factory: " +

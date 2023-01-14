@@ -14,11 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-package org.apache.logging.log4j.util;
+package org.apache.logging.log4j.spi;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Recycler strategy which doesn't recycle anything; all instances are freshly created.
+ *
+ * @since 3.0.0
+ */
 public class DummyRecyclerFactory implements RecyclerFactory {
 
     private static final DummyRecyclerFactory INSTANCE = new DummyRecyclerFactory();
@@ -36,4 +41,21 @@ public class DummyRecyclerFactory implements RecyclerFactory {
         return new DummyRecycler<>(supplier);
     }
 
+    private static class DummyRecycler<V> implements Recycler<V> {
+
+        private final Supplier<V> supplier;
+
+        private DummyRecycler(final Supplier<V> supplier) {
+            this.supplier = supplier;
+        }
+
+        @Override
+        public V acquire() {
+            return supplier.get();
+        }
+
+        @Override
+        public void release(final V value) {}
+
+    }
 }
