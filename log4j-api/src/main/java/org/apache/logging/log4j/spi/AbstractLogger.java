@@ -84,7 +84,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
     private static final ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
-    private final transient ThreadLocal<DefaultLogBuilder> logBuilder;
+    private static final ThreadLocal<DefaultLogBuilder> logBuilder = ThreadLocal.withInitial(DefaultLogBuilder::new);
 
 
     /**
@@ -95,7 +95,6 @@ public abstract class AbstractLogger implements ExtendedLogger {
         this.name = canonicalName != null ? canonicalName : getClass().getName();
         this.messageFactory = LoggingSystem.getMessageFactory();
         this.flowMessageFactory = LoggingSystem.getFlowMessageFactory();
-        this.logBuilder = new LocalLogBuilder(this);
     }
 
     /**
@@ -117,7 +116,6 @@ public abstract class AbstractLogger implements ExtendedLogger {
         this.name = name;
         this.messageFactory = messageFactory == null ? LoggingSystem.getMessageFactory() : messageFactory;
         this.flowMessageFactory = LoggingSystem.getFlowMessageFactory();
-        this.logBuilder = new LocalLogBuilder(this);
     }
 
     /**
@@ -2742,11 +2740,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
      */
     @Override
     public LogBuilder always() {
-        final DefaultLogBuilder builder = logBuilder.get();
-        if (builder.isInUse()) {
-            return new DefaultLogBuilder(this);
-        }
-        return builder.reset(Level.OFF);
+        return getLogBuilder(Level.OFF);
     }
 
     /**
@@ -2757,26 +2751,13 @@ public abstract class AbstractLogger implements ExtendedLogger {
     @Override
     public LogBuilder atLevel(final Level level) {
         if (isEnabled(level)) {
-            return (getLogBuilder(level).reset(level));
-        } else {
-            return LogBuilder.NOOP;
+            return getLogBuilder(level).reset(this, level);
         }
+        return LogBuilder.NOOP;
     }
 
     private DefaultLogBuilder getLogBuilder(final Level level) {
         final DefaultLogBuilder builder = logBuilder.get();
         return Constants.isThreadLocalsEnabled() && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
-    }
-
-    private static class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {
-        private final AbstractLogger logger;
-        LocalLogBuilder(final AbstractLogger logger) {
-            this.logger = logger;
-        }
-
-        @Override
-        protected DefaultLogBuilder initialValue() {
-            return new DefaultLogBuilder(logger);
-        }
     }
 }

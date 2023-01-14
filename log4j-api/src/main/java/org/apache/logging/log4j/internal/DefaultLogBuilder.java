@@ -39,7 +39,7 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Message EMPTY_MESSAGE = new SimpleMessage(Strings.EMPTY);
 
-    private final Logger logger;
+    private Logger logger;
     private Level level;
     private Marker marker;
     private Throwable throwable;
@@ -52,13 +52,11 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
         this.logger = logger;
         this.level = level;
         this.threadId = Thread.currentThread().getId();
-        this.inUse = true;
+        this.inUse = level != null;
     }
 
-    public DefaultLogBuilder(final Logger logger) {
-        this.logger = logger;
-        this.inUse = false;
-        this.threadId = Thread.currentThread().getId();
+    public DefaultLogBuilder() {
+        this(null, null);
     }
 
     @Override
@@ -71,12 +69,13 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
      * @param level The logging level for this event.
      * @return This LogBuilder instance.
      */
-    public LogBuilder reset(final Level level) {
-        this.inUse = true;
+    public LogBuilder reset(Logger logger, Level level) {
+        this.logger = logger;
         this.level = level;
         this.marker = null;
         this.throwable = null;
         this.location = null;
+        this.inUse = true;
         return this;
     }
 
