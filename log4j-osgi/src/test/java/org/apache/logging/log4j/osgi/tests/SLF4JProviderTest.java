@@ -57,7 +57,7 @@ public class SLF4JProviderTest {
                 junitBundles());
     }
 
-    @Test
+    @Test(timeout = 10_000L)
     public void testSlf4jFactoryResolves() {
         final Optional<Bundle> slf4jBundle = Stream.of(context.getBundles())
                 .filter(b -> "org.apache.logging.log4j.to-slf4j".equals(b.getSymbolicName()))
