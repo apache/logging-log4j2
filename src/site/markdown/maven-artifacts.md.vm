@@ -149,14 +149,29 @@ file. When you specify the version identifier in this section, you don't have to
 </dependencyManagement>
 ```
 
-To use this with Gradle, an additional [Gradle plugin](https://github.com/spring-gradle-plugins/dependency-management-plugin)
+Gradle 5.0+ supports importing Maven BOM as a [platform](https://docs.gradle.org/current/userguide/platforms.html#sub:bom_import)
+to align dependency versions.
+
+`build.gradle`
+
+```
+dependencies {
+  implementation platform('org.apache.logging.log4j:log4j-bom:${Log4jReleaseVersion}')
+
+  implementation 'org.apache.logging.log4j:log4j-api'
+  runtimeOnly 'org.apache.logging.log4j:log4j-core'
+  // etc.
+}
+```
+
+To use this with Gradle 2.8-4.10, an additional [Gradle plugin](https://github.com/spring-gradle-plugins/dependency-management-plugin)
 is required for dependency management functionality.
 
 `build.gradle`
 
 ```
 plugins {
-  id 'io.spring.dependency-management' version '1.0.1.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
 dependencyManagement {
@@ -166,8 +181,9 @@ dependencyManagement {
 }
 
 dependencies {
+  // For Gradle 2.8-3.3 use compile/runtime instead of implementation/runtimeOnly
   implementation 'org.apache.logging.log4j:log4j-api'
-  implementation 'org.apache.logging.log4j:log4j-core'
+  runtimeOnly 'org.apache.logging.log4j:log4j-core'
   // etc.
 }
 ```
