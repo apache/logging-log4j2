@@ -16,13 +16,13 @@
  */
 package org.apache.logging.slf4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.util.Strings;
@@ -37,6 +37,12 @@ import org.slf4j.Marker;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
+import org.slf4j.spi.LoggingEventBuilder;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -181,6 +187,23 @@ public class LoggerTest {
         lal.log(null, LoggerTest.class.getName(), LocationAwareLogger.DEBUG_INT, "Hello {}",
                 new Object[] { "World!", expected }, null);
         verifyThrowable(expected);
+    }
+
+    @Test
+    public void testLazyLoggingEventBuilder() {
+        final ListAppender appender = ctx.getListAppender("UnformattedList");
+        final Level oldLevel = ctx.getRootLogger().getLevel();
+        try {
+            Configurator.setRootLevel(Level.ERROR);
+            final LoggingEventBuilder builder = logger.makeLoggingEventBuilder(org.slf4j.event.Level.DEBUG);
+            Configurator.setRootLevel(Level.DEBUG);
+            builder.log();
+            assertThat(appender.getEvents()).hasSize(1)
+                    .map(LogEvent::getLevel)
+                    .containsExactly(Level.DEBUG);
+        } finally {
+            Configurator.setRootLevel(oldLevel);
+        }
     }
 
     private ListAppender getAppenderByName(final String name) {

@@ -33,10 +33,8 @@ import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.MessageFactory2;
-import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
-import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
@@ -46,7 +44,6 @@ import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
-import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.Supplier;
 
 /**
@@ -518,7 +515,8 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     protected EntryMessage enter(final String fqcn, final String format, final Supplier<?>... paramSuppliers) {
         EntryMessage entryMsg = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = entryMsg(format, paramSuppliers), null);
+            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER,
+                    entryMsg = flowMessageFactory.newEntryMessage(format, LambdaUtil.getAll(paramSuppliers)), null);
         }
         return entryMsg;
     }
@@ -549,7 +547,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     protected EntryMessage enter(final String fqcn, final String format, final Object... params) {
         EntryMessage entryMsg = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = entryMsg(format, params), null);
+            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = flowMessageFactory.newEntryMessage(format, params), null);
         }
         return entryMsg;
     }
@@ -616,27 +614,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     protected EntryMessage entryMsg(final String format, final Object... params) {
-        final int count = params == null ? 0 : params.length;
-        if (count == 0) {
-            if (Strings.isEmpty(format)) {
-                return flowMessageFactory.newEntryMessage(null);
-            }
-            return flowMessageFactory.newEntryMessage(new SimpleMessage(format));
-        }
-        if (format != null) {
-            return flowMessageFactory.newEntryMessage(new ParameterizedMessage(format, params));
-        }
-        final StringBuilder sb = new StringBuilder();
-        sb.append("params(");
-        for (int i = 0; i < count; i++) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            final Object parm = params[i];
-            sb.append(parm instanceof Message ? ((Message) parm).getFormattedMessage() : String.valueOf(parm));
-        }
-        sb.append(')');
-        return flowMessageFactory.newEntryMessage(new SimpleMessage(sb));
+        return flowMessageFactory.newEntryMessage(format, params);
     }
 
     protected EntryMessage entryMsg(final String format, final MessageSupplier... paramSuppliers) {
@@ -644,21 +622,12 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         final Object[] params = new Object[count];
         for (int i = 0; i < count; i++) {
             params[i] = paramSuppliers[i].get();
-            params[i] = params[i] != null ? ((Message) params[i]).getFormattedMessage() : null;
         }
         return entryMsg(format, params);
     }
 
     protected EntryMessage entryMsg(final String format, final Supplier<?>... paramSuppliers) {
-        final int count = paramSuppliers == null ? 0 : paramSuppliers.length;
-        final Object[] params = new Object[count];
-        for (int i = 0; i < count; i++) {
-            params[i] = paramSuppliers[i].get();
-            if (params[i] instanceof Message) {
-                params[i] = ((Message) params[i]).getFormattedMessage();
-            }
-        }
-        return entryMsg(format, params);
+        return entryMsg(format, LambdaUtil.getAll(paramSuppliers));
     }
 
     @Override
@@ -940,7 +909,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      */
     protected <R> R exit(final String fqcn, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, (CharSequence) null, null)) {
-            logMessageSafely(fqcn, Level.TRACE, EXIT_MARKER, exitMsg(null, result), null);
+            logMessageSafely(fqcn, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(null, result), null);
         }
         return result;
     }
@@ -955,23 +924,13 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      */
     protected <R> R exit(final String fqcn, final String format, final R result) {
         if (isEnabled(Level.TRACE, EXIT_MARKER, (CharSequence) null, null)) {
-            logMessageSafely(fqcn, Level.TRACE, EXIT_MARKER, exitMsg(format, result), null);
+            logMessageSafely(fqcn, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(format, result), null);
         }
         return result;
     }
 
     protected Message exitMsg(final String format, final Object result) {
-        if (result == null) {
-            if (format == null) {
-                return messageFactory.newMessage("Exit");
-            }
-            return messageFactory.newMessage("Exit: " + format);
-        }
-        if (format == null) {
-            return messageFactory.newMessage("Exit with(" + result + ')');
-        }
-        return messageFactory.newMessage("Exit: " + format, result);
-
+        return flowMessageFactory.newExitMessage(format, result);
     }
 
     @Override
@@ -1234,6 +1193,11 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     @Override
     public <MF extends MessageFactory> MF getMessageFactory() {
         return (MF) messageFactory;
+    }
+
+    @Override
+    public FlowMessageFactory getFlowMessageFactory() {
+        return flowMessageFactory;
     }
 
     @Override

@@ -282,10 +282,10 @@
     <checksum-maven-plugin.version>1.11</checksum-maven-plugin.version>
     <docker-maven-plugin.version>0.40.2</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
-    <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
     <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
-    <log4j-tools.version>0.1.0-SNAPSHOT</log4j-tools.version>
+    <log4j-tools.version>0.1.0</log4j-tools.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
+    <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
     <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
     <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
     <maven-jxr-plugin.version>3.3.0</maven-jxr-plugin.version>
@@ -1233,7 +1233,6 @@
           <artifactId>exam-maven-plugin</artifactId>
           <version>${exam-maven-plugin.version}</version>
         </plugin>
-
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
@@ -1434,6 +1433,7 @@
             <exclude>**/fluent-bit.conf</exclude>
             <exclude>**/rabbitmq.config</exclude>
             <exclude>**/MANIFEST.MF</exclude>
+            <exclude>.surefire-*</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -1607,14 +1607,28 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <!-- export AsciiDoc-formatted sources to `target/generated-sources/site/asciidoc/changelog` -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>changelog-export</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
           <includeProjectDependencies>false</includeProjectDependencies>
           <includePluginDependencies>true</includePluginDependencies>
           <executableDependency>
-            <groupId>org.apache.logging.log4j.tools</groupId>
+            <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-changelog</artifactId>
           </executableDependency>
-          <mainClass>org.apache.logging.log4j.tools.changelog.exporter.ChangelogExporter</mainClass>
+          <mainClass>org.apache.logging.log4j.changelog.exporter.ChangelogExporter</mainClass>
           <systemProperties>
             <systemProperty>
               <key>log4j.changelog.directory</key>
@@ -1628,7 +1642,7 @@
         </configuration>
         <dependencies>
           <dependency>
-            <groupId>org.apache.logging.log4j.tools</groupId>
+            <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-changelog</artifactId>
             <version>${log4j-tools.version}</version>
           </dependency>
@@ -1641,6 +1655,7 @@
         <artifactId>maven-resources-plugin</artifactId>
         <inherited>false</inherited>
         <executions>
+          <!-- copy `src/site` to `target/generated-sources/site` -->
           <execution>
             <id>copy-site</id>
             <phase>pre-site</phase>
@@ -1810,14 +1825,37 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- populate `src/changelog/<releaseVersion>` from `src/changelog/.<releaseVersionMajor>.x.x` -->
+    <profile>
+      <id>changelog-releaser</id>
+      <build>
+        <defaultGoal>validate</defaultGoal>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>changelog-releaser</id>
+                <!-- Choosing the earlier possible phase, since `ChangelogReleaser` execution doesn't depend on anything: -->
+                <phase>validate</phase>
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
             <configuration>
               <includeProjectDependencies>false</includeProjectDependencies>
               <includePluginDependencies>true</includePluginDependencies>
               <executableDependency>
-                <groupId>org.apache.logging.log4j.tools</groupId>
+                <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-changelog</artifactId>
               </executableDependency>
-              <mainClass>org.apache.logging.log4j.tools.changelog.releaser.ChangelogReleaser</mainClass>
+              <mainClass>org.apache.logging.log4j.changelog.releaser.ChangelogReleaser</mainClass>
               <systemProperties>
                 <systemProperty>
                   <key>log4j.changelog.directory</key>
@@ -1831,7 +1869,7 @@
             </configuration>
             <dependencies>
               <dependency>
-                <groupId>org.apache.logging.log4j.tools</groupId>
+                <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-changelog</artifactId>
                 <version>${log4j-tools.version}</version>
               </dependency>

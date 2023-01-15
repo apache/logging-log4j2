@@ -15,9 +15,11 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<entry type="fixed">
-  <issue id="LOG4J2-3631" link="https://issues.apache.org/jira/browse/LOG4J2-3631"/>
+<entry type="added">
+  <issue id="LOG4J2-1631" link="https://issues.apache.org/jira/browse/LOG4J2-1631"/>
   <author id="pkarwasz"/>
-  <author name="Jeff Thomas"/>
-  <description format="asciidoc">Fix `Configurator#setLevel` for internal classes</description>
+  <author name="Danas Mikelinskas"/>
+  <description format="asciidoc">
+    Add support for timezones in `RollingFileAppender` date pattern
+  </description>
 </entry>

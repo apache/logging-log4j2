@@ -16,8 +16,8 @@
    limitations under the License.
 -->
 <entry type="fixed">
-  <issue id="LOG4J2-3631" link="https://issues.apache.org/jira/browse/LOG4J2-3631"/>
-  <author id="pkarwasz"/>
-  <author name="Jeff Thomas"/>
-  <description format="asciidoc">Fix `Configurator#setLevel` for internal classes</description>
+  <issue id="LOG4J2-3487" link="https://issues.apache.org/jira/browse/LOG4J2-3487"/>
+  <author id="rgoers"/>
+  <author name="Dave Messink"/>
+  <description format="asciidoc">Correct default to not include location for ``AsyncRootLogger``s</description>
 </entry>
