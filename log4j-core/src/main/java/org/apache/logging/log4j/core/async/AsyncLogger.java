@@ -37,6 +37,7 @@ import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringMap;
 
@@ -418,7 +419,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         event.setValues(asyncLogger, asyncLogger.getName(), marker, fqcn, level, message, thrown,
                 // config properties are taken care of in the EventHandler thread
                 // in the AsyncLogger#actualAsyncLog method
-                contextDataInjector.injectContextData(null, (StringMap) event.getContextData()),
+                contextDataInjector.injectContextData(null, event.getContextData()),
                 contextStack, currentThread.getId(), threadName, currentThread.getPriority(), location,
                 clock, nanoClock);
     }
@@ -492,24 +493,24 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         privateConfigLoggerConfig.getReliabilityStrategy().log(this, event);
     }
 
-    @SuppressWarnings("ForLoopReplaceableByForEach") // Avoid iterator allocation
+    @PerformanceSensitive("allocation")
     private void onPropertiesPresent(final RingBufferLogEvent event, final List<Property> properties) {
         final StringMap contextData = getContextData(event);
-        for (int i = 0, size = properties.size(); i < size; i++) {
-            final Property prop = properties.get(i);
+        // List::forEach is garbage-free when using an ArrayList or Arrays.asList
+        properties.forEach(prop -> {
             if (contextData.getValue(prop.getName()) != null) {
-                continue; // contextMap overrides config properties
+                return; // contextMap overrides config properties
             }
             final String value = prop.isValueNeedsLookup() //
                     ? privateConfig.config.getStrSubstitutor().replace(event, prop.getValue()) //
                     : prop.getValue();
             contextData.putValue(prop.getName(), value);
-        }
+        });
         event.setContextData(contextData);
     }
 
     private static StringMap getContextData(final RingBufferLogEvent event) {
-        final StringMap contextData = (StringMap) event.getContextData();
+        final StringMap contextData = event.getContextData();
         if (contextData.isFrozen()) {
             final StringMap temp = ContextDataFactory.createContextData();
             temp.putAll(contextData);

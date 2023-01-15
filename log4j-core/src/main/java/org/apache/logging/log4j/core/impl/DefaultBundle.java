@@ -54,6 +54,8 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
+import org.apache.logging.log4j.spi.RecyclerFactories;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
@@ -86,6 +88,11 @@ public class DefaultBundle {
         this.injector = injector;
         this.properties = properties;
         this.classLoader = classLoader;
+    }
+
+    @SingletonFactory
+    public RecyclerFactory defaultRecyclerFactory() {
+        return RecyclerFactories.ofSpec(null);
     }
 
     @ConditionalOnProperty(name = Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME)
@@ -202,8 +209,8 @@ public class DefaultBundle {
 
     @SingletonFactory
     public LogEventFactory defaultLogEventFactory(
-            final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock) {
-        return isThreadLocalsEnabled() ? new ReusableLogEventFactory(injector, clock, nanoClock) :
+            final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock, final RecyclerFactory recyclerFactory) {
+        return isThreadLocalsEnabled() ? new ReusableLogEventFactory(injector, clock, nanoClock, recyclerFactory) :
                 new DefaultLogEventFactory(injector, clock, nanoClock);
     }
 

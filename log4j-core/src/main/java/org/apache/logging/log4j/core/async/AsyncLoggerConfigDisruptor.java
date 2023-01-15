@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.ReusableLogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
@@ -80,8 +81,8 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
          */
         public void clear() {
             loggerConfig = null;
-            if (event instanceof MutableLogEvent) {
-                ((MutableLogEvent) event).clear();
+            if (event instanceof ReusableLogEvent) {
+                ((ReusableLogEvent) event).clear();
             } else {
                 event = null;
             }

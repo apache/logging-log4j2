@@ -14,17 +14,17 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.impl;
+
+import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.ReusableLogEvent;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.di.Key;
-
-import java.util.List;
 
 /**
  *
@@ -45,5 +45,11 @@ public interface LogEventFactory {
             List<Property> properties,
             Throwable t) {
         return createEvent(loggerName, marker, fqcn, level, data, properties, t);
+    }
+
+    default void recycle(final LogEvent event) {
+        if (event instanceof ReusableLogEvent) {
+            ((ReusableLogEvent) event).clear();
+        }
     }
 }
