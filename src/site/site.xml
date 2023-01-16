@@ -346,8 +346,6 @@
 
     <menu name="Project Information" img="img/glyphicons/info.png">
       <item name="Project Team" href="/team-list.html" />
-      <item name="Mailing Lists" href="/mailing-lists.html" />
-      <item name="Issue Tracking" href="https://github.com/apache/logging-log4j2/issues" />
       <item name="Project License" href="https://www.apache.org/licenses/LICENSE-2.0" />
       <item name="Source Repository" href="https://github.com/apache/logging-log4j2" />
     </menu>

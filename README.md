@@ -103,8 +103,9 @@ see [Snapshot builds](https://logging.apache.org/log4j/2.x/maven-artifacts.html#
 
 ## Issue Tracking
 
-Issues, bugs, and feature requests should be submitted to our
-[GitHub issues tracker](https://github.com/apache/logging-log4j2/issues).
+Issues, bugs, and feature requests should be submitted to [the issue tracker](https://github.com/apache/logging-log4j2/issues).
+
+Pull requests on GitHub are welcome, but please open a ticket in the issue tracker first, and mention the issue in the pull request.
 
 ## Building From Source
 

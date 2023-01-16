@@ -36,14 +36,15 @@
   <url>https://logging.apache.org/log4j/2.x/</url>
 
   <issueManagement>
-    <system>JIRA</system>
-    <url>https://issues.apache.org/jira/browse/LOG4J2</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/logging-log4j2/issues</url>
   </issueManagement>
 
   <ciManagement>
     <system>GitHub Actions</system>
     <url>https://github.com/apache/logging-log4j2/actions</url>
   </ciManagement>
+
   <inceptionYear>1999</inceptionYear>
 
   <developers>
@@ -286,7 +287,6 @@
     <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
     <log4j-tools.version>0.1.0</log4j-tools.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
-    <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
     <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
     <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
     <maven-jxr-plugin.version>3.3.0</maven-jxr-plugin.version>
@@ -1235,6 +1235,7 @@
           <artifactId>exam-maven-plugin</artifactId>
           <version>${exam-maven-plugin.version}</version>
         </plugin>
+
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
