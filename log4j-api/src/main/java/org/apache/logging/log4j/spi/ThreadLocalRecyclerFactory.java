@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.spi;
 
-import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import org.apache.logging.log4j.util.Queues;
 
 /**
  * Recycling strategy that caches instances in a ThreadLocal value to allow threads to reuse objects. This strategy
@@ -63,7 +64,8 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
             this.supplier = supplier;
             this.lazyCleaner = lazyCleaner;
             this.eagerCleaner = eagerCleaner;
-            this.holder = ThreadLocal.withInitial(ArrayDeque::new);
+            // allow for some reasonable level of recursive calls before we stop caring to reuse things
+            this.holder = ThreadLocal.withInitial(() -> Queues.SPSC.create(8));
         }
 
         @Override
