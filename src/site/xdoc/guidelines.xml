@@ -231,7 +231,7 @@
       </subsection>
       <a name="changelogs"/>
       <subsection name="Changelog and Git logs">
-      <p>Many code changes should be noted in a <code>changelog/.unreleased-*/&lt;issueId&gt;_&lt;shortSummary&gt;.xml</code> file, and all should be
+      <p>Many code changes should be noted in a <code>src/changelog/.&lt;releaseMajorVersion&gt;.x.x/&lt;issueId&gt;_&lt;shortSummary&gt;.xml</code> file, and all should be
         documented in Git commit messages. Often the text of the Git
         log and the changelog entry are the same, but the distinct requirements
         sometimes result in different information.</p>
