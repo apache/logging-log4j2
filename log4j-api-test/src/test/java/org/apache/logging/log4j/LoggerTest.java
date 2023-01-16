@@ -43,8 +43,8 @@ import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junitpioneer.jupiter.ReadsSystemProperty;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -88,8 +88,8 @@ public class LoggerTest {
         logger.entry();
         logger.exit();
         assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), equalTo("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("incorrect Exit", results.get(1), equalTo("EXIT[ FLOW ] TRACE Exit"));
+        assertThat(results.get(0)).isEqualTo("ENTER[ FLOW ] TRACE Enter");
+        assertThat(results.get(1)).isEqualTo("EXIT[ FLOW ] TRACE Exit");
 
     }
 
@@ -100,95 +100,90 @@ public class LoggerTest {
         logger.traceEntry(new JsonMessage(props));
         final Response response = new Response(-1, "Generic error");
         logger.traceExit(new JsonMessage(response),  response);
-        assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("\"foo\":\"bar\""));
-        assertThat("incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
-        assertThat("Missing exit data", results.get(1), containsString("\"message\":\"Generic error\""));
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0)).startsWith("ENTER[ FLOW ] TRACE Enter").contains("\"foo\":\"bar\"");
+        assertThat(results.get(1)).startsWith("EXIT[ FLOW ] TRACE Exit").contains("\"message\":\"Generic error\"");
     }
 
     @Test
     public void flowTracingString_ObjectArray1() {
         logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit("doFoo(a=1, b=2): {}", 3);
-        assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
-        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
-        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0)).startsWith("ENTER[ FLOW ] TRACE Enter").contains("doFoo(a=1, b=2)");
+        assertThat(results.get(1)).startsWith("EXIT[ FLOW ] TRACE Exit").contains("doFoo(a=1, b=2): 3");
     }
 
     @Test
     public void flowTracingExitValueOnly() {
         logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(3);
-        assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
-        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
-        assertThat("Missing exit data", results.get(1), containsString("3"));
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0)).startsWith("ENTER[ FLOW ] TRACE Enter").contains("doFoo(a=1, b=2)");
+        assertThat(results.get(1)).startsWith("EXIT[ FLOW ] TRACE Exit").contains("3");
     }
 
     @Test
     public void flowTracingString_ObjectArray2() {
         final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(msg, 3);
-        assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
-        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
-        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0)).startsWith("ENTER[ FLOW ] TRACE Enter").contains("doFoo(a=1, b=2)");
+        assertThat(results.get(1)).startsWith("EXIT[ FLOW ] TRACE Exit").contains("doFoo(a=1, b=2): 3");
     }
 
     @Test
     public void flowTracingVoidReturn() {
         final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", 1, 2);
         logger.traceExit(msg);
-        assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
-        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
-        assertThat("Missing exit data", results.get(1), endsWith("doFoo(a=1, b=2)"));
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0)).startsWith("ENTER[ FLOW ] TRACE Enter").contains("doFoo(a=1, b=2)");
+        assertThat(results.get(1)).startsWith("EXIT[ FLOW ] TRACE Exit").endsWith("doFoo(a=1, b=2)");
     }
 
     @Test
     public void flowTracingNoExitArgs() {
         logger.traceEntry();
         logger.traceExit();
-        assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0)).startsWith("ENTER[ FLOW ] TRACE Enter");
+        assertThat(results.get(1)).startsWith("EXIT[ FLOW ] TRACE Exit");
     }
 
     @Test
     public void flowTracingNoArgs() {
         final EntryMessage message = logger.traceEntry();
         logger.traceExit(message);
-        assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0)).startsWith("ENTER[ FLOW ] TRACE Enter");
+        assertThat(results.get(1)).startsWith("EXIT[ FLOW ] TRACE Exit");
     }
 
     @Test
     public void flowTracingString_SupplierOfObjectMessages() {
         final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", (Supplier<Message>) () -> new ObjectMessage(1), (Supplier<Message>) () -> new ObjectMessage(2));
         logger.traceExit(msg, 3);
-        assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
-        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
-        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0)).startsWith("ENTER[ FLOW ] TRACE Enter").contains("doFoo(a=1, b=2)");
+        assertThat(results.get(1)).startsWith("EXIT[ FLOW ] TRACE Exit").contains("doFoo(a=1, b=2): 3");
     }
 
     @Test
     public void flowTracingString_SupplierOfStrings() {
         final EntryMessage msg = logger.traceEntry("doFoo(a={}, b={})", (Supplier<String>) () -> "1", (Supplier<String>) () -> "2");
         logger.traceExit(msg, 3);
-        assertEquals(2, results.size());
-        assertThat("Incorrect Entry", results.get(0), startsWith("ENTER[ FLOW ] TRACE Enter"));
-        assertThat("Missing entry data", results.get(0), containsString("doFoo(a=1, b=2)"));
-        assertThat("Incorrect Exit", results.get(1), startsWith("EXIT[ FLOW ] TRACE Exit"));
-        assertThat("Missing exit data", results.get(1), containsString("doFoo(a=1, b=2): 3"));
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0)).startsWith("ENTER[ FLOW ] TRACE Enter").contains("doFoo(a=1, b=2)");
+        assertThat(results.get(1)).startsWith("EXIT[ FLOW ] TRACE Exit").contains("doFoo(a=1, b=2): 3");
+    }
+
+    @Test
+    public void flowTracingNoFormat() {
+        logger.traceEntry(null, 1, "2", new ObjectMessage(3));
+        logger.traceExit((String) null, 4);
+        assertThat(results).hasSize(2);
+        assertThat(results.get(0)).isEqualTo("ENTER[ FLOW ] TRACE Enter params(1, 2, 3)");
+        assertThat(results.get(1)).isEqualTo("EXIT[ FLOW ] TRACE Exit with(4)");
     }
 
     @Test

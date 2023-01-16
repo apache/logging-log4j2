@@ -594,7 +594,10 @@ public class Bar {
               </tr>
               <tr>
                 <td>packages</td>
-                <td>A comma separated list of package names to search for plugins. Plugins are only loaded
+                <td><b>Use of the packages attribute is deprecated and will be removed in Log4j 3.0.</b> Plugins
+                  should be processed with the Log4j annotation processor.
+
+                  A comma separated list of package names to search for plugins. Plugins are only loaded
                   once per classloader so changing this value may not have any effect upon reconfiguration.</td>
               </tr>
               <tr>

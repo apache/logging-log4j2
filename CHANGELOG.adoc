@@ -1,0 +1,77 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+:log4j-changelog-ref: https://github.com/apache/logging-log4j-tools/tree/master/log4j-changelog[log4j-changelog]
+
+== Where are changelogs stored?
+
+Changelogs are stored in xref:src/changelog[`src/changelog`] directory.
+
+{log4j-changelog-ref} is used to generate AsciiDoc-formatted changelog files during Maven `pre-site` phase and export them to xref:target/generated-sources/site/asciidoc/changelog[`target/generated-sources/site/asciidoc/changelog`] directory.
+These exported AsciiDoc files are not committed, since they are only relevant for the website, and they cause merge-conflicts between feature branches.
+`./mvnw -N site` command can be used to manually generate these files.
+
+See {log4j-changelog-ref} project for further details; how to use this changelog system, what steps are needed while making a new release, etc.
+
+== I am about to deploy a new release. What shall I do?
+
+Just before a release, three things need to happen in the changelog sources:
+
+. *changelog entry files needs to be moved* from the _upcoming_ release changelog directory `src/changelog/.<releaseVersionMajor>.x.x`  to the _new_ release changelog directory `src/changelog/<releaseVersion>`
+. *`.changelog.adoc.ftl` needs to be copied* from the _upcoming_ release changelog directory to the _new_ release changelog directory, unless it already exists in the target
+. *`.release.xml` needs to be created* in the _new_ release changelog directory
+
+Due to the nature of release candidates, above steps might need to be repeated multiple times.
+
+[TIP]
+====
+Log4j _releases_ and _release candidates_ all get deployed to the same https://repository.apache.org/#stagingRepositories[_staging repository_].
+Their `pom.xml` files all contain the same release version, e.g., `2.19.0`.
+There are no `-rc1`, `-rc2`, etc. suffixes in the version of a release candidate.
+Once a release candidate voting reaches to a consensus for release, associated artifacts simply get promoted from the _staging_ to the _public_ repository.
+Hence, there are no differences between releases and release candidates.
+====
+
+How to carry out aforementioned changes are explained below in steps:
+
+. Populate the `src/changelog/<releaseVersion>` directory (e.g., `src/changelog/2.19.0`) from the upcoming release changelog directory (e.g., `src/changelog/.2.x.x`):
++
+[source,bash]
+----
+./mvnw -N -P changelog-releaser
+----
++
+[IMPORTANT]
+====
+`changelog-releaser` Maven profile obtains the new release version from `Log4jReleaseVersion` property.
+If needed, you can override it to point to another release version:
+
+[source,bash]
+----
+./mvnw -N -P changelog-releaser -DLog4jReleaseVersion=6.6.6
+----
+====
+. Verify that all changelog entry files are moved from `src/changelog/.<releaseVersionMajor>.x.x` directory (e.g., `src/changelog/.2.x.x`)
+. Verify that `src/changelog/<releaseVersion>` directory (e.g., `src/changelog/2.19.0`) is created, and it contains `.changelog.adoc.ftl`, `.release.xml`, and changelog entry files
++
+[IMPORTANT]
+====
+If `src/changelog/<releaseVersion>` directory (e.g., `src/changelog/2.19.0`) already exists with certain content, `changelog-releaser` profile will only move new changelog entry files and override `.release.xml`; `.changelog.adoc.ftl` will not be touched, if it already exists.
+This allows one to run `changelog-releaser` profile multiple times, e.g., to incorporate changes added to a release candidate.
+====
+. Edit the populated `.changelog.adoc.ftl`
+. `git add` the changes in `src/changelog` and commit them

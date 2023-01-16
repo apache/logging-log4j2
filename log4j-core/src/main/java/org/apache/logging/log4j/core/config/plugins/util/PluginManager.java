@@ -14,12 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config.plugins.util;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,6 +22,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Loads and manages all the plugins.
@@ -125,6 +124,9 @@ public class PluginManager {
      * @since 2.1
      */
     public void collectPlugins(final List<String> packages) {
+        if (isNotEmpty(packages) || isNotEmpty(PACKAGES)) {
+            LOGGER.warn("The use of package scanning to locate plugins is deprecated and will be removed in a future release");
+        }
         final String categoryLowerCase = category.toLowerCase();
         final Map<String, PluginType<?>> newPlugins = new LinkedHashMap<>();
 
@@ -172,5 +174,9 @@ public class PluginManager {
                     key, existing.getPluginClass(), pluginType.getPluginClass());
             }
         }
+    }
+
+    private boolean isNotEmpty(List<String> list) {
+        return list != null && !list.isEmpty();
     }
 }

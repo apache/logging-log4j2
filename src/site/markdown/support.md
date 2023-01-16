@@ -49,3 +49,15 @@ projects, we cannot recommend any particular individual for any specific issue.
 * [Ralph Goers](https://github.com/rgoers)
 * [Volkan Yazıcı](https://github.com/vy)
 * [Carter Kozak](https://github.com/carterkozak)
+* [Piotr P. Karwasz](https://github.com/ppkarwasz)
+
+## Third-party commercial support
+
+While neither the Apache Software Foundation nor the Apache Logging Services project provide any commercial support for
+the Log4j products, individual committers may collaborate with services that provide such support.
+
+The following aims to be a list of all commercial support services involving one or more Log4j committers.
+
+### Tidelift
+
+Some Log4j maintainers receive funding from Tidelift for their maintenance efforts. See [the Tidelift website](https://tidelift.com) for details.

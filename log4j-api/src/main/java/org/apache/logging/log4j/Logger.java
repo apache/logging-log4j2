@@ -17,6 +17,7 @@
 package org.apache.logging.log4j;
 
 import org.apache.logging.log4j.message.EntryMessage;
+import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.message.MessageFactory2;
@@ -1745,6 +1746,14 @@ public interface Logger {
      * @return the message factory, as an instance of {@link MessageFactory2}
      */
     <MF extends MessageFactory> MF getMessageFactory();
+
+    /**
+     * Gets the flow message factory used to convert messages into flow messages.
+     *
+     * @return the flow message factory, as an instance of {@link FlowMessageFactory}.
+     * @since 2.20
+     */
+    FlowMessageFactory getFlowMessageFactory();
 
     /**
      * Gets the logger name.

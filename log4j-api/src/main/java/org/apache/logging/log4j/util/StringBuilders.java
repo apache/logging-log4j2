@@ -24,6 +24,19 @@ import static java.lang.Character.toLowerCase;
  * <em>Consider this class private.</em>
  */
 public final class StringBuilders {
+
+    private static final Class<?> timeClass;
+
+    static {
+        Class<?> clazz;
+        try {
+            clazz = Class.forName("java.sql.Time");
+        } catch(ClassNotFoundException ex) {
+            clazz = null;
+        }
+        timeClass = clazz;
+    }
+
     private StringBuilders() {
     }
 
@@ -97,11 +110,21 @@ public final class StringBuilders {
             stringBuilder.append(((Float) obj).floatValue());
         } else if (obj instanceof Byte) {
             stringBuilder.append(((Byte) obj).byteValue());
+        } else if (isTime(obj) || obj instanceof java.time.temporal.Temporal) {
+            stringBuilder.append(obj);
         } else {
             return false;
         }
         return true;
     }
+
+    /*
+        Check to see if obj is an instance of java.sql.time without requiring the java.sql module.
+     */
+    private static boolean isTime(final Object obj) {
+        return timeClass != null && timeClass.isAssignableFrom(obj.getClass());
+    }
+
 
     /**
      * Returns true if the specified section of the left CharSequence equals the specified section of the right
