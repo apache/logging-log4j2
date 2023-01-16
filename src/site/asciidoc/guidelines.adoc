@@ -253,7 +253,7 @@ change can be included in any public release.
 [#changelogs]
 == Changelog and Git logs
 
-Many code changes should be noted in a `changelog/.unreleased-*/<issueId>_<shortSummary>.xml` file, and all
+Many code changes should be noted in a `src/changelog/.<releaseMajorVersion>.x.x/<issueId>_<shortSummary>.xml` file, and all
 should be documented in Git commit messages. Often the text of the Git
 log and the changelog entry are the same, but the distinct
 requirements sometimes result in different information.
