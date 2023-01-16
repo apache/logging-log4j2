@@ -16,20 +16,13 @@
  */
 package org.apache.logging.log4j.spi;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.Objects;
+import java.util.Set;
 
-import org.apache.logging.log4j.util.Cast;
-import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.ReflectionUtil;
+import org.apache.logging.log4j.util.QueueFactory;
+import org.apache.logging.log4j.util.Queues;
 import org.apache.logging.log4j.util.StringParameterParser;
-import org.jctools.queues.MpmcArrayQueue;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
@@ -37,122 +30,23 @@ public final class RecyclerFactories {
 
     private RecyclerFactories() {}
 
-    private static final String JCTOOLS_FACTORY_CLASS_NAME =
-            RecyclerFactories.class.getName() + "$MpmcArrayQueueFactory";
-
-    private interface QueueFactory {
-        <V> Queue<V> create(final int capacity);
+    private static int getDefaultCapacity() {
+        return Math.max(
+                2 * Runtime.getRuntime().availableProcessors() + 1,
+                8);
     }
 
-    private static class ArrayBlockingQueueFactory implements QueueFactory {
-        @Override
-        public <V> Queue<V> create(final int capacity) {
-            return new ArrayBlockingQueue<>(capacity);
-        }
-    }
-
-    @SuppressWarnings("unused") // loaded via reflection to check for presence of JCTools
-    private static class MpmcArrayQueueFactory implements QueueFactory {
-        @Override
-        public <V> Queue<V> create(final int capacity) {
-            return new MpmcArrayQueue<>(capacity);
-        }
-    }
-
-    private static class ConstructedQueueFactory implements QueueFactory {
-        private final String queueFactorySpec;
-        private final Constructor<?> constructor;
-
-        private ConstructedQueueFactory(final String queueFactorySpec, final Constructor<?> constructor) {
-            this.queueFactorySpec = queueFactorySpec;
-            this.constructor = constructor;
-        }
-
-        @Override
-        public <V> Queue<V> create(final int capacity) {
-            final Constructor<Queue<V>> typedConstructor = Cast.cast(constructor);
-            try {
-                return typedConstructor.newInstance(capacity);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException(
-                        "recycler queue construction failed for factory: " +
-                                queueFactorySpec, e.getCause());
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException(
-                        "recycler queue construction failed for factory: " +
-                                queueFactorySpec, e);
-            }
-        }
-    }
-
-    private static class MethodProvidedQueueFactory implements QueueFactory {
-        private final String queueFactorySpec;
-        private final Method method;
-
-        private MethodProvidedQueueFactory(final String queueFactorySpec, final Method method) {
-            this.queueFactorySpec = queueFactorySpec;
-            this.method = method;
-        }
-
-        @Override
-        public <V> Queue<V> create(final int capacity) {
-            try {
-                return Cast.cast(method.invoke(null, capacity));
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException(
-                        "recycler queue construction failed for factory: " +
-                                queueFactorySpec, e.getCause());
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(
-                        "recycler queue construction failed for factory: " +
-                                queueFactorySpec, e);
-            }
-        }
-    }
-
-    private static class QueueFactorySupplier implements QueueSupplier {
-        private final QueueFactory queueFactory;
-        private final int capacity;
-
-        private QueueFactorySupplier(final QueueFactory queueFactory, final int capacity) {
-            this.queueFactory = queueFactory;
-            this.capacity = capacity;
-        }
-
-        @Override
-        public <E> Queue<E> create() {
-            return queueFactory.create(capacity);
-        }
-    }
-
-    private static QueueSupplier getQueueSupplier(final int capacity) {
-        final ClassLoader classLoader = RecyclerFactories.class.getClassLoader();
-        Class<? extends QueueFactory> factoryClass;
-        try {
-            // try to load RecyclerFactories.MpmcArrayQueueFactory; a linkage error should occur if JCTools is unavailable
-            factoryClass = classLoader.loadClass(JCTOOLS_FACTORY_CLASS_NAME)
-                    .asSubclass(QueueFactory.class);
-        } catch (final ClassNotFoundException | LinkageError ignored) {
-            factoryClass = ArrayBlockingQueueFactory.class;
-        }
-        final QueueFactory queueFactory = ReflectionUtil.instantiate(factoryClass);
-        return new QueueFactorySupplier(queueFactory, capacity);
+    public static RecyclerFactory getDefault() {
+        return isThreadLocalsEnabled()
+                ? ThreadLocalRecyclerFactory.getInstance()
+                : new QueueingRecyclerFactory(Queues.MPMC.factory(getDefaultCapacity()));
     }
 
     public static RecyclerFactory ofSpec(final String recyclerFactorySpec) {
 
-        // Determine the default capacity.
-        final int defaultCapacity = Math.max(
-                2 * Runtime.getRuntime().availableProcessors() + 1,
-                8);
-
         // TLA-, MPMC-, or ABQ-based queueing factory -- if nothing is specified.
         if (recyclerFactorySpec == null) {
-            if (isThreadLocalsEnabled()) {
-                return ThreadLocalRecyclerFactory.getInstance();
-            } else {
-                return new QueueingRecyclerFactory(getQueueSupplier(defaultCapacity));
-            }
+            return getDefault();
         }
 
         // Is a dummy factory requested?
@@ -167,6 +61,10 @@ public final class RecyclerFactories {
 
         // Is a queueing factory requested?
         else if (recyclerFactorySpec.startsWith("queue")) {
+
+            // Determine the default capacity.
+            final int defaultCapacity = getDefaultCapacity();
+
             return readQueueingRecyclerFactory(recyclerFactorySpec, defaultCapacity);
         }
 
@@ -190,8 +88,7 @@ public final class RecyclerFactories {
                                 : 0));
         final Map<String, StringParameterParser.Value> parsedValues =
                 StringParameterParser.parse(
-                        queueFactorySpec,
-                        new LinkedHashSet<>(Arrays.asList("supplier", "capacity")));
+                        queueFactorySpec, Set.of("supplier", "capacity"));
 
         // Read the supplier path.
         final StringParameterParser.Value supplierValue = parsedValues.get("supplier");
@@ -218,43 +115,11 @@ public final class RecyclerFactories {
         }
 
         // Execute the read spec.
-        if (supplierPath == null) {
-            return new QueueingRecyclerFactory(getQueueSupplier(capacity));
-        }
-        return createRecyclerFactory(queueFactorySpec, supplierPath, capacity);
+        final QueueFactory queueFactory = Objects.isNull(supplierPath)
+                ? Queues.MPMC.factory(capacity)
+                : Queues.createQueueFactory(queueFactorySpec, supplierPath, capacity);
 
-    }
-
-    private static RecyclerFactory createRecyclerFactory(
-            final String queueFactorySpec,
-            final String supplierPath,
-            final int capacity) {
-        final int supplierPathSplitterIndex = supplierPath.lastIndexOf('.');
-        if (supplierPathSplitterIndex < 0) {
-            throw new IllegalArgumentException(
-                    "invalid supplier in queueing recycler factory: " +
-                            queueFactorySpec);
-        }
-        final String supplierClassName = supplierPath.substring(0, supplierPathSplitterIndex);
-        final String supplierMethodName = supplierPath.substring(supplierPathSplitterIndex + 1);
-        try {
-            final Class<?> supplierClass = LoaderUtil.loadClass(supplierClassName);
-            final QueueFactory queueFactory;
-            if ("new".equals(supplierMethodName)) {
-                final Constructor<?> supplierCtor =
-                        supplierClass.getDeclaredConstructor(int.class);
-                queueFactory = new ConstructedQueueFactory(queueFactorySpec, supplierCtor);
-            } else {
-                final Method supplierMethod =
-                        supplierClass.getMethod(supplierMethodName, int.class);
-                queueFactory = new MethodProvidedQueueFactory(queueFactorySpec, supplierMethod);
-            }
-            return new QueueingRecyclerFactory(new QueueFactorySupplier(queueFactory, capacity));
-        } catch (final Exception error) {
-            throw new RuntimeException(
-                    "failed executing queueing recycler factory: " +
-                            queueFactorySpec, error);
-        }
+        return new QueueingRecyclerFactory(queueFactory);
     }
 
 }

@@ -166,32 +166,36 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
         // so we generate the message first
         final String message = messageLayout != null ? messageLayout.toSerializable(event)
                 : event.getMessage().getFormattedMessage();
-        final StringBuilder buf = getStringBuilder();
+        final StringBuilder buf = acquireStringBuilder();
 
-        buf.append('<');
-        buf.append(Priority.getPriority(facility, event.getLevel()));
-        buf.append('>');
+        try {
+            buf.append('<');
+            buf.append(Priority.getPriority(facility, event.getLevel()));
+            buf.append('>');
 
-        if (header) {
-            final int index = buf.length() + 4;
-            dateConverter.format(event, buf);
-            // RFC 3164 says leading space, not leading zero on days 1-9
-            if (buf.charAt(index) == '0') {
-                buf.setCharAt(index, Chars.SPACE);
+            if (header) {
+                final int index = buf.length() + 4;
+                dateConverter.format(event, buf);
+                // RFC 3164 says leading space, not leading zero on days 1-9
+                if (buf.charAt(index) == '0') {
+                    buf.setCharAt(index, Chars.SPACE);
+                }
+
+                buf.append(Chars.SPACE);
+                buf.append(localHostname);
+                buf.append(Chars.SPACE);
             }
 
-            buf.append(Chars.SPACE);
-            buf.append(localHostname);
-            buf.append(Chars.SPACE);
-        }
+            if (facilityPrinting) {
+                buf.append(facility != null ? facility.name().toLowerCase() : "user").append(':');
+            }
 
-        if (facilityPrinting) {
-            buf.append(facility != null ? facility.name().toLowerCase() : "user").append(':');
+            buf.append(message);
+            // TODO: splitting message into 1024 byte chunks?
+            return buf.toString();
+        } finally {
+            releaseStringBuilder(buf);
         }
-
-        buf.append(message);
-        // TODO: splitting message into 1024 byte chunks?
-        return buf.toString();
     }
 
     /**

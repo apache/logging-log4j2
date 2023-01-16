@@ -18,7 +18,6 @@ package org.apache.logging.log4j.spi;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -41,8 +40,9 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
     @Override
     public <V> Recycler<V> create(
             final Supplier<V> supplier,
-            final Consumer<V> cleaner) {
-        return new ThreadLocalRecycler<>(supplier, cleaner);
+            final Consumer<V> lazyCleaner,
+            final Consumer<V> eagerCleaner) {
+        return new ThreadLocalRecycler<>(supplier, lazyCleaner, eagerCleaner);
     }
 
     // Visible for testing
@@ -50,15 +50,19 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
 
         private final Supplier<V> supplier;
 
-        private final Consumer<V> cleaner;
+        private final Consumer<V> lazyCleaner;
+
+        private final Consumer<V> eagerCleaner;
 
         private final ThreadLocal<Queue<V>> holder;
 
         private ThreadLocalRecycler(
                 final Supplier<V> supplier,
-                final Consumer<V> cleaner) {
+                final Consumer<V> lazyCleaner,
+                final Consumer<V> eagerCleaner) {
             this.supplier = supplier;
-            this.cleaner = cleaner;
+            this.lazyCleaner = lazyCleaner;
+            this.eagerCleaner = eagerCleaner;
             this.holder = ThreadLocal.withInitial(ArrayDeque::new);
         }
 
@@ -68,13 +72,15 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
             final V value = queue.poll();
             if (value == null) {
                 return supplier.get();
+            } else {
+                lazyCleaner.accept(value);
+                return value;
             }
-            cleaner.accept(value);
-            return value;
         }
 
         @Override
         public void release(final V value) {
+            eagerCleaner.accept(value);
             holder.get().offer(value);
         }
 

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.csv.layout;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.core.Layout;
@@ -28,9 +31,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * A Comma-Separated Value (CSV) layout to log event parameters.
@@ -88,13 +88,15 @@ public class CsvParameterLayout extends AbstractCsvLayout {
     public String toSerializable(final LogEvent event) {
         final Message message = event.getMessage();
         final Object[] parameters = message.getParameters();
-        final StringBuilder buffer = getStringBuilder();
+        final StringBuilder buffer = acquireStringBuilder();
         try {
             getFormat().printRecord(buffer, parameters);
             return buffer.toString();
         } catch (final IOException e) {
             StatusLogger.getLogger().error(message, e);
             return getFormat().getCommentMarker() + " " + e;
+        } finally {
+            releaseStringBuilder(buffer);
         }
     }
 

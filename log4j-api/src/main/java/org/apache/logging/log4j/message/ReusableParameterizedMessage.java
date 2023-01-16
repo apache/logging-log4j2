@@ -52,7 +52,7 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
      * Creates a reusable message.
      */
     public ReusableParameterizedMessage() {
-        this(RecyclerFactories.ofSpec(null));
+        this(RecyclerFactories.getDefault());
     }
 
     public ReusableParameterizedMessage(final RecyclerFactory recyclerFactory) {
@@ -61,7 +61,8 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
                     final int currentPatternLength = messagePattern == null ? 0 : messagePattern.length();
                     return new StringBuilder(Math.max(MIN_BUILDER_SIZE, currentPatternLength * 2));
                 },
-                buffer -> buffer.setLength(0)
+                buffer -> buffer.setLength(0),
+                buffer -> StringBuilders.trimToMaxSize(buffer, Constants.MAX_REUSABLE_MESSAGE_SIZE)
         );
     }
 
@@ -314,11 +315,12 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
     @Override
     public String getFormattedMessage() {
         final StringBuilder sb = bufferRecycler.acquire();
-        formatTo(sb);
-        final String result = sb.toString();
-        StringBuilders.trimToMaxSize(sb, Constants.MAX_REUSABLE_MESSAGE_SIZE);
-        bufferRecycler.release(sb);
-        return result;
+        try {
+            formatTo(sb);
+            return sb.toString();
+        } finally {
+            bufferRecycler.release(sb);
+        }
     }
 
     @Override

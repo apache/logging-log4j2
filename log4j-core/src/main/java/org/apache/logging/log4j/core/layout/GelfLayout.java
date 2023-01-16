@@ -16,6 +16,19 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPOutputStream;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -29,31 +42,23 @@ import org.apache.logging.log4j.core.util.JsonUtils;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.Patterns;
+import org.apache.logging.log4j.core.util.StringBuilderWriter;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerFactories;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.TriConsumer;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * Lays out events in the Graylog Extended Log Format (GELF) 1.1.
@@ -112,6 +117,7 @@ public final class GelfLayout extends AbstractStringLayout {
     private final PatternLayout layout;
     private final FieldWriter mdcWriter;
     private final FieldWriter mapWriter;
+    private final Recycler<StringBuilderWriter> stacktraceRecycler;
 
     public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
         implements org.apache.logging.log4j.plugins.util.Builder<GelfLayout> {
@@ -170,6 +176,8 @@ public final class GelfLayout extends AbstractStringLayout {
         @PluginElement("PatternSelector")
         private PatternSelector patternSelector = null;
 
+        private RecyclerFactory recyclerFactory;
+
         public Builder() {
             super();
             setCharset(StandardCharsets.UTF_8);
@@ -185,22 +193,26 @@ public final class GelfLayout extends AbstractStringLayout {
                         + "ignoring message pattern");
                 messagePattern = null;
             }
+            final Configuration config = getConfiguration();
             if (messagePattern != null) {
                 patternLayout = PatternLayout.newBuilder().setPattern(messagePattern)
                         .setAlwaysWriteExceptions(includeStacktrace)
-                        .setConfiguration(getConfiguration())
+                        .setConfiguration(config)
                         .build();
             }
             if (patternSelector != null) {
                 patternLayout = PatternLayout.newBuilder().setPatternSelector(patternSelector)
                         .setAlwaysWriteExceptions(includeStacktrace)
-                        .setConfiguration(getConfiguration())
+                        .setConfiguration(config)
                         .build();
             }
-            return new GelfLayout(getConfiguration(), host, additionalFields, compressionType, compressionThreshold,
+            if (recyclerFactory == null) {
+                recyclerFactory = config != null ? config.getRecyclerFactory() : RecyclerFactories.getDefault();
+            }
+            return new GelfLayout(config, host, additionalFields, compressionType, compressionThreshold,
                     includeStacktrace, includeThreadContext, includeMapMessage, includeNullDelimiter,
                     includeNewLineDelimiter, omitEmptyFields, mdcChecker, mapChecker, patternLayout,
-                    threadContextPrefix, mapPrefix);
+                    threadContextPrefix, mapPrefix, recyclerFactory);
         }
 
         private ListChecker createChecker(final String excludes, final String includes) {
@@ -436,6 +448,12 @@ public final class GelfLayout extends AbstractStringLayout {
             }
             return asBuilder();
         }
+
+        @Inject
+        public B setRecyclerFactory(final RecyclerFactory recyclerFactory) {
+            this.recyclerFactory = recyclerFactory;
+            return asBuilder();
+        }
     }
 
     private GelfLayout(final Configuration config, final String host, final KeyValuePair[] additionalFields,
@@ -443,7 +461,7 @@ public final class GelfLayout extends AbstractStringLayout {
             final boolean includeThreadContext, final boolean includeMapMessage, final boolean includeNullDelimiter,
             final boolean includeNewLineDelimiter, final boolean omitEmptyFields, final ListChecker mdcChecker,
             final ListChecker mapChecker, final PatternLayout patternLayout, final String mdcPrefix,
-            final String mapPrefix) {
+            final String mapPrefix, final RecyclerFactory recyclerFactory) {
         super(config, StandardCharsets.UTF_8, null, null);
         this.host = host != null ? host : NetUtils.getLocalHostname();
         this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
@@ -468,6 +486,11 @@ public final class GelfLayout extends AbstractStringLayout {
         this.mdcWriter = new FieldWriter(mdcChecker, mdcPrefix);
         this.mapWriter = new FieldWriter(mapChecker, mapPrefix);
         this.layout = patternLayout;
+        stacktraceRecycler = recyclerFactory.create(
+                () -> new StringBuilderWriter(2048),
+                writer -> writer.getBuilder().setLength(0),
+                writer -> StringBuilders.trimToMaxSize(writer.getBuilder(), 2048)
+        );
     }
 
     @Override
@@ -489,7 +512,7 @@ public final class GelfLayout extends AbstractStringLayout {
             sb.append(", ").append(mapVars);
         }
         if (layout != null) {
-            sb.append(", PatternLayout{").append(layout.toString()).append("}");
+            sb.append(", PatternLayout{").append(layout).append("}");
         }
         return sb.toString();
     }
@@ -511,8 +534,13 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public byte[] toByteArray(final LogEvent event) {
-        final StringBuilder text = toText(event, getStringBuilder(), false);
-        final byte[] bytes = getBytes(text.toString());
+        final StringBuilder text = acquireStringBuilder();
+        final byte[] bytes;
+        try {
+            bytes = getBytes(toText(event, text, false).toString());
+        } finally {
+            releaseStringBuilder(text);
+        }
         return compressionType != CompressionType.OFF && bytes.length > compressionThreshold ? compress(bytes) : bytes;
     }
 
@@ -522,9 +550,13 @@ public final class GelfLayout extends AbstractStringLayout {
             super.encode(event, destination);
             return;
         }
-        final StringBuilder text = toText(event, getStringBuilder(), true);
-        final Encoder<StringBuilder> helper = getStringBuilderEncoder();
-        helper.encode(text, destination);
+        final StringBuilder text = acquireStringBuilder();
+        try {
+            final Encoder<StringBuilder> helper = getStringBuilderEncoder();
+            helper.encode(toText(event, text, true), destination);
+        } finally {
+            releaseStringBuilder(text);
+        }
     }
 
     @Override
@@ -551,8 +583,12 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder text = toText(event, getStringBuilder(), false);
-        return text.toString();
+        final StringBuilder text = acquireStringBuilder();
+        try {
+            return toText(event, text, false).toString();
+        } finally {
+            releaseStringBuilder(text);
+        }
     }
 
     private StringBuilder toText(final LogEvent event, final StringBuilder builder, final boolean gcFree) {
@@ -561,7 +597,9 @@ public final class GelfLayout extends AbstractStringLayout {
         builder.append("\"host\":\"");
         JsonUtils.quoteAsString(toNullSafeString(host), builder);
         builder.append(QC);
-        builder.append("\"timestamp\":").append(formatTimestamp(event.getTimeMillis())).append(C);
+        builder.append("\"timestamp\":");
+        formatTimestampTo(builder, event.getTimeMillis());
+        builder.append(C);
         builder.append("\"level\":").append(formatLevel(event.getLevel())).append(C);
         if (event.getThreadName() != null) {
             builder.append("\"_thread\":\"");
@@ -598,12 +636,22 @@ public final class GelfLayout extends AbstractStringLayout {
         if (event.getThrown() != null || layout != null) {
             builder.append("\"full_message\":\"");
             if (layout != null) {
-                final StringBuilder messageBuffer = getMessageStringBuilder();
-                layout.serialize(event, messageBuffer);
-                JsonUtils.quoteAsString(messageBuffer, builder);
+                final StringBuilder messageBuffer = acquireStringBuilder();
+                try {
+                    layout.serialize(event, messageBuffer);
+                    JsonUtils.quoteAsString(messageBuffer, builder);
+                } finally {
+                    releaseStringBuilder(messageBuffer);
+                }
             } else {
                 if (includeStacktrace) {
-                    JsonUtils.quoteAsString(formatThrowable(event.getThrown()), builder);
+                    final StringBuilderWriter writer = stacktraceRecycler.acquire();
+                    try {
+                        formatThrowableTo(writer, event.getThrown());
+                        JsonUtils.quoteAsString(writer.getBuilder(), builder);
+                    } finally {
+                        stacktraceRecycler.release(writer);
+                    }
                 } else {
                     JsonUtils.quoteAsString(event.getThrown().toString(), builder);
                 }
@@ -616,12 +664,12 @@ public final class GelfLayout extends AbstractStringLayout {
         if (message instanceof CharSequence) {
             JsonUtils.quoteAsString(((CharSequence) message), builder);
         } else if (gcFree && message instanceof StringBuilderFormattable) {
-            final StringBuilder messageBuffer = getMessageStringBuilder();
+            final StringBuilder messageBuffer = acquireStringBuilder();
             try {
                 ((StringBuilderFormattable) message).formatTo(messageBuffer);
                 JsonUtils.quoteAsString(messageBuffer, builder);
             } finally {
-                trimToMaxSize(messageBuffer);
+                releaseStringBuilder(messageBuffer);
             }
         } else {
             JsonUtils.quoteAsString(toNullSafeString(message.getFormattedMessage()), builder);
@@ -667,18 +715,6 @@ public final class GelfLayout extends AbstractStringLayout {
         }
     }
 
-    private static final ThreadLocal<StringBuilder> messageStringBuilder = new ThreadLocal<>();
-
-    private static StringBuilder getMessageStringBuilder() {
-        StringBuilder result = messageStringBuilder.get();
-        if (result == null) {
-            result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-            messageStringBuilder.set(result);
-        }
-        result.setLength(0);
-        return result;
-    }
-
     private static CharSequence toNullSafeString(final CharSequence s) {
         return s == null ? Strings.EMPTY : s;
     }
@@ -690,22 +726,17 @@ public final class GelfLayout extends AbstractStringLayout {
         if (timeMillis < 1000) {
             return "0";
         }
-        final StringBuilder builder = getTimestampStringBuilder();
-        builder.append(timeMillis);
-        builder.insert(builder.length() - 3, '.');
+        final StringBuilder builder = new StringBuilder(20);
+        formatTimestampTo(builder, timeMillis);
         return builder;
     }
 
-    private static final ThreadLocal<StringBuilder> timestampStringBuilder = new ThreadLocal<>();
-
-    private static StringBuilder getTimestampStringBuilder() {
-        StringBuilder result = timestampStringBuilder.get();
-        if (result == null) {
-            result = new StringBuilder(20);
-            timestampStringBuilder.set(result);
+    private static void formatTimestampTo(final StringBuilder builder, final long timeMillis) {
+        if (timeMillis < 1000) {
+            builder.append(0);
+        } else {
+            builder.append(timeMillis).insert(builder.length() - 3, '.');
         }
-        result.setLength(0);
-        return result;
     }
 
     /**
@@ -720,10 +751,14 @@ public final class GelfLayout extends AbstractStringLayout {
      */
     static CharSequence formatThrowable(final Throwable throwable) {
         // stack traces are big enough to provide a reasonably large initial capacity here
-        final StringWriter sw = new StringWriter(2048);
-        final PrintWriter pw = new PrintWriter(sw);
+        final StringBuilderWriter writer = new StringBuilderWriter(2048);
+        formatThrowableTo(writer, throwable);
+        return writer.getBuilder();
+    }
+
+    private static void formatThrowableTo(final StringBuilderWriter writer, final Throwable throwable) {
+        final PrintWriter pw = new PrintWriter(writer);
         throwable.printStackTrace(pw);
         pw.flush();
-        return sw.getBuffer();
     }
 }

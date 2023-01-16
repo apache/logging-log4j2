@@ -16,18 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.pattern.DatePatternConverter;
-import org.apache.logging.log4j.core.util.Transform;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.util.Strings;
-
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.LineNumberReader;
@@ -39,6 +27,18 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.pattern.DatePatternConverter;
+import org.apache.logging.log4j.core.util.Transform;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Outputs events as rows in an HTML table on an HTML page.
@@ -149,85 +149,89 @@ public final class HtmlLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder sbuf = getStringBuilder();
+        final StringBuilder sbuf = acquireStringBuilder();
+        try {
 
-        sbuf.append(Strings.LINE_SEPARATOR).append("<tr>").append(Strings.LINE_SEPARATOR);
+            sbuf.append(Strings.LINE_SEPARATOR).append("<tr>").append(Strings.LINE_SEPARATOR);
 
-        sbuf.append("<td>");
-
-        if (datePatternConverter == null) {
-            sbuf.append(event.getTimeMillis() - jvmStartTime);
-        } else {
-            datePatternConverter.format(event, sbuf);
-        }
-        sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
-
-        final String escapedThread = Transform.escapeHtmlTags(event.getThreadName());
-        sbuf.append("<td title=\"").append(escapedThread).append(" thread\">");
-        sbuf.append(escapedThread);
-        sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
-
-        sbuf.append("<td title=\"Level\">");
-        if (event.getLevel().equals(Level.DEBUG)) {
-            sbuf.append("<font color=\"#339933\">");
-            sbuf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
-            sbuf.append("</font>");
-        } else if (event.getLevel().isMoreSpecificThan(Level.WARN)) {
-            sbuf.append("<font color=\"#993300\"><strong>");
-            sbuf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
-            sbuf.append("</strong></font>");
-        } else {
-            sbuf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
-        }
-        sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
-
-        String escapedLogger = Transform.escapeHtmlTags(event.getLoggerName());
-        if (Strings.isEmpty(escapedLogger)) {
-            escapedLogger = LoggerConfig.ROOT;
-        }
-        sbuf.append("<td title=\"").append(escapedLogger).append(" logger\">");
-        sbuf.append(escapedLogger);
-        sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
-
-        if (locationInfo) {
-            final StackTraceElement element = event.getSource();
             sbuf.append("<td>");
-            sbuf.append(Transform.escapeHtmlTags(element.getFileName()));
-            sbuf.append(':');
-            sbuf.append(element.getLineNumber());
+
+            if (datePatternConverter == null) {
+                sbuf.append(event.getTimeMillis() - jvmStartTime);
+            } else {
+                datePatternConverter.format(event, sbuf);
+            }
             sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
+
+            final String escapedThread = Transform.escapeHtmlTags(event.getThreadName());
+            sbuf.append("<td title=\"").append(escapedThread).append(" thread\">");
+            sbuf.append(escapedThread);
+            sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
+
+            sbuf.append("<td title=\"Level\">");
+            if (event.getLevel().equals(Level.DEBUG)) {
+                sbuf.append("<font color=\"#339933\">");
+                sbuf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
+                sbuf.append("</font>");
+            } else if (event.getLevel().isMoreSpecificThan(Level.WARN)) {
+                sbuf.append("<font color=\"#993300\"><strong>");
+                sbuf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
+                sbuf.append("</strong></font>");
+            } else {
+                sbuf.append(Transform.escapeHtmlTags(String.valueOf(event.getLevel())));
+            }
+            sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
+
+            String escapedLogger = Transform.escapeHtmlTags(event.getLoggerName());
+            if (Strings.isEmpty(escapedLogger)) {
+                escapedLogger = LoggerConfig.ROOT;
+            }
+            sbuf.append("<td title=\"").append(escapedLogger).append(" logger\">");
+            sbuf.append(escapedLogger);
+            sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
+
+            if (locationInfo) {
+                final StackTraceElement element = event.getSource();
+                sbuf.append("<td>");
+                sbuf.append(Transform.escapeHtmlTags(element.getFileName()));
+                sbuf.append(':');
+                sbuf.append(element.getLineNumber());
+                sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
+            }
+
+            sbuf.append("<td title=\"Message\">");
+            sbuf.append(Transform.escapeHtmlTags(event.getMessage().getFormattedMessage()).replaceAll(REGEXP, "<br />"));
+            sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
+            sbuf.append("</tr>").append(Strings.LINE_SEPARATOR);
+
+            if (event.getContextStack() != null && !event.getContextStack().isEmpty()) {
+                sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : ").append(fontSize);
+                sbuf.append(";\" colspan=\"6\" ");
+                sbuf.append("title=\"Nested Diagnostic Context\">");
+                sbuf.append("NDC: ").append(Transform.escapeHtmlTags(event.getContextStack().toString()));
+                sbuf.append("</td></tr>").append(Strings.LINE_SEPARATOR);
+            }
+
+            if (event.getContextData() != null && !event.getContextData().isEmpty()) {
+                sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : ").append(fontSize);
+                sbuf.append(";\" colspan=\"6\" ");
+                sbuf.append("title=\"Mapped Diagnostic Context\">");
+                sbuf.append("MDC: ").append(Transform.escapeHtmlTags(event.getContextData().toMap().toString()));
+                sbuf.append("</td></tr>").append(Strings.LINE_SEPARATOR);
+            }
+
+            final Throwable throwable = event.getThrown();
+            if (throwable != null) {
+                sbuf.append("<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : ").append(fontSize);
+                sbuf.append(";\" colspan=\"6\">");
+                appendThrowableAsHtml(throwable, sbuf);
+                sbuf.append("</td></tr>").append(Strings.LINE_SEPARATOR);
+            }
+
+            return sbuf.toString();
+        } finally {
+            releaseStringBuilder(sbuf);
         }
-
-        sbuf.append("<td title=\"Message\">");
-        sbuf.append(Transform.escapeHtmlTags(event.getMessage().getFormattedMessage()).replaceAll(REGEXP, "<br />"));
-        sbuf.append("</td>").append(Strings.LINE_SEPARATOR);
-        sbuf.append("</tr>").append(Strings.LINE_SEPARATOR);
-
-        if (event.getContextStack() != null && !event.getContextStack().isEmpty()) {
-            sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : ").append(fontSize);
-            sbuf.append(";\" colspan=\"6\" ");
-            sbuf.append("title=\"Nested Diagnostic Context\">");
-            sbuf.append("NDC: ").append(Transform.escapeHtmlTags(event.getContextStack().toString()));
-            sbuf.append("</td></tr>").append(Strings.LINE_SEPARATOR);
-        }
-
-        if (event.getContextData() != null && !event.getContextData().isEmpty()) {
-            sbuf.append("<tr><td bgcolor=\"#EEEEEE\" style=\"font-size : ").append(fontSize);
-            sbuf.append(";\" colspan=\"6\" ");
-            sbuf.append("title=\"Mapped Diagnostic Context\">");
-            sbuf.append("MDC: ").append(Transform.escapeHtmlTags(event.getContextData().toMap().toString()));
-            sbuf.append("</td></tr>").append(Strings.LINE_SEPARATOR);
-        }
-
-        final Throwable throwable = event.getThrown();
-        if (throwable != null) {
-            sbuf.append("<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : ").append(fontSize);
-            sbuf.append(";\" colspan=\"6\">");
-            appendThrowableAsHtml(throwable, sbuf);
-            sbuf.append("</td></tr>").append(Strings.LINE_SEPARATOR);
-        }
-
-        return sbuf.toString();
     }
 
     @Override
@@ -289,41 +293,45 @@ public final class HtmlLayout extends AbstractStringLayout {
      */
     @Override
     public byte[] getHeader() {
-        final StringBuilder sbuf = new StringBuilder();
-        append(sbuf, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" ");
-        appendLs(sbuf, "\"http://www.w3.org/TR/html4/loose.dtd\">");
-        appendLs(sbuf, "<html>");
-        appendLs(sbuf, "<head>");
-        append(sbuf, "<meta charset=\"");
-        append(sbuf, getCharset().toString());
-        appendLs(sbuf, "\"/>");
-        append(sbuf, "<title>").append(title);
-        appendLs(sbuf, "</title>");
-        appendLs(sbuf, "<style type=\"text/css\">");
-        appendLs(sbuf, "<!--");
-        append(sbuf, "body, table {font-family:").append(font).append("; font-size: ");
-        appendLs(sbuf, headerSize).append(";}");
-        appendLs(sbuf, "th {background: #336699; color: #FFFFFF; text-align: left;}");
-        appendLs(sbuf, "-->");
-        appendLs(sbuf, "</style>");
-        appendLs(sbuf, "</head>");
-        appendLs(sbuf, "<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">");
-        appendLs(sbuf, "<hr size=\"1\" noshade=\"noshade\">");
-        appendLs(sbuf, "Log session start time " + new Date() + "<br>");
-        appendLs(sbuf, "<br>");
-        appendLs(sbuf,
-                "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">");
-        appendLs(sbuf, "<tr>");
-        appendLs(sbuf, "<th>Time</th>");
-        appendLs(sbuf, "<th>Thread</th>");
-        appendLs(sbuf, "<th>Level</th>");
-        appendLs(sbuf, "<th>Logger</th>");
-        if (locationInfo) {
-            appendLs(sbuf, "<th>File:Line</th>");
+        final StringBuilder sbuf = acquireStringBuilder();
+        try {
+            append(sbuf, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" ");
+            appendLs(sbuf, "\"http://www.w3.org/TR/html4/loose.dtd\">");
+            appendLs(sbuf, "<html>");
+            appendLs(sbuf, "<head>");
+            append(sbuf, "<meta charset=\"");
+            append(sbuf, getCharset().toString());
+            appendLs(sbuf, "\"/>");
+            append(sbuf, "<title>").append(title);
+            appendLs(sbuf, "</title>");
+            appendLs(sbuf, "<style type=\"text/css\">");
+            appendLs(sbuf, "<!--");
+            append(sbuf, "body, table {font-family:").append(font).append("; font-size: ");
+            appendLs(sbuf, headerSize).append(";}");
+            appendLs(sbuf, "th {background: #336699; color: #FFFFFF; text-align: left;}");
+            appendLs(sbuf, "-->");
+            appendLs(sbuf, "</style>");
+            appendLs(sbuf, "</head>");
+            appendLs(sbuf, "<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">");
+            appendLs(sbuf, "<hr size=\"1\" noshade=\"noshade\">");
+            appendLs(sbuf, "Log session start time " + new Date() + "<br>");
+            appendLs(sbuf, "<br>");
+            appendLs(sbuf,
+                    "<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">");
+            appendLs(sbuf, "<tr>");
+            appendLs(sbuf, "<th>Time</th>");
+            appendLs(sbuf, "<th>Thread</th>");
+            appendLs(sbuf, "<th>Level</th>");
+            appendLs(sbuf, "<th>Logger</th>");
+            if (locationInfo) {
+                appendLs(sbuf, "<th>File:Line</th>");
+            }
+            appendLs(sbuf, "<th>Message</th>");
+            appendLs(sbuf, "</tr>");
+            return sbuf.toString().getBytes(getCharset());
+        } finally {
+            releaseStringBuilder(sbuf);
         }
-        appendLs(sbuf, "<th>Message</th>");
-        appendLs(sbuf, "</tr>");
-        return sbuf.toString().getBytes(getCharset());
     }
 
     /**
@@ -332,11 +340,15 @@ public final class HtmlLayout extends AbstractStringLayout {
      */
     @Override
     public byte[] getFooter() {
-        final StringBuilder sbuf = new StringBuilder();
-        appendLs(sbuf, "</table>");
-        appendLs(sbuf, "<br>");
-        appendLs(sbuf, "</body></html>");
-        return getBytes(sbuf.toString());
+        final StringBuilder sbuf = acquireStringBuilder();
+        try {
+            appendLs(sbuf, "</table>");
+            appendLs(sbuf, "<br>");
+            appendLs(sbuf, "</body></html>");
+            return getBytes(sbuf.toString());
+        } finally {
+            releaseStringBuilder(sbuf);
+        }
     }
 
     /**

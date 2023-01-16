@@ -656,7 +656,7 @@ public class LoggerConfig extends AbstractFilterable {
             final AppenderRef[] refs, final Property[] properties, final Configuration config, final Filter filter) {
         final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
         return new LoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
-            includeLocation(includeLocation, config), config.getComponent(LogEventFactory.KEY));
+            includeLocation(includeLocation, config), config.getLogEventFactory());
     }
 
     // Note: for asynchronous loggers, includeLocation default is FALSE,
@@ -817,7 +817,7 @@ public class LoggerConfig extends AbstractFilterable {
 
             return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, actualLevel, additive,
                     properties, config, includeLocation(includeLocation, config),
-                    config.getComponent(LogEventFactory.KEY));
+                    config.getLogEventFactory());
         }
     }
 

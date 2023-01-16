@@ -48,14 +48,23 @@ public final class ReusableMessageFactory implements MessageFactory {
      * Constructs a message factory using the default {@link RecyclerFactory}.
      */
     public ReusableMessageFactory() {
-        this(RecyclerFactories.ofSpec(null));
+        this(RecyclerFactories.getDefault());
     }
 
     public ReusableMessageFactory(final RecyclerFactory recyclerFactory) {
         super();
-        parameterizedMessageRecycler = recyclerFactory.create(ReusableParameterizedMessage::new);
-        simpleMessageRecycler = recyclerFactory.create(ReusableSimpleMessage::new);
-        objectMessageRecycler = recyclerFactory.create(ReusableObjectMessage::new);
+        parameterizedMessageRecycler = recyclerFactory.create(
+                ReusableParameterizedMessage::new,
+                RecyclerFactory.defaultCleaner(),
+                ReusableParameterizedMessage::clear);
+        simpleMessageRecycler = recyclerFactory.create(
+                ReusableSimpleMessage::new,
+                RecyclerFactory.defaultCleaner(),
+                ReusableSimpleMessage::clear);
+        objectMessageRecycler = recyclerFactory.create(
+                ReusableObjectMessage::new,
+                RecyclerFactory.defaultCleaner(),
+                ReusableObjectMessage::clear);
     }
 
     /**
@@ -77,15 +86,12 @@ public final class ReusableMessageFactory implements MessageFactory {
     @Override
     public void recycle(final Message message) {
         // related to LOG4J2-1583 and nested log messages clobbering each other. recycle messages today!
-        if (message instanceof ReusableMessage) {
-            ((ReusableMessage) message).clear();
-            if (message instanceof ReusableParameterizedMessage) {
-                parameterizedMessageRecycler.release((ReusableParameterizedMessage) message);
-            } else if (message instanceof ReusableObjectMessage) {
-                objectMessageRecycler.release((ReusableObjectMessage) message);
-            } else if (message instanceof ReusableSimpleMessage) {
-                simpleMessageRecycler.release((ReusableSimpleMessage) message);
-            }
+        if (message instanceof ReusableParameterizedMessage) {
+            parameterizedMessageRecycler.release((ReusableParameterizedMessage) message);
+        } else if (message instanceof ReusableObjectMessage) {
+            objectMessageRecycler.release((ReusableObjectMessage) message);
+        } else if (message instanceof ReusableSimpleMessage) {
+            simpleMessageRecycler.release((ReusableSimpleMessage) message);
         }
     }
 

@@ -167,25 +167,30 @@ public abstract class AbstractLayout implements Layout {
      * Subclasses can override this method to provide a garbage-free implementation. For text-based layouts,
      * {@code AbstractStringLayout} provides various convenience methods to help with this:
      * </p>
-     * <pre>@Category(Node.CATEGORY)
-     * @Plugin(value = "MyLayout", elementType = Layout.ELEMENT_TYPE, printObject = true)
+     * <pre>{@code @Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
+     * @Plugin("MyLayout")
      * public final class MyLayout extends AbstractStringLayout {
      *     @Override
      *     public void encode(LogEvent event, ByteBufferDestination destination) {
-     *         StringBuilder text = getStringBuilder();
-     *         convertLogEventToText(event, text);
-     *         getStringBuilderEncoder().encode(text, destination);
+     *         StringBuilder text = acquireStringBuilder();
+     *         try {
+     *             convertLogEventToText(event, text);
+     *             getStringBuilderEncoder().encode(text, destination);
+     *         } finally {
+     *             releaseStringBuilder(text);
+     *         }
      *     }
      *
      *     private void convertLogEventToText(LogEvent event, StringBuilder destination) {
      *         ... // append a text representation of the log event to the StringBuilder
      *     }
      * }
-     * </pre>
+     * }</pre>
      *
      * @param event the LogEvent to encode.
      * @param destination holds the ByteBuffer to write into.
-     * @see AbstractStringLayout#getStringBuilder()
+     * @see AbstractStringLayout#acquireStringBuilder()
+     * @see AbstractStringLayout#releaseStringBuilder(StringBuilder)
      * @see AbstractStringLayout#getStringBuilderEncoder()
      */
     @Override

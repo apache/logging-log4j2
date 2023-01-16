@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter;
@@ -32,10 +36,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Strings;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Asynchronous Logger object that is created via configuration and can be
@@ -255,7 +255,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
         return new AsyncLoggerConfig(name, appenderRefs, filter, level,
                 additive, properties, config, includeLocation(includeLocation),
-                config.getComponent(LogEventFactory.KEY));
+                config.getLogEventFactory());
     }
 
     /**
@@ -278,7 +278,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             final AppenderRef[] refs, final Property[] properties, final Configuration config, final Filter filter) {
         final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
         return new AsyncLoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
-                includeLocation(includeLocation), config.getComponent(LogEventFactory.KEY));
+                includeLocation(includeLocation), config.getLogEventFactory());
     }
 
     // Note: for asynchronous loggers, includeLocation default is FALSE
@@ -318,7 +318,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
             final boolean additive = Booleans.parseBoolean(additivity, true);
             return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, actualLevel, additive,
                     properties, config, AsyncLoggerConfig.includeLocation(includeLocation),
-                    config.getComponent(LogEventFactory.KEY));
+                    config.getLogEventFactory());
         }
     }
 }

@@ -1,4 +1,4 @@
-package org.apache.logging.log4j.core.layout;/*
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,13 +14,15 @@ package org.apache.logging.log4j.core.layout;/*
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.core.layout;
 
 import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests AbstractStringLayout.
@@ -34,10 +36,6 @@ public class AbstractStringLayoutTest {
             super(Charset.defaultCharset());
         }
 
-        public static StringBuilder getStringBuilder() {
-            return AbstractStringLayout.getStringBuilder();
-        }
-
         @Override
         public String toSerializable(final LogEvent event) {
             return null;
@@ -46,7 +44,8 @@ public class AbstractStringLayoutTest {
 
     @Test
     public void testGetStringBuilderCapacityRestrictedToMax() throws Exception {
-        final StringBuilder sb = ConcreteStringLayout.getStringBuilder();
+        final ConcreteStringLayout layout = new ConcreteStringLayout();
+        final StringBuilder sb = layout.acquireStringBuilder();
         final int initialCapacity = sb.capacity();
         assertEquals(ConcreteStringLayout.DEFAULT_STRING_BUILDER_SIZE, sb.capacity(), "initial capacity");
 
@@ -55,8 +54,9 @@ public class AbstractStringLayoutTest {
         sb.append(smallMessage);
         assertEquals(initialCapacity, sb.capacity(), "capacity not grown");
         assertEquals(SMALL, sb.length(), "length=msg length");
+        layout.releaseStringBuilder(sb);
 
-        final StringBuilder sb2 = ConcreteStringLayout.getStringBuilder();
+        final StringBuilder sb2 = layout.acquireStringBuilder();
         assertEquals(sb2.capacity(), initialCapacity, "capacity unchanged");
         assertEquals(0, sb2.length(), "empty, ready for use");
 
@@ -70,8 +70,9 @@ public class AbstractStringLayoutTest {
         sb2.setLength(0); // set 0 before next getStringBuilder() call
         assertEquals(0, sb2.length(), "empty, cleared");
         assertTrue(sb2.capacity() >= ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, "capacity remains very large");
+        layout.releaseStringBuilder(sb2);
 
-        final StringBuilder sb3 = ConcreteStringLayout.getStringBuilder();
+        final StringBuilder sb3 = layout.acquireStringBuilder();
         assertEquals(ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, sb3.capacity(),
                 "capacity, trimmed to MAX_STRING_BUILDER_SIZE");
         assertEquals(0, sb3.length(), "empty, ready for use");

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.csv.layout;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.core.Layout;
@@ -27,9 +30,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * A Comma-Separated Value (CSV) layout to log events.
@@ -77,7 +77,7 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buffer = getStringBuilder();
+        final StringBuilder buffer = acquireStringBuilder();
         final CSVFormat format = getFormat();
         try {
             format.print(event.getNanoTime(), buffer, true);
@@ -99,6 +99,8 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
         } catch (final IOException e) {
             StatusLogger.getLogger().error(event.toString(), e);
             return format.getCommentMarker() + " " + e;
+        } finally {
+            releaseStringBuilder(buffer);
         }
     }
 

@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.perf.jmh;
 
 import java.nio.ByteBuffer;
@@ -215,9 +214,13 @@ public class AbstractStringLayoutStringEncodingBenchmark {
 
         @Override
         public byte[] toByteArray(final LogEvent event) {
-            final StringBuilder sb = getStringBuilder();
-            ((StringBuilderFormattable) event.getMessage()).formatTo(sb);
-            return getBytes(sb.toString());
+            final StringBuilder sb = acquireStringBuilder();
+            try {
+                ((StringBuilderFormattable) event.getMessage()).formatTo(sb);
+                return getBytes(sb.toString());
+            } finally {
+                releaseStringBuilder(sb);
+            }
         }
     }
 
@@ -238,10 +241,14 @@ public class AbstractStringLayoutStringEncodingBenchmark {
 
         @Override
         public void encode(final LogEvent event, final ByteBufferDestination destination) {
-            final StringBuilder sb = getStringBuilder();
-            ((StringBuilderFormattable) event.getMessage()).formatTo(sb);
-            final Encoder<StringBuilder> helper = getStringBuilderEncoder();
-            helper.encode(sb, destination);
+            final StringBuilder sb = acquireStringBuilder();
+            try {
+                ((StringBuilderFormattable) event.getMessage()).formatTo(sb);
+                final Encoder<StringBuilder> helper = getStringBuilderEncoder();
+                helper.encode(sb, destination);
+            } finally {
+                releaseStringBuilder(sb);
+            }
         }
     }
 

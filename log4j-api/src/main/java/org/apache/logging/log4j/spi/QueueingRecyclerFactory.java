@@ -20,20 +20,23 @@ import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.apache.logging.log4j.util.QueueFactory;
+
 public class QueueingRecyclerFactory implements RecyclerFactory {
 
-    private final QueueSupplier queueSupplier;
+    private final QueueFactory queueFactory;
 
-    public QueueingRecyclerFactory(final QueueSupplier queueSupplier) {
-        this.queueSupplier = queueSupplier;
+    public QueueingRecyclerFactory(final QueueFactory queueFactory) {
+        this.queueFactory = queueFactory;
     }
 
     @Override
     public <V> Recycler<V> create(
             final Supplier<V> supplier,
-            final Consumer<V> cleaner) {
-        final Queue<V> queue = queueSupplier.create();
-        return new QueueingRecycler<>(supplier, cleaner, queue);
+            final Consumer<V> lazyCleaner,
+            final Consumer<V> eagerCleaner) {
+        final Queue<V> queue = queueFactory.create();
+        return new QueueingRecycler<>(supplier, lazyCleaner, eagerCleaner, queue);
     }
 
     // Visible for tests.
@@ -41,16 +44,20 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
 
         private final Supplier<V> supplier;
 
-        private final Consumer<V> cleaner;
+        private final Consumer<V> lazyCleaner;
+
+        private final Consumer<V> eagerCleaner;
 
         private final Queue<V> queue;
 
         private QueueingRecycler(
                 final Supplier<V> supplier,
-                final Consumer<V> cleaner,
+                final Consumer<V> lazyCleaner,
+                final Consumer<V> eagerCleaner,
                 final Queue<V> queue) {
             this.supplier = supplier;
-            this.cleaner = cleaner;
+            this.lazyCleaner = lazyCleaner;
+            this.eagerCleaner = eagerCleaner;
             this.queue = queue;
         }
 
@@ -65,13 +72,14 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
             if (value == null) {
                 return supplier.get();
             } else {
-                cleaner.accept(value);
+                lazyCleaner.accept(value);
                 return value;
             }
         }
 
         @Override
         public void release(final V value) {
+            eagerCleaner.accept(value);
             queue.offer(value);
         }
 

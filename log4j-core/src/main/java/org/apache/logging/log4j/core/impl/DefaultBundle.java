@@ -92,7 +92,7 @@ public class DefaultBundle {
 
     @SingletonFactory
     public RecyclerFactory defaultRecyclerFactory() {
-        return RecyclerFactories.ofSpec(null);
+        return RecyclerFactories.getDefault();
     }
 
     @ConditionalOnProperty(name = Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME)

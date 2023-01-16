@@ -16,6 +16,12 @@
  */
 package org.apache.log4j.layout;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Objects;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
@@ -27,12 +33,6 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.Strings;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Port of XMLLayout in Log4j 1.x. Provided for compatibility with existing Log4j 1 configurations.
@@ -75,16 +75,24 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
 
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
-        final StringBuilder text = getStringBuilder();
-        formatTo(event, text);
-        getStringBuilderEncoder().encode(text, destination);
+        final StringBuilder text = acquireStringBuilder();
+        try {
+            formatTo(event, text);
+            getStringBuilderEncoder().encode(text, destination);
+        } finally {
+            releaseStringBuilder(text);
+        }
     }
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder text = getStringBuilder();
-        formatTo(event, text);
-        return text.toString();
+        final StringBuilder text = acquireStringBuilder();
+        try {
+            formatTo(event, text);
+            return text.toString();
+        } finally {
+            releaseStringBuilder(text);
+        }
     }
 
     private void formatTo(final LogEvent event, final StringBuilder buf) {

@@ -38,6 +38,9 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerFactories;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.Strings;
@@ -194,22 +197,15 @@ public final class PatternLayout extends AbstractStringLayout {
 
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
-        final StringBuilder text = toText(eventSerializer, event, getStringBuilder());
-        final Encoder<StringBuilder> encoder = getStringBuilderEncoder();
-        encoder.encode(text, destination);
-        trimToMaxSize(text);
-    }
-
-    /**
-     * Creates a text representation of the specified log event
-     * and writes it into the specified StringBuilder.
-     * <p>
-     * Implementations are free to return a new StringBuilder if they can
-     * detect in advance that the specified StringBuilder is too small.
-     */
-    private StringBuilder toText(final Serializer2 serializer, final LogEvent event,
-            final StringBuilder destination) {
-        return serializer.toSerializable(event, destination);
+        final StringBuilder builder = acquireStringBuilder();
+        StringBuilder text = builder;
+        try {
+            text = eventSerializer.toSerializable(event, builder);
+            final Encoder<StringBuilder> encoder = getStringBuilderEncoder();
+            encoder.encode(text, destination);
+        } finally {
+            releaseStringBuilder(text);
+        }
     }
 
     /**
@@ -240,21 +236,23 @@ public final class PatternLayout extends AbstractStringLayout {
     private static final class NoFormatPatternSerializer implements PatternSerializer {
 
         private final LogEventPatternConverter[] converters;
+        private final Recycler<StringBuilder> recycler;
 
-        private NoFormatPatternSerializer(final PatternFormatter[] formatters) {
+        private NoFormatPatternSerializer(final PatternFormatter[] formatters, final Recycler<StringBuilder> recycler) {
             this.converters = new LogEventPatternConverter[formatters.length];
             for (int i = 0; i < formatters.length; i++) {
                 converters[i] = formatters[i].getConverter();
             }
+            this.recycler = recycler;
         }
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder sb = getStringBuilder();
+            final StringBuilder sb = recycler.acquire();
             try {
                 return toSerializable(event, sb).toString();
             } finally {
-                trimToMaxSize(sb);
+                recycler.release(sb);
             }
         }
 
@@ -285,18 +283,20 @@ public final class PatternLayout extends AbstractStringLayout {
     private static final class PatternFormatterPatternSerializer implements PatternSerializer {
 
         private final PatternFormatter[] formatters;
+        private final Recycler<StringBuilder> recycler;
 
-        private PatternFormatterPatternSerializer(final PatternFormatter[] formatters) {
+        private PatternFormatterPatternSerializer(final PatternFormatter[] formatters, final Recycler<StringBuilder> recycler) {
             this.formatters = formatters;
+            this.recycler = recycler;
         }
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder sb = getStringBuilder();
+            final StringBuilder sb = recycler.acquire();
             try {
                 return toSerializable(event, sb).toString();
             } finally {
-                trimToMaxSize(sb);
+                recycler.release(sb);
             }
         }
 
@@ -321,19 +321,22 @@ public final class PatternLayout extends AbstractStringLayout {
 
         private final PatternSerializer delegate;
         private final RegexReplacement replace;
+        private final Recycler<StringBuilder> recycler;
 
-        private PatternSerializerWithReplacement(final PatternSerializer delegate, final RegexReplacement replace) {
+        private PatternSerializerWithReplacement(final PatternSerializer delegate, final RegexReplacement replace,
+                                                 final Recycler<StringBuilder> recycler) {
             this.delegate = delegate;
             this.replace = replace;
+            this.recycler = recycler;
         }
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder sb = getStringBuilder();
+            final StringBuilder sb = recycler.acquire();
             try {
                 return toSerializable(event, sb).toString();
             } finally {
-                trimToMaxSize(sb);
+                recycler.release(sb);
             }
         }
 
@@ -381,6 +384,10 @@ public final class PatternLayout extends AbstractStringLayout {
             if (Strings.isEmpty(pattern) && Strings.isEmpty(defaultPattern)) {
                 return null;
             }
+            final RecyclerFactory recyclerFactory = configuration != null
+                    ? configuration.getRecyclerFactory()
+                    : RecyclerFactories.getDefault();
+            final Recycler<StringBuilder> recycler = createRecycler(recyclerFactory);
             if (patternSelector == null) {
                 try {
                     final PatternParser parser = createPatternParser(configuration);
@@ -396,14 +403,16 @@ public final class PatternLayout extends AbstractStringLayout {
                         }
                     }
                     PatternSerializer serializer = hasFormattingInfo
-                            ? new PatternFormatterPatternSerializer(formatters)
-                            : new NoFormatPatternSerializer(formatters);
-                    return replace == null ? serializer : new PatternSerializerWithReplacement(serializer, replace);
+                            ? new PatternFormatterPatternSerializer(formatters, recycler)
+                            : new NoFormatPatternSerializer(formatters, recycler);
+                    return replace == null
+                            ? serializer
+                            : new PatternSerializerWithReplacement(serializer, replace, recycler);
                 } catch (final RuntimeException ex) {
                     throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
                 }
             }
-            return new PatternSelectorSerializer(patternSelector, replace);
+            return new PatternSelectorSerializer(patternSelector, replace, recycler);
         }
 
         public SerializerBuilder setConfiguration(final Configuration configuration) {
@@ -452,20 +461,23 @@ public final class PatternLayout extends AbstractStringLayout {
 
         private final PatternSelector patternSelector;
         private final RegexReplacement replace;
+        private final Recycler<StringBuilder> recycler;
 
-        private PatternSelectorSerializer(final PatternSelector patternSelector, final RegexReplacement replace) {
+        private PatternSelectorSerializer(final PatternSelector patternSelector, final RegexReplacement replace,
+                                          final Recycler<StringBuilder> recycler) {
             super();
             this.patternSelector = patternSelector;
             this.replace = replace;
+            this.recycler = recycler;
         }
 
         @Override
         public String toSerializable(final LogEvent event) {
-            final StringBuilder sb = getStringBuilder();
+            final StringBuilder sb = recycler.acquire();
             try {
                 return toSerializable(event, sb).toString();
             } finally {
-                trimToMaxSize(sb);
+                recycler.release(sb);
             }
         }
 
