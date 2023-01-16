@@ -352,9 +352,6 @@
       <item name="Source Repository" href="https://github.com/apache/logging-log4j2" />
     </menu>
 
-    <menu name="Project Reports" img="img/glyphicons/layers.png">
-      <item name="RAT Report" href="/rat-report.html" />
-    </menu>
     <footer><![CDATA[<p align="center">Copyright &copy; ${project.inceptionYear}-${currentYear} <a class="external" href="https://www.apache.org">The Apache Software Foundation</a>. All Rights Reserved.<br>
       Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, and the Apache Logging project logo are trademarks of The Apache Software Foundation.</p>]]>
     </footer>
