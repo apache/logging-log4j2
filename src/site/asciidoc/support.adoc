@@ -79,3 +79,16 @@ In either case, while the Apache Logging Services project thanks you for your su
 * https://github.com/rgoers[Ralph Goers]
 * https://github.com/vy[Volkan Yazıcı]
 * https://github.com/carterkozak[Carter Kozak]
+
+[#commercial]
+== Third-party commercial support
+
+While neither the Apache Software Foundation nor the Apache Logging Services project provide any commercial support for the Log4j products, individual committers may collaborate with services that provide such support.
+
+The following aims to be a list of all commercial support services involving one or more Log4j committers.
+
+[#tidelift]
+=== Tidelift
+
+Some Log4j maintainers receive funding from Tidelift for their maintenance efforts.
+See https://tidelift.com[the Tidelift website] for details.
