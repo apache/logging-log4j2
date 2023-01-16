@@ -282,6 +282,7 @@
     <checksum-maven-plugin.version>1.11</checksum-maven-plugin.version>
     <docker-maven-plugin.version>0.40.2</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
+    <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
     <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
     <log4j-tools.version>0.1.0</log4j-tools.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
@@ -819,6 +820,7 @@
         <version>${jansi.version}</version>
       </dependency>
 
+      <!-- Used for garbage-free tests: -->
       <dependency>
         <groupId>com.google.code.java-allocation-instrumenter</groupId>
         <artifactId>java-allocation-instrumenter</artifactId>
@@ -1050,7 +1052,7 @@
         <artifactId>org.eclipse.persistence.jpa</artifactId>
         <version>${org.eclipse.persistence.version}</version>
         <exclusions>
-          <!-- a copy of `javax.persistence:javax.persistence-api`: -->
+          <!-- A copy of `javax.persistence:javax.persistence-api`: -->
           <exclusion>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>jakarta.persistence</artifactId>
@@ -1607,20 +1609,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <!-- export AsciiDoc-formatted sources to `target/generated-sources/site/asciidoc/changelog` -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>changelog-export</id>
-            <phase>pre-site</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <includeProjectDependencies>false</includeProjectDependencies>
           <includePluginDependencies>true</includePluginDependencies>
@@ -1807,29 +1795,6 @@
   <profiles>
 
     <!-- shortcut to populate `src/changelog/<releaseVersion>` from `src/changelog/.<releaseVersionMajor>.x.x` -->
-    <profile>
-      <id>changelog-releaser</id>
-      <build>
-        <defaultGoal>validate</defaultGoal>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>changelog-releaser</id>
-                <!-- Choosing the earlier possible phase, since `ChangelogReleaser` execution doesn't depend on anything: -->
-                <phase>validate</phase>
-                <goals>
-                  <goal>java</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <!-- populate `src/changelog/<releaseVersion>` from `src/changelog/.<releaseVersionMajor>.x.x` -->
     <profile>
       <id>changelog-releaser</id>
       <build>
