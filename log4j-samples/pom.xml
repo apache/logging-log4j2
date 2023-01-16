@@ -16,40 +16,48 @@
  limitations under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>2.19.1-SNAPSHOT</version>
   </parent>
+
   <groupId>org.apache.logging.log4j.samples</groupId>
   <artifactId>log4j-samples</artifactId>
   <packaging>pom</packaging>
+
   <name>Apache Log4j Samples</name>
   <url>http://maven.apache.org</url>
+
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <revapi.skip>true</revapi.skip>
-
     <maven-jetty-plugin.version>6.1.26</maven-jetty-plugin.version>
-
     <spring-ws.version>4.0.0</spring-ws.version>
   </properties>
+
   <dependencyManagement>
     <dependencies>
+
       <dependency>
         <groupId>org.apache.logging.log4j.samples</groupId>
         <artifactId>log4j-samples-flume-common</artifactId>
         <version>${project.version}</version>
       </dependency>
+
       <dependency>
         <groupId>org.springframework.ws</groupId>
         <artifactId>spring-ws-core</artifactId>
         <version>${spring-ws.version}</version>
       </dependency>
+
     </dependencies>
   </dependencyManagement>
+
   <modules>
     <module>log4j-samples-flume-common</module>
     <module>log4j-samples-flume-remote</module>
@@ -57,7 +65,9 @@
     <module>log4j-samples-configuration</module>
     <module>log4j-samples-loggerProperties</module>
   </modules>
+
   <build>
+
     <pluginManagement>
       <plugins>
         <plugin>
@@ -67,7 +77,11 @@
         </plugin>
       </plugins>
     </pluginManagement>
+
     <plugins>
+
+      <!-- Samples aren't meant to be consumed as dependencies.
+           Skip deploying their artifacts: -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
@@ -75,6 +89,25 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+
+      <!-- `enforce-upper-bound-deps` enforcer using `requireUpperBoundDeps` directive has been of no help so far.
+           It is a source of compilation errors that have nothing much to do with Log4j.
+           Hence, disabling it for samples: -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-upper-bound-deps</id>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
+
   </build>
+
 </project>
