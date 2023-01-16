@@ -47,6 +47,8 @@
 
   <inceptionYear>1999</inceptionYear>
 
+  <!-- Developer IDs are used to map author IDs to names while exporting changelogs.
+       Hence, updates here need to be reflected to `.changelog-entries.adoc.ftl` too. -->
   <developers>
 
     <developer>
