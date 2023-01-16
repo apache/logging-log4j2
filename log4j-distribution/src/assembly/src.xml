@@ -65,7 +65,6 @@
 
         <!-- misc -->
         <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?cobertura\.ser]</exclude>
-        <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?doap_vfs\.rdf]</exclude>
 
         <!-- release-plugin temp files -->
         <exclude>%regex[(?!((?!${project.build.directory}/)[^/]+/)*src/)(.*/)?pom\.xml\.releaseBackup]</exclude>

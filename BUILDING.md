@@ -58,4 +58,8 @@ To remedy this, you can execute the following:
 
 You can build the website and manual as follows:
 
-    ./mvnw --non-recursive -Dmaven.doap.skip -DskipTests site
+    ./mvnw site
+
+And view it using a simple HTTP server, e.g., the one comes with the Python:
+
+    python3 -m http.server -d target/site

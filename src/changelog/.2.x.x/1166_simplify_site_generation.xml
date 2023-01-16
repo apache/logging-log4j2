@@ -15,8 +15,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<entry type="fixed">
-  <issue id="LOG4J2-3598" link="https://issues.apache.org/jira/browse/LOG4J2-3598"/>
-  <author id="pkarwasz"/>
-  <description format="asciidoc">Lazily evaluate the level of a SLF4J `LogEventBuilder`</description>
+<entry type="changed">
+  <issue id="1166" link="https://github.com/apache/logging-log4j2/pull/1166"/>
+  <author id="vy"/>
+  <description format="asciidoc">Simplify site generation</description>
 </entry>

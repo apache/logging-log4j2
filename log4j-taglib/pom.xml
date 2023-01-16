@@ -31,7 +31,6 @@
     <docLabel>Log4j Tag Library Documentation</docLabel>
     <projectDir>/taglib</projectDir>
     <module.name>org.apache.logging.log4j.taglib</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>

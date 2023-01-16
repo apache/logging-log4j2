@@ -31,7 +31,6 @@
     <docLabel>OSGi Documentation</docLabel>
     <projectDir>/osgi</projectDir>
     <module.name>org.apache.logging.log4j.osgi</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>

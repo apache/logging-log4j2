@@ -30,7 +30,6 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
-    <maven.doap.skip>true</maven.doap.skip>
     <!--<revapi.skip>true</revapi.skip>-->
   </properties>
   <dependencies>
