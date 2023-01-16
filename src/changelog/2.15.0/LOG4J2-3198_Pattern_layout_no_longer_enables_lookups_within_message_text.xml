@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<entry type="added">
+  <issue id="LOG4J2-3198" link="https://issues.apache.org/jira/browse/LOG4J2-3198"/>
+  <author id="ckozak"/>
+  <description format="asciidoc">Pattern layout no longer enables lookups within message text by default for cleaner API boundaries and reduced
+        formatting overhead. The old 'log4j2.formatMsgNoLookups' which enabled this behavior has been removed as well
+        as the 'nolookups' message pattern converter option. The old behavior can be enabled on a per-pattern basis
+        using '%m{lookups}'.</description>
+</entry>

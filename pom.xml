@@ -39,6 +39,8 @@
     <url>https://ci-builds.apache.org/job/Logging/job/log4j/</url>
   </ciManagement>
   <inceptionYear>1999</inceptionYear>
+  <!-- Developer IDs are used to map author IDs to names while exporting changelogs.
+       Hence, updates here need to be reflected to `.changelog-entries.adoc.ftl` too. -->
   <developers>
     <developer>
       <id>rgoers</id>
@@ -54,11 +56,16 @@
       <id>ggregory</id>
       <name>Gary Gregory</name>
       <email>ggregory@apache.org</email>
-      <organization>Rocket Software</organization>
+      <url>https://www.garygregory.com</url>
+      <organization>The Apache Software Foundation</organization>
+      <organizationUrl>https://www.apache.org/</organizationUrl>
       <roles>
         <role>PMC Member</role>
       </roles>
-      <timezone>America/Denver</timezone>
+      <timezone>America/New_York</timezone>
+      <properties>
+        <picUrl>https://people.apache.org/~ggregory/img/garydgregory80.png</picUrl>
+      </properties>
     </developer>
     <developer>
       <id>sdeboy</id>
@@ -78,7 +85,7 @@
       </roles>
       <timezone>Asia/Tokyo</timezone>
       <properties>
-        <picUrl>http://people.apache.org/~rpopma/img/profilepic.jpg</picUrl>
+        <picUrl>https://people.apache.org/~rpopma/img/profilepic.jpg</picUrl>
       </properties>
     </developer>
     <developer>
@@ -94,9 +101,9 @@
       <id>mattsicker</id>
       <name>Matt Sicker</name>
       <email>mattsicker@apache.org</email>
-      <organization>CloudBees</organization>
+      <organization>Apple</organization>
       <roles>
-        <role>PMC Chair</role>
+        <role>PMC Member</role>
       </roles>
       <timezone>America/Chicago</timezone>
     </developer>
@@ -108,6 +115,15 @@
         <role>Committer</role>
       </roles>
       <timezone>America/Detroit</timezone>
+    </developer>
+    <developer>
+      <id>rgupta</id>
+      <name>Raman Gupta</name>
+      <email>rgupta@apache.org</email>
+      <roles>
+        <role>Committer</role>
+      </roles>
+      <timezone>Asia/Kolkata</timezone>
     </developer>
     <developer>
       <id>mikes</id>
@@ -142,6 +158,15 @@
       <timezone>Europe/Amsterdam</timezone>
     </developer>
     <developer>
+      <id>rgrabowski</id>
+      <name>Ron Grabowski</name>
+      <email>rgrabowski@apache.org</email>
+      <roles>
+        <role>PMC Chair</role>
+      </roles>
+      <timezone>America/New_York</timezone>
+    </developer>
+    <developer>
       <id>pkarwasz</id>
       <name>Piotr P. Karwasz</name>
       <email>pkarwasz@apache.org</email>
@@ -149,6 +174,15 @@
         <role>PMC Member</role>
       </roles>
       <timezone>Europe/Warsaw</timezone>
+    </developer>
+    <developer>
+      <id>grobmeier</id>
+      <name>Christian Grobmeier</name>
+      <email>grobmeier@apache.org</email>
+      <roles>
+        <role>PMC Member</role>
+      </roles>
+      <timezone>Europe/Berlin</timezone>
     </developer>
   </developers>
   <!-- Contributors -->
@@ -241,7 +275,7 @@
     <!-- Plugin versions -->
     <!-- Properties in the format `<artifactId>.version` -->
     <!-- Spring Boot uses the same convention. -->
-    <asciidoctor-maven-plugin.version>1.5.6</asciidoctor-maven-plugin.version>
+    <asciidoctor-maven-plugin.version>2.2.2</asciidoctor-maven-plugin.version>
     <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
     <!-- checkstyle 10.0 requires Java 11 -->
     <checkstyle.version>9.3</checkstyle.version>
@@ -249,10 +283,11 @@
     <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
     <docker-maven-plugin.version>0.40.2</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
+    <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
     <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
     <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
+    <log4j-tools.version>0.1.0</log4j-tools.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
-    <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
     <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
     <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
     <maven-doap-plugin.version>1.2</maven-doap-plugin.version>
@@ -1217,11 +1252,6 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-changes-plugin</artifactId>
-          <version>${maven-changes-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${maven-checkstyle-plugin.version}</version>
           <configuration>
@@ -1360,6 +1390,11 @@
               </goals>
             </execution>
           </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>${exec-maven-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>net.sourceforge.maven-taglib</groupId>
@@ -1586,25 +1621,66 @@
           </execution>
         </executions>
       </plugin>
+      <!-- export AsciiDoc-formatted sources to `target/generated-sources/site/asciidoc/changelog` -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>changelog-export</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <includeProjectDependencies>false</includeProjectDependencies>
+          <includePluginDependencies>true</includePluginDependencies>
+          <executableDependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-changelog</artifactId>
+          </executableDependency>
+          <mainClass>org.apache.logging.log4j.changelog.exporter.ChangelogExporter</mainClass>
+          <systemProperties>
+            <systemProperty>
+              <key>log4j.changelog.directory</key>
+              <value>${project.basedir}/src/changelog</value>
+            </systemProperty>
+            <systemProperty>
+              <key>log4j.changelog.exporter.outputDirectory</key>
+              <value>${project.build.directory}/generated-sources/site/asciidoc/changelog</value>
+            </systemProperty>
+          </systemProperties>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-changelog</artifactId>
+            <version>${log4j-tools.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
+          <!-- copy `src/site` to `target/generated-sources/site` -->
           <execution>
-            <id>copy-sitecss</id>
-            <!-- fetch site.xml before creating site documentation -->
+            <id>copy-site</id>
             <phase>pre-site</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/site</outputDirectory>
+              <outputDirectory>${project.build.directory}/generated-sources/site</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${log4jParentDir}/src/site/resources</directory>
-                  <includes>
-                    <include>**/*</include>
-                  </includes>
+                  <directory>${log4jParentDir}/src/site</directory>
+                  <excludes>
+                    <exclude>/resources/glyphicons-halflings-2-1.zip</exclude>
+                    <exclude>/resources/logo/**/*</exclude>
+                  </excludes>
                 </resource>
               </resources>
             </configuration>
@@ -1617,19 +1693,18 @@
         <!-- version inherited from ASF parent POM -->
         <dependencies>
           <dependency>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-ssh</artifactId>
-            <version>${wagon.version}</version>
+            <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctor-maven-plugin</artifactId>
+            <version>${asciidoctor-maven-plugin.version}</version>
           </dependency>
         </dependencies>
         <configuration>
+          <siteDirectory>${project.build.directory}/generated-sources/site</siteDirectory>
           <!-- only build English site even on other language OS -->
           <locales>en</locales>
-          <!-- Exclude the navigation file for Maven 1 sites
-               and the changes file used by the changes-plugin,
-               as they interfere with the site generation. -->
+          <!-- Exclude the navigation file for Maven 1 sites as it interferes with the site generation. -->
           <moduleExcludes>
-            <xdoc>navigation.xml,changes.xml</xdoc>
+            <xdoc>navigation.xml</xdoc>
           </moduleExcludes>
           <asciidoc>
             <attributes>
@@ -1770,26 +1845,6 @@
             <exclude>**/rabbitmq.config</exclude>
             <exclude>**/MANIFEST.MF</exclude>
           </excludes>
-        </configuration>
-      </plugin>
-      <!-- Changes report -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-              <report>jira-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <statusIds>Resolved, Closed</statusIds>
-          <columnNames>Type,Key,Summary,Assignee,Status,Resolution,Fix Version</columnNames>
-          <useJql>true</useJql>
-          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
-          <onlyCurrentVersion>true</onlyCurrentVersion>
         </configuration>
       </plugin>
       <plugin>
@@ -1940,39 +1995,51 @@
         </plugins>
       </build>
     </profile>
+    <!-- populate `src/changelog/<releaseVersion>` from `src/changelog/.<releaseVersionMajor>.x.x` -->
     <profile>
-      <id>release-notes</id>
+      <id>changelog-releaser</id>
       <build>
+        <defaultGoal>validate</defaultGoal>
         <plugins>
           <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-changes-plugin</artifactId>
-            <configuration>
-              <template>announcement.vm</template>
-              <templateDirectory>src/changes</templateDirectory>
-              <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
-              <announcementDirectory>.</announcementDirectory>
-              <announcementFile>RELEASE-NOTES.md</announcementFile>
-              <issueManagementSystems>
-                <issueManagementSystem>changes.xml</issueManagementSystem>
-                <!--<issueManagementSystem>JIRA</issueManagementSystem> -->
-              </issueManagementSystems>
-              <version>${Log4jReleaseVersion}</version>
-              <announceParameters>
-                <releaseVersion>${Log4jReleaseVersion}</releaseVersion>
-                <releaseCount>${Log4jReleaseCount}</releaseCount>
-              </announceParameters>
-              <useJql>true</useJql>
-            </configuration>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
             <executions>
               <execution>
-                <id>create-release-notes</id>
-                <phase>generate-resources</phase>
+                <id>changelog-releaser</id>
+                <!-- Choosing the earlier possible phase, since `ChangelogReleaser` execution doesn't depend on anything: -->
+                <phase>validate</phase>
                 <goals>
-                  <goal>announcement-generate</goal>
+                  <goal>java</goal>
                 </goals>
               </execution>
             </executions>
+            <configuration>
+              <includeProjectDependencies>false</includeProjectDependencies>
+              <includePluginDependencies>true</includePluginDependencies>
+              <executableDependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-changelog</artifactId>
+              </executableDependency>
+              <mainClass>org.apache.logging.log4j.changelog.releaser.ChangelogReleaser</mainClass>
+              <systemProperties>
+                <systemProperty>
+                  <key>log4j.changelog.directory</key>
+                  <value>${project.basedir}/src/changelog</value>
+                </systemProperty>
+                <systemProperty>
+                  <key>log4j.changelog.releaseVersion</key>
+                  <value>${Log4jReleaseVersion}</value>
+                </systemProperty>
+              </systemProperties>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-changelog</artifactId>
+                <version>${log4j-tools.version}</version>
+              </dependency>
+            </dependencies>
           </plugin>
         </plugins>
       </build>
