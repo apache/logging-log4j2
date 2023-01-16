@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.smtp.appender;
 
 import org.apache.logging.log4j.core.Appender;
@@ -35,8 +34,6 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
-
-import java.io.Serializable;
 
 /**
  * Send an e-mail when a specific logging event occurs, typically on errors or
@@ -65,7 +62,7 @@ public final class SmtpAppender extends AbstractAppender {
     /** The SMTP Manager */
     private final SmtpManager manager;
 
-    private SmtpAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout, final boolean ignoreExceptions,
+    private SmtpAppender(final String name, final Filter filter, final Layout layout, final boolean ignoreExceptions,
                          Property[] properties, final SmtpManager manager) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
@@ -237,7 +234,7 @@ public final class SmtpAppender extends AbstractAppender {
          * {@linkplain HtmlLayout#createDefaultLayout() default HTML layout}.
          */
         @Override
-        public Builder setLayout(final Layout<? extends Serializable> layout) {
+        public Builder setLayout(final Layout layout) {
             return super.setLayout(layout);
         }
 
@@ -284,7 +281,7 @@ public final class SmtpAppender extends AbstractAppender {
                                               final String smtpHost, final String smtpPortStr,
                                               final String smtpUsername, final String smtpPassword,
                                               final String smtpDebug, final String bufferSizeStr,
-                                              Layout<? extends Serializable> layout, Filter filter,
+                                              Layout layout, Filter filter,
                                               final String ignore) {
         if (name == null) {
             LOGGER.error("No name provided for SmtpAppender");

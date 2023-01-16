@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +23,13 @@ import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests the JdkMapAdapterStringMap class.
@@ -49,33 +50,6 @@ public class JdkMapAdapterStringMapTest {
         original.putValue("C", "Cvalue");
         original.putValue("3", "3value");
         assertEquals("{3=3value, B=Bvalue, C=Cvalue, a=avalue, a2=bvalue}", original.toString());
-    }
-
-    @Test
-    public void testSerialization() throws Exception {
-        final JdkMapAdapterStringMap original = new JdkMapAdapterStringMap();
-        original.putValue("a", "avalue");
-        original.putValue("B", "Bvalue");
-        original.putValue("3", "3value");
-
-        final byte[] binary = serialize(original);
-        final JdkMapAdapterStringMap copy = deserialize(binary);
-        assertEquals(original, copy);
-    }
-
-    private byte[] serialize(final JdkMapAdapterStringMap data) throws IOException {
-        final ByteArrayOutputStream arr = new ByteArrayOutputStream();
-        final ObjectOutputStream out = new ObjectOutputStream(arr);
-        out.writeObject(data);
-        return arr.toByteArray();
-    }
-
-    @SuppressWarnings("BanSerializableRead")
-    private JdkMapAdapterStringMap deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
-        final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
-        final ObjectInputStream in = new ObjectInputStream(inArr);
-        final JdkMapAdapterStringMap result = (JdkMapAdapterStringMap) in.readObject();
-        return result;
     }
 
     @Test

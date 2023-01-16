@@ -19,10 +19,9 @@ package org.apache.logging.log4j.message;
 /**
  * {@link Clearable} objects may be reset to a reusable state.
  *
- * This type should be combined into {@link ReusableMessage} as a default method for 3.0.
- *
- * @since 2.11.1
+ * @deprecated use {@link ReusableMessage} directly
  */
+@Deprecated(since = "3.0.0")
 interface Clearable {
 
     /**

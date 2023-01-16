@@ -16,15 +16,13 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
 /**
  * The StructuredData identifier.
  */
-public class StructuredDataId implements Serializable, StringBuilderFormattable {
+public class StructuredDataId implements StringBuilderFormattable {
 
     /**
      * RFC 5424 Time Quality.
@@ -49,7 +47,6 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      */
     public static final String RESERVED = "-1";
 
-    private static final long serialVersionUID = -8252896346202183738L;
     private static final int MAX_LENGTH = 32;
     private static final String AT_SIGN = "@";
 

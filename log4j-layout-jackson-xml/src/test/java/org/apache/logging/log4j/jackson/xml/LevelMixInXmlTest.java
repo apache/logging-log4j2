@@ -14,23 +14,29 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.jackson.xml;
 
-import org.apache.logging.log4j.core.test.categories.Layouts;
+import java.io.IOException;
+
 import org.apache.logging.log4j.jackson.LevelMixInTest;
-import org.junit.Ignore;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Ignore("Fails for #testNameOnly()")
-@Category(Layouts.Xml.class)
 public class LevelMixInXmlTest extends LevelMixInTest {
 
     @Override
     protected ObjectMapper newObjectMapper() {
         return new Log4jXmlObjectMapper();
+    }
+
+    @Test
+    @Disabled("String-like objects like Level do not work as root elements.")
+    @Override
+    public void testNameOnly() throws IOException {
+        // Disabled: see https://github.com/FasterXML/jackson-dataformat-xml
+        super.testNameOnly();
     }
 
 }

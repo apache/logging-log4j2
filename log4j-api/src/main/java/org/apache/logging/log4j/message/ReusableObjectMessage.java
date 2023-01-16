@@ -24,8 +24,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableObjectMessage implements ReusableMessage, ParameterVisitable, Clearable {
-    private static final long serialVersionUID = 6922476812535519960L;
+public class ReusableObjectMessage implements ReusableMessage, ParameterVisitable {
 
     private transient Object obj;
 

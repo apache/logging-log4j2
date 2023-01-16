@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-<Configuration status="INFO" packages="">
+<Configuration status="INFO">
   <Appenders>
     <File name="stdout" ignoreExceptions="false" fileName="target/test-xml-layout.log" append="false">
       <XmlLayout compact="true" eventEol="true" />

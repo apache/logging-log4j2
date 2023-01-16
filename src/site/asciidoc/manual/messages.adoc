@@ -223,18 +223,15 @@ Otherwise, the Map will be formatted as `"key1=value1 key2=value2 ..."`.
 Some Appenders make special use of `MapMessage` objects:
 
 * When a link:appenders.html#JMSAppender[JMS Appender] is configured
-with a `MessageLayout`, it converts a Log4j `MapMessage` to a JMS
+with a no layout, it converts a Log4j `MapMessage` to a JMS
 `javax.jms.MapMessage`.
 * When a link:appenders.html#JDBCAppender[JDBC Appender] is configured
-with a `MessageLayout`, it converts a Log4j `MapMessage` to values in a
+with no layout, it converts a Log4j `MapMessage` to values in a
 SQL INSERT statement.
 * When a link:appenders.html#NoSQLAppenderMongoDB3[MongoDB3 Appender] or
 link:appenders.html#NoSQLAppenderMongoDB4[MongoDB4 Appender] is
-configured with a `MessageLayout`, it converts a Log4j `MapMessage` to
+configured with no layout, it converts a Log4j `MapMessage` to
 fields in a MongoDB object.
-
-When an Appender is `MessageLayout`-aware, the object Log4j sends to
-target is not a Log4j Log Event but a custom object.
 
 [#MessageFormatMessage]
 === MessageFormatMessage

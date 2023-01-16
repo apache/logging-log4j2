@@ -16,19 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -36,7 +24,14 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the SortedArrayStringMap class.
@@ -78,120 +73,6 @@ public class SortedArrayStringMapTest {
         assertEquals("{3=3value, B=Bvalue, a=avalue}", original.toString());
     }
 
-    @Test
-    public void testSerialization() throws Exception {
-        final SortedArrayStringMap original = new SortedArrayStringMap();
-        original.putValue("a", "avalue");
-        original.putValue("B", null); // null may be treated differently
-        original.putValue("3", "3value");
-
-        final byte[] binary = serialize(original);
-        final SortedArrayStringMap copy = deserialize(binary);
-        assertEquals(original, copy);
-    }
-
-    @Test
-    public void testSerializationOfEmptyMap() throws Exception {
-        final SortedArrayStringMap original = new SortedArrayStringMap();
-        final byte[] binary = serialize(original);
-        final SortedArrayStringMap copy = deserialize(binary);
-        assertEquals(original, copy);
-    }
-
-    @Test
-    public void testSerializationOfNonSerializableValue() throws Exception {
-        final SortedArrayStringMap original = new SortedArrayStringMap();
-        original.putValue("a", "avalue");
-        original.putValue("B", "Bvalue");
-        original.putValue("unserializable", new Object());
-
-        final byte[] binary = serialize(original);
-        final SortedArrayStringMap copy = deserialize(binary);
-
-        final SortedArrayStringMap expected = new SortedArrayStringMap();
-        expected.putValue("a", "avalue");
-        expected.putValue("B", "Bvalue");
-        expected.putValue("unserializable", null);
-        assertEquals(expected, copy);
-    }
-
-    @Test
-    public void testDeserializationOfUnknownClass() throws Exception {
-        final SortedArrayStringMap original = new SortedArrayStringMap();
-        original.putValue("a", "avalue");
-        original.putValue("serializableButNotInClasspathOfDeserializer", new org.junit.runner.Result());
-        original.putValue("zz", "last");
-
-        final File file = new File("target/SortedArrayStringMap.ser");
-        try (FileOutputStream fout = new FileOutputStream(file, false)) {
-            fout.write(serialize(original));
-            fout.flush();
-        }
-        final String classpath = createClassPath(SortedArrayStringMap.class, DeserializerHelper.class);
-        final Process process = new ProcessBuilder("java", "-cp", classpath,
-                DeserializerHelper.class.getName(), file.getPath()).start();
-        final BufferedReader in = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-        final int exitValue = process.waitFor();
-
-        file.delete();
-        if (exitValue != 0) {
-            final StringBuilder sb = new StringBuilder();
-            sb.append("DeserializerHelper exited with error code ").append(exitValue);
-            sb.append(". Classpath='").append(classpath);
-            sb.append("'. Process output: ");
-            int c = -1;
-            while ((c = in.read()) != -1) {
-                sb.append((char) c);
-            }
-            fail(sb.toString());
-        }
-    }
-
-    private String createClassPath(final Class<?>... classes) throws Exception {
-        final StringBuilder result = new StringBuilder();
-        for (final Class<?> cls : classes) {
-            if (result.length() > 0) {
-                result.append(File.pathSeparator);
-            }
-            result.append(createClassPath(cls));
-        }
-        return result.toString();
-    }
-
-    private String createClassPath(final Class<?> cls) throws Exception {
-        final String resource = "/" + cls.getName().replace('.', '/') + ".class";
-        final URL url = cls.getResource(resource);
-        String location = url.toString();
-        if (location.startsWith("jar:")) {
-            location = location.substring("jar:".length(), location.indexOf('!'));
-        }
-        if (location.startsWith("file:/")) {
-            location = location.substring("file:/".length());
-        }
-        if (location.endsWith(resource)) {
-            location = location.substring(0, location.length() - resource.length());
-        }
-        if (!new File(location).exists()) {
-            location = File.separator + location;
-        }
-        location = URLDecoder.decode(location, Charset.defaultCharset().name()); // replace %20 with ' ' etc
-        return location.isEmpty() ? "." : location;
-    }
-
-    private byte[] serialize(final SortedArrayStringMap data) throws IOException {
-        final ByteArrayOutputStream arr = new ByteArrayOutputStream();
-        final ObjectOutputStream out = new ObjectOutputStream(arr);
-        out.writeObject(data);
-        return arr.toByteArray();
-    }
-
-    @SuppressWarnings("BanSerializableRead")
-    private SortedArrayStringMap deserialize(final byte[] binary) throws IOException, ClassNotFoundException {
-        final ByteArrayInputStream inArr = new ByteArrayInputStream(binary);
-        try (final ObjectInputStream in = new FilteredObjectInputStream(inArr)) {
-            return (SortedArrayStringMap) in.readObject();
-        }
-    }
 
     @Test
     public void testPutAll() {

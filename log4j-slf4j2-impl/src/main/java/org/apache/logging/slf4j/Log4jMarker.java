@@ -17,6 +17,7 @@
 package org.apache.logging.slf4j;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -79,10 +80,7 @@ class Log4jMarker implements Marker {
             return false;
         }
         final Log4jMarker other = (Log4jMarker) obj;
-        if (!Objects.equals(marker, other.marker)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(marker, other.marker);
     }
 
     public org.apache.logging.log4j.Marker getLog4jMarker() {
@@ -112,6 +110,9 @@ class Log4jMarker implements Marker {
     @Override
     public Iterator<Marker> iterator() {
         final org.apache.logging.log4j.Marker[] log4jParents = this.marker.getParents();
+        if (log4jParents == null) {
+            return Collections.emptyIterator();
+        }
         final List<Marker> parents = new ArrayList<>(log4jParents.length);
         for (final org.apache.logging.log4j.Marker m : log4jParents) {
             parents.add(factory.getMarker(m.getName()));

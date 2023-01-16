@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j;
 
-import java.io.Serializable;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -71,7 +70,7 @@ import org.apache.logging.log4j.util.Strings;
  * used in logging configurations.
  * </p>
  */
-public final class Level implements Comparable<Level>, Serializable {
+public final class Level implements Comparable<Level> {
 
     private static final Level[] EMPTY_ARRAY = {};
 
@@ -124,8 +123,6 @@ public final class Level implements Comparable<Level>, Serializable {
      */
     public static final String CATEGORY = NAMESPACE;
 
-    private static final long serialVersionUID = 1581082L;
-
     private final String name;
     private final int intLevel;
     private final StandardLevel standardLevel;
@@ -169,7 +166,7 @@ public final class Level implements Comparable<Level>, Serializable {
      *
      * @param minLevel The minimum level to test.
      * @param maxLevel The maximum level to test.
-     * @return True true if this level is in between the given levels
+     * @return true if this level is in between the given levels
      * @since 2.4
      */
     public boolean isInRange(final Level minLevel, final Level maxLevel) {
@@ -188,7 +185,7 @@ public final class Level implements Comparable<Level>, Serializable {
      *
      * @param level
      *            The level to test.
-     * @return True if this level Level is less specific or the same as the given Level.
+     * @return True if this Level is less specific or the same as the given Level.
      */
     public boolean isLessSpecificThan(final Level level) {
         return this.intLevel >= level.intLevel;
@@ -204,7 +201,7 @@ public final class Level implements Comparable<Level>, Serializable {
      * </p>
      *
      * @param level The level to test.
-     * @return True if this level Level is more specific or the same as the given Level.
+     * @return True if this Level is more specific or the same as the given Level.
      */
     public boolean isMoreSpecificThan(final Level level) {
         return this.intLevel <= level.intLevel;
@@ -220,12 +217,12 @@ public final class Level implements Comparable<Level>, Serializable {
 
     @Override
     public int compareTo(final Level other) {
-        return intLevel < other.intLevel ? -1 : (intLevel > other.intLevel ? 1 : 0);
+        return Integer.compare(intLevel, other.intLevel);
     }
 
     @Override
     public boolean equals(final Object other) {
-        return other instanceof Level && other == this;
+        return other == this;
     }
 
     public Class<Level> getDeclaringClass() {
@@ -366,8 +363,4 @@ public final class Level implements Comparable<Level>, Serializable {
         return Enum.valueOf(enumType, name);
     }
 
-    // for deserialization
-    protected Object readResolve() {
-        return Level.valueOf(this.name);
-    }
 }

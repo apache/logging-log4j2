@@ -16,22 +16,22 @@
  */
 package org.apache.logging.log4j.jndi.lookup;
 
+import java.io.Serializable;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.Reference;
 import javax.naming.Referenceable;
 import javax.naming.StringRefAddr;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.lookup.StrLookup;
-import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.Strings;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.zapodot.junit.ldap.EmbeddedLdapRule;
 import org.zapodot.junit.ldap.EmbeddedLdapRuleBuilder;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
@@ -97,7 +97,7 @@ public class JndiRestrictedLookupTest {
     public void testBadSerializableLookup() throws Exception {
         int port = embeddedLdapRule.embeddedServerPort();
         Context context = embeddedLdapRule.context();
-        context.bind(   "cn=" + TEST_MESSAGE +"," + DOMAIN_DSN, new SimpleMessage("Test Message"));
+        context.bind(   "cn=" + TEST_MESSAGE +"," + DOMAIN_DSN, new SerializableMessage("Test Message"));
         final StrLookup lookup = new JndiLookup();
         String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_MESSAGE + "," + DOMAIN_DSN);
         if (result != null) {
@@ -114,7 +114,7 @@ public class JndiRestrictedLookupTest {
         }
     }
 
-    class Fruit implements Referenceable {
+    static class Fruit implements Referenceable {
         String fruit;
         public Fruit(String f) {
             fruit = f;
@@ -128,6 +128,34 @@ public class JndiRestrictedLookupTest {
 
         public String toString() {
             return fruit;
+        }
+    }
+
+    static class SerializableMessage implements Serializable, Message {
+        private final String message;
+
+        SerializableMessage(String message) {
+            this.message = message;
+        }
+
+        @Override
+        public String getFormattedMessage() {
+            return message;
+        }
+
+        @Override
+        public String getFormat() {
+            return Strings.EMPTY;
+        }
+
+        @Override
+        public Object[] getParameters() {
+            return null;
+        }
+
+        @Override
+        public Throwable getThrowable() {
+            return null;
         }
     }
 

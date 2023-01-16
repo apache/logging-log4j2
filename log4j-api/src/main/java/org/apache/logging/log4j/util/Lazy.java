@@ -42,7 +42,8 @@ public interface Lazy<T> extends Supplier<T> {
     void set(final T newValue);
 
     /**
-     * Creates a lazy value using the provided Supplier for initialization guarded by a Lock.
+     * Creates a strict lazy value using the provided Supplier. The supplier is guaranteed to only be invoked by at
+     * most one thread, and all threads will see the same published value when this returns.
      */
     static <T> Lazy<T> lazy(final Supplier<T> supplier) {
         Objects.requireNonNull(supplier);
@@ -57,8 +58,8 @@ public interface Lazy<T> extends Supplier<T> {
     }
 
     /**
-     * Creates a relaxed lazy value using the provided Supplier for initialization which may be invoked more than once
-     * in order to set the initialized value.
+     * Creates a relaxed lazy value using the provided Supplier. The supplier may be invoked by more than one thread,
+     * but all threads will seem the same published value when this returns.
      */
     static <T> Lazy<T> relaxed(final Supplier<T> supplier) {
         Objects.requireNonNull(supplier);

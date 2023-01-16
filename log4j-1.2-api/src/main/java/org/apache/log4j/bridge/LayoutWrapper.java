@@ -24,17 +24,17 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 public class LayoutWrapper extends Layout {
 
-    private final org.apache.logging.log4j.core.Layout<?> layout;
+    private final org.apache.logging.log4j.core.Layout layout;
 
     /**
      * Adapts a Log4j 2.x layout into a Log4j 1.x layout. Applying this method to
      * the result of {@link LayoutAdapter#adapt(Layout)} should return the original
      * Log4j 1.x layout.
-     * 
+     *
      * @param layout a Log4j 2.x layout
      * @return a Log4j 1.x layout or {@code null} if the parameter is {@code null}
      */
-    public static Layout adapt(org.apache.logging.log4j.core.Layout<?> layout) {
+    public static Layout adapt(org.apache.logging.log4j.core.Layout layout) {
         if (layout instanceof LayoutAdapter) {
             return ((LayoutAdapter) layout).getLayout();
         }
@@ -49,7 +49,7 @@ public class LayoutWrapper extends Layout {
      *
      * @param layout The layout to wrap.
      */
-    public LayoutWrapper(org.apache.logging.log4j.core.Layout<?> layout) {
+    public LayoutWrapper(org.apache.logging.log4j.core.Layout layout) {
         this.layout = layout;
     }
 
@@ -63,7 +63,7 @@ public class LayoutWrapper extends Layout {
      *
      * @return The wrapped object.
      */
-    public org.apache.logging.log4j.core.Layout<?> getLayout() {
+    public org.apache.logging.log4j.core.Layout getLayout() {
         return this.layout;
     }
 

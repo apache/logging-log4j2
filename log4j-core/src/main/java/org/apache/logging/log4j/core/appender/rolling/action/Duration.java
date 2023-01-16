@@ -14,10 +14,8 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,8 +30,7 @@ import java.util.regex.Pattern;
  *
  * @see #parse(CharSequence)
  */
-public class Duration implements Serializable, Comparable<Duration> {
-    private static final long serialVersionUID = -3756810052716342061L;
+public class Duration implements Comparable<Duration> {
 
     /**
      * Constant for a duration of zero.

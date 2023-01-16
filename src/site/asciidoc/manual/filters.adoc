@@ -85,7 +85,7 @@ A configuration containing the BurstFilter might look like:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -116,7 +116,7 @@ A configuration containing the CompositeFilter might look like:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Filters>
     <MarkerFilter marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
     <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
@@ -197,7 +197,7 @@ Here is a sample configuration containing the DynamicThresholdFilter:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <DynamicThresholdFilter key="loginId" defaultThreshold="ERROR"
                           onMatch="ACCEPT" onMismatch="NEUTRAL">
     <KeyValuePair key="User1" value="DEBUG"/>
@@ -261,7 +261,7 @@ events:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <MapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="eventId" value="Login"/>
     <KeyValuePair key="eventId" value="Logout"/>
@@ -290,7 +290,7 @@ preceding example since the only logger configured is the root.
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -321,7 +321,7 @@ root is only configured with a single appender reference.
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -378,7 +378,7 @@ appender if the Marker matches:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -438,7 +438,7 @@ appender if the Marker matches:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <MutableContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or"
     configLocation="http://localhost:8080/threadContextFilter.json" pollInterval="300"/>
   <Appenders>
@@ -496,7 +496,7 @@ appender if no marker is there:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -553,7 +553,7 @@ appender if it contains the word "test":
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -734,7 +734,7 @@ particular events:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <StructuredDataFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="id" value="Login"/>
     <KeyValuePair key="id" value="Logout"/>
@@ -798,7 +798,7 @@ A configuration containing the ContextMapFilter might look like:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <ContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
     <KeyValuePair key="User1" value="DEBUG"/>
     <KeyValuePair key="User2" value="WARN"/>
@@ -826,7 +826,7 @@ The ContextMapFilter can also be applied to a logger for filtering:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -885,7 +885,7 @@ appender if the level matches:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
@@ -946,7 +946,7 @@ appender from 5:00 to 5:30 am each day using the default timezone:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">

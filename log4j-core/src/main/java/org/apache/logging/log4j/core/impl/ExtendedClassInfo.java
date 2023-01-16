@@ -16,17 +16,13 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.core.pattern.TextRenderer;
 
 /**
  * Class and package data used with a {@link StackTraceElement} in a {@link ExtendedStackTraceElement}.
  */
-public final class ExtendedClassInfo implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public final class ExtendedClassInfo {
 
     private final boolean exact;
 

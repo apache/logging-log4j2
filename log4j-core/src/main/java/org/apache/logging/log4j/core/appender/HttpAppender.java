@@ -14,8 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender;
+
+import java.net.URL;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -29,11 +32,6 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import java.io.Serializable;
-import java.net.URL;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -153,7 +151,7 @@ public final class HttpAppender extends AbstractAppender {
 
     private final HttpManager manager;
 
-    private HttpAppender(final String name, final Layout<? extends Serializable> layout, final Filter filter,
+    private HttpAppender(final String name, final Layout layout, final Filter filter,
                          final boolean ignoreExceptions, final HttpManager manager, final Property[] properties) {
         super(name, filter, layout, ignoreExceptions, properties);
         Objects.requireNonNull(layout, "layout");

@@ -35,7 +35,6 @@ import org.apache.logging.log4j.util.StringBuilders;
 @AsynchronouslyFormattable
 public class StructuredDataMessage extends MapMessage<StructuredDataMessage, String> {
 
-    private static final long serialVersionUID = 1703221292892071920L;
     private static final int MAX_LENGTH = 32;
     private static final int HASHVAL = 31;
 

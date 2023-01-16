@@ -200,9 +200,6 @@ It also requires an appropriate JDBC driver
 |NoSQL Appender with Apache CouchDB provider
 |LightCouch CouchDB client library and Log4j CouchDB library
 
-|Redis Appender
-|https://github.com/xetorthio/jedis[Jedis client]
-
 |Cassandra Appender
 |Datastax Cassandra driver and Log4j Cassandra library
 

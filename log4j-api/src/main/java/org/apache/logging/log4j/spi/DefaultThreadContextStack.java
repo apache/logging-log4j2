@@ -34,8 +34,6 @@ public class DefaultThreadContextStack implements ThreadContextStack, StringBuil
 
     private static final Object[] EMPTY_OBJECT_ARRAY = {};
 
-    private static final long serialVersionUID = 5050501L;
-
     private static final ThreadLocal<MutableThreadContextStack> STACK = new ThreadLocal<>();
 
     private final boolean useStack;
@@ -163,8 +161,7 @@ public class DefaultThreadContextStack implements ThreadContextStack, StringBuil
     public Iterator<String> iterator() {
         final MutableThreadContextStack values = STACK.get();
         if (values == null) {
-            final List<String> empty = Collections.emptyList();
-            return empty.iterator();
+            return Collections.emptyIterator();
         }
         return values.iterator();
     }

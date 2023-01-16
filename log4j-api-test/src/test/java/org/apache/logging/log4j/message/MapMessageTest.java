@@ -16,16 +16,17 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -309,6 +310,14 @@ public class MapMessageTest {
         final String result = msg.remove(key);
         final String expected = "formatTo";
         assertEquals(expected, result);
+    }
+
+    @Test
+    public void testTime() throws Exception {
+        final Time time = new Time(12, 5, 5);
+        final ObjectMapMessage message = new ObjectMapMessage().with("time", time);
+        assertEquals("time=\"" + time.toString() + "\"",
+                message.getFormattedMessage(), "Incorrect time format");
     }
 
     private static final class FormattableTestType implements StringBuilderFormattable {

@@ -81,8 +81,6 @@ public final class MarkerManager {
      */
     public static class Log4jMarker implements Marker, StringBuilderFormattable {
 
-        private static final long serialVersionUID = 100L;
-
         private final String name;
 
         private volatile Marker[] parents;

@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -35,21 +32,18 @@ import org.apache.logging.log4j.status.StatusLogger;
  * </p>
  */
 public class LocalizedMessage implements Message, LoggerNameAwareMessage {
-    private static final long serialVersionUID = 3893703791567290742L;
 
-    private String baseName;
+    private final String baseName;
 
-    // ResourceBundle is not Serializable.
-    private transient ResourceBundle resourceBundle;
+    private final ResourceBundle resourceBundle;
 
     private final Locale locale;
 
-    private transient StatusLogger logger = StatusLogger.getLogger();
+    private final StatusLogger logger = StatusLogger.getLogger();
 
     private String loggerName;
-    private String key;
-    private String[] stringArgs;
-    private transient Object[] argArray;
+    private final String key;
+    private final Object[] argArray;
     private String formattedMessage;
     private transient Throwable throwable;
 
@@ -155,7 +149,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Set the name of the Logger.
-     * 
+     *
      * @param name The name of the Logger.
      */
     @Override
@@ -165,7 +159,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Returns the name of the Logger.
-     * 
+     *
      * @return the name of the Logger.
      */
     @Override
@@ -175,7 +169,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Returns the formatted message after looking up the format in the resource bundle.
-     * 
+     *
      * @return The formatted message String.
      */
     @Override
@@ -193,8 +187,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         }
         final String myKey = getFormat();
         final String msgPattern = (bundle == null || !bundle.containsKey(myKey)) ? myKey : bundle.getString(myKey);
-        final Object[] array = argArray == null ? stringArgs : argArray;
-        final FormattedMessage msg = new FormattedMessage(msgPattern, array);
+        final FormattedMessage msg = new FormattedMessage(msgPattern, argArray);
         formattedMessage = msg.getFormattedMessage();
         throwable = msg.getThrowable();
         return formattedMessage;
@@ -207,10 +200,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     @Override
     public Object[] getParameters() {
-        if (argArray != null) {
-            return argArray;
-        }
-        return stringArgs;
+        return argArray;
     }
 
     @Override
@@ -220,7 +210,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Override this to use a ResourceBundle.Control in Java 6
-     * 
+     *
      * @param rbBaseName The base name of the resource bundle, a fully qualified class name.
      * @param resourceBundleLocale The locale to use when formatting the message.
      * @param loop If true the key will be treated as a package or class name and a resource bundle will be located
@@ -269,31 +259,4 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         return getFormattedMessage();
     }
 
-    private void writeObject(final ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        getFormattedMessage();
-        out.writeUTF(formattedMessage);
-        out.writeUTF(key);
-        out.writeUTF(baseName);
-        out.writeInt(argArray.length);
-        stringArgs = new String[argArray.length];
-        int i = 0;
-        for (final Object obj : argArray) {
-            stringArgs[i] = obj.toString();
-            ++i;
-        }
-        out.writeObject(stringArgs);
-    }
-
-    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        formattedMessage = in.readUTF();
-        key = in.readUTF();
-        baseName = in.readUTF();
-        in.readInt();
-        stringArgs = (String[]) in.readObject();
-        logger = StatusLogger.getLogger();
-        resourceBundle = null;
-        argArray = null;
-    }
 }

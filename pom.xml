@@ -310,14 +310,14 @@
     <!-- Dependency versions -->
     <!-- We can use the property names from Spring Boot: -->
     <!--  https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-dependencies/2.7.4/spring-boot-dependencies-2.7.4.pom -->
-    <activemq.version>5.17.2</activemq.version>
+    <activemq.version>5.17.3</activemq.version>
     <assertj.version>3.21.0</assertj.version>
     <awaitility.version>4.0.2</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
-    <cassandra.version>3.11.13</cassandra.version>
+    <cassandra.version>3.11.14</cassandra.version>
     <cassandra-driver.version>3.11.3</cassandra-driver.version>
     <commons-codec.version>1.15</commons-codec.version>
-    <commons-compress.version>1.21</commons-compress.version>
+    <commons-compress.version>1.22</commons-compress.version>
     <commons-csv.version>1.8</commons-csv.version>
     <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
     <commons-io.version>2.11.0</commons-io.version>
@@ -326,12 +326,12 @@
     <commons-pool2.version>2.11.1</commons-pool2.version>
     <conversant.disruptor.version>1.2.19</conversant.disruptor.version> <!-- Version 1.2.16 requires Java 9 -->
     <disruptor.version>3.4.4</disruptor.version>
-    <elasticsearch.version>7.17.6</elasticsearch.version>
+    <elasticsearch.version>7.17.8</elasticsearch.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <embedded-mongo.version>3.5.1</embedded-mongo.version>
     <errorprone.version>2.7.1</errorprone.version>
     <felix.version>7.0.5</felix.version>
-    <flume.version>1.10.1</flume.version>
+    <flume.version>1.11.0</flume.version>
     <graalvm.version>21.3.0</graalvm.version>
     <groovy.version>4.0.6</groovy.version>
     <guava.version>31.1-jre</guava.version>
@@ -341,7 +341,7 @@
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
     <hsqldb.version>2.4.1</hsqldb.version>
     <jackson1.version>1.9.13</jackson1.version>
-    <jackson-bom.version>2.13.4.20221013</jackson-bom.version>
+    <jackson-bom.version>2.14.1</jackson-bom.version>
     <!-- Implementation of `jakarta.activation-api` -->
     <jakarta-activation.version>2.0.1</jakarta-activation.version>
     <jakarta-mail.version>2.0.1</jakarta-mail.version>
@@ -360,10 +360,10 @@
     <java-allocation-instrumenter.version>3.3.0</java-allocation-instrumenter.version>
     <jctools.version>3.3.0</jctools.version>
     <je.version>5.0.73</je.version>
-    <jeromq.version>0.5.2</jeromq.version>
-    <jetty.version>9.4.49.v20220914</jetty.version>
+    <jeromq.version>0.5.3</jeromq.version>
+    <jetty.version>9.4.50.v20221201</jetty.version>
     <jmdns.version>3.5.8</jmdns.version>
-    <jmh.version>1.35</jmh.version>
+    <jmh.version>1.36</jmh.version>
     <jna.version>5.12.1</jna.version>
     <json-unit.version>2.36.0</json-unit.version>
     <junit.version>4.13.2</junit.version>
@@ -380,10 +380,10 @@
     <log4j2-logstash-layout.version>0.18</log4j2-logstash-layout.version>
     <logback.version>1.2.11</logback.version>
     <maven.version>3.8.6</maven.version>
-    <mockito.version>4.8.1</mockito.version>
+    <mockito.version>4.11.0</mockito.version>
     <mongodb.version>4.0.3</mongodb.version>
     <nashorn.version>15.3</nashorn.version>
-    <netty.version>4.1.84.Final</netty.version>
+    <netty.version>4.1.86.Final</netty.version>
     <opentest4j.version>1.2.0</opentest4j.version>
     <org.eclipse.osgi.version>3.16.200</org.eclipse.osgi.version>
     <org.eclipse.persistence.version>2.7.11</org.eclipse.persistence.version>
@@ -393,19 +393,18 @@
     <osgi.resource.version>1.0.1</osgi.resource.version>
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus.errorprone.version>2.8.8</plexus.errorprone.version>
-    <plexus-utils.version>3.2.0</plexus-utils.version>
-    <redis.version>2.9.0</redis.version>
+    <plexus-utils.version>3.5.0</plexus-utils.version>
     <revapi.version>0.22.1</revapi.version>
     <slf4j.version>1.7.36</slf4j.version>
     <spotbugs.version>4.1.2</spotbugs.version>
-    <spring.version>5.3.23</spring.version>
-    <spring-boot.version>2.7.5</spring-boot.version>
+    <spring.version>5.3.24</spring.version>
+    <spring-boot.version>2.7.7</spring-boot.version>
     <system-stubs.version>2.0.1</system-stubs.version>
     <tomcat-juli.version>10.0.23</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
     <wagon.version>3.1.0</wagon.version>
-    <wiremock.version>2.34.0</wiremock.version>
-    <woodstox.version>6.3.1</woodstox.version>
+    <wiremock.version>2.35.0</wiremock.version>
+    <woodstox.version>6.4.0</woodstox.version>
     <xmlunit.version>2.8.3</xmlunit.version>
     <xz.version>1.9</xz.version>
   </properties>
@@ -856,12 +855,6 @@
         <groupId>com.sleepycat</groupId>
         <artifactId>je</artifactId>
         <version>${je.version}</version>
-      </dependency>
-      <!-- Used for Redis appender -->
-      <dependency>
-        <groupId>redis.clients</groupId>
-        <artifactId>jedis</artifactId>
-        <version>${redis.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zeromq</groupId>
@@ -1504,6 +1497,7 @@
             <exclude>**/rabbitmq.config</exclude>
             <exclude>**/MANIFEST.MF</exclude>
             <exclude>.surefire-*</exclude>
+            <exclude>src/changelog/**</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -1921,7 +1915,6 @@
     <module>log4j-plugin-processor</module>
     <module>log4j-plugins</module>
     <module>log4j-plugins-test</module>
-    <module>log4j-redis</module>
     <module>log4j-samples</module>
     <module>log4j-script</module>
     <module>log4j-slf4j2-impl</module>

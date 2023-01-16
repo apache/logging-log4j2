@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.HashMap;
@@ -33,26 +32,19 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Wraps a Throwable to add packaging information about each stack trace element.
  *
- * <p>
- * A proxy is used to represent a throwable that may not exist in a different class loader or JVM. When an application
- * deserializes a ThrowableProxy, the throwable may not be set, but the throwable's information is preserved in other
- * fields of the proxy like the message and stack trace.
- * </p>
+ * <p>A proxy is used to represent a Throwable when serialized and transferred across processes, JVMs, or even
+ * ClassLoaders. This proxy preserves the information from the originating Throwable such as its message and stack
+ * trace.</p>
  *
  * <p>
  * TODO: Move this class to org.apache.logging.log4j.core because it is used from LogEvent.
  * </p>
- * <p>
- * TODO: Deserialize: Try to rebuild Throwable if the target exception is in this class loader?
- * </p>
  */
-public class ThrowableProxy implements Serializable {
+public class ThrowableProxy {
 
     private static final char EOL = '\n';
 
     private static final String EOL_STR = String.valueOf(EOL);
-
-    private static final long serialVersionUID = -2752771578252251910L;
 
     private final ThrowableProxy causeProxy;
 

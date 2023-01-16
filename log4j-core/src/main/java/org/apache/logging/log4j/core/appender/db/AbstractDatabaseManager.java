@@ -14,11 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.db;
 
 import java.io.Flushable;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -38,7 +36,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      */
     protected abstract static class AbstractFactoryData {
         private final int bufferSize;
-        private final Layout<? extends Serializable> layout;
+        private final Layout layout;
 
         /**
          * Constructs the base factory data.
@@ -46,7 +44,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
          * @param bufferSize The size of the buffer.
          * @param layout The appender-level layout
          */
-        protected AbstractFactoryData(final int bufferSize, final Layout<? extends Serializable> layout) {
+        protected AbstractFactoryData(final int bufferSize, final Layout layout) {
             this.bufferSize = bufferSize;
             this.layout = layout;
         }
@@ -65,7 +63,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
          *
          * @return the layout.
          */
-        public Layout<? extends Serializable> getLayout() {
+        public Layout getLayout() {
             return layout;
         }
     }
@@ -91,7 +89,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     private final ArrayList<LogEvent> buffer;
 
     private final int bufferSize;
-    private final Layout<? extends Serializable> layout;
+    private final Layout layout;
     private boolean running;
     /**
      * Instantiates the base manager.
@@ -112,7 +110,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * @param layout the Appender-level layout.
      * @param bufferSize The size of the log event buffer.
      */
-    protected AbstractDatabaseManager(final String name, final int bufferSize, final Layout<? extends Serializable> layout) {
+    protected AbstractDatabaseManager(final String name, final int bufferSize, final Layout layout) {
         super(null, name);
         this.bufferSize = bufferSize;
         this.buffer = new ArrayList<>(bufferSize + 1);
@@ -152,7 +150,7 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
             this.connectAndStart();
             try {
                 for (final LogEvent event : this.buffer) {
-                    this.writeInternal(event, layout != null ? layout.toSerializable(event) : null);
+                    this.writeInternal(event);
                 }
             } finally {
                 this.commitAndClose();
@@ -244,28 +242,31 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
      * This method manages buffering and writing of events.
      *
      * @param event The event to write to the database.
-     * @param serializable Serializable event
      */
-    public final synchronized void write(final LogEvent event, final Serializable serializable) {
+    public final synchronized void write(final LogEvent event) {
         if (isBuffered()) {
             buffer(event);
         } else {
-            writeThrough(event, serializable);
+            writeThrough(event);
         }
+    }
+
+    protected Layout getLayout() {
+        return layout;
     }
 
     /**
      * Performs the actual writing of the event in an implementation-specific way. This method is called immediately
-     * from {@link #write(LogEvent, Serializable)} if buffering is off, or from {@link #flush()} if the buffer has reached its limit.
+     * from {@link #write(LogEvent)} if buffering is off, or from {@link #flush()} if the buffer has reached its limit.
      *
      * @param event The event to write to the database.
      */
-    protected abstract void writeInternal(LogEvent event, Serializable serializable);
+    protected abstract void writeInternal(LogEvent event);
 
-    protected void writeThrough(final LogEvent event, final Serializable serializable) {
+    protected void writeThrough(final LogEvent event) {
         this.connectAndStart();
         try {
-            this.writeInternal(event, serializable);
+            this.writeInternal(event);
         } finally {
             this.commitAndClose();
         }

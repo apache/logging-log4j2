@@ -39,8 +39,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
         JsonConstants.ELT_CONTEXT_STACK, "loggerFQCN", "Source", "endOfBatch" })
 abstract class LogEventWithContextListMixIn implements LogEvent {
 
-    private static final long serialVersionUID = 1L;
-
     @JsonProperty(JsonConstants.ELT_CONTEXT_MAP)
     @JsonSerialize(using = ContextDataAsEntryListSerializer.class)
     @JsonDeserialize(using = ContextDataAsEntryListDeserializer.class)

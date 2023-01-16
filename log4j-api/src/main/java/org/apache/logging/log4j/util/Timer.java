@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.io.Serializable;
 import java.text.DecimalFormat;
 
 /**
@@ -24,9 +23,7 @@ import java.text.DecimalFormat;
  * so long as all the timer methods are called on the same thread in which it was started. Calling start on
  * multiple threads will cause the times to be aggregated.
  */
-public class Timer implements Serializable, StringBuilderFormattable
-{
-    private static final long serialVersionUID = 9175191792439630013L;
+public class Timer implements StringBuilderFormattable {
 
     private final String name;        // The timer's name
     public enum Status {
@@ -38,11 +35,7 @@ public class Timer implements Serializable, StringBuilderFormattable
     private static final long NANO_PER_SECOND = 1000000000L;
     private static final long NANO_PER_MINUTE = NANO_PER_SECOND * 60;
     private static final long NANO_PER_HOUR = NANO_PER_MINUTE * 60;
-    private final ThreadLocal<Long> startTime = new ThreadLocal<Long>() {
-            @Override protected Long initialValue() {
-                return 0L;
-            }
-    };
+    private final ThreadLocal<Long> startTime = ThreadLocal.withInitial(() -> 0L);
 
 
     /**

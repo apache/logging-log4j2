@@ -128,7 +128,7 @@ A typical AsyncAppender configuration might look like:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <File name="MyFile" fileName="logs/app.log">
       <PatternLayout>
@@ -380,7 +380,7 @@ A typical Console configuration might look like:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%m%n"/>
@@ -432,7 +432,7 @@ A Failover configuration might look like:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz"
                  ignoreExceptions="false">
@@ -574,7 +574,7 @@ Here is a sample File configuration:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <File name="MyFile" fileName="logs/app.log">
       <PatternLayout>
@@ -748,7 +748,7 @@ RFC5424Layout, and persists encrypted events to disk:
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Flume name="eventLogger" compress="true" type="persistent" dataDir="./logData">
       <Agent host="192.168.10.101" port="8800"/>
@@ -772,7 +772,7 @@ RFC5424Layout and passes the events to an embedded Flume Agent.
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Flume name="eventLogger" compress="true" type="Embedded">
       <Agent host="192.168.10.101" port="8800"/>
@@ -802,7 +802,7 @@ an embedded Flume Agent.
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="error" name="MyApp" packages="">
+<Configuration status="error" name="MyApp">
   <Appenders>
     <Flume name="eventLogger" compress="true" type="Embedded">
       <Property name="channels">file</Property>
@@ -1214,7 +1214,7 @@ public class ConnectionFactory {
 
 This appender is link:messages.html#MapMessage[`MapMessage`]-aware.
 
-The following configuration uses a `MessageLayout` to indicate that the
+The following configuration uses no layout to indicate that the
 Appender should match the keys of a `MapMessage` to the names of
 `ColumnMapping`s when setting the values of the Appender's SQL INSERT
 statement. This let you insert rows for custom values in a database
@@ -1233,7 +1233,6 @@ table based on a Log4j `MapMessage` instead of values from `LogEvent`s.
       <ColumnMapping name="Id" />
       <ColumnMapping name="ColumnA" />
       <ColumnMapping name="ColumnB" />
-      <MessageLayout />
     </Jdbc>
   </Appenders>
 
@@ -1832,7 +1831,7 @@ Here is a sample MemoryMappedFile configuration:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <MemoryMappedFile name="MyFile" fileName="logs/app.log">
       <PatternLayout>
@@ -2277,7 +2276,7 @@ Here is a sample RandomAccessFile configuration:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RandomAccessFile name="MyFile" fileName="logs/app.log">
       <PatternLayout>
@@ -2292,97 +2291,6 @@ Here is a sample RandomAccessFile configuration:
   </Loggers>
 </Configuration>
 ----
-
-
-[#RedisAppender]
-== RedisAppender
-
-Log4j2 supports a RedisAppender as part of the `log4j2-redis` module. The RedisAppender logs events to a https://redis.io/[Redis] queue. Each log event is appended via the standard
-https://redis.io/commands/rpush[RPUSH] command.
-
-.RedisAppender Parameters
-[cols=",,",options="header",]
-|=======================================================================
-|Parameter Name |Type |Description
-
-|name |String |The name of the Appender. Required.
-
-|layout |Layout |The Layout to use to format the LogEvent. Required,
-there is no default. _New since 2.9, in previous versions <PatternLayout
-pattern="%m"/> was default._
-
-|filter |Filter |A Filter to determine if the event should be handled by
-this Appender. More than one Filter may be used by using a
-CompositeFilter.
-
-|host |String |The hostname on which Redis is running (required).
-
-|port |int |The port on which Redis is running. Default: 6379.
-
-|keys |String |The keys of the queue to which each log message should be sent, separated by commas (e.g. "key-one,key-two,key-three"). Default: "logEvents".
-
-|ignoreExceptions |boolean |The default is `true`, causing exceptions
-encountered while appending events to be internally logged and then
-ignored. When set to `false` exceptions will be propagated to the
-caller, instead. You must set this to `false` when wrapping this
-Appender in a link:#FailoverAppender[FailoverAppender].
-
-|immediateFlush | boolean | Whether to immediately send logs to redis rather than sending at the end of a batch. Default: true.
-
-|queueCapacity | int | The maximum number of logs to hold in memory before sending to Redis. Default: 20.
-
-|SslConfiguration |SslConfiguration |Contains the configuration for the KeyStore and
-TrustStore. See link:#SSL[SSL].
-
-|RedisPoolConfiguration |LoggingRedisPoolConfiguration |Granular configuration of the resource pool for the Redis
-client connection. Available parameters include maxIdle, minIdle, testOnBorrow, testOnReturn, testWhileIdle, numTestsPerEvictionRun, and timeBetweenEvictionRunsMillis.
-|=======================================================================
-
-Here is a sample RedisAppender configuration snippet in XML:
-
-[source,prettyprint,linenums]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-  ...
-  <Appenders>
-    <Redis name"RedisAppend" host="localhost" port=6379 keys="key-one,key-two" immediateFlush=false>
-      <PatternLayout>
-        <Pattern>%m</Pattern>
-      </PatternLayout>
-    </Redis>
-    <Async name="Async">
-      <AppenderRef ref="RedisAppend"/>
-    </Async>
-  </Appenders>
-----
-You can also configure the appender easily in YML:
-[source,prettyprint,linenums]
-----
-Configuration:
-  Appenders:
-    Redis:
-      name: RedisAppend
-      host: localhost
-      port: 6379
-      Keys: key-one,key-two
-      PatternLayout:
-        pattern: "%m"
-----
-
-
-This appender operates synchronously by default and will block until the record
-has been acknowledged by the Redis server. Wrap with
-http://logging.apache.org/log4j/2.x/manual/appenders.html#AsyncAppender[Async
-appender] and/or set syncSend to `false` to log asynchronously (as in the first example above).
-
-=== Redis vs. Kafka
-
-In a logging context, Redis may play a similar role to Kafka, serving as a message broker
-in logging pipelines. In general, Redis may be preferred to Kafka in situations where
-an in-memory queue is desired. A fairly simple breakdown of the diffferent approaches can be found
-https://stackoverflow.com/questions/37990784/difference-between-redis-and-kafka[on StackOverflow here].
-
-If you prefer to use Kafka, please refer to the supported <<KafkaAppender>>.
 
 [#RewriteAppender]
 == RewriteAppender
@@ -2445,7 +2353,7 @@ product key and its value to the MapMessage.:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%m%n"/>
@@ -2486,7 +2394,7 @@ product key and its value to the MapMessage:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%m%n"/>
@@ -2963,7 +2871,7 @@ the current year and month, and will compress each archive using gzip:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
@@ -2990,7 +2898,7 @@ files before removing them.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
@@ -3021,7 +2929,7 @@ and will roll every 6 hours when the hour is divisible by 6:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
@@ -3050,7 +2958,7 @@ while the file size is limited to 250MB:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" filePattern="logs/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
       <PatternLayout>
@@ -3076,7 +2984,7 @@ number of files saved each hour to 10:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingFile name="RollingFile" filePattern="logs/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
       <PatternLayout>
@@ -3278,7 +3186,7 @@ and are 60 days old or older are deleted at rollover time.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Properties>
     <Property name="baseDir">logs</Property>
   </Properties>
@@ -3315,7 +3223,7 @@ comes first.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Properties>
     <Property name="baseDir">logs</Property>
   </Properties>
@@ -3405,7 +3313,7 @@ by the script.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="trace" name="MyApp" packages="">
+<Configuration status="trace" name="MyApp">
   <Properties>
     <Property name="baseDir">logs</Property>
   </Properties>
@@ -3530,7 +3438,7 @@ files.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="trace" name="MyApp" packages="">
+<Configuration status="trace" name="MyApp">
   <Properties>
     <Property name="baseDir">logs</Property>
   </Properties>
@@ -3704,7 +3612,7 @@ will compress each archive using gzip:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
@@ -3731,7 +3639,7 @@ files before removing them.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
@@ -3763,7 +3671,7 @@ the hour is divisible by 6:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="logs/app.log"
                  filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz">
@@ -3979,7 +3887,7 @@ created as needed.
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Flume name="AuditLogger" compress="true">
       <Agent host="192.168.10.101" port="8800"/>
@@ -4089,7 +3997,7 @@ Appender in a link:#FailoverAppender[FailoverAppender].
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <SMTP name="Mail" subject="Error Log" to="errors@logging.apache.org" from="test@logging.apache.org"
           smtpHost="localhost" smtpPort="25" bufferSize="50">
@@ -4218,7 +4126,7 @@ This is an unsecured TCP configuration:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Socket name="socket" host="localhost" port="9500">
       <JsonLayout properties="true"/>
@@ -4237,7 +4145,7 @@ This is a secured link:#SSL[SSL] configuration:
 [source,prettyprint,linenums]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Socket name="socket" host="localhost" port="9500">
       <JsonLayout properties="true"/>
@@ -4495,7 +4403,7 @@ A sample syslogAppender configuration that is configured with two
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Syslog name="bsd" host="localhost" port="514" protocol="TCP"/>
     <Syslog name="RFC5424" format="RFC5424" host="localhost" port="8514"
@@ -4521,7 +4429,7 @@ conforms with either the BSD Syslog format or the RFC 5424 format.
 [source,xml]
 ----
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" name="MyApp" packages="">
+<Configuration status="warn" name="MyApp">
   <Appenders>
     <Syslog name="bsd" host="localhost" port="6514" protocol="SSL">
       <SSL>

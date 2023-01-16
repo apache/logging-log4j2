@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.lang.reflect.Array;
+import java.util.Collections;
 import java.util.Map.Entry;
 
 import static java.lang.Character.toLowerCase;
@@ -25,6 +27,21 @@ import static java.lang.Character.toLowerCase;
  */
 @InternalApi
 public final class StringBuilders {
+
+    private static final Object timeClass;
+
+    static {
+        Object obj;
+        try {
+            Class<?> clazz = Class.forName("java.sql.Time");
+            long current = System.currentTimeMillis();
+            obj = clazz.getDeclaredConstructor(Long.TYPE).newInstance(current);
+        } catch(Exception ex) {
+            obj = null;
+        }
+        timeClass = obj;
+    }
+
     private StringBuilders() {
     }
 
@@ -118,10 +135,19 @@ public final class StringBuilders {
             stringBuilder.append(((Float) obj).floatValue());
         } else if (obj instanceof Byte) {
             stringBuilder.append(((Byte) obj).byteValue());
+        } else if (isTime(obj) || obj instanceof java.time.temporal.Temporal) {
+            stringBuilder.append(obj);
         } else {
             return false;
         }
         return true;
+    }
+
+    /*
+        Check to see if obj is an instance of java.sql.time without requiring the java.sql module.
+     */
+    private static boolean isTime(final Object obj) {
+        return obj.getClass().isInstance(timeClass);
     }
 
     /**

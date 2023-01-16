@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.io.Serializable;
-
 /**
  * Appends {@link LogEvent}s. An Appender can contain a {@link Layout} if applicable as well
  * as an {@link ErrorHandler}. Typical Appender implementations coordinate with an
@@ -43,7 +41,7 @@ public interface Appender extends LifeCycle {
      * @since 2.6
      */
     String ELEMENT_TYPE = "appender";
-    
+
     /**
      * Empty array.
      */
@@ -71,7 +69,7 @@ public interface Appender extends LifeCycle {
      *
      * @return the Layout for this Appender or {@code null} if none is configured.
      */
-    Layout<? extends Serializable> getLayout();
+    Layout getLayout();
 
     /**
      * Some Appenders need to propagate exceptions back to the application. When {@code ignoreExceptions} is

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -30,9 +33,6 @@ import org.apache.logging.log4j.plugins.Named;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
-
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -73,7 +73,6 @@ public class AsyncLoggerTimestampMessageTest {
     }
 
     static class TimeMsg extends SimpleMessage implements TimestampMessage {
-        private static final long serialVersionUID = 1L;
         private final long timestamp;
 
         public TimeMsg(final String msg, final long timestamp) {

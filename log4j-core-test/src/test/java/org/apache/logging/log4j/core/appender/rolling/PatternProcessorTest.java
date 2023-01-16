@@ -14,13 +14,15 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
@@ -34,8 +36,10 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class PatternProcessorTest {
 
-    private String format(final long time) {
-        return new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").format(new Date(time));
+    private static Instant parseLocalDateTime(String text) {
+        return LocalDateTime.parse(text)
+                .atZone(ZoneId.systemDefault())
+                .toInstant();
     }
 
     @Test
@@ -56,155 +60,142 @@ public class PatternProcessorTest {
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextHour() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
-        final Calendar initial = Calendar.getInstance();
-        initial.set(2014, Calendar.MARCH, 4, 10, 31, 59); // Tue, March 4, 2014, 10:31
-        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+        Instant initial = parseLocalDateTime("2014-03-04T10:31:59");
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-        // expect Wed, March 4, 2014, 11:00
-        final Calendar expected = Calendar.getInstance();
-        expected.set(2014, Calendar.MARCH, 4, 11, 0, 0);
-        expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        Instant expected = parseLocalDateTime("2014-03-04T11:00:00");
+        assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextHour2() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
-        final Calendar initial = Calendar.getInstance();
-        initial.set(2014, Calendar.MARCH, 4, 23, 31, 59); // Tue, March 4, 2014, 23:31
-        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+        Instant initial = parseLocalDateTime("2014-03-04T23:31:59");
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-        // expect Wed, March 5, 2014, 00:00
-        final Calendar expected = Calendar.getInstance();
-        expected.set(2014, Calendar.MARCH, 5, 0, 0, 0);
-        expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        Instant expected = parseLocalDateTime("2014-03-05T00:00:00");
+        assertEquals(expected, Instant.ofEpochMilli(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeHourlyReturnsFirstMinuteOfNextHourDstStart() {
+        // America/Chicago 2014 - DST start - Mar 9 02:00
+        // during winter GMT-6
+        // during summer GMT-5
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}{America/Chicago}.log.gz");
+        Instant initial = OffsetDateTime.parse("2014-03-09T01:31:59-06:00").toInstant();
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
+
+        Instant expected = OffsetDateTime.parse("2014-03-09T02:00:00-06:00").toInstant();
+        assertEquals(expected, Instant.ofEpochMilli(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeHourlyReturnsFirstMinuteOfHourAfterNextHourDstEnd() {
+        // America/Chicago 2014 - DST end - Nov 2 02:00
+        // during summer GMT-5
+        // during winter GMT-6
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}{America/Chicago}.log.gz");
+        Instant initial = OffsetDateTime.parse("2014-11-02T01:31:59-05:00").toInstant();
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
+
+        // expect 1h 29min since initial
+        Instant expected = OffsetDateTime.parse("2014-11-02T03:00:00-05:00").toInstant();
+        assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeHourlyReturnsFirstMinuteOfNextYear() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH}.log.gz");
-        final Calendar initial = Calendar.getInstance();
-        initial.set(2015, Calendar.DECEMBER, 31, 23, 31, 59);
-        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+        Instant initial = parseLocalDateTime("2015-12-31T23:31:59");
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-        final Calendar expected = Calendar.getInstance();
-        expected.set(2016, Calendar.JANUARY, 1, 0, 0, 0);
-        expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        Instant expected = parseLocalDateTime("2016-01-01T00:00:00");
+        assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMillisecondlyReturnsNextMillisec() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm-ss.SSS}.log.gz");
-        final Calendar initial = Calendar.getInstance();
-        initial.set(2014, Calendar.MARCH, 4, 10, 31, 53); // Tue, March 4, 2014, 10:31:53.123
-        initial.set(Calendar.MILLISECOND, 123);
-        assertEquals("2014/03/04 10:31:53.123", format(initial.getTimeInMillis()));
-        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+        Instant initial = parseLocalDateTime("2014-03-04T10:31:53.123");
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-        // expect Tue, March 4, 2014, 10:31:53.124
-        final Calendar expected = Calendar.getInstance();
-        expected.set(2014, Calendar.MARCH, 4, 10, 31, 53);
-        expected.set(Calendar.MILLISECOND, 124);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        Instant expected = parseLocalDateTime("2014-03-04T10:31:53.124");
+        assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMinutelyReturnsFirstSecondOfNextMinute() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm}.log.gz");
-        final Calendar initial = Calendar.getInstance();
-        initial.set(2014, Calendar.MARCH, 4, 10, 31, 59); // Tue, March 4, 2014, 10:31
-        initial.set(Calendar.MILLISECOND, 0);
-        assertEquals("2014/03/04 10:31:59.000", format(initial.getTimeInMillis()));
-        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+        Instant initial = parseLocalDateTime("2014-03-04T10:31:59");
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-        // expect Tue, March 4, 2014, 10:32
-        final Calendar expected = Calendar.getInstance();
-        expected.set(2014, Calendar.MARCH, 4, 10, 32, 0);
-        expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        Instant expected = parseLocalDateTime("2014-03-04T10:32:00");
+        assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
-        final Calendar initial = Calendar.getInstance();
-        initial.set(2014, Calendar.OCTOBER, 15, 10, 31, 59); // Oct 15th
-        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+        Instant initial = parseLocalDateTime("2014-10-15T10:31:59");
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-        // We expect 1st day of next month
-        final Calendar expected = Calendar.getInstance();
-        expected.set(2014, Calendar.NOVEMBER, 1, 0, 0, 0);
-        expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        Instant expected = parseLocalDateTime("2014-11-01T00:00:00");
+        assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth2() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
-        final Calendar initial = Calendar.getInstance();
-        initial.set(2014, Calendar.JANUARY, 31, 10, 31, 59); // 2014 Jan 31st
-        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+        Instant initial = parseLocalDateTime("2014-01-31T10:31:59");
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
         // Expect 1st of next month: 2014 Feb 1st
-        final Calendar expected = Calendar.getInstance();
-        expected.set(2014, Calendar.FEBRUARY, 1, 0, 0, 0);
-        expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        Instant expected = parseLocalDateTime("2014-02-01T00:00:00");
+        assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextMonth3() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
-        final Calendar initial = Calendar.getInstance();
-        initial.set(2014, Calendar.DECEMBER, 31, 10, 31, 59); // 2014 Dec 31st
-        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+        Instant initial = parseLocalDateTime("2014-12-31T10:31:59");
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
         // Expect 1st of next month: 2015 Jan 1st
-        final Calendar expected = Calendar.getInstance();
-        expected.set(2015, Calendar.JANUARY, 1, 0, 0, 0);
-        expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        Instant expected = parseLocalDateTime("2015-01-01T00:00:00");
+        assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeMonthlyReturnsFirstDayOfNextYear() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM}.log.gz");
-        final Calendar initial = Calendar.getInstance();
-        initial.set(2015, Calendar.DECEMBER, 28, 0, 0, 0);
-        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+        Instant initial = parseLocalDateTime("2015-12-28T00:00:00");
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
         // We expect 1st day of next month
-        final Calendar expected = Calendar.getInstance();
-        expected.set(2016, Calendar.JANUARY, 1, 0, 0, 0);
-        expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        Instant expected = parseLocalDateTime("2016-01-01T00:00:00");
+        assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
     @Test
     @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void testGetNextTimeSecondlyReturnsFirstMillisecOfNextSecond() {
         final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd-HH-mm-ss}.log.gz");
-        final Calendar initial = Calendar.getInstance();
-        initial.set(2014, Calendar.MARCH, 4, 10, 31, 53); // Tue, March 4, 2014, 10:31:53
-        initial.set(Calendar.MILLISECOND, 123);
-        assertEquals("2014/03/04 10:31:53.123", format(initial.getTimeInMillis()));
-        final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+        Instant initial = parseLocalDateTime("2014-03-04T10:31:53.123");
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-        // expect Tue, March 4, 2014, 10:31:54
-        final Calendar expected = Calendar.getInstance();
-        expected.set(2014, Calendar.MARCH, 4, 10, 31, 54);
-        expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(format(expected.getTimeInMillis()), format(actual));
+        Instant expected = parseLocalDateTime("2014-03-04T10:31:54");
+        assertEquals(expected, Instant.ofEpochMilli(actual));
     }
 
     @Test
@@ -215,15 +206,11 @@ public class PatternProcessorTest {
 
         try {
             final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-W}.log.gz");
-            final Calendar initial = Calendar.getInstance();
-            initial.set(2014, Calendar.MARCH, 4, 10, 31, 59); // Tue, March 4, 2014
-            final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+            Instant initial = parseLocalDateTime("2014-03-04T10:31:59");
+            final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-            // expect Monday, March 10, 2014
-            final Calendar expected = Calendar.getInstance();
-            expected.set(2014, Calendar.MARCH, 10, 0, 0, 0);
-            expected.set(Calendar.MILLISECOND, 0);
-            assertEquals(format(expected.getTimeInMillis()), format(actual));
+            Instant expected = parseLocalDateTime("2014-03-10T00:00:00");
+            assertEquals(expected, Instant.ofEpochMilli(actual));
         } finally {
             Locale.setDefault(old);
         }
@@ -237,15 +224,11 @@ public class PatternProcessorTest {
 
         try {
             final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-W}.log.gz");
-            final Calendar initial = Calendar.getInstance();
-            initial.set(2014, Calendar.MARCH, 4, 10, 31, 59); // Tue, March 4, 2014
-            final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+            Instant initial = parseLocalDateTime("2014-03-04T10:31:59");
+            final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-            // expect Sunday, March 9, 2014
-            final Calendar expected = Calendar.getInstance();
-            expected.set(2014, Calendar.MARCH, 9, 0, 0, 0);
-            expected.set(Calendar.MILLISECOND, 0);
-            assertEquals(format(expected.getTimeInMillis()), format(actual));
+            Instant expected = parseLocalDateTime("2014-03-09T00:00:00");
+            assertEquals(expected, Instant.ofEpochMilli(actual));
         } finally {
             Locale.setDefault(old);
         }
@@ -261,17 +244,139 @@ public class PatternProcessorTest {
         Locale.setDefault(Locale.US); // force 1st day of the week to be Sunday
         try {
             final PatternProcessor pp = new PatternProcessor("logs/market_data_msg.log-%d{yyyy-MM-'W'W}");
-            final Calendar initial = Calendar.getInstance();
-            initial.set(2015, Calendar.DECEMBER, 28, 0, 0, 0); // Monday, December 28, 2015
-            final long actual = pp.getNextTime(initial.getTimeInMillis(), 1, false);
+            Instant initial = parseLocalDateTime("2015-12-28T00:00:00");
+            final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
 
-            // expect Sunday January 3, 2016
-            final Calendar expected = Calendar.getInstance();
-            expected.set(2016, Calendar.JANUARY, 3, 0, 0, 0);
-            expected.set(Calendar.MILLISECOND, 0);
-            assertEquals(format(expected.getTimeInMillis()), format(actual));
+            Instant expected = parseLocalDateTime("2016-01-03T00:00:00");
+            assertEquals(expected, Instant.ofEpochMilli(actual));
         } finally {
             Locale.setDefault(old);
+        }
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDay() {
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}.log.gz");
+        Instant initial = parseLocalDateTime("2014-03-04T02:31:59");
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
+
+        Instant expected = parseLocalDateTime("2014-03-05T00:00:00");
+        assertEquals(expected, Instant.ofEpochMilli(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayHonoringTimeZoneOption1() {
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
+        Instant initial = OffsetDateTime.parse("2014-03-04T02:31:59-06:00").toInstant();
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
+
+        Instant expected = OffsetDateTime.parse("2014-03-05T00:00:00-06:00").toInstant();
+        assertEquals(expected, Instant.ofEpochMilli(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    @ResourceLock(value = Resources.TIME_ZONE)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayHonoringTimeZoneOption2() {
+        TimeZone old = TimeZone.getDefault();
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+10")); // default is ignored if pattern contains timezone
+        try {
+            final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
+            Instant initial = OffsetDateTime.parse("2014-03-04T02:31:59-06:00").toInstant();
+            final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
+
+            Instant expected = OffsetDateTime.parse("2014-03-05T00:00:00-06:00").toInstant();
+            assertEquals(expected, Instant.ofEpochMilli(actual));
+        } finally {
+            TimeZone.setDefault(old);
+        }
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    @ResourceLock(value = Resources.TIME_ZONE)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayHonoringTimeZoneOption3() {
+        TimeZone old = TimeZone.getDefault();
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT-10")); // default is ignored if pattern contains timezone
+        try {
+            final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{GMT-6}.log.gz");
+            Instant initial = OffsetDateTime.parse("2014-03-04T02:31:59-06:00").toInstant();
+            final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
+
+            Instant expected = OffsetDateTime.parse("2014-03-05T00:00:00-06:00").toInstant();
+            assertEquals(expected, Instant.ofEpochMilli(actual));
+        } finally {
+            TimeZone.setDefault(old);
+        }
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayDstJan() {
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
+        Instant initial = OffsetDateTime.parse("2014-01-04T00:31:59-06:00").toInstant();
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
+
+        Instant expected = OffsetDateTime.parse("2014-01-05T00:00:00-06:00").toInstant();
+        assertEquals(expected, Instant.ofEpochMilli(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayDstJun() {
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
+        Instant initial = OffsetDateTime.parse("2014-06-04T00:31:59-05:00").toInstant();
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
+
+        Instant expected = OffsetDateTime.parse("2014-06-05T00:00:00-05:00").toInstant();
+        assertEquals(expected, Instant.ofEpochMilli(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayDstStart() {
+        // America/Chicago 2014 - DST start - Mar 9 02:00
+        // during winter GMT-6
+        // during summer GMT-5
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
+        Instant initial = OffsetDateTime.parse("2014-03-09T00:31:59-06:00").toInstant();
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
+
+        Instant expected = OffsetDateTime.parse("2014-03-10T00:00:00-05:00").toInstant();
+        assertEquals(expected, Instant.ofEpochMilli(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayDstEnd() {
+        // America/Chicago 2014 - DST end - Nov 2 02:00
+        // during summer GMT-5
+        // during winter GMT-6
+        final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{America/Chicago}.log.gz");
+        Instant initial = OffsetDateTime.parse("2014-11-02T00:31:59-05:00").toInstant();
+        final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
+
+        Instant expected = OffsetDateTime.parse("2014-11-03T00:00:00-06:00").toInstant();
+        assertEquals(expected, Instant.ofEpochMilli(actual));
+    }
+
+    @Test
+    @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
+    @ResourceLock(value = Resources.TIME_ZONE)
+    public void testGetNextTimeDailyReturnsFirstHourOfNextDayInGmtIfZoneIsInvalid() {
+        TimeZone old = TimeZone.getDefault();
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT-10")); // default is ignored even if timezone option invalid
+        try {
+            final PatternProcessor pp = new PatternProcessor("logs/app-%d{yyyy-MM-dd}{NOTVALID}.log.gz");
+            Instant initial = Instant.parse("2014-03-04T02:31:59Z");
+            final long actual = pp.getNextTime(initial.toEpochMilli(), 1, false);
+
+            Instant expected = Instant.parse("2014-03-05T00:00:00Z");
+            assertEquals(expected, Instant.ofEpochMilli(actual));
+        } finally {
+            TimeZone.setDefault(old);
         }
     }
 }

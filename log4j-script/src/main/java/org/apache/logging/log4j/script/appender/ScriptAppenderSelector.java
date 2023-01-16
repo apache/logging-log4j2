@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.script.appender;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -35,9 +37,6 @@ import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.script.AbstractScript;
-
-import java.io.Serializable;
-import java.util.Objects;
 
 @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
 @Plugin
@@ -142,7 +141,7 @@ public class ScriptAppenderSelector extends AbstractAppender {
         return new Builder();
     }
 
-    private ScriptAppenderSelector(final String name, final Filter filter, final Layout<? extends Serializable> layout) {
+    private ScriptAppenderSelector(final String name, final Filter filter, final Layout layout) {
         super(name, filter, layout, true, Property.EMPTY_ARRAY);
     }
 

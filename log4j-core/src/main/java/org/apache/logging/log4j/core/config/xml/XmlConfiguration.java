@@ -121,7 +121,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
                 } else if ("verbose".equalsIgnoreCase(key)) {
                     statusConfig.setVerbosity(value);
                 } else if ("packages".equalsIgnoreCase(key)) {
-                    pluginPackages.addAll(Arrays.asList(value.split(Patterns.COMMA_SEPARATOR)));
+                    LOGGER.warn("The packages attribute is no longer supported");
                 } else if ("name".equalsIgnoreCase(key)) {
                     setName(value);
                 } else if ("strict".equalsIgnoreCase(key)) {

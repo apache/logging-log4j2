@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.lang.ref.WeakReference;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -26,14 +34,6 @@ import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.lang.ref.WeakReference;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * Proxies other {@link StrLookup}s using a keys within ${} markers.
@@ -63,23 +63,16 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
 
     private WeakReference<LoggerContext> loggerContext = null;
 
-    // Used by tests
-    public Interpolator(final StrLookup defaultLookup) {
-        this(defaultLookup, List.of());
-    }
-
     /**
      * Constructs an Interpolator using a given StrLookup and a list of packages to find Lookup plugins in.
      * Only used in the Interpolator.
      *
      * @param defaultLookup  the default StrLookup to use as a fallback
-     * @param pluginPackages a list of packages to scan for Lookup plugins
      * @since 2.1
      */
-    public Interpolator(final StrLookup defaultLookup, final List<String> pluginPackages) {
+    public Interpolator(final StrLookup defaultLookup) {
         this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
         final Injector injector = DI.createInjector();
-        injector.registerBinding(Keys.PLUGIN_PACKAGES_KEY, () -> pluginPackages);
         injector.getInstance(PLUGIN_CATEGORY_KEY)
                 .forEach((key, value) -> {
                     try {
@@ -112,7 +105,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
      * Creates the default Interpolator with the provided properties.
      */
     public Interpolator(final Map<String, String> properties) {
-        this(new PropertiesLookup(properties), List.of());
+        this(new PropertiesLookup(properties));
     }
 
     public StrLookup getDefaultLookup() {

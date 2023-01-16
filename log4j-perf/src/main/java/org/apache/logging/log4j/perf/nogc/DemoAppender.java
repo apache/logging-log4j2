@@ -33,13 +33,13 @@ public class DemoAppender extends AbstractAppender implements ByteBufferDestinat
 
     public long checksum;
 
-    public DemoAppender(final Layout<?> layout) {
+    public DemoAppender(final Layout layout) {
         super("demo", null, layout, true, Property.EMPTY_ARRAY);
     }
 
     @Override
     public void append(final LogEvent event) {
-        final Layout<?> layout = getLayout();
+        final Layout layout = getLayout();
         if (layout instanceof NoGcLayout) {
             layout.encode(event, this);
             drain(byteBuffer);

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.Locale;
+
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.message.AsynchronouslyFormattable;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import java.util.Locale;
 
 @LoggerContextSource("xml-events.xml")
 @Disabled("TODO")
@@ -49,11 +49,6 @@ public class XmlEvents {
 
     @AsynchronouslyFormattable
     private static class TransferMessage extends StructuredDataMessage {
-
-        /**
-         * Generated serial version ID.
-         */
-        private static final long serialVersionUID = -4334703653495359785L;
 
         public TransferMessage() {
             super("Transfer@18060", null, "Audit");

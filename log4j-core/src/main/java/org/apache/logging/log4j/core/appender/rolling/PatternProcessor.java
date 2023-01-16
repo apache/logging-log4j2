@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -27,12 +34,6 @@ import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.PatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Parses the rollover pattern.
@@ -62,6 +63,7 @@ public class PatternProcessor {
     private boolean isTimeBased = false;
 
     private RolloverFrequency frequency = null;
+    private TimeZone timeZone;
 
     private final String pattern;
 
@@ -95,11 +97,15 @@ public class PatternProcessor {
             if (converter instanceof DatePatternConverter) {
                 final DatePatternConverter dateConverter = (DatePatternConverter) converter;
                 frequency = calculateFrequency(dateConverter.getPattern());
+                timeZone = dateConverter.getTimeZone();
             } else if (converter instanceof FileDatePatternConverter) {
-                frequency = calculateFrequency(((FileDatePatternConverter) converter).getPattern());
+                final FileDatePatternConverter dateConverter = (FileDatePatternConverter) converter;
+                frequency = calculateFrequency(dateConverter.getPattern());
+                timeZone = dateConverter.getTimeZone();
             }
         }
     }
+
 
     /**
      * Copy constructor with another pattern as source.
@@ -165,9 +171,9 @@ public class PatternProcessor {
         if (frequency == null) {
             throw new IllegalStateException("Pattern '" + pattern + "' does not contain a date");
         }
-        final Calendar currentCal = Calendar.getInstance();
+        final Calendar currentCal = Calendar.getInstance(timeZone);
         currentCal.setTimeInMillis(currentMillis);
-        final Calendar cal = Calendar.getInstance();
+        final Calendar cal = Calendar.getInstance(timeZone);
         currentCal.setMinimalDaysInFirstWeek(7);
         cal.setMinimalDaysInFirstWeek(7);
         cal.set(currentCal.get(Calendar.YEAR), 0, 1, 0, 0, 0);
@@ -238,9 +244,9 @@ public class PatternProcessor {
 
     public void updateTime() {
         if (nextFileTime != 0 || !isTimeBased) {
-			prevFileTime = nextFileTime;
-			currentFileTime = 0;
-		}
+            prevFileTime = nextFileTime;
+            currentFileTime = 0;
+        }
     }
 
     private long debugGetNextTime(final long nextTime) {
@@ -293,9 +299,9 @@ public class PatternProcessor {
                                      final Object obj) {
         // LOG4J2-628: we deliberately use System time, not the log4j.Clock time
         // for creating the file name of rolled-over files.
-		LOGGER.debug("Formatting file name. useCurrentTime={}, currentFileTime={}, prevFileTime={}, nextFileTime={}",
-			useCurrentTime, currentFileTime, prevFileTime, nextFileTime);
-		final long time = useCurrentTime ? currentFileTime != 0 ? currentFileTime : System.currentTimeMillis() :
+        LOGGER.debug("Formatting file name. useCurrentTime={}, currentFileTime={}, prevFileTime={}, nextFileTime={}",
+            useCurrentTime, currentFileTime, prevFileTime, nextFileTime);
+        final long time = useCurrentTime ? currentFileTime != 0 ? currentFileTime : System.currentTimeMillis() :
                 prevFileTime != 0 ? prevFileTime : System.currentTimeMillis();
         formatFileName(buf, new Date(time), obj);
         final LogEvent event = new Log4jLogEvent.Builder().setTimeMillis(time).build();

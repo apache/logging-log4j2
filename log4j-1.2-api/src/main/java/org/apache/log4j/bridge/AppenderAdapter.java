@@ -39,7 +39,7 @@ public class AppenderAdapter {
      * on the result of
      * {@link AppenderWrapper#adapt(org.apache.logging.log4j.core.Appender)} should
      * return the original Log4j 2.x appender.
-     * 
+     *
      * @param appender a Log4j 1.x appender
      * @return a Log4j 2.x appender or {@code null} if the parameter is {@code null}
      */
@@ -76,7 +76,7 @@ public class AppenderAdapter {
 
     public class Adapter extends AbstractAppender {
 
-        protected Adapter(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+        protected Adapter(final String name, final Filter filter, final Layout layout,
             final boolean ignoreExceptions, final Property[] properties) {
             super(name, filter, layout, ignoreExceptions, properties);
         }

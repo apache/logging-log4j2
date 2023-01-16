@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
+import java.sql.PreparedStatement;
+import java.util.Arrays;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -31,10 +34,6 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.Assert;
-
-import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.util.Arrays;
 
 /**
  * This Appender writes logging events to a relational database using standard JDBC mechanisms. It takes a list of
@@ -185,7 +184,7 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
 
     private final String description;
 
-    private JdbcAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+    private JdbcAppender(final String name, final Filter filter, final Layout layout,
             final boolean ignoreExceptions, Property[] properties, final JdbcDatabaseManager manager) {
         super(name, filter, layout, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";

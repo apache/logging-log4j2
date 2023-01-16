@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Locale;
 
 import org.apache.logging.log4j.test.junit.Mutable;
@@ -30,7 +25,6 @@ import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
@@ -156,22 +150,5 @@ public class FormattedMessageTest {
         param.set("XYZ");
         final String actual = msg.getFormattedMessage();
         assertEquals("Test message abc", actual, "Should use initial param value");
-    }
-
-    @SuppressWarnings("BanSerializableRead")
-    @Test
-    public void testSerialization() throws IOException, ClassNotFoundException {
-        final FormattedMessage expected = new FormattedMessage("Msg", "a", "b", "c");
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (final ObjectOutputStream out = new ObjectOutputStream(baos)) {
-            out.writeObject(expected);
-        }
-        final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        final ObjectInputStream in = new ObjectInputStream(bais);
-        final FormattedMessage actual = (FormattedMessage) in.readObject();
-        assertEquals(expected, actual);
-        assertEquals(expected.getFormat(), actual.getFormat());
-        assertEquals(expected.getFormattedMessage(), actual.getFormattedMessage());
-        assertArrayEquals(expected.getParameters(), actual.getParameters());
     }
 }

@@ -21,7 +21,7 @@ import java.nio.charset.Charset;
 /**
  * Instantiates the @{link Layout} type for String-based layouts.
  */
-public interface StringLayout extends Layout<String> {
+public interface StringLayout extends Layout {
 
     /**
      * Gets the Charset this layout uses to encode Strings into bytes.

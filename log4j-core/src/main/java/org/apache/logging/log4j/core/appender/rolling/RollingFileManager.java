@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -92,11 +91,11 @@ public class RollingFileManager extends FileManager {
     protected RollingFileManager(final LoggerContext loggerContext, final String fileName, final String pattern, final OutputStream os,
             final boolean append, final boolean createOnDemand, final long size, final long initialTime,
             final TriggeringPolicy triggeringPolicy, final RolloverStrategy rolloverStrategy,
-            final String advertiseURI, final Layout<? extends Serializable> layout,
+            final String advertiseURI, final Layout layout,
             final String filePermissions, final String fileOwner, final String fileGroup,
             final boolean writeHeader, final ByteBuffer buffer) {
         super(loggerContext, fileName != null ? fileName : pattern, os, append, false, createOnDemand,
-			advertiseURI, layout, filePermissions, fileOwner, fileGroup, writeHeader, buffer);
+            advertiseURI, layout, filePermissions, fileOwner, fileGroup, writeHeader, buffer);
         this.size = size;
         this.initialTime = initialTime;
         this.triggeringPolicy = triggeringPolicy;
@@ -149,11 +148,11 @@ public class RollingFileManager extends FileManager {
      * @return A RollingFileManager.
      */
     public static RollingFileManager getFileManager(final String fileName, final String pattern, final boolean append,
-            final boolean bufferedIO, final TriggeringPolicy policy, final RolloverStrategy strategy,
-            final String advertiseURI, final Layout<? extends Serializable> layout, final int bufferSize,
-            final boolean immediateFlush, final boolean createOnDemand,
-            final String filePermissions, final String fileOwner, final String fileGroup,
-            final Configuration configuration) {
+                                                    final boolean bufferedIO, final TriggeringPolicy policy, final RolloverStrategy strategy,
+                                                    final String advertiseURI, final Layout layout, final int bufferSize,
+                                                    final boolean immediateFlush, final boolean createOnDemand,
+                                                    final String filePermissions, final String fileOwner, final String fileGroup,
+                                                    final Configuration configuration) {
 
         if (strategy instanceof DirectWriteRolloverStrategy && fileName != null) {
             LOGGER.error("The fileName attribute must not be specified with the DirectWriteRolloverStrategy");
@@ -302,12 +301,12 @@ public class RollingFileManager extends FileManager {
         return status;
     }
 
-	public synchronized void rollover(final long prevFileTime, final long prevRollTime) {
+    public synchronized void rollover(final long prevFileTime, final long prevRollTime) {
         LOGGER.debug("Rollover PrevFileTime: {}, PrevRollTime: {}", prevFileTime, prevRollTime);
-		getPatternProcessor().setPrevFileTime(prevFileTime);
-		getPatternProcessor().setCurrentFileTime(prevRollTime);
-		rollover();
-	}
+        getPatternProcessor().setPrevFileTime(prevFileTime);
+        getPatternProcessor().setCurrentFileTime(prevRollTime);
+        rollover();
+    }
 
     public synchronized void rollover() {
         if (!hasOutputStream() && !isCreateOnDemand() && !isDirectWrite()) {
@@ -548,7 +547,7 @@ public class RollingFileManager extends FileManager {
         private final TriggeringPolicy policy;
         private final RolloverStrategy strategy;
         private final String advertiseURI;
-        private final Layout<? extends Serializable> layout;
+        private final Layout layout;
         private final String filePermissions;
         private final String fileOwner;
         private final String fileGroup;
@@ -569,10 +568,10 @@ public class RollingFileManager extends FileManager {
          * @param configuration The configuration
          */
         public FactoryData(final String fileName, final String pattern, final boolean append, final boolean bufferedIO,
-                final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
-                final Layout<? extends Serializable> layout, final int bufferSize, final boolean immediateFlush,
-                final boolean createOnDemand, final String filePermissions, final String fileOwner, final String fileGroup,
-                final Configuration configuration) {
+                           final TriggeringPolicy policy, final RolloverStrategy strategy, final String advertiseURI,
+                           final Layout layout, final int bufferSize, final boolean immediateFlush,
+                           final boolean createOnDemand, final String filePermissions, final String fileOwner, final String fileGroup,
+                           final Configuration configuration) {
             super(configuration);
             this.fileName = fileName;
             this.pattern = pattern;

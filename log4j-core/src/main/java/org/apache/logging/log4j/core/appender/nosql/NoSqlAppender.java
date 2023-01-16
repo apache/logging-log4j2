@@ -28,8 +28,6 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
-import java.io.Serializable;
-
 /**
  * This Appender writes logging events to a NoSQL database using a configured NoSQL provider. It requires
  * implementations of {@link NoSqlObject}, {@link NoSqlConnection}, and {@link NoSqlProvider} to "know" how to write
@@ -116,7 +114,7 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
 
     private final String description;
 
-    private NoSqlAppender(final String name, final Filter filter, final Layout<? extends Serializable> layout,
+    private NoSqlAppender(final String name, final Filter filter, final Layout layout,
             final boolean ignoreExceptions, final Property[] properties, final NoSqlDatabaseManager<?> manager) {
         super(name, filter, layout, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";

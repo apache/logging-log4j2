@@ -16,15 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
@@ -52,6 +43,15 @@ import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NoSqlDatabaseManagerTest {
@@ -104,7 +104,7 @@ public class NoSqlDatabaseManagerTest {
         try (final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager("name", 0,
             provider)) {
             expectedException.expect(AppenderLoggingException.class);
-            manager.writeInternal(mock(LogEvent.class), null);
+            manager.writeInternal(mock(LogEvent.class));
         }
     }
 
@@ -120,7 +120,7 @@ public class NoSqlDatabaseManagerTest {
             then(provider).should().getConnection();
 
             expectedException.expect(AppenderLoggingException.class);
-            manager.writeInternal(mock(LogEvent.class), null);
+            manager.writeInternal(mock(LogEvent.class));
         }
     }
 
@@ -147,7 +147,7 @@ public class NoSqlDatabaseManagerTest {
                 .setTimeMillis(1234567890123L)
                 .build();
 
-            manager.writeInternal(event, null);
+            manager.writeInternal(event);
             then(connection).should().insertObject(captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
@@ -219,7 +219,7 @@ public class NoSqlDatabaseManagerTest {
                 .setContextStack(stack)
                 .build();
 
-            manager.writeInternal(event, null);
+            manager.writeInternal(event);
             then(connection).should().insertObject(captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();
@@ -320,7 +320,7 @@ public class NoSqlDatabaseManagerTest {
                 .setContextStack(stack)
                 .build();
 
-            manager.writeInternal(event, null);
+            manager.writeInternal(event);
             then(connection).should().insertObject(captor.capture());
 
             final NoSqlObject<Map<String, Object>> inserted = captor.getValue();

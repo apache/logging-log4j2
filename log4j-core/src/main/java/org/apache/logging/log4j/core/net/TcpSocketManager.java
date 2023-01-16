@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.net;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -96,7 +95,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      */
     public TcpSocketManager(final String name, final OutputStream os, final Socket socket,
             final InetAddress inetAddress, final String host, final int port, final int connectTimeoutMillis,
-            final int reconnectionDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
+            final int reconnectionDelayMillis, final boolean immediateFail, final Layout layout,
             final int bufferSize, final SocketOptions socketOptions) {
         super(name, os, inetAddress, host, port, layout, true, bufferSize);
         this.connectTimeoutMillis = connectTimeoutMillis;
@@ -127,7 +126,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      * @return A TcpSocketManager.
      */
     public static TcpSocketManager getSocketManager(final String host, int port, final int connectTimeoutMillis,
-            int reconnectDelayMillis, final boolean immediateFail, final Layout<? extends Serializable> layout,
+            int reconnectDelayMillis, final boolean immediateFail, final Layout layout,
             final int bufferSize, final SocketOptions socketOptions) {
         if (Strings.isEmpty(host)) {
             throw new IllegalArgumentException("A host name is required");
@@ -363,13 +362,13 @@ public class TcpSocketManager extends AbstractSocketManager {
         protected final int connectTimeoutMillis;
         protected final int reconnectDelayMillis;
         protected final boolean immediateFail;
-        protected final Layout<? extends Serializable> layout;
+        protected final Layout layout;
         protected final int bufferSize;
         protected final SocketOptions socketOptions;
 
         public FactoryData(final String host, final int port, final int connectTimeoutMillis,
-                final int reconnectDelayMillis, final boolean immediateFail,
-                final Layout<? extends Serializable> layout, final int bufferSize, final SocketOptions socketOptions) {
+                           final int reconnectDelayMillis, final boolean immediateFail,
+                           final Layout layout, final int bufferSize, final SocketOptions socketOptions) {
             this.host = host;
             this.port = port;
             this.connectTimeoutMillis = connectTimeoutMillis;
@@ -480,7 +479,7 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     public static class HostResolver {
-        
+
         /**
          * Singleton instance.
          */

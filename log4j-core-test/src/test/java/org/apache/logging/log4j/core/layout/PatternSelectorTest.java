@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PatternSelectorTest {
 
     public static class FauxLogger {
-        public String formatEvent(final LogEvent event, final Layout<?> layout) {
+        public String formatEvent(final LogEvent event, final Layout layout) {
             return new String(layout.toByteArray(event));
         }
     }

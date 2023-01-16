@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.nosql;
 
-import java.io.Serializable;
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
@@ -26,6 +24,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.message.MapMessage;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
@@ -68,15 +67,16 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     }
 
     @Override
-    protected void writeInternal(final LogEvent event, final Serializable serializable) {
+    protected void writeInternal(final LogEvent event) {
         if (!this.isRunning() || this.connection == null || this.connection.isClosed()) {
             throw new AppenderLoggingException(
                     "Cannot write logging event; NoSQL manager not connected to the database.");
         }
 
         final NoSqlObject<W> entity = this.connection.createObject();
-        if (serializable instanceof MapMessage) {
-            setFields((MapMessage<?, ?>) serializable, entity);
+        Message eventMessage = event.getMessage();
+        if (eventMessage instanceof MapMessage<?, ?>) {
+            setFields((MapMessage<?, ?>) eventMessage, entity);
         } else {
             setFields(event, entity);
         }
@@ -176,7 +176,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         // also, all our NoSQL drivers use internal connection pooling and provide clients, not connections.
         // thus, we should not be closing the client until shutdown as NoSQL is very different from SQL.
         // see LOG4J2-591 and LOG4J2-676
-    	return true;
+        return true;
     }
 
     private NoSqlObject<W>[] convertStackTrace(final StackTraceElement[] stackTrace) {
