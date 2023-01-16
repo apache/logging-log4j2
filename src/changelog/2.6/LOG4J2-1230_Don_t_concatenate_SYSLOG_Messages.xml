@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-1230" link="https://issues.apache.org/jira/browse/LOG4J2-1230"/>
   <author id="ggregory"/>
-  <author name="Vladimir Hudec, Ralph Goers, Gary Gregory"/>
+  <author id="rgoers"/>
+  <author name="Vladimir Hudec"/>
   <description format="asciidoc">Don't concatenate SYSLOG Messages.</description>
 </entry>

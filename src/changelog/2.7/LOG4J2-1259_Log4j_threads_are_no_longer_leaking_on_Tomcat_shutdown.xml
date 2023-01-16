@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-1259" link="https://issues.apache.org/jira/browse/LOG4J2-1259"/>
   <author id="ggregory"/>
-  <author name="Misagh Moayyed, Steffen Offermann"/>
+  <author name="Misagh Moayyed"/>
+  <author name="Steffen Offermann"/>
   <description format="asciidoc">Log4j threads are no longer leaking on Tomcat shutdown.</description>
 </entry>

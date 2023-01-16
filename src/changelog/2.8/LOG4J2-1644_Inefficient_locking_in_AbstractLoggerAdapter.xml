@@ -18,6 +18,7 @@
 <entry type="changed">
   <issue id="LOG4J2-1644" link="https://issues.apache.org/jira/browse/LOG4J2-1644"/>
   <author id="ggregory"/>
-  <author name="Tim Gokcen, Pavel Sivolobtchik"/>
+  <author name="Tim Gokcen"/>
+  <author name="Pavel Sivolobtchik"/>
   <description format="asciidoc">Inefficient locking in AbstractLoggerAdapter.</description>
 </entry>

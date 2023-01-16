@@ -18,6 +18,7 @@
 <entry type="fixed">
   <issue id="LOG4J2-1313" link="https://issues.apache.org/jira/browse/LOG4J2-1313"/>
   <author id="rpopma"/>
-  <author name="Philipp Knobel, Leon Finker"/>
+  <author name="Philipp Knobel"/>
+  <author name="Leon Finker"/>
   <description format="asciidoc">Support Property values to be specified in configuration as a value attribute as well as an element.</description>
 </entry>

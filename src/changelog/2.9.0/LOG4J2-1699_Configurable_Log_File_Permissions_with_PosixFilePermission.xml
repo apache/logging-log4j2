@@ -18,6 +18,7 @@
 <entry type="added">
   <issue id="LOG4J2-1699" link="https://issues.apache.org/jira/browse/LOG4J2-1699"/>
   <author id="ggregory"/>
-  <author name="Demetrios Dimatos, Pierrick HYMBERT"/>
+  <author name="Demetrios Dimatos"/>
+  <author name="Pierrick Hymbert"/>
   <description format="asciidoc">Configurable Log File Permissions with PosixFilePermission.</description>
 </entry>
