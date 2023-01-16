@@ -35,8 +35,8 @@
   <description>Apache Log4j 2</description>
   <url>https://logging.apache.org/log4j/2.x/</url>
   <issueManagement>
-    <system>JIRA</system>
-    <url>https://issues.apache.org/jira/browse/LOG4J2</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/logging-log4j2/issues</url>
   </issueManagement>
 
   <ciManagement>

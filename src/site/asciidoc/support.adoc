@@ -15,48 +15,80 @@
     limitations under the License.
 ////
 
-= Log4j Support
+= Support
 
-The Apache Software Foundation does not employ individuals to develop and support any of its projects. The
-individuals who contribute to Apache projects do it either as part of specific tasks assigned to them by their
-employer, on their own initiative to benefit their employer, or on their own free time. While some projects
-at the ASF have employees who are specifically paid to work on the project, none of the committers to any
-of the Logging Services projects are directly paid to work on them.
+The Apache Software Foundation does not employ individuals to develop and support any of its projects.
+The individuals who contribute to Apache projects do it either as part of specific tasks assigned to them by their employer, on their own initiative to benefit their employer, or on their own free time.
 
-The Log4j project uses https://issues.apache.org/jira/projects/LOG4J2[Jira] as its issue tracking system.
+[#discussions]
+== Discussions
+
+Apache Log4j project officially uses following mailing lists for discussions:
+
+`log4j-user@logging.apache.org` (public | mailto:log4j-user-subscribe@logging.apache.org[subscribe] | mailto:log4j-user-unsubscribe@logging.apache.org[unsubscribe] | mailto:log4j-user@logging.apache.org[post] | https://lists.apache.org/list.html?log4j-user%40logging.apache.org[archive])::
+For _questions_ related to the usage of Log4j components
+
+`dev@logging.apache.org` (public | mailto:dev-subscribe@logging.apache.org[subscribe] | mailto:dev-unsubscribe@logging.apache.org[unsubscribe] | mailto:dev@logging.apache.org[post] | https://lists.apache.org/list.html?dev%40logging.apache.org[archive])::
+For _development_ discussions
+(Please prefix subjects with `[log4j]` when starting a new thread!)
+
+`security@logging.apache.org` (private | mailto:security@logging.apache.org[post])::
+For reporting unlisted security vulnerabilities or other unexpected behaviour that has a security impact
+
+`private@logging.apache.org` (private | mailto:private@logging.apache.org[post])::
+For the discussion of confidential topics within the Apache Logging Services project management committee
+
+You can alternatively post questions on Stack Overflow tagged with either http://stackoverflow.com/questions/tagged/log4j[log4j] or http://stackoverflow.com/questions/tagged/log4j2[log4j2].
+Note that *Stack Overflow is more casually monitored due to time constraints*.
+It is fine if you want to post first to Stack Overflow and then if you don't get an answer to post to the mailing lists.
+
+[#issues]
+== Issues
+
+The Log4j project uses https://github.com/apache/logging-log4j2/issues[GitHub Issues] as its issue tracking system.
+The old issue tracking system, https://issues.apache.org/jira/projects/LOG4J2[JIRA], is still accessible, though only recommended for issues that were already created there.
+
 Issues get resolved in one of the following ways:
 
-1. The reporter or another interested party provide a patch attached to the Jira issue, or (preferred) a pull request
-is provided at the https://github.com/apache/logging-log4j2[Log4j GitHub site].
-2. A committer is interested in the issue and decides to work on it.
-3. The reporter or another interested party sponsors one or more of the people listed below to encourage them to
-work on the issue.
+. The reporter or another interested party provides https://github.com/apache/logging-log4j2/pulls[a pull request] tagging the issue in its title
+. A committer is interested in the issue and decides to work on it
+. The reporter or another interested party sponsors one or more of xref:#sponsorship[the committers listed below] to encourage them to work on the issue
 
-== GitHub Sponsorship
+Created issues are subject to the following policy:
 
-The following are Log4j committers who accept sponsorship through GitHub. GitHub sponsorship can be used simply as
-a way to say thank you for the work that has been done or as a way to encourage specific issues to be worked on. In either
-case, while the Apache Logging Services Project thanks you for your support we cannot be responsible for any
-promises and/or contributions made by an individual committer as individual commits must be reviewed and accepted
-by the project team. While the Logging Services team has accepted the individuals listed below as committers to the
-projects, we cannot recommend any particular individual for any specific issue.
+Quality::
+Issues posted of insufficient quality will be removed
 
-==== Committers who accept GitHub Sponsorship
+No protracted discussions::
+Issues likely to result in protracted discussion must be posted to the mailing lists
 
-* [Gary Gregory](https://github.com/garydgregory)
-* [Matt Sicker](https://github.com/jvz)
-* [Ralph Goers](https://github.com/rgoers)
-* [Volkan Yazıcı](https://github.com/vy)
-* [Carter Kozak](https://github.com/carterkozak)
-* [Piotr P. Karwasz](https://github.com/ppkarwasz)
+No Questions::
+Do not post questions as issues!
+These will be removed, and you will be asked to post questions to the mailing lists instead.
 
-## Third-party commercial support
+[#sponsorship]
+== Sponsorship
 
-While neither the Apache Software Foundation nor the Apache Logging Services project provide any commercial support for
-the Log4j products, individual committers may collaborate with services that provide such support.
+Sponsorship can be used simply as a way to say thank you for the work that has been done or as a way to encourage specific issues to be worked on.
+In either case, while the Apache Logging Services project thanks you for your support, we cannot be responsible for any promises and/or contributions made by an individual committer, as individual commits must be reviewed and accepted by the project team.
+
+=== Committers accepting GitHub Sponsorship
+
+* https://github.com/garydgregory[Gary Gregory]
+* https://github.com/jvz[Matt Sicker]
+* https://github.com/rgoers[Ralph Goers]
+* https://github.com/vy[Volkan Yazıcı]
+* https://github.com/carterkozak[Carter Kozak]
+
+[#commercial]
+== Third-party commercial support
+
+While neither the Apache Software Foundation nor the Apache Logging Services project provide any commercial support for the Log4j products, individual committers may collaborate with services that provide such support.
 
 The following aims to be a list of all commercial support services involving one or more Log4j committers.
 
-### Tidelift
+[#tidelift]
+=== Tidelift
 
-Some Log4j maintainers receive funding from Tidelift for their maintenance efforts. See [the Tidelift website](https://tidelift.com) for details.
+Some Log4j maintainers receive funding from Tidelift for their maintenance efforts.
+See https://tidelift.com[the Tidelift website] for details.
