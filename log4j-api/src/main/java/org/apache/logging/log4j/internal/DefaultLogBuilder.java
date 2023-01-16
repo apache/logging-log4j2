@@ -115,7 +115,16 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
     }
 
     @Override
-    public void log(CharSequence message) {
+    public Message logAndGet(Supplier<Message> messageSupplier) {
+        Message message = null;
+        if (isValid()) {
+            logMessage(message = messageSupplier.get());
+        }
+        return message;
+    }
+
+    @Override
+    public void log(final CharSequence message) {
         if (isValid()) {
             logMessage(logger.getMessageFactory().newMessage(message));
         }

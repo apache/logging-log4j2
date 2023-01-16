@@ -21,7 +21,17 @@ package org.apache.logging.log4j.message;
  * @since 2.6
  */
 public interface FlowMessageFactory {
-    
+
+    /**
+     * Creates a new entry message based on a format string with parameters.
+     *
+     * @param message format string
+     * @param params  parameters
+     * @return the new entry message
+     * @since 2.20
+     */
+    EntryMessage newEntryMessage(String message, Object... params);
+
     /**
      * Creates a new entry message based on an existing message.
      *
@@ -29,6 +39,25 @@ public interface FlowMessageFactory {
      * @return the new entry message
      */
     EntryMessage newEntryMessage(Message message);
+
+    /**
+     * Creates a new exit message based on a return value and a forma string.
+     *
+     * @param format a format string
+     * @param result the return value
+     * @return the new exit message
+     * @since 2.20
+     */
+    ExitMessage newExitMessage(String format, Object result);
+
+    /**
+     * Creates a new exit message based on no return value and an existing message.
+     *
+     * @param message the original entry message
+     * @return the new exit message
+     * @since 2.20
+     */
+    ExitMessage newExitMessage(Message message);
 
     /**
      * Creates a new exit message based on a return value and an existing message.

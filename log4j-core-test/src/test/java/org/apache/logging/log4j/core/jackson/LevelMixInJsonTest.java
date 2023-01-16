@@ -14,15 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.jackson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.junit.experimental.categories.Category;
-
-@Category(Layouts.Json.class)
 public class LevelMixInJsonTest extends LevelMixInTest {
 
     @Override

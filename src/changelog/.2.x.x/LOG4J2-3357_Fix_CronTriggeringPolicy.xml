@@ -16,8 +16,7 @@
    limitations under the License.
 -->
 <entry type="fixed">
-  <issue id="LOG4J2-3631" link="https://issues.apache.org/jira/browse/LOG4J2-3631"/>
-  <author id="pkarwasz"/>
-  <author name="Jeff Thomas"/>
-  <description format="asciidoc">Fix `Configurator#setLevel` for internal classes</description>
+  <issue id="LOG4J2-3357" link="https://issues.apache.org/jira/browse/LOG4J2-3357"/>
+  <author id="rgoers"/>
+  <description format="asciidoc">Fix previous fire time computation in `CronTriggeringPolicy`</description>
 </entry>

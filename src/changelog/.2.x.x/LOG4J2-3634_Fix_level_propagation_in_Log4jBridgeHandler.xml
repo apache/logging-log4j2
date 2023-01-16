@@ -19,5 +19,5 @@
   <issue id="LOG4J2-3634" link="https://issues.apache.org/jira/browse/LOG4J2-3634"/>
   <author id="pkarwasz"/>
   <author name="Marcel Koch"/>
-  <description format="asciidoc">Fix level propagation in `Log4jBridgeHandler`.</description>
+  <description format="asciidoc">Fix level propagation in `Log4jBridgeHandler`</description>
 </entry>

@@ -15,9 +15,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<entry type="fixed">
-  <issue id="LOG4J2-3631" link="https://issues.apache.org/jira/browse/LOG4J2-3631"/>
-  <author id="pkarwasz"/>
-  <author name="Jeff Thomas"/>
-  <description format="asciidoc">Fix `Configurator#setLevel` for internal classes</description>
+<entry type="deprecated">
+  <issue id="LOG4J2-3644" link="https://issues.apache.org/jira/browse/LOG4J2-3644"/>
+  <author id="rgoers"/>
+  <description format="asciidoc">Deprecate support for package scanning for plugins</description>
 </entry>

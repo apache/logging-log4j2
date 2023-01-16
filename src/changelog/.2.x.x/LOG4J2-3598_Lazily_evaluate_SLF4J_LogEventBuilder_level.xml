@@ -16,8 +16,7 @@
    limitations under the License.
 -->
 <entry type="fixed">
-  <issue id="LOG4J2-3631" link="https://issues.apache.org/jira/browse/LOG4J2-3631"/>
+  <issue id="LOG4J2-3598" link="https://issues.apache.org/jira/browse/LOG4J2-3598"/>
   <author id="pkarwasz"/>
-  <author name="Jeff Thomas"/>
-  <description format="asciidoc">Fix `Configurator#setLevel` for internal classes</description>
+  <description format="asciidoc">Lazily evaluate the level of a SLF4J `LogEventBuilder`</description>
 </entry>

@@ -413,56 +413,11 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
     @Override
     public LoggingEventBuilder makeLoggingEventBuilder(org.slf4j.event.Level level) {
         final Level log4jLevel = getLevel(level.toInt());
-        if (logger.isEnabled(log4jLevel)) {
-            return new Log4jEventBuilder(markerFactory, logger.atLevel(log4jLevel));
-        }
-        return NOPLoggingEventBuilder.singleton();
-    }
-
-    @Override
-    public LoggingEventBuilder atTrace() {
-        if (logger.isTraceEnabled()) {
-            return new Log4jEventBuilder(markerFactory, logger.atTrace());
-        }
-        return NOPLoggingEventBuilder.singleton();
-    }
-
-    @Override
-    public LoggingEventBuilder atDebug() {
-        if (logger.isDebugEnabled()) {
-            return new Log4jEventBuilder(markerFactory, logger.atDebug());
-        }
-        return NOPLoggingEventBuilder.singleton();
-    }
-
-    @Override
-    public LoggingEventBuilder atInfo() {
-        if (logger.isInfoEnabled()) {
-            return new Log4jEventBuilder(markerFactory, logger.atInfo());
-        }
-        return NOPLoggingEventBuilder.singleton();
-    }
-
-    @Override
-    public LoggingEventBuilder atWarn() {
-        if (logger.isWarnEnabled()) {
-            return new Log4jEventBuilder(markerFactory, logger.atWarn());
-        }
-        return NOPLoggingEventBuilder.singleton();
-    }
-
-    @Override
-    public LoggingEventBuilder atError() {
-        if (logger.isErrorEnabled()) {
-            return new Log4jEventBuilder(markerFactory, logger.atError());
-        }
-        return NOPLoggingEventBuilder.singleton();
+        return new Log4jEventBuilder(markerFactory, logger, log4jLevel);
     }
 
     @Override
     public boolean isEnabledForLevel(org.slf4j.event.Level level) {
         return logger.isEnabled(getLevel(level.toInt()));
     }
-
-    
 }
