@@ -33,7 +33,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <revapi.skip>true</revapi.skip>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <spring-cloud.version>2021.0.4</spring-cloud.version>
+    <spring-cloud.version>2022.0.0</spring-cloud.version>
   </properties>
 
   <dependencyManagement>
