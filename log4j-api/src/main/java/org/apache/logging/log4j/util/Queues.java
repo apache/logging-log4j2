@@ -33,13 +33,27 @@ import org.jctools.queues.SpscArrayQueue;
  * is provided as a fallback for thread-safety. Custom implementations of {@link QueueFactory} may also be
  * created via {@link #createQueueFactory(String, String, int)}.
  */
+@InternalApi
 public enum Queues {
     /**
-     * Provides a bounded queue for single-producer/single-consumer usage.
+     * Provides a bounded queue for single-producer/single-consumer usage. Only one thread may offer objects
+     * while only one thread may poll for them.
      */
     SPSC(Lazy.lazy(JCToolsQueueFactory.SPSC::load)),
+    /**
+     * Provides a bounded queue for multi-producer/single-consumer usage. Any thread may offer objects while only
+     * one thread may poll for them.
+     */
     MPSC(Lazy.lazy(JCToolsQueueFactory.MPSC::load)),
+    /**
+     * Provides a bounded queue for single-producer/multi-consumer usage. Only one thread may offer objects but
+     * any thread may poll for them.
+     */
     SPMC(Lazy.lazy(JCToolsQueueFactory.SPMC::load)),
+    /**
+     * Provides a bounded queue for multi-producer/multi-consumer usage. Any thread may offer objects and any thread
+     * may poll for them.
+     */
     MPMC(Lazy.lazy(JCToolsQueueFactory.MPMC::load));
 
     private final Lazy<BoundedQueueFactory> queueFactory;
