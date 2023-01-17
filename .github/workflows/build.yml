@@ -76,11 +76,7 @@ jobs:
         if: runner.os == 'macOS'
         run: env | grep '^JAVA'
 
-      # Ideally, `verify` goal should be called here.
-      # Though `log4j-osgi` depends on `log4j-samples-configuration`!?!
-      # This causes `site` goal (used in the next step) to fail without an `install` first.
-      # Hence, we temporarily(🤞) use `install` instead of `verify` here.
-      - name: Maven "install"
+      - name: Maven "verify"
         timeout-minutes: 60
         shell: bash
         run: |
@@ -89,9 +85,8 @@ jobs:
             -DtrimStackTrace=false \
             -Dsurefire.rerunFailingTestsCount=2 \
             -Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000 \
-            -DinstallAtEnd \
             --global-toolchains ".github/workflows/maven-toolchains.xml" \
-            install
+            verify
 
       - name: Maven "site"
         timeout-minutes: 10
@@ -100,6 +95,7 @@ jobs:
           ./mvnw \
             --show-version --batch-mode --errors --no-transfer-progress \
             --global-toolchains ".github/workflows/maven-toolchains.xml" \
+            --non-recursive \
             site
 
   deploy:
