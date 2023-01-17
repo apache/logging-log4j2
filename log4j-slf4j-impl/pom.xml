@@ -34,7 +34,6 @@
       they do not require support for SLF4J's EventData -->
     <slf4j.version>1.7.25</slf4j.version>
     <module.name>org.apache.logging.log4j.slf4j</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>

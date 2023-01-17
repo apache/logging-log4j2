@@ -97,14 +97,11 @@
       </subsection>
       <a name="issues"/>
       <subsection name="Issue Management">
-      <p>The Log4j project uses the <a href="https://issues.apache.org/jira/browse/LOG4J2">Jira</a> bug tracking
-        system hosted and maintained by the Apache Software Foundation for tracking bugs and enhancements. The
-        project roadmap may be maintained in JIRA through its RoadMap feature and through the use of
-        Story or Epic issues.</p>
+      <p>The Log4j project uses https://github.com/apache/logging-log4j2/issues[GitHub Issues] as its issue tracking system.</p>
       <p>Many issues will be encountered by the project, each resulting in zero or
         more proposed action items. Issues should be raised on the mailing list as
         soon as they are identified. Action items <strong>must</strong> be raised on the mailing
-        list and added to JIRA using the appropriate issue type. All action items may be voted
+        list and added to the issue tracker. All action items may be voted
         on, but not all of them will require a formal vote.</p>
       </subsection>
       <a name="voting"/>
@@ -151,8 +148,8 @@
           approval</em> until someone votes <strong>-1</strong> , after which point they are decided
         by either consensus or a majority vote, depending upon the type of action
         item.</p>
-      <p>When appropriate, votes should be tallied in the JIRA issue. All votes must be either sent to
-        the mailing list or added directly to the JIRA issue.</p>
+      <p>When appropriate, votes should be tallied in the issue tracker. All votes must be either sent to
+        the mailing list or added directly to the associated issue.</p>
       </subsection>
       <a name="types-of-action-items"/>
       <subsection name="Types of Action Items">
@@ -183,9 +180,9 @@
           Majority approval is required before the distribution can be publicly released.</dd>
         <dt><strong>Showstoppers/Blockers</strong></dt>
         <dd>Showstoppers are issues that require a fix be in place before the next
-          public release. They are listed in Jira in order to focus
+          public release. They are listed in issue tracker in order to focus
           special attention on the problem. An issue becomes a showstopper when
-          it is listed as such in Jira and remains so by lazy consensus.</dd>
+          it is listed as such in the tracker and remains so by lazy consensus.</dd>
       </dl>
       <p>All product changes to the currently active repository are subject to lazy
         consensus. All product changes to a prior-branch (old version) repository
@@ -202,7 +199,7 @@
         size of the program, or changes the semantics of an existing API function
         must receive consensus approval on the mailing list before being committed.</p>
       <p>Each developer is responsible for notifying the mailing list and adding an
-        action item to Jira when they have an idea for a new feature or major
+        action item to the issue tracker when they have an idea for a new feature or major
         change to propose for the product. The distributed nature of the Log4j
         project requires an advance notice of 48 hours in order to properly review
         a major change -- consensus approval of either the concept or a specific
@@ -234,7 +231,7 @@
       </subsection>
       <a name="changelogs"/>
       <subsection name="Changelog and Git logs">
-      <p>Many code changes should be noted in a <code>changelog/.unreleased-*/&lt;issueId&gt;_&lt;shortSummary&gt;.xml</code> file, and all should be
+      <p>Many code changes should be noted in a <code>src/changelog/.&lt;releaseMajorVersion&gt;.x.x/&lt;issueId&gt;_&lt;shortSummary&gt;.xml</code> file, and all should be
         documented in Git commit messages. Often the text of the Git
         log and the changelog entry are the same, but the distinct requirements
         sometimes result in different information.</p>
@@ -280,8 +277,8 @@ Reviewed by: susiecommitter
             time of the commit, add later.)</p>
         </li>
       </ul>
-      <p>All entries in changes.xml should include the appropriate Jira issue number and should
-        credit contributions made by non-committers by referencing them in the due-to attribute
+      <p>All changelog entries should include the appropriate issue number and should
+        credit contributions made by non-committers by referencing them
         even if modifications needed to be made to the contribution.</p>
       <p>The attribution for the change is anyone responsible for the code changes.</p>
       </subsection>

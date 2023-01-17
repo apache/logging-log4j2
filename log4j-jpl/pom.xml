@@ -26,7 +26,6 @@
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <module.name>org.apache.logging.log4j.jpl</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
     <!-- Do not upgrade until https://issues.apache.org/jira/browse/SUREFIRE-2073 is fixed -->
     <surefire.version>2.13</surefire.version>
   </properties>

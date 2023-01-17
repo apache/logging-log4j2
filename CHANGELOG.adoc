@@ -23,7 +23,7 @@ Changelogs are stored in xref:src/changelog[`src/changelog`] directory.
 
 {log4j-changelog-ref} is used to generate AsciiDoc-formatted changelog files during Maven `pre-site` phase and export them to xref:target/generated-sources/site/asciidoc/changelog[`target/generated-sources/site/asciidoc/changelog`] directory.
 These exported AsciiDoc files are not committed, since they are only relevant for the website, and they cause merge-conflicts between feature branches.
-`./mvnw -N site` command can be used to manually generate these files.
+`./mvnw site` command can be used to manually generate these files.
 
 See {log4j-changelog-ref} project for further details; how to use this changelog system, what steps are needed while making a new release, etc.
 

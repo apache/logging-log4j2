@@ -23,7 +23,7 @@
     <artifactId>log4j-spring-cloud-config-samples</artifactId>
     <version>2.19.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.apache.logging.log4j.samples</groupId>
+
   <artifactId>log4j-spring-cloud-config-sample-server</artifactId>
   <packaging>jar</packaging>
 
@@ -42,7 +42,6 @@
 
     <!-- maven plugin config -->
     <pmd.failurePriority>2</pmd.failurePriority>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>
@@ -108,39 +107,14 @@
     </dependency>
   </dependencies>
 
-
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>com/oracle/brm/**/*.class</exclude>
-            <exclude>org/w3/**/*.class</exclude>
-            <exclude>org/xmlsoap/**/*.class</exclude>
-            <exclude>oracle/security/pki/*.class</exclude>
-          </excludes>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>report</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
@@ -148,6 +122,7 @@
           <skip>true</skip>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -171,29 +146,33 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-          <skipDeploy>true</skipDeploy>
-        </configuration>
-      </plugin>
+
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
+
+      <!-- Skipping `requireUpperBoundDeps` enforcer rule.
+           The entire Spring Boot, SnakeYAML, and Kotlin milky way is causing a mayhem there.
+           We should not fix `requireUpperBoundDeps` issues of our dependencies. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-upper-bound-deps</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
-
-  <distributionManagement>
-    <downloadUrl>https://logging.apache.org/log4j/2.x/download.html</downloadUrl>
-    <!-- site is only included to make maven-site-plugin stop complaining -->
-    <site>
-      <id>www.example.com</id>
-      <url>scp://www.example.com/www/docs/project/</url>
-    </site>
-  </distributionManagement>
 
   <repositories>
     <repository>
@@ -213,32 +192,5 @@
       </snapshots>
     </repository>
   </repositories>
-  <profiles>
-    <profile>
-      <id>rat</id>
-      <build>
-        <plugins>
-          <!-- RAT report -->
-          <plugin>
-            <groupId>org.apache.rat</groupId>
-            <artifactId>apache-rat-plugin</artifactId>
-            <configuration>
-              <excludes>
-                <exclude>**/*.yaml</exclude>
-                <exclude>**/readme.txt</exclude>
-              </excludes>
-            </configuration>
-            <executions>
-              <execution>
-                <phase>verify</phase>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+
 </project>

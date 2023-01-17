@@ -17,6 +17,6 @@
 
 = ${release.version}<#if release.date?has_content> (${release.date})</#if>
 
-Changes staged for the next version that is yet to be released.
+Changes staged for the next 2.x.x version that is yet to be released.
 
 <#include "../.changelog-entries.adoc.ftl">
