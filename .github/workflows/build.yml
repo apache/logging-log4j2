@@ -89,6 +89,8 @@ jobs:
             verify
 
       - name: Maven "site"
+        # FreeMarker integration of `log4j-changelog` is broken on Windows: https://github.com/apache/logging-log4j-tools/issues/19
+        if: runner.os != 'Windows'
         timeout-minutes: 10
         shell: bash
         run: |
