@@ -1618,36 +1618,40 @@ public final class CronExpression {
 
     private long findMinIncrement() {
         if (seconds.size() != 1) {
-            return minInSet(seconds) * 1000;
+            return minInSet(seconds, 60) * 1000;
         } else if (seconds.first() == ALL_SPEC_INT) {
             return 1000;
         }
         if (minutes.size() != 1) {
-            return minInSet(minutes) * 60000;
+            return minInSet(minutes, 60) * 60000;
         } else if (minutes.first() == ALL_SPEC_INT) {
             return 60000;
         }
         if (hours.size() != 1) {
-            return minInSet(hours) * 3600000;
+            return minInSet(hours, 24) * 3600000;
         } else if (hours.first() == ALL_SPEC_INT) {
             return 3600000;
         }
         return 86400000;
     }
 
-    private int minInSet(final TreeSet<Integer> set) {
+    private int minInSet(final TreeSet<Integer> set, int duration) {
         int previous = 0;
+        int previousInNextDuration = 0;
         int min = Integer.MAX_VALUE;
         boolean first = true;
         for (final int value : set) {
             if (first) {
                 previous = value;
+                previousInNextDuration = previous + duration;
                 first = false;
                 continue;
             } else {
-                final int diff = value - previous;
-                if (diff < min) {
-                    min = diff;
+                final int diffInDuration = value - previous;
+                final int diffOverDuration = previousInNextDuration - value;
+                final int minDiff = Math.min(diffInDuration, diffOverDuration);
+                if (minDiff < min) {
+                    min = minDiff;
                 }
             }
         }
