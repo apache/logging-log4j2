@@ -99,7 +99,7 @@ class ThrowableProxyHelper {
                 extClassInfo = entry.element;
                 lastLoader = entry.loader;
                 stack.pollLast();
-                clazz = stack.isEmpty() ? null : stack.peekLast();
+                clazz = stack.peekLast();
             } else {
                 final CacheEntry cacheEntry = map.get(className);
                 if (cacheEntry != null) {
