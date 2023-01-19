@@ -221,9 +221,9 @@
   </mailingLists>
 
   <scm>
-    <connection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</connection>
-    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4j2.git</developerConnection>
-    <url>https://gitbox.apache.org/repos/asf?p=logging-log4j2.git</url>
+    <connection>scm:git:https://github.com/apache/logging-log4j2.git</connection>
+    <developerConnection>scm:git:https://github.com/apache/logging-log4j2.git</developerConnection>
+    <url>https://github.com/apache/logging-log4j2</url>
     <tag>log4j-${Log4jReleaseVersion}</tag>
   </scm>
 
@@ -249,11 +249,12 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- See https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
-    <!-- 1641056400 = Jan 1 2022, instead of 1969, which shows up in Javadoc -->
-    <project.build.outputTimestamp>1663368682</project.build.outputTimestamp>
+    <!-- 1672527600 = 2023-01-01, instead of the default 1969, which shows up in Javadoc -->
+    <project.build.outputTimestamp>1672527600</project.build.outputTimestamp>
     <docLabel>Site Documentation</docLabel>
     <projectDir/>
     <module.name/>
+    <javadoc.skip>false</javadoc.skip>
     <!-- Skipping `maven-site-plugin` globally.
          It is manually enabled only for the parent module below. -->
     <maven.site.skip>true</maven.site.skip>
@@ -308,7 +309,7 @@
     <!-- =====================================================
          Dependency version properties (in alphabetical order)
          ===================================================== -->
-    <activemq.version>5.17.2</activemq.version>
+    <activemq.version>5.17.3</activemq.version>
     <assertj.version>3.23.1</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
@@ -355,7 +356,6 @@
     <javax-servlet-jsp.version>2.3.3</javax-servlet-jsp.version>
     <jansi.version>2.4.0</jansi.version>
     <java-allocation-instrumenter.version>3.3.0</java-allocation-instrumenter.version>
-    <javadoc.skip>false</javadoc.skip>
     <jconsole.version>1.7.0</jconsole.version>
     <jctools.version>3.3.0</jctools.version>
     <je.version>18.3.12</je.version>
@@ -367,7 +367,7 @@
     <json-unit.version>2.36.0</json-unit.version>
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.9.1</junit-jupiter.version>
-    <junit-pioneer.version>1.6.2</junit-pioneer.version>
+    <junit-pioneer.version>1.9.1</junit-pioneer.version>
     <kafka.version>1.1.1</kafka.version>
     <kubernetes-client.version>5.12.2</kubernetes-client.version>
     <lightcouch.version>0.2.0</lightcouch.version>
@@ -826,7 +826,7 @@
       <dependency>
         <groupId>com.google.code.java-allocation-instrumenter</groupId>
         <artifactId>java-allocation-instrumenter</artifactId>
-        <version>3.3.0</version>
+        <version>${java-allocation-instrumenter.version}</version>
       </dependency>
 
       <dependency>
@@ -1712,7 +1712,8 @@
 
   </build>
 
-  <!-- *Warning!* Do not add anything to `reporting`, unless you disable something inherited from parent POMs.
+  <!-- WARNING!
+       Do not add anything to `reporting`, unless you disable something inherited from parent POMs.
        Site generation is actively worked on to move away from `maven-site-plugin` et al. -->
   <reporting>
     <plugins>
@@ -1797,7 +1798,7 @@
 
   <profiles>
 
-    <!-- shortcut to populate `src/changelog/<releaseVersion>` from `src/changelog/.<releaseVersionMajor>.x.x` -->
+    <!-- Shortcut to populate `src/changelog/<releaseVersion>` from `src/changelog/.<releaseVersionMajor>.x.x` -->
     <profile>
       <id>changelog-releaser</id>
       <build>
@@ -1847,7 +1848,7 @@
       </build>
     </profile>
 
-    <!-- shortcut to enable `log4j-distribution` module creating the release distribution containing artifacts, sources, etc. -->
+    <!-- Shortcut to enable `log4j-distribution` module creating the release distribution containing artifacts, sources, etc. -->
     <profile>
       <id>apache-release</id>
       <build>
