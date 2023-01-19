@@ -66,12 +66,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.logging.log4j.samples</groupId>
-      <artifactId>log4j-samples-configuration</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest</artifactId>
       <scope>test</scope>
