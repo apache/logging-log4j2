@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.osgi.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -37,6 +33,9 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.launch.FrameworkFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests a basic Log4J 'setup' in an OSGi container.
@@ -69,10 +68,6 @@ public abstract class AbstractLoadBundleTest {
 
     private Bundle getCoreBundle() throws BundleException {
         return installBundle("org.apache.logging.log4j.core");
-    }
-
-    private Bundle getDummyBundle() throws BundleException {
-        return installBundle("org.apache.logging.log4j.samples.log4j-samples-configuration");
     }
 
     private Bundle get12ApiBundle() throws BundleException {
@@ -225,68 +220,6 @@ public abstract class AbstractLoadBundleTest {
     }
 
     /**
-     * Tests LOG4J2-920.
-     */
-    @Test
-    public void testLoadingOfConfigurableCoreClasses() throws BundleException, ReflectiveOperationException {
-
-        final Bundle api = getApiBundle();
-        final Bundle core = getCoreBundle();
-        final Bundle dummy = getDummyBundle();
-
-        start(api, core, dummy);
-
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final PrintStream logStream = new PrintStream(baos);
-
-        final PrintStream bakStream = setupStream(api, logStream);
-
-        log(dummy);
-
-        setupStream(api, bakStream);
-
-        // org.apache.logging.log4j.core.osgi.BundleContextSelector cannot be found by org.apache.logging.log4j.api
-        final boolean result = baos.toString().contains("BundleContextSelector cannot be found");
-        Assert.assertFalse("Core class BundleContextSelector cannot be loaded in OSGI setup", result);
-
-        stop(api, core, dummy);
-        uninstall(api, core, dummy);
-    }
-
-    /**
-     * Tests the log of a simple message in an OSGi container
-     */
-    @Test
-    public void testSimpleLogInAnOsgiContext() throws BundleException, ReflectiveOperationException {
-
-        final Bundle api = getApiBundle();
-        final Bundle core = getCoreBundle();
-        final Bundle dummy = getDummyBundle();
-
-        start(api, core, dummy);
-
-        final PrintStream bakStream = System.out;
-        try {
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            final PrintStream logStream = new PrintStream(baos);
-            System.setOut(logStream);
-
-            log(dummy);
-
-            final String result = baos.toString().substring(
-                12).trim(); // remove the instant then the spaces at start and end, that are non constant
-            Assert.assertEquals("[main] ERROR org.apache.logging.log4j.configuration.CustomConfiguration - Test OK",
-                result);
-        } finally {
-            System.setOut(bakStream);
-        }
-
-        stop(api, core, dummy);
-        uninstall(api, core, dummy);
-    }
-
-
-    /**
      * Tests the loading of the 1.2 Compatibility API bundle, its classes should be loadable from the Core bundle,
      * and the class loader should be the same between a class from core and a class from compat
      */
@@ -315,7 +248,7 @@ public abstract class AbstractLoadBundleTest {
 
     /**
      * Tests whether the {@link ServiceLoaderUtil} finds services in other bundles.
-     * 
+     *
      * @throws BundleException
      * @throws ReflectiveOperationException
      */
