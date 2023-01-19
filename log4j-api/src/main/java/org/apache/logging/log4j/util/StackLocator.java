@@ -54,7 +54,7 @@ public final class StackLocator {
     private static final Method GET_CALLER_CLASS_METHOD;
 
     private static final StackLocator INSTANCE;
-    
+
     /** TODO: Use Object.class. */
     private static final Class<?> DEFAULT_CALLER_CLASS = null;
 
@@ -203,7 +203,7 @@ public final class StackLocator {
         final Deque<Class<?>> classes = new ArrayDeque<>();
         Class<?> clazz;
         for (int i = 1; null != (clazz = getCallerClass(i)); i++) {
-            classes.push(clazz);
+            classes.addLast(clazz);
         }
         return classes;
     }
