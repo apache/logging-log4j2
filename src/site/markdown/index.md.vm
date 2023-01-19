@@ -153,8 +153,7 @@ of Log4j 2.13.0 Log4j 2 also provides experimental support for Log4j 1.x configu
 
 $h2 Documentation
 
-The Log4j 2 User's Guide is available on this [site](manual/index.html) or as a downloadable
-[PDF](log4j-users-guide.pdf).
+The Log4j 2 User's Guide is available on this [site](manual/index.html).
 
 $h2 Requirements
 
