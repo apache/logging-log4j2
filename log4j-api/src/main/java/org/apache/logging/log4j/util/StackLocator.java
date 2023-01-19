@@ -108,7 +108,6 @@ public final class StackLocator {
             s.forEach(f -> stack.add(f.getDeclaringClass()));
             return stack;
         });
-
     }
 
     public StackTraceElement calcLocation(final String fqcnOfLogger) {
