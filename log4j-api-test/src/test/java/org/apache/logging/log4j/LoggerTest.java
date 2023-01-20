@@ -229,6 +229,7 @@ public class LoggerTest {
     }
 
     @Test
+    @ResourceLock(value = org.junit.jupiter.api.parallel.Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void getFormatterLogger() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
@@ -244,6 +245,7 @@ public class LoggerTest {
     }
 
     @Test
+    @ResourceLock(value = org.junit.jupiter.api.parallel.Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void getFormatterLogger_Class() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
@@ -264,6 +266,7 @@ public class LoggerTest {
     }
 
     @Test
+    @ResourceLock(value = org.junit.jupiter.api.parallel.Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void getFormatterLogger_Object() {
         // The TestLogger logger was already created in an instance variable for this class.
         // The message factory is only used when the logger is created.
@@ -277,6 +280,7 @@ public class LoggerTest {
     }
 
     @Test
+    @ResourceLock(value = org.junit.jupiter.api.parallel.Resources.LOCALE, mode = ResourceAccessMode.READ)
     public void getFormatterLogger_String() {
         final StringFormatterMessageFactory messageFactory = StringFormatterMessageFactory.INSTANCE;
         final TestLogger testLogger = (TestLogger) LogManager.getFormatterLogger("getLogger_String_StringFormatterMessageFactory");
