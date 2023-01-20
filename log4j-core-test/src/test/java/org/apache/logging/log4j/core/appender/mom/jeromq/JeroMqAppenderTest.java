@@ -22,13 +22,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.util.ExecutorServices;
-import org.junit.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -55,7 +56,8 @@ public class JeroMqAppenderTest {
     }
 
     @Test
-    public void testClientServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final Logger logger) throws Exception {
+    public void testClientServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx) throws Exception {
+        final Logger logger = ctx.getLogger(getClass());
         final int expectedReceiveCount = 3;
         final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), ENDPOINT, expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -79,7 +81,8 @@ public class JeroMqAppenderTest {
     }
 
     @Test
-    public void testMultiThreadedServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final Logger logger) throws Exception {
+    public void testMultiThreadedServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx) throws Exception {
+        final Logger logger = ctx.getLogger(getClass());
         final int nThreads = 10;
         final int expectedReceiveCount = 2 * nThreads;
         final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), ENDPOINT,
@@ -122,7 +125,8 @@ public class JeroMqAppenderTest {
     }
 
     @Test
-    public void testServerOnly(@Named(APPENDER_NAME) final JeroMqAppender appender, final Logger logger) {
+    public void testServerOnly(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx) {
+        final Logger logger = ctx.getLogger(getClass());
         appender.resetSendRcs();
         logger.info("Hello");
         logger.info("Again");
