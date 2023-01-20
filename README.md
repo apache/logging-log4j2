@@ -20,10 +20,10 @@
 Apache Log4j 3.x is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x,
 and provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
 
-[![GitHub build (3.x)](https://img.shields.io/github/workflow/status/apache/logging-log4j2/build/master?label=3.x&logo=github)](https://github.com/apache/logging-log4j2/actions?query=workflow%3AMaven+branch%3Amaster)
-[![GitHub build (2.x)](https://img.shields.io/github/workflow/status/apache/logging-log4j2/build/release-2.x?label=2.x&logo=github)](https://github.com/apache/logging-log4j2/actions?query=workflow%3AMaven+branch%3Arelease-2.x)
-[![Latest Maven Central release](https://img.shields.io/maven-central/v/org.apache.logging.log4j/log4j-api.svg?logo=java)](http://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api)
-
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.logging.log4j/log4j-api.svg)](https://search.maven.org/artifact/org.apache.logging.log4j/log4j-api)
+[![build (2.x)](https://img.shields.io/github/actions/workflow/status/apache/logging-log4j2/build.yml?branch=release-2.x&label=build%20%282.x%29)](https://github.com/apache/logging-log4j2/actions/workflows/build.yml)
+[![build (3.x)](https://img.shields.io/github/actions/workflow/status/apache/logging-log4j2/build.yml?branch=master&label=build%20%283.x%29)](https://github.com/apache/logging-log4j2/actions/workflows/build.yml)
+![CodeQL](https://github.com/apache/logging-log4j2/actions/workflows/codeql-analysis.yml/badge.svg)
 
 ## Pull Requests on Github
 
