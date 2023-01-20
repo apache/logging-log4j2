@@ -16,21 +16,22 @@
  */
 package org.apache.logging.log4j.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-
 import java.util.Deque;
 import java.util.Stack;
 
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.ParentRunner;
 
 import sun.reflect.Reflection;
 
-/** 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+
+/**
  * Tests {@link StackLocatorUtilTest}.
  */
 @RunWith(BlockJUnit4ClassRunner.class)
@@ -80,6 +81,15 @@ public class StackLocatorUtilTest {
         }
         reversed.pop(); // ReflectionUtil
         assertSame(StackLocatorUtilTest.class, reversed.pop());
+    }
+
+    @Test
+    public void testTopElementInStackTrace() {
+        final StackLocator stackLocator = StackLocator.getInstance();
+        final Deque<Class<?>> classes = stackLocator.getCurrentStackTrace();
+        //Removing private class in "PrivateSecurityManagerStackTraceUtil"
+        classes.removeFirst();
+        Assertions.assertSame(PrivateSecurityManagerStackTraceUtil.class, classes.getFirst());
     }
 
     @Test
