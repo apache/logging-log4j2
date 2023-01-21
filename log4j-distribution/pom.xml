@@ -26,6 +26,11 @@
   <packaging>pom</packaging>
   <name>Log4j Distribution</name>
   <description>The Apache Log4j distribution archives.</description>
+  <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.install.skip>true</maven.install.skip>
+    <maven.test.skip>true</maven.test.skip>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -661,13 +666,6 @@
             <phase>package</phase>
           </execution> -->
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

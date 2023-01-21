@@ -31,6 +31,8 @@
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
     <revapi.skip>true</revapi.skip>
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.install.skip>true</maven.install.skip>
   </properties>
   <dependencies>
     <dependency>
@@ -197,13 +199,6 @@
             <phase>test-compile</phase>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -30,6 +30,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Implementation Documentation</docLabel>
     <projectDir>/core</projectDir>
+    <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
   <dependencies>
     <!-- Naturally, all implementations require the log4j-api JAR -->
@@ -110,13 +111,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -35,6 +35,9 @@
     <projectDir>/log4j-perf</projectDir>
     <uberjar.name>benchmarks</uberjar.name>
     <revapi.skip>true</revapi.skip>
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.install.skip>true</maven.install.skip>
+    <maven.test.skip>true</maven.test.skip>
     <module.name>org.apache.logging.log4j.perf</module.name>
   </properties>
 
@@ -154,13 +157,6 @@
           <compilerVersion>9</compilerVersion>
           <source>9</source>
           <target>9</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
         </configuration>
       </plugin>
       <plugin>
