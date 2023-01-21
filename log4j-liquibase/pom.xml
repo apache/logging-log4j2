@@ -30,7 +30,6 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Liquibase Documentation</docLabel>
     <projectDir>/liquibase</projectDir>
-    <maven.doap.skip>true</maven.doap.skip>
     <module.name>org.apache.logging.log4j.liquibase</module.name>
   </properties>
   <dependencies>

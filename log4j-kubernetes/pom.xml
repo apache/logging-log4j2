@@ -31,7 +31,6 @@
     <docLabel>Log4j Kubernetes Library Documentation</docLabel>
     <projectDir>/kubernetes</projectDir>
     <module.name>org.apache.logging.log4j.kubernetes</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>

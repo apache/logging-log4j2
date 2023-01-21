@@ -31,7 +31,6 @@
     <docLabel>JNDI Documentation</docLabel>
     <projectDir>/log4j-jndi</projectDir>
     <module.name>org.apache.logging.log4j.jndi</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>

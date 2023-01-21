@@ -35,7 +35,6 @@
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-appserver</projectDir>
     <module.name>org.apache.logging.log4j.appserver</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>
@@ -95,7 +94,6 @@
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
                project -->
-          <additionalparam>${javadoc.opts}</additionalparam>
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
           <source>8</source>

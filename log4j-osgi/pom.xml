@@ -31,7 +31,6 @@
     <docLabel>OSGi Documentation</docLabel>
     <projectDir>/osgi</projectDir>
     <module.name>org.apache.logging.log4j.osgi</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>
@@ -124,6 +123,18 @@
   </dependencies>
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.ops4j.pax.exam</groupId>
+        <artifactId>exam-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>generate-link-files</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
