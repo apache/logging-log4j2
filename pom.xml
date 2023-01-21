@@ -1712,28 +1712,6 @@
 
   </build>
 
-  <!-- WARNING!
-       Do not add anything to `reporting`, unless you disable something inherited from parent POMs.
-       Site generation is actively worked on to move away from `maven-site-plugin` et al. -->
-  <reporting>
-    <plugins>
-
-      <!-- disable `maven-project-info-reports-plugin` injected by `org.apache:apache` POM, which is parenting `org.apache.logging:logging-parent` POM, which is parenting us: -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </reportSet>
-        </reportSets>
-      </plugin>
-
-    </plugins>
-  </reporting>
-
   <distributionManagement>
     <downloadUrl>https://logging.apache.org/log4j/2.x/download.html</downloadUrl>
     <!-- `site` is only included to make `maven-site-plugin` stop complaining: -->
