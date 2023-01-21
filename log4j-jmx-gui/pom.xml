@@ -33,7 +33,6 @@
     <docLabel>JMX GUI Documentation</docLabel>
     <projectDir>/jmx-gui</projectDir>
     <module.name>org.apache.logging.log4j.jmx.gui</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>

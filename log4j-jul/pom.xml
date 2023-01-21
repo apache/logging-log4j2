@@ -25,7 +25,6 @@
 
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <artifactId>log4j-jul</artifactId>

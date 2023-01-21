@@ -123,8 +123,7 @@ link:manual/compatiblity.html[Log4j 2 Compatiblity with Log4j 1] for more inform
 
 == Documentation
 
-The Log4j 2 User's Guide is available on this link:manual/index.html[site] or as a downloadable
-link:log4j-users-guide.pdf[PDF].
+The Log4j 2 User's Guide is available on this link:manual/index.html[site].
 
 == Requirements
 

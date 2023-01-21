@@ -31,7 +31,6 @@
     <docLabel>Log4j 1.2 Documentation</docLabel>
     <projectDir>/log4j12-api</projectDir>
     <module.name>org.apache.log4j</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>
