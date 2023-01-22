@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.InternalApi;
 import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -33,6 +34,7 @@ import org.apache.logging.log4j.util.Supplier;
 /**
  * Collects data for a log event and then logs it. This class should be considered private.
  */
+@InternalApi
 public class DefaultLogBuilder implements BridgeAware, LogBuilder {
 
     private static final String FQCN = DefaultLogBuilder.class.getName();
@@ -44,20 +46,11 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
     private Marker marker;
     private Throwable throwable;
     private StackTraceElement location;
-    private volatile boolean inUse;
     private final long threadId;
     private String fqcn = FQCN;
 
-    public DefaultLogBuilder(final Logger logger, final Level level) {
-        this.logger = logger;
-        this.level = level;
-        this.threadId = Thread.currentThread().getId();
-        this.inUse = true;
-    }
-
     public DefaultLogBuilder(final Logger logger) {
         this.logger = logger;
-        this.inUse = false;
         this.threadId = Thread.currentThread().getId();
     }
 
@@ -66,42 +59,34 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
         this.fqcn = fqcn;
     }
 
-    /**
-     * This method should be considered internal. It is used to reset the LogBuilder for a new log message.
-     * @param level The logging level for this event.
-     * @return This LogBuilder instance.
-     */
-    public LogBuilder reset(final Level level) {
-        this.inUse = true;
+    @InternalApi
+    public LogBuilder atLevel(final Level level) {
         this.level = level;
-        this.marker = null;
-        this.throwable = null;
-        this.location = null;
         return this;
     }
 
+    @Override
     public LogBuilder withMarker(final Marker marker) {
         this.marker = marker;
         return this;
     }
 
+    @Override
     public LogBuilder withThrowable(final Throwable throwable) {
         this.throwable = throwable;
         return this;
     }
 
+    @Override
     public LogBuilder withLocation() {
         location = StackLocatorUtil.getStackTraceElement(2);
         return this;
     }
 
+    @Override
     public LogBuilder withLocation(final StackTraceElement location) {
         this.location = location;
         return this;
-    }
-
-    public boolean isInUse() {
-        return inUse;
     }
 
     @Override
@@ -246,16 +231,15 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
         try {
             logger.logMessage(level, marker, fqcn, location, message, throwable);
         } finally {
-            inUse = false;
+            // recycle self
+            this.level = null;
+            this.marker = null;
+            this.throwable = null;
+            this.location = null;
         }
     }
 
     private boolean isValid() {
-        if (!inUse) {
-            LOGGER.warn("Attempt to reuse LogBuilder was ignored. {}",
-                    StackLocatorUtil.getCallerClass(2));
-            return false ;
-        }
         if (this.threadId != Thread.currentThread().getId()) {
             LOGGER.warn("LogBuilder can only be used on the owning thread. {}",
                     StackLocatorUtil.getCallerClass(2));

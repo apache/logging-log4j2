@@ -53,8 +53,8 @@ import org.apache.logging.log4j.plugins.di.InjectException;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
-import org.apache.logging.log4j.spi.RecyclerFactories;
 import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -92,7 +92,7 @@ public class DefaultBundle {
 
     @SingletonFactory
     public RecyclerFactory defaultRecyclerFactory() {
-        return RecyclerFactories.getDefault();
+        return LoggingSystem.getRecyclerFactory();
     }
 
     @ConditionalOnProperty(name = Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME)

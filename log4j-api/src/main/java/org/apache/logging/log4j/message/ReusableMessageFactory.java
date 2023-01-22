@@ -16,8 +16,8 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Recycler;
-import org.apache.logging.log4j.spi.RecyclerFactories;
 import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
@@ -48,7 +48,7 @@ public final class ReusableMessageFactory implements MessageFactory {
      * Constructs a message factory using the default {@link RecyclerFactory}.
      */
     public ReusableMessageFactory() {
-        this(RecyclerFactories.getDefault());
+        this(LoggingSystem.getRecyclerFactory());
     }
 
     public ReusableMessageFactory(final RecyclerFactory recyclerFactory) {

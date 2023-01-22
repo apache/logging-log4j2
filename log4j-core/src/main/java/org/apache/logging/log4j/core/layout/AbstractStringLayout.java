@@ -29,8 +29,8 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Recycler;
-import org.apache.logging.log4j.spi.RecyclerFactories;
 import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -159,7 +159,7 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
         this.footerSerializer = null;
         this.charset = aCharset == null ? StandardCharsets.UTF_8 : aCharset;
         textEncoder = Constants.ENABLE_DIRECT_ENCODERS ? new StringBuilderEncoder(charset) : null;
-        recyclerFactory = RecyclerFactories.getDefault();
+        recyclerFactory = LoggingSystem.getRecyclerFactory();
         recycler = createRecycler(recyclerFactory);
     }
 
@@ -178,7 +178,7 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
         this.footerSerializer = footerSerializer;
         this.charset = aCharset == null ? StandardCharsets.UTF_8 : aCharset;
         textEncoder = Constants.ENABLE_DIRECT_ENCODERS ? new StringBuilderEncoder(charset) : null;
-        recyclerFactory = config != null ? config.getRecyclerFactory() : RecyclerFactories.getDefault();
+        recyclerFactory = config != null ? config.getRecyclerFactory() : LoggingSystem.getRecyclerFactory();
         recycler = createRecycler(recyclerFactory);
     }
 

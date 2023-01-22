@@ -51,8 +51,8 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Recycler;
-import org.apache.logging.log4j.spi.RecyclerFactories;
 import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -207,7 +207,7 @@ public final class GelfLayout extends AbstractStringLayout {
                         .build();
             }
             if (recyclerFactory == null) {
-                recyclerFactory = config != null ? config.getRecyclerFactory() : RecyclerFactories.getDefault();
+                recyclerFactory = config != null ? config.getRecyclerFactory() : LoggingSystem.getRecyclerFactory();
             }
             return new GelfLayout(config, host, additionalFields, compressionType, compressionThreshold,
                     includeStacktrace, includeThreadContext, includeMapMessage, includeNullDelimiter,

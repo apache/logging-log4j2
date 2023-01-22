@@ -26,11 +26,9 @@ import org.apache.logging.log4j.message.EntryMessage;
 import org.apache.logging.log4j.message.FlowMessageFactory;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
-import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LambdaUtil;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.PerformanceSensitive;
@@ -84,7 +82,8 @@ public abstract class AbstractLogger implements ExtendedLogger {
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
     private static final ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
-    protected final transient ThreadLocal<DefaultLogBuilder> logBuilder;
+    protected final Recycler<LogBuilder> recycler = LoggingSystem.getRecyclerFactory()
+            .create(() -> new DefaultLogBuilder(this));
 
 
     /**
@@ -95,7 +94,6 @@ public abstract class AbstractLogger implements ExtendedLogger {
         this.name = canonicalName != null ? canonicalName : getClass().getName();
         this.messageFactory = LoggingSystem.getMessageFactory();
         this.flowMessageFactory = LoggingSystem.getFlowMessageFactory();
-        this.logBuilder = new LocalLogBuilder(this);
     }
 
     /**
@@ -117,7 +115,6 @@ public abstract class AbstractLogger implements ExtendedLogger {
         this.name = name;
         this.messageFactory = messageFactory == null ? LoggingSystem.getMessageFactory() : messageFactory;
         this.flowMessageFactory = LoggingSystem.getFlowMessageFactory();
-        this.logBuilder = new LocalLogBuilder(this);
     }
 
     /**
@@ -2742,11 +2739,8 @@ public abstract class AbstractLogger implements ExtendedLogger {
      */
     @Override
     public LogBuilder always() {
-        final DefaultLogBuilder builder = logBuilder.get();
-        if (builder.isInUse()) {
-            return new DefaultLogBuilder(this);
-        }
-        return builder.reset(Level.OFF);
+        final DefaultLogBuilder builder = (DefaultLogBuilder) recycler.acquire();
+        return builder.atLevel(Level.OFF);
     }
 
     /**
@@ -2757,26 +2751,11 @@ public abstract class AbstractLogger implements ExtendedLogger {
     @Override
     public LogBuilder atLevel(final Level level) {
         if (isEnabled(level)) {
-            return (getLogBuilder(level).reset(level));
+            final DefaultLogBuilder builder = (DefaultLogBuilder) recycler.acquire();
+            return builder.atLevel(level);
         } else {
             return LogBuilder.NOOP;
         }
     }
 
-    private DefaultLogBuilder getLogBuilder(final Level level) {
-        final DefaultLogBuilder builder = logBuilder.get();
-        return Constants.isThreadLocalsEnabled() && !builder.isInUse() ? builder : new DefaultLogBuilder(this, level);
-    }
-
-    private static class LocalLogBuilder extends ThreadLocal<DefaultLogBuilder> {
-        private final AbstractLogger logger;
-        LocalLogBuilder(final AbstractLogger logger) {
-            this.logger = logger;
-        }
-
-        @Override
-        protected DefaultLogBuilder initialValue() {
-            return new DefaultLogBuilder(logger);
-        }
-    }
 }

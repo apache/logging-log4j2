@@ -38,8 +38,8 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Recycler;
-import org.apache.logging.log4j.spi.RecyclerFactories;
 import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
@@ -386,7 +386,7 @@ public final class PatternLayout extends AbstractStringLayout {
             }
             final RecyclerFactory recyclerFactory = configuration != null
                     ? configuration.getRecyclerFactory()
-                    : RecyclerFactories.getDefault();
+                    : LoggingSystem.getRecyclerFactory();
             final Recycler<StringBuilder> recycler = createRecycler(recyclerFactory);
             if (patternSelector == null) {
                 try {

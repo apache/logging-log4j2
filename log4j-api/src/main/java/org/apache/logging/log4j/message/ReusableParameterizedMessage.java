@@ -18,8 +18,8 @@ package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Recycler;
-import org.apache.logging.log4j.spi.RecyclerFactories;
 import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PerformanceSensitive;
@@ -52,7 +52,7 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
      * Creates a reusable message.
      */
     public ReusableParameterizedMessage() {
-        this(RecyclerFactories.getDefault());
+        this(LoggingSystem.getRecyclerFactory());
     }
 
     public ReusableParameterizedMessage(final RecyclerFactory recyclerFactory) {
