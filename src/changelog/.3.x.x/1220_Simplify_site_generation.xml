@@ -16,7 +16,7 @@
    limitations under the License.
 -->
 <entry type="changed">
-  <issue id="1219" link="https://github.com/apache/logging-log4j2/pull/1219"/>
+  <issue id="1220" link="https://github.com/apache/logging-log4j2/pull/1220"/>
   <author id="vy"/>
   <description format="asciidoc">Simplify Maven `site` phase and align it with the one in `release-2.x` branch</description>
 </entry>
