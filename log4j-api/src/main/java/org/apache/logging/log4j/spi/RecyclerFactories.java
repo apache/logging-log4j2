@@ -90,15 +90,6 @@ public final class RecyclerFactories {
                 StringParameterParser.parse(
                         queueFactorySpec, Set.of("supplier", "capacity"));
 
-        // Read the supplier path.
-        final StringParameterParser.Value supplierValue = parsedValues.get("supplier");
-        final String supplierPath;
-        if (supplierValue == null || supplierValue instanceof StringParameterParser.NullValue) {
-            supplierPath = null;
-        } else {
-            supplierPath = supplierValue.toString();
-        }
-
         // Read the capacity.
         final StringParameterParser.Value capacityValue = parsedValues.get("capacity");
         final int capacity;
@@ -114,10 +105,17 @@ public final class RecyclerFactories {
             }
         }
 
+        // Read the supplier path.
+        final StringParameterParser.Value supplierValue = parsedValues.get("supplier");
+        final String supplierPath;
+        if (supplierValue == null || supplierValue instanceof StringParameterParser.NullValue) {
+            supplierPath = Queues.MPMC.factory(capacity);
+        } else {
+            supplierPath = supplierValue.toString();
+        }
+
         // Execute the read spec.
-        final QueueFactory queueFactory = Objects.isNull(supplierPath)
-                ? Queues.MPMC.factory(capacity)
-                : Queues.createQueueFactory(queueFactorySpec, supplierPath, capacity);
+        final QueueFactory queueFactory = Queues.createQueueFactory(queueFactorySpec, supplierPath, capacity);
 
         return new QueueingRecyclerFactory(queueFactory);
     }
