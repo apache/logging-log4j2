@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.spi;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import org.apache.logging.log4j.util.QueueFactory;
@@ -109,13 +108,18 @@ public final class RecyclerFactories {
         final StringParameterParser.Value supplierValue = parsedValues.get("supplier");
         final String supplierPath;
         if (supplierValue == null || supplierValue instanceof StringParameterParser.NullValue) {
-            supplierPath = Queues.MPMC.factory(capacity);
+            supplierPath = null;
         } else {
             supplierPath = supplierValue.toString();
         }
 
         // Execute the read spec.
-        final QueueFactory queueFactory = Queues.createQueueFactory(queueFactorySpec, supplierPath, capacity);
+        final QueueFactory queueFactory;
+        if (supplierPath != null) {
+            queueFactory = Queues.createQueueFactory(supplierPath, capacity);
+        } else {
+            queueFactory = Queues.MPMC.factory(capacity);
+        }
 
         return new QueueingRecyclerFactory(queueFactory);
     }
