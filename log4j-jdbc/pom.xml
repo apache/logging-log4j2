@@ -24,7 +24,6 @@
     <docLabel>Log4j JDBC Documentation</docLabel>
     <projectDir>/log4j-jdbc</projectDir>
     <module.name>org.apache.logging.log4j.jdbc</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>
@@ -150,22 +149,6 @@
   </build>
   <reporting>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
-          <useJql>true</useJql>
-          <component>JDBC</component>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>

@@ -25,7 +25,6 @@
 
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <artifactId>log4j-jul</artifactId>
@@ -163,22 +162,6 @@
   </build>
   <reporting>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
-          <useJql>true</useJql>
-          <component>JUL adapter</component>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>

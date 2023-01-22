@@ -30,7 +30,6 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <!-- Used for OSGi bundle support -->
@@ -205,22 +204,6 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
-          <useJql>true</useJql>
-          <component>Appenders, Configuration, Configurators, Core, Filters, Layouts, Lookups, Pattern Converters, Reconfiguration</component>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
           <!--<propertiesLocation>${vfs.parent.dir}/checkstyle.properties</propertiesLocation> -->
@@ -242,7 +225,6 @@
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
                project -->
-          <additionalparam>${javadoc.opts}</additionalparam>
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
           <links>

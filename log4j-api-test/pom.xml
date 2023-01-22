@@ -30,7 +30,6 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>API Documentation</docLabel>
     <projectDir>/api</projectDir>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>
@@ -225,22 +224,6 @@
   </build>
   <reporting>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
-          <useJql>true</useJql>
-          <component>API</component>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>

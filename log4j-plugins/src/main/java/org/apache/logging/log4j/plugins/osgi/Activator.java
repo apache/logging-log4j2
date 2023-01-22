@@ -167,6 +167,7 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
                     loadPlugins(bundle);
                     scanBundleForPlugins(bundle);
                 }
+                break;
 
             case BundleEvent.STOPPING:
                 if (CORE_MODULE_NAME.equals(bundle.getSymbolicName()) && pluginRegistry != null) {

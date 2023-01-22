@@ -33,7 +33,6 @@
     <docLabel>Log4j Kafka Documentation</docLabel>
     <projectDir>/log4j-kafka</projectDir>
     <module.name>org.apache.logging.log4j.kafka</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>
@@ -103,21 +102,6 @@
   </build>
   <reporting>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
-          <useJql>true</useJql>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>

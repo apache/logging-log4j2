@@ -35,7 +35,6 @@
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-appserver</projectDir>
     <module.name>org.apache.logging.log4j.appserver</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>
@@ -76,21 +75,6 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
-          <useJql>true</useJql>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
           <!--<propertiesLocation>${vfs.parent.dir}/checkstyle.properties</propertiesLocation> -->
@@ -110,7 +94,6 @@
             and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
           <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
                project -->
-          <additionalparam>${javadoc.opts}</additionalparam>
           <detectOfflineLinks>false</detectOfflineLinks>
           <linksource>true</linksource>
           <source>8</source>

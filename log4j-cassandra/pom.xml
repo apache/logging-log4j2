@@ -33,7 +33,6 @@
     <docLabel>Cassandra Documentation</docLabel>
     <projectDir>/log4j-cassandra</projectDir>
     <module.name>org.apache.logging.log4j.cassandra</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
 
     <!-- cassandra-all breaks with a newer version -->
     <!-- at least this version has one CVE less than the one suggested by Cassandra -->
@@ -139,21 +138,6 @@
   </build>
   <reporting>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <issueLinkTemplate>%URL%/show_bug.cgi?id=%ISSUE%</issueLinkTemplate>
-          <useJql>true</useJql>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>

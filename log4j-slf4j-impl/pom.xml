@@ -32,7 +32,6 @@
     <projectDir>/slf4j-impl</projectDir>
     <slf4j.version>1.7.25</slf4j.version>
     <module.name>org.apache.logging.log4j.slf4j</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>
@@ -199,22 +198,6 @@
   </build>
   <reporting>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
-          <useJql>true</useJql>
-          <component>SLF4J Bridge</component>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>

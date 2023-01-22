@@ -31,7 +31,6 @@
     <docLabel>JCL Bridge Documentation</docLabel>
     <projectDir>/jcl-bridge</projectDir>
     <module.name>org.apache.logging.log4j.jcl</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>
@@ -85,22 +84,6 @@
   </build>
   <reporting>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-        <configuration>
-          <issueLinkTemplate>%URL%/%ISSUE%</issueLinkTemplate>
-          <useJql>true</useJql>
-          <component>JCL Bridge</component>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>

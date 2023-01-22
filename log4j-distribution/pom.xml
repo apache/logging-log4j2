@@ -27,10 +27,7 @@
   <name>Log4j Distribution</name>
   <description>The Apache Log4j distribution archives.</description>
   <properties>
-    <maven.doap.skip>true</maven.doap.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
-    <maven.site.skip>true</maven.site.skip>
-    <maven.site.deploy.skip>true</maven.site.deploy.skip>
   </properties>
   <dependencies>
     <!-- log4j-1.2-api -->

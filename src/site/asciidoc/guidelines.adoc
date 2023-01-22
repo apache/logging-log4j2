@@ -97,16 +97,12 @@ access].
 [#issues]
 == Issue Management
 
-The Log4j project uses the
-https://issues.apache.org/JIRA/browse/LOG4J2[JIRA] bug tracking system
-hosted and maintained by the Apache Software Foundation for tracking
-bugs and enhancements. The project roadmap may be maintained in JIRA
-through its RoadMap feature and through the use of Story or Epic issues.
+The Log4j project uses https://github.com/apache/logging-log4j2/issues[GitHub Issues] for its issue tracking system.
 
 Many issues will be encountered by the project, each resulting in zero
 or more proposed action items. Issues should be raised on the mailing
 list as soon as they are identified. Action items *must* be raised on
-the mailing list and added to JIRA using the appropriate issue type. All
+the mailing list and added to the issue tracker using the appropriate issue type. All
 action items may be voted on, but not all of them will require a formal
 vote.
 
@@ -159,10 +155,6 @@ approval_ until someone votes *-1* , after which point they are decided
 by either consensus or a majority vote, depending upon the type of
 action item.
 
-When appropriate, votes should be tallied in the JIRA issue. All votes
-must be either sent to the mailing list or added directly to the JIRA
-issue.
-
 [#types-of-action-items]
 == Types of Action Items
 
@@ -193,9 +185,9 @@ to the public. Majority approval is required before the distribution
 can be publicly released.
 Showstoppers/Blockers::
 Showstoppers are issues that require a fix be in place before the next
-public release. They are listed in JIRA in order to focus special
+public release. They are listed in the issue tracking system in order to focus special
 attention on the problem. An issue becomes a showstopper when it is
-listed as such in JIRA and remains so by lazy consensus.
+listed as such in the issue tracking system and remains so by lazy consensus.
 
 All product changes to the currently active repository are subject to
 lazy consensus. All product changes to a prior-branch (old version)
@@ -215,7 +207,7 @@ function must receive consensus approval on the mailing list before
 being committed.
 
 Each developer is responsible for notifying the mailing list and adding
-an action item to JIRA when they have an idea for a new feature or major
+an action item to the issue tracking system when they have an idea for a new feature or major
 change to propose for the product. The distributed nature of the Log4j
 project requires an advance notice of 48 hours in order to properly
 review a major change -- consensus approval of either the concept or a
@@ -251,11 +243,11 @@ equivalent of a "bug fix" commit. The veto must be rescinded before the
 change can be included in any public release.
 
 [#changelogs]
-== changes.xml and Git logs
+== Changelog and Git logs
 
-Many code changes should be noted in the changes.xml file, and all
+Many code changes should be noted in a `src/changelog/.<releaseMajorVersion>.x.x/<issueId>_<shortSummary>.xml` file, and all
 should be documented in Git commit messages. Often the text of the Git
-log and the changes.xml entry are the same, but the distinct
+log and the changelog entry are the same, but the distinct
 requirements sometimes result in different information.
 
 [#subversion-log]
@@ -287,9 +279,9 @@ Reviewed by: susiecommitter
 ....
 
 [#changes]
-=== changes.xml
+=== Changelog
 
-changes.xml is the subset of the information that end users need to see
+Changelog is a subset of the information that end users need to see
 when they upgrade from one release to the next:
 
 * what can I now do that I couldn't do before
@@ -298,8 +290,8 @@ now fixed
 * all security fixes included, with CVE number. (If not available at the
 time of the commit, add later.)
 
-All entries in changes.xml should include the appropriate JIRA issue
-number and should credit contributions made by non-committers by
+All entries in changelog should include the appropriate issue
+ID and should credit contributions made by non-committers by
 referencing them in the due-to attribute even if modifications needed to
 be made to the contribution.
 
