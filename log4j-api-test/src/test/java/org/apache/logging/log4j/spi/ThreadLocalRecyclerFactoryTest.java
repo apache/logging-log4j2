@@ -16,36 +16,89 @@
  */
 package org.apache.logging.log4j.spi;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
+import java.util.Queue;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junitpioneer.jupiter.params.IntRangeSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ThreadLocalRecyclerFactoryTest {
-    @Test
-    void nestedAcquiresDoNotInterfere() {
-        final Recycler<AtomicInteger> r = ThreadLocalRecyclerFactory.getInstance()
-                .create(AtomicInteger::new, i -> i.set(0));
-        final var recycler = (ThreadLocalRecyclerFactory.ThreadLocalRecycler<AtomicInteger>) r;
 
-        assertThat(recycler.getQueue()).isEmpty();
-        final AtomicInteger first = recycler.acquire();
-        assertThat(recycler.getQueue()).isEmpty();
-        final AtomicInteger second = recycler.acquire();
-        assertThat(recycler.getQueue()).isEmpty();
-        first.set(1);
-        second.set(2);
-        final AtomicInteger third = recycler.acquire();
-        assertThat(recycler.getQueue()).isEmpty();
-        assertThat(third.get()).isEqualTo(0);
-        assertThat(first.get()).isEqualTo(1);
-        assertThat(second.get()).isEqualTo(2);
-        recycler.release(first);
-        assertThat(recycler.getQueue()).hasSize(1);
-        recycler.release(second);
-        assertThat(recycler.getQueue()).hasSize(2);
-        recycler.release(third);
-        assertThat(recycler.getQueue()).hasSize(3);
+    static class RecyclableObject {
+        boolean using;
+        boolean returned;
+    }
+
+    private Recycler<RecyclableObject> recycler;
+
+    private Queue<RecyclableObject> getRecyclerQueue() {
+        return ((ThreadLocalRecyclerFactory.ThreadLocalRecycler<RecyclableObject>) recycler).getQueue();
+    }
+
+    @BeforeEach
+    void setUp() {
+        recycler = ThreadLocalRecyclerFactory.getInstance()
+                .create(RecyclableObject::new, o -> {
+                    o.using = true;
+                    o.returned = false;
+                }, o -> {
+                    o.returned = true;
+                    o.using = false;
+                });
+    }
+
+    @ParameterizedTest
+    @IntRangeSource(from = 1, to = ThreadLocalRecyclerFactory.MAX_QUEUE_SIZE, closed = true)
+    void nestedAcquiresDoNotInterfere(int acquisitionCount) {
+        // pool should start empty
+        assertThat(getRecyclerQueue()).isEmpty();
+
+        final List<RecyclableObject> acquiredObjects = IntStream.range(0, acquisitionCount)
+                .mapToObj(i -> recycler.acquire())
+                .collect(Collectors.toList());
+
+        // still nothing returned to pool
+        assertThat(getRecyclerQueue()).isEmpty();
+
+        // don't want any duplicate instances
+        assertThat(acquiredObjects).containsOnlyOnceElementsOf(acquiredObjects);
+        acquiredObjects.forEach(recycler::release);
+
+        // and now they should be back in the pool
+        assertThat(getRecyclerQueue()).hasSize(acquisitionCount);
+
+        // then reacquire them to see that they're still the same object as we've filled in
+        // the thread-local queue with returned objects
+        final List<RecyclableObject> reacquiredObjects = IntStream.range(0, acquisitionCount)
+                .mapToObj(i -> recycler.acquire())
+                .collect(Collectors.toList());
+
+        assertThat(reacquiredObjects).containsExactlyElementsOf(acquiredObjects);
+    }
+
+    @Test
+    void nestedAcquiresPastMaximumQueueSizeShouldDiscardExtraReleases() {
+        assertThat(getRecyclerQueue()).isEmpty();
+
+        // simulate a massively callstack with tons of logging
+        final List<RecyclableObject> acquiredObjects = IntStream.range(0, 1024)
+                .mapToObj(i -> recycler.acquire())
+                .collect(Collectors.toList());
+
+        // still nothing returned to pool
+        assertThat(getRecyclerQueue()).isEmpty();
+
+        // don't want any duplicate instances
+        assertThat(acquiredObjects).containsOnlyOnceElementsOf(acquiredObjects);
+        acquiredObjects.forEach(recycler::release);
+
+        // upon return, we should only have ThreadLocalRecyclerFactory.MAX_QUEUE_SIZE retained for future use
+        assertThat(getRecyclerQueue()).hasSize(ThreadLocalRecyclerFactory.MAX_QUEUE_SIZE);
     }
 }

@@ -25,9 +25,19 @@ import org.apache.logging.log4j.util.Queues;
 /**
  * Recycling strategy that caches instances in a ThreadLocal value to allow threads to reuse objects. This strategy
  * may not be appropriate in workloads where units of work are independent of operating system threads such as
- * reactive streams, coroutines, or virtual threads.
+ * reactive streams, coroutines, or virtual threads; a {@linkplain QueueingRecyclerFactory queue-based approach}
+ * is more flexible.
+ *
+ * @since 3.0.0
  */
 public class ThreadLocalRecyclerFactory implements RecyclerFactory {
+
+    // This determines the maximum number of recyclable objects we may retain per thread.
+    // This allows us to acquire recyclable objects in recursive method calls and maintain
+    // minimal overhead in the scenarios where the active instance count goes far beyond this
+    // for a brief moment.
+    // Visible for testing
+    static final int MAX_QUEUE_SIZE = 8;
 
     private static final ThreadLocalRecyclerFactory INSTANCE =
             new ThreadLocalRecyclerFactory();
@@ -64,8 +74,7 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
             this.supplier = supplier;
             this.lazyCleaner = lazyCleaner;
             this.eagerCleaner = eagerCleaner;
-            // allow for some reasonable level of recursive calls before we stop caring to reuse things
-            this.holder = ThreadLocal.withInitial(() -> Queues.SPSC.create(8));
+            this.holder = ThreadLocal.withInitial(() -> Queues.SPSC.create(MAX_QUEUE_SIZE));
         }
 
         @Override
