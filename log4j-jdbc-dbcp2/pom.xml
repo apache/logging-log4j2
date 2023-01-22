@@ -24,7 +24,6 @@
     <docLabel>Log4j JDBC DBCP 2 Documentation</docLabel>
     <projectDir>/log4j-jdbc-dbcp2</projectDir>
     <module.name>org.apache.logging.log4j.dbcp2</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>

@@ -33,7 +33,6 @@
     <docLabel>Log4j Layout for Jackson JSON Documentation</docLabel>
     <projectDir>/log4j-layout-json</projectDir>
     <module.name>org.apache.logging.log4j.jackson.json</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>

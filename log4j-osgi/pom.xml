@@ -31,8 +31,6 @@
     <docLabel>OSGi Documentation</docLabel>
     <projectDir>/osgi</projectDir>
     <module.name>org.apache.logging.log4j.osgi</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
-    <pax.exam.version>4.13.5</pax.exam.version>
   </properties>
   <dependencies>
     <dependency>
@@ -141,7 +139,6 @@
       <plugin>
         <groupId>org.ops4j.pax.exam</groupId>
         <artifactId>exam-maven-plugin</artifactId>
-        <version>${pax.exam.version}</version>
         <executions>
             <execution>
                 <phase>generate-test-resources</phase>

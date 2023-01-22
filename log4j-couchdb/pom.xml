@@ -33,7 +33,6 @@
     <docLabel>CouchDB Documentation</docLabel>
     <projectDir>/log4j-couchdb</projectDir>
     <module.name>org.apache.logging.log4j.couchdb</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
 
   <dependencies>

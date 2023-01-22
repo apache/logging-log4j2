@@ -33,7 +33,6 @@
     <!-- Override parent's default -->
     <slf4j.version>2.0.6</slf4j.version>
     <module.name>org.apache.logging.log4j.slf4j</module.name>
-    <maven.doap.skip>true</maven.doap.skip>
   </properties>
   <dependencies>
     <dependency>
