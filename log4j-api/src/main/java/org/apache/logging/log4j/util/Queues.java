@@ -31,7 +31,7 @@ import org.jctools.queues.SpscArrayQueue;
  * <a href="https://jctools.github.io/JCTools/">JCTools</a> library is included at runtime, then
  * the specialized lock free or wait free queues are used from there. Otherwise, {@link ArrayBlockingQueue}
  * is provided as a fallback for thread-safety. Custom implementations of {@link QueueFactory} may also be
- * created via {@link #createQueueFactory(String, String, int)}.
+ * created via {@link #createQueueFactory(String, int)}.
  */
 @InternalApi
 public enum Queues {
@@ -70,14 +70,10 @@ public enum Queues {
         return queueFactory.get().create(capacity);
     }
 
-    public static QueueFactory createQueueFactory(final String queueFactorySpec,
-                                                  final String supplierPath,
-                                                  final int capacity) {
+    public static QueueFactory createQueueFactory(final String supplierPath, final int capacity) {
         final int supplierPathSplitterIndex = supplierPath.lastIndexOf('.');
         if (supplierPathSplitterIndex < 0) {
-            throw new IllegalArgumentException(
-                    "invalid supplier in queue factory: " +
-                            queueFactorySpec);
+            throw new IllegalArgumentException("invalid supplier in queue factory: " + supplierPath);
         }
         final String supplierClassName = supplierPath.substring(0, supplierPathSplitterIndex);
         final String supplierMethodName = supplierPath.substring(supplierPathSplitterIndex + 1);
@@ -87,27 +83,23 @@ public enum Queues {
             if ("new".equals(supplierMethodName)) {
                 final Constructor<?> supplierCtor =
                         supplierClass.getDeclaredConstructor(int.class);
-                queueFactory = new ConstructorProvidedQueueFactory(
-                        queueFactorySpec, supplierCtor);
+                queueFactory = new ConstructorProvidedQueueFactory(supplierCtor);
             } else {
                 final Method supplierMethod =
                         supplierClass.getMethod(supplierMethodName, int.class);
-                queueFactory = new StaticMethodProvidedQueueFactory(
-                        queueFactorySpec, supplierMethod);
+                queueFactory = new StaticMethodProvidedQueueFactory(supplierMethod);
             }
             return new ProxyQueueFactory(queueFactory, capacity);
         } catch (final ReflectiveOperationException | LinkageError | SecurityException error) {
-            throw new RuntimeException(
-                    "failed executing queue factory: " +
-                            queueFactorySpec, error);
+            throw new RuntimeException("failed executing queue factory", error);
         }
     }
 
-    static class ProxyQueueFactory implements QueueFactory {
+    private static class ProxyQueueFactory implements QueueFactory {
         private final BoundedQueueFactory factory;
         private final int capacity;
 
-        ProxyQueueFactory(final BoundedQueueFactory factory, final int capacity) {
+        private ProxyQueueFactory(final BoundedQueueFactory factory, final int capacity) {
             this.factory = factory;
             this.capacity = capacity;
         }
@@ -118,18 +110,18 @@ public enum Queues {
         }
     }
 
-    interface BoundedQueueFactory {
+    private interface BoundedQueueFactory {
         <E> Queue<E> create(final int capacity);
     }
 
-    static class ArrayBlockingQueueFactory implements BoundedQueueFactory {
+    private static class ArrayBlockingQueueFactory implements BoundedQueueFactory {
         @Override
         public <E> Queue<E> create(final int capacity) {
             return new ArrayBlockingQueue<>(capacity);
         }
     }
 
-    enum JCToolsQueueFactory implements BoundedQueueFactory {
+    private enum JCToolsQueueFactory implements BoundedQueueFactory {
         SPSC {
             @Override
             public <E> Queue<E> create(final int capacity) {
@@ -169,12 +161,10 @@ public enum Queues {
         }
     }
 
-    static class ConstructorProvidedQueueFactory implements BoundedQueueFactory {
-        private final String queueFactorySpec;
+    private static class ConstructorProvidedQueueFactory implements BoundedQueueFactory {
         private final Constructor<?> constructor;
 
-        ConstructorProvidedQueueFactory(final String queueFactorySpec, final Constructor<?> constructor) {
-            this.queueFactorySpec = queueFactorySpec;
+        private ConstructorProvidedQueueFactory(final Constructor<?> constructor) {
             this.constructor = constructor;
         }
 
@@ -184,19 +174,15 @@ public enum Queues {
             try {
                 return typedConstructor.newInstance(capacity);
             } catch (final ReflectiveOperationException e) {
-                throw new RuntimeException(
-                        "queue construction failed for factory: " +
-                                queueFactorySpec, e);
+                throw new RuntimeException("queue construction failed for factory", e);
             }
         }
     }
 
-    static class StaticMethodProvidedQueueFactory implements BoundedQueueFactory {
-        private final String queueFactorySpec;
+    private static class StaticMethodProvidedQueueFactory implements BoundedQueueFactory {
         private final Method method;
 
-        StaticMethodProvidedQueueFactory(final String queueFactorySpec, final Method method) {
-            this.queueFactorySpec = queueFactorySpec;
+        private StaticMethodProvidedQueueFactory(final Method method) {
             this.method = method;
         }
 
@@ -205,9 +191,7 @@ public enum Queues {
             try {
                 return Cast.cast(method.invoke(null, capacity));
             } catch (final ReflectiveOperationException e) {
-                throw new RuntimeException(
-                        "queue construction failed for factory: " +
-                                queueFactorySpec, e);
+                throw new RuntimeException("queue construction failed for factory", e);
             }
         }
     }
