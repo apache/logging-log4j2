@@ -39,7 +39,7 @@ public interface RecyclerFactory {
      * @return a new recycler for V-type instances
      */
     default <V> Recycler<V> create(final Supplier<V> supplier) {
-        return create(supplier, defaultCleaner());
+        return create(supplier, getDefaultCleaner());
     }
 
     /**
@@ -55,7 +55,7 @@ public interface RecyclerFactory {
      * @return a new recycler for V-type instances
      */
     default <V> Recycler<V> create(Supplier<V> supplier, Consumer<V> cleaner) {
-        return create(supplier, cleaner, defaultCleaner());
+        return create(supplier, cleaner, getDefaultCleaner());
     }
 
     /**
@@ -75,7 +75,7 @@ public interface RecyclerFactory {
     /**
      * Creates a default cleaner function that does nothing.
      */
-    static <V> Consumer<V> defaultCleaner() {
+    static <V> Consumer<V> getDefaultCleaner() {
         return ignored -> {};
     }
 
