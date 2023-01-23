@@ -304,8 +304,8 @@ public class PatternProcessor {
         final long time = useCurrentTime ? currentFileTime != 0 ? currentFileTime : System.currentTimeMillis() :
                 prevFileTime != 0 ? prevFileTime : System.currentTimeMillis();
         formatFileName(buf, new Date(time), obj);
-        final LogEvent event = new Log4jLogEvent.Builder().setTimeMillis(time).build();
-        final String fileName = subst.replace(event, buf);
+        // LOG4J2-3643
+        final String fileName = subst.replace(null, buf);
         buf.setLength(0);
         buf.append(fileName);
     }
