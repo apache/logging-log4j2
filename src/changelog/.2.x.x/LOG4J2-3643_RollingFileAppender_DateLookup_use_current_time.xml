@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<entry type="fix">
+<entry type="fixed">
   <issue id="LOG4J2-3643" link="https://issues.apache.org/jira/browse/LOG4J2-3643"/>
   <author id="rgoers"/>
   <description format="asciidoc">When using a Date Lookup in the file pattern the current time should be used.</description>
