@@ -46,7 +46,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 @Plugin("RollingRandomAccessFile")
 public final class RollingRandomAccessFileAppender extends AbstractOutputStreamAppender<RollingRandomAccessFileManager> {
 
-    public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+    public static class Builder extends AbstractOutputStreamAppender.Builder<Builder>
             implements org.apache.logging.log4j.plugins.util.Builder<RollingRandomAccessFileAppender> {
 
         public Builder() {
@@ -139,54 +139,54 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
                     isIgnoreExceptions(), immediateFlush, bufferSize, advertise ? getConfiguration().getAdvertiser() : null);
         }
 
-        public B setFileName(final String fileName) {
+        public Builder setFileName(final String fileName) {
             this.fileName = fileName;
-            return asBuilder();
+            return this;
         }
 
-        public B setFilePattern(final String filePattern) {
+        public Builder setFilePattern(final String filePattern) {
             this.filePattern = filePattern;
-            return asBuilder();
+            return this;
         }
 
-        public B setAppend(final boolean append) {
+        public Builder setAppend(final boolean append) {
             this.append = append;
-            return asBuilder();
+            return this;
         }
 
-        public B setPolicy(final TriggeringPolicy policy) {
+        public Builder setPolicy(final TriggeringPolicy policy) {
             this.policy = policy;
-            return asBuilder();
+            return this;
         }
 
-        public B setStrategy(final RolloverStrategy strategy) {
+        public Builder setStrategy(final RolloverStrategy strategy) {
             this.strategy = strategy;
-            return asBuilder();
+            return this;
         }
 
-        public B setAdvertise(final boolean advertise) {
+        public Builder setAdvertise(final boolean advertise) {
             this.advertise = advertise;
-            return asBuilder();
+            return this;
         }
 
-        public B setAdvertiseURI(final String advertiseURI) {
+        public Builder setAdvertiseURI(final String advertiseURI) {
             this.advertiseURI = advertiseURI;
-            return asBuilder();
+            return this;
         }
 
-        public B setFilePermissions(final String filePermissions) {
+        public Builder setFilePermissions(final String filePermissions) {
             this.filePermissions = filePermissions;
-            return asBuilder();
+            return this;
         }
 
-        public B setFileOwner(final String fileOwner) {
+        public Builder setFileOwner(final String fileOwner) {
             this.fileOwner = fileOwner;
-            return asBuilder();
+            return this;
         }
 
-        public B setFileGroup(final String fileGroup) {
+        public Builder setFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
-            return asBuilder();
+            return this;
         }
 
     }
@@ -266,8 +266,8 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
     }
 
     @PluginFactory
-    public static <B extends Builder<B>> B newBuilder() {
-        return new Builder<B>().asBuilder();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
 }

@@ -55,7 +55,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      * </ul>
      * @param <B> the builder type
      */
-    public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
+    public static class Builder extends AbstractStringLayout.Builder<Builder>
             implements org.apache.logging.log4j.plugins.util.Builder<SyslogLayout> {
 
         public Builder() {
@@ -89,26 +89,26 @@ public final class SyslogLayout extends AbstractStringLayout {
             return escapeNL;
         }
 
-        public B setFacility(final Facility facility) {
+        public Builder setFacility(final Facility facility) {
             this.facility = facility;
-            return asBuilder();
+            return this;
         }
 
-        public B setIncludeNewLine(final boolean includeNewLine) {
+        public Builder setIncludeNewLine(final boolean includeNewLine) {
             this.includeNewLine = includeNewLine;
-            return asBuilder();
+            return this;
         }
 
-        public B setEscapeNL(final String escapeNL) {
+        public Builder setEscapeNL(final String escapeNL) {
             this.escapeNL = escapeNL;
-            return asBuilder();
+            return this;
         }
 
     }
 
     @PluginFactory
-    public static <B extends Builder<B>> B newBuilder() {
-        return new Builder<B>().asBuilder();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     /**

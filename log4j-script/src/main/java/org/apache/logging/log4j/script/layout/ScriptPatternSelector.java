@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.script.layout;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -35,10 +39,6 @@ import org.apache.logging.log4j.script.AbstractScript;
 import org.apache.logging.log4j.script.ScriptManagerImpl;
 import org.apache.logging.log4j.script.ScriptRef;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Selects the pattern to use based on the result of executing a Script. The returned value will be used as the "key"
@@ -108,6 +108,34 @@ public class ScriptPatternSelector implements PatternSelector {
             }
             return new ScriptPatternSelector(script, properties, defaultPattern, alwaysWriteExceptions, disableAnsi,
                     noConsoleNoAnsi, configuration);
+        }
+
+        public AbstractScript getScript() {
+            return script;
+        }
+
+        public PatternMatch[] getProperties() {
+            return properties;
+        }
+
+        public String getDefaultPattern() {
+            return defaultPattern;
+        }
+
+        public boolean isAlwaysWriteExceptions() {
+            return alwaysWriteExceptions;
+        }
+
+        public boolean isDisableAnsi() {
+            return disableAnsi;
+        }
+
+        public boolean isNoConsoleNoAnsi() {
+            return noConsoleNoAnsi;
+        }
+
+        public Configuration getConfiguration() {
+            return configuration;
         }
 
         public Builder setScript(final AbstractScript script) {

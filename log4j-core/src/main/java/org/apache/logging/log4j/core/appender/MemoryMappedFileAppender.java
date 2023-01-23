@@ -46,7 +46,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
      * @param <B>
      *            The type to build
      */
-    public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+    public static class Builder extends AbstractOutputStreamAppender.Builder<Builder>
             implements org.apache.logging.log4j.plugins.util.Builder<MemoryMappedFileAppender> {
 
         @PluginBuilderAttribute("fileName")
@@ -89,29 +89,49 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
                     advertise ? getConfiguration().getAdvertiser() : null, getPropertyArray());
         }
 
-        public B setFileName(final String fileName) {
+        public String getFileName() {
+            return fileName;
+        }
+
+        public boolean isAppend() {
+            return append;
+        }
+
+        public int getRegionLength() {
+            return regionLength;
+        }
+
+        public boolean isAdvertise() {
+            return advertise;
+        }
+
+        public String getAdvertiseURI() {
+            return advertiseURI;
+        }
+
+        public Builder setFileName(final String fileName) {
             this.fileName = fileName;
-            return asBuilder();
+            return this;
         }
 
-        public B setAppend(final boolean append) {
+        public Builder setAppend(final boolean append) {
             this.append = append;
-            return asBuilder();
+            return this;
         }
 
-        public B setRegionLength(final int regionLength) {
+        public Builder setRegionLength(final int regionLength) {
             this.regionLength = regionLength;
-            return asBuilder();
+            return this;
         }
 
-        public B setAdvertise(final boolean advertise) {
+        public Builder setAdvertise(final boolean advertise) {
             this.advertise = advertise;
-            return asBuilder();
+            return this;
         }
 
-        public B setAdvertiseURI(final String advertiseURI) {
+        public Builder setAdvertiseURI(final String advertiseURI) {
             this.advertiseURI = advertiseURI;
-            return asBuilder();
+            return this;
         }
 
     }
@@ -169,8 +189,8 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
     }
 
     @PluginFactory
-    public static <B extends Builder<B>> B newBuilder() {
-        return new Builder<B>().asBuilder();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     /**

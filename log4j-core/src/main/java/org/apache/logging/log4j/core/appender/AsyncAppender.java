@@ -39,7 +39,6 @@ import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -47,6 +46,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.InternalApi;
@@ -234,13 +234,13 @@ public final class AsyncAppender extends AbstractAppender {
         }
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<AsyncAppender> {
+    public static class Builder extends AbstractFilterable.Builder<Builder>
+            implements org.apache.logging.log4j.plugins.util.Builder<AsyncAppender> {
 
         @PluginElement("AppenderRef")
         @Required(message = "No appender references provided to AsyncAppender")
@@ -274,6 +274,46 @@ public final class AsyncAppender extends AbstractAppender {
 
         @PluginElement(BlockingQueueFactory.ELEMENT_TYPE)
         private BlockingQueueFactory<LogEvent> blockingQueueFactory = new ArrayBlockingQueueFactory<>();
+
+        public AppenderRef[] getAppenderRefs() {
+            return appenderRefs;
+        }
+
+        public String getErrorRef() {
+            return errorRef;
+        }
+
+        public boolean isBlocking() {
+            return blocking;
+        }
+
+        public long getShutdownTimeout() {
+            return shutdownTimeout;
+        }
+
+        public int getBufferSize() {
+            return bufferSize;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isIncludeLocation() {
+            return includeLocation;
+        }
+
+        public Configuration getConfiguration() {
+            return configuration;
+        }
+
+        public boolean isIgnoreExceptions() {
+            return ignoreExceptions;
+        }
+
+        public BlockingQueueFactory<LogEvent> getBlockingQueueFactory() {
+            return blockingQueueFactory;
+        }
 
         public Builder setAppenderRefs(final AppenderRef[] appenderRefs) {
             this.appenderRefs = appenderRefs;

@@ -116,6 +116,70 @@ public class PoolableConnectionFactoryConfig {
                     validationQueryTimeoutSeconds);
         }
 
+        public boolean isCacheState() {
+            return cacheState;
+        }
+
+        public String[] getConnectionInitSqls() {
+            return connectionInitSqls;
+        }
+
+        public Boolean getDefaultAutoCommit() {
+            return defaultAutoCommit;
+        }
+
+        public String getDefaultCatalog() {
+            return defaultCatalog;
+        }
+
+        public Integer getDefaultQueryTimeoutSeconds() {
+            return defaultQueryTimeoutSeconds;
+        }
+
+        public Boolean getDefaultReadOnly() {
+            return defaultReadOnly;
+        }
+
+        public int getDefaultTransactionIsolation() {
+            return defaultTransactionIsolation;
+        }
+
+        public String[] getDisconnectionSqlCodes() {
+            return disconnectionSqlCodes;
+        }
+
+        public boolean isAutoCommitOnReturn() {
+            return autoCommitOnReturn;
+        }
+
+        public boolean isFastFailValidation() {
+            return fastFailValidation;
+        }
+
+        public long getMaxConnLifetimeMillis() {
+            return maxConnLifetimeMillis;
+        }
+
+        public int getMaxOpenPreparedStatements() {
+            return maxOpenPreparedStatements;
+        }
+
+        public boolean isPoolStatements() {
+            return poolStatements;
+        }
+
+        public boolean isRollbackOnReturn() {
+            return rollbackOnReturn;
+        }
+
+        public String getValidationQuery() {
+            return validationQuery;
+        }
+
+        public int getValidationQueryTimeoutSeconds() {
+            return validationQueryTimeoutSeconds;
+        }
+
         public Builder setAutoCommitOnReturn(final boolean autoCommitOnReturn) {
             this.autoCommitOnReturn = autoCommitOnReturn;
             return this;

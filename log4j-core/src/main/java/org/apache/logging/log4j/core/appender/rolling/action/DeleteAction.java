@@ -14,8 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling.action;
+
+import java.io.IOException;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
@@ -26,13 +32,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.io.IOException;
-import java.nio.file.FileVisitor;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Rollover or scheduled action for deleting old log files that are accepted by the specified PathFilters.
@@ -190,8 +189,8 @@ public class DeleteAction extends AbstractPathAction {
      *            href="http://logging.apache.org/log4j/2.x/manual/configuration.html#StatusMessages">status logger</a>
      *            at INFO level. Users can use this to do a dry run to test if their configuration works as expected.
      *            Default is false.
-     * @param PathSorter a plugin implementing the {@link PathSorter} interface
-     * @param PathConditions an array of path conditions (if more than one, they all need to accept a path before it is
+     * @param sorterParameter a plugin implementing the {@link PathSorter} interface
+     * @param pathConditions an array of path conditions (if more than one, they all need to accept a path before it is
      *            deleted).
      * @param config The Configuration.
      * @return A DeleteAction.

@@ -406,6 +406,38 @@ public final class PatternLayout extends AbstractStringLayout {
             return new PatternSelectorSerializer(patternSelector, replace);
         }
 
+        public Configuration getConfiguration() {
+            return configuration;
+        }
+
+        public RegexReplacement getReplace() {
+            return replace;
+        }
+
+        public String getPattern() {
+            return pattern;
+        }
+
+        public String getDefaultPattern() {
+            return defaultPattern;
+        }
+
+        public PatternSelector getPatternSelector() {
+            return patternSelector;
+        }
+
+        public boolean isAlwaysWriteExceptions() {
+            return alwaysWriteExceptions;
+        }
+
+        public boolean isDisableAnsi() {
+            return disableAnsi;
+        }
+
+        public boolean isNoConsoleNoAnsi() {
+            return noConsoleNoAnsi;
+        }
+
         public SerializerBuilder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
@@ -579,6 +611,46 @@ public final class PatternLayout extends AbstractStringLayout {
             final boolean isPlatformSupportsAnsi = !properties.isOsWindows();
             final boolean isJansiRequested = !properties.getBooleanProperty(Log4jProperties.JANSI_DISABLED, true);
             return isPlatformSupportsAnsi || isJansiRequested;
+        }
+
+        public String getPattern() {
+            return pattern;
+        }
+
+        public PatternSelector getPatternSelector() {
+            return patternSelector;
+        }
+
+        public Configuration getConfiguration() {
+            return configuration;
+        }
+
+        public RegexReplacement getRegexReplacement() {
+            return regexReplacement;
+        }
+
+        public Charset getCharset() {
+            return charset;
+        }
+
+        public boolean isAlwaysWriteExceptions() {
+            return alwaysWriteExceptions;
+        }
+
+        public boolean isDisableAnsi() {
+            return disableAnsi;
+        }
+
+        public boolean isNoConsoleNoAnsi() {
+            return noConsoleNoAnsi;
+        }
+
+        public String getHeader() {
+            return header;
+        }
+
+        public String getFooter() {
+            return footer;
         }
 
         /**

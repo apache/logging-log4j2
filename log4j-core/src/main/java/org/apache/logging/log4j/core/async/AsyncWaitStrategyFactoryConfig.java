@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.lang.reflect.Constructor;
+import java.util.Objects;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -24,8 +27,7 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.Objects;
+import org.apache.logging.log4j.util.Cast;
 
 /**
  * This class allows users to configure the factory used to create
@@ -59,7 +61,7 @@ public class AsyncWaitStrategyFactoryConfig {
      *            The type to build
      */
     public static class Builder<B extends AsyncWaitStrategyFactoryConfig.Builder<B>>
-            implements org.apache.logging.log4j.core.util.Builder<AsyncWaitStrategyFactoryConfig> {
+            implements org.apache.logging.log4j.plugins.util.Builder<AsyncWaitStrategyFactoryConfig> {
 
         @PluginBuilderAttribute("class")
         @Required(message = "AsyncWaitStrategyFactory cannot be configured without a factory class name")
@@ -69,7 +71,7 @@ public class AsyncWaitStrategyFactoryConfig {
             return factoryClassName;
         }
 
-        public B withFactoryClassName(String className) {
+        public B setFactoryClassName(String className) {
             this.factoryClassName = className;
             return asBuilder();
         }
@@ -79,23 +81,19 @@ public class AsyncWaitStrategyFactoryConfig {
             return new AsyncWaitStrategyFactoryConfig(factoryClassName);
         }
 
-        @SuppressWarnings("unchecked")
         public B asBuilder() {
-            return (B) this;
+            return Cast.cast(this);
         }
     }
 
     public AsyncWaitStrategyFactory createWaitStrategyFactory() {
         try {
-            @SuppressWarnings("unchecked")
-            final Class<? extends AsyncWaitStrategyFactory> klass = (Class<? extends AsyncWaitStrategyFactory>) Loader.loadClass(factoryClassName);
-            if (AsyncWaitStrategyFactory.class.isAssignableFrom(klass)) {
-                return klass.newInstance();
-            }
-            LOGGER.error("Ignoring factory '{}': it is not assignable to AsyncWaitStrategyFactory", factoryClassName);
-            return null;
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            LOGGER.info("Invalid implementation class name value: error creating AsyncWaitStrategyFactory {}: {}", factoryClassName, e);
+            final Class<?> factoryClass = Loader.loadClass(factoryClassName);
+            final Class<? extends AsyncWaitStrategyFactory> klass = factoryClass.asSubclass(AsyncWaitStrategyFactory.class);
+            final Constructor<? extends AsyncWaitStrategyFactory> constructor = klass.getDeclaredConstructor();
+            return constructor.newInstance();
+        } catch (ReflectiveOperationException e) {
+            LOGGER.info("Invalid implementation class name value: error creating AsyncWaitStrategyFactory {}: {}", factoryClassName, e.getMessage());
             return null;
         }
 

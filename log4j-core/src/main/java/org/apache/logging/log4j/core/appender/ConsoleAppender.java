@@ -109,15 +109,14 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     @PluginFactory
-    public static <B extends Builder<B>> B newBuilder() {
-        return new Builder<B>().asBuilder();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     /**
      * Builds ConsoleAppender instances.
-     * @param <B> The type to build
      */
-    public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+    public static class Builder extends AbstractOutputStreamAppender.Builder<Builder>
             implements org.apache.logging.log4j.plugins.util.Builder<ConsoleAppender> {
 
         @PluginBuilderAttribute
@@ -130,19 +129,31 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         @PluginBuilderAttribute
         private boolean direct;
 
-        public B setTarget(final Target aTarget) {
+        public Target getTarget() {
+            return target;
+        }
+
+        public boolean isFollow() {
+            return follow;
+        }
+
+        public boolean isDirect() {
+            return direct;
+        }
+
+        public Builder setTarget(final Target aTarget) {
             this.target = aTarget;
-            return asBuilder();
+            return this;
         }
 
-        public B setFollow(final boolean shouldFollow) {
+        public Builder setFollow(final boolean shouldFollow) {
             this.follow = shouldFollow;
-            return asBuilder();
+            return this;
         }
 
-        public B setDirect(final boolean shouldDirect) {
+        public Builder setDirect(final boolean shouldDirect) {
             this.direct = shouldDirect;
-            return asBuilder();
+            return this;
         }
 
         @Override

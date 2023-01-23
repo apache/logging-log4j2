@@ -145,7 +145,8 @@ public final class DenyAllFilter extends AbstractFilter {
         return new DenyAllFilter.Builder();
     }
 
-    public static class Builder extends AbstractFilterBuilder<DenyAllFilter.Builder> implements org.apache.logging.log4j.core.util.Builder<DenyAllFilter> {
+    public static class Builder extends AbstractFilterBuilder<DenyAllFilter.Builder>
+            implements org.apache.logging.log4j.plugins.util.Builder<DenyAllFilter> {
 
         @Override
         public DenyAllFilter build() {

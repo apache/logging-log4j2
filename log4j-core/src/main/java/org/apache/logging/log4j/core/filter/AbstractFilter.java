@@ -22,8 +22,9 @@ import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.util.Cast;
 
 /**
  * Users should extend this class to implement filters. Filters can be either context wide or attached to
@@ -77,9 +78,8 @@ public abstract class AbstractFilter extends AbstractLifeCycle implements Filter
             return asBuilder();
         }
 
-        @SuppressWarnings("unchecked")
         public B asBuilder() {
-            return (B) this;
+            return Cast.cast(this);
         }
 
     }

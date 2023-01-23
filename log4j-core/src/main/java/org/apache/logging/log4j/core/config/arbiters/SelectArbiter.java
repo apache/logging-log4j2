@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * Class Description goes here.
@@ -46,17 +46,18 @@ public class SelectArbiter {
         return opt.orElse(null);
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<SelectArbiter> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<SelectArbiter> {
 
         public Builder asBuilder() {
             return this;
         }
 
+        @Override
         public SelectArbiter build() {
             return new SelectArbiter();
         }

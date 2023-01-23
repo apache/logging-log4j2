@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
@@ -38,23 +38,13 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
 
     /**
      * Builds RandomAccessFileAppender instances.
-     *
-     * @param <B>
-     *            The type to build
      */
-    public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+    public static class Builder extends AbstractOutputStreamAppender.Builder<Builder>
             implements org.apache.logging.log4j.plugins.util.Builder<RandomAccessFileAppender> {
 
-        @PluginBuilderAttribute("fileName")
         private String fileName;
-
-        @PluginBuilderAttribute("append")
         private boolean append = true;
-
-        @PluginBuilderAttribute("advertise")
         private boolean advertise;
-
-        @PluginBuilderAttribute("advertiseURI")
         private String advertiseURI;
 
         public Builder() {
@@ -85,24 +75,40 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
                     immediateFlush, advertise ? getConfiguration().getAdvertiser() : null);
         }
 
-        public B setFileName(final String fileName) {
+        public String getFileName() {
+            return fileName;
+        }
+
+        public boolean isAppend() {
+            return append;
+        }
+
+        public boolean isAdvertise() {
+            return advertise;
+        }
+
+        public String getAdvertiseURI() {
+            return advertiseURI;
+        }
+
+        public Builder setFileName(@PluginAttribute final String fileName) {
             this.fileName = fileName;
-            return asBuilder();
+            return this;
         }
 
-        public B setAppend(final boolean append) {
+        public Builder setAppend(@PluginAttribute(defaultBoolean = true) final boolean append) {
             this.append = append;
-            return asBuilder();
+            return this;
         }
 
-        public B setAdvertise(final boolean advertise) {
+        public Builder setAdvertise(@PluginAttribute final boolean advertise) {
             this.advertise = advertise;
-            return asBuilder();
+            return this;
         }
 
-        public B setAdvertiseURI(final String advertiseURI) {
+        public Builder setAdvertiseURI(@PluginAttribute String advertiseURI) {
             this.advertiseURI = advertiseURI;
-            return asBuilder();
+            return this;
         }
 
     }
@@ -161,8 +167,8 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
      * @return a builder for a RandomAccessFileAppender.
      */
     @PluginFactory
-    public static <B extends Builder<B>> B newBuilder() {
-        return new Builder<B>().asBuilder();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
 }

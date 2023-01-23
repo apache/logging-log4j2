@@ -16,29 +16,23 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.core.Appender;
+import java.io.Writer;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldWriter;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.io.Writer;
 
 /**
  * Appends log events to a {@link Writer}.
  */
-@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
-@Plugin("Writer")
 public final class WriterAppender extends AbstractWriterAppender<WriterManager> {
 
     /**
      * Builds WriterAppender instances.
      */
-    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+    public static class Builder extends AbstractAppender.Builder<Builder>
             implements org.apache.logging.log4j.plugins.util.Builder<WriterAppender> {
 
         private boolean follow = false;
@@ -53,14 +47,22 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
                     isIgnoreExceptions(), getPropertyArray());
         }
 
-        public B setFollow(final boolean shouldFollow) {
-            this.follow = shouldFollow;
-            return asBuilder();
+        public boolean isFollow() {
+            return follow;
         }
 
-        public B setTarget(final Writer aTarget) {
+        public Writer getTarget() {
+            return target;
+        }
+
+        public Builder setFollow(final boolean shouldFollow) {
+            this.follow = shouldFollow;
+            return this;
+        }
+
+        public Builder setTarget(final Writer aTarget) {
             this.target = aTarget;
-            return asBuilder();
+            return this;
         }
     }
     /**
@@ -127,7 +129,6 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
      *            the caller. Use true as the default.
      * @return The ConsoleAppender.
      */
-    @PluginFactory
     public static WriterAppender createAppender(StringLayout layout, final Filter filter, final Writer target,
             final String name, final boolean follow, final boolean ignore) {
         if (name == null) {
@@ -147,9 +148,8 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
         return WriterManager.getManager(managerName, new FactoryData(writer, managerName, layout), factory);
     }
 
-    @PluginFactory
-    public static <B extends Builder<B>> B newBuilder() {
-        return new Builder<B>().asBuilder();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     private WriterAppender(final String name, final StringLayout layout, final Filter filter,

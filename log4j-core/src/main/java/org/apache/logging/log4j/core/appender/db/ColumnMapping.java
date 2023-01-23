@@ -106,6 +106,42 @@ public class ColumnMapping {
             return new ColumnMapping(name, source, layout, literal, parameter, type, () -> injector.getTypeConverter(type));
         }
 
+        public Configuration getConfiguration() {
+            return configuration;
+        }
+
+        public StringLayout getLayout() {
+            return layout;
+        }
+
+        public String getLiteral() {
+            return literal;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getParameter() {
+            return parameter;
+        }
+
+        public String getPattern() {
+            return pattern;
+        }
+
+        public String getSource() {
+            return source;
+        }
+
+        public Class<?> getType() {
+            return type;
+        }
+
+        public Injector getInjector() {
+            return injector;
+        }
+
         public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;

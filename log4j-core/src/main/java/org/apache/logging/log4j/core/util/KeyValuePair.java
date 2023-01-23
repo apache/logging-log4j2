@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.plugins.Configurable;
@@ -77,6 +76,14 @@ public final class KeyValuePair {
 
         @PluginBuilderAttribute
         private String value;
+
+        public String getKey() {
+            return key;
+        }
+
+        public String getValue() {
+            return value;
+        }
 
         public Builder setKey(final String aKey) {
             this.key = aKey;

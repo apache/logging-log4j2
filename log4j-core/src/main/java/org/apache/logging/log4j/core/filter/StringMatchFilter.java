@@ -153,16 +153,21 @@ public final class StringMatchFilter extends AbstractFilter {
         return new StringMatchFilter.Builder();
     }
 
-    public static class Builder extends AbstractFilterBuilder<StringMatchFilter.Builder> implements org.apache.logging.log4j.core.util.Builder<StringMatchFilter> {
+    public static class Builder extends AbstractFilterBuilder<StringMatchFilter.Builder>
+            implements org.apache.logging.log4j.plugins.util.Builder<StringMatchFilter> {
         @PluginBuilderAttribute
         private String text = "";
 
+        public String getMatchString() {
+            return text;
+        }
+
         /**
          * Sets the logging level to use.
-         * @param level the logging level to use.
+         * @param text the logging level to use.
          * @return this
          */
-        public StringMatchFilter.Builder setMatchString(final String text) {
+        public Builder setMatchString(final String text) {
             this.text = text;
             return this;
         }

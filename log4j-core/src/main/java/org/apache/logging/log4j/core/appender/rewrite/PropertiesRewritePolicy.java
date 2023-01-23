@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -30,11 +35,6 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringMap;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * This policy modifies events by replacing or possibly adding keys and values to the MapMessage.
  */
@@ -42,10 +42,7 @@ import java.util.Map;
 @Plugin
 public final class PropertiesRewritePolicy implements RewritePolicy {
 
-    /**
-     * Allows subclasses access to the status logger without creating another instance.
-     */
-    protected static final Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Map<Property, Boolean> properties;
 

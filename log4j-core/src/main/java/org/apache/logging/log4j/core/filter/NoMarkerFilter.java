@@ -141,7 +141,8 @@ public final class NoMarkerFilter extends AbstractFilter {
         return new Builder();
     }
 
-    public static class Builder extends AbstractFilterBuilder<Builder> implements org.apache.logging.log4j.core.util.Builder<NoMarkerFilter> {
+    public static class Builder extends AbstractFilterBuilder<Builder>
+            implements org.apache.logging.log4j.plugins.util.Builder<NoMarkerFilter> {
 
         @Override
         public NoMarkerFilter build() {

@@ -42,11 +42,8 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
 
     /**
      * Builds FileAppender instances.
-     *
-     * @param <B>
-     *            The type to build
      */
-    public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+    public static class Builder extends AbstractOutputStreamAppender.Builder<Builder>
             implements org.apache.logging.log4j.plugins.util.Builder<FileAppender> {
 
         @PluginBuilderAttribute
@@ -136,56 +133,56 @@ public final class FileAppender extends AbstractOutputStreamAppender<FileManager
             return fileGroup;
         }
 
-        public B setAdvertise(final boolean advertise) {
+        public Builder setAdvertise(final boolean advertise) {
             this.advertise = advertise;
-            return asBuilder();
+            return this;
         }
 
-        public B setAdvertiseUri(final String advertiseUri) {
+        public Builder setAdvertiseUri(final String advertiseUri) {
             this.advertiseUri = advertiseUri;
-            return asBuilder();
+            return this;
         }
 
-        public B setAppend(final boolean append) {
+        public Builder setAppend(final boolean append) {
             this.append = append;
-            return asBuilder();
+            return this;
         }
 
-        public B setFileName(final String fileName) {
+        public Builder setFileName(final String fileName) {
             this.fileName = fileName;
-            return asBuilder();
+            return this;
         }
 
-        public B setCreateOnDemand(final boolean createOnDemand) {
+        public Builder setCreateOnDemand(final boolean createOnDemand) {
             this.createOnDemand = createOnDemand;
-            return asBuilder();
+            return this;
         }
 
-        public B setLocking(final boolean locking) {
+        public Builder setLocking(final boolean locking) {
             this.locking = locking;
-            return asBuilder();
+            return this;
         }
 
-        public B setFilePermissions(final String filePermissions) {
+        public Builder setFilePermissions(final String filePermissions) {
             this.filePermissions = filePermissions;
-            return asBuilder();
+            return this;
         }
 
-        public B setFileOwner(final String fileOwner) {
+        public Builder setFileOwner(final String fileOwner) {
             this.fileOwner = fileOwner;
-            return asBuilder();
+            return this;
         }
 
-        public B setFileGroup(final String fileGroup) {
+        public Builder setFileGroup(final String fileGroup) {
             this.fileGroup = fileGroup;
-            return asBuilder();
+            return this;
         }
 
     }
 
     @PluginFactory
-    public static <B extends Builder<B>> B newBuilder() {
-        return new Builder<B>().asBuilder();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     private final String fileName;

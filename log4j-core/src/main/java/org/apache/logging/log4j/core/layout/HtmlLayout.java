@@ -16,18 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.pattern.DatePatternConverter;
-import org.apache.logging.log4j.core.util.Transform;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.util.Strings;
-
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.LineNumberReader;
@@ -39,6 +27,18 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.pattern.DatePatternConverter;
+import org.apache.logging.log4j.core.util.Transform;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Outputs events as rows in an HTML table on an HTML page.
@@ -380,6 +380,38 @@ public final class HtmlLayout extends AbstractStringLayout {
         private String timezone = null; // null means default timezone
 
         private Builder() {
+        }
+
+        public boolean isLocationInfo() {
+            return locationInfo;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+
+        public Charset getCharset() {
+            return charset;
+        }
+
+        public FontSize getFontSize() {
+            return fontSize;
+        }
+
+        public String getFontName() {
+            return fontName;
+        }
+
+        public String getDatePattern() {
+            return datePattern;
+        }
+
+        public String getTimezone() {
+            return timezone;
         }
 
         public Builder setLocationInfo(final boolean locationInfo) {

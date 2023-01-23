@@ -18,16 +18,11 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.OutputStream;
 
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
-import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.core.util.NullOutputStream;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * Appends log events to a given output stream using a layout.
@@ -35,39 +30,41 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  * Character encoding is handled within the Layout.
  * </p>
  */
-@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
-@Plugin("OutputStream")
 public final class OutputStreamAppender extends AbstractOutputStreamAppender<OutputStreamManager> {
 
     /**
      * Builds OutputStreamAppender instances.
-     *
-     * @param <B>
-     *            The type to build.
      */
-    public static class Builder<B extends Builder<B>> extends AbstractOutputStreamAppender.Builder<B>
+    public static class Builder extends AbstractOutputStreamAppender.Builder<Builder>
             implements org.apache.logging.log4j.plugins.util.Builder<OutputStreamAppender> {
 
         private boolean follow = false;
-
-        private final Layout layout = PatternLayout.createDefaultLayout();
 
         private OutputStream target;
 
         @Override
         public OutputStreamAppender build() {
-
-            return new OutputStreamAppender(getName(), layout, getFilter(), getManager(target, follow, layout), isIgnoreExceptions(), getPropertyArray());
+            final Layout layout = getOrCreateLayout();
+            final OutputStreamManager manager = getManager(target, follow, layout);
+            return new OutputStreamAppender(getName(), layout, getFilter(), manager, isIgnoreExceptions());
         }
 
-        public B setFollow(final boolean shouldFollow) {
+        public boolean isFollow() {
+            return follow;
+        }
+
+        public OutputStream getTarget() {
+            return target;
+        }
+
+        public Builder setFollow(final boolean shouldFollow) {
             this.follow = shouldFollow;
-            return asBuilder();
+            return this;
         }
 
-        public B setTarget(final OutputStream aTarget) {
+        public Builder setTarget(final OutputStream aTarget) {
             this.target = aTarget;
-            return asBuilder();
+            return this;
         }
     }
     /**
@@ -137,7 +134,6 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
      *            the caller. Use true as the default.
      * @return The ConsoleAppender.
      */
-    @PluginFactory
     public static OutputStreamAppender createAppender(Layout layout, final Filter filter,
                                                       final OutputStream target, final String name, final boolean follow, final boolean ignore) {
         if (name == null) {
@@ -147,7 +143,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
         if (layout == null) {
             layout = PatternLayout.createDefaultLayout();
         }
-        return new OutputStreamAppender(name, layout, filter, getManager(target, follow, layout), ignore, null);
+        return new OutputStreamAppender(name, layout, filter, getManager(target, follow, layout), ignore);
     }
 
     private static OutputStreamManager getManager(final OutputStream target, final boolean follow,
@@ -159,13 +155,12 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
         return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
     }
 
-    @PluginFactory
-    public static <B extends Builder<B>> B newBuilder() {
-        return new Builder<B>().asBuilder();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     private OutputStreamAppender(final String name, final Layout layout, final Filter filter,
-                                 final OutputStreamManager manager, final boolean ignoreExceptions, final Property[] properties) {
+                                 final OutputStreamManager manager, final boolean ignoreExceptions) {
         super(name, layout, filter, ignoreExceptions, true, null, manager);
     }
 

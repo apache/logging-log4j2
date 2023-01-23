@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -31,9 +34,6 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * This Appender allows the logging event to be manipulated before it is processed by other Appenders.
@@ -89,8 +89,8 @@ public final class RewriteAppender extends AbstractAppender {
     /**
      * Creates a RewriteAppender.
      * @param name The name of the Appender.
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
-     *               they are propagated to the caller.
+     * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged;
+     *                         otherwise they are propagated to the caller.
      * @param appenderRefs An array of Appender names to call.
      * @param config The Configuration.
      * @param rewritePolicy The policy to use to modify the event.

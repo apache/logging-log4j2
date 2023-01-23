@@ -215,7 +215,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
     private static final class FactoryData extends AbstractDatabaseManager.AbstractFactoryData {
         private final NoSqlProvider<?> provider;
 
-        protected FactoryData(final int bufferSize, final NoSqlProvider<?> provider) {
+        private FactoryData(final int bufferSize, final NoSqlProvider<?> provider) {
             super(bufferSize, null);
             this.provider = provider;
         }

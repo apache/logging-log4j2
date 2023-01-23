@@ -74,9 +74,6 @@ public final class NoSqlAppender extends AbstractDatabaseAppender<NoSqlDatabaseM
 
             final NoSqlDatabaseManager<?> manager = NoSqlDatabaseManager.getNoSqlDatabaseManager(managerName,
                     bufferSize, provider);
-            if (manager == null) {
-                return null;
-            }
 
             return new NoSqlAppender(name, getFilter(), getLayout(), isIgnoreExceptions(), getPropertyArray(), manager);
         }

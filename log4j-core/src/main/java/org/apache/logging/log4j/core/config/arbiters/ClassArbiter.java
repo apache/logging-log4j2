@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
@@ -40,18 +40,19 @@ public class ClassArbiter implements Arbiter {
         return LoaderUtil.isClassAvailable(className);
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static ClassArbiter.Builder newBuilder() {
         return new ClassArbiter.Builder();
     }
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ClassArbiter> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<ClassArbiter> {
 
-        public static final String ATTR_CLASS_NAME = "className";
-
-        @PluginBuilderAttribute(ATTR_CLASS_NAME)
+        @PluginBuilderAttribute
         private String className;
 
+        public String getClassName() {
+            return className;
+        }
 
         /**
          * Sets the Class name.
@@ -67,6 +68,7 @@ public class ClassArbiter implements Arbiter {
             return this;
         }
 
+        @Override
         public ClassArbiter build() {
             return new ClassArbiter(className);
         }

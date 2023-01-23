@@ -243,33 +243,6 @@ public final class TimeFilter extends AbstractFilter {
         return sb.toString();
     }
 
-    /**
-     * Creates a TimeFilter.
-     * @param start The start time.
-     * @param end The end time.
-     * @param tz timezone.
-     * @param match Action to perform if the time matches.
-     * @param mismatch Action to perform if the action does not match.
-     * @return A TimeFilter.
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static TimeFilter createFilter(
-            final String start, final String end, final String tz, final Result match, final Result mismatch) {
-        final Builder builder = newBuilder()
-                .setStart(start)
-                .setEnd(end);
-        if (tz != null) {
-            builder.setTimezone(ZoneId.of(tz));
-        }
-        if (match != null) {
-            builder.setOnMatch(match);
-        }
-        if (mismatch != null) {
-            builder.setOnMismatch(mismatch);
-        }
-        return builder.get();
-    }
-
     private static LocalTime parseTimestamp(final String timestamp, final LocalTime defaultValue) {
         if (timestamp == null) {
             return defaultValue;
@@ -294,6 +267,22 @@ public final class TimeFilter extends AbstractFilter {
         @PluginAttribute
         private ZoneId timezone = ZoneId.systemDefault();
         private Clock clock;
+
+        public String getStart() {
+            return start;
+        }
+
+        public String getEnd() {
+            return end;
+        }
+
+        public ZoneId getTimezone() {
+            return timezone;
+        }
+
+        public Clock getClock() {
+            return clock;
+        }
 
         public Builder setStart(@PluginAttribute final String start) {
             this.start = start;

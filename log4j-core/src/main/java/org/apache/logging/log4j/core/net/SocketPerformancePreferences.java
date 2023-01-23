@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.net.Socket;
+
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.util.Builder;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import java.net.Socket;
 
 /**
  * Holds all socket options settable via {@link Socket#setPerformancePreferences(int, int, int)}.
@@ -77,16 +77,19 @@ public class SocketPerformancePreferences implements Builder<SocketPerformancePr
         return latency;
     }
 
-    public void setBandwidth(final int bandwidth) {
+    public SocketPerformancePreferences setBandwidth(final int bandwidth) {
         this.bandwidth = bandwidth;
+        return this;
     }
 
-    public void setConnectionTime(final int connectionTime) {
+    public SocketPerformancePreferences setConnectionTime(final int connectionTime) {
         this.connectionTime = connectionTime;
+        return this;
     }
 
-    public void setLatency(final int latency) {
+    public SocketPerformancePreferences setLatency(final int latency) {
         this.latency = latency;
+        return this;
     }
 
     @Override

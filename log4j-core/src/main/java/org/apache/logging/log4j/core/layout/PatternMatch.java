@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.ObjectStreamException;
-
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -77,6 +75,14 @@ public final class PatternMatch {
         @PluginBuilderAttribute
         private String pattern;
 
+        public String getKey() {
+            return key;
+        }
+
+        public String getPattern() {
+            return pattern;
+        }
+
         public Builder setKey(final String key) {
             this.key = key;
             return this;
@@ -92,9 +98,6 @@ public final class PatternMatch {
             return new PatternMatch(key, pattern);
         }
 
-        protected Object readResolve() throws ObjectStreamException {
-            return new PatternMatch(key, pattern);
-        }
     }
 
     @Override

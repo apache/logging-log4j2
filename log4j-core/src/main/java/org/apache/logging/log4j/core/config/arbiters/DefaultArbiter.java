@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * Default Condition for a Select Condition.
@@ -35,12 +35,12 @@ public class DefaultArbiter implements Arbiter {
         return true;
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<DefaultArbiter> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<DefaultArbiter> {
 
         public Builder asBuilder() {
             return this;

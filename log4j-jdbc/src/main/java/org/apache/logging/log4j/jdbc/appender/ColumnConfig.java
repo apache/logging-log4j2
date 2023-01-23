@@ -98,6 +98,34 @@ public final class ColumnConfig {
             return null;
         }
 
+        public Configuration getConfiguration() {
+            return configuration;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getPattern() {
+            return pattern;
+        }
+
+        public String getLiteral() {
+            return literal;
+        }
+
+        public boolean isEventTimestamp() {
+            return isEventTimestamp;
+        }
+
+        public boolean isUnicode() {
+            return isUnicode;
+        }
+
+        public boolean isClob() {
+            return isClob;
+        }
+
         /**
          * If {@code "true"}, indicates that the column is a character LOB (CLOB).
          *

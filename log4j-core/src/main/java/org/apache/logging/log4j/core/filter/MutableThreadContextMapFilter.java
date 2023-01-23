@@ -200,7 +200,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
     }
 
     public static class Builder extends AbstractFilterBuilder<Builder>
-            implements org.apache.logging.log4j.core.util.Builder<MutableThreadContextMapFilter> {
+            implements org.apache.logging.log4j.plugins.util.Builder<MutableThreadContextMapFilter> {
         @PluginAttribute
         private String configLocation;
 
@@ -209,6 +209,18 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
 
         @PluginConfiguration
         private Configuration configuration;
+
+        public String getConfigLocation() {
+            return configLocation;
+        }
+
+        public long getPollInterval() {
+            return pollInterval;
+        }
+
+        public Configuration getConfiguration() {
+            return configuration;
+        }
 
         /**
          * Sets the Configuration.
@@ -255,8 +267,12 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                 ConfigResult result = getConfig(source, authorizationProvider);
                 if (result.status == Status.SUCCESS) {
                     if (result.pairs.length > 0) {
-                        filter = ThreadContextMapFilter.createFilter(result.pairs, "or",
-                                getOnMatch(), getOnMismatch());
+                        filter = ThreadContextMapFilter.newBuilder()
+                                .setPairs(result.pairs)
+                                .setOperator("or")
+                                .setOnMatch(getOnMatch())
+                                .setOnMismatch(getOnMismatch())
+                                .get();
                     } else {
                         filter = new NoOpFilter();
                     }

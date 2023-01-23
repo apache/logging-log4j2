@@ -43,9 +43,8 @@ public final class HttpAppender extends AbstractAppender {
 
     /**
      * Builds HttpAppender instances.
-     * @param <B> The type to build
      */
-    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+    public static class Builder extends AbstractAppender.Builder<Builder>
             implements org.apache.logging.log4j.plugins.util.Builder<HttpAppender> {
 
         @PluginBuilderAttribute
@@ -105,39 +104,39 @@ public final class HttpAppender extends AbstractAppender {
             return verifyHostname;
         }
 
-        public B setUrl(final URL url) {
+        public Builder setUrl(final URL url) {
             this.url = url;
-            return asBuilder();
+            return this;
         }
 
-        public B setMethod(final String method) {
+        public Builder setMethod(final String method) {
             this.method = method;
-            return asBuilder();
+            return this;
         }
 
-        public B setConnectTimeoutMillis(final int connectTimeoutMillis) {
+        public Builder setConnectTimeoutMillis(final int connectTimeoutMillis) {
             this.connectTimeoutMillis = connectTimeoutMillis;
-            return asBuilder();
+            return this;
         }
 
-        public B setReadTimeoutMillis(final int readTimeoutMillis) {
+        public Builder setReadTimeoutMillis(final int readTimeoutMillis) {
             this.readTimeoutMillis = readTimeoutMillis;
-            return asBuilder();
+            return this;
         }
 
-        public B setHeaders(final Property[] headers) {
+        public Builder setHeaders(final Property[] headers) {
             this.headers = headers;
-            return asBuilder();
+            return this;
         }
 
-        public B setSslConfiguration(final SslConfiguration sslConfiguration) {
+        public Builder setSslConfiguration(final SslConfiguration sslConfiguration) {
             this.sslConfiguration = sslConfiguration;
-            return asBuilder();
+            return this;
         }
 
-        public B setVerifyHostname(final boolean verifyHostname) {
+        public Builder setVerifyHostname(final boolean verifyHostname) {
             this.verifyHostname = verifyHostname;
-            return asBuilder();
+            return this;
         }
     }
 
@@ -145,8 +144,8 @@ public final class HttpAppender extends AbstractAppender {
      * @return a builder for a HttpAppender.
      */
     @PluginFactory
-    public static <B extends Builder<B>> B newBuilder() {
-        return new Builder<B>().asBuilder();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     private final HttpManager manager;

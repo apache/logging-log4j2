@@ -121,6 +121,54 @@ public class JmsAppender extends AbstractAppender {
             }
         }
 
+        public String getFactoryName() {
+            return factoryName;
+        }
+
+        public String getProviderUrl() {
+            return providerUrl;
+        }
+
+        public String getUrlPkgPrefixes() {
+            return urlPkgPrefixes;
+        }
+
+        public String getSecurityPrincipalName() {
+            return securityPrincipalName;
+        }
+
+        public String getSecurityCredentials() {
+            return securityCredentials;
+        }
+
+        public String getFactoryBindingName() {
+            return factoryBindingName;
+        }
+
+        public String getDestinationBindingName() {
+            return destinationBindingName;
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public char[] getPassword() {
+            return password;
+        }
+
+        public long getReconnectIntervalMillis() {
+            return reconnectIntervalMillis;
+        }
+
+        public boolean isImmediateFail() {
+            return immediateFail;
+        }
+
+        public JmsManager getJmsManager() {
+            return jmsManager;
+        }
+
         public B setDestinationBindingName(final String destinationBindingName) {
             this.destinationBindingName = destinationBindingName;
             return asBuilder();

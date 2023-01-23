@@ -646,7 +646,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                 exceptionPattern, useTlsMessageFormat, loggerFields);
     }
 
-    public static class Rfc5424LayoutBuilder {
+    public static class Rfc5424LayoutBuilder implements org.apache.logging.log4j.plugins.util.Builder<Rfc5424Layout> {
         private Configuration config;
         private Facility facility = Facility.LOCAL0;
         private String id;
@@ -666,6 +666,82 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         private String exceptionPattern;
         private boolean useTLSMessageFormat;
         private LoggerFields[] loggerFields;
+
+        public Configuration getConfig() {
+            return config;
+        }
+
+        public Facility getFacility() {
+            return facility;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getEin() {
+            return ein;
+        }
+
+        public boolean isIncludeMDC() {
+            return includeMDC;
+        }
+
+        public boolean isIncludeNL() {
+            return includeNL;
+        }
+
+        public String getEscapeNL() {
+            return escapeNL;
+        }
+
+        public String getMdcId() {
+            return mdcId;
+        }
+
+        public String getMdcPrefix() {
+            return mdcPrefix;
+        }
+
+        public String getEventPrefix() {
+            return eventPrefix;
+        }
+
+        public String getAppName() {
+            return appName;
+        }
+
+        public String getMessageId() {
+            return messageId;
+        }
+
+        public String getExcludes() {
+            return excludes;
+        }
+
+        public String getIncludes() {
+            return includes;
+        }
+
+        public String getRequired() {
+            return required;
+        }
+
+        public Charset getCharset() {
+            return charset;
+        }
+
+        public String getExceptionPattern() {
+            return exceptionPattern;
+        }
+
+        public boolean isUseTLSMessageFormat() {
+            return useTLSMessageFormat;
+        }
+
+        public LoggerFields[] getLoggerFields() {
+            return loggerFields;
+        }
 
         public Rfc5424LayoutBuilder setConfig(Configuration config) {
             this.config = config;
@@ -801,7 +877,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
     }
 
-    private class StructuredDataElement {
+    private static class StructuredDataElement {
 
         private final Map<String, String> fields;
         private final boolean discardIfEmpty;
@@ -815,7 +891,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
 
         boolean discard() {
-            if (discardIfEmpty == false) {
+            if (!discardIfEmpty) {
                 return false;
             }
             boolean foundNotEmptyValue = false;

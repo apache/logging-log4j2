@@ -151,9 +151,14 @@ public final class LevelMatchFilter extends AbstractFilter {
         return new LevelMatchFilter.Builder();
     }
 
-    public static class Builder extends AbstractFilterBuilder<LevelMatchFilter.Builder> implements org.apache.logging.log4j.core.util.Builder<LevelMatchFilter> {
+    public static class Builder extends AbstractFilterBuilder<LevelMatchFilter.Builder>
+            implements org.apache.logging.log4j.plugins.util.Builder<LevelMatchFilter> {
         @PluginBuilderAttribute
         private Level level = Level.ERROR;
+
+        public Level getLevel() {
+            return level;
+        }
 
         /**
          * Sets the logging level to use.

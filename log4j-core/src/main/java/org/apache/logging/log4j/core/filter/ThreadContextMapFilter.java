@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
-import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -212,6 +211,18 @@ public class ThreadContextMapFilter extends MapFilter {
         private String operator;
         private ContextDataInjector contextDataInjector;
 
+        public KeyValuePair[] getPairs() {
+            return pairs;
+        }
+
+        public String getOperator() {
+            return operator;
+        }
+
+        public ContextDataInjector getContextDataInjector() {
+            return contextDataInjector;
+        }
+
         public Builder setPairs(@Required @PluginElement final KeyValuePair[] pairs) {
             this.pairs = pairs;
             return this;
@@ -269,15 +280,4 @@ public class ThreadContextMapFilter extends MapFilter {
         return new Builder();
     }
 
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static ThreadContextMapFilter createFilter(
-            final KeyValuePair[] pairs, final String operator, final Result onMatch, final Result onMismatch) {
-        return newBuilder()
-                .setPairs(pairs)
-                .setOperator(operator)
-                .setOnMatch(onMatch)
-                .setOnMismatch(onMismatch)
-                .setContextDataInjector(ContextDataInjectorFactory.createInjector())
-                .get();
-    }
 }

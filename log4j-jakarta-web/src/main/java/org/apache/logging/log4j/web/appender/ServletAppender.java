@@ -16,21 +16,20 @@
  */
 package org.apache.logging.log4j.web.appender;
 
+import jakarta.servlet.ServletContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.web.WebLoggerContextUtils;
-
-import jakarta.servlet.ServletContext;
 
 /**
  * Logs using the ServletContext's log method
@@ -40,7 +39,7 @@ import jakarta.servlet.ServletContext;
 public class ServletAppender extends AbstractAppender {
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<ServletAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<ServletAppender> {
 
         @PluginBuilderAttribute
         private boolean logThrowables;
@@ -84,7 +83,7 @@ public class ServletAppender extends AbstractAppender {
 
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
@@ -101,7 +100,7 @@ public class ServletAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        final String serialized = ((AbstractStringLayout) getLayout()).toSerializable(event);
+        final String serialized = getLayout().toSerializable(event);
         if (logThrowables) {
             servletContext.log(serialized, event.getThrown());
         } else {

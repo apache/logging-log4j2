@@ -16,23 +16,23 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Selects the pattern to use based on the Level in the LogEvent.
@@ -44,7 +44,7 @@ public class LevelPatternSelector implements PatternSelector{
     /**
      * Custom MarkerPatternSelector builder. Use the {@link LevelPatternSelector#newBuilder() builder factory method} to create this.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<LevelPatternSelector> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<LevelPatternSelector> {
 
         @PluginElement("PatternMatch")
         private PatternMatch[] properties;
@@ -75,6 +75,30 @@ public class LevelPatternSelector implements PatternSelector{
             }
             return new LevelPatternSelector(properties, defaultPattern, alwaysWriteExceptions, disableAnsi,
                     noConsoleNoAnsi, configuration);
+        }
+
+        public PatternMatch[] getProperties() {
+            return properties;
+        }
+
+        public String getDefaultPattern() {
+            return defaultPattern;
+        }
+
+        public boolean isAlwaysWriteExceptions() {
+            return alwaysWriteExceptions;
+        }
+
+        public boolean isDisableAnsi() {
+            return disableAnsi;
+        }
+
+        public boolean isNoConsoleNoAnsi() {
+            return noConsoleNoAnsi;
+        }
+
+        public Configuration getConfiguration() {
+            return configuration;
         }
 
         public Builder setProperties(final PatternMatch[] properties) {
@@ -120,16 +144,6 @@ public class LevelPatternSelector implements PatternSelector{
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final boolean requiresLocation;
-
-    /**
-     * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.
-     */
-    @Deprecated
-    public LevelPatternSelector(final PatternMatch[] properties, final String defaultPattern,
-                                 final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
-                                 final Configuration config) {
-        this(properties, defaultPattern, alwaysWriteExceptions, false, noConsoleNoAnsi, config);
-    }
 
     private LevelPatternSelector(final PatternMatch[] properties, final String defaultPattern,
                                  final boolean alwaysWriteExceptions, final boolean disableAnsi,
@@ -189,35 +203,9 @@ public class LevelPatternSelector implements PatternSelector{
      *
      * @return a ScriptPatternSelector builder.
      */
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    /**
-     * Deprecated, use {@link #newBuilder()} instead.
-     * @param properties
-     * @param defaultPattern
-     * @param alwaysWriteExceptions
-     * @param noConsoleNoAnsi
-     * @param configuration
-     * @return a new MarkerPatternSelector.
-     * @deprecated Use {@link #newBuilder()} instead.
-     */
-    @Deprecated
-    public static LevelPatternSelector createSelector(
-            final PatternMatch[] properties,
-            final String defaultPattern,
-            final boolean alwaysWriteExceptions,
-            final boolean noConsoleNoAnsi,
-            final Configuration configuration) {
-        final Builder builder = newBuilder();
-        builder.setProperties(properties);
-        builder.setDefaultPattern(defaultPattern);
-        builder.setAlwaysWriteExceptions(alwaysWriteExceptions);
-        builder.setNoConsoleNoAnsi(noConsoleNoAnsi);
-        builder.setConfiguration(configuration);
-        return builder.build();
     }
 
     @Override

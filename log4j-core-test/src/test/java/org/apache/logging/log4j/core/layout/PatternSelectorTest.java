@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PatternSelectorTest {
 
@@ -74,7 +74,13 @@ public class PatternSelectorTest {
     public void testLevelPatternSelector() throws Exception {
         final PatternMatch[] patterns = new PatternMatch[1];
         patterns[0] = new PatternMatch("TRACE", "%d %-5p [%t]: ====== %C{1}.%M:%L %m ======%n");
-        final PatternSelector selector = LevelPatternSelector.createSelector(patterns, "%d %-5p [%t]: %m%n", true, true, ctx.getConfiguration());
+        final PatternSelector selector = LevelPatternSelector.newBuilder()
+                .setProperties(patterns)
+                .setDefaultPattern("%d %-5p [%t]: %m%n")
+                .setAlwaysWriteExceptions(true)
+                .setNoConsoleNoAnsi(true)
+                .setConfiguration(ctx.getConfiguration())
+                .build();
         final PatternLayout layout = PatternLayout.newBuilder().setPatternSelector(selector)
                 .setConfiguration(ctx.getConfiguration()).build();
         final LogEvent event1 = Log4jLogEvent.newBuilder() //

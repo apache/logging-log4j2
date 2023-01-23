@@ -18,8 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -44,8 +43,7 @@ public abstract class AbstractWriterAppender<M extends WriterManager> extends Ab
      */
     protected final boolean immediateFlush;
     private final M manager;
-    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    private final Lock readLock = readWriteLock.readLock();
+    private final Lock lock = new ReentrantLock();
 
     /**
      * Instantiates.
@@ -76,7 +74,7 @@ public abstract class AbstractWriterAppender<M extends WriterManager> extends Ab
      */
     @Override
     public void append(final LogEvent event) {
-        readLock.lock();
+        lock.lock();
         try {
             final String str = getStringLayout().toSerializable(event);
             if (str.length() > 0) {
@@ -89,7 +87,7 @@ public abstract class AbstractWriterAppender<M extends WriterManager> extends Ab
             error("Unable to write " + manager.getName() + " for appender " + getName(), event, ex);
             throw ex;
         } finally {
-            readLock.unlock();
+            lock.unlock();
         }
     }
 

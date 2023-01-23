@@ -32,7 +32,10 @@ public class ThreadContextMapFilterTest {
         ThreadContext.put("organization", "Apache");
         final KeyValuePair[] pairs = new KeyValuePair[] { new KeyValuePair("userid", "JohnDoe"),
                                                     new KeyValuePair("organization", "Apache")};
-        ThreadContextMapFilter filter = ThreadContextMapFilter.createFilter(pairs, "and", null, null);
+        ThreadContextMapFilter filter = ThreadContextMapFilter.newBuilder()
+                .setPairs(pairs)
+                .setOperator("and")
+                .get();
         assertNotNull(filter);
         filter.start();
         assertTrue(filter.isStarted());
@@ -44,7 +47,10 @@ public class ThreadContextMapFilterTest {
         ThreadContext.put("organization", "ASF");
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
         ThreadContext.clearMap();
-        filter = ThreadContextMapFilter.createFilter(pairs, "or", null, null);
+        filter = ThreadContextMapFilter.newBuilder()
+                .setPairs(pairs)
+                .setOperator("or")
+                .get();
         assertNotNull(filter);
         filter.start();
         assertTrue(filter.isStarted());
@@ -56,7 +62,7 @@ public class ThreadContextMapFilterTest {
         ThreadContext.remove("organization");
         assertSame(Filter.Result.DENY, filter.filter(null, Level.DEBUG, null, (Object) null, (Throwable) null));
         final KeyValuePair[] single = new KeyValuePair[] {new KeyValuePair("userid", "testuser")};
-        filter = ThreadContextMapFilter.createFilter(single, null, null, null);
+        filter = ThreadContextMapFilter.newBuilder().setPairs(single).get();
         assertNotNull(filter);
         filter.start();
         assertTrue(filter.isStarted());

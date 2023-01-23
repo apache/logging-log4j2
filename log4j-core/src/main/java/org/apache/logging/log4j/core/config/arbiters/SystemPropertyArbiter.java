@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * Condition that determines if the specified property is set.
@@ -47,21 +47,27 @@ public class SystemPropertyArbiter implements Arbiter {
         return value != null && (propertyValue == null || value.equals(propertyValue));
     }
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<SystemPropertyArbiter> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<SystemPropertyArbiter> {
 
-        public static final String ATTR_PROPERTY_NAME = "propertyName";
-        public static final String ATTR_PROPERTY_VALUE = "propertyValue";
-
-        @PluginBuilderAttribute(ATTR_PROPERTY_NAME)
+        @PluginBuilderAttribute
         private String propertyName;
 
-        @PluginBuilderAttribute(ATTR_PROPERTY_VALUE)
+        @PluginBuilderAttribute
         private String propertyValue;
+
+        public String getPropertyName() {
+            return propertyName;
+        }
+
+        public String getPropertyValue() {
+            return propertyValue;
+        }
+
         /**
          * Sets the Property Name.
          * @param propertyName the property name.
@@ -86,6 +92,7 @@ public class SystemPropertyArbiter implements Arbiter {
             return this;
         }
 
+        @Override
         public SystemPropertyArbiter build() {
             return new SystemPropertyArbiter(propertyName, propertyValue);
         }
