@@ -16,6 +16,11 @@
 .project
 .idea
 **/*.iml
+/.metadata/
+/.mvn/wrapper/maven-wrapper.jar
+.project
+.settings
+.surefire-*
 **/target
 target/
 .settings
