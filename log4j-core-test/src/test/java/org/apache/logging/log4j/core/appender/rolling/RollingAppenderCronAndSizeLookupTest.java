@@ -58,34 +58,34 @@ public class RollingAppenderCronAndSizeLookupTest {
         this.logger = loggerContextRule.getLogger(RollingAppenderCronAndSizeLookupTest.class.getName());
     }
 
-	@Test
-	public void testAppender() throws Exception {
-		Random rand = new Random();
-		// Loop for 500 times with a 5ms wait guarantees at least 2 time based rollovers.
-		for (int j=0; j < 500; ++j) {
-			for (int i = 0; i < 10; ++i) {
-				logger.debug("This is test message number " + i);
-			}
-			Thread.sleep(5);
-		}
-		Thread.sleep(50);
-		final File dir = new File(DIR);
-		assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
-		final File[] files = dir.listFiles();
-		Arrays.sort(files);
-		assertNotNull(files);
-		assertThat(files, hasItemInArray(that(hasName(that(endsWith(".log"))))));
-		int found = 0;
-		int fileCounter = 0;
-		String previous = "";
-		for (final File file: files) {
-			final String actual = file.getName();
-			if (previous.length() == 0) {
-				previous = actual;
-			} else {
-				assertNotSame("File names snould not be equal", previous, actual);
-			}
-		}
+    @Test
+    public void testAppender() throws Exception {
+        Random rand = new Random();
+        // Loop for 500 times with a 5ms wait guarantees at least 2 time based rollovers.
+        for (int j=0; j < 500; ++j) {
+            for (int i = 0; i < 10; ++i) {
+                logger.debug("This is test message number " + i);
+            }
+            Thread.sleep(5);
+        }
+        Thread.sleep(50);
+        final File dir = new File(DIR);
+        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
+        final File[] files = dir.listFiles();
+        Arrays.sort(files);
+        assertNotNull(files);
+        assertThat(files, hasItemInArray(that(hasName(that(endsWith(".log"))))));
+        int found = 0;
+        int fileCounter = 0;
+        String previous = "";
+        for (final File file: files) {
+            final String actual = file.getName();
+            if (previous.length() == 0) {
+                previous = actual;
+            } else {
+                assertNotSame("File names snould not be equal", previous, actual);
+            }
+        }
 
-	}
+    }
 }
