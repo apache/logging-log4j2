@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.web.appender;
 
-import jakarta.servlet.ServletContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
@@ -30,6 +29,8 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.web.WebLoggerContextUtils;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * Logs using the ServletContext's log method
