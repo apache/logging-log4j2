@@ -287,8 +287,7 @@
     <docker-maven-plugin.version>0.40.2</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
     <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
-    <log4j-maven-changelog-plugin.version>0.2.0-SNAPSHOT</log4j-maven-changelog-plugin.version>
-    <log4j-tools.version>0.1.0</log4j-tools.version>
+    <log4j-tools.version>0.2.0-SNAPSHOT</log4j-tools.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
     <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
     <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
@@ -1233,8 +1232,8 @@
 
         <plugin>
           <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-maven-changelog-plugin</artifactId>
-          <version>${log4j-maven-changelog-plugin.version}</version>
+          <artifactId>log4j-changelog-maven-plugin</artifactId>
+          <version>${log4j-tools.version}</version>
         </plugin>
 
         <plugin>
@@ -1626,7 +1625,7 @@
       <!-- export AsciiDoc-formatted sources to `target/generated-sources/site/asciidoc/changelog` -->
       <plugin>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-maven-changelog-plugin</artifactId>
+        <artifactId>log4j-changelog-maven-plugin</artifactId>
         <inherited>false</inherited>
         <executions>
           <execution>
@@ -1781,13 +1780,11 @@
         <plugins>
           <plugin>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-maven-changelog-plugin</artifactId>
+            <artifactId>log4j-changelog-maven-plugin</artifactId>
             <inherited>false</inherited>
             <executions>
               <execution>
                 <id>changelog-releaser</id>
-                <!-- Choosing the earlier possible phase, since `ChangelogReleaser` execution doesn't depend on anything: -->
-                <phase>validate</phase>
                 <goals>
                   <goal>release</goal>
                 </goals>
