@@ -59,7 +59,7 @@ public class JdbcH2TestHelper {
     static final String H2_TEST_RELATIVE_DIR = "h2/test_log4j";
 
     static void deleteDir() throws IOException {
-        final Path resolve = getH2Path();
+        final Path resolve = getH2Path().getParent();
         if (Files.exists(resolve)) {
             PathUtils.deleteDirectory(resolve);
         }
