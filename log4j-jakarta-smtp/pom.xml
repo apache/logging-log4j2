@@ -41,13 +41,11 @@
       <groupId>jakarta.activation</groupId>
       <artifactId>jakarta.activation-api</artifactId>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>jakarta.mail</groupId>
       <artifactId>jakarta.mail-api</artifactId>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -58,13 +56,13 @@
       <artifactId>log4j-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.sun.activation</groupId>
-      <artifactId>jakarta.activation</artifactId>
+      <groupId>org.eclipse.angus</groupId>
+      <artifactId>angus-activation</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>com.sun.mail</groupId>
-      <artifactId>smtp</artifactId>
+      <groupId>org.eclipse.angus</groupId>
+      <artifactId>jakarta.mail</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>
