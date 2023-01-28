@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
@@ -139,29 +138,6 @@ public final class ThreadContext {
         @Override
         public ContextStack getImmutableStackOrNull() {
             return this;
-        }
-    }
-
-    /**
-     * An empty iterator. Since Java 1.7 added the Collections.emptyIterator() method, we have to make do.
-     *
-     * @param <E> the type of the empty iterator
-     */
-    private static class EmptyIterator<E> implements Iterator<E> {
-
-        @Override
-        public boolean hasNext() {
-            return false;
-        }
-
-        @Override
-        public E next() {
-            throw new NoSuchElementException("This is an empty iterator!");
-        }
-
-        @Override
-        public void remove() {
-            // no-op
         }
     }
 
