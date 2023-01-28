@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -194,6 +195,7 @@ public class DefaultThreadContextStack implements ThreadContextStack, StringBuil
 
     @Override
     public void push(final String message) {
+        Objects.requireNonNull(message, "No message provided");
         if (!useStack) {
             return;
         }

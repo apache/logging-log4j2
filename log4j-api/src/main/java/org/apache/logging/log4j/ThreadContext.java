@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
@@ -31,6 +32,7 @@ import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.util.InternalApi;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * The ThreadContext allows applications to store information either in a Map or a Stack.
@@ -50,12 +52,12 @@ public final class ThreadContext {
 
         @Override
         public String pop() {
-            return null;
+            return Strings.EMPTY;
         }
 
         @Override
         public String peek() {
-            return null;
+            return Strings.EMPTY;
         }
 
         @Override
@@ -364,8 +366,10 @@ public final class ThreadContext {
      * Sets this thread's stack.
      *
      * @param stack The stack to use.
+     * @throws NullPointerException if stack is null
      */
     public static void setStack(final Collection<String> stack) {
+        Objects.requireNonNull(stack, "No stack provided");
         if (stack.isEmpty()) {
             return;
         }
@@ -420,6 +424,7 @@ public final class ThreadContext {
      * </p>
      *
      * @param message The new diagnostic context information.
+     * @throws UnsupportedOperationException if the context stack is disabled
      */
     public static void push(final String message) {
         contextStack.push(message);
@@ -436,6 +441,7 @@ public final class ThreadContext {
      *
      * @param message The new diagnostic context information.
      * @param args Parameters for the message.
+     * @throws UnsupportedOperationException if the context stack is disabled
      */
     public static void push(final String message, final Object... args) {
         contextStack.push(ParameterizedMessage.format(message, args));
@@ -492,6 +498,7 @@ public final class ThreadContext {
      *
      * @see #getDepth
      * @param depth The number of elements to keep.
+     * @throws IllegalArgumentException if depth is negative
      */
     public static void trim(final int depth) {
         contextStack.trim(depth);
@@ -503,17 +510,16 @@ public final class ThreadContext {
     public interface ContextStack extends Collection<String> {
 
         /**
-         * Returns the element at the top of the stack.
+         * Returns the element at the top of the stack. If the stack is empty, then the empty string is returned.
          *
          * @return The element at the top of the stack.
-         * @throws java.util.NoSuchElementException if the stack is empty.
          */
         String pop();
 
         /**
-         * Returns the element at the top of the stack without removing it or null if the stack is empty.
+         * Returns the element at the top of the stack without removing it or the empty string if the stack is empty.
          *
-         * @return the element at the top of the stack or null if the stack is empty.
+         * @return the element at the top of the stack or the empty string if the stack is empty.
          */
         String peek();
 
@@ -521,6 +527,8 @@ public final class ThreadContext {
          * Pushes an element onto the stack.
          *
          * @param message The element to add.
+         * @throws NullPointerException if message is null
+         * @throws UnsupportedOperationException if the context stack is disabled
          */
         void push(String message);
 
@@ -542,6 +550,7 @@ public final class ThreadContext {
          * Trims elements from the end of the stack.
          *
          * @param depth The maximum number of items in the stack to keep.
+         * @throws IllegalArgumentException if depth is negative
          */
         void trim(int depth);
 

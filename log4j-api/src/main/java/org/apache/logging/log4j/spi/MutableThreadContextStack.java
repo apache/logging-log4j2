@@ -24,6 +24,7 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * TODO
@@ -65,7 +66,7 @@ public class MutableThreadContextStack implements ThreadContextStack, StringBuil
     public String pop() {
         checkInvariants();
         if (list.isEmpty()) {
-            return null;
+            return Strings.EMPTY;
         }
         final int last = list.size() - 1;
         return list.remove(last);
@@ -74,7 +75,7 @@ public class MutableThreadContextStack implements ThreadContextStack, StringBuil
     @Override
     public String peek() {
         if (list.isEmpty()) {
-            return null;
+            return Strings.EMPTY;
         }
         final int last = list.size() - 1;
         return list.get(last);
@@ -82,6 +83,7 @@ public class MutableThreadContextStack implements ThreadContextStack, StringBuil
 
     @Override
     public void push(final String message) {
+        Objects.requireNonNull(message, "No message provided");
         checkInvariants();
         list.add(message);
     }
