@@ -17,6 +17,7 @@
 -->
 <entry type="changed">
   <issue id="1214" link="https://github.com/apache/logging-log4j2/pull/1214"/>
-  <author id="vy"/>
-  <description format="asciidoc">Fixing the issue with stacktrace elements order which causes major regression due to cache misses</description>
+  <author id="alex-dubrouski" name="Aliaksei Durbouski"/>
+  <author id="ppkarwasz"/>
+  <description format="asciidoc">Fix order of stacktrace elements, that causes cache misses in `ThrowableProxyHelper`.</description>
 </entry>
