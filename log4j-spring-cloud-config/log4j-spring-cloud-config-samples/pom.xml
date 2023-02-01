@@ -32,7 +32,7 @@
     <log4jParentDir>${basedir}/../..</log4jParentDir>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
-    <spring-ws.version>4.0.0</spring-ws.version>
+    <spring-ws.version>4.0.1</spring-ws.version>
   </properties>
   <dependencyManagement>
     <dependencies>

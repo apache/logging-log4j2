@@ -39,7 +39,7 @@
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
     <maven-jetty-plugin.version>6.1.26</maven-jetty-plugin.version>
-    <spring-ws.version>4.0.0</spring-ws.version>
+    <spring-ws.version>4.0.1</spring-ws.version>
   </properties>
 
   <dependencyManagement>
