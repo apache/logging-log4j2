@@ -43,6 +43,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 @InternalApi
 public final class ServiceLoaderUtil {
 
+    private static final int MAX_BROKEN_SERVICES = 8;
+
     private ServiceLoaderUtil() {
     }
 
@@ -146,14 +148,22 @@ public final class ServiceLoaderUtil {
 
         @Override
         public boolean tryAdvance(Consumer<? super S> action) {
-            while (serviceIterator.hasNext()) {
+            int i = MAX_BROKEN_SERVICES;
+            while (i-- > 0) {
                 try {
-                    action.accept(serviceIterator.next());
-                    return true;
-                } catch (ServiceConfigurationError e) {
+                    if (serviceIterator.hasNext()) {
+                        action.accept(serviceIterator.next());
+                        return true;
+                    }
+                } catch (ServiceConfigurationError | LinkageError e) {
                     if (logger != null) {
                         logger.warn("Unable to load service class for service {}", serviceName, e);
                     }
+                } catch (Throwable e) {
+                    if (logger != null) {
+                        logger.warn("Unable to load service class for service {}", serviceName, e);
+                    }
+                    throw e;
                 }
             }
             return false;

@@ -17,51 +17,52 @@
 package org.apache.logging.log4j.util;
 
 import java.lang.invoke.MethodHandles;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceConfigurationError;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.test.BetterService;
+import org.apache.logging.log4j.test.ListStatusListener;
 import org.apache.logging.log4j.test.Service;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class ServiceLoaderUtilTest {
 
     @Test
     public void testServiceResolution() {
-        // Run only if we are a module
-        if (ServiceLoaderUtil.class.getModule().isNamed()) {
-            List<Object> services = Collections.emptyList();
-            // Service from test module
-            try {
-                services = ServiceLoaderUtil.loadServices(Service.class, MethodHandles.lookup())
-                        .collect(Collectors.toList());
-            } catch (ServiceConfigurationError e) {
-                fail(e);
-            }
-            assertEquals(2, services.size(), "Service services");
-            // BetterService from test module
+            final List<Object> services = new ArrayList<>();
+            assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(BetterService.class, MethodHandles.lookup(), false)
+                    .forEach(services::add));
+            assertThat(services).hasSize(1);
             services.clear();
-            try {
-                services = ServiceLoaderUtil.loadServices(BetterService.class, MethodHandles.lookup())
-                        .collect(Collectors.toList());
-            } catch (ServiceConfigurationError e) {
-                fail(e);
-            }
-            assertEquals(1, services.size(), "BetterService services");
-            // PropertySource from org.apache.logging.log4j module from this module
-            services.clear();
-            try {
-                services = ServiceLoaderUtil.loadServices(PropertySource.class, MethodHandles.lookup())
-                        .collect(Collectors.toList());
-            } catch (ServiceConfigurationError e) {
-                fail(e);
-            }
-            assertEquals(0, services.size(), "PropertySource services");
+            assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(PropertySource.class, MethodHandles.lookup(), false)
+                    .forEach(services::add));
+            assertThat(services).hasSize(3);
         }
+
+    @Test
+    @UsingStatusListener
+    public void testBrokenServiceFile(final ListStatusListener listener) {
+        final List<Service> services = new ArrayList<>();
+        assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(Service.class, MethodHandles.lookup(), false)
+                .forEach(services::add));
+        assertEquals(2, services.size());
+        // A warning for each broken service
+        final List<Throwable> errors = listener.findStatusData(Level.WARN).map(StatusData::getThrowable)
+                .collect(Collectors.toList());
+        assertThat(errors.stream().map(Throwable::getMessage))
+                .allMatch(message -> message.endsWith("invalid.Service not found")
+                        || message.endsWith("org.apache.logging.log4j.Logger not a subtype")
+                        || message.endsWith("Truncated class file"));
+        assertThat(errors.stream().<Class<?>>map(Throwable::getClass)).containsExactlyInAnyOrder(
+                ServiceConfigurationError.class, ServiceConfigurationError.class, ClassFormatError.class);
     }
 }
