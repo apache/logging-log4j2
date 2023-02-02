@@ -14,78 +14,56 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceConfigurationError;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
-import org.apache.logging.log4j.status.StatusListener;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.test.Service;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.logging.log4j.test.BetterService;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.Service;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
-@Execution(ExecutionMode.SAME_THREAD)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class ServiceLoaderUtilTest {
 
-    private static final AtomicInteger counter = new AtomicInteger();
-    private static final StatusListener listener = new StatusListener() {
-
-        @Override
-        public void close() throws IOException {
+    @Test
+    public void testServiceResolution() {
+            final List<Object> services = new ArrayList<>();
+            assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(BetterService.class, MethodHandles.lookup(), false)
+                    .forEach(services::add));
+            assertThat(services).hasSize(1);
+            services.clear();
+            assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(PropertySource.class, MethodHandles.lookup(), false)
+                    .forEach(services::add));
+            assertThat(services).hasSize(3);
         }
-
-        @Override
-        public void log(StatusData data) {
-            final StackTraceElement stackTraceElement = data.getStackTraceElement();
-            if (stackTraceElement.getClassName().startsWith(ServiceLoaderUtil.class.getName())) {
-                counter.incrementAndGet();
-            }
-        }
-
-        @Override
-        public Level getStatusLevel() {
-            return Level.WARN;
-        }
-    };
-
-    @BeforeAll
-    public static void installStatusListener() {
-        StatusLogger.getLogger().registerListener(listener);
-    }
-
-    @AfterAll
-    public static void removeStatusListener() {
-        StatusLogger.getLogger().removeListener(listener);
-    }
 
     @Test
-    public void testBrokenServiceFile() {
-        List<Service> services = Collections.emptyList();
-        final int warnings = counter.get();
-        try {
-            services = ServiceLoaderUtil.loadServices(Service.class, MethodHandles.lookup(), false)
-                    .collect(Collectors.toList());
-        } catch (ServiceConfigurationError e) {
-            fail(e);
-        }
+    @UsingStatusListener
+    public void testBrokenServiceFile(final ListStatusListener listener) {
+        final List<Service> services = new ArrayList<>();
+        assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(Service.class, MethodHandles.lookup(), false)
+                .forEach(services::add));
         assertEquals(2, services.size());
         // A warning for each broken service
-        assertEquals(warnings + 2, counter.get());
+        final List<Throwable> errors = listener.findStatusData(Level.WARN).map(StatusData::getThrowable)
+                .collect(Collectors.toList());
+        assertThat(errors.stream().map(Throwable::getMessage))
+                .allMatch(message -> message.endsWith("invalid.Service not found")
+                        || message.endsWith("org.apache.logging.log4j.Logger not a subtype")
+                        || message.endsWith("Truncated class file"));
+        assertThat(errors.stream().<Class<?>>map(Throwable::getClass)).containsExactlyInAnyOrder(
+                ServiceConfigurationError.class, ServiceConfigurationError.class, ClassFormatError.class);
     }
 
 }

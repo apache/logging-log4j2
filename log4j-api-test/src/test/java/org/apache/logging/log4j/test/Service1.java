@@ -14,8 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.test;
 
-package org.apache.logging.log4j.util.test;
-
-public class Service2 implements BetterService {
+public class Service1 implements Service {
 }
