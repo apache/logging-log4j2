@@ -17,6 +17,6 @@
 -->
 <entry type="changed">
   <issue id="1193" link="https://github.com/apache/logging-log4j2/pull/1193"/>
-  <author id="StevenMassaro"/>
+  <author name="StevenMassaro"/>
   <description format="asciidoc">Remove liquibase-log4j2 maven module</description>
 </entry>
