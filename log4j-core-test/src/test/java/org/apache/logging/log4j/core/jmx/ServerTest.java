@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.jmx;
 
 import javax.management.ObjectName;
@@ -116,5 +115,10 @@ public class ServerTest {
         assertEquals("\"a\\nc\"", ctxName);
         new ObjectName(String.format(LoggerContextAdminMBean.PATTERN, ctxName));
         // no MalformedObjectNameException = success
+    }
+
+    @Test
+    public void testReadOnlyDefaultValue() {
+        assertThrows(UnsupportedOperationException.class, () -> Server.checkWriteAccess());
     }
 }

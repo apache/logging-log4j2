@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
-
 import javax.management.MBeanNotificationInfo;
 import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
@@ -117,6 +116,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
 
     @Override
     public void setConfigLocationUri(final String configLocation) throws URISyntaxException, IOException {
+        Server.checkWriteAccess();
         if (configLocation == null || configLocation.isEmpty()) {
             throw new IllegalArgumentException("Missing configuration location");
         }
@@ -191,6 +191,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
 
     @Override
     public void setConfigText(final String configText, final String charsetName) {
+        Server.checkWriteAccess();
         LOGGER.debug("---------");
         LOGGER.debug("Remote request to reconfigure from config text.");
 

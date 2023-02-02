@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.jmx;
 
 import java.util.List;
 import java.util.Objects;
-
 import javax.management.ObjectName;
 
 import org.apache.logging.log4j.Level;
@@ -78,6 +77,7 @@ public class LoggerConfigAdmin implements LoggerConfigAdminMBean {
 
     @Override
     public void setLevel(final String level) {
+        Server.checkWriteAccess();
         loggerConfig.setLevel(Level.getLevel(level));
         loggerContext.updateLoggers();
     }
@@ -89,6 +89,7 @@ public class LoggerConfigAdmin implements LoggerConfigAdminMBean {
 
     @Override
     public void setAdditive(final boolean additive) {
+        Server.checkWriteAccess();
         loggerConfig.setAdditive(additive);
         loggerContext.updateLoggers();
     }
