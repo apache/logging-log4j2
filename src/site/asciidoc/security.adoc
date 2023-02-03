@@ -42,7 +42,9 @@ Log4j Users mailing list
 
 If you have encountered an unlisted security vulnerability or other unexpected behaviour
 that has security impact, or if the descriptions here are incomplete, please report them
-privately to the mailto:private@logging.apache.org[Log4j Security Team]. Thank you.
+privately to mailto:private@logging.apache.org[the Log4j Security Team].
+Note that reports assuming attacker's access to the Log4j configuration will not qualify as a vulnerability.
+Thank you for your understanding and help!
 
 [#log4j-2-15-0]
 === Fixed in Log4j 2.15.0
