@@ -42,7 +42,9 @@ Log4j [Users mailing list](mail-lists.html).
 
 If you have encountered an unlisted security vulnerability or other unexpected behaviour
 that has security impact, or if the descriptions here are incomplete, please report them
-privately to the [Log4j Security Team](mailto:security@logging.apache.org). Thank you!
+privately to [the Log4j Security Team](mailto:security@logging.apache.org).
+Note that reports assuming attacker's access to the Log4j configuration will not qualify as a vulnerability.
+Thank you for your understanding and help!
 
 <a name="CVE-2021-44832"/><a name="cve-2021-44832"/>
 ## <a name="log4j-2.17.1"/> Fixed in Log4j 2.17.1 (Java 8), 2.12.4 (Java 7) and 2.3.2 (Java 6)
