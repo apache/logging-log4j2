@@ -64,25 +64,6 @@ jobs:
           architecture: x64
           cache: maven
 
-      - name: Inspect environment (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          env | grep '^JAVA'
-          ./mvnw --version
-
-      - name: Inspect environment (Windows)
-        if: runner.os == 'Windows'
-        shell: cmd
-        run: |
-          set JAVA
-          mvnw --version
-
-      - name: Inspect environment (MacOS)
-        if: runner.os == 'macOS'
-        run: |
-          env | grep '^JAVA'
-          ./mvnw --version
-
       - name: Maven "verify"
         timeout-minutes: 60
         shell: bash
