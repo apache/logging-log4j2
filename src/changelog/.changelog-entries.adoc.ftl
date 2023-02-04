@@ -38,6 +38,7 @@
 <#elseif author.id == "vy">Volkan Yazıcı
 <#elseif author.id == "rgrabowski">Ron Grabowski
 <#elseif author.id == "pkarwasz">Piotr P. Karwasz
+<#elseif author.id == "ppkarwasz">Piotr P. Karwasz
 <#else>`${author.id}`
 </#if>
 </@compress><#if author?has_next>, </#if>
