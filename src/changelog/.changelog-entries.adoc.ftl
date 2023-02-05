@@ -14,35 +14,58 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
+<#function isCommitter id>
+  <#switch id>
+    <#case "bbrouwer">
+    <#case "ckozak">
+    <#case "ggregory">
+    <#case "mattsicker">
+    <#case "mikes">
+    <#case "nickwilliams">
+    <#case "pkarwasz">
+    <#case "ppkarwasz">
+    <#case "rgoers">
+    <#case "rgrabowski">
+    <#case "rgupta">
+    <#case "rpopma">
+    <#case "sdeboy">
+    <#case "vy">
+      <#return true>
+    <#default>
+      <#return false>
+  </#switch>
+</#function>
 <#if entriesByType?size gt 0>== Changes
 <#list entriesByType as entryType, entries>
 
 == ${entryType?capitalize}
 
 <#list entries as entry>
-* ${entry.description.text?replace("\\s+", " ", "r")} (for <@compress single_line=true>
-<#list entry.issues as issue>${issue.link}[${issue.id}]<#if issue?has_next>, </#if></#list> by
-<#list entry.authors as author>
 <@compress single_line=true>
-<#if !author.id?has_content>${author.name}
-<#elseif author.id == "rgoers">Ralph Goers
-<#elseif author.id == "ggregory">Gary Gregory
-<#elseif author.id == "sdeboy">Scott Deboy
-<#elseif author.id == "rpopma">Remko Popma
-<#elseif author.id == "nickwilliams">Nick Williams
-<#elseif author.id == "mattsicker">Matt Sicker
-<#elseif author.id == "bbrouwer">Bruce Brouwer
-<#elseif author.id == "rgupta">Raman Gupta
-<#elseif author.id == "mikes">Mikael Ståldal
-<#elseif author.id == "ckozak">Carter Kozak
-<#elseif author.id == "vy">Volkan Yazıcı
-<#elseif author.id == "rgrabowski">Ron Grabowski
-<#elseif author.id == "pkarwasz">Piotr P. Karwasz
-<#else>`${author.id}`
-</#if>
-</@compress><#if author?has_next>, </#if>
-</#list>
-</@compress>)
+  * <#list entry.issues as issue>
+    ${issue.link}[${issue.id}]
+    ${issue?has_next?string(", ", ":")}
+    </#list>
+  ${entry.description.text?ensure_ends_with(".")}
+  <#assign first = true>
+  <#assign committer = "">
+  <#list entry.authors as author>
+    <#if isCommitter(author.id!"")>
+      <#assign committer = author.id>
+    <#else>
+      ${first?string("Thanks to ", ", ")}
+      <#if author.name?has_content>
+        ${author.name}
+      <#else>
+        `${author.id}`
+      </#if>
+    </#if>
+  </#list>
+  <#if committer?has_content>
+    (${committer})
+  </#if>
+</@compress>
+
 </#list>
 </#list>
 </#if>
