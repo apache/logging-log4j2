@@ -21,7 +21,7 @@
        type="fixed">
   <issue id="1202" link="https://github.com/apache/logging-log4j2/pull/1202"/>
   <author id="wleese"/>
-  <author id="ppkarwasz"/>
+  <author id="pkarwasz"/>
   <description format="asciidoc">
     Eliminate status logger warning, when `disableAnsi` or `noConsoleNoAnsi` is
     used the style and highlight patterns.
