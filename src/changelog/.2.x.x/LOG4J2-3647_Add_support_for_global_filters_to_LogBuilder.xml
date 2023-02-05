@@ -17,6 +17,6 @@
 -->
 <entry type="fixed">
   <issue id="LOG4J2-3647" link="https://issues.apache.org/jira/browse/LOG4J2-3647"/>
-  <author id="ppkarwasz"/>
+  <author id="pkarwasz"/>
   <description format="asciidoc">Fixed `LogBuilder` filtering in the presence of global filters.</description>
 </entry>
