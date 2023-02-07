@@ -336,7 +336,6 @@
     <hamcrest.version>2.2</hamcrest.version>
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
     <hsqldb.version>2.5.2</hsqldb.version>
-    <jackson1.version>1.9.13</jackson1.version>
     <jackson-bom.version>2.14.1</jackson-bom.version>
     <!-- Implementation of `jakarta.activation-api`: -->
     <jakarta-activation.version>2.0.1</jakarta-activation.version>
@@ -797,18 +796,6 @@
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
         <version>${hsqldb.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-core-asl</artifactId>
-        <version>${jackson1.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-mapper-asl</artifactId>
-        <version>${jackson1.version}</version>
       </dependency>
 
       <dependency>
