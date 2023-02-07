@@ -14,14 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.util;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 import java.util.Properties;
@@ -35,6 +28,12 @@ import org.junit.jupiter.api.parallel.Resources;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 import uk.org.webcompere.systemstubs.properties.SystemProperties;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SystemStubsExtension.class)
 @ResourceLock(value = Resources.SYSTEM_PROPERTIES)
@@ -155,6 +154,25 @@ public class PropertiesUtilOrderTest {
     }
 
     @Test
+    public void testLegacySystemPropertyHasHigherPriorityThanEnv(EnvironmentVariables env, SystemProperties sysProps) {
+        env.set("LOG4J_CONFIGURATION_FILE", "env");
+        final PropertiesUtil util = new PropertiesUtil(properties);
+
+        assertTrue(util.hasProperty("log4j.configurationFile"));
+        assertEquals("env", util.getStringProperty("log4j.configurationFile"));
+
+        sysProps.set("log4j.configurationFile", "legacy");
+        util.reload();
+        assertTrue(util.hasProperty("log4j.configurationFile"));
+        assertEquals("legacy", util.getStringProperty("log4j.configurationFile"));
+
+        sysProps.set("log4j2.configurationFile", "new");
+        util.reload();
+        assertTrue(util.hasProperty("log4j.configurationFile"));
+        assertEquals("new", util.getStringProperty("log4j.configurationFile"));
+    }
+
+    @Test
     public void testHighPriorityNonEnumerableSource(SystemProperties sysProps) {
         // In both datasources
         assertNotNull(properties.getProperty("log4j2.normalizedProperty"));
@@ -188,7 +206,7 @@ public class PropertiesUtilOrderTest {
     /**
      * Checks the for missing null checks. The {@link NullPropertySource} returns
      * {@code null} in almost every call.
-     * 
+     *
      * @param sysProps
      */
     @Test

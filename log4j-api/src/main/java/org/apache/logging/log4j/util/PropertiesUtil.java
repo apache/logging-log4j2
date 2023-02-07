@@ -503,7 +503,6 @@ public final class PropertiesUtil {
                     sources.forEach(source -> {
                         if (source.containsProperty(key)) {
                             final String value = source.getProperty(key);
-                            literal.putIfAbsent(key, value);
                             if (hasTokens) {
                                 tokenized.putIfAbsent(tokens, value);
                             }
@@ -511,7 +510,10 @@ public final class PropertiesUtil {
                         if (hasTokens) {
                             final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
                             if (normalKey != null && source.containsProperty(normalKey)) {
-                                normalized.putIfAbsent(key, source.getProperty(normalKey));
+                                literal.putIfAbsent(key, source.getProperty(normalKey));
+                            }
+                            else if(source.containsProperty(key)) {
+                                literal.putIfAbsent(key, source.getProperty(key));
                             }
                         }
                     });
@@ -519,9 +521,6 @@ public final class PropertiesUtil {
         }
 
         private String get(final String key) {
-            if (normalized.containsKey(key)) {
-                return normalized.get(key);
-            }
             if (literal.containsKey(key)) {
                 return literal.get(key);
             }
@@ -543,8 +542,7 @@ public final class PropertiesUtil {
 
         private boolean containsKey(final String key) {
             List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-            return normalized.containsKey(key) ||
-                   literal.containsKey(key) ||
+            return literal.containsKey(key) ||
                    tokenized.containsKey(tokens) ||
                    sources.stream().anyMatch(s -> {
                         final CharSequence normalizedKey = s.getNormalForm(tokens);
