@@ -1699,9 +1699,6 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <inherited>false</inherited>
-        <configuration>
-          <outputDirectory>${project.build.directory}/generated-sources/site/asciidoc/release-notes</outputDirectory>
-        </configuration>
         <executions>
           <execution>
             <id>changelog-export</id>
@@ -1726,7 +1723,7 @@
             </systemProperty>
             <systemProperty>
               <key>log4j.changelog.exporter.outputDirectory</key>
-              <value>${project.build.directory}/generated-sources/site/asciidoc/changelog</value>
+              <value>${project.build.directory}/generated-sources/site/asciidoc/release-notes</value>
             </systemProperty>
           </systemProperties>
         </configuration>
