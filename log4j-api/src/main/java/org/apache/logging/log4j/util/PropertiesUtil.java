@@ -189,14 +189,9 @@ public class PropertiesUtil implements PropertyEnvironment {
 
         private final Set<PropertySource> sources = new ConcurrentSkipListSet<>(new PropertySource.Comparator());
         /**
-         * Maps a key to its value in the lowest priority source that contains it.
+         * Maps a key to its value or the value of its normalization in the lowest priority source that contains it.
          */
         private final Map<String, String> literal = new ConcurrentHashMap<>();
-        /**
-         * Maps a key to the value associated to its normalization in the lowest
-         * priority source that contains it.
-         */
-        private final Map<String, String> normalized = new ConcurrentHashMap<>();
         private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
 
         private Environment(final PropertySource propertySource) {
@@ -224,7 +219,6 @@ public class PropertiesUtil implements PropertyEnvironment {
 
         private synchronized void reload() {
             literal.clear();
-            normalized.clear();
             tokenized.clear();
             // 1. Collects all property keys from enumerable sources.
             final Set<String> keys = new HashSet<>();
