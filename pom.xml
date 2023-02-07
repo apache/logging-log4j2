@@ -341,7 +341,6 @@
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
     <hsqldb.version>2.5.2</hsqldb.version>
     <icu4j.version>72.1</icu4j.version>
-    <jackson1.version>1.9.13</jackson1.version>
     <jackson-bom.version>2.14.1</jackson-bom.version>
     <!-- Override the version in Jakarta EE 9 BOM: -->
     <jakarta-activation.version>2.1.1</jakarta-activation.version>
@@ -802,18 +801,6 @@
         <groupId>org.hsqldb</groupId>
         <artifactId>hsqldb</artifactId>
         <version>${hsqldb.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-core-asl</artifactId>
-        <version>${jackson1.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-mapper-asl</artifactId>
-        <version>${jackson1.version}</version>
       </dependency>
 
       <dependency>
