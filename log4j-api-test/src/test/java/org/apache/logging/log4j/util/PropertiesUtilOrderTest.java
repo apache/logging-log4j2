@@ -29,7 +29,11 @@ import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 import uk.org.webcompere.systemstubs.properties.SystemProperties;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SystemStubsExtension.class)
 @ResourceLock(value = Resources.SYSTEM_PROPERTIES)
@@ -147,6 +151,25 @@ public class PropertiesUtilOrderTest {
         assertEquals("sysProps", util.getStringProperty("Log4jNormalizedProperty"));
         assertTrue(util.hasProperty("log4j2.normalizedProperty"));
         assertEquals("sysProps", util.getStringProperty("log4j2.normalizedProperty"));
+    }
+
+    @Test
+    public void testLegacySystemPropertyHasHigherPriorityThanEnv(EnvironmentVariables env, SystemProperties sysProps) {
+        env.set("LOG4J_CONFIGURATION_FILE", "env");
+        final PropertiesUtil util = new PropertiesUtil(properties);
+
+        assertTrue(util.hasProperty("log4j.configurationFile"));
+        assertEquals("env", util.getStringProperty("log4j.configurationFile"));
+
+        sysProps.set("log4j.configurationFile", "legacy");
+        util.reload();
+        assertTrue(util.hasProperty("log4j.configurationFile"));
+        assertEquals("legacy", util.getStringProperty("log4j.configurationFile"));
+
+        sysProps.set("log4j2.configurationFile", "new");
+        util.reload();
+        assertTrue(util.hasProperty("log4j.configurationFile"));
+        assertEquals("new", util.getStringProperty("log4j.configurationFile"));
     }
 
     @Test
