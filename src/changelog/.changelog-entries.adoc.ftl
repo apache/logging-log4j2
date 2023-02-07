@@ -17,7 +17,7 @@
 <#if entriesByType?size gt 0>== Changes
 <#list entriesByType as entryType, entries>
 
-== ${entryType?capitalize}
+=== ${entryType?capitalize}
 
 <#list entries as entry>
 * ${entry.description.text?replace("\\s+", " ", "r")} (for <@compress single_line=true>

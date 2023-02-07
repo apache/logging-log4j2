@@ -184,6 +184,6 @@ Adapters are also available for Apache Commons Logging, SLF4J, and java.util.log
 
 Log4j $Log4jReleaseVersion is the latest release of Log4j. As of Log4j 2.13.0 Log4j 2 requires Java 8 or greater at
 runtime.
-This release contains new features and fixes which are explained further in [changelogs](changelog/).
+This release contains new features and fixes which are explained further in [release notes](release-notes).
 
 Log4j $Log4jReleaseVersion maintains binary compatibility with previous releases.

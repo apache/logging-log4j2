@@ -15,7 +15,7 @@
     limitations under the License.
 ////
 
-= Release changelogs
+= Release Notes
 
 <#list releases as release>
 * xref:${release.changelogFileName}[${release.version}]<#if release.date?has_content> (${release.date})</#if>
