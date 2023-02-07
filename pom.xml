@@ -1664,11 +1664,14 @@
            This section consists of plugins responsible for generating the site.
            Note that only parent is supposed to have a `site` goal, it is skipped for modules! -->
 
-      <!-- export AsciiDoc-formatted sources to `target/generated-sources/site/asciidoc/changelog` -->
+      <!-- export AsciiDoc-formatted sources to `target/generated-sources/site/asciidoc/release-notes` -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <inherited>false</inherited>
+        <configuration>
+          <outputDirectory>${project.build.directory}/generated-sources/site/asciidoc/release-notes</outputDirectory>
+        </configuration>
         <executions>
           <execution>
             <id>changelog-export</id>
