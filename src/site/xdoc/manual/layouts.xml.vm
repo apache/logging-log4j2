@@ -332,13 +332,12 @@ logger.debug("one={}, two={}, three={}", 1, 2, 3);
           <p>
               To include any custom field in the output, use following syntax:
           </p>
-              <pre class="prettyprint linenums">
-  &lt;GelfLayout includeThreadContext="true" threadContextIncludes="loginId,requestId">
+          <pre class="prettyprint linenums"><![CDATA[
+<GelfLayout includeThreadContext="true" threadContextIncludes="loginId,requestId">
     <MessagePattern>%d %5p [%t] %c{1} %X{loginId, requestId} - %m%n</MessagePattern>
-    &lt;KeyValuePair key="additionalField1" value="constant value"/&gt;
-    &lt;KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/&gt;
-  &lt;/GelfLayout&gt;
-</pre>
+    <KeyValuePair key="additionalField1" value="constant value"/>
+    <KeyValuePair key="additionalField2" value="${dollar}${dollar}{ctx:key}"/>
+</GelfLayout>]]></pre>
           <p>
               Custom fields are included in the order they are declared. The values support <a href="lookups.html">lookups</a>.
           </p>
