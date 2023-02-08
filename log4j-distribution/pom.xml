@@ -660,7 +660,7 @@
               <goal>sign</goal>
             </goals>
             <configuration>
-              <keyname>${Log4jSigningUserName}</keyname>
+              <keyname>${log4jSigningUserName}</keyname>
             </configuration>
           </execution>
         </executions>
