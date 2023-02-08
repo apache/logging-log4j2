@@ -15,7 +15,8 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
@@ -35,18 +36,10 @@
     <module.name>org.apache.logging.log4j.slf4j</module.name>
   </properties>
   <dependencies>
+    <?SORTPOM IGNORE?>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-ext</artifactId>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -67,6 +60,16 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-to-slf4j</artifactId>
       <scope>test</scope>
+    </dependency>
+    <?SORTPOM RESUME?>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-ext</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
@@ -106,16 +109,10 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Export-Package>
-              org.apache.logging.slf4j,
-              org.slf4j.impl
-            </Export-Package>
-            <Require-Capability>
-              osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
-            </Require-Capability>
-            <Provide-Capability>
-              osgi.serviceloader;osgi.serviceloader=org.slf4j.spi.SLF4JServiceProvider
-            </Provide-Capability>
+            <Export-Package>org.apache.logging.slf4j,
+              org.slf4j.impl</Export-Package>
+            <Require-Capability>osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
+            <Provide-Capability>osgi.serviceloader;osgi.serviceloader=org.slf4j.spi.SLF4JServiceProvider</Provide-Capability>
           </instructions>
         </configuration>
       </plugin>
@@ -125,10 +122,10 @@
         <executions>
           <execution>
             <id>loop-test</id>
-            <phase>test</phase>
             <goals>
               <goal>test</goal>
             </goals>
+            <phase>test</phase>
             <configuration>
               <includes>
                 <include>**/OverflowTest.java</include>
@@ -138,10 +135,10 @@
           </execution>
           <execution>
             <id>default-test</id>
-            <phase>test</phase>
             <goals>
               <goal>test</goal>
             </goals>
+            <phase>test</phase>
             <configuration>
               <includes>
                 <include>**/*Test.java</include>

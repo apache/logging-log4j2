@@ -15,7 +15,8 @@
   ~ See the license for the specific language governing permissions and
   ~ limitations under the license.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -28,22 +29,12 @@
 
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j</artifactId>
-  <packaging>pom</packaging>
   <version>2.19.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
   <name>Apache Log4j 2</name>
   <description>Apache Log4j 2</description>
   <url>https://logging.apache.org/log4j/2.x/</url>
-
-  <issueManagement>
-    <system>GitHub Issues</system>
-    <url>https://github.com/apache/logging-log4j2/issues</url>
-  </issueManagement>
-
-  <ciManagement>
-    <system>GitHub Actions</system>
-    <url>https://github.com/apache/logging-log4j2/actions</url>
-  </ciManagement>
 
   <inceptionYear>1999</inceptionYear>
 
@@ -68,7 +59,7 @@
       <email>ggregory@apache.org</email>
       <url>https://www.garygregory.com</url>
       <organization>The Apache Software Foundation</organization>
-      <organizationUrl>https://www.apache.org/</organizationUrl>      
+      <organizationUrl>https://www.apache.org/</organizationUrl>
       <roles>
         <role>PMC Member</role>
       </roles>
@@ -220,12 +211,85 @@
 
   </mailingLists>
 
+  <modules>
+
+    <?SORTPOM IGNORE?>
+    <!-- Unpublished modules first: -->
+    <module>log4j-api-java9</module>
+    <module>log4j-core-java9</module>
+    <?SORTPOM RESUME?>
+
+    <!-- Modules in alphabetical order: -->
+    <!-- `log4j-distribution` is excluded to speed up the build.
+         It is only needed while creating a release.
+         It is enabled by the `apache-release` profile defined below. -->
+    <module>log4j-1.2-api</module>
+    <module>log4j-api</module>
+    <module>log4j-api-test</module>
+    <module>log4j-appserver</module>
+    <module>log4j-bom</module>
+    <module>log4j-cassandra</module>
+    <module>log4j-core</module>
+    <module>log4j-core-its</module>
+    <module>log4j-core-test</module>
+    <module>log4j-couchdb</module>
+    <module>log4j-docker</module>
+    <module>log4j-flume-ng</module>
+    <module>log4j-iostreams</module>
+    <module>log4j-jakarta-smtp</module>
+    <module>log4j-jakarta-web</module>
+    <module>log4j-jcl</module>
+    <module>log4j-jdbc-dbcp2</module>
+    <module>log4j-jmx-gui</module>
+    <module>log4j-jpa</module>
+    <module>log4j-jpl</module>
+    <module>log4j-jul</module>
+    <module>log4j-kubernetes</module>
+    <module>log4j-layout-template-json</module>
+    <module>log4j-layout-template-json-test</module>
+    <module>log4j-mongodb3</module>
+    <module>log4j-mongodb4</module>
+    <module>log4j-osgi</module>
+    <module>log4j-perf</module>
+    <module>log4j-samples</module>
+    <module>log4j-slf4j-impl</module>
+    <module>log4j-slf4j2-impl</module>
+    <module>log4j-spring-boot</module>
+    <module>log4j-spring-cloud-config</module>
+    <module>log4j-taglib</module>
+    <module>log4j-to-jul</module>
+    <module>log4j-to-slf4j</module>
+    <module>log4j-web</module>
+
+  </modules>
+
   <scm>
     <connection>scm:git:https://github.com/apache/logging-log4j2.git</connection>
     <developerConnection>scm:git:https://github.com/apache/logging-log4j2.git</developerConnection>
-    <url>https://github.com/apache/logging-log4j2</url>
     <tag>log4j-${Log4jReleaseVersion}</tag>
+    <url>https://github.com/apache/logging-log4j2</url>
   </scm>
+
+  <issueManagement>
+    <system>GitHub Issues</system>
+    <url>https://github.com/apache/logging-log4j2/issues</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>GitHub Actions</system>
+    <url>https://github.com/apache/logging-log4j2/actions</url>
+  </ciManagement>
+
+  <distributionManagement>
+    <!-- `site` is only included to make `maven-site-plugin` stop complaining: -->
+    <site>
+      <id>www.example.com</id>
+      <url>scp://www.example.com/www/docs/project/</url>
+    </site>
+    <downloadUrl>https://logging.apache.org/log4j/2.x/download.html</downloadUrl>
+    <!-- `repository` from ASF parent POM (id: apache.releases.https) -->
+    <!-- `snapshotRepository` from ASF parent POM (id: apache.snapshots.https) -->
+  </distributionManagement>
 
   <properties>
 
@@ -403,6 +467,7 @@
   <dependencyManagement>
     <dependencies>
 
+      <?SORTPOM IGNORE?>
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-bom</artifactId>
@@ -410,6 +475,21 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-api-java9</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core-java9</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+      </dependency>
+      <?SORTPOM RESUME?>
 
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
@@ -473,20 +553,6 @@
         <version>${spring.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-api-java9</artifactId>
-        <version>${project.version}</version>
-        <type>zip</type>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core-java9</artifactId>
-        <version>${project.version}</version>
-        <type>zip</type>
       </dependency>
 
       <dependency>
@@ -871,15 +937,15 @@
       </dependency>
 
       <dependency>
-        <groupId>javax.servlet.jsp</groupId>
-        <artifactId>javax.servlet.jsp-api</artifactId>
-        <version>${javax-servlet-jsp.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>javax.servlet-api</artifactId>
         <version>${javax-servlet.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.servlet.jsp</groupId>
+        <artifactId>javax.servlet.jsp-api</artifactId>
+        <version>${javax-servlet-jsp.version}</version>
       </dependency>
 
       <dependency>
@@ -1241,8 +1307,8 @@
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
           <version>${maven-bundle-plugin.version}</version>
-          <inherited>true</inherited>
           <extensions>true</extensions>
+          <inherited>true</inherited>
           <executions>
             <execution>
               <goals>
@@ -1352,11 +1418,11 @@
           <executions>
             <execution>
               <id>attach-sources</id>
-              <phase>verify</phase>
               <goals>
                 <goal>jar-no-fork</goal>
                 <goal>test-jar-no-fork</goal>
               </goals>
+              <phase>verify</phase>
             </execution>
           </executions>
         </plugin>
@@ -1444,10 +1510,10 @@
         </configuration>
         <executions>
           <execution>
-            <phase>validate</phase>
             <goals>
               <goal>check</goal>
             </goals>
+            <phase>validate</phase>
           </execution>
         </executions>
       </plugin>
@@ -1511,14 +1577,6 @@
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-spotless</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <ratchetFrom>HEAD~31</ratchetFrom>
           <java>
@@ -1532,10 +1590,28 @@
               <spacesPerTab>4</spacesPerTab>
             </indent>
             <importOrder>
-              <order>java,org,com,\#</order>
+              <order>java,org,com,,\#</order>
             </importOrder>
           </java>
+          <pom>
+            <sortPom>
+              <expandEmptyElements>false</expandEmptyElements>
+              <keepBlankLines>true</keepBlankLines>
+              <indentSchemaLocation>true</indentSchemaLocation>
+              <sortDependencies>scope,artifactId,groupId</sortDependencies>
+              <sortDependencyExclusions>artifactId,groupId</sortDependencyExclusions>
+              <sortModules>true</sortModules>
+            </sortPom>
+          </pom>
         </configuration>
+        <executions>
+          <execution>
+            <id>default-spotless</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -1559,14 +1635,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <systemPropertyVariables>
             <java.awt.headless>true</java.awt.headless>
@@ -1576,6 +1644,14 @@
           <reuseForks>false</reuseForks>
           <encoding>UTF-8</encoding>
         </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -1650,10 +1726,10 @@
           <!-- copy `src/site` to `target/generated-sources/site` -->
           <execution>
             <id>copy-site</id>
-            <phase>pre-site</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
+            <phase>pre-site</phase>
             <configuration>
               <outputDirectory>${project.build.directory}/generated-sources/site</outputDirectory>
               <resources>
@@ -1713,67 +1789,6 @@
 
   </build>
 
-  <distributionManagement>
-    <downloadUrl>https://logging.apache.org/log4j/2.x/download.html</downloadUrl>
-    <!-- `site` is only included to make `maven-site-plugin` stop complaining: -->
-    <site>
-      <id>www.example.com</id>
-      <url>scp://www.example.com/www/docs/project/</url>
-    </site>
-    <!-- `repository` from ASF parent POM (id: apache.releases.https) -->
-    <!-- `snapshotRepository` from ASF parent POM (id: apache.snapshots.https) -->
-  </distributionManagement>
-
-  <modules>
-
-    <!-- Unpublished modules first: -->
-    <module>log4j-api-java9</module>
-    <module>log4j-core-java9</module>
-
-    <!-- Modules in alphabetical order: -->
-    <module>log4j-1.2-api</module>
-    <module>log4j-api</module>
-    <module>log4j-api-test</module>
-    <module>log4j-appserver</module>
-    <module>log4j-bom</module>
-    <module>log4j-cassandra</module>
-    <module>log4j-core</module>
-    <module>log4j-core-its</module>
-    <module>log4j-core-test</module>
-    <module>log4j-couchdb</module>
-    <!-- `log4j-distribution` is excluded to speed up the build.
-         It is only needed while creating a release.
-         It is enabled by the `apache-release` profile defined below. -->
-    <module>log4j-docker</module>
-    <module>log4j-flume-ng</module>
-    <module>log4j-iostreams</module>
-    <module>log4j-jakarta-smtp</module>
-    <module>log4j-jakarta-web</module>
-    <module>log4j-jcl</module>
-    <module>log4j-jpa</module>
-    <module>log4j-jpl</module>
-    <module>log4j-jdbc-dbcp2</module>
-    <module>log4j-jmx-gui</module>
-    <module>log4j-jul</module>
-    <module>log4j-kubernetes</module>
-    <module>log4j-layout-template-json</module>
-    <module>log4j-layout-template-json-test</module>
-    <module>log4j-mongodb3</module>
-    <module>log4j-mongodb4</module>
-    <module>log4j-osgi</module>
-    <module>log4j-perf</module>
-    <module>log4j-samples</module>
-    <module>log4j-slf4j-impl</module>
-    <module>log4j-slf4j2-impl</module>
-    <module>log4j-spring-boot</module>
-    <module>log4j-spring-cloud-config</module>
-    <module>log4j-taglib</module>
-    <module>log4j-to-slf4j</module>
-    <module>log4j-to-jul</module>
-    <module>log4j-web</module>
-
-  </modules>
-
   <profiles>
 
     <!-- Shortcut to populate `src/changelog/<releaseVersion>` from `src/changelog/.<releaseVersionMajor>.x.x` -->
@@ -1786,6 +1801,9 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-changelog-maven-plugin</artifactId>
             <inherited>false</inherited>
+            <configuration>
+              <releaseVersion>${Log4jReleaseVersion}</releaseVersion>
+            </configuration>
             <executions>
               <execution>
                 <id>changelog-release</id>
@@ -1794,9 +1812,6 @@
                 </goals>
               </execution>
             </executions>
-            <configuration>
-              <releaseVersion>${Log4jReleaseVersion}</releaseVersion>
-            </configuration>
           </plugin>
         </plugins>
       </build>
@@ -1805,6 +1820,9 @@
     <!-- Shortcut to enable `log4j-distribution` module creating the release distribution containing artifacts, sources, etc. -->
     <profile>
       <id>apache-release</id>
+      <modules>
+        <module>log4j-distribution</module>
+      </modules>
       <build>
         <plugins>
           <plugin>
@@ -1820,9 +1838,6 @@
           </plugin>
         </plugins>
       </build>
-      <modules>
-        <module>log4j-distribution</module>
-      </modules>
     </profile>
 
     <profile>
