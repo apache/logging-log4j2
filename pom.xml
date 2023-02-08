@@ -223,7 +223,7 @@
     <connection>scm:git:https://github.com/apache/logging-log4j2.git</connection>
     <developerConnection>scm:git:https://github.com/apache/logging-log4j2.git</developerConnection>
     <url>https://github.com/apache/logging-log4j2</url>
-    <tag>log4j-${Log4jReleaseVersion}</tag>
+    <tag>log4j-${log4jReleaseVersion}</tag>
   </scm>
 
   <properties>
@@ -232,10 +232,10 @@
          Release-specific properties
          =========================== -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <Log4jReleaseVersion>3.0.0</Log4jReleaseVersion>
-    <Log4jReleaseManager>Ralph Goers</Log4jReleaseManager>
-    <Log4jReleaseKey>B3D8E1BA</Log4jReleaseKey>
-    <Log4jSigningUserName>rgoers@apache.org</Log4jSigningUserName>
+    <log4jReleaseVersion>3.0.0</log4jReleaseVersion>
+    <log4jReleaseManager>Ralph Goers</log4jReleaseManager>
+    <log4jReleaseKey>B3D8E1BA</log4jReleaseKey>
+    <log4jSigningUserName>rgoers@apache.org</log4jSigningUserName>
 
     <!-- =================
          Common properties
@@ -1767,14 +1767,12 @@
           <moduleExcludes>
             <xdoc>navigation.xml</xdoc>
           </moduleExcludes>
-          <asciidoc>
-            <attributes>
-              <!-- copy any site properties wanted in asciidoc files -->
-              <Log4jReleaseVersion>${Log4jReleaseVersion}</Log4jReleaseVersion>
-              <Log4jReleaseManager>${Log4jReleaseManager}</Log4jReleaseManager>
-              <Log4jReleaseKey>${Log4jReleaseKey}</Log4jReleaseKey>
-            </attributes>
-          </asciidoc>
+          <attributes>
+            <!-- copy any site properties wanted in asciidoc files -->
+            <Log4jReleaseVersion>${log4jReleaseVersion}</Log4jReleaseVersion>
+            <Log4jReleaseManager>${log4jReleaseManager}</Log4jReleaseManager>
+            <Log4jReleaseKey>${log4jReleaseKey}</Log4jReleaseKey>
+          </attributes>
         </configuration>
         <dependencies>
           <dependency>
@@ -1903,7 +1901,7 @@
                 </systemProperty>
                 <systemProperty>
                   <key>log4j.changelog.releaseVersion</key>
-                  <value>${Log4jReleaseVersion}</value>
+                  <value>${log4jReleaseVersion}</value>
                 </systemProperty>
               </systemProperties>
             </configuration>
