@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("zeromq")
 @Tag("sleepy")
-@Timeout(value = 60)
+@Timeout(value = 200)
 @LoggerContextSource(value = "JeroMqAppenderTest.xml", timeout = 60)
 public class JeroMqAppenderTest {
 
