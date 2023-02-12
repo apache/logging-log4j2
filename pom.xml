@@ -252,6 +252,14 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir/>
     <module.name/>
+
+    <!-- ========================
+         Site-specific properties
+         ======================== -->
+    <!-- `maven-javadoc-plugin` is only used to generate Javadoc HTML used in the website.
+         We don't deploy any Javadoc JARs.
+         We also don't generate Javadoc HTML for all modules, but only for two modules: `log4j-api` and `log4j-core`. -->
+    <javadoc.skip>true</javadoc.skip>
     <!-- Skipping `maven-site-plugin` globally.
          It is manually enabled only for the parent module below. -->
     <maven.site.skip>true</maven.site.skip>
@@ -281,13 +289,11 @@
     <checksum-maven-plugin.version>1.11</checksum-maven-plugin.version>
     <docker-maven-plugin.version>0.40.2</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
-    <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
     <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
-    <log4j-tools.version>0.1.0</log4j-tools.version>
+    <log4j-tools.version>0.2.0</log4j-tools.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
     <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
     <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
-    <maven-jxr-plugin.version>3.3.0</maven-jxr-plugin.version>
     <maven-pmd-plugin.version>3.19.0</maven-pmd-plugin.version>
     <maven-scm-plugin.version>1.12.2</maven-scm-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -1283,9 +1289,9 @@
         </plugin>
 
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>${exec-maven-plugin.version}</version>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-changelog-maven-plugin</artifactId>
+          <version>${log4j-tools.version}</version>
         </plugin>
 
         <plugin>
@@ -1389,24 +1395,6 @@
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <bottom>&lt;p align="center"&gt;Copyright &amp;#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.&lt;br /&gt;
-              Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
-              and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
-            <doclint>none</doclint>
-            <skip>${javadoc.skip}</skip>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jxr-plugin</artifactId>
-          <version>${maven-jxr-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-pmd-plugin</artifactId>
           <version>${maven-pmd-plugin.version}</version>
         </plugin>
@@ -1421,16 +1409,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
           <version>${maven-source-plugin.version}</version>
-          <executions>
-            <execution>
-              <id>attach-sources</id>
-              <phase>verify</phase>
-              <goals>
-                <goal>jar-no-fork</goal>
-                <goal>test-jar-no-fork</goal>
-              </goals>
-            </execution>
-          </executions>
         </plugin>
 
         <plugin>
@@ -1515,25 +1493,6 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>timestamp-property</id>
-            <goals>
-              <goal>timestamp-property</goal>
-            </goals>
-            <phase>initialize</phase>
-            <configuration>
-              <name>currentYear</name>
-              <pattern>yyyy</pattern>
-              <locale>en_US</locale>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Ensure that version for each dependency resolved during a build, is equal to or higher than all transitive dependency declarations.
            A failure here requires adding the dependency to the dependency management. -->
       <plugin>
@@ -1557,6 +1516,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -1677,58 +1645,77 @@
            ███████    ██    ██   ██ ██   ██    ██           ███████ ██    ██    ███████
 
            This section consists of plugins responsible for generating the site.
-           Note that only parent is supposed to have a `site` goal, it is skipped for modules! -->
+           Note that only this (i.e., the parent) module is supposed to have a `site` goal, it is skipped for all other modules! -->
 
-      <!-- export AsciiDoc-formatted sources to `target/generated-sources/site/asciidoc/release-notes` -->
+      <!-- Define `currentYear` property used while generating the site -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <inherited>false</inherited>
+        <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>changelog-export</id>
+            <id>define-currentYear-property</id>
             <phase>pre-site</phase>
             <goals>
-              <goal>java</goal>
+              <goal>timestamp-property</goal>
+            </goals>
+            <configuration>
+              <name>currentYear</name>
+              <pattern>yyyy</pattern>
+              <locale>en_US</locale>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-site-javadoc</id>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>javadoc-no-fork</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
-          <includeProjectDependencies>false</includeProjectDependencies>
-          <includePluginDependencies>true</includePluginDependencies>
-          <executableDependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-changelog</artifactId>
-          </executableDependency>
-          <mainClass>org.apache.logging.log4j.changelog.exporter.ChangelogExporter</mainClass>
-          <systemProperties>
-            <systemProperty>
-              <key>log4j.changelog.directory</key>
-              <value>${project.basedir}/src/changelog</value>
-            </systemProperty>
-            <systemProperty>
-              <key>log4j.changelog.exporter.outputDirectory</key>
-              <value>${project.build.directory}/generated-sources/site/asciidoc/release-notes</value>
-            </systemProperty>
-          </systemProperties>
+          <skip>${javadoc.skip}</skip>
+          <bottom><![CDATA[
+            <p align="center">
+              Copyright &copy; {inceptionYear}-{currentYear} {organizationName}.
+              All Rights Reserved.<br/>
+              Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo, and the Apache Log4j logo are trademarks of The Apache Software Foundation.
+            </p>]]></bottom>
+          <failOnError>false</failOnError>
         </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-changelog</artifactId>
-            <version>${log4j-tools.version}</version>
-          </dependency>
-        </dependencies>
       </plugin>
 
-      <!-- copy `src/site` to `target/generated-sources/site` -->
+      <!-- Export AsciiDoc-formatted sources to `target/generated-sources/site/asciidoc/release-notes` -->
+      <plugin>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-changelog-maven-plugin</artifactId>
+        <inherited>false</inherited>
+        <configuration>
+          <outputDirectory>${project.build.directory}/generated-sources/site/asciidoc/release-notes</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>generate-changelog</id>
+            <goals>
+              <goal>export</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <inherited>false</inherited>
         <executions>
-          <!-- copy `src/site` to `target/generated-sources/site` -->
+          <!-- Copy `src/site` to `target/generated-sources/site` -->
           <execution>
+            <inherited>false</inherited>
             <id>copy-site</id>
             <phase>pre-site</phase>
             <goals>
@@ -1747,6 +1734,23 @@
               </resources>
             </configuration>
           </execution>
+          <!-- Copy `target/site/apidocs` to the parent module's `target/site/javadoc/<artifactId>` folder -->
+          <execution>
+            <id>copy-javadoc</id>
+            <phase>site</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <skip>${javadoc.skip}</skip>
+              <outputDirectory>${log4jParentDir}/target/site/javadoc/${project.artifactId}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.directory}/site/apidocs</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
@@ -1759,7 +1763,6 @@
           <generateProjectInfo>false</generateProjectInfo>
           <generateReports>false</generateReports>
           <siteDirectory>${project.build.directory}/generated-sources/site</siteDirectory>
-          <!-- only build English site even on other language OS -->
           <locales>en</locales>
           <!-- Exclude the navigation file for Maven 1 sites as it interferes with the site generation. -->
           <moduleExcludes>
@@ -1867,49 +1870,25 @@
 
     <!-- Shortcut to populate `src/changelog/<releaseVersion>` from `src/changelog/.<releaseVersionMajor>.x.x` -->
     <profile>
-      <id>changelog-releaser</id>
+      <id>changelog-release</id>
       <build>
         <defaultGoal>validate</defaultGoal>
         <plugins>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>exec-maven-plugin</artifactId>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-changelog-maven-plugin</artifactId>
+            <inherited>false</inherited>
             <executions>
               <execution>
-                <id>changelog-releaser</id>
-                <!-- Choosing the earlier possible phase, since `ChangelogReleaser` execution doesn't depend on anything: -->
-                <phase>validate</phase>
+                <id>changelog-release</id>
                 <goals>
-                  <goal>java</goal>
+                  <goal>release</goal>
                 </goals>
               </execution>
             </executions>
             <configuration>
-              <includeProjectDependencies>false</includeProjectDependencies>
-              <includePluginDependencies>true</includePluginDependencies>
-              <executableDependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-changelog</artifactId>
-              </executableDependency>
-              <mainClass>org.apache.logging.log4j.changelog.releaser.ChangelogReleaser</mainClass>
-              <systemProperties>
-                <systemProperty>
-                  <key>log4j.changelog.directory</key>
-                  <value>${project.basedir}/src/changelog</value>
-                </systemProperty>
-                <systemProperty>
-                  <key>log4j.changelog.releaseVersion</key>
-                  <value>${log4jReleaseVersion}</value>
-                </systemProperty>
-              </systemProperties>
+              <releaseVersion>${log4jReleaseVersion}</releaseVersion>
             </configuration>
-            <dependencies>
-              <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-changelog</artifactId>
-                <version>${log4j-tools.version}</version>
-              </dependency>
-            </dependencies>
           </plugin>
         </plugins>
       </build>
