@@ -30,7 +30,6 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
-    <!--<revapi.skip>true</revapi.skip>-->
     <javadoc.skip>false</javadoc.skip>
   </properties>
   <dependencies>

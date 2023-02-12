@@ -35,7 +35,6 @@
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <revapi.skip>true</revapi.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
     <maven-jetty-plugin.version>6.1.26</maven-jetty-plugin.version>

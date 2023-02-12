@@ -28,7 +28,6 @@
   <name>Apache Log4j Spring Cloud Config Samples</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <revapi.skip>true</revapi.skip>
     <log4jParentDir>${basedir}/../..</log4jParentDir>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>

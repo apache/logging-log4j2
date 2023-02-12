@@ -32,7 +32,6 @@
     <docLabel>Log4j to JUL Documentation</docLabel>
     <projectDir>/log4j-to-jul</projectDir>
     <module.name>org.apache.logging.tojul</module.name>
-    <revapi.skip>true</revapi.skip>
   </properties>
   <dependencies>
     <dependency>
