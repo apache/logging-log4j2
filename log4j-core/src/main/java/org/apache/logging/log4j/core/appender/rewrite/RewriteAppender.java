@@ -33,6 +33,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.impl.LocationAware;
 import org.apache.logging.log4j.core.util.Booleans;
 
 /**
@@ -116,4 +117,16 @@ public final class RewriteAppender extends AbstractAppender {
         }
         return new RewriteAppender(name, filter, ignoreExceptions, appenderRefs, rewritePolicy, config, null);
     }
+
+    @Override
+    public boolean requiresLocation() {
+        for (final AppenderControl control : appenders.values()) {
+            final Appender appender = control.getAppender();
+            if (appender instanceof LocationAware && ((LocationAware) appender).requiresLocation()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
