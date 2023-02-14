@@ -28,7 +28,9 @@ jobs:
   build:
 
     runs-on: ${{ matrix.os }}
-
+    # Based on: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+    env:
+      MAVEN_OPTS: -Xms3072m -Xmx3072m
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
@@ -36,12 +38,12 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8   # 3.1.0
+        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b   # 3.2.0
         with:
           fetch-depth: 32
 
       - name: Setup JDK 11
-        uses: actions/setup-java@de1bb2b0c5634f0fc4438d7aa9944e68f9bf86cc   # 3.6.0
+        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b   # 3.9.0
         with:
           distribution: temurin
           java-version: 11
@@ -49,43 +51,68 @@ jobs:
           architecture: x64
           cache: maven
 
-      - name: Maven "verify"
+      # We could have used `verify`, but `clean install` is required for the following:
+      # 1. The build reproducibility report
+      #    For details, see: https://maven.apache.org/guides/mini/guide-reproducible-builds.html#how-to-test-my-maven-build-reproducibility
+      # 2. `javadoc:javadoc-no-fork`, which is attached to the `site` goal
+      - name: Build
         timeout-minutes: 60
         shell: bash
         run: |
           ./mvnw \
-            --show-version --batch-mode --errors --no-transfer-progress --fail-at-end \
+            --show-version --batch-mode --errors --no-transfer-progress \
             -DtrimStackTrace=false \
             -Dsurefire.rerunFailingTestsCount=2 \
             -Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000 \
-            verify
+            -DinstallAtEnd=true \
+            clean install
+
+      # `clean verify artifact:compare` is required to generate the build reproducibility report.
+      # For details, see: https://maven.apache.org/guides/mini/guide-reproducible-builds.html#how-to-test-my-maven-build-reproducibility
+      - name: Report build reproducibility
+        shell: bash
+        run: |
+          ./mvnw \
+            --show-version --batch-mode --errors --no-transfer-progress \
+            -DskipTests=true \
+            clean verify artifact:compare
+
+      - name: Verify build reproducibility
+        shell: bash
+        run: |
+          for report_file in target/*.buildcompare **/target/*.buildcompare; do
+            if ! grep -q "^ko=0$" "$report_file"; then
+              echo "Spotted build reproducibility failure in \`$report_file\`:"
+              cat "$report_file"
+              exit 1
+            fi
+          done
 
       - name: Maven "site"
-        # FreeMarker integration of `log4j-changelog` is broken on Windows: https://github.com/apache/logging-log4j-tools/issues/19
-        if: runner.os != 'Windows'
         timeout-minutes: 10
         shell: bash
         run: |
           ./mvnw \
-            --show-version --batch-mode --errors --no-transfer-progress --fail-at-end \
-            --non-recursive \
+            --show-version --batch-mode --errors --no-transfer-progress \
             site
 
   deploy:
 
     runs-on: ubuntu-latest
+    env:
+      MAVEN_OPTS: -Xms3072m -Xmx3072m
     needs: build
     if: github.repository == 'apache/logging-log4j2' && github.ref == 'refs/heads/master'
 
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8   # 3.1.0
+        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b   # 3.2.0
         with:
           fetch-depth: 32
 
       - name: Setup JDK 11
-        uses: actions/setup-java@de1bb2b0c5634f0fc4438d7aa9944e68f9bf86cc   # 3.6.0
+        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b   # 3.9.0
         with:
           distribution: temurin
           java-version: 11
@@ -96,17 +123,28 @@ jobs:
       - name: Inspect environment
         run: env | grep '^JAVA'
 
-      - name: Maven "deploy"
+      - name: Inspect project version
+        run: |
+          echo ::set-output name=version::$(./mvnw \
+            -q -Dexec.executable=echo \
+            -Dexec.args='${project.version}' --non-recursive exec:exec)
+        id: get_version
+
+      - name: Deploy artifacts
+        # Do not deploy release versions
+        if: ${{ endsWith(steps.get_version.outputs.version, '-SNAPSHOT') }}
         timeout-minutes: 15
         shell: bash
         # `package install:install deploy:deploy` goal is needed to deploy without configuring the plugin in the POM.
-        # For details see: https://maven.apache.org/plugins/maven-gpg-plugin/examples/deploy-signed-artifacts.html
+        # For details, see: https://maven.apache.org/plugins/maven-gpg-plugin/examples/deploy-signed-artifacts.html
         run: |
           ./mvnw \
             --show-version --batch-mode --errors --no-transfer-progress \
+            --settings .github/workflows/maven-settings.xml \
             -Dgpg.skip=true \
             -DskipTests=true \
-            --settings .github/workflows/maven-settings.xml \
+            -DinstallAtEnd=true \
+            -DdeployAtEnd=true \
             package install:install deploy:deploy
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}

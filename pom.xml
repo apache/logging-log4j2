@@ -246,9 +246,8 @@
     <maven.compiler.release>11</maven.compiler.release>
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- See https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
-    <!-- 1672527600 = 2023-01-01, instead of the default 1969, which shows up in Javadoc -->
-    <project.build.outputTimestamp>1672527600</project.build.outputTimestamp>
+    <!-- Fixed `project.build.outputTimestamp` is required for reproducible builds: https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
+    <project.build.outputTimestamp>0</project.build.outputTimestamp>
     <docLabel>Site Documentation</docLabel>
     <projectDir/>
     <module.name/>
@@ -1679,7 +1678,9 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
+        <configuration combine.self="override">
+          <!-- `notimestamp` avoids `diff` noise and is required for reproducible builds: https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
+          <notimestamp>true</notimestamp>
           <skip>${javadoc.skip}</skip>
           <bottom><![CDATA[
             <p align="center">
