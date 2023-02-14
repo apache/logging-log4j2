@@ -29,9 +29,7 @@
   <url>http://maven.apache.org</url>
   <properties>
     <log4jParentDir>${basedir}/../..</log4jParentDir>
-    <revapi.skip>true</revapi.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
-
     <spring-ws.version>4.0.0</spring-ws.version>
   </properties>
   <dependencyManagement>

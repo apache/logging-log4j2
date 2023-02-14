@@ -240,7 +240,6 @@
     <!-- =================
          Common properties
          ================= -->
-    <revapi.skip>true</revapi.skip>
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
@@ -293,7 +292,6 @@
     <maven-scm-plugin.version>1.12.2</maven-scm-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
-    <revapi-maven-plugin.version>0.12.2</revapi-maven-plugin.version>
     <spotbugs-maven-plugin.version>4.7.2.1</spotbugs-maven-plugin.version>
     <spotless-maven-plugin.version>2.27.2</spotless-maven-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
