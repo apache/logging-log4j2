@@ -110,7 +110,6 @@ jobs:
           ./mvnw \
             --show-version --batch-mode --errors --no-transfer-progress \
             --global-toolchains ".github/workflows/maven-toolchains.xml" \
-            --non-recursive \
             site
 
   deploy:
