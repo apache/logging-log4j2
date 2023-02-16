@@ -79,7 +79,6 @@ jobs:
             -DtrimStackTrace=false \
             -Dsurefire.rerunFailingTestsCount=2 \
             -Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000 \
-            -DinstallAtEnd=true \
             clean install
 
       # `clean verify artifact:compare` is required to generate the build reproducibility report.
@@ -176,8 +175,6 @@ jobs:
             --settings .github/workflows/maven-settings.xml \
             -Dgpg.skip=true \
             -DskipTests=true \
-            -DinstallAtEnd=true \
-            -DdeployAtEnd=true \
             package install:install deploy:deploy
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
