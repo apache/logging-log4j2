@@ -36,7 +36,7 @@ public final class IfAll implements PathCondition {
     private final PathCondition[] components;
 
     private IfAll(final PathCondition... filters) {
-        this.components = Objects.requireNonNull(filters, "filters");
+        this.components = Objects.requireNonNull(filters, "At-least 1 PathCondition is required in IfAll.");
     }
 
     public PathCondition[] getDeleteFilters() {
@@ -51,7 +51,7 @@ public final class IfAll implements PathCondition {
      */
     @Override
     public boolean accept(final Path baseDir, final Path relativePath, final BasicFileAttributes attrs) {
-        if (components == null || components.length == 0) {
+        if (components.length == 0) {
             return false; // unconditional delete not supported
         }
         return accept(components, baseDir, relativePath, attrs);

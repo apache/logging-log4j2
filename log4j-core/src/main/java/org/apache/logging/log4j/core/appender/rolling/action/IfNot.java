@@ -34,7 +34,7 @@ public final class IfNot implements PathCondition {
     private final PathCondition negate;
 
     private IfNot(final PathCondition negate) {
-        this.negate = Objects.requireNonNull(negate, "filter");
+        this.negate = Objects.requireNonNull(negate, "A PathCondition is required in IfNot.");
     }
 
     public PathCondition getWrappedFilter() {

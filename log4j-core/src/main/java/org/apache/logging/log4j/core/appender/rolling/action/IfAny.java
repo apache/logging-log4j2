@@ -36,7 +36,7 @@ public final class IfAny implements PathCondition {
     private final PathCondition[] components;
 
     private IfAny(final PathCondition... filters) {
-        this.components = Objects.requireNonNull(filters, "filters");
+        this.components = Objects.requireNonNull(filters, "At-least 1 PathCondition is required in IfAny.");
     }
 
     public PathCondition[] getDeleteFilters() {
