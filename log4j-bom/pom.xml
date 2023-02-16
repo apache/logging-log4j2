@@ -35,6 +35,7 @@
     <project.build.outputTimestamp>10</project.build.outputTimestamp>
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
+    <project.build.outputTimestamp>0</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>
