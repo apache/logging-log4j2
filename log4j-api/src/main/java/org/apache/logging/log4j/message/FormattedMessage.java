@@ -33,8 +33,6 @@ public class FormattedMessage implements Message {
 
     private static final long serialVersionUID = -665975803997290697L;
     private static final int HASHVAL = 31;
-    private static final String FORMAT_SPECIFIER = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";
-    private static final Pattern MSG_PATTERN = Pattern.compile(FORMAT_SPECIFIER);
 
     private String messagePattern;
     private transient Object[] argArray;
@@ -43,7 +41,7 @@ public class FormattedMessage implements Message {
     private final Throwable throwable;
     private Message message;
     private final Locale locale;
-    
+
     /**
      * Constructs with a locale, a pattern and a single parameter.
      * @param locale The locale
@@ -184,20 +182,16 @@ public class FormattedMessage implements Message {
         try {
             final MessageFormat format = new MessageFormat(msgPattern);
             final Format[] formats = format.getFormats();
-            if (formats != null && formats.length > 0) {
+            if (formats.length > 0) {
                 return new MessageFormatMessage(locale, msgPattern, args);
             }
         } catch (final Exception ignored) {
             // Obviously, the message is not a proper pattern for MessageFormat.
         }
-        try {
-            if (MSG_PATTERN.matcher(msgPattern).find()) {
-                return new StringFormattedMessage(locale, msgPattern, args);
-            }
-        } catch (final Exception ignored) {
-            // Also not properly formatted.
+        if (ParameterizedMessage.countArgumentPlaceholders(msgPattern) > 0) {
+            return new ParameterizedMessage(msgPattern, args, aThrowable);
         }
-        return new ParameterizedMessage(msgPattern, args, aThrowable);
+        return new StringFormattedMessage(locale, msgPattern, args);
     }
 
     /**
