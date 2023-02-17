@@ -362,7 +362,6 @@
     <jetty.version>9.4.50.v20221201</jetty.version>
     <jmdns.version>3.5.8</jmdns.version>
     <jmh.version>1.36</jmh.version>
-    <jna.version>5.12.1</jna.version>
     <json-unit.version>2.36.0</json-unit.version>
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.9.1</junit-jupiter.version>
@@ -730,12 +729,6 @@
 
       <dependency>
         <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>${guava.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.guava</groupId>
         <!-- https://javadoc.io/doc/com.google.guava/guava-testlib/latest/com/google/common/testing/TestLogHandler.html used in log4j-to-jul tests -->
         <artifactId>guava-testlib</artifactId>
         <version>${guava.version}</version>
@@ -915,12 +908,6 @@
         <groupId>org.openjdk.jmh</groupId>
         <artifactId>jmh-generator-annprocess</artifactId>
         <version>${jmh.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>net.java.dev.jna</groupId>
-        <artifactId>jna</artifactId>
-        <version>${jna.version}</version>
       </dependency>
 
       <dependency>
