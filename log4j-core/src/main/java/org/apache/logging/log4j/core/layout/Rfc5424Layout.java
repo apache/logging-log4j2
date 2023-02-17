@@ -35,15 +35,15 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.TlsSyslogFrame;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.layout.internal.ExcludeChecker;
-import org.apache.logging.log4j.core.layout.internal.IncludeChecker;
-import org.apache.logging.log4j.core.layout.internal.ListChecker;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.layout.internal.ExcludeChecker;
+import org.apache.logging.log4j.core.layout.internal.IncludeChecker;
+import org.apache.logging.log4j.core.layout.internal.ListChecker;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
@@ -85,6 +85,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     /**
      * Match characters which require escaping.
      */
+    @Deprecated
     public static final Pattern PARAM_VALUE_ESCAPE_PATTERN = Pattern.compile("[\\\"\\]\\\\]");
 
     /**
@@ -570,7 +571,20 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     }
 
     private String escapeSDParams(final String value) {
-        return PARAM_VALUE_ESCAPE_PATTERN.matcher(value).replaceAll("\\\\$0");
+        StringBuilder output = null;
+        for (int i = 0; i < value.length(); i++) {
+            final char cur = value.charAt(i);
+            if (cur == '"' || cur == ']' || cur == '\\') {
+                if (output == null) {
+                    output = new StringBuilder(value.substring(0, i));
+                }
+                output.append("\\");
+            }
+            if (output != null) {
+                output.append(cur);
+            }
+        }
+        return output != null ? output.toString() : value;
     }
 
     @Override
