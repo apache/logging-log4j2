@@ -1810,7 +1810,6 @@
     <module>log4j-mongodb4</module>
     <module>log4j-osgi</module>
     <module>log4j-perf</module>
-    <module>log4j-samples</module>
     <module>log4j-slf4j-impl</module>
     <module>log4j-slf4j2-impl</module>
     <module>log4j-spring-boot</module>
