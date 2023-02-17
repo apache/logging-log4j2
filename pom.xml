@@ -1715,6 +1715,8 @@
           <attributes>
             <!-- copy any site properties wanted in asciidoc files -->
             <Log4jReleaseVersion>${log4jReleaseVersion}</Log4jReleaseVersion>
+            <Log4jReleaseVersionJava6>${log4jReleaseVersionJava6}</Log4jReleaseVersionJava6>
+            <Log4jReleaseVersionJava7>${log4jReleaseVersionJava7}</Log4jReleaseVersionJava7>
             <Log4jReleaseManager>${log4jReleaseManager}</Log4jReleaseManager>
             <Log4jReleaseKey>${log4jReleaseKey}</Log4jReleaseKey>
           </attributes>
