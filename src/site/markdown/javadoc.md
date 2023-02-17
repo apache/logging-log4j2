@@ -23,5 +23,5 @@ directly in code. You can also use the menu links on the left.
 
 Component | Description
 --------- | -----------
-[Log4j 2 API](javadoc/log4j-api) | The interface that applications should use and code against.
-[Implementation](javadoc/log4j-core) | The standard implementation, also called the Log4j 2 Core, that contains Appenders, Filters, and more.
+[Log4j 2 API](javadoc/log4j-api/index.html) | The interface that applications should use and code against.
+[Implementation](javadoc/log4j-core/index.html) | The standard implementation, also called the Log4j 2 Core, that contains Appenders, Filters, and more.

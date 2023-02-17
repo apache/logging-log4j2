@@ -168,15 +168,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <properties>
-            <configurationParameters>
-              <!-- LOG4J2-2921: use parallel test execution by default -->
-              junit.jupiter.execution.parallel.enabled = true
-              junit.jupiter.execution.parallel.mode.default = same_thread
-              junit.jupiter.execution.parallel.mode.classes.default = concurrent
-            </configurationParameters>
-          </properties>
-          <reuseForks>true</reuseForks>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <excludedGroups>performance,smoke</excludedGroups>
         </configuration>
