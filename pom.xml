@@ -344,6 +344,7 @@
     <hamcrest.version>2.2</hamcrest.version>
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
     <hsqldb.version>2.5.2</hsqldb.version>
+    <httpclient.version>4.5.13</httpclient.version>
     <icu4j.version>72.1</icu4j.version>
     <jackson-bom.version>2.14.1</jackson-bom.version>
     <!-- Override the version in Jakarta EE 9 BOM: -->
@@ -594,6 +595,12 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-pool2</artifactId>
         <version>${commons-pool2.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>${httpclient.version}</version>
       </dependency>
 
       <dependency>
