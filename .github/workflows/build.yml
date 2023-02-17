@@ -72,7 +72,6 @@ jobs:
         timeout-minutes: 60
         shell: bash
         run: |
-          rm -rf ~/.m2/repository/org/apache/logging/log4j
           ./mvnw \
             --show-version --batch-mode --errors --no-transfer-progress \
             --global-toolchains ".github/workflows/maven-toolchains.xml" \
