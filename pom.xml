@@ -1856,7 +1856,6 @@
     <module>log4j-plugin-processor</module>
     <module>log4j-plugins</module>
     <module>log4j-plugins-test</module>
-    <module>log4j-samples</module>
     <module>log4j-script</module>
     <module>log4j-slf4j2-impl</module>
     <module>log4j-slf4j-impl</module>
