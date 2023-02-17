@@ -340,7 +340,7 @@
     </menu>
 
     <menu name="Project Information" img="img/glyphicons/info.png">
-      <item name="Logging Services Team" href="https://logging.apache.org/team-list.html" />
+      <item name="Project Team" href="/team.html" />
       <item name="Project License" href="https://www.apache.org/licenses/LICENSE-2.0" />
       <item name="Source Repository" href="https://github.com/apache/logging-log4j2" />
     </menu>
