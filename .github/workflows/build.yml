@@ -69,7 +69,7 @@ jobs:
       #    For details, see: https://maven.apache.org/guides/mini/guide-reproducible-builds.html#how-to-test-my-maven-build-reproducibility
       # 2. `javadoc:javadoc-no-fork`, which is attached to the `site` goal
       - name: Build
-        timeout-minutes: 60
+        timeout-minutes: 10
         shell: bash
         run: |
           ./mvnw \
@@ -81,6 +81,7 @@ jobs:
       # `clean verify artifact:compare` is required to generate the build reproducibility report.
       # For details, see: https://maven.apache.org/guides/mini/guide-reproducible-builds.html#how-to-test-my-maven-build-reproducibility
       - name: Report build reproducibility
+        timeout-minutes: 10
         shell: bash
         run: |
           ./mvnw \
@@ -103,7 +104,7 @@ jobs:
           done
 
       - name: Maven "verify"
-        timeout-minutes: 10
+        timeout-minutes: 60
         shell: bash
         run: |
           ./mvnw \
