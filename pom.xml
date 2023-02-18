@@ -1853,6 +1853,10 @@
     <!-- Shortcut to enable `log4j-distribution` module creating the release distribution containing artifacts, sources, etc. -->
     <profile>
       <id>apache-release</id>
+      <properties>
+        <maven.test.skip>true</maven.test.skip>
+        <spotless.check.skip>true</spotless.check.skip>
+      </properties>
       <build>
         <plugins>
           <plugin>
