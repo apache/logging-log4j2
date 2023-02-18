@@ -29,7 +29,7 @@
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j</artifactId>
   <packaging>pom</packaging>
-  <version>2.20.1-SNAPSHOT</version>
+  <version>2.20.0</version>
 
   <name>Apache Log4j 2</name>
   <description>Apache Log4j 2</description>
@@ -224,7 +224,7 @@
     <connection>scm:git:https://github.com/apache/logging-log4j2.git</connection>
     <developerConnection>scm:git:https://github.com/apache/logging-log4j2.git</developerConnection>
     <url>https://github.com/apache/logging-log4j2</url>
-    <tag>log4j-${log4jReleaseVersion}</tag>
+    <tag>log4j-2.20.1-rc1</tag>
   </scm>
 
   <properties>
@@ -248,7 +248,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- Fixed `project.build.outputTimestamp` is required for reproducible builds: https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
-    <project.build.outputTimestamp>1676683596</project.build.outputTimestamp>
+    <project.build.outputTimestamp>1676694869</project.build.outputTimestamp>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <module.name />
