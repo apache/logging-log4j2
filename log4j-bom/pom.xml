@@ -32,7 +32,7 @@
   <properties>
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
-    <project.build.outputTimestamp>1676694869</project.build.outputTimestamp>
+    <project.build.outputTimestamp>1676697365</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>
@@ -241,6 +241,6 @@
   </build>
 
   <scm>
-    <tag>log4j-2.20.1-rc1</tag>
+    <tag>log4j-2.20.0-rc1</tag>
   </scm>
 </project>
