@@ -163,7 +163,7 @@
       <name>Volkan Yazıcı</name>
       <email>vy@apache.org</email>
       <roles>
-        <role>PMC Member</role>
+        <role>PMC Chair</role>
       </roles>
       <timezone>Europe/Amsterdam</timezone>
     </developer>
@@ -173,7 +173,7 @@
       <name>Ron Grabowski</name>
       <email>rgrabowski@apache.org</email>
       <roles>
-        <role>PMC Chair</role>
+        <role>PMC Member</role>
       </roles>
       <timezone>America/New_York</timezone>
     </developer>
