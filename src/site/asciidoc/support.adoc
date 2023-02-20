@@ -74,11 +74,12 @@ In either case, while the Apache Logging Services project thanks you for your su
 
 === Committers accepting GitHub Sponsorship
 
+* https://github.com/carterkozak[Carter Kozak]
 * https://github.com/garydgregory[Gary Gregory]
 * https://github.com/jvz[Matt Sicker]
+* https://github.com/ppkarwasz[Piotr P. Karwasz]
 * https://github.com/rgoers[Ralph Goers]
 * https://github.com/vy[Volkan Yazıcı]
-* https://github.com/carterkozak[Carter Kozak]
 
 [#commercial]
 == Third-party commercial support
