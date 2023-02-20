@@ -16,15 +16,16 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
