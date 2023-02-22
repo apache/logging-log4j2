@@ -24,9 +24,9 @@ Due to a break in compatibility in the SLF4J binding, Log4j now ships with two v
 SLF4J-2.0.0 alpha releases are not fully supported.
 See https://issues.apache.org/jira/browse/LOG4J2-2975[LOG4J2-2975] and https://jira.qos.ch/browse/SLF4J-511[SLF4J-511].
 
-The Log4j 2.19.0 API, as well as many core components, maintains binary compatibility with previous releases.
+The Log4j 2.20.0 API, as well as many core components, maintains binary compatibility with previous releases.
 
-Apache Log4j 2.19.0 requires a minimum of Java 8 to build and run.
+Apache Log4j 2.20.0 requires a minimum of Java 8 to build and run.
 Log4j 2.12.4 is the last release to support Java 7.
 Log4j 2.3.2 is the last release to support Java 6.
 Java 6 and Java 7 are no longer supported by the Log4j team.
