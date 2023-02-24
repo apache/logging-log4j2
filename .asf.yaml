@@ -20,7 +20,7 @@ notifications:
   # GitHub already provides notifications for PRs and issues.
   # Please don't duplicate that noise here!
   commits: commits@logging.apache.org
-  jira_options: link label
+  pullrequests_bot_dependabot: robots@logging.apache.org
 github:
   description: "Apache Log4j 2 is a versatile, feature-rich, efficient logging API and backend for Java."
   homepage: https://logging.apache.org/log4j/2.x/
@@ -44,3 +44,14 @@ github:
   protected_branches:
     master: {}
     release-2.x: {}
+  # Attempt to make the auto-generated github emails more easily readable in email clients.
+  custom_subjects:
+    new_pr: "[PR] {title} ({repository})"
+    close_pr: "Re: [PR] {title} ({repository})"
+    comment_pr: "Re: [PR] {title} ({repository})"
+    diffcomment: "Re: [PR] {title} ({repository})"
+    merge_pr: "Re: [PR] {title} ({repository})"
+    new_issue: "[I] {title} ({repository})"
+    comment_issue: "Re: [I] {title} ({repository})"
+    close_issue: "Re: [I] {title} ({repository})"
+    catchall: "[GH] {title} ({repository})"
