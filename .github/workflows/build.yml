@@ -45,7 +45,7 @@ jobs:
       # JDK 11 is needed for the build.
       # Search `maven-toolchains-plugin` usages for details.
       - name: Setup JDK 11
-        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b   # 3.9.0
+        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98   # 3.10.0
         with:
           distribution: temurin
           java-version: 11
@@ -56,7 +56,7 @@ jobs:
       # JDK 8 is needed for the build, and it is the primary bytecode target.
       # Hence, JDK 8 is set up after 11, so that JAVA_HOME used by Maven during build will point to 8.
       - name: Setup JDK 8
-        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b   # 3.9.0
+        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98   # 3.10.0
         with:
           distribution: temurin
           java-version: 8
@@ -142,7 +142,7 @@ jobs:
       # JDK 11 is needed for the build.
       # Search `maven-toolchains-plugin` usages for details.
       - name: Setup JDK 11
-        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b   # 3.9.0
+        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98   # 3.10.0
         with:
           distribution: temurin
           java-version: 11
@@ -153,7 +153,7 @@ jobs:
       # JDK 8 is needed for the build, and it is the primary bytecode target.
       # Hence, JDK 8 is set up after 11, so that JAVA_HOME used by Maven during build will point to 8.
       - name: Setup JDK 8
-        uses: actions/setup-java@1df8dbefe2a8cbc99770194893dd902763bee34b   # 3.9.0
+        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98   # 3.10.0
         with:
           distribution: temurin
           java-version: 8
