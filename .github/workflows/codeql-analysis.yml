@@ -62,22 +62,17 @@ jobs:
           # Prefix the list here with "+" to use these queries and those in the config file.
           # queries: ./path/to/local/query, your-org/your-repo/queries@main
 
-      # JDK 8 and 11 is needed for the build.
-      # Search `maven-toolchains-plugin` usages for details.
+      # JDK 11 is used for the build.
       - name: Setup JDK
         uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2   # 3.12.0
         with:
           distribution: temurin
-          java-version: |
-            8
-            11
+          java-version: 11
           cache: maven
 
       - name: Build with Maven
         timeout-minutes: 60
         shell: bash
-        env:
-          JAVA_HOME: ${{ env.JAVA_HOME_8_X64 }}
         run: |
           ./mvnw \
           --show-version --batch-mode --errors --no-transfer-progress \

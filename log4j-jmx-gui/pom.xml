@@ -30,7 +30,6 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>JMX GUI Documentation</docLabel>
     <projectDir>/jmx-gui</projectDir>
-    <jenkins.java.home>/home/jenkins/tools/java/latest1.7</jenkins.java.home>
     <module.name>org.apache.logging.log4j.jmx.gui</module.name>
   </properties>
   <dependencies>
@@ -55,75 +54,36 @@
   </dependencies>
   <build>
     <plugins>
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>org.apache.logging.log4j.jmx.gui</Export-Package>
-          </instructions>
-        </configuration>
+        <executions>
+          <execution>
+            <phase>none</phase>
+          </execution>
+        </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <!-- Exclude dummy classes -->
+            <configuration>
+              <archive>
+                <manifestFile combine.self="override" />
+              </archive>
+              <excludes>
+                <exclude>com/**</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>default-jmx-profile</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-        <file>
-          <exists>${java.home}/../lib/jconsole.jar</exists>
-        </file>
-      </activation>
-      <properties>
-        <toolsjar>${java.home}/../lib/jconsole.jar</toolsjar>
-      </properties>
-      <dependencies>
-        <dependency>
-          <groupId>com.sun</groupId>
-          <artifactId>jconsole</artifactId>
-          <scope>system</scope>
-          <systemPath>${java.home}/../lib/jconsole.jar</systemPath>
-          <optional>true</optional>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>mac-profile</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-        <file>
-          <exists>${java.home}/../Classes/jconsole.jar</exists>
-        </file>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.sun</groupId>
-          <artifactId>jconsole</artifactId>
-          <scope>system</scope>
-          <systemPath>${java.home}/../Classes/jconsole.jar</systemPath>
-          <optional>true</optional>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>jenkins-profile</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-        <property>
-          <name>jenkins</name>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.sun</groupId>
-          <artifactId>jconsole</artifactId>
-          <scope>system</scope>
-          <systemPath>${jenkins.java.home}/lib/jconsole.jar</systemPath>
-          <optional>true</optional>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
 </project>

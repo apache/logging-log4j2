@@ -41,7 +41,9 @@ jobs:
         uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2   # 3.12.0
         with:
           distribution: temurin
-          java-version: 8
+          java-version: |
+            8
+            11
           java-package: jdk
           architecture: x64
           cache: maven
@@ -58,4 +60,5 @@ jobs:
             --show-version --batch-mode --errors --no-transfer-progress --fail-at-end \
             -Dkafka.version=${{ matrix.version }} \
             -pl log4j-core-test -Dtest=Kafka*Test \
+            -P java8-tests \
             test

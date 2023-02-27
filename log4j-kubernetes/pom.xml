@@ -30,8 +30,6 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Kubernetes Library Documentation</docLabel>
     <projectDir>/kubernetes</projectDir>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
     <module.name>org.apache.logging.log4j.kubernetes</module.name>
   </properties>
   <dependencies>
@@ -61,35 +59,12 @@
   </dependencies>
   <build>
     <plugins>
+
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
       </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <forkCount>1</forkCount>
-          <reuseForks>false</reuseForks>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-toolchains-plugin</artifactId>
-        <configuration>
-          <toolchains>
-            <jdk>
-              <version>[8, )</version>
-            </jdk>
-          </toolchains>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>toolchain</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+
     </plugins>
   </build>
 </project>

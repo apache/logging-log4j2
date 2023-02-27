@@ -19,27 +19,29 @@ package org.apache.logging.log4j.util;
 import java.util.Deque;
 import java.util.Stack;
 
-import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.ParentRunner;
-import sun.reflect.Reflection;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor;
+import org.junit.platform.engine.support.hierarchical.ThrowableCollector;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
- * Tests {@link StackLocatorUtilTest}.
+ * Tests {@link StackLocatorUtil}.
  */
-@RunWith(BlockJUnit4ClassRunner.class)
 public class StackLocatorUtilTest {
 
     @Test
+    @EnabledOnJre(JRE.JAVA_8)
     public void testStackTraceEquivalence() throws Exception {
-        for (int i = 1; i < 15; i++) {
-            final Class<?> expected = Reflection.getCallerClass(i + StackLocator.JDK_7U25_OFFSET);
+        // Frame 8 is a hidden frame and does not show in the stacktrace
+        for (int i = 1; i < 8; i++) {
+            final Class<?> expected = (Class<?>) Class.forName("sun.reflect.Reflection")
+                    .getMethod("getCallerClass", int.class)
+                    .invoke(null, i + StackLocator.JDK_7U25_OFFSET);
             final Class<?> actual = StackLocatorUtil.getCallerClass(i);
             final Class<?> fallbackActual = Class.forName(
                 StackLocatorUtil.getStackTraceElement(i).getClassName());
@@ -88,13 +90,13 @@ public class StackLocatorUtilTest {
         final Deque<Class<?>> classes = stackLocator.getCurrentStackTrace();
         //Removing private class in "PrivateSecurityManagerStackTraceUtil"
         classes.removeFirst();
-        Assertions.assertSame(PrivateSecurityManagerStackTraceUtil.class, classes.getFirst());
+        assertSame(PrivateSecurityManagerStackTraceUtil.class, classes.getFirst());
     }
 
     @Test
     public void testGetCallerClassViaName() throws Exception {
-        final Class<?> expected = BlockJUnit4ClassRunner.class;
-        final Class<?> actual = StackLocatorUtil.getCallerClass("org.junit.runners.ParentRunner");
+        final Class<?> expected = TestMethodTestDescriptor.class;
+        final Class<?> actual = StackLocatorUtil.getCallerClass("org.junit.platform.engine.support.hierarchical.ThrowableCollector");
         // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
         // update this test accordingly
         assertSame(expected, actual);
@@ -102,8 +104,8 @@ public class StackLocatorUtilTest {
 
     @Test
     public void testGetCallerClassViaAnchorClass() throws Exception {
-        final Class<?> expected = BlockJUnit4ClassRunner.class;
-        final Class<?> actual = StackLocatorUtil.getCallerClass(ParentRunner.class);
+        final Class<?> expected = TestMethodTestDescriptor.class;
+        final Class<?> actual = StackLocatorUtil.getCallerClass(ThrowableCollector.class);
         // if this test fails in the future, it's probably because of a JUnit upgrade; check the new stack trace and
         // update this test accordingly
         assertSame(expected, actual);
@@ -113,8 +115,8 @@ public class StackLocatorUtilTest {
     public void testLocateClass() {
         final ClassLocator locator = new ClassLocator();
         final Class<?> clazz = locator.locateClass();
-        assertNotNull("Could not locate class", clazz);
-        assertEquals("Incorrect class", this.getClass(), clazz);
+        assertNotNull(clazz, "Could note locate class");
+        assertEquals(this.getClass(), clazz, "Incorrect class");
     }
 
 }

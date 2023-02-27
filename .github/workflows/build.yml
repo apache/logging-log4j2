@@ -49,12 +49,15 @@ jobs:
         with:
           fetch-depth: 32
 
-      # JDK 8 and 11 is needed for the build.
+      # JDK 11 is used for the build.
+      # JDK 8 is used for the tests.
       # Search `maven-toolchains-plugin` usages for details.
       - name: Setup JDK
         uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2   # 3.12.0
         with:
           distribution: temurin
+          # The last provided Java version will be used and available globally.
+          # Other Java versions can be accessed through environment variables: `JAVA_HOME_<majorVersion>_<architecture>`
           java-version: |
             8
             11
@@ -68,9 +71,10 @@ jobs:
       - name: Build
         timeout-minutes: 60
         shell: bash
-        env:
-          JAVA_HOME: ${{ env.JAVA_HOME_8_X64 }}
-        run: ./mvnw clean install
+        run: |
+          ./mvnw \
+          -Pjava8-tests \
+          clean install
 
       - name: Upload Surefire Reports
         if: failure()
@@ -85,8 +89,6 @@ jobs:
         id: report-reproducible
         timeout-minutes: 10
         shell: bash
-        env:
-          JAVA_HOME: ${{ env.JAVA_HOME_8_X64 }}
         run: |
           ./mvnw \
           -DskipTests=true \
@@ -105,8 +107,6 @@ jobs:
       - name: Build site
         timeout-minutes: 10
         shell: bash
-        env:
-          JAVA_HOME: ${{ env.JAVA_HOME_8_X64 }}
         run: ./mvnw site
 
   merge:
@@ -138,12 +138,15 @@ jobs:
         with:
           fetch-depth: 32
 
-      # JDK 8 and 11 are needed for the build.
+      # JDK 11 is used for the build.
+      # JDK 8 is used for the tests.
       # Search `maven-toolchains-plugin` usages for details.
       - name: Setup JDK
         uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2   # 3.12.0
         with:
           distribution: temurin
+          # The last provided Java version will be used and available globally.
+          # Other Java versions can be accessed through environment variables: `JAVA_HOME_<majorVersion>_<architecture>`
           java-version: |
             8
             11
@@ -173,6 +176,5 @@ jobs:
             -DskipTests=true \
             package install:install deploy:deploy
         env:
-          JAVA_HOME: ${{ env.JAVA_HOME_8_X64 }}
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PW: ${{ secrets.NEXUS_PW }}

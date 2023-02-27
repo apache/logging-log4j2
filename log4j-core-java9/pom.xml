@@ -55,33 +55,6 @@
   </dependencies>
   <build>
     <plugins>
-      <!-- There are no test for now.
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>test</id>
-            <phase>test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <systemPropertyVariables>
-            <java.awt.headless>true</java.awt.headless>
-          </systemPropertyVariables>
-          <includes>
-            <include>**/Test*.java</include>
-            <include>**/*Test.java</include>
-          </includes>
-          <excludes>
-            <exclude>**/*FuncTest.java</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-      -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
@@ -101,6 +74,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -111,24 +85,6 @@
               <goal>compile</goal>
             </goals>
             <phase>compile</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-toolchains-plugin</artifactId>
-        <configuration>
-          <toolchains>
-            <jdk>
-              <version>[9, )</version>
-            </jdk>
-          </toolchains>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>toolchain</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>
