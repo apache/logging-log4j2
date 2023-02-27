@@ -18,7 +18,7 @@ name: build
 on:
   push:
     branches:
-      - release-2.x
+      - 2.x
   pull_request:
 
 permissions: read-all
@@ -130,7 +130,7 @@ jobs:
     env:
       MAVEN_OPTS: -Xms3072m -Xmx3072m
     needs: build
-    if: github.repository == 'apache/logging-log4j2' && github.ref == 'refs/heads/release-2.x'
+    if: github.repository == 'apache/logging-log4j2' && github.ref == 'refs/heads/2.x'
 
     steps:
 

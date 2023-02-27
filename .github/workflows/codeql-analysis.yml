@@ -17,11 +17,10 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ release-2.x ]
-    # TODO: add master branch if build can be more generic
+    branches: [ 2.x ]
   pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [ release-2.x ]
+    # The branches below must be a subset of the branches provided in `on.push.branches`
+    branches: [ 2.x ]
   schedule:
     - cron: '32 12 * * 5'
 

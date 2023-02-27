@@ -2,6 +2,7 @@
 
 ## Checklist
 
+* Base your changes on `2.x` branch if you are targeting Log4j 2; use `main` otherwise
 * `./mvnw verify` succeeds (if it fails due to code formatting issues reported by Spotless, simply run `spotless:apply` and retry)
 * Changes contain an entry file in the `src/changelog/.2.x.x` directory
 * Tests for the changes are provided

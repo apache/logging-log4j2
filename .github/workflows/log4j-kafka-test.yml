@@ -14,7 +14,8 @@
 # limitations under the license.
 
 name: log4j-kafka tests
-on: [workflow_dispatch]
+
+on: [ workflow_dispatch ]
 
 permissions: read-all
 
@@ -56,4 +57,3 @@ jobs:
             -Dkafka.version=${{ matrix.version }} \
             -pl log4j-core-test -Dtest=Kafka*Test \
             test
-

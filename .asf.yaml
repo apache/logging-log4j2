@@ -42,8 +42,8 @@ github:
     - api
     - syslog
   protected_branches:
-    master: {}
-    release-2.x: {}
+    main: {}
+    2.x: {}
   # Attempt to make the auto-generated github emails more easily readable in email clients.
   custom_subjects:
     new_pr: "[PR] {title} ({repository})"

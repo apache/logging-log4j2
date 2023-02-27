@@ -20,7 +20,7 @@ on:
   schedule:
     - cron: "30 1 * * 6"    # Weekly on Saturdays
   push:
-    branches: [ "release-2.x", "master" ]
+    branches: [ "2.x", "main" ]
 
 permissions: read-all
 

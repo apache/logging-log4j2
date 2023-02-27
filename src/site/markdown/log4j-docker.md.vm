@@ -28,7 +28,7 @@ $h2 Accessing Docker
 The Log4j Docker support requires access to the Docker REST interface. In practical terms this means the
 application either needs access to unix:///var/run/docker.sock through a volume mount (not recommended),
 bind Docker to another host/port or unix socket. or use a proxy application to provide access. The
-[Log4j Spring Cloud sample application](https://github.com/apache/logging-log4j2/tree/master/log4j-spring-cloud-config/log4j-spring-cloud-config-samples/log4j-spring-cloud-config-sample-application)
+[Log4j Spring Cloud sample application](https://github.com/apache/logging-log4j2/tree/main/log4j-spring-cloud-config/log4j-spring-cloud-config-samples/log4j-spring-cloud-config-sample-application)
 uses a socat proxy to access Docker.
 
 $h2 Lookup Attributes

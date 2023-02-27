@@ -309,10 +309,10 @@ $h2 Snapshot builds
 
 You can access the latest development snapshot by using the Maven repository
 `https://repository.apache.org/snapshots` and the current SNAPSHOT version.
-Generally, the master branch will use the next patch version as its snapshot
+Generally, the `main` branch will use the next patch version as its snapshot
 version regardless of what the next actual version of Log4j will be. For example,
-if the latest release were `2.0`, then master would be using the version
-`2.0.1-SNAPSHOT`. Always verify with `pom.xml` in the master branch as described
+if the latest release were `2.0`, then `main` would be using the version
+`2.0.1-SNAPSHOT`. Always verify with `pom.xml` in the `main` branch as described
 in the [source repository page](source-repository.html).
 
 $h3 Maven
