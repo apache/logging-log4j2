@@ -28,12 +28,12 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
         deferChildren = true, printObject = true)
 public class EnvironmentArbiter implements Arbiter {
 
-    private final String variableName;
-    private final String variableValue;
+    private final String propertyName;
+    private final String propertyValue;
 
-    private EnvironmentArbiter(final String variableName, final String variableValue) {
-        this.variableName = variableName;
-        this.variableValue = variableValue;
+    private EnvironmentArbiter(final String propertyName, final String propertyValue) {
+        this.propertyName = propertyName;
+        this.propertyValue = propertyValue;
     }
 
 
@@ -43,8 +43,8 @@ public class EnvironmentArbiter implements Arbiter {
      */
     @Override
     public boolean isCondition() {
-        String value = System.getenv(variableName);
-        return value != null && (variableValue == null || value.equals(variableValue));
+        String value = System.getenv(propertyName);
+        return value != null && (propertyValue == null || value.equals(propertyValue));
     }
 
     @PluginBuilderFactory
@@ -54,31 +54,31 @@ public class EnvironmentArbiter implements Arbiter {
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<EnvironmentArbiter> {
 
-        public static final String ATTR_VARIABLE_NAME = "variableName";
-        public static final String ATTR_VARIABLE_VALUE = "variableValue";
+        public static final String ATTR_PROPERTY_NAME = "propertyName";
+        public static final String ATTR_PROPERTY_VALUE = "propertyValue";
 
-        @PluginBuilderAttribute(ATTR_VARIABLE_NAME)
-        private String variableName;
+        @PluginBuilderAttribute(ATTR_PROPERTY_NAME)
+        private String propertyName;
 
-        @PluginBuilderAttribute(ATTR_VARIABLE_VALUE)
-        private String variableValue;
+        @PluginBuilderAttribute(ATTR_PROPERTY_VALUE)
+        private String propertyValue;
         /**
          * Sets the Property Name.
-         * @param variableName the property name.
+         * @param propertyName the property name.
          * @return this
          */
-        public Builder setVariableName(final String variableName) {
-            this.variableName = variableName;
+        public Builder setPropertyName(final String propertyName) {
+            this.propertyName = propertyName;
             return asBuilder();
         }
 
         /**
          * Sets the Property Value.
-         * @param variableValue the property name.
+         * @param propertyValue the property value.
          * @return this
          */
-        public Builder setVariableValue(final String variableValue) {
-            this.variableValue = variableValue;
+        public Builder setPropertyValue(final String propertyValue) {
+            this.propertyValue = propertyValue;
             return asBuilder();
         }
 
@@ -87,7 +87,7 @@ public class EnvironmentArbiter implements Arbiter {
         }
 
         public EnvironmentArbiter build() {
-            return new EnvironmentArbiter(variableName, variableValue);
+            return new EnvironmentArbiter(propertyName, propertyValue);
         }
     }
 }

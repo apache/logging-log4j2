@@ -19,12 +19,12 @@
 <Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
   <Appenders>
 
-    <EnvironmentArbiter variableName="ENV" variableValue="dev">
+    <EnvironmentArbiter propertyName="ENV" propertyValue="dev">
       <Console name="Out">
         <PatternLayout pattern="%m%n"/>
       </Console>
     </EnvironmentArbiter>
-    <EnvironmentArbiter variableName="ENV" variableValue="prod">
+    <EnvironmentArbiter propertyName="ENV" propertyValue="prod">
       <List name="Out">
       </List>
     </EnvironmentArbiter>
