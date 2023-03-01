@@ -16,21 +16,21 @@
  */
 package org.apache.log4j.pattern;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import org.apache.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class Log4j1LevelPatternConverterTest {
 
     /**
      * Tests if the converter returns the Log4j 1.x {@code toString()} value of
      * custom Log4j 1.x levels.
-     * 
+     *
      * @param level a Log4j 1.x level
      */
     @ParameterizedTest

@@ -14,16 +14,15 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.test.junit;
+
+import java.util.Collection;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
-
-import java.util.Collection;
 
 class ThreadContextStackExtension implements BeforeEachCallback {
     private static class ThreadContextStackStore implements Store.CloseableResource {

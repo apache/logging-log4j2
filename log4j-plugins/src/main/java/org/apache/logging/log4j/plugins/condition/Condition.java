@@ -14,12 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.condition;
 
-import org.apache.logging.log4j.plugins.di.Key;
-
 import java.lang.reflect.AnnotatedElement;
+
+import org.apache.logging.log4j.plugins.di.Key;
 
 /**
  * Checks an annotated element to see if it matches some condition.

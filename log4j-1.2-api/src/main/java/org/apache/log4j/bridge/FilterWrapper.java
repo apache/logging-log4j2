@@ -31,7 +31,7 @@ public class FilterWrapper extends Filter {
      * Adapts a Log4j 2.x filter into a Log4j 1.x filter. Applying this method to
      * the result of {@link FilterAdapter#adapt(Filter)} should return the original
      * Log4j 1.x filter.
-     * 
+     *
      * @param filter a Log4j 2.x filter
      * @return a Log4j 1.x filter or {@code null} if the parameter is {@code null}
      */

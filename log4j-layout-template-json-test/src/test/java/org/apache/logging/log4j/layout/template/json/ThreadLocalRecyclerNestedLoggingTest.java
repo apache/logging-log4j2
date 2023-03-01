@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -24,11 +29,6 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.layout.template.json.util.ThreadLocalRecycler;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Tests if logging while trying to encode an event causes {@link ThreadLocalRecycler} to incorrectly share buffers and end up overriding layout's earlier encoding work.

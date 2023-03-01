@@ -14,17 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * FileSize utility class.

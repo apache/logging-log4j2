@@ -16,13 +16,10 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -30,10 +27,13 @@ import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
+
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  *  SSL Configuration

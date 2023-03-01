@@ -14,13 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.validation.constraints;
+
+import java.lang.annotation.*;
 
 import org.apache.logging.log4j.plugins.validation.Constraint;
 import org.apache.logging.log4j.plugins.validation.validators.RequiredValidator;
-
-import java.lang.annotation.*;
 
 /**
  * Marks a plugin builder field or plugin factory parameter as required.

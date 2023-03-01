@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.test.junit.Mutable;
-import org.junit.jupiter.api.Test;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import org.apache.logging.log4j.test.junit.Mutable;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 

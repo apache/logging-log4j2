@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.csv.layout;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.core.Layout;
@@ -28,9 +31,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * A Comma-Separated Value (CSV) layout to log event parameters.

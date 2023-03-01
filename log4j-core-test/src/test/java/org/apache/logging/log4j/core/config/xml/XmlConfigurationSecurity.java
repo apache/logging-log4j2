@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
+import java.io.IOException;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -38,4 +38,3 @@ public class XmlConfigurationSecurity {
     }
 
 }
-

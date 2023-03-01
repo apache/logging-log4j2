@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Container of Logger objects.

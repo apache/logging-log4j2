@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -28,12 +24,12 @@ import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.CoreContextSelectors;
-import org.apache.logging.log4j.test.junit.CleanFiles;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.test.junit.CleanFiles;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,6 +37,10 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.

@@ -14,14 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.lookup;
-
-import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 
 import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests {@link PropertiesLookup}.

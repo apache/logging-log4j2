@@ -16,6 +16,10 @@
  */
 package org.apache.log4j.config;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -27,10 +31,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 

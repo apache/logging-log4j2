@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
+
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;

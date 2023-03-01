@@ -16,19 +16,19 @@
  */
 package liquibase.ext.logging.log4j2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
-
-import liquibase.logging.Logger;
 
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import liquibase.logging.Logger;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class LoggingTest {
 

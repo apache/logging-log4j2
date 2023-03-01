@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.log4j.helpers;
 
 import org.apache.logging.log4j.status.StatusLogger;
@@ -86,7 +85,7 @@ public class LogLog {
 
     /**
      * Logs Log4j internal debug statements.
-     * 
+     *
      * @param message the message object to log.
      */
     public static void debug(final String message) {
@@ -97,7 +96,7 @@ public class LogLog {
 
     /**
      * Logs Log4j internal debug statements.
-     * 
+     *
      * @param message the message object to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
      */
@@ -109,7 +108,7 @@ public class LogLog {
 
     /**
      * Logs Log4j internal error statements.
-     * 
+     *
      * @param message the message object to log.
      */
     public static void error(final String message) {
@@ -120,7 +119,7 @@ public class LogLog {
 
     /**
      * Logs Log4j internal error statements.
-     * 
+     *
      * @param message the message object to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
      */
@@ -150,7 +149,7 @@ public class LogLog {
 
     /**
      * Logs Log4j internal warning statements.
-     * 
+     *
      * @param message the message object to log.
      */
     public static void warn(final String message) {
@@ -161,7 +160,7 @@ public class LogLog {
 
     /**
      * Logs Log4j internal warnings.
-     * 
+     *
      * @param message the message object to log.
      * @param throwable the {@code Throwable} to log, including its stack trace.
      */

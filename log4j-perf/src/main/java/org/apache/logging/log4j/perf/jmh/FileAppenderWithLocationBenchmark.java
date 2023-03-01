@@ -14,12 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.perf.jmh;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.FileHandler;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openjdk.jmh.annotations.Benchmark;

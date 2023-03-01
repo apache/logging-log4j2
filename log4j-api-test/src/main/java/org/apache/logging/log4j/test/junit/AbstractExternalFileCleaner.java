@@ -37,149 +37,149 @@ import org.junit.rules.ExternalResource;
  */
 public abstract class AbstractExternalFileCleaner extends ExternalResource {
 
-	protected static final String CLEANER_MARKER = "CLEANER";
+    protected static final String CLEANER_MARKER = "CLEANER";
 
-	private static final int SLEEP_RETRY_MILLIS = 200;
-	private final boolean cleanAfter;
-	private final boolean cleanBefore;
-	private final Set<Path> files;
-	private final int maxTries;
-	private final PrintStream printStream;
+    private static final int SLEEP_RETRY_MILLIS = 200;
+    private final boolean cleanAfter;
+    private final boolean cleanBefore;
+    private final Set<Path> files;
+    private final int maxTries;
+    private final PrintStream printStream;
 
-	public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
-			final PrintStream logger, final File... files) {
-		this.cleanBefore = before;
-		this.cleanAfter = after;
-		this.maxTries = maxTries;
-		this.files = new HashSet<>(files.length);
-		this.printStream = logger;
-		for (final File file : files) {
-			this.files.add(file.toPath());
-		}
-	}
+    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
+            final PrintStream logger, final File... files) {
+        this.cleanBefore = before;
+        this.cleanAfter = after;
+        this.maxTries = maxTries;
+        this.files = new HashSet<>(files.length);
+        this.printStream = logger;
+        for (final File file : files) {
+            this.files.add(file.toPath());
+        }
+    }
 
-	public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
-			final PrintStream logger, final Path... files) {
-		this.cleanBefore = before;
-		this.cleanAfter = after;
-		this.maxTries = maxTries;
-		this.printStream = logger;
-		this.files = new HashSet<>(Arrays.asList(files));
-	}
+    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
+            final PrintStream logger, final Path... files) {
+        this.cleanBefore = before;
+        this.cleanAfter = after;
+        this.maxTries = maxTries;
+        this.printStream = logger;
+        this.files = new HashSet<>(Arrays.asList(files));
+    }
 
-	public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
-			final PrintStream logger, final String... fileNames) {
-		this.cleanBefore = before;
-		this.cleanAfter = after;
-		this.maxTries = maxTries;
-		this.printStream = logger;
-		this.files = new HashSet<>(fileNames.length);
-		for (final String fileName : fileNames) {
-			this.files.add(Paths.get(fileName));
-		}
-	}
+    public AbstractExternalFileCleaner(final boolean before, final boolean after, final int maxTries,
+            final PrintStream logger, final String... fileNames) {
+        this.cleanBefore = before;
+        this.cleanAfter = after;
+        this.maxTries = maxTries;
+        this.printStream = logger;
+        this.files = new HashSet<>(fileNames.length);
+        for (final String fileName : fileNames) {
+            this.files.add(Paths.get(fileName));
+        }
+    }
 
-	@Override
-	protected void after() {
-		if (cleanAfter()) {
-			this.clean();
-		}
-	}
+    @Override
+    protected void after() {
+        if (cleanAfter()) {
+            this.clean();
+        }
+    }
 
-	@Override
-	protected void before() {
-		if (cleanBefore()) {
-			this.clean();
-		}
-	}
+    @Override
+    protected void before() {
+        if (cleanBefore()) {
+            this.clean();
+        }
+    }
 
-	protected void clean() {
-		final Map<Path, IOException> failures = new HashMap<>();
-		// Clean and gather failures
-		for (final Path path : getPaths()) {
-			if (Files.exists(path)) {
-				for (int i = 0; i < getMaxTries(); i++) {
-					try {
-						if (clean(path, i)) {
-							if (failures.containsKey(path)) {
-								failures.remove(path);
-							}
-							break;
-						}
-					} catch (final IOException e) {
-						println(CLEANER_MARKER + ": Caught exception cleaning: " + this);
-						printStackTrace(e);
-						// We will try again.
-						failures.put(path, e);
-					}
-					try {
-						Thread.sleep(SLEEP_RETRY_MILLIS);
-					} catch (final InterruptedException ignored) {
-						// ignore
-					}
-				}
-			}
-		}
-		// Fail on failures
-		if (failures.size() > 0) {
-			final StringBuilder sb = new StringBuilder();
-			boolean first = true;
-			for (final Map.Entry<Path, IOException> failure : failures.entrySet()) {
-				failure.getValue().printStackTrace();
-				if (!first) {
-					sb.append(", ");
-				}
-				sb.append(failure.getKey()).append(" failed with ").append(failure.getValue());
-				first = false;
-			}
-			Assert.fail(sb.toString());
-		}
-	}
+    protected void clean() {
+        final Map<Path, IOException> failures = new HashMap<>();
+        // Clean and gather failures
+        for (final Path path : getPaths()) {
+            if (Files.exists(path)) {
+                for (int i = 0; i < getMaxTries(); i++) {
+                    try {
+                        if (clean(path, i)) {
+                            if (failures.containsKey(path)) {
+                                failures.remove(path);
+                            }
+                            break;
+                        }
+                    } catch (final IOException e) {
+                        println(CLEANER_MARKER + ": Caught exception cleaning: " + this);
+                        printStackTrace(e);
+                        // We will try again.
+                        failures.put(path, e);
+                    }
+                    try {
+                        Thread.sleep(SLEEP_RETRY_MILLIS);
+                    } catch (final InterruptedException ignored) {
+                        // ignore
+                    }
+                }
+            }
+        }
+        // Fail on failures
+        if (failures.size() > 0) {
+            final StringBuilder sb = new StringBuilder();
+            boolean first = true;
+            for (final Map.Entry<Path, IOException> failure : failures.entrySet()) {
+                failure.getValue().printStackTrace();
+                if (!first) {
+                    sb.append(", ");
+                }
+                sb.append(failure.getKey()).append(" failed with ").append(failure.getValue());
+                first = false;
+            }
+            Assert.fail(sb.toString());
+        }
+    }
 
-	protected abstract boolean clean(Path path, int tryIndex) throws IOException;
+    protected abstract boolean clean(Path path, int tryIndex) throws IOException;
 
-	public boolean cleanAfter() {
-		return cleanAfter;
-	}
+    public boolean cleanAfter() {
+        return cleanAfter;
+    }
 
-	public boolean cleanBefore() {
-		return cleanBefore;
-	}
+    public boolean cleanBefore() {
+        return cleanBefore;
+    }
 
-	public int getMaxTries() {
-		return maxTries;
-	}
+    public int getMaxTries() {
+        return maxTries;
+    }
 
-	public Set<Path> getPaths() {
-		return files;
-	}
+    public Set<Path> getPaths() {
+        return files;
+    }
 
-	public PrintStream getPrintStream() {
-		return printStream;
-	}
+    public PrintStream getPrintStream() {
+        return printStream;
+    }
 
-	protected void printf(final String format, final Object... args) {
-		if (printStream != null) {
-		    printStream.printf(format, args);
-		}
-	}
+    protected void printf(final String format, final Object... args) {
+        if (printStream != null) {
+            printStream.printf(format, args);
+        }
+    }
 
-	protected void println(final String msg) {
-		if (printStream != null) {
-		    printStream.println(msg);
-		}
-	}
+    protected void println(final String msg) {
+        if (printStream != null) {
+            printStream.println(msg);
+        }
+    }
 
-	protected void printStackTrace(final Throwable t) {
-		if (printStream != null) {
-			t.printStackTrace(printStream);
-		}
-	}
+    protected void printStackTrace(final Throwable t) {
+        if (printStream != null) {
+            t.printStackTrace(printStream);
+        }
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + " [files=" + files + ", cleanAfter=" + cleanAfter + ", cleanBefore="
-				+ cleanBefore + "]";
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " [files=" + files + ", cleanAfter=" + cleanAfter + ", cleanBefore="
+                + cleanBefore + "]";
+    }
 
 }

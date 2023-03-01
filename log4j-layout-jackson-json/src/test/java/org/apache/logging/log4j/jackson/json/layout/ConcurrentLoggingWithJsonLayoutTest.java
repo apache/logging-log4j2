@@ -16,9 +16,6 @@
  */
 package org.apache.logging.log4j.jackson.json.layout;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
-
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -33,6 +30,9 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.AfterClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Test for LOG4J2-1769.

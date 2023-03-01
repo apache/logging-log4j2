@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.test;
 
 import org.apache.logging.log4j.Marker;
@@ -25,10 +24,10 @@ import org.apache.logging.log4j.MarkerManager;
  */
 public class TestMarkers {
 
-	public static final Marker LIFE_CYCLE = MarkerManager.getMarker("LIFECYCLE");
-	public static final Marker TEST = MarkerManager.getMarker("TEST");
-	public static final Marker TEST_RULE = MarkerManager.getMarker("TEST_RULE").addParents(TEST);
-	public static final Marker TEST_RULE_LIFE_CYCLE = MarkerManager.getMarker("TEST_RULE_LIFE_CYCLE")
-			.addParents(TEST_RULE).addParents(LIFE_CYCLE);
+    public static final Marker LIFE_CYCLE = MarkerManager.getMarker("LIFECYCLE");
+    public static final Marker TEST = MarkerManager.getMarker("TEST");
+    public static final Marker TEST_RULE = MarkerManager.getMarker("TEST_RULE").addParents(TEST);
+    public static final Marker TEST_RULE_LIFE_CYCLE = MarkerManager.getMarker("TEST_RULE_LIFE_CYCLE")
+            .addParents(TEST_RULE).addParents(LIFE_CYCLE);
 
 }

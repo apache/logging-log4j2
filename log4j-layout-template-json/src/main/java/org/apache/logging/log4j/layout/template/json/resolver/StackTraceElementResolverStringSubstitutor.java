@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-
 import java.util.Objects;
+
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 /**
  * {@link TemplateResolverStringSubstitutor} specialized for {@link StackTraceElement}s.

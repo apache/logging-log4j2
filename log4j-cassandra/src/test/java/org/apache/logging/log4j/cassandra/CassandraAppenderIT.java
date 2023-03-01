@@ -16,9 +16,12 @@
  */
 package org.apache.logging.log4j.cassandra;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -27,11 +30,9 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

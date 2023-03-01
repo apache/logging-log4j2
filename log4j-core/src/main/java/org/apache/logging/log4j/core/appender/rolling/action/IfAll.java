@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
-
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Arrays;
 import java.util.Objects;
+
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * Composite {@code PathCondition} that only accepts objects that are accepted by <em>all</em> component conditions.

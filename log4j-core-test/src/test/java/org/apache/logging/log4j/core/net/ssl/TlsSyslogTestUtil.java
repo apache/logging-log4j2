@@ -74,4 +74,3 @@ public class TlsSyslogTestUtil {
         return n;
     }
 }
-

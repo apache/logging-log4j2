@@ -255,4 +255,3 @@ public class Level extends Priority implements Serializable {
     }
 
 }
-

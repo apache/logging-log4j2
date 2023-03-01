@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 /**
  * Tests LOG4J2-807.

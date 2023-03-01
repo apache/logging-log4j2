@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
+import java.util.function.Consumer;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.function.Consumer;
 
 class TruncatingBufferedWriterTest {
 

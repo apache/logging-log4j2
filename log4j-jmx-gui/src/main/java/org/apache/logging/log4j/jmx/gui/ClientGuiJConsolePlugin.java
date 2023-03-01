@@ -18,7 +18,6 @@ package org.apache.logging.log4j.jmx.gui;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 

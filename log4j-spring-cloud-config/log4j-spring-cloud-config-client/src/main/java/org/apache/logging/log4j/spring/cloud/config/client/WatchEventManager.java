@@ -27,22 +27,22 @@ import org.apache.logging.log4j.core.util.WatchManager;
  *
  */
 public class WatchEventManager implements WatchEventService {
-	private static final ConcurrentMap<UUID, WatchManager> watchManagers = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<UUID, WatchManager> watchManagers = new ConcurrentHashMap<>();
 
-	public static void publishEvent() {
-		for (final WatchManager manager : watchManagers.values()) {
-			manager.checkFiles();
-		}
-	}
+    public static void publishEvent() {
+        for (final WatchManager manager : watchManagers.values()) {
+            manager.checkFiles();
+        }
+    }
 
-	@Override
-	public void subscribe(final WatchManager manager) {
-		watchManagers.put(manager.getId(), manager);
+    @Override
+    public void subscribe(final WatchManager manager) {
+        watchManagers.put(manager.getId(), manager);
 
-	}
+    }
 
-	@Override
-	public void unsubscribe(final WatchManager manager) {
-		watchManagers.remove(manager.getId());
-	}
+    @Override
+    public void unsubscribe(final WatchManager manager) {
+        watchManagers.remove(manager.getId());
+    }
 }

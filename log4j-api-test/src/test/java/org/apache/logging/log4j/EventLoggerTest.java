@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j;
 
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.TestLogger;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
-
-import java.util.List;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

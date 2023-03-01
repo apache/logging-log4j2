@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
 import java.util.Objects;
+
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Encoder for StringBuilders that locks on the ByteBufferDestination.

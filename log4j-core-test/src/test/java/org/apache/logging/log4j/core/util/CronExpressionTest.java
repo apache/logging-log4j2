@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.junit.jupiter.api.Test;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

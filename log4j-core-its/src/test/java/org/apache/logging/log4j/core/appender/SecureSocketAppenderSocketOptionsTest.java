@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
-
 import javax.net.ssl.SSLServerSocketFactory;
 
 import org.apache.logging.log4j.core.appender.SocketAppenderTest.TcpSocketTestServer;
@@ -29,11 +28,11 @@ import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.StoreConfigurationException;
-import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
-import org.apache.logging.log4j.core.util.NullOutputStream;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
+import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;

@@ -14,12 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.validation;
 
-import org.apache.logging.log4j.plugins.PluginException;
-
 import java.lang.reflect.AnnotatedElement;
+
+import org.apache.logging.log4j.plugins.PluginException;
 
 import static org.apache.logging.log4j.message.ParameterizedMessage.deepToString;
 

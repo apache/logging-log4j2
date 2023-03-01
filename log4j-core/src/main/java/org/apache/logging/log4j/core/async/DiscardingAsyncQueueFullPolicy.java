@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Discarding router extends the DefaultAsyncQueueFullPolicy by first verifying if the queue is fuller than the specified

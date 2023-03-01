@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.Logger;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.Logger;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
 

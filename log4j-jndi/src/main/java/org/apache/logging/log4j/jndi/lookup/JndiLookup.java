@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.jndi.lookup;
 
+import java.util.Objects;
+import javax.naming.NamingException;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -26,9 +29,6 @@ import org.apache.logging.log4j.jndi.JndiManager;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.validation.constraints.RequiredProperty;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import javax.naming.NamingException;
-import java.util.Objects;
 
 /**
  * Looks up keys from JNDI resources.

@@ -21,11 +21,11 @@ import java.io.IOException;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -79,4 +79,3 @@ public class GelfLayoutPatternSelectorTest {
     }
 
 }
-

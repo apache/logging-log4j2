@@ -14,15 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.jndi;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Properties;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests {@link JndiManager}.

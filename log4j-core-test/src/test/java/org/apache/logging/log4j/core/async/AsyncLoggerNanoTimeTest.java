@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
@@ -25,9 +28,6 @@ import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.plugins.Named;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;

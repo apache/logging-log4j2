@@ -18,10 +18,10 @@ package org.apache.logging.log4j.script.appender;
 
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;

@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.time.Instant;
-import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
-import org.apache.logging.log4j.core.time.InstantFormatter;
-import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-
 import java.util.Locale;
 import java.util.TimeZone;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.time.Instant;
+import org.apache.logging.log4j.core.time.InstantFormatter;
+import org.apache.logging.log4j.core.time.MutableInstant;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 /**
  * Timestamp resolver.

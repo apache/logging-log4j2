@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.List;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -36,54 +36,54 @@ import org.junit.runner.Description;
  */
 public class JdbcRule implements TestRule {
 
-	private final ConnectionSource connectionSource;
-	private final String createTableStatement;
-	private final String dropTableStatement;
+    private final ConnectionSource connectionSource;
+    private final String createTableStatement;
+    private final String dropTableStatement;
 
-	/**
-	 * Creates a JdbcRule using a {@link ConnectionSource} and a table creation statement.
-	 *
-	 * @param connectionSource a required source for obtaining a Connection.
-	 * @param createTableStatement an optional SQL DDL statement to create a table for use in a JUnit test.
-	 * @param dropTableStatement an optional SQL DDL statement to drop the created table.
-	 */
-	public JdbcRule(final ConnectionSource connectionSource, final String createTableStatement,
-			final String dropTableStatement) {
-		this.connectionSource = Objects.requireNonNull(connectionSource, "connectionSource");
-		this.createTableStatement = createTableStatement;
-		this.dropTableStatement = dropTableStatement;
-	}
+    /**
+     * Creates a JdbcRule using a {@link ConnectionSource} and a table creation statement.
+     *
+     * @param connectionSource a required source for obtaining a Connection.
+     * @param createTableStatement an optional SQL DDL statement to create a table for use in a JUnit test.
+     * @param dropTableStatement an optional SQL DDL statement to drop the created table.
+     */
+    public JdbcRule(final ConnectionSource connectionSource, final String createTableStatement,
+            final String dropTableStatement) {
+        this.connectionSource = Objects.requireNonNull(connectionSource, "connectionSource");
+        this.createTableStatement = createTableStatement;
+        this.dropTableStatement = dropTableStatement;
+    }
 
-	@Override
-	public org.junit.runners.model.Statement apply(final org.junit.runners.model.Statement base,
-			final Description description) {
-		return new org.junit.runners.model.Statement() {
-			@Override
-			public void evaluate() throws Throwable {
-				try (final Connection connection = getConnection();
-						final Statement statement = connection.createStatement()) {
-					try {
-						if (StringUtils.isNotEmpty(createTableStatement)) {
-							statement.executeUpdate(createTableStatement);
-						}
-						base.evaluate();
-					} finally {
-						if (StringUtils.isNotEmpty(dropTableStatement)) {
-							statement.executeUpdate(dropTableStatement);
-						}
-						statement.execute("SHUTDOWN");
-					}
-				}
-			}
+    @Override
+    public org.junit.runners.model.Statement apply(final org.junit.runners.model.Statement base,
+            final Description description) {
+        return new org.junit.runners.model.Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                try (final Connection connection = getConnection();
+                        final Statement statement = connection.createStatement()) {
+                    try {
+                        if (StringUtils.isNotEmpty(createTableStatement)) {
+                            statement.executeUpdate(createTableStatement);
+                        }
+                        base.evaluate();
+                    } finally {
+                        if (StringUtils.isNotEmpty(dropTableStatement)) {
+                            statement.executeUpdate(dropTableStatement);
+                        }
+                        statement.execute("SHUTDOWN");
+                    }
+                }
+            }
 
-		};
-	}
+        };
+    }
 
-	public Connection getConnection() throws SQLException {
-		return connectionSource.getConnection();
-	}
+    public Connection getConnection() throws SQLException {
+        return connectionSource.getConnection();
+    }
 
-	public ConnectionSource getConnectionSource() {
-		return connectionSource;
-	}
+    public ConnectionSource getConnectionSource() {
+        return connectionSource;
+    }
 }

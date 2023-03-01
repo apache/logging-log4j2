@@ -16,13 +16,6 @@
  */
 package org.apache.logging.log4j.web;
 
-import static org.apache.logging.log4j.web.Log4jShutdownOnContextDestroyedListener.DEFAULT_STOP_TIMEOUT;
-import static org.apache.logging.log4j.web.Log4jShutdownOnContextDestroyedListener.DEFAULT_STOP_TIMEOUT_TIMEUNIT;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.never;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
@@ -30,6 +23,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.apache.logging.log4j.web.Log4jShutdownOnContextDestroyedListener.DEFAULT_STOP_TIMEOUT;
+import static org.apache.logging.log4j.web.Log4jShutdownOnContextDestroyedListener.DEFAULT_STOP_TIMEOUT_TIMEUNIT;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
 
 @ExtendWith(MockitoExtension.class)
 public class Log4jShutdownOnContextDestroyedListenerTest {
@@ -46,14 +46,14 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
         this.listener = new Log4jShutdownOnContextDestroyedListener();
         given(event.getServletContext()).willReturn(servletContext);
         if (mockInitializer) {
-        	given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE))
-        			.willReturn(initializer);
+            given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE))
+                    .willReturn(initializer);
         }
     }
 
     @Test
     public void testInitAndDestroy() throws Exception {
-    	setUp(true);
+        setUp(true);
         this.listener.contextInitialized(this.event);
 
         then(initializer).should(never()).start();
@@ -67,7 +67,7 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
 
     @Test
     public void testDestroy() throws Exception {
-    	setUp(true);
+        setUp(true);
         this.listener.contextDestroyed(this.event);
 
         then(initializer).should(never()).clearLoggerContext();
@@ -76,10 +76,10 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
 
     @Test
     public void whenNoInitializerInContextTheContextInitializedShouldThrowAnException() {
-    	setUp(false);
+        setUp(false);
 
-    	assertThrows(IllegalStateException.class, () -> {
-    		this.listener.contextInitialized(this.event);
-    	});
+        assertThrows(IllegalStateException.class, () -> {
+            this.listener.contextInitialized(this.event);
+        });
     }
 }

@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.ReadsSystemProperty;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.ReadsSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.*;
 

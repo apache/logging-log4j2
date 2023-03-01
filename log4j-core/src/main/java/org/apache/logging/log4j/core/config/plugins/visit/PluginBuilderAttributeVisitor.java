@@ -14,17 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config.plugins.visit;
+
+import java.lang.reflect.AnnotatedElement;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Keys;
-
-import java.lang.reflect.AnnotatedElement;
-import java.util.function.Function;
 
 public class PluginBuilderAttributeVisitor extends org.apache.logging.log4j.plugins.visit.PluginBuilderAttributeVisitor {
     @Inject

@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
 

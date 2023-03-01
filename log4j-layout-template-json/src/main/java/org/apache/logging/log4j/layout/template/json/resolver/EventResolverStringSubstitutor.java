@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-
-import java.util.Objects;
 
 /**
  * {@link TemplateResolverStringSubstitutor} specialized for {@link LogEvent}s.

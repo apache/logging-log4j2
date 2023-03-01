@@ -38,9 +38,6 @@ end of the request. When an event that needs to be recorded occurs a
 
 [source,java]
 ----
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.commons.lang.time.DateUtils;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
@@ -53,6 +50,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.TimeZone;
+
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.commons.lang.time.DateUtils;
 
 public class RequestFilter implements Filter {
     private FilterConfig filterConfig;
@@ -114,11 +114,11 @@ Sample class that uses `EventLogger`.
 
 [source,java]
 ----
-import org.apache.logging.log4j.StructuredDataMessage;
-import org.apache.logging.log4j.EventLogger;
-
 import java.util.Date;
 import java.util.UUID;
+
+import org.apache.logging.log4j.StructuredDataMessage;
+import org.apache.logging.log4j.EventLogger;
 
 public class MyApp {
 

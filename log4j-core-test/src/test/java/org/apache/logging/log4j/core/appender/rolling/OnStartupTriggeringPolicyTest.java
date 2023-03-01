@@ -16,13 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -35,6 +28,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

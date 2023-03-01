@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -37,6 +33,10 @@ import org.h2.util.IOUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Abstract unit test for JdbcAppender using a {@link FactoryMethodConnectionSource} configuration.

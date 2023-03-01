@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.plugins.validation.validators;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * Validator that checks an object to verify it is a valid hostname or IP address. Validation rules follow the same

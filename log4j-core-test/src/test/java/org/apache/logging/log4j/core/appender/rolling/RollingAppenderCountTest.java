@@ -16,13 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.plugins.Named;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -30,6 +23,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.concurrent.CountDownLatch;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.plugins.Named;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

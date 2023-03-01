@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.jackson.yaml.layout;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -32,6 +26,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;

@@ -14,8 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.filter;
+
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.DelayQueue;
+import java.util.concurrent.Delayed;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -27,12 +32,6 @@ import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.DelayQueue;
-import java.util.concurrent.Delayed;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The <code>BurstFilter</code> is a logging filter that regulates logging traffic.

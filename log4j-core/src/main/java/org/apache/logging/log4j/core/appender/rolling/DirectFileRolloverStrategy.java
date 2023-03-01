@@ -23,5 +23,5 @@ public interface DirectFileRolloverStrategy {
 
     String getCurrentFileName(final RollingFileManager manager);
 
-	void clearCurrentFileName();
+    void clearCurrentFileName();
 }

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -23,9 +26,6 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 public class RollingFileManagerTest {
 

@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.validation.constraints;
 
 import java.lang.annotation.Documented;
@@ -48,4 +47,3 @@ public @interface RequiredProperty {
      */
     String message() default "The required property is not present or has an incorrect value";
 }
-

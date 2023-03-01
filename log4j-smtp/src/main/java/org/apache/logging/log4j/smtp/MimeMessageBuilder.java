@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.smtp;
 
 import java.nio.charset.StandardCharsets;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;

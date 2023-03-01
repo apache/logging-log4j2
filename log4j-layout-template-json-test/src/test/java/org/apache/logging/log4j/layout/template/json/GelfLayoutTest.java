@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
@@ -24,11 +29,6 @@ import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.serializeUsingLayout;
 

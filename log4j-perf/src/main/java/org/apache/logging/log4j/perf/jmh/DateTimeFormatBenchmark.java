@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.IntStream;
+
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.internal.format.FastDatePrinter;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
@@ -23,11 +28,6 @@ import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
-
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.IntStream;
 
 /**
  * Compares {@link MutableInstant} formatting efficiency of

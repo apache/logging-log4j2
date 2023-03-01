@@ -39,7 +39,7 @@ public class AppenderWrapper implements Appender {
      * Adapts a Log4j 2.x appender into a Log4j 1.x appender. Applying this method
      * on the result of {@link AppenderAdapter#adapt(Appender)} should return the
      * original Log4j 1.x appender.
-     * 
+     *
      * @param appender a Log4j 2.x appender
      * @return a Log4j 1.x appender or {@code null} if the parameter is {@code null}
      */

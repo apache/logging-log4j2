@@ -14,15 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling;
-
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.NullOutputStream;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,6 +28,13 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Set;
 import java.util.concurrent.locks.LockSupport;
+
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.core.util.NullOutputStream;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.Test;
 
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.beforeNow;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasLength;

@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -31,11 +36,6 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The FailoverAppender will capture exceptions in an Appender and then route the event

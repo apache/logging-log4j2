@@ -14,8 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.perf.jmh;
+
+import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
@@ -31,8 +32,6 @@ import org.jctools.queues.MpmcArrayQueue;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
-
-import java.util.List;
 
 /**
  * Checks {@link PatternFormatter} performance with various StringBuilder

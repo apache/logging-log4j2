@@ -38,7 +38,7 @@ public class JdbcAppenderStringSubstitutionTest {
     }
 
     @Rule
-	public final LoggerContextRule rule = new LoggerContextRule("org/apache/logging/log4j/jdbc/appender/log4j2-jdbc-string-substitution.xml");
+    public final LoggerContextRule rule = new LoggerContextRule("org/apache/logging/log4j/jdbc/appender/log4j2-jdbc-string-substitution.xml");
 
     @Test
     public void test() throws Exception {

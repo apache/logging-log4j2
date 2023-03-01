@@ -14,12 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,6 +30,10 @@ import org.junit.jupiter.api.Test;
 
 import com.sun.management.UnixOperatingSystemMXBean;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
+
 public class ConfigurationSourceTest {
 
     @Test
@@ -46,7 +45,7 @@ public class ConfigurationSourceTest {
     /**
      * Checks if the usage of 'jar:' URLs does not increase the file descriptor
      * count and the jar file can be deleted.
-     * 
+     *
      * @throws Exception
      */
     @Test

@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
-
 import javax.xml.parsers.FactoryConfigurationError;
 
 import org.apache.log4j.LogManager;

@@ -14,8 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling.action;
+
+import java.io.IOException;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
 
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
@@ -26,13 +32,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.io.IOException;
-import java.nio.file.FileVisitor;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Rollover or scheduled action for deleting old log files that are accepted by the specified PathFilters.

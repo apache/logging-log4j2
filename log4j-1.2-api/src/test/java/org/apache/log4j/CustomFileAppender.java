@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.log4j;
 
 public class CustomFileAppender extends FileAppender {

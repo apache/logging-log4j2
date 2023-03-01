@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.net.Severity;
-import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.net.Severity;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 /**
  * {@link Level} resolver.

@@ -16,6 +16,8 @@
  */
 package org.apache.log4j;
 
+import java.net.URI;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-
-import java.net.URI;
 
 /**
  *

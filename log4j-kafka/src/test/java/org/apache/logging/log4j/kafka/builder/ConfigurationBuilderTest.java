@@ -16,12 +16,9 @@
  */
 package org.apache.logging.log4j.kafka.builder;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -34,6 +31,8 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.junit.Test;
 import org.w3c.dom.Document;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConfigurationBuilderTest {
 

@@ -16,21 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.fusesource.jansi.Ansi.ansi;
-import static org.fusesource.jansi.Ansi.Color.CYAN;
-import static org.fusesource.jansi.Ansi.Color.RED;
-
 import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
+
+import static org.fusesource.jansi.Ansi.Color.CYAN;
+import static org.fusesource.jansi.Ansi.Color.RED;
+import static org.fusesource.jansi.Ansi.ansi;
 
 /**
  * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest

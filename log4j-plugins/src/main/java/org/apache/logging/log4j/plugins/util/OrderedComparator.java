@@ -14,12 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.util;
-
-import org.apache.logging.log4j.plugins.Ordered;
-import org.apache.logging.log4j.plugins.di.Keys;
-import org.apache.logging.log4j.util.Strings;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.AnnotatedType;
@@ -27,6 +22,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Comparator;
+
+import org.apache.logging.log4j.plugins.Ordered;
+import org.apache.logging.log4j.plugins.di.Keys;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Comparator for annotated elements using {@link Ordered} followed by their name from {@link Keys#getName}.

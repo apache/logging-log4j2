@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.plugins.validation.constraints;
 
+import java.lang.annotation.*;
+
 import org.apache.logging.log4j.plugins.validation.Constraint;
 import org.apache.logging.log4j.plugins.validation.validators.ValidPortValidator;
-
-import java.lang.annotation.*;
 
 /**
  * Indicates that a plugin attribute must be a valid port number. A valid port number is an integer between 0 and

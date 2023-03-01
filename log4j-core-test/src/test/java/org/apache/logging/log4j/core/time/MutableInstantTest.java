@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.time;
 
-import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
-import org.junit.jupiter.api.Test;
-
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+
+import org.apache.logging.log4j.core.time.internal.FixedPreciseClock;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 

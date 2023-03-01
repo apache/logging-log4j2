@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j;
 
+import java.io.Closeable;
+import java.io.IOException;
+
 import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ReadsSystemProperty;
-
-import java.io.Closeable;
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,20 +34,20 @@ public class LogManagerTest {
     class Inner {
         final Logger LOGGER = LogManager.getLogger();
     }
-    
+
     @SuppressWarnings("InnerClassMayBeStatic")
     class InnerByClass {
         final Logger LOGGER = LogManager.getLogger(InnerByClass.class);
     }
-    
+
     static class StaticInner {
         final static Logger LOGGER = LogManager.getLogger();
     }
-    
+
     static class StaticInnerByClass {
         final static Logger LOGGER = LogManager.getLogger(StaticInnerByClass.class);
     }
-    
+
     @Test
     public void testGetLogger() {
         Logger logger = LogManager.getLogger();
@@ -79,9 +79,9 @@ public class LogManagerTest {
     @Test
     public void testGetLoggerForAnonymousInnerClass1() throws IOException {
         final Closeable closeable = new Closeable() {
-            
+
             final Logger LOGGER = LogManager.getLogger();
-            
+
             @Override
             public void close() throws IOException {
                 assertEquals("org.apache.logging.log4j.LogManagerTest$1", LOGGER.getName());
@@ -93,9 +93,9 @@ public class LogManagerTest {
     @Test
     public void testGetLoggerForAnonymousInnerClass2() throws IOException {
         final Closeable closeable = new Closeable() {
-            
+
             final Logger LOGGER = LogManager.getLogger(getClass());
-            
+
             @Override
             public void close() throws IOException {
                 assertEquals("org.apache.logging.log4j.LogManagerTest$2", LOGGER.getName());

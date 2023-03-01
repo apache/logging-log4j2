@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -28,8 +30,6 @@ import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.util.StringMap;
-
-import java.util.List;
 
 /**
  * Garbage-free LogEventFactory that reuses a single mutable log event.

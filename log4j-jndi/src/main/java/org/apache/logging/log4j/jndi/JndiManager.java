@@ -14,14 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.jndi;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;

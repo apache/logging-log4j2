@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import static org.junit.jupiter.api.Assertions.*;
 

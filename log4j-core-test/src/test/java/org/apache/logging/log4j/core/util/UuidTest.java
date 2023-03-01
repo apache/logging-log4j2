@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.UUID;
+
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 

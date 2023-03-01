@@ -16,19 +16,19 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.Test;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.apache.logging.log4j.util.Strings;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

@@ -16,13 +16,14 @@
  */
 package org.apache.logging.log4j.jackson.yaml;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import java.io.IOException;
+
 import org.apache.logging.log4j.jackson.Log4jStackTraceElementDeserializer;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

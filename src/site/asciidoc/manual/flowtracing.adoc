@@ -81,10 +81,10 @@ Exceptions are explicitly thrown and not handled.
 ----
 package com.test;
 
+import java.util.Random;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-
-import java.util.Random;
 
 public class TestService {
     private Logger logger = LogManager.getLogger(TestService.class.getName());

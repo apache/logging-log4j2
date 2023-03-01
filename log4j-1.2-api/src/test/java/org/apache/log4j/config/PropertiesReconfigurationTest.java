@@ -16,6 +16,12 @@
  */
 package org.apache.log4j.config;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang3.function.FailableConsumer;
 import org.apache.log4j.CustomFileAppender;
 import org.apache.log4j.CustomNoopAppender;
@@ -34,12 +40,6 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.time.Duration;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 

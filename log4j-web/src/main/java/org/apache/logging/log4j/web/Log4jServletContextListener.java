@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.web;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
-
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * In environments older than Servlet 3.0, this initializer is responsible for starting up Log4j logging before anything
@@ -36,10 +36,10 @@ public class Log4jServletContextListener implements ServletContextListener {
     static final int DEFAULT_STOP_TIMEOUT = 30;
     static final TimeUnit DEFAULT_STOP_TIMEOUT_TIMEUNIT = TimeUnit.SECONDS;
 
-	private static final String KEY_STOP_TIMEOUT = "log4j.stop.timeout";
-	private static final String KEY_STOP_TIMEOUT_TIMEUNIT = "log4j.stop.timeout.timeunit";
+    private static final String KEY_STOP_TIMEOUT = "log4j.stop.timeout";
+    private static final String KEY_STOP_TIMEOUT_TIMEUNIT = "log4j.stop.timeout.timeunit";
 
-	private static final Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private ServletContext servletContext;
     private Log4jWebLifeCycle initializer;
@@ -51,10 +51,10 @@ public class Log4jServletContextListener implements ServletContextListener {
 
         if ("true".equalsIgnoreCase(servletContext.getInitParameter(
                 Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED))) {
-        	throw new IllegalStateException("Do not use " + getClass().getSimpleName() + " when "
-        			+ Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED + " is true. Please use "
-        			+ Log4jShutdownOnContextDestroyedListener.class.getSimpleName() + " instead of "
-        			+ getClass().getSimpleName() + ".");
+            throw new IllegalStateException("Do not use " + getClass().getSimpleName() + " when "
+                    + Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED + " is true. Please use "
+                    + Log4jShutdownOnContextDestroyedListener.class.getSimpleName() + " instead of "
+                    + getClass().getSimpleName() + ".");
         }
 
         this.initializer = WebLoggerContextUtils.getWebLifeCycle(this.servletContext);
@@ -67,21 +67,21 @@ public class Log4jServletContextListener implements ServletContextListener {
     }
 
     @Override
-	public void contextDestroyed(final ServletContextEvent event) {
-		if (this.servletContext == null || this.initializer == null) {
-			LOGGER.warn("Context destroyed before it was initialized.");
-			return;
-		}
-		LOGGER.debug("Log4jServletContextListener ensuring that Log4j shuts down properly.");
+    public void contextDestroyed(final ServletContextEvent event) {
+        if (this.servletContext == null || this.initializer == null) {
+            LOGGER.warn("Context destroyed before it was initialized.");
+            return;
+        }
+        LOGGER.debug("Log4jServletContextListener ensuring that Log4j shuts down properly.");
 
-		this.initializer.clearLoggerContext(); // the application is finished
-		// shutting down now
-		final String stopTimeoutStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT);
-		final long stopTimeout = Strings.isEmpty(stopTimeoutStr) ? DEFAULT_STOP_TIMEOUT
-				: Long.parseLong(stopTimeoutStr);
-		final String timeoutTimeUnitStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT_TIMEUNIT);
-		final TimeUnit timeoutTimeUnit = Strings.isEmpty(timeoutTimeUnitStr) ? DEFAULT_STOP_TIMEOUT_TIMEUNIT
-				: TimeUnit.valueOf(timeoutTimeUnitStr.toUpperCase(Locale.ROOT));
-		this.initializer.stop(stopTimeout, timeoutTimeUnit);
-	}
+        this.initializer.clearLoggerContext(); // the application is finished
+        // shutting down now
+        final String stopTimeoutStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT);
+        final long stopTimeout = Strings.isEmpty(stopTimeoutStr) ? DEFAULT_STOP_TIMEOUT
+                : Long.parseLong(stopTimeoutStr);
+        final String timeoutTimeUnitStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT_TIMEUNIT);
+        final TimeUnit timeoutTimeUnit = Strings.isEmpty(timeoutTimeUnitStr) ? DEFAULT_STOP_TIMEOUT_TIMEUNIT
+                : TimeUnit.valueOf(timeoutTimeUnitStr.toUpperCase(Locale.ROOT));
+        this.initializer.stop(stopTimeout, timeoutTimeUnit);
+    }
 }

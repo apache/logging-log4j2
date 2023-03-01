@@ -14,17 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Container for CustomLevelConfig objects.

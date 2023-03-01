@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.concurrent.TimeUnit;
+import java.util.zip.Deflater;
+
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
@@ -30,17 +41,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.concurrent.TimeUnit;
-import java.util.zip.Deflater;
 
 /**
  * When rolling over, <code>DirectWriteRolloverStrategy</code> writes directly to the file as resolved by the file
@@ -280,10 +280,10 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
         return currentFileName;
     }
 
-	@Override
-	public void clearCurrentFileName() {
-		currentFileName = null;
-	}
+    @Override
+    public void clearCurrentFileName() {
+        currentFileName = null;
+    }
 
     /**
      * Performs the rollover.

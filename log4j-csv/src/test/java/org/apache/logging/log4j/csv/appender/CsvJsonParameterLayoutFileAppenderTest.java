@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.csv.appender;
 
 import java.io.File;
@@ -23,9 +22,9 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Assert;
 import org.junit.Rule;

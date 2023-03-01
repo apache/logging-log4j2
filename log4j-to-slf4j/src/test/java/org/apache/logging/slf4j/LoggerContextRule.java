@@ -16,14 +16,15 @@
  */
 package org.apache.logging.slf4j;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.GenericConfigurator;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.GenericConfigurator;
 
 /**
  * JUnit {@link TestRule} similar to the TestRule in {@code log4j-core} of the same name.

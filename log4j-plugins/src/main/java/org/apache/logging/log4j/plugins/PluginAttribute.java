@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.name.PluginAttributeNameProvider;
-import org.apache.logging.log4j.plugins.visit.NodeVisitor;
-import org.apache.logging.log4j.plugins.visit.PluginAttributeVisitor;
-import org.apache.logging.log4j.util.Strings;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.apache.logging.log4j.plugins.name.NameProvider;
+import org.apache.logging.log4j.plugins.name.PluginAttributeNameProvider;
+import org.apache.logging.log4j.plugins.visit.NodeVisitor;
+import org.apache.logging.log4j.plugins.visit.PluginAttributeVisitor;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Identifies a Plugin Attribute along with optional metadata. Plugin attributes can be injected as parameters to

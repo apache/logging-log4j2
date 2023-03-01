@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.config.plugins;
 
-import org.apache.logging.log4j.plugins.FactoryType;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.apache.logging.log4j.plugins.FactoryType;
 
 /**
  * Identifies a Method as the factory to create the plugin. This annotation should only be used on a {@code static}

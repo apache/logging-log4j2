@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
-import org.apache.logging.log4j.util.Strings;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
+
+import org.apache.logging.log4j.util.Strings;
 
 public final class StringParameterParser {
 

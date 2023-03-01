@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -24,16 +28,12 @@ import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.core.test.appender.FailOnceAppender;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Verifies {@link AsyncAppender} works after certain type of {@link Appender}

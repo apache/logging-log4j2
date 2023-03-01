@@ -16,6 +16,9 @@
  */
 package org.apache.log4j.config;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
@@ -23,9 +26,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Experimental ConfigurationFactory for Log4j 1.2 properties configuration files.

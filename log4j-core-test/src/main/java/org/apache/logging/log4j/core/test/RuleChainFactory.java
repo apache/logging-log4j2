@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.test;
 
 import org.junit.rules.RuleChain;
@@ -27,7 +26,7 @@ public class RuleChainFactory {
 
     /**
      * Creates a {@link RuleChain} where the rules are evaluated in the order you pass in.
-     * 
+     *
      * @param testRules
      *            test rules to evaluate
      * @return a new rule chain.

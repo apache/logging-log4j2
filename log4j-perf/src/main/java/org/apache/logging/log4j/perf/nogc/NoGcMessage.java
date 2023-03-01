@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.perf.nogc;
 
-import org.apache.logging.log4j.message.Message;
-
 import java.util.Arrays;
+
+import org.apache.logging.log4j.message.Message;
 
 /**
  * Reusable Message..

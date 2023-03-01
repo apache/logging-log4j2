@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.jmx;
 
 import java.util.List;
 import java.util.Objects;
-
 import javax.management.ObjectName;
 
 import org.apache.logging.log4j.Level;

@@ -16,6 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
@@ -32,17 +43,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;

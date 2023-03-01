@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Filter;
@@ -27,8 +29,6 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 

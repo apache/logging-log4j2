@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
  * Exception resolver.

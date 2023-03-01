@@ -16,17 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.status.StatusData;
-import org.apache.logging.log4j.status.StatusListener;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,6 +26,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusListener;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;

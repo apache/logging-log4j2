@@ -14,8 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -24,10 +27,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

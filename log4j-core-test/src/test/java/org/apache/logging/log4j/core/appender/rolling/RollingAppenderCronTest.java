@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.CountDownLatch;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
@@ -24,14 +32,6 @@ import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.concurrent.CountDownLatch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;

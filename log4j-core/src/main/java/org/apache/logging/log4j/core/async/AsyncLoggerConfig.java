@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter;
@@ -32,10 +36,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Strings;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Asynchronous Logger object that is created via configuration and can be

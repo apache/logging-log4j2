@@ -16,20 +16,21 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.message.StringMapMessage;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -97,4 +98,3 @@ public class GelfLayout3Test {
     }
 
 }
-

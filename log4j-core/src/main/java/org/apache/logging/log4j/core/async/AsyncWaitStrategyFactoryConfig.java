@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.Objects;
 
 /**
  * This class allows users to configure the factory used to create

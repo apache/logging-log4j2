@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
-import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
-
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
+
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
+import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
 
 /**
  * Accessor to the resolver configuration JSON object read from the template.

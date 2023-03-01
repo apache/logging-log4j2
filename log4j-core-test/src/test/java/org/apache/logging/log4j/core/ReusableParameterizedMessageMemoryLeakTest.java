@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.junit.jupiter.api.Test;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

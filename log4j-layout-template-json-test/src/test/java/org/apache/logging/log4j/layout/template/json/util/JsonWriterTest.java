@@ -16,17 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
-import org.apache.logging.log4j.core.impl.JdkMapAdapterStringMap;
-import org.apache.logging.log4j.layout.template.json.JacksonFixture;
-import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
-import org.apache.logging.log4j.util.SortedArrayStringMap;
-import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.StringMap;
-import org.apache.logging.log4j.util.Strings;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -41,6 +30,17 @@ import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import org.apache.logging.log4j.core.impl.JdkMapAdapterStringMap;
+import org.apache.logging.log4j.layout.template.json.JacksonFixture;
+import org.apache.logging.log4j.util.IndexedReadOnlyStringMap;
+import org.apache.logging.log4j.util.SortedArrayStringMap;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.apache.logging.log4j.util.StringMap;
+import org.apache.logging.log4j.util.Strings;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("DoubleBraceInitialization")
 class JsonWriterTest {

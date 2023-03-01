@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,4 +86,3 @@ public class AppenderRefLevelTest {
         assertEquals(4, events.size(), "Incorrect number of events. Expected 4, actual " + events.size());
     }
 }
-

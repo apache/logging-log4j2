@@ -16,15 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +27,15 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 

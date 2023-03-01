@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.plugins.Namespace;
-import org.apache.logging.log4j.plugins.di.Key;
-
-import javax.crypto.SecretKey;
 import java.util.Map;
 import java.util.function.Supplier;
+import javax.crypto.SecretKey;
+
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.di.Key;
 
 /**
  * Factory class to provide a {@link SecretKey} instance.

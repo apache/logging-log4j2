@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.File;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -31,8 +33,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import java.io.File;
 
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.instanceOf;

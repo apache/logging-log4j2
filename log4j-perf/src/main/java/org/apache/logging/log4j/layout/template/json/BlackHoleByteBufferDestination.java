@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.nio.ByteBuffer;
+
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
-
-import java.nio.ByteBuffer;
 
 class BlackHoleByteBufferDestination implements ByteBufferDestination {
 

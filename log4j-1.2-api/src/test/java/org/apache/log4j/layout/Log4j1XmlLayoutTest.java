@@ -16,16 +16,16 @@
  */
 package org.apache.log4j.layout;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.test.junit.ThreadContextRule;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.ThreadContextRule;
 import org.apache.logging.log4j.util.StringMap;
 import org.junit.Rule;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class Log4j1XmlLayoutTest {
 

@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
-
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -81,7 +81,7 @@ public class LocalizedMessageFactoryTest {
         final Message message = localizedMessageFactory.newMessage("C:/Program%20Files/Some%20Company/Some%20Product%20Name/{0}", "One");
         assertEquals("C:/Program%20Files/Some%20Company/Some%20Product%20Name/One", message.getFormattedMessage());
     }
-	
+
     @Test
     public void testNoMatchPercentInMessageNoArgsNo() {
         // LOG4J2-3458 LocalizedMessage causes a lot of noise on the console

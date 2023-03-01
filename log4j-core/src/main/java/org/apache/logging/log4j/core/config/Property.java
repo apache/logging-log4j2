@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.PluginValue;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.Strings;
-
-import java.util.Objects;
 
 /**
  * Represents a key/value pair in the configuration.

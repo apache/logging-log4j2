@@ -18,9 +18,9 @@ package org.apache.logging.log4j.test.junit;
 
 /**
  * Restores the ThreadContext to it's initial stack values after a JUnit test.
- * 
+ *
  * Usage:
- * 
+ *
  * <pre>
  * &#64;Rule
  * public final ThreadContextStackRule threadContextRule = new ThreadContextStackRule();

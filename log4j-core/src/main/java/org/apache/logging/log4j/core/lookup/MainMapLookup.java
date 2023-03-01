@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.util.Map;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Plugin;
-
-import java.util.Map;
 
 /**
  * A map-based lookup for main arguments.

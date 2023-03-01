@@ -14,14 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config.plugins.util;
+
+import java.util.Optional;
 
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.util.Strings;
-
-import java.util.Optional;
 
 public class PluginBuilderAttributeNameProvider implements AnnotatedElementNameProvider<PluginBuilderAttribute> {
     @Override

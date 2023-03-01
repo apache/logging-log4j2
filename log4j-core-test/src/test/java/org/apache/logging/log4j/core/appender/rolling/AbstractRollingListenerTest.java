@@ -14,13 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.plugins.Factory;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Provides a controllable clock for rolling appender tests.

@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.time.Clock;
-import org.junit.jupiter.api.Test;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.TimeZone;
+
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.time.Clock;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;

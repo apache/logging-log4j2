@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -26,9 +29,6 @@ import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.SingletonFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collection;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

@@ -16,9 +16,9 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.apache.logging.log4j.core.LogEvent;
-
 import java.util.Map;
+
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * Work in progress, saved for future experimentation.

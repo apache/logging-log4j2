@@ -16,6 +16,10 @@
  */
 package org.apache.log4j.builders.layout;
 
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
@@ -26,10 +30,6 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;

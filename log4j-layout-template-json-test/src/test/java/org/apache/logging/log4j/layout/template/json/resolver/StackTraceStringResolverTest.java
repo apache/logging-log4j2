@@ -16,14 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
-import org.assertj.core.api.AbstractStringAssert;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
@@ -36,6 +28,14 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
+import org.assertj.core.api.AbstractStringAssert;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -591,7 +591,7 @@ class StackTraceStringResolverTest {
         private String matchingRegex(String string) {
             return "[" + string.charAt(0) + "]" + Pattern.quote(string.substring(1));
         }
-        
+
     }
 
     @Test

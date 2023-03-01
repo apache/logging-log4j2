@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.validation.constraints;
 
 import java.lang.annotation.Documented;
@@ -46,4 +45,3 @@ public @interface RequiredClass {
      */
     String message() default "The required class is not present";
 }
-

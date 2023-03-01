@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.selector;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.plugins.di.Key;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.plugins.di.Key;
 
 /**
  * Interface used to locate a LoggerContext.

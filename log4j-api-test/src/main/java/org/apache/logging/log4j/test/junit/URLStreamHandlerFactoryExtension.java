@@ -14,15 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.test.junit;
+
+import java.net.URLStreamHandlerFactory;
 
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
-
-import java.net.URLStreamHandlerFactory;
 
 public class URLStreamHandlerFactoryExtension implements BeforeAllCallback {
     @Override

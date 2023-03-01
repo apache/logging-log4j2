@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config.status;
 
 import java.io.File;
@@ -25,7 +24,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
-
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.util.FileUtils;

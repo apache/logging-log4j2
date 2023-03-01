@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.Random;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -25,8 +27,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.util.Random;
 
 /**
  *
@@ -47,12 +47,12 @@ public class SimplePerfTest {
     @BeforeAll
     public static void setupClass() {
 
-		final Configuration config = LoggerContext.getContext().getConfiguration();
+        final Configuration config = LoggerContext.getContext().getConfiguration();
 
-		if (!DefaultConfiguration.DEFAULT_NAME.equals(config.getName())) {
-			System.out.println("Configuration was " + config.getName());
-			LoggerContext.getContext().start(new DefaultConfiguration());
-		}
+        if (!DefaultConfiguration.DEFAULT_NAME.equals(config.getName())) {
+            System.out.println("Configuration was " + config.getName());
+            LoggerContext.getContext().start(new DefaultConfiguration());
+        }
 
         for (int i=0; i < WARMUP; ++i) {
             overhead();

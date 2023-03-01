@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.logging.log4j.Logger;
@@ -25,14 +33,6 @@ import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

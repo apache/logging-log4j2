@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.File;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
 
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;

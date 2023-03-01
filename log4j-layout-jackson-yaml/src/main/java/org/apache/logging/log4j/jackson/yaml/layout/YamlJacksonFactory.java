@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.jackson.yaml.layout;
 
 import org.apache.logging.log4j.jackson.AbstractJacksonFactory;

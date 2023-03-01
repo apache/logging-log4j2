@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -25,9 +28,6 @@ import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Tag("async")
 @Tag("sleepy")

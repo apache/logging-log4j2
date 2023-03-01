@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.io.PrintStream;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

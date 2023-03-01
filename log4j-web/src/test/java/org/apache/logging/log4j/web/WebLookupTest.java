@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.web;
 
 import java.util.Map;
-
 import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.core.Appender;

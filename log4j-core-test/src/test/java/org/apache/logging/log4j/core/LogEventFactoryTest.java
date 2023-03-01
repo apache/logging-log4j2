@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.config.Property;
@@ -28,8 +30,6 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Factory;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -80,4 +80,3 @@ public class LogEventFactoryTest {
         return new TestLogEventFactory(injector);
     }
 }
-

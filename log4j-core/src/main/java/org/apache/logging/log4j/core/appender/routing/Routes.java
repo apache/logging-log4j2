@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import java.util.Objects;
+import java.util.concurrent.ConcurrentMap;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -30,9 +33,6 @@ import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.Objects;
-import java.util.concurrent.ConcurrentMap;
 
 import static org.apache.logging.log4j.core.appender.routing.RoutingAppender.STATIC_VARIABLES_KEY;
 

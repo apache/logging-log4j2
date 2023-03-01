@@ -16,6 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.concurrent.TimeUnit;
+import java.util.zip.Deflater;
+
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
@@ -30,18 +42,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.concurrent.TimeUnit;
-import java.util.zip.Deflater;
 
 /**
  * When rolling over, <code>DefaultRolloverStrategy</code> renames files according to an algorithm as described below.
@@ -465,11 +465,11 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     @Override
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
         final int fileIndex;
-		final StringBuilder buf = new StringBuilder(255);
+        final StringBuilder buf = new StringBuilder(255);
         if (minIndex == Integer.MIN_VALUE) {
             final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
             fileIndex = eligibleFiles.size() > 0 ? eligibleFiles.lastKey() + 1 : 1;
-			manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
+            manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
         } else {
             if (maxIndex < 0) {
                 return null;
@@ -479,7 +479,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             if (fileIndex < 0) {
                 return null;
             }
-			manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
+            manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
             if (LOGGER.isTraceEnabled()) {
                 final double durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
                 LOGGER.trace("DefaultRolloverStrategy.purge() took {} milliseconds", durationMillis);

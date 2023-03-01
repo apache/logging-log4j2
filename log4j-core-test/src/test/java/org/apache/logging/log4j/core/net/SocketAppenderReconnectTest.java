@@ -16,22 +16,6 @@
  */
 package org.apache.logging.log4j.core.net;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
-import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.apache.logging.log4j.core.net.TcpSocketManager.HostResolver;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,6 +34,22 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.core.net.TcpSocketManager.HostResolver;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
@@ -77,7 +77,7 @@ class SocketAppenderReconnectTest {
             // Start the server.
             server.start("Main", EPHEMERAL_PORT);
             final int port = server.serverSocket.getLocalPort();
-            
+
             // Initialize the logger context.
             final LoggerContext loggerContext = initContext(port);
             try {

@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

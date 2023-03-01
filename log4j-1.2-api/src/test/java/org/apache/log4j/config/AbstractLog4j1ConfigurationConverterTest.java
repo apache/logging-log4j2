@@ -14,10 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.log4j.config;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -28,7 +25,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -36,6 +32,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.xml.sax.SAXException;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @RunWith(Parameterized.class)
 public abstract class AbstractLog4j1ConfigurationConverterTest {

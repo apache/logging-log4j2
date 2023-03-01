@@ -14,14 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config.plugins.util;
-
-import org.apache.logging.log4j.core.config.plugins.PluginAliases;
-import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 
 import java.util.Collection;
 import java.util.List;
+
+import org.apache.logging.log4j.core.config.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 
 public class PluginAliasesProvider implements AnnotatedElementAliasesProvider<PluginAliases> {
     @Override

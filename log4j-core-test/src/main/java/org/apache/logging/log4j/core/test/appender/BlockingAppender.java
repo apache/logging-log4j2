@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.test.appender;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
@@ -24,8 +26,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import java.util.concurrent.TimeUnit;
 
 @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
 @Plugin("Block")

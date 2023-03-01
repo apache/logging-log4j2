@@ -16,14 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
-
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -31,6 +23,14 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;

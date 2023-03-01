@@ -14,12 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.time;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.concurrent.TimeUnit;
+
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

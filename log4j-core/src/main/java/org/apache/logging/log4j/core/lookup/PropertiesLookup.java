@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
-import org.apache.logging.log4j.core.LogEvent;
-
 import java.util.Collections;
 import java.util.Map;
+
+import org.apache.logging.log4j.core.LogEvent;
 
 /**
  * A lookup designed for {@code Properties} defined in the configuration. This is similar

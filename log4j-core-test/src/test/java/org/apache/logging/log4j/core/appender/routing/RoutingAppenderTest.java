@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.routing;
 
+import java.io.File;
+import java.util.List;
+
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -24,9 +27,6 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 

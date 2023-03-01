@@ -16,20 +16,20 @@
  */
 package org.apache.logging.log4j.core.appender.rewrite;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.hamcrest.MapMatchers;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

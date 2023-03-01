@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.Level;
@@ -67,16 +66,16 @@ public class RollingFileAppenderUpdateDataTest {
     private LoggerContext loggerContext2 = null;
 
     @After
-	public void after() {
-    	if (loggerContext1 != null) {
-    		loggerContext1.close();
-    		loggerContext1 = null;
-		}
-    	if (loggerContext2 != null) {
-    		loggerContext2.close();
-    		loggerContext2 = null;
-		}
-	}
+    public void after() {
+        if (loggerContext1 != null) {
+            loggerContext1.close();
+            loggerContext1 = null;
+        }
+        if (loggerContext2 != null) {
+            loggerContext2.close();
+            loggerContext2 = null;
+        }
+    }
 
     @Test
     public void testClosingLoggerContext() {
@@ -101,19 +100,19 @@ public class RollingFileAppenderUpdateDataTest {
         loggerContext2 = Configurator.initialize(buildConfigB().build());
         Assert.assertNotNull("No LoggerContext", loggerContext2);
         Assert.assertSame("Expected same logger context to be returned", loggerContext1, loggerContext2);
-		validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
+        validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
     }
 
-	@Test
-	public void testReconfigure() {
-		// initial config with indexed rollover
-		loggerContext1 = Configurator.initialize(buildConfigA().build());
-		validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
+    @Test
+    public void testReconfigure() {
+        // initial config with indexed rollover
+        loggerContext1 = Configurator.initialize(buildConfigA().build());
+        validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%i");
 
-		// rebuild config with date based rollover
-		loggerContext1.setConfiguration(buildConfigB().build());
-		validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
-	}
+        // rebuild config with date based rollover
+        loggerContext1.setConfiguration(buildConfigB().build());
+        validateAppender(loggerContext1, "target/rolling-update-date/foo.log.%d{yyyy-MM-dd-HH:mm:ss}.%i");
+    }
 
     private void validateAppender(final LoggerContext loggerContext, final String expectedFilePattern) {
         final RollingFileAppender appender = loggerContext.getConfiguration().getAppender("fooAppender");

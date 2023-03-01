@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.lang.reflect.Field;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,9 +30,6 @@ import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Field;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -14,11 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.test.junit;
-
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.parallel.ResourceLock;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -26,6 +22,9 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
  * JUnit 5 test extension that sets a specific StatusLogger logging level for each test.

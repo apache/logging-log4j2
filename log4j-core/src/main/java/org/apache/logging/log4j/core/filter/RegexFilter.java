@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.filter;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
@@ -28,12 +34,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This filter returns the onMatch result if the message matches the regular expression.

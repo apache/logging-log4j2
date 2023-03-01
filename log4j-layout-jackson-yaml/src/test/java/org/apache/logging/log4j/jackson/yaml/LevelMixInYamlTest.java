@@ -14,11 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.jackson.yaml;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.jackson.LevelMixInTest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class LevelMixInYamlTest extends LevelMixInTest {
 

@@ -35,7 +35,7 @@ public class NDCTest {
         NDC.clear();
         Assert.assertEquals(Strings.EMPTY, NDC.peek());
     }
-    
+
     @SuppressWarnings({"rawtypes"})
     @Test
     public void testCompileCloneToInherit() {

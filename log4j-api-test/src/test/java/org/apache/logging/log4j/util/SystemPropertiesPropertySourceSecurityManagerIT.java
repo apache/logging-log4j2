@@ -63,19 +63,19 @@ public class SystemPropertiesPropertySourceSecurityManagerIT {
      *
      * <pre>
      * java.lang.ExceptionInInitializerError
-     * 	at org.apache.logging.log4j.util.SystemPropertiesPropertySourceSecurityManagerTest.test(SystemPropertiesPropertySourceSecurityManagerTest.java:64)
-     * 	...
+     *     at org.apache.logging.log4j.util.SystemPropertiesPropertySourceSecurityManagerTest.test(SystemPropertiesPropertySourceSecurityManagerTest.java:64)
+     *     ...
      * Caused by: java.lang.SecurityException
-     * 	at org.apache.logging.log4j.util.SystemPropertiesPropertySourceSecurityManagerTest$TestSecurityManager.checkPermission(SystemPropertiesPropertySourceSecurityManagerTest.java:49)
-     * 	at java.lang.SecurityManager.checkPropertiesAccess(SecurityManager.java:1265)
-     * 	at java.lang.System.getProperties(System.java:624)
-     * 	at org.apache.logging.log4j.util.SystemPropertiesPropertySource.forEach(SystemPropertiesPropertySource.java:40)
-     * 	at org.apache.logging.log4j.util.PropertiesUtil$Environment.reload(PropertiesUtil.java:330)
-     * 	at org.apache.logging.log4j.util.PropertiesUtil$Environment.<init>(PropertiesUtil.java:322)
-     * 	at org.apache.logging.log4j.util.PropertiesUtil$Environment.<init>(PropertiesUtil.java:310)
-     * 	at org.apache.logging.log4j.util.PropertiesUtil.<init>(PropertiesUtil.java:69)
-     * 	at org.apache.logging.log4j.util.PropertiesUtil.<clinit>(PropertiesUtil.java:49)
-     * 	... 26 more
+     *     at org.apache.logging.log4j.util.SystemPropertiesPropertySourceSecurityManagerTest$TestSecurityManager.checkPermission(SystemPropertiesPropertySourceSecurityManagerTest.java:49)
+     *     at java.lang.SecurityManager.checkPropertiesAccess(SecurityManager.java:1265)
+     *     at java.lang.System.getProperties(System.java:624)
+     *     at org.apache.logging.log4j.util.SystemPropertiesPropertySource.forEach(SystemPropertiesPropertySource.java:40)
+     *     at org.apache.logging.log4j.util.PropertiesUtil$Environment.reload(PropertiesUtil.java:330)
+     *     at org.apache.logging.log4j.util.PropertiesUtil$Environment.<init>(PropertiesUtil.java:322)
+     *     at org.apache.logging.log4j.util.PropertiesUtil$Environment.<init>(PropertiesUtil.java:310)
+     *     at org.apache.logging.log4j.util.PropertiesUtil.<init>(PropertiesUtil.java:69)
+     *     at org.apache.logging.log4j.util.PropertiesUtil.<clinit>(PropertiesUtil.java:49)
+     *     ... 26 more
      * </pre>
      */
     @Test

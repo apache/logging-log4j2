@@ -86,4 +86,3 @@ public abstract class Layout {
      */
     public abstract boolean ignoresThrowable();
 }
-

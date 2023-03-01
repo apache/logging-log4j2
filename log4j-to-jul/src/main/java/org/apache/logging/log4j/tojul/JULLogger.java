@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j.tojul;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.logging.Logger;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Implementation of {@link org.apache.logging.log4j.Logger} that's backed by a {@link Logger}.

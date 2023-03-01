@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.csv.layout;
 
-import static org.junit.Assert.assertEquals;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,19 +27,21 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.test.junit.ThreadContextRule;
-import org.apache.logging.log4j.message.ObjectArrayMessage;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.categories.Layouts;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.message.ObjectArrayMessage;
+import org.apache.logging.log4j.test.junit.ThreadContextRule;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests {@link AbstractCsvLayout}.

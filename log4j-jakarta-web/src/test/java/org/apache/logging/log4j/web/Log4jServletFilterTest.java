@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.web;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.BeforeEach;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
@@ -72,9 +72,9 @@ public class Log4jServletFilterTest {
 
     @Test
     public void testDestroy() {
-    	assertThrows(IllegalStateException.class, () -> {
-    		this.filter.destroy();
-    	});
+        assertThrows(IllegalStateException.class, () -> {
+            this.filter.destroy();
+        });
     }
 
     @Test

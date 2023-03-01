@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.test.appender;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
@@ -27,10 +31,6 @@ import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * An {@link Appender} that fails on the first use and works for the rest.

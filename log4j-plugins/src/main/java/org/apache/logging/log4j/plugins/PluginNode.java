@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.visit.NodeVisitor;
-import org.apache.logging.log4j.plugins.visit.PluginNodeVisitor;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.apache.logging.log4j.plugins.visit.NodeVisitor;
+import org.apache.logging.log4j.plugins.visit.PluginNodeVisitor;
 
 /**
  * Identifies the configuration {@link Node} currently being configured. This can be injected as a parameter to a static

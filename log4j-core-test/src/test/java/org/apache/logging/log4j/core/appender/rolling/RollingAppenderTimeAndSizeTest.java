@@ -16,17 +16,17 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.Random;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpDirectories;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;

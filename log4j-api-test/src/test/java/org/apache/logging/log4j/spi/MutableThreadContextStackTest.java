@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 

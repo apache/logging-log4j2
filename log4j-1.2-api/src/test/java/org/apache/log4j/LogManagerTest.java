@@ -14,10 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.log4j;
-
-import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -25,6 +22,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link LogManager}.

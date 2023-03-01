@@ -83,7 +83,6 @@ public interface Filter extends LifeCycle {
             return EnglishEnums.valueOf(Result.class, name, defaultResult);
         }
 }
-
     /**
      * Returns the result that should be returned when the filter does not match the event.
      * @return the Result that should be returned when the filter does not match the event.

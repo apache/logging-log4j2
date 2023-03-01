@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.test;
 
 import java.util.Map;
@@ -24,15 +23,15 @@ import org.apache.logging.log4j.ThreadContext.ContextStack;
 
 /**
  * Holds an immutable copy of the ThreadContext stack and map.
- * 
+ *
  * TODO Use LOG4J2-1517 Add ThreadContext.setContext(Map<String, String>)
- * 
+ *
  * or
- * 
+ *
  * TODO Might be replaced by something from LOG4J2-1447.
- * 
+ *
  * or do nothing.
- * 
+ *
  * @since 2.7
  */
 public class ThreadContextHolder {
@@ -44,7 +43,7 @@ public class ThreadContextHolder {
 
     /**
      * Constructs a new holder initialized with an immutable copy of the ThreadContext stack and map.
-     * 
+     *
      * @param restoreContext
      * @param restoreStack
      */

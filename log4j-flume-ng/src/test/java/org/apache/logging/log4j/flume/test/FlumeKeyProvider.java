@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.flume.test;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  *

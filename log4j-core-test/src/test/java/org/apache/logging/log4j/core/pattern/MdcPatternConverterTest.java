@@ -20,9 +20,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -194,4 +194,3 @@ public class MdcPatternConverterTest {
     }
 
 }
-

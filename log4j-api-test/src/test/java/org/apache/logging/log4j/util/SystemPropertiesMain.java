@@ -28,7 +28,7 @@ public class SystemPropertiesMain {
 
     /**
      * Prints system properties to the console.
-     * 
+     *
      * @param args
      *            unused
      */

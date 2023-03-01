@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-
 import java.util.List;
 import java.util.Map;
+
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 /**
  * Context used to compile a template and passed to

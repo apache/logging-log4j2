@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -29,10 +33,6 @@ import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Selects the pattern to use based on the Level in the LogEvent.

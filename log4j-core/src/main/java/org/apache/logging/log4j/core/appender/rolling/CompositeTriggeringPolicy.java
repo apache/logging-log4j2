@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Triggering policy that wraps other triggering policies.
@@ -50,7 +50,7 @@ public final class CompositeTriggeringPolicy extends AbstractTriggeringPolicy {
     @Override
     public void initialize(final RollingFileManager manager) {
         for (final TriggeringPolicy triggeringPolicy : triggeringPolicies) {
-        	LOGGER.debug("Initializing triggering policy {}", triggeringPolicy.toString());
+            LOGGER.debug("Initializing triggering policy {}", triggeringPolicy.toString());
             triggeringPolicy.initialize(manager);
         }
     }

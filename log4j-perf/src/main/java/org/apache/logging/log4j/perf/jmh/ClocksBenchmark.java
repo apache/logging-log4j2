@@ -14,14 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.perf.jmh;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
-import org.apache.logging.log4j.core.time.internal.CachedClock;
 import org.apache.logging.log4j.core.time.Clock;
+import org.apache.logging.log4j.core.time.internal.CachedClock;
 import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
 import org.openjdk.jmh.annotations.Benchmark;

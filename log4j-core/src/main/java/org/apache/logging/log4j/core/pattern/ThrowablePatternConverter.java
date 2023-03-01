@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
@@ -24,12 +30,6 @@ import org.apache.logging.log4j.core.util.StringBuilderWriter;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.Strings;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 
 /**

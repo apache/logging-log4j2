@@ -14,12 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.name;
 
-import org.apache.logging.log4j.plugins.Plugin;
-
 import java.util.Optional;
+
+import org.apache.logging.log4j.plugins.Plugin;
 
 public class PluginNameProvider implements AnnotatedElementNameProvider<Plugin> {
     @Override

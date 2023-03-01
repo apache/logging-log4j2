@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
-
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 
 /**
  * Plugin to hold a hostname and port (socket address).

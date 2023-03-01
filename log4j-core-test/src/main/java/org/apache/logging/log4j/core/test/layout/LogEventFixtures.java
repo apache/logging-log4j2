@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.test.layout;
 
-import static org.junit.Assert.*;
-
 import java.io.IOException;
 
 import org.apache.logging.log4j.Level;
@@ -30,6 +28,8 @@ import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextStack;
 import org.apache.logging.log4j.util.StringMap;
+
+import static org.junit.Assert.*;
 
 public class LogEventFixtures {
 

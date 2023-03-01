@@ -22,9 +22,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -72,9 +72,9 @@ public class Log4jServletFilterTest {
 
     @Test
     public void testDestroy() {
-    	assertThrows(IllegalStateException.class, () -> {
-    		this.filter.destroy();
-    	});
+        assertThrows(IllegalStateException.class, () -> {
+            this.filter.destroy();
+        });
     }
 
     @Test

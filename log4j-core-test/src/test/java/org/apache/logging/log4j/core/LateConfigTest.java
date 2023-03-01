@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
 import java.util.stream.Stream;
 
@@ -38,6 +33,11 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("functional")
 public class LateConfigTest {
@@ -73,4 +73,3 @@ public class LateConfigTest {
         assertSame(newConfig, sameConfig, "Configuration should not have been reset");
     }
 }
-

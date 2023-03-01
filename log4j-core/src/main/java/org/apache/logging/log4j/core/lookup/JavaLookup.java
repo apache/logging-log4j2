@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.util.Locale;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.Strings;
-
-import java.util.Locale;
 
 /**
  * Looks up keys related to Java: Java version, JRE version, VM version, and so on.

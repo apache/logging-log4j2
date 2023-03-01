@@ -14,16 +14,15 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.di;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;

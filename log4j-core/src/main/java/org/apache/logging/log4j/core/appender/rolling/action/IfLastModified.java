@@ -16,6 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
@@ -26,14 +34,6 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Supplier;
 
 /**
  * PathCondition that accepts paths that are older than the specified duration.

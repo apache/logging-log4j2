@@ -14,8 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.config.plugins;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import org.apache.logging.log4j.core.config.plugins.util.PluginBuilderAttributeNameProvider;
 import org.apache.logging.log4j.core.config.plugins.visit.PluginBuilderAttributeVisitor;
@@ -23,12 +28,6 @@ import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.name.NameProvider;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.util.Strings;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
  * Marks a field as a Plugin Attribute.

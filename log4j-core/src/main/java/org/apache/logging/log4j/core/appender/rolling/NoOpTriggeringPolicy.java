@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.core.LogEvent;
@@ -38,15 +37,15 @@ public class NoOpTriggeringPolicy extends AbstractTriggeringPolicy {
         return INSTANCE;
     }
 
-	@Override
-	public void initialize(final RollingFileManager manager) {
-		// NoOp
-	}
+    @Override
+    public void initialize(final RollingFileManager manager) {
+        // NoOp
+    }
 
-	@Override
-	public boolean isTriggeringEvent(final LogEvent logEvent) {
-		// Never triggers.
-		return false;
-	}
+    @Override
+    public boolean isTriggeringEvent(final LogEvent logEvent) {
+        // Never triggers.
+        return false;
+    }
 
 }

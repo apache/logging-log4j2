@@ -16,10 +16,6 @@
  */
 package org.apache.logging.log4j.core.util;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
-
 import java.io.File;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -34,6 +30,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Networking-related convenience methods.

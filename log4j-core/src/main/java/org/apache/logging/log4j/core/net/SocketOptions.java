@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.net;
 
+import java.net.Socket;
+import java.net.SocketException;
+
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.util.Builder;
-
-import java.net.Socket;
-import java.net.SocketException;
 
 /**
  * Holds all socket options settable via {@link Socket} methods.

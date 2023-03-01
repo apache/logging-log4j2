@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Objects;
+
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Objects;
 
 /**
  * Wrapper {@code PathCondition} that accepts objects that are rejected by the wrapped component filter.

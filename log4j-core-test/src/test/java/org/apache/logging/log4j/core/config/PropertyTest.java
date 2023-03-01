@@ -1,4 +1,4 @@
-package org.apache.logging.log4j.core.config;/*
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,13 +14,14 @@ package org.apache.logging.log4j.core.config;/*
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.core.config;
 
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

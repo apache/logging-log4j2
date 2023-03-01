@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.apache.logging.log4j.core.selector.BasicContextSelector;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Log4jContextFactoryTest {
 

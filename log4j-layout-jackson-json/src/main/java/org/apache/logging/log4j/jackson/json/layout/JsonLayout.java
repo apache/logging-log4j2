@@ -16,10 +16,13 @@
  */
 package org.apache.logging.log4j.jackson.json.layout;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -34,12 +37,10 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * Note: The JsonLayout should be considered to be deprecated. Please use JsonTemplateLayout instead.

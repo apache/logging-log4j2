@@ -16,13 +16,13 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.MapMessage.MapFormat;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
-
-import java.util.Objects;
 
 /**
  * Able to handle the contents of the LogEvent's MapMessage and either

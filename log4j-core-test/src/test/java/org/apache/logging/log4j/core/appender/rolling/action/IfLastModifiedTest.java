@@ -14,13 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling.action;
+
+import java.nio.file.attribute.FileTime;
 
 import org.apache.logging.log4j.core.test.appender.rolling.action.DummyFileAttributes;
 import org.junit.jupiter.api.Test;
-
-import java.nio.file.attribute.FileTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 

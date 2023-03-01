@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Before;
@@ -24,13 +31,6 @@ import org.junit.Test;
 import org.junit.jupiter.api.Tag;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.io.File;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

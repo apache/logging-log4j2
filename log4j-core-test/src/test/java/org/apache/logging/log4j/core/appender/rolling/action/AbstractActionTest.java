@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
-import org.apache.logging.log4j.status.StatusData;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.util.List;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;

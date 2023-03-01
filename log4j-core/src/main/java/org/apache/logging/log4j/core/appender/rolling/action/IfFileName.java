@@ -16,14 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -33,6 +25,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * PathCondition that accepts files for deletion if their relative path matches either a glob pattern or a regular

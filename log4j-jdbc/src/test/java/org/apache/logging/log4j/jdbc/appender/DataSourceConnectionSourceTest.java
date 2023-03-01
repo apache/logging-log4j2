@@ -16,18 +16,9 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javax.sql.DataSource;
-
 
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
@@ -36,6 +27,13 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @RunWith(Parameterized.class)
 public class DataSourceConnectionSourceTest {

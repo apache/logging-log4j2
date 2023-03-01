@@ -19,10 +19,10 @@ package org.apache.logging.log4j.core;
 import java.util.List;
 
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 

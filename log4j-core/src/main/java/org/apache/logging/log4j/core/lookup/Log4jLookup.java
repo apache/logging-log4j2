@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.lookup;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 /**
  * Lookup properties of Log4j

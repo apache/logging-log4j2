@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.lookup.InterpolatorFactory;
 import org.apache.logging.log4j.core.lookup.PropertiesLookup;
@@ -25,9 +28,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.di.Key;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Handles properties defined in the configuration.

@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
-
 import javax.management.InstanceNotFoundException;
 import javax.management.JMException;
 import javax.management.ListenerNotFoundException;

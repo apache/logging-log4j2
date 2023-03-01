@@ -14,8 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.script.appender.rolling.action;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rolling.action.PathWithAttributes;
@@ -31,10 +34,6 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.script.ScriptManagerImpl;
 import org.apache.logging.log4j.script.ScriptRef;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * A condition of the {@link DeleteAction} where a user-provided script selects the files to delete from a provided

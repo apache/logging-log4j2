@@ -34,7 +34,7 @@ public class FilterAdapter extends AbstractFilter {
      * the result of
      * {@link FilterWrapper#adapt(org.apache.logging.log4j.core.Filter)} should
      * return the original Log4j 2.x filter.
-     * 
+     *
      * @param filter a Log4j 1.x filter
      * @return a Log4j 2.x filter or {@code null} if the parameter is {@code null}
      */

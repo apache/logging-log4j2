@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import com.conversantmedia.util.concurrent.DisruptorBlockingQueue;
-import com.conversantmedia.util.concurrent.SpinPolicy;
+import java.util.concurrent.BlockingQueue;
+
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
-import java.util.concurrent.BlockingQueue;
+import com.conversantmedia.util.concurrent.DisruptorBlockingQueue;
+import com.conversantmedia.util.concurrent.SpinPolicy;
 
 /**
  * Factory for creating instances of {@link DisruptorBlockingQueue}.

@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.util.Collections;
+
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.util.Collections;
 
 /**
  * Interceptor to add a root object key to the event template.

@@ -22,9 +22,9 @@ import org.junit.rules.ExternalResource;
 
 /**
  * Restores the ThreadContext to it's initial map and stack values after a JUnit test.
- * 
+ *
  * Usage:
- * 
+ *
  * <pre>
  * &#64;Rule
  * public final ThreadContextRule threadContextRule = new ThreadContextRule();
@@ -48,7 +48,7 @@ public class ThreadContextRule extends ExternalResource {
 
     /**
      * Constructs an instance initialized to restore the given structures.
-     * 
+     *
      * @param restoreMap
      *            Whether to restore the thread context map.
      * @param restoreStack

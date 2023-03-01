@@ -96,4 +96,3 @@ public class RollingDirectSize3490Test implements RolloverListener {
         rolloverTriggered = true;
     }
 }
-

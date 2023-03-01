@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.perf.jmh;
 
 import java.text.SimpleDateFormat;
@@ -24,8 +23,8 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.apache.logging.log4j.core.time.internal.format.FastDateFormat;
+import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;

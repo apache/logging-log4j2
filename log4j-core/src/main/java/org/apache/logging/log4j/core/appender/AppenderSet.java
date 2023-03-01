@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -26,10 +30,6 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.PluginNode;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A deferred plugin for appenders.

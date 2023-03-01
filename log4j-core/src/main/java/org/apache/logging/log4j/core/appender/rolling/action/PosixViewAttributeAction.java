@@ -16,18 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.plugins.validation.constraints.Required;
-import org.apache.logging.log4j.util.Strings;
-
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -40,6 +28,18 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.util.FileUtils;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.validation.constraints.Required;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * File POSIX attribute view action.

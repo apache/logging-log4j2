@@ -151,7 +151,7 @@ public class Priority {
 
     /**
      * Gets the Log4j 2.x level associated with this priority
-     * 
+     *
      * @return a Log4j 2.x level.
      */
     public org.apache.logging.log4j.Level getVersion2Level() {

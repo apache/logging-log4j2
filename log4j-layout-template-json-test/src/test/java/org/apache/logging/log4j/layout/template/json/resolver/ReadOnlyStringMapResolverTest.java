@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
@@ -26,10 +30,6 @@ import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.PatternSyntaxException;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.log4j.builders;
 
 import org.apache.log4j.config.PropertiesConfiguration;
@@ -30,7 +29,7 @@ public interface Parser<T> extends Builder<T> {
 
     /**
      * Parses a DOM Element.
-     * 
+     *
      * @param element the DOM Element.
      * @param config the XML configuration.
      * @return parse result.
@@ -39,7 +38,7 @@ public interface Parser<T> extends Builder<T> {
 
     /**
      * Parses a PropertiesConfigurationt.
-     * 
+     *
      * @param element the PropertiesConfiguration.
      * @return parse result.
      */

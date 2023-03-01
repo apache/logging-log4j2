@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.perf.nogc;
 
+import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.ParameterizedMessage;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * Logger with varargs methods, ParameterizedMessage and PatternLayout("%m").

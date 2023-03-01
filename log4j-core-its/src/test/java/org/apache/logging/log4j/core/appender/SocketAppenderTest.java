@@ -16,8 +16,21 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.ThreadContext;
@@ -39,20 +52,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -16,6 +16,11 @@
  */
 package org.apache.log4j.builders.appender;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.log4j.Appender;
 import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.bridge.RewritePolicyAdapter;
@@ -37,11 +42,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;

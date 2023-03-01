@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Class Description goes here.

@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.core.config.properties;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,9 +35,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;

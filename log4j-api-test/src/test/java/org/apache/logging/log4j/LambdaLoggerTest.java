@@ -14,8 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ReusableMessage;
@@ -24,9 +26,6 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 

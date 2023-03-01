@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.net.ssl;
 
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
-import org.apache.logging.log4j.plugins.PluginFactory;
-
-import javax.net.ssl.KeyManagerFactory;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.util.Arrays;
+import javax.net.ssl.KeyManagerFactory;
+
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * Configuration of the KeyStore

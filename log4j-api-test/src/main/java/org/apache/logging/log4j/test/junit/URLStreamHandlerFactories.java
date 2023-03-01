@@ -14,17 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.test.junit;
-
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.opentest4j.TestAbortedException;
 
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLStreamHandlerFactory;
 import java.util.Hashtable;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.opentest4j.TestAbortedException;
 
 public class URLStreamHandlerFactories {
     private static final Field FACTORY_FIELD = Stream.of(URL.class.getDeclaredFields())

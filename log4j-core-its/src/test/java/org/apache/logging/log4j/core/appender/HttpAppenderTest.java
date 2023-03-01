@@ -16,6 +16,31 @@
  */
 package org.apache.logging.log4j.core.appender;
 
+import java.io.IOException;
+import java.net.URL;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.lookup.JavaLookup;
+import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
+import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusListener;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
@@ -27,31 +52,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-import java.net.URL;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.lookup.JavaLookup;
-import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
-import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
-import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
-import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.status.StatusData;
-import org.apache.logging.log4j.status.StatusListener;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-
-import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 @Ignore("Fails often on Windows")
 

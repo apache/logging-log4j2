@@ -16,15 +16,6 @@
  */
 package org.apache.logging.log4j.script.appender.rolling;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
-import org.assertj.core.api.ThrowingConsumer;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -34,6 +25,15 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 import java.util.function.LongSupplier;
 import java.util.stream.Stream;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
+import org.assertj.core.api.ThrowingConsumer;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

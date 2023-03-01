@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 

@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.plugins;
 
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.name.PluginValueNameProvider;
-import org.apache.logging.log4j.plugins.visit.NodeVisitor;
-import org.apache.logging.log4j.plugins.visit.PluginValueVisitor;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.apache.logging.log4j.plugins.name.NameProvider;
+import org.apache.logging.log4j.plugins.name.PluginValueNameProvider;
+import org.apache.logging.log4j.plugins.visit.NodeVisitor;
+import org.apache.logging.log4j.plugins.visit.PluginValueVisitor;
 
 /**
  * Identifies a Plugin Value and its corresponding attribute alias for configuration formats that don't distinguish

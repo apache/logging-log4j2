@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.pattern.LoggerPatternConverter;
@@ -31,8 +33,6 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Tests Log4j2 NamePatternConverter's performance.<br>

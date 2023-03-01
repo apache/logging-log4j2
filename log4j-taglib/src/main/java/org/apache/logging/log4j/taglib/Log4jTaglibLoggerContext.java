@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.taglib;
 
 import java.util.WeakHashMap;
-
 import javax.servlet.ServletContext;
 
 import org.apache.logging.log4j.LogManager;

@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Arrays;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -24,11 +29,6 @@ import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedF
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 

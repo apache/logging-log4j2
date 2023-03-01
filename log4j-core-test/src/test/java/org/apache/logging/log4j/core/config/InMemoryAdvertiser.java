@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Configurable(elementType = "advertiser")
 @Plugin("memory")

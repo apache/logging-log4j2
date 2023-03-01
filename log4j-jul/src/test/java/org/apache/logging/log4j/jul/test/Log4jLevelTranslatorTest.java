@@ -14,10 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.jul.test;
-
-import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +24,8 @@ import org.apache.logging.log4j.jul.LevelTranslator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests that all Log4j levels are mapped to a JUL level.

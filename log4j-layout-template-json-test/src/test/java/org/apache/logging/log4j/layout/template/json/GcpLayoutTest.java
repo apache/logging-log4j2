@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.LogEvent;
-import org.junit.jupiter.api.Test;
-
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.LogEvent;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.CONFIGURATION;
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.usingSerializedLogEventAccessor;

@@ -14,17 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.di;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.function.Supplier;
 
 /**
  * Manages dependency injection of a set of bindings between {@link Key}s and {@link Supplier}s lifecycle-bound to

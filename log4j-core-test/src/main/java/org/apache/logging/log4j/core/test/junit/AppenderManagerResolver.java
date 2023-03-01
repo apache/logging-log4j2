@@ -14,8 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.test.junit;
+
+import java.lang.reflect.Parameter;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -27,8 +28,6 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.ReflectionSupport;
-
-import java.lang.reflect.Parameter;
 
 import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.getLoggerContext;
 

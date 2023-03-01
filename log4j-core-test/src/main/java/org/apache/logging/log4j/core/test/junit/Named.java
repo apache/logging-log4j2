@@ -14,12 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.test.junit;
-
-import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
-import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.util.Strings;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -27,6 +22,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Optional;
+
+import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
+import org.apache.logging.log4j.plugins.name.NameProvider;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Specifies the name of an {@link org.apache.logging.log4j.core.Appender} to inject into JUnit 5 tests from the specified

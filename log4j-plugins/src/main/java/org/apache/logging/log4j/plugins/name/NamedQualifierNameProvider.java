@@ -14,15 +14,14 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.name;
-
-import org.apache.logging.log4j.plugins.Named;
-import org.apache.logging.log4j.util.Strings;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
+import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.util.Strings;
 
 public class NamedQualifierNameProvider implements AnnotatedElementNameProvider<Named>, AnnotatedElementAliasesProvider<Named> {
     @Override

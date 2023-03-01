@@ -14,17 +14,16 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.util;
-
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
+
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 

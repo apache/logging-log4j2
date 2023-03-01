@@ -16,6 +16,16 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.zip.GZIPInputStream;
+
 import org.apache.flume.Channel;
 import org.apache.flume.ChannelException;
 import org.apache.flume.ChannelSelector;
@@ -45,16 +55,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.zip.GZIPInputStream;
 
 /**
  *

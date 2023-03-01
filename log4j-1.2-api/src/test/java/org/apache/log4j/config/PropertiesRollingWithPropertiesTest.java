@@ -16,6 +16,8 @@
  */
 package org.apache.log4j.config;
 
+import java.nio.file.Paths;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -23,8 +25,6 @@ import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

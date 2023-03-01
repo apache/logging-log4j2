@@ -79,7 +79,7 @@ public class ConsoleAppender extends WriterAppender {
 
     /**
      * Gets whether the appender honors reassignments of System.out or System.err made after configuration.
-     * 
+     *
      * @return true if appender will use value of System.out or System.err in force at the time when logging events are
      *         appended.
      * @since 1.2.13
@@ -107,7 +107,7 @@ public class ConsoleAppender extends WriterAppender {
 
     /**
      * Sets whether the appender honors reassignments of System.out or System.err made after configuration.
-     * 
+     *
      * @param follow if true, appender will use value of System.out or System.err in force at the time when logging events
      *        are appended.
      * @since 1.2.13

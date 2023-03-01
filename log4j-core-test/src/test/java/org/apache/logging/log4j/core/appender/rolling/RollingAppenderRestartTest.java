@@ -16,18 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.commons.io.file.PathUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.hamcrest.Matcher;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.Tag;
-import org.junit.rules.RuleChain;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -41,6 +29,18 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.file.PathUtils;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.hamcrest.Matcher;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.jupiter.api.Tag;
+import org.junit.rules.RuleChain;
 
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;

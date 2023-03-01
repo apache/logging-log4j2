@@ -14,16 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.test.junit;
-
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.AbstractManager;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -32,6 +23,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AbstractManager;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Specifies a configuration file to use for unit tests. This configuration file will be loaded once and used for all tests

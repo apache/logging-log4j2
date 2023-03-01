@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -14,11 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.test.validation.generic;
 
-import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.Singleton;
 

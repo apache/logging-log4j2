@@ -16,12 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import static org.fusesource.jansi.AnsiRenderer.Code.BG_RED;
-import static org.fusesource.jansi.AnsiRenderer.Code.BOLD;
-import static org.fusesource.jansi.AnsiRenderer.Code.RED;
-import static org.fusesource.jansi.AnsiRenderer.Code.WHITE;
-import static org.fusesource.jansi.AnsiRenderer.Code.YELLOW;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
@@ -31,6 +25,12 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiRenderer;
 import org.fusesource.jansi.AnsiRenderer.Code;
+
+import static org.fusesource.jansi.AnsiRenderer.Code.BG_RED;
+import static org.fusesource.jansi.AnsiRenderer.Code.BOLD;
+import static org.fusesource.jansi.AnsiRenderer.Code.RED;
+import static org.fusesource.jansi.AnsiRenderer.Code.WHITE;
+import static org.fusesource.jansi.AnsiRenderer.Code.YELLOW;
 
 /**
  * Renders an input as ANSI escaped output.

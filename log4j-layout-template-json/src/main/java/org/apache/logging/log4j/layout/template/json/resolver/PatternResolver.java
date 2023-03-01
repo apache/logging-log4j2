@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
+import java.util.Optional;
+import java.util.function.BiConsumer;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.util.Strings;
-
-import java.util.Optional;
-import java.util.function.BiConsumer;
 
 /**
  * Resolver delegating to {@link PatternLayout}.

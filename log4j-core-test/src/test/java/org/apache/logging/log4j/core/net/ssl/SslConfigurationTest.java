@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
-
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 

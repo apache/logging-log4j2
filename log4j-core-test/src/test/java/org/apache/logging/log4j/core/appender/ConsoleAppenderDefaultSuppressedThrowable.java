@@ -37,13 +37,13 @@ import org.apache.logging.log4j.core.config.Configurator;
  */
 public class ConsoleAppenderDefaultSuppressedThrowable {
 
-	private static final Logger LOG = LogManager.getLogger(ConsoleAppenderDefaultSuppressedThrowable.class);
+    private static final Logger LOG = LogManager.getLogger(ConsoleAppenderDefaultSuppressedThrowable.class);
 
-	public static void main(final String[] args) {
-		final String config = args.length == 0 ? "target/test-classes/log4j2-console-default-suppressed-throwable.xml"
-				: args[0];
-		test(args, config);
-	}
+    public static void main(final String[] args) {
+        final String config = args.length == 0 ? "target/test-classes/log4j2-console-default-suppressed-throwable.xml"
+                : args[0];
+        test(args, config);
+    }
 
     static void test(final String[] args, final String config) {
         // System.out.println(System.getProperty("java.class.path"));

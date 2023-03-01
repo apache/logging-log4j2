@@ -25,7 +25,7 @@ public final class ContextUtil {
 
     /**
      * Delegates to {@link org.apache.logging.log4j.core.LoggerContext#reconfigure()} if appropriate.
-     * 
+     *
      * @param loggerContext The target logger context.
      */
     public static void reconfigure(LoggerContext loggerContext) {
@@ -36,7 +36,7 @@ public final class ContextUtil {
 
     /**
      * Delegates to {@link org.apache.logging.log4j.core.LoggerContext#close()} if appropriate.
-     * 
+     *
      * @param loggerContext The target logger context.
      */
     public static void shutdown(LoggerContext loggerContext) {

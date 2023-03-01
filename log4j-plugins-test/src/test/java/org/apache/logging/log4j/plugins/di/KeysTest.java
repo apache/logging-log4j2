@@ -14,13 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.di;
+
+import java.util.function.Function;
 
 import org.apache.logging.log4j.plugins.Named;
 import org.junit.jupiter.api.Test;
-
-import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

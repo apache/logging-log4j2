@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
@@ -24,11 +29,6 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.MutableThreadContextStack;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.util.StringMap;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 final class LogEventFixture {
 

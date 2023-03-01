@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.List;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

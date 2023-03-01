@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.nio.file.FileSystems;
@@ -25,8 +24,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 
-import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;

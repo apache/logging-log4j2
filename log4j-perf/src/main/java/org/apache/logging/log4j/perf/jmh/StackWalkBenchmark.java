@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
+import java.lang.StackWalker;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 import org.apache.logging.log4j.perf.util.StackDriver;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -25,11 +30,6 @@ import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
-
-import java.lang.StackWalker;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 /**
  * Benchmark logging with logging disabled.

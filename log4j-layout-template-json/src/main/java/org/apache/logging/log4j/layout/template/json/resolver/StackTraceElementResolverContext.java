@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 
 /**
  * {@link TemplateResolverContext} specialized for {@link StackTraceElement}s.

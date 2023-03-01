@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.test.net.mock;
 
 import java.io.IOException;
 import java.net.SocketException;
-
 import javax.net.ssl.SSLServerSocket;
 
 import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat;

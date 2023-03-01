@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.web;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
-
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
 
 public class Log4jShutdownOnContextDestroyedListener implements ServletContextListener {
 
@@ -42,12 +42,12 @@ public class Log4jShutdownOnContextDestroyedListener implements ServletContextLi
     @Override
     public void contextInitialized(final ServletContextEvent event) {
         LOGGER.debug(Log4jShutdownOnContextDestroyedListener.class.getSimpleName() +
-        		" ensuring that Log4j started up properly.");
+                " ensuring that Log4j started up properly.");
         servletContext = event.getServletContext();
         if (null == servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)) {
-        	throw new IllegalStateException(
-        			"Context did not contain required Log4jWebLifeCycle in the "
-        			+ Log4jWebSupport.SUPPORT_ATTRIBUTE + " attribute.");
+            throw new IllegalStateException(
+                    "Context did not contain required Log4jWebLifeCycle in the "
+                    + Log4jWebSupport.SUPPORT_ATTRIBUTE + " attribute.");
         }
         this.initializer = WebLoggerContextUtils.getWebLifeCycle(servletContext);
     }
@@ -59,7 +59,7 @@ public class Log4jShutdownOnContextDestroyedListener implements ServletContextLi
             return;
         }
         LOGGER.debug(Log4jShutdownOnContextDestroyedListener.class.getSimpleName() +
-        		" ensuring that Log4j shuts down properly.");
+                " ensuring that Log4j shuts down properly.");
 
         this.initializer.clearLoggerContext(); // the application is finished
         // shutting down now

@@ -14,8 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.dbcp2.appender;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.dbcp2.PoolableConnectionFactory;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPoolConfig;
@@ -26,10 +29,6 @@ import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Configures an Apache Commons DBCP {@link PoolableConnectionFactory}.

@@ -18,20 +18,20 @@ package org.apache.logging.log4j.web;
 // Please note that if you move this class, make sure to update the Interpolator class (if still applicable) or remove
 // this comment if no longer relevant
 
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.lookup.AbstractLookup;
-import org.apache.logging.log4j.plugins.Namespace;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.util.Strings;
-
+import java.security.Principal;
+import java.util.Objects;
+import java.util.stream.Stream;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.security.Principal;
-import java.util.Objects;
-import java.util.stream.Stream;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.lookup.AbstractLookup;
+import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.util.Strings;
 
 @Namespace("Lookup")
 @Plugin("web")

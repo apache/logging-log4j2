@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.core;
 
-import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.message.EntryMessage;
-import org.apache.logging.log4j.message.StructuredDataMessage;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.junit.jupiter.api.Test;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.apache.logging.log4j.message.EntryMessage;
+import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -130,4 +130,3 @@ public class StrictXmlConfigTest {
         assertEquals(1, events.size(), "Incorrect number of events. Expected 1, actual " + events.size());
     }
 }
-

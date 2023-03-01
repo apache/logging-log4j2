@@ -16,18 +16,18 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.test.TestLogger;
-import org.apache.logging.log4j.test.TestLoggerContext;
-import org.apache.logging.log4j.test.TestLoggerContextFactory;
-import org.apache.logging.log4j.simple.SimpleLoggerContext;
-import org.junit.jupiter.api.Test;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.simple.SimpleLoggerContext;
+import org.apache.logging.log4j.test.TestLogger;
+import org.apache.logging.log4j.test.TestLoggerContext;
+import org.apache.logging.log4j.test.TestLoggerContextFactory;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 

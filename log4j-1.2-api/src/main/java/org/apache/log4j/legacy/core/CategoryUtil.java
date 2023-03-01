@@ -135,7 +135,7 @@ public final class CategoryUtil {
     /**
      * Adds an appender to the logger. This method requires a check for the presence
      * of Log4j Core or it will cause a {@code ClassNotFoundException}.
-     * 
+     *
      * @param logger   The target logger.
      * @param appender A Log4j2 appender.
      */
@@ -150,7 +150,7 @@ public final class CategoryUtil {
      * Sends the event to all appenders directly connected with the logger. This
      * method requires a check for the presence of Log4j Core or it will cause a
      * {@code ClassNotFoundException}.
-     * 
+     *
      * @param logger The target logger.
      * @param event  The event to send.
      */

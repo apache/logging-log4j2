@@ -140,4 +140,3 @@ public interface Appender {
      */
     boolean requiresLayout();
 }
-

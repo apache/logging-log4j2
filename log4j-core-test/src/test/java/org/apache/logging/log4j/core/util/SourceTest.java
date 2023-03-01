@@ -14,10 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.util;
-
-import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -28,6 +25,8 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests {@link Source}.

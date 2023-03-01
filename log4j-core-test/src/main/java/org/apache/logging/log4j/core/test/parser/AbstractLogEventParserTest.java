@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.core.test.parser;
 
+import java.util.Arrays;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
-
-import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;

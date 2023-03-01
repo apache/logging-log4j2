@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
+import java.sql.DriverManager;
+
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.sql.DriverManager;
 
 /**
  * A {@link ConnectionSource} that uses a JDBC connection string, a user name, and a password to call

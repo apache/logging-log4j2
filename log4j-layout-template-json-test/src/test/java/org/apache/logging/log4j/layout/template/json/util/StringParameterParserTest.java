@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.layout.template.json.util;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.DoubleQuotedStringValue;
 import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.NullValue;
 import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.StringValue;
@@ -23,12 +29,6 @@ import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.
 import org.apache.logging.log4j.layout.template.json.util.StringParameterParser.Values;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 
 @SuppressWarnings("DoubleBraceInitialization")
 class StringParameterParserTest {

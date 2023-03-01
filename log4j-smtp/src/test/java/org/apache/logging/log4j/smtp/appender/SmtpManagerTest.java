@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.smtp.appender;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -31,6 +26,11 @@ import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.ReusableSimpleMessage;
 import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit tests for {@link SmtpManager}.

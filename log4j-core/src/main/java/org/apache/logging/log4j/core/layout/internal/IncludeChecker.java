@@ -37,4 +37,3 @@ public class IncludeChecker implements ListChecker {
         return "ThreadContextIncludes=" + list.toString();
     }
 }
-

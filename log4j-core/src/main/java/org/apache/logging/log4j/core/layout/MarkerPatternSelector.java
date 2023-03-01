@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.LogEvent;
@@ -29,10 +33,6 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.status.StatusLogger;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Selects the pattern to use based on the Marker in the LogEvent.

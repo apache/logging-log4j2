@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.File;
+import java.util.List;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 

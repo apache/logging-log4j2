@@ -16,22 +16,18 @@
  */
 package org.apache.logging.log4j.core.config;
 
-
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.junit.jupiter.api.Test;
-
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
-
-import org.junit.jupiter.api.condition.DisabledOnOs;
 
 @DisabledOnOs(WINDOWS) // FIXME: Fix status logger to close files so this will pass on windows.
 @CleanUpFiles({"target/status.log", "target/test.log"})

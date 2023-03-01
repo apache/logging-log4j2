@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -24,12 +30,6 @@ import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ReadsSystemProperty;
-
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 
 @LoggerContextSource("log4j-collectionLogging.xml")
 @Disabled("Work in progress")
