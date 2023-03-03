@@ -81,6 +81,7 @@ jobs:
       # `clean verify artifact:compare` is required to generate the build reproducibility report.
       # For details, see: https://maven.apache.org/guides/mini/guide-reproducible-builds.html#how-to-test-my-maven-build-reproducibility
       - name: Report build reproducibility
+        id: report-reproducible
         timeout-minutes: 10
         shell: bash
         run: |
@@ -88,7 +89,7 @@ jobs:
             --show-version --batch-mode --errors --no-transfer-progress \
             --global-toolchains ".github/workflows/maven-toolchains.xml" \
             -DskipTests=true \
-            clean verify artifact:compare
+            clean verify artifact:compare || failed=1
 
       # `artifact:compare` doesn't fail the build in case of a reproducibility problem.
       # Below we manually check reproducibility build reports and fail the build, if necessary.
@@ -99,9 +100,22 @@ jobs:
             if ! grep -q "^ko=0$" "$report_file"; then
               echo "Spotted build reproducibility failure in \`$report_file\`:"
               cat "$report_file"
-              exit 1
+              failed=1
             fi
           done
+          if [ -n "$failed" ]; then
+            exit $failed
+          fi
+
+      - name: Upload reproducibility failure context artifacts
+        if: failure() && steps.report-reproducible.outcome == 'failure'
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce
+        with:
+          name: reproducubility-failure-context-${{matrix.os}}
+          path: |
+            **/target/*.buildcompare
+            **/target/*.jar
+            **/target/reference/*.jar
 
       - name: Maven "verify"
         timeout-minutes: 60
