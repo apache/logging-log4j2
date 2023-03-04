@@ -1545,6 +1545,11 @@
               <order>java,org,com,\#</order>
             </importOrder>
           </java>
+          <pom>
+            <sortPom>
+              <expandEmptyElements>false</expandEmptyElements>
+            </sortPom>
+          </pom>
         </configuration>
       </plugin>
 
