@@ -126,10 +126,8 @@
         <configuration>
           <instructions>
             <Export-Package>org.apache.logging.log4j.*</Export-Package>
-            <Import-Package>
-              sun.reflect;resolution:=optional,
-              *
-            </Import-Package>
+            <Import-Package>sun.reflect;resolution:=optional,
+              *</Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
             <_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
           </instructions>
@@ -142,10 +140,10 @@
         <executions>
           <execution>
             <id>remove-module-info</id>
-            <phase>process-classes</phase>
             <goals>
               <goal>clean</goal>
             </goals>
+            <phase>process-classes</phase>
             <configuration>
               <excludeDefaultDirectories>true</excludeDefaultDirectories>
               <filesets>

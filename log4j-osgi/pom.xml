@@ -140,12 +140,12 @@
         <groupId>org.ops4j.pax.exam</groupId>
         <artifactId>exam-maven-plugin</artifactId>
         <executions>
-            <execution>
-                <phase>generate-test-resources</phase>
-                <goals>
-                    <goal>generate-link-files</goal>
-                </goals>
-            </execution>
+          <execution>
+            <goals>
+              <goal>generate-link-files</goal>
+            </goals>
+            <phase>generate-test-resources</phase>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -154,9 +154,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>org.apache.logging.log4j.osgi</Bundle-SymbolicName>
-            <Import-Package>
-              *
-            </Import-Package>
+            <Import-Package>*</Import-Package>
           </instructions>
         </configuration>
       </plugin>

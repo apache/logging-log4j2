@@ -16,20 +16,20 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
-
-  <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-  </properties>
 
   <artifactId>log4j-jul</artifactId>
   <name>Apache Log4j JUL Adapter</name>
   <description>The Apache Log4j implementation of java.util.logging</description>
+
+  <properties>
+    <log4jParentDir>${basedir}/..</log4jParentDir>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -54,7 +54,7 @@
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest</artifactId>
+      <artifactId>hamcrest</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -107,6 +107,14 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <java.awt.headless>true</java.awt.headless>
+          </systemPropertyVariables>
+          <argLine>-Xms256m -Xmx1024m</argLine>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
+        </configuration>
         <dependencies>
           <!-- Manual override of the Surefire provider -->
           <!-- The `surefire-platform` provider initializes JUL before calling our tests -->
@@ -116,47 +124,39 @@
             <version>${surefire.version}</version>
           </dependency>
         </dependencies>
-          <configuration>
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <excludes>
+                <exclude>${log4j.skip.test1}</exclude>
+                <exclude>${log4j.skip.test2}</exclude>
+                <exclude>Log4jBridgeHandlerTest.java</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- this test needs some special configuration, thus its own run -->
+            <id>bridgeHandler-test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <includes>
+                <include>Log4jBridgeHandlerTest.java</include>
+              </includes>
               <systemPropertyVariables>
-                  <java.awt.headless>true</java.awt.headless>
+                <java.util.logging.config.file>src/test/resources/logging-test.properties</java.util.logging.config.file>
+                <log4j2.configurationFile>log4j2-julBridge-test.xml</log4j2.configurationFile>
               </systemPropertyVariables>
-              <argLine>-Xms256m -Xmx1024m</argLine>
-              <forkCount>1</forkCount>
-              <reuseForks>false</reuseForks>
-          </configuration>
-          <executions>
-              <execution>
-                  <id>default-test</id>
-                  <phase>test</phase>
-                  <goals>
-                      <goal>test</goal>
-                  </goals>
-                  <configuration>
-                      <excludes>
-                          <exclude>${log4j.skip.test1}</exclude>
-                          <exclude>${log4j.skip.test2}</exclude>
-                          <exclude>Log4jBridgeHandlerTest.java</exclude>
-                      </excludes>
-                  </configuration>
-              </execution>
-              <execution>
-                  <!-- this test needs some special configuration, thus its own run -->
-                  <id>bridgeHandler-test</id>
-                  <phase>test</phase>
-                  <goals>
-                      <goal>test</goal>
-                  </goals>
-                  <configuration>
-                      <includes>
-                          <include>Log4jBridgeHandlerTest.java</include>
-                      </includes>
-                      <systemPropertyVariables>
-                          <java.util.logging.config.file>src/test/resources/logging-test.properties</java.util.logging.config.file>
-                          <log4j2.configurationFile>log4j2-julBridge-test.xml</log4j2.configurationFile>
-                      </systemPropertyVariables>
-                  </configuration>
-              </execution>
-          </executions>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

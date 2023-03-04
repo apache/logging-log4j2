@@ -16,21 +16,21 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>log4j-jpl</artifactId>
+  <name>Apache Log4j JDK Platform Logging Adapter</name>
+  <description>The Apache Log4j implementation of java.lang.System.LoggerFinder</description>
 
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <module.name>org.apache.logging.log4j.jpl</module.name>
   </properties>
-
-  <artifactId>log4j-jpl</artifactId>
-  <name>Apache Log4j JDK Platform Logging Adapter</name>
-  <description>The Apache Log4j implementation of java.lang.System.LoggerFinder</description>
 
   <dependencies>
     <dependency>
@@ -106,22 +106,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>default-testCompile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <source>11</source>
           <target>11</target>
@@ -130,6 +114,22 @@
           <!-- disable errorprone -->
           <compilerId>javac</compilerId>
         </configuration>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <phase>compile</phase>
+          </execution>
+          <execution>
+            <id>default-testCompile</id>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <phase>test-compile</phase>
+          </execution>
+        </executions>
       </plugin>
       <!-- Workaround Surefire 3.0.0-M7 limitation: it does not add the main classes with 'patch-module' -->
       <plugin>
@@ -138,10 +138,10 @@
         <executions>
           <execution>
             <id>shade-test-module</id>
-            <phase>process-test-classes</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
+            <phase>process-test-classes</phase>
             <configuration>
               <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
               <resources>
@@ -156,8 +156,8 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-          <!-- Manual override of the Surefire provider -->
-          <!-- The `surefire-platform` provider initializes JUL before calling our tests -->
+        <!-- Manual override of the Surefire provider -->
+        <!-- The `surefire-platform` provider initializes JUL before calling our tests -->
         <dependencies>
           <dependency>
             <groupId>org.apache.maven.surefire</groupId>

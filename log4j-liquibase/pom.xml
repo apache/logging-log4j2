@@ -84,9 +84,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Export-Package>
-              liquibase.ext.logging.log4j2
-            </Export-Package>
+            <Export-Package>liquibase.ext.logging.log4j2</Export-Package>
           </instructions>
         </configuration>
       </plugin>
@@ -121,10 +119,10 @@
         <executions>
           <execution>
             <id>default-tests</id>
-            <phase>test</phase>
             <goals>
               <goal>test</goal>
             </goals>
+            <phase>test</phase>
             <configuration>
               <includes>
                 <include>**/*Test.java</include>
@@ -136,10 +134,10 @@
           </execution>
           <execution>
             <id>test-optional</id>
-            <phase>test</phase>
             <goals>
               <goal>test</goal>
             </goals>
+            <phase>test</phase>
             <configuration>
               <excludes>
                 <exclude>**/LoggerTest.java</exclude>

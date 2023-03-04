@@ -7,18 +7,16 @@
   OR CONDITIONS OF ANY KIND, either express or implied. ~ See the License for the specific language governing permissions and 
   ~ limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
 
   <artifactId>log4j-jdbc-dbcp2</artifactId>
   <name>Apache Log4j JDBC DBCP 2</name>
-  <description>
-    Connection source for the JDBC Appender using Apache Commons DBCP2.
-  </description>
+  <description>Connection source for the JDBC Appender using Apache Commons DBCP2.</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j JDBC DBCP 2 Documentation</docLabel>

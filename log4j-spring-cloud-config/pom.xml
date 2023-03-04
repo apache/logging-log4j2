@@ -26,6 +26,9 @@
   <packaging>pom</packaging>
   <name>Apache Log4j Spring Cloud Config Support</name>
   <url>http://maven.apache.org</url>
+  <modules>
+    <module>log4j-spring-cloud-config-client</module>
+  </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-cloud.version>2021.0.4</spring-cloud.version>
@@ -57,7 +60,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <modules>
-    <module>log4j-spring-cloud-config-client</module>
-  </modules>
 </project>

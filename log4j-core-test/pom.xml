@@ -329,8 +329,7 @@
             <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
             <!-- TODO: exclude internal classes from export -->
             <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
-            <Import-Package>
-              sun.reflect;resolution:=optional,
+            <Import-Package>sun.reflect;resolution:=optional,
               org.apache.logging.log4j.util,
               org.apache.logging.log4j.plugins,
               org.apache.logging.log4j.plugins.convert,
@@ -338,8 +337,7 @@
               org.apache.logging.log4j.plugins.util,
               org.apache.logging.log4j.plugins.validation,
               org.apache.logging.log4j.plugins.inject,
-              *
-            </Import-Package>
+              *</Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
@@ -351,10 +349,10 @@
         <executions>
           <execution>
             <id>remove-module-info</id>
-            <phase>process-classes</phase>
             <goals>
               <goal>clean</goal>
             </goals>
+            <phase>process-classes</phase>
             <configuration>
               <excludeDefaultDirectories>true</excludeDefaultDirectories>
               <filesets>

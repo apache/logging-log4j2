@@ -27,10 +27,8 @@
 
   <artifactId>log4j-layout-template-json</artifactId>
   <name>Apache Log4j layout for templated JSON encoding</name>
-  <description>
-    JSON Template Layout is a customizable, efficient, and garbage-free JSON generating Apache Log4j layout.
-    It encodes log events according to the structure described by the JSON template provided.
-  </description>
+  <description>JSON Template Layout is a customizable, efficient, and garbage-free JSON generating Apache Log4j layout.
+    It encodes log events according to the structure described by the JSON template provided.</description>
 
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
