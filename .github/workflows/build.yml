@@ -138,6 +138,22 @@ jobs:
             --global-toolchains ".github/workflows/maven-toolchains.xml" \
             site
 
+  merge:
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    needs: build
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: "[dependabot] Auto-merge the PR"
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   deploy:
 
     runs-on: ubuntu-latest
