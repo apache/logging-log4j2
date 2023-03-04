@@ -136,10 +136,10 @@
         <artifactId>exam-maven-plugin</artifactId>
         <executions>
           <execution>
-            <phase>generate-test-resources</phase>
             <goals>
               <goal>generate-link-files</goal>
             </goals>
+            <phase>generate-test-resources</phase>
           </execution>
         </executions>
       </plugin>
@@ -149,9 +149,7 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>org.apache.logging.log4j.osgi</Bundle-SymbolicName>
-            <Import-Package>
-              *
-            </Import-Package>
+            <Import-Package>*</Import-Package>
           </instructions>
         </configuration>
       </plugin>
@@ -170,9 +168,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <classpathDependencyExcludes>
-            org.osgi:org.osgi.core
-          </classpathDependencyExcludes>
+          <classpathDependencyExcludes>org.osgi:org.osgi.core</classpathDependencyExcludes>
           <systemPropertyVariables>
             <!-- PAX logging has a copy of Log4j2 API-->
             <pax.exam.logging>false</pax.exam.logging>

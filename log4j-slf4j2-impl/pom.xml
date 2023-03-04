@@ -106,16 +106,10 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Export-Package>
-              org.apache.logging.slf4j,
-              org.slf4j.impl
-            </Export-Package>
-            <Require-Capability>
-              osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"
-            </Require-Capability>
-            <Provide-Capability>
-              osgi.serviceloader;osgi.serviceloader=org.slf4j.spi.SLF4JServiceProvider
-            </Provide-Capability>
+            <Export-Package>org.apache.logging.slf4j,
+              org.slf4j.impl</Export-Package>
+            <Require-Capability>osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
+            <Provide-Capability>osgi.serviceloader;osgi.serviceloader=org.slf4j.spi.SLF4JServiceProvider</Provide-Capability>
           </instructions>
         </configuration>
       </plugin>
@@ -125,10 +119,10 @@
         <executions>
           <execution>
             <id>loop-test</id>
-            <phase>test</phase>
             <goals>
               <goal>test</goal>
             </goals>
+            <phase>test</phase>
             <configuration>
               <includes>
                 <include>**/OverflowTest.java</include>
@@ -138,10 +132,10 @@
           </execution>
           <execution>
             <id>default-test</id>
-            <phase>test</phase>
             <goals>
               <goal>test</goal>
             </goals>
+            <phase>test</phase>
             <configuration>
               <includes>
                 <include>**/*Test.java</include>

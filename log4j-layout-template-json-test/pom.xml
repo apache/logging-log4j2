@@ -27,9 +27,7 @@
 
   <artifactId>log4j-layout-template-json-test</artifactId>
   <name>Apache Log4j Layout for JSON template Tests</name>
-  <description>
-    Apache Log4j Layout for JSON template test.
-  </description>
+  <description>Apache Log4j Layout for JSON template test.</description>
 
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
@@ -121,6 +119,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
         <executions>
           <execution>
             <goals>
@@ -129,9 +130,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -213,22 +211,6 @@
           <plugin>
             <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>start</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>stop</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>stop</goal>
-                </goals>
-              </execution>
-            </executions>
             <configuration>
               <verbose>all</verbose>
               <startParallel>true</startParallel>
@@ -285,9 +267,7 @@
                         <arg>--pipeline.batch.size</arg>
                         <arg>1</arg>
                         <arg>-e</arg>
-                        <arg>
-                          
-                          input {
+                        <arg>input {
                             gelf {
                               host =&gt; "logstash"
                               use_tcp =&gt; true
@@ -330,9 +310,7 @@
                               hosts =&gt; ["http://elasticsearch:9200"]
                               index =&gt; "log4j"
                             }
-                          }
-                          
-                        </arg>
+                          }</arg>
                       </exec>
                     </entrypoint>
                     <wait>
@@ -343,10 +321,31 @@
                 </image>
               </images>
             </configuration>
+            <executions>
+              <execution>
+                <id>start</id>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+                <phase>pre-integration-test</phase>
+              </execution>
+              <execution>
+                <id>stop</id>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+                <phase>post-integration-test</phase>
+              </execution>
+            </executions>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>**/*IT.java</include>
+              </includes>
+            </configuration>
             <executions>
               <execution>
                 <goals>
@@ -355,11 +354,6 @@
                 </goals>
               </execution>
             </executions>
-            <configuration>
-              <includes>
-                <include>**/*IT.java</include>
-              </includes>
-            </configuration>
           </plugin>
         </plugins>
       </build>

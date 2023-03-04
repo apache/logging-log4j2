@@ -29,6 +29,10 @@
   <packaging>pom</packaging>
   <name>Apache Log4j Spring Cloud Config Support</name>
 
+  <modules>
+    <module>log4j-spring-cloud-config-client</module>
+  </modules>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <log4jParentDir>${basedir}/..</log4jParentDir>
@@ -65,9 +69,5 @@
 
     </dependencies>
   </dependencyManagement>
-
-  <modules>
-    <module>log4j-spring-cloud-config-client</module>
-  </modules>
 
 </project>

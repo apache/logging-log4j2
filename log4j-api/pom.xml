@@ -47,10 +47,10 @@
         <executions>
           <execution>
             <id>add-source</id>
-            <phase>generate-sources</phase>
             <goals>
               <goal>add-source</goal>
             </goals>
+            <phase>generate-sources</phase>
             <configuration>
               <sources>
                 <source>${project.build.directory}/log4j-api-java9</source>
@@ -64,18 +64,12 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Private-Package>
-              *.internal
-            </Private-Package>
-            <Export-Package>
-              !*.internal,
-              org.apache.logging.log4j.*
-            </Export-Package>
-            <Import-Package>
-              !*.internal,
+            <Private-Package>*.internal</Private-Package>
+            <Export-Package>!*.internal,
+              org.apache.logging.log4j.*</Export-Package>
+            <Import-Package>!*.internal,
               sun.reflect;resolution:=optional,
-              *
-            </Import-Package>
+              *</Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
             <_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
           </instructions>
@@ -101,10 +95,10 @@
         <executions>
           <execution>
             <id>unpack-classes</id>
-            <phase>prepare-package</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
+            <phase>prepare-package</phase>
             <configuration>
               <artifactItems>
                 <artifactItem>

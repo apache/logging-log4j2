@@ -25,9 +25,7 @@
   <artifactId>log4j-jmx-gui</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j JMX GUI</name>
-  <description>
-    Swing GUI to remotely edit Log4j configurations. This includes a JConsole plugin and a StatusLogger monitor.
-  </description>
+  <description>Swing GUI to remotely edit Log4j configurations. This includes a JConsole plugin and a StatusLogger monitor.</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>JMX GUI Documentation</docLabel>

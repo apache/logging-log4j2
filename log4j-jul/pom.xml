@@ -16,21 +16,21 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>log4j</artifactId>
     <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j</artifactId>
     <version>2.20.1-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>log4j-jul</artifactId>
+  <name>Apache Log4j JUL Adapter</name>
+  <description>The Apache Log4j implementation of java.util.logging</description>
 
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <module.name>org.apache.logging.log4j.jul</module.name>
   </properties>
-
-  <artifactId>log4j-jul</artifactId>
-  <name>Apache Log4j JUL Adapter</name>
-  <description>The Apache Log4j implementation of java.util.logging</description>
 
   <dependencies>
     <dependency>
@@ -85,6 +85,14 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <java.awt.headless>true</java.awt.headless>
+          </systemPropertyVariables>
+          <argLine>-Xms256m -Xmx1024m</argLine>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
+        </configuration>
         <dependencies>
           <!-- Manual override of the Surefire provider -->
           <!-- The `surefire-platform` provider initializes JUL before calling our tests -->
@@ -94,21 +102,13 @@
             <version>${surefire.version}</version>
           </dependency>
         </dependencies>
-        <configuration>
-          <systemPropertyVariables>
-            <java.awt.headless>true</java.awt.headless>
-          </systemPropertyVariables>
-          <argLine>-Xms256m -Xmx1024m</argLine>
-          <forkCount>1</forkCount>
-          <reuseForks>false</reuseForks>
-        </configuration>
         <executions>
           <execution>
             <id>default-test</id>
-            <phase>test</phase>
             <goals>
               <goal>test</goal>
             </goals>
+            <phase>test</phase>
             <configuration>
               <excludes>
                 <exclude>Log4jBridgeHandlerTest.java</exclude>
@@ -118,10 +118,10 @@
           <execution>
             <!-- this test needs some special configuration, thus its own run -->
             <id>bridgeHandler-test</id>
-            <phase>test</phase>
             <goals>
               <goal>test</goal>
             </goals>
+            <phase>test</phase>
             <configuration>
               <includes>
                 <include>Log4jBridgeHandlerTest.java</include>

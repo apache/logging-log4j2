@@ -51,10 +51,10 @@
         <executions>
           <execution>
             <id>zip</id>
-            <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
+            <phase>package</phase>
             <configuration>
               <finalName>log4j-api-java9-${project.version}</finalName>
               <appendAssemblyId>false</appendAssemblyId>
@@ -68,13 +68,16 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <proc>none</proc>
+        </configuration>
         <executions>
           <execution>
             <id>default-compile</id>
-            <phase>compile</phase>
             <goals>
               <goal>compile</goal>
             </goals>
+            <phase>compile</phase>
             <configuration>
               <jdkToolchain>
                 <version>[9, )</version>
@@ -85,18 +88,18 @@
           <!-- We explicitly compile tests using Java 8 to work around SUREFIRE-2073 -->
           <execution>
             <id>default-test-compile</id>
-            <phase>test-compile</phase>
             <goals>
               <goal>testCompile</goal>
             </goals>
+            <phase>test-compile</phase>
           </execution>
           <!-- Of course the 'module-info.java' needs Java 9 -->
           <execution>
             <id>test-compile-module</id>
-            <phase>test-compile</phase>
             <goals>
               <goal>testCompile</goal>
             </goals>
+            <phase>test-compile</phase>
             <configuration>
               <jdkToolchain>
                 <version>[9, )</version>
@@ -108,22 +111,10 @@
             </configuration>
           </execution>
         </executions>
-        <configuration>
-          <proc>none</proc>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>test</id>
-            <phase>test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <systemPropertyVariables>
             <java.awt.headless>true</java.awt.headless>
@@ -132,6 +123,15 @@
             <version>[9, )</version>
           </jdkToolchain>
         </configuration>
+        <executions>
+          <execution>
+            <id>test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>test</phase>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

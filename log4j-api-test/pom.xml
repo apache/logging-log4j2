@@ -113,7 +113,7 @@
           <instructions>
             <Fragment-Host>org.apache.logging.log4j.api</Fragment-Host>
             <Export-Package>org.apache.logging.log4j.*</Export-Package>
-            <Import-Package />
+            <Import-Package/>
           </instructions>
         </configuration>
       </plugin>
