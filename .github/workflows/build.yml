@@ -21,6 +21,12 @@ on:
       - main
   pull_request:
 
+env:
+  # Maven JVM arguments
+  MAVEN_OPTS: -XX:InitialRAMPercentage=50.0
+  # Common Maven arguments since Maven 3.9.0
+  MAVEN_ARGS: --show-version --batch-mode --errors --no-transfer-progress
+
 permissions: read-all
 
 jobs:
@@ -29,8 +35,6 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     # Based on: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
-    env:
-      MAVEN_OPTS: -Xms3072m -Xmx3072m
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
@@ -56,10 +60,7 @@ jobs:
       - name: Build
         timeout-minutes: 60
         shell: bash
-        run: |
-          ./mvnw \
-            --show-version --batch-mode --errors --no-transfer-progress \
-            clean install
+        run: ./mvnw clean install
 
       # `clean verify artifact:compare` is required to generate the build reproducibility report.
       # For details, see: https://maven.apache.org/guides/mini/guide-reproducible-builds.html#how-to-test-my-maven-build-reproducibility
@@ -69,9 +70,8 @@ jobs:
         shell: bash
         run: |
           ./mvnw \
-            --show-version --batch-mode --errors --no-transfer-progress \
-            -DskipTests=true \
-            clean package artifact:compare
+          -DskipTests=true \
+          clean package artifact:compare
 
       - name: Upload reproducibility failure context artifacts
         if: failure()
@@ -86,10 +86,7 @@ jobs:
       - name: Build site
         timeout-minutes: 10
         shell: bash
-        run: |
-          ./mvnw \
-            --show-version --batch-mode --errors --no-transfer-progress \
-            site
+        run: ./mvnw site
 
   merge:
 
@@ -110,8 +107,6 @@ jobs:
   deploy:
 
     runs-on: ubuntu-latest
-    env:
-      MAVEN_OPTS: -Xms3072m -Xmx3072m
     needs: build
     if: github.repository == 'apache/logging-log4j2' && github.ref == 'refs/heads/master'
 
@@ -145,7 +140,6 @@ jobs:
         # For details, see: https://maven.apache.org/plugins/maven-gpg-plugin/examples/deploy-signed-artifacts.html
         run: |
           ./mvnw \
-            --show-version --batch-mode --errors --no-transfer-progress \
             --settings .github/workflows/maven-settings.xml \
             -Dgpg.skip=true \
             -DskipTests=true \
