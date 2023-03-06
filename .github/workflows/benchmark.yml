@@ -50,7 +50,7 @@ jobs:
             package
 
       - name: Upload built sources
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: benchmarks.jar
           path: log4j-perf/target/benchmarks.jar
