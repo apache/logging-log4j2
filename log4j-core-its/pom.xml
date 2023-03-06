@@ -31,6 +31,7 @@
     <docLabel>Core Integration Tests Documentation</docLabel>
     <projectDir>/log4j-core-its</projectDir>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.install.skip>true</maven.install.skip>
     <maven.test.skip>true</maven.test.skip>
   </properties>
   <dependencies>
