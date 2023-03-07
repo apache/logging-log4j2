@@ -441,7 +441,7 @@
     <log4j2-cachefile-transformer.version>2.15.0</log4j2-cachefile-transformer.version>
     <log4j2-ecs-layout.version>1.5.0</log4j2-ecs-layout.version>
     <logback.version>1.2.11</logback.version>
-    <maven.version>3.8.6</maven.version>
+    <maven.version>3.9.0</maven.version>
     <mockito.version>4.11.0</mockito.version>
     <mongodb.version>4.9.0</mongodb.version>
     <netty.version>4.1.86.Final</netty.version>
