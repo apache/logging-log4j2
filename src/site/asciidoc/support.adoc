@@ -25,10 +25,10 @@ The individuals who contribute to Apache projects do it either as part of specif
 
 Apache Log4j project officially uses following mailing lists for discussions:
 
-`log4j-user@logging.apache.org` (public | mailto:log4j-user-subscribe@logging.apache.org[subscribe] | mailto:log4j-user-unsubscribe@logging.apache.org[unsubscribe] | mailto:log4j-user@logging.apache.org[post] | https://lists.apache.org/list.html?log4j-user%40logging.apache.org[archive])::
+`log4j-user@logging.apache.org` (public | mailto:log4j-user-subscribe@logging.apache.org[subscribe] | mailto:log4j-user-unsubscribe@logging.apache.org[unsubscribe] | mailto:log4j-user@logging.apache.org[post] | https://lists.apache.org/list.html?log4j-user@logging.apache.org[archive])::
 For _questions_ related to the usage of Log4j components
 
-`dev@logging.apache.org` (public | mailto:dev-subscribe@logging.apache.org[subscribe] | mailto:dev-unsubscribe@logging.apache.org[unsubscribe] | mailto:dev@logging.apache.org[post] | https://lists.apache.org/list.html?dev%40logging.apache.org[archive])::
+`dev@logging.apache.org` (public | mailto:dev-subscribe@logging.apache.org[subscribe] | mailto:dev-unsubscribe@logging.apache.org[unsubscribe] | mailto:dev@logging.apache.org[post] | https://lists.apache.org/list.html?dev@logging.apache.org[archive])::
 For _development_ discussions
 (Please prefix subjects with `[log4j]` when starting a new thread!)
 
