@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.util;
 
 import java.lang.invoke.MethodHandles.Lookup;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.status.StatusLogger;
@@ -54,13 +55,19 @@ public class OsgiServiceLocator {
     }
 
     public static <T> Stream<T> loadServices(final Class<T> serviceType, final Lookup lookup, final boolean verbose) {
-        final Bundle bundle = FrameworkUtil.getBundle(lookup.lookupClass());
+        final Class<?> lookupClass = Objects.requireNonNull(lookup, "lookup").lookupClass();
+        final Bundle bundle = FrameworkUtil.getBundle(Objects.requireNonNull(lookupClass, "lookupClass"));
         if (bundle != null) {
             final BundleContext ctx = bundle.getBundleContext();
+            if (ctx == null) {
+                if (verbose) {
+                    StatusLogger.getLogger().error(
+                            "Unable to load OSGI services: The bundle has no valid BundleContext for serviceType = {}, lookup = {}, lookupClass = {}, bundle = {}",
+                            serviceType, lookup, lookupClass, bundle);
+                }
+            }
             try {
-                return ctx.getServiceReferences(serviceType, null)
-                        .stream()
-                        .map(ctx::getService);
+                return ctx.getServiceReferences(serviceType, null).stream().map(ctx::getService);
             } catch (Throwable e) {
                 if (verbose) {
                     StatusLogger.getLogger().error("Unable to load OSGI services for service {}", serviceType, e);
