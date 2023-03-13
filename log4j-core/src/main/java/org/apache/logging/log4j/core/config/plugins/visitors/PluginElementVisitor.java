@@ -98,13 +98,12 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
     private Node findNamedNode(final String name, final Iterable<Node> children) {
         for (final Node child : children) {
             final PluginType<?> childType = child.getType();
-            if (childType == null) {
-                //System.out.println();
-            }
-            if (name.equalsIgnoreCase(childType.getElementName()) ||
-                this.conversionType.isAssignableFrom(childType.getPluginClass())) {
-                // FIXME: check child.getObject() for null?
-                // doing so would be more consistent with the array version
+            boolean elementNameMatch = childType != null && name.equalsIgnoreCase(childType.getElementName());
+            boolean isAssignableByPluginClass = childType != null &&
+                    this.conversionType.isAssignableFrom(childType.getPluginClass());
+            // FIXME: check child.getObject() for null?
+            // doing so would be more consistent with the array version
+            if (elementNameMatch || isAssignableByPluginClass) {
                 return child;
             }
         }
