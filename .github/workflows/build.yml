@@ -155,7 +155,7 @@ jobs:
         run: |
           VERSION=$(./mvnw -q -N help:evaluate -DforceStdout=true -Dexpression=project.version)
           echo $VERSION
-          echo project_version=$VERSION >> GITHUB_ENV
+          echo "project_version=$VERSION" >> $GITHUB_ENV
 
       - name: Deploy artifacts
         # Do not deploy release versions
