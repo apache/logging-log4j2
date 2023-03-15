@@ -120,7 +120,7 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: build
-    if: github.repository == 'apache/logging-log4j2' && github.ref == 'refs/heads/2.x'
+    if: github.repository == 'apache/logging-log4j2' && github.ref == '2.x'
 
     steps:
 
@@ -142,15 +142,17 @@ jobs:
           cache: maven
 
       - name: Inspect project version
+        env:
+          # Overrides defaults
+          MAVEN_ARGS:
         run: |
-          echo ::set-output name=version::$(./mvnw \
-            -q -Dexec.executable=echo \
-            -Dexec.args='${project.version}' --non-recursive exec:exec)
-        id: get_version
+          VERSION=$(./mvnw -q -N help:evaluate -DforceStdout=true -Dexpression=project.version)
+          echo $VERSION
+          echo project_version=$VERSION >> GITHUB_ENV
 
       - name: Deploy artifacts
         # Do not deploy release versions
-        if: ${{ endsWith(steps.get_version.outputs.version, '-SNAPSHOT') }}
+        if: ${{ endsWith(env.project_version, '-SNAPSHOT') }}
         timeout-minutes: 15
         shell: bash
         # `package install:install deploy:deploy` goal is needed to deploy without configuring the plugin in the POM.
