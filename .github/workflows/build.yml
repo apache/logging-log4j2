@@ -120,7 +120,7 @@ jobs:
 
     runs-on: ubuntu-latest
     needs: build
-    if: github.repository == 'apache/logging-log4j2' && github.ref == '2.x'
+    if: github.repository == 'apache/logging-log4j2' && github.ref == 'refs/heads/2.x'
 
     steps:
 
