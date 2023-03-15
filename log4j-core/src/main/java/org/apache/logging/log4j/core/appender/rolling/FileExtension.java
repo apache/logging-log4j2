@@ -100,10 +100,10 @@ public enum FileExtension {
         this.extension = extension;
     }
 
-    abstract Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
+    public abstract Action createCompressAction(String renameTo, String compressedName, boolean deleteSource,
                                          int compressionLevel);
 
-    String getExtension() {
+    public String getExtension() {
         return extension;
     }
 
@@ -111,7 +111,7 @@ public enum FileExtension {
         return s.endsWith(this.extension);
     }
 
-    int length() {
+    public int length() {
         return extension.length();
     }
 
