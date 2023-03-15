@@ -151,9 +151,9 @@ jobs:
       - name: Inspect project version
         env:
           # Overrides defaults
-          MAVEN_ARGS:
+          MAVEN_ARGS: -q -N
         run: |
-          VERSION=$(./mvnw -q -N help:evaluate -DforceStdout=true -Dexpression=project.version)
+          VERSION=$(./mvnw help:evaluate -DforceStdout=true -Dexpression=project.version)
           echo $VERSION
           echo "project_version=$VERSION" >> $GITHUB_ENV
 
