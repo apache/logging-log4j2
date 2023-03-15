@@ -70,6 +70,13 @@ jobs:
           JAVA_HOME: ${{ env.JAVA_HOME_8_X64 }}
         run: ./mvnw clean install
 
+      - name: Upload Surefire Reports
+        if: failure()
+        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce   # 3.1.2
+        with:
+          name: surefire-reports-${{matrix.os}}
+          path: **/target/surefire-reports/*
+
       # `clean verify artifact:compare` is required to generate the build reproducibility report.
       # For details, see: https://maven.apache.org/guides/mini/guide-reproducible-builds.html#how-to-test-my-maven-build-reproducibility
       - name: Report build reproducibility
