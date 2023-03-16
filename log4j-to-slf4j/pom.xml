@@ -31,6 +31,7 @@
     <docLabel>SLF4J Documentation</docLabel>
     <projectDir>/log4j-to-slf4j</projectDir>
     <module.name>org.apache.logging.slf4j</module.name>
+    <slf4j.support.bound>3</slf4j.support.bound>
   </properties>
   <dependencies>
     <dependency>
@@ -97,6 +98,7 @@
           <instructions>
             <Bundle-Activator>org.apache.logging.slf4j.Activator</Bundle-Activator>
             <Export-Package>org.apache.logging.slf4j</Export-Package>
+            <Import-Package>org.slf4j*;version="${range;[==,${slf4j.support.bound})}",*</Import-Package>
           </instructions>
         </configuration>
       </plugin>
