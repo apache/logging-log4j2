@@ -358,7 +358,7 @@
     <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
     <maven-enforcer-plugin.version>3.2.1</maven-enforcer-plugin.version>
     <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
-    <maven-pmd-plugin.version>3.19.0</maven-pmd-plugin.version>
+    <maven-pmd-plugin.version>3.20.0</maven-pmd-plugin.version>
     <maven-scm-plugin.version>1.13.0</maven-scm-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
