@@ -33,7 +33,7 @@ As of release 2.19.0 the `log4j-slf4j18-impl` module targetting the unreleased S
 ## Requirements
 
 The Log4j 2 SLF4J Binding has a dependency on the Log4j 2 API as well as the SLF4J API.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).
 
 ## Usage
 

@@ -101,4 +101,4 @@ Note that Spring Boot initializes logging 3 times and only the last will have a 
 
 $h2 Requirements
 Log4j Kubernetes requires Log4j Core, Log4j API and a minimum of Java 8.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).

@@ -38,7 +38,7 @@ the Log4j 2 Core module is included then when it is not:
 If log4j-core is not present location information will not be accurate in calls using the Log4j 1.2 API. The config
 package which attempts to convert Log4j 1.x configurations to Log4j 2 is not supported without Log4j 2.    
 
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).
 
 ## Usage
 

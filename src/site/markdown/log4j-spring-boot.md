@@ -44,7 +44,7 @@ Spring configuration.
 ### Spring Property Source
 
 Log4j uses property sources when resolving properties it uses internally. This support allows
-most of Log4j's [System Properties](http://logging.apache.org/log4j/2.x/manual/configuration.html#SystemProperties)
+most of Log4j's [System Properties](manual/configuration.html#SystemProperties)
 to be specified in the Spring Configuration. However, some properties that are only referenced
 during the first Log4j initialization, such as the property Log4j uses to allow the default 
 Log4j implementation to be chosen, would not be available.
@@ -84,8 +84,4 @@ this purpose. Below is an example:
 
 The Log4j 2 Spring Cloud Configuration integration has a dependency on Log4j 2 API, Log4j 2 Core, and 
 Spring Boot versions 2.0.3.RELEASE or 2.1.1.RELEASE or later versions it either release series.
-For more information, see [Runtime Dependencies](../../runtime-dependencies.html).
-
-
-
-
+For more information, see [Runtime Dependencies](runtime-dependencies.html).
