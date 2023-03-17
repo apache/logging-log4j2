@@ -32,7 +32,6 @@ while writing to another `OutputStream` or `Writer`, or the contents read by an
 ## Requirements
 
 The Log4j IOStreams API extension requires the Log4j 2 API. This component was introduced in Log4j 2.1.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
 
 ## Usage
 The main entry point for the IOStreams module is the builder class
