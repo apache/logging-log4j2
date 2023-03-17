@@ -32,7 +32,7 @@ the "logger" attribute in this library.
 
 The Log4j Tag Library requires at least Servlet 2.5 (or Java EE 5), at least
 JSP 2.1 (or Java EE 5), and is dependent on the Log4j 2 API.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).
 
 <span class="label label-important">Important Note!</span>
 For performance reasons, containers often ignore certain JARs known not to
@@ -43,7 +43,7 @@ will need to change `catalina.properties` and remove "log4j*.jar" from the `jars
 property. You may need to do something similar on other containers if they skip scanning Log4j JAR files.
 
 ## Usage
-In accordance with the [Logger](../log4j-api/apidocs/org/apache/logging/log4j/Logger.html)
+In accordance with the [Logger](javadoc/log4j-api/org/apache/logging/log4j/Logger.html)
 API, this tag library has tags to
 support the following logging calls: "catching", "entry", "exit", "log", "trace", "debug",
 "info", "warn", "error", and "fatal". The "trace" tag was not supported in Jakarta Commons Log
@@ -65,6 +65,3 @@ available in this library, their uses are not nano-second order of magnitude wit
 that users may be used to with standard Log4j method calls. Therefore, they should be used
 sparingly. Use of the "ifEnabled" tag does not improve this performance; this tag is available
 to conditionally evaluate other actions in addition to logging actions.
-
-For detailed documentation of each tag, see the [Tag Library Reference](tagreference.html) or the
-[TLDDoc Documentation](tlddoc/index.html).

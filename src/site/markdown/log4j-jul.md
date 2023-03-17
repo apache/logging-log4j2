@@ -24,19 +24,19 @@ There are two possibilities:
 
 The JDK Logging Adapter is a custom implementation of
 [`java.util.logging.LogManager`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/LogManager.html)
-that uses [Log4j](../log4j-core/index.html). This adapter can be used with either the Log4j API or
+that uses [Log4j](javadoc/log4j-core/index.html). This adapter can be used with either the Log4j API or
 Log4j Core. When used with the API, there are a couple features of JUL that aren't supported. However, this
 does allow any other Log4j Provider besides the Core provider to be used with JUL.
 
 ## Requirements
 
 The JDK Logging Adapter is dependent on the Log4j API and optionally Log4j Core.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).
 
 ## Usage
 
 To use the JDK Logging Adapter, you must set the system property `java.util.logging.manager` to
-[`org.apache.logging.log4j.jul.LogManager`](apidocs/org/apache/logging/log4j/jul/LogManager.html)
+`org.apache.logging.log4j.jul.LogManager`.
 
 This must be done either through the command line (i.e., using the
 `-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager` argument) or by using
@@ -47,20 +47,20 @@ This must be done either through the command line (i.e., using the
 The use of a
 [`java.util.logging.Filter`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Filter.html)
 is supported on a per-[`Logger`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Logger.html)
-basis. However, it is recommended to use the standard [Filters](../manual/filters.html) feature in
+basis. However, it is recommended to use the standard [Filters](manual/filters.html) feature in
 Log4j instead.
 
 The use of
 [`java.util.logging.Handler`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Handler.html)
 classes is _NOT_ supported. Custom Handlers should instead use an appropriate
-[Appender](../manual/appenders.html) or code their own
-[`Appender`](../log4j-core/apidocs/org/apache/logging/log4j/core/Appender.html)
+[Appender](manual/appenders.html) or code their own
+[`Appender`](javadoc/log4j-core/org/apache/logging/log4j/core/Appender.html)
 plugin.
 
 Java logging levels are translated into Log4j logging levels dynamically. The following table lists the
 conversions between a Java logging level and its equivalent Log4j level. Custom levels should be implemented
 as an implementation of
-[`LevelConverter`](apidocs/org/apache/logging/log4j/jul/LevelConverter.html), and the
+`LevelConverter`, and the
 Log4j property `log4j.jul.levelConverter` must be set to your custom class name. Using the default
 `LevelConverter` implementation, custom logging levels are mapped to whatever the current level of
 the `Logger` being logged to is using.
@@ -73,10 +73,10 @@ Java Level | Log4j Level
 [`SEVERE`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#SEVERE) | `ERROR`
 [`WARNING`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#WARNING) | `WARN`
 [`INFO`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#INFO) | `INFO`
-[`CONFIG`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#CONFIG) | [`CONFIG`](apidocs/org/apache/logging/log4j/jul/LevelTranslator.html#CONFIG)
+[`CONFIG`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#CONFIG) | `CONFIG`
 [`FINE`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINE) | `DEBUG`
 [`FINER`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINER) | `TRACE`
-[`FINEST`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINEST) | [`FINEST`](apidocs/org/apache/logging/log4j/jul/LevelTranslator.html#FINEST)
+[`FINEST`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINEST) | `FINEST`
 [`ALL`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#ALL) | `ALL`
 
 
@@ -85,7 +85,7 @@ Java Level | Log4j Level
 The LogManager is not always useable because you have to set a JVM wide effective system
 property - e.g. in web servers this is not possible if you are not the administrator.
 
-The [`Log4jBridgeHandler`](apidocs/org/apache/logging/log4j/jul/Log4jBridgeHandler.html) is an
+The `Log4jBridgeHandler` is an
 alternative that can be declaratively used via `logging.properties`.
 
 It is less performant than the LogManager but still okay to use: the LogManager replaces the JDK
@@ -116,6 +116,3 @@ e.g. inside `ServletContextListener` or a `ServletFilter` static-class-init. or 
 
 **Important:** Log levels of JDK should match the ones of log4j. You may do this manually or use the
 automatic level propagation via `Log4jBridgeHandler.propagateLevels = true`.
-
-Please, read the [JavaDoc](apidocs/org/apache/logging/log4j/jul/Log4jBridgeHandler.html) for detailed
-configuration and limitation information!

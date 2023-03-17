@@ -24,7 +24,7 @@ Log4j 2 as the implementation.
 ## Requirements
 
 The Commons Logging Bridge is dependent on the Log4j 2 API and Commons Logging.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).
 
 ## Usage
 

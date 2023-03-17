@@ -26,8 +26,8 @@ The JMX GUI can be run as a stand-alone application or as a JConsole plug-in.
 ## Requirements
 
 The JMX GUI is dependent on Log4j 2 Core.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).
 
 ## Usage
 
-See the [JMX manual](../manual/jmx.html#ClientGUI) page for details.
+See the [JMX manual](manual/jmx.html#ClientGUI) page for details.

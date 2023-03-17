@@ -27,7 +27,7 @@ formatted only when they are accessed by a Filter or Appender.
 ## Requirements
 
 The Log4j 2 to JUL adapter is dependent on the Log4j 2 API.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).
 
 ## Usage
 

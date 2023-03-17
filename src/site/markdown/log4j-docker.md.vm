@@ -53,4 +53,4 @@ shouldn't be referenced with more than one '$' character.
 
 $h2 Requirements
 Log4j Docker requires Log4j Core, Log4j API and a minimum of Java 8.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).

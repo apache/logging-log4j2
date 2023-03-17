@@ -45,4 +45,4 @@ $h1 MongoDB appender
 $h2 Requirements
 
 The MongoDB Appender is dependent on the Log4j 2 API and implementation.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).

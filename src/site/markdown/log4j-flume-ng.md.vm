@@ -230,4 +230,4 @@ Flume Embedded Appender into an application.
 
 $h2 Requirements
 The Flume Appender requires the Log4J 2 API.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).

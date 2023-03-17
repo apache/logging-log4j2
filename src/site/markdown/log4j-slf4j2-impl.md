@@ -24,7 +24,7 @@ Log4j 2 as the implementation.
 ## Requirements
 
 The Log4j 2 SLF4J Binding has a dependency on the Log4j 2 API as well as the SLF4J API.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).
 
 ## Usage
 
