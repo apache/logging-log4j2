@@ -1676,13 +1676,14 @@
               <dir>src/changelog</dir>
               <includes>**/*.xml</includes>
               <publicId>http://logging.apache.org/log4j/changelog</publicId>
-              <systemId>https://logging.apache.org/log4j/changelog-0.1.0.xsd</systemId>
+              <systemId>https://logging.apache.org/log4j/changelog-0.1.1.xsd</systemId>
               <validating>true</validating>
             </validationSet>
           </validationSets>
         </configuration>
         <executions>
           <execution>
+            <phase>validate</phase>
             <goals>
               <goal>validate</goal>
             </goals>
