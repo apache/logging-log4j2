@@ -15,8 +15,8 @@
     limitations under the License.
 ////
 
-= Release Notes
+= ${release.version}<#if release.date?has_content> (${release.date})</#if>
 
-<#list releases as release>
-* xref:${release.version}.adoc[${release.version}]<#if release.date?has_content> (${release.date})</#if>
-</#list>
+Changes staged for the next 2.x.x version that is yet to be released.
+
+<#include "../.changelog.adoc.ftl">

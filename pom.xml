@@ -352,7 +352,7 @@
     <docker-maven-plugin.version>0.42.0</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
     <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
-    <log4j-tools.version>0.2.0</log4j-tools.version>
+    <log4j-tools.version>0.3.0</log4j-tools.version>
     <maven-artifact-plugin.version>3.4.0</maven-artifact-plugin.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
     <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
@@ -1751,6 +1751,17 @@
         <inherited>false</inherited>
         <configuration>
           <outputDirectory>${project.build.directory}/generated-sources/site/asciidoc/release-notes</outputDirectory>
+          <indexTemplates>
+            <template>
+              <source>.index.adoc.ftl</source>
+            </template>
+          </indexTemplates>
+          <changelogTemplates>
+            <template>
+              <source>.release-notes.adoc.ftl</source>
+              <target>%v.adoc</target>
+            </template>
+          </changelogTemplates>
         </configuration>
         <executions>
           <execution>
