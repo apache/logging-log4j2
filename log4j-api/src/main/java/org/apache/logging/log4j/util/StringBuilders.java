@@ -26,6 +26,7 @@ import static java.lang.Character.toLowerCase;
 public final class StringBuilders {
 
     private static final Class<?> timeClass;
+    private static final Class<?> dateClass;
 
     static {
         Class<?> clazz;
@@ -35,6 +36,13 @@ public final class StringBuilders {
             clazz = null;
         }
         timeClass = clazz;
+
+        try {
+            clazz = Class.forName("java.sql.Date");
+        } catch(ClassNotFoundException ex) {
+            clazz = null;
+        }
+        dateClass = clazz;
     }
 
     private StringBuilders() {
@@ -110,7 +118,7 @@ public final class StringBuilders {
             stringBuilder.append(((Float) obj).floatValue());
         } else if (obj instanceof Byte) {
             stringBuilder.append(((Byte) obj).byteValue());
-        } else if (isTime(obj) || obj instanceof java.time.temporal.Temporal) {
+        } else if (isTime(obj) || isDate(obj) || obj instanceof java.time.temporal.Temporal) {
             stringBuilder.append(obj);
         } else {
             return false;
@@ -119,12 +127,18 @@ public final class StringBuilders {
     }
 
     /*
-        Check to see if obj is an instance of java.sql.time without requiring the java.sql module.
+        Check to see if obj is an instance of java.sql.Time without requiring the java.sql module.
      */
     private static boolean isTime(final Object obj) {
         return timeClass != null && timeClass.isAssignableFrom(obj.getClass());
     }
 
+    /*
+        Check to see if obj is an instance of java.sql.Date without requiring the java.sql module.
+    */
+    private static boolean isDate(final Object obj) {
+        return dateClass != null && dateClass.isAssignableFrom(obj.getClass());
+    }
 
     /**
      * Returns true if the specified section of the left CharSequence equals the specified section of the right
