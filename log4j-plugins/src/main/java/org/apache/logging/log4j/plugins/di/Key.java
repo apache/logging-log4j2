@@ -33,6 +33,7 @@ import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -41,7 +42,7 @@ import org.apache.logging.log4j.util.Strings;
  *
  * @param <T> type of key
  */
-public class Key<T> {
+public class Key<T> implements StringBuilderFormattable {
     private final Type type;
     private final Class<T> rawType;
     private final Class<? extends Annotation> qualifierType;
@@ -192,11 +193,32 @@ public class Key<T> {
     public final String toString() {
         String string = toString;
         if (string == null) {
-            toString = string = String.format("Key{namespace='%s', name='%s', type=%s, qualifierType=%s}",
-                    namespace, name, type.getTypeName(), qualifierType != null ? qualifierType.getSimpleName() : Strings.EMPTY);
+            StringBuilder sb = new StringBuilder(32);
+            formatTo(sb);
+            toString = string = sb.toString();
         }
         return string;
     }
+
+    @Override
+    public void formatTo(final StringBuilder buffer) {
+        buffer.append(TO_STRING_PREFIX).append(type.getTypeName());
+        if (!namespace.isEmpty()) {
+            buffer.append(NAMESPACE).append(namespace);
+        }
+        if (!name.isEmpty()) {
+            buffer.append(NAME).append(name);
+        }
+        if (qualifierType != null) {
+            buffer.append(QUALIFIER_TYPE).append(qualifierType.getSimpleName());
+        }
+        buffer.append(']');
+    }
+
+    private static final String TO_STRING_PREFIX = "Key[type: ";
+    private static final String NAMESPACE = "; namespace: ";
+    private static final String NAME = "; name: ";
+    private static final String QUALIFIER_TYPE = "; qualifierType: ";
 
     /**
      * Creates a Key for the class.
