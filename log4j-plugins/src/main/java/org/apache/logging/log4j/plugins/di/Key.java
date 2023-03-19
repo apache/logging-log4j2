@@ -117,6 +117,14 @@ public class Key<T> implements StringBuilderFormattable {
     }
 
     /**
+     * Returns the qualifier type of this key. If this key has no qualifier type defined, then this returns
+     * {@code null}.
+     */
+    public final Class<? extends Annotation> getQualifierType() {
+        return qualifierType;
+    }
+
+    /**
      * Returns the ordinal value of this key. Keys that are otherwise equal can be compared by this
      * ordinal using the natural integer comparator where ties should default to keeping an existing binding intact.
      */
@@ -128,21 +136,21 @@ public class Key<T> implements StringBuilderFormattable {
      * Returns a new key using the provided name and the same type and qualifier type as this instance.
      */
     public final Key<T> withName(final String name) {
-        return builder(this).setName(name).get();
+        return new Key<>(type, rawType, qualifierType, name, namespace, order);
     }
 
     /**
      * Returns a new key using the provided namespace otherwise populated with the same values as this instance.
      */
     public final Key<T> withNamespace(final String namespace) {
-        return builder(this).setNamespace(namespace).get();
+        return new Key<>(type, rawType, qualifierType, name, namespace, order);
     }
 
     /**
      * Returns a new key using the provided qualifier type and the same type and name as this instance.
      */
     public final Key<T> withQualifierType(final Class<? extends Annotation> qualifierType) {
-        return builder(this).setQualifierType(qualifierType).get();
+        return new Key<>(type, rawType, qualifierType, name, namespace, order);
     }
 
     /**
@@ -152,7 +160,8 @@ public class Key<T> implements StringBuilderFormattable {
     public final <P> Key<P> getSuppliedType() {
         if (type instanceof ParameterizedType && Supplier.class.isAssignableFrom(rawType)) {
             final Type typeArgument = ((ParameterizedType) type).getActualTypeArguments()[0];
-            return builder(this).<P>setType(typeArgument).get();
+            final Class<P> rawType = Cast.cast(TypeUtil.getRawType(typeArgument));
+            return new Key<>(typeArgument, rawType, qualifierType, name, namespace, order);
         }
         return null;
     }
@@ -164,7 +173,8 @@ public class Key<T> implements StringBuilderFormattable {
     public final <P> Key<P> getParameterizedTypeArgument(final int arg) {
         if (type instanceof ParameterizedType) {
             final Type typeArgument = ((ParameterizedType) type).getActualTypeArguments()[arg];
-            return builder(this).<P>setType(typeArgument).get();
+            final Class<P> rawType = Cast.cast(TypeUtil.getRawType(typeArgument));
+            return new Key<>(typeArgument, rawType, qualifierType, name, namespace, order);
         }
         return null;
     }
@@ -224,8 +234,7 @@ public class Key<T> implements StringBuilderFormattable {
      * Creates a Key for the class.
      */
     public static <T> Key<T> forClass(final Class<T> clazz) {
-        return builder()
-                .setType(clazz)
+        return Key.builder(clazz)
                 .setQualifierType(getQualifierType(clazz))
                 .setName(Keys.getName(clazz))
                 .setNamespace(Keys.getNamespace(clazz))
@@ -237,8 +246,7 @@ public class Key<T> implements StringBuilderFormattable {
      * Creates a Key for the return type of the method.
      */
     public static <T> Key<T> forMethod(final Method method) {
-        return builder()
-                .<T>setType(method.getGenericReturnType())
+        return Key.<T>builder(method.getGenericReturnType())
                 .setQualifierType(getQualifierType(method))
                 .setName(Keys.getName(method))
                 .setNamespace(Keys.getNamespace(method))
@@ -250,8 +258,7 @@ public class Key<T> implements StringBuilderFormattable {
      * Creates a Key for the parameter.
      */
     public static <T> Key<T> forParameter(final Parameter parameter) {
-        return builder()
-                .<T>setType(parameter.getParameterizedType())
+        return Key.<T>builder(parameter.getParameterizedType())
                 .setQualifierType(getQualifierType(parameter))
                 .setName(Keys.getName(parameter))
                 .setNamespace(Keys.getNamespace(parameter))
@@ -262,8 +269,7 @@ public class Key<T> implements StringBuilderFormattable {
      * Creates a Key for the field.
      */
     public static <T> Key<T> forField(final Field field) {
-        return builder()
-                .<T>setType(field.getGenericType())
+        return Key.<T>builder(field.getGenericType())
                 .setQualifierType(getQualifierType(field))
                 .setName(Keys.getName(field))
                 .setNamespace(Keys.getNamespace(field))
@@ -271,10 +277,17 @@ public class Key<T> implements StringBuilderFormattable {
     }
 
     /**
-     * Creates a new key builder.
+     * Creates a new key builder for the given generic type.
      */
-    public static <T> Builder<T> builder() {
-        return new Builder<>();
+    public static <T> Builder<T> builder(final Type type) {
+        return new Builder<>(type);
+    }
+
+    /**
+     * Creates a new key builder for the given class.
+     */
+    public static <T> Builder<T> builder(final Class<T> type) {
+        return new Builder<>(type);
     }
 
     /**
@@ -300,37 +313,30 @@ public class Key<T> implements StringBuilderFormattable {
      * @param <T> type of key
      */
     public static class Builder<T> implements Supplier<Key<T>> {
-        private Type type;
+        private final Type type;
+        private final Class<T> rawType;
         private Class<? extends Annotation> qualifierType;
         private String name;
         private String namespace;
         private Integer order;
 
-        private Builder() {
+        private Builder(final Type type) {
+            this.type = type;
+            rawType = Cast.cast(TypeUtil.getRawType(type));
+        }
+
+        private Builder(final Class<T> type) {
+            this.type = type;
+            rawType = type;
         }
 
         private Builder(final Key<T> original) {
             type = original.type;
+            rawType = original.rawType;
             qualifierType = original.qualifierType;
             name = original.name;
             namespace = original.namespace;
             order = original.order;
-        }
-
-        /**
-         * Specifies the generic type of the key.
-         */
-        public <U> Builder<U> setType(final Type type) {
-            this.type = type;
-            return Cast.cast(this);
-        }
-
-        /**
-         * Specifies the type of key using a class reference.
-         */
-        public <U> Builder<U> setType(final Class<U> type) {
-            this.type = type;
-            return Cast.cast(this);
         }
 
         /**
@@ -378,7 +384,6 @@ public class Key<T> implements StringBuilderFormattable {
             if (namespace == null) {
                 namespace = Strings.EMPTY;
             }
-            final Class<T> rawType = Cast.cast(TypeUtil.getRawType(type));
             int order = this.order != null ? this.order : getOrder(rawType);
             return new Key<>(type, rawType, qualifierType, name, namespace, order);
         }
