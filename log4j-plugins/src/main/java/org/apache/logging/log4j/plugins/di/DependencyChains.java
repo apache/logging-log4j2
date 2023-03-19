@@ -19,6 +19,7 @@ package org.apache.logging.log4j.plugins.di;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 class DependencyChains {
     static final DependencyChain EMPTY = new EmptyChain();
@@ -56,6 +57,11 @@ class DependencyChains {
         @Override
         public boolean equals(final Object o) {
             return this == o || o != null && getClass() == o.getClass();
+        }
+
+        @Override
+        public String toString() {
+            return "[]";
         }
     }
 
@@ -107,6 +113,15 @@ class DependencyChains {
         @Override
         public int hashCode() {
             return Objects.hash(head, tail);
+        }
+
+        @Override
+        public String toString() {
+            final StringJoiner joiner = new StringJoiner(", ", "[", "]");
+            for (final Key<?> key : this) {
+                joiner.add(key.toString());
+            }
+            return joiner.toString();
         }
 
         private static class Iter implements Iterator<Key<?>> {
