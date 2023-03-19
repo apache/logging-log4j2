@@ -23,7 +23,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -37,23 +36,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UnknownFormatConversionException;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.FactoryType;
-import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.PluginException;
-import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.ScopeType;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.condition.Conditional;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.convert.TypeConverters;
+import org.apache.logging.log4j.plugins.convert.TypeConverterFactory;
+import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
+import org.apache.logging.log4j.plugins.internal.util.HierarchicalMap;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginRegistry;
 import org.apache.logging.log4j.plugins.model.PluginType;
@@ -66,7 +63,6 @@ import org.apache.logging.log4j.plugins.validation.ConstraintValidator;
 import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
-import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.ServiceRegistry;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -76,21 +72,20 @@ class DefaultInjector implements Injector {
     private static final Set<Class<?>> COLLECTION_INJECTION_TYPES = Set.of(
             Collection.class, Iterable.class, List.class, Map.class, Optional.class, Set.class, Stream.class);
 
-    private final BindingMap bindingMap;
-    private final Map<Class<? extends Annotation>, Scope> scopes = new ConcurrentHashMap<>();
-    private final Map<Type, TypeConverter<?>> typeConverters = new ConcurrentHashMap<>();
+    private final HierarchicalMap<Key<?>, Binding<?>> bindings;
+    private final HierarchicalMap<Class<? extends Annotation>, Scope> scopes;
     private ReflectionAccessor accessor = object -> object.setAccessible(true);
 
     DefaultInjector() {
-        bindingMap = new BindingMap();
-        bindingMap.put(KEY, () -> this);
+        bindings = HierarchicalMap.newRootMap();
+        bindings.put(KEY, Binding.from(KEY).toInstance(this));
+        scopes = HierarchicalMap.newRootMap();
         scopes.put(Singleton.class, new SingletonScope());
     }
 
     DefaultInjector(final DefaultInjector original) {
-        bindingMap = new BindingMap(original.bindingMap);
-        scopes.putAll(original.scopes);
-        typeConverters.putAll(original.typeConverters);
+        bindings = original.bindings.newChildMap();
+        scopes = original.scopes.newChildMap();
         accessor = original.accessor;
     }
 
@@ -115,46 +110,17 @@ class DefaultInjector implements Injector {
 
     @Override
     public <T> Supplier<T> getFactory(final Key<T> key) {
-        return getFactory(key, Set.of(), null, Set.of());
+        return getFactory(key, Set.of(), null, DependencyChain.empty());
     }
 
     @Override
     public TypeConverter<?> getTypeConverter(final Type type) {
-        if (typeConverters.isEmpty()) {
-            synchronized (typeConverters) {
-                if (typeConverters.isEmpty()) {
-                    LOGGER.trace("Initializing type converters");
-                    initializeTypeConverters();
-                }
-            }
-        }
-        final TypeConverter<?> primary = typeConverters.get(type);
-        // cached type converters
-        if (primary != null) {
-            return primary;
-        }
-        // dynamic enum support
-        if (type instanceof Class<?>) {
-            final Class<?> clazz = (Class<?>) type;
-            if (clazz.isEnum()) {
-                return registerTypeConverter(type, s -> EnglishEnums.valueOf(clazz.asSubclass(Enum.class), s));
-            }
-        }
-        // look for compatible converters
-        for (final Map.Entry<Type, TypeConverter<?>> entry : typeConverters.entrySet()) {
-            final Type key = entry.getKey();
-            if (TypeUtil.isAssignable(type, key)) {
-                LOGGER.debug("Found compatible TypeConverter<{}> for type [{}].", key, type);
-                final TypeConverter<?> value = entry.getValue();
-                return registerTypeConverter(type, value);
-            }
-        }
-        throw new UnknownFormatConversionException(type.toString());
+        return getInstance(TypeConverterFactory.class).getTypeConverter(type);
     }
 
     @Override
     public void injectMembers(final Object instance) {
-        injectMembers(Key.forClass(instance.getClass()), null, instance, Set.of(), null);
+        injectMembers(Key.forClass(instance.getClass()), null, instance, DependencyChain.empty(), null);
     }
 
     @Override
@@ -198,24 +164,24 @@ class DefaultInjector implements Injector {
 
     @Override
     public <T> Injector registerBinding(final Key<T> key, final Supplier<? extends T> factory) {
-        bindingMap.put(key, factory::get);
+        bindings.put(key, Binding.from(key).to(factory));
         return this;
     }
 
     @Override
     public <T> Injector registerBindingIfAbsent(final Key<T> key, final Supplier<? extends T> factory) {
-        bindingMap.bindIfAbsent(key, factory::get);
+        bindings.putIfAbsent(key, Binding.from(key).to(factory));
         return this;
     }
 
     @Override
     public void removeBinding(final Key<?> key) {
-        bindingMap.remove(key);
+        bindings.remove(key);
     }
 
     @Override
     public boolean hasBinding(final Key<?> key) {
-        return bindingMap.get(key) != null;
+        return bindings.containsKey(key);
     }
 
     @Override
@@ -224,7 +190,7 @@ class DefaultInjector implements Injector {
     }
 
     private <T> Supplier<T> getFactory(
-            final InjectionPoint<T> point, final Node node, final Set<Key<?>> chain, final StringBuilder debugLog) {
+            final InjectionPoint<T> point, final Node node, final DependencyChain chain, final StringBuilder debugLog) {
         final AnnotatedElement element = point.getElement();
         final Key<? extends NodeVisitor> visitorKey = NodeVisitor.keyFor(element);
         final NodeVisitor visitor = visitorKey != null ? getInstance(visitorKey) : null;
@@ -238,14 +204,23 @@ class DefaultInjector implements Injector {
         final Key<T> key = point.getKey();
         final Collection<String> aliases = point.getAliases();
         final Key<T> suppliedType = key.getSuppliedType();
-        return suppliedType != null ? getFactory(suppliedType, aliases, node, Set.of()) : getFactory(key, aliases, node, chain);
+        return suppliedType != null
+                ? getFactory(suppliedType, aliases, node, DependencyChain.empty())
+                : getFactory(key, aliases, node, chain);
     }
 
     private <T> Supplier<T> getFactory(
-            final Key<T> key, final Collection<String> aliases, final Node node, final Set<Key<?>> chain) {
-        final Binding<T> existing = bindingMap.get(key, aliases);
+            final Key<T> key, final Collection<String> aliases, final Node node, final DependencyChain chain) {
+        final Binding<?> existing = bindings.get(key);
         if (existing != null) {
-            return existing.getSupplier();
+            return Cast.cast(existing);
+        }
+        for (final String alias : aliases) {
+            final Key<T> keyAlias = key.withName(alias);
+            final Binding<?> existingAlias = bindings.get(keyAlias);
+            if (existingAlias != null) {
+                return Cast.cast(existingAlias);
+            }
         }
 
         final Class<T> rawType = key.getRawType();
@@ -255,7 +230,7 @@ class DefaultInjector implements Injector {
         if (rawType == PluginNamespace.class && !key.getNamespace().isEmpty()) {
             final Key<PluginNamespace> pluginNamespaceKey = Cast.cast(key);
             final Supplier<PluginNamespace> pluginNamespaceFactory = createPluginNamespaceFactory(pluginNamespaceKey);
-            return Cast.cast(bindingMap.merge(pluginNamespaceKey, pluginNamespaceFactory));
+            return Cast.cast(merge(pluginNamespaceKey, pluginNamespaceFactory));
         }
 
         // @Namespace Collection<T>/Map<String, T>/Stream<T>/etc. injection
@@ -264,23 +239,23 @@ class DefaultInjector implements Injector {
                 final Key<Stream<T>> streamKey = Cast.cast(key);
                 final Supplier<Stream<T>> streamFactory =
                         () -> streamPluginInstancesFromNamespace(key.getParameterizedTypeArgument(0));
-                return Cast.cast(bindingMap.merge(streamKey, streamFactory));
+                return Cast.cast(merge(streamKey, streamFactory));
             } else if (Set.class.isAssignableFrom(rawType)) {
                 final Key<Set<T>> setKey = Cast.cast(key);
                 final Supplier<Set<T>> setFactory = () -> getPluginSet(key.getParameterizedTypeArgument(0));
-                return Cast.cast(bindingMap.merge(setKey, setFactory));
+                return Cast.cast(merge(setKey, setFactory));
             } else if (Map.class.isAssignableFrom(rawType)) {
                 final Key<Map<String, T>> mapKey = Cast.cast(key);
                 final Supplier<Map<String, T>> mapFactory = () -> getPluginMap(key.getParameterizedTypeArgument(1));
-                return Cast.cast(bindingMap.merge(mapKey, mapFactory));
+                return Cast.cast(merge(mapKey, mapFactory));
             } else if (Iterable.class.isAssignableFrom(rawType)) {
                 final Key<Iterable<T>> iterableKey = Cast.cast(key);
                 final Supplier<Iterable<T>> iterableFactory = () -> getPluginList(key.getParameterizedTypeArgument(0));
-                return Cast.cast(bindingMap.merge(iterableKey, iterableFactory));
+                return Cast.cast(merge(iterableKey, iterableFactory));
             } else if (Optional.class.isAssignableFrom(rawType)) {
                 final Key<Optional<T>> optionalKey = Cast.cast(key);
                 final Supplier<Optional<T>> optionalFactory = () -> getOptionalPlugin(key.getParameterizedTypeArgument(0));
-                return Cast.cast(bindingMap.merge(optionalKey, optionalFactory));
+                return Cast.cast(merge(optionalKey, optionalFactory));
             } else {
                 throw new InjectException("Cannot inject plugins into " + key);
             }
@@ -291,17 +266,23 @@ class DefaultInjector implements Injector {
             final Key<Optional<T>> optionalKey = Cast.cast(key);
             final Supplier<Optional<T>> optionalFactory = () ->
                     getOptionalInstance(key.getParameterizedTypeArgument(0), aliases, node, chain);
-            return Cast.cast(bindingMap.merge(optionalKey, optionalFactory));
+            return Cast.cast(merge(optionalKey, optionalFactory));
         }
 
         // default namespace generic T injection
         final Supplier<T> instanceSupplier = () -> {
             final StringBuilder debugLog = new StringBuilder();
-            final T instance = Cast.cast(getInjectableInstance(key, node, chain, debugLog));
+            final T instance = getInjectableInstance(key, node, chain, debugLog);
             injectMembers(key, node, instance, chain, debugLog);
             return instance;
         };
-        return bindingMap.merge(key, scope.get(key, instanceSupplier));
+        return merge(key, scope.get(key, instanceSupplier));
+    }
+
+    private <T> Supplier<T> merge(final Key<T> key, final Supplier<T> factory) {
+        final Binding<?> binding = bindings.merge(key, Binding.from(key).to(factory), (oldValue, value) ->
+                oldValue.getKey().getOrder() <= value.getKey().getOrder() ? oldValue : value);
+        return Cast.cast(binding);
     }
 
     private Supplier<PluginNamespace> createPluginNamespaceFactory(final Key<PluginNamespace> key) {
@@ -364,7 +345,7 @@ class DefaultInjector implements Injector {
     }
 
     private <T> Optional<T> getOptionalInstance(
-            final Key<T> key, final Collection<String> aliases, final Node node, final Set<Key<?>> chain) {
+            final Key<T> key, final Collection<String> aliases, final Node node, final DependencyChain chain) {
         try {
             return Optional.ofNullable(getFactory(key, aliases, node, chain).get());
         } catch (final PluginException e) {
@@ -372,11 +353,11 @@ class DefaultInjector implements Injector {
         }
     }
 
-    private Object getInjectableInstance(
-            final Key<?> key, final Node node, final Set<Key<?>> chain, final StringBuilder debugLog) {
-        final Class<?> rawType = key.getRawType();
+    private <T> T getInjectableInstance(
+            final Key<T> key, final Node node, final DependencyChain chain, final StringBuilder debugLog) {
+        final Class<T> rawType = key.getRawType();
         validate(rawType, key.getName(), rawType);
-        final Constructor<?> constructor = getInjectableConstructor(key, chain);
+        final Constructor<T> constructor = BeanUtils.getInjectableConstructor(key, chain);
         final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(constructor);
         final var args = getArguments(key, node, points, chain, debugLog);
         return accessor.newInstance(constructor, args);
@@ -400,77 +381,8 @@ class DefaultInjector implements Injector {
         }
     }
 
-    private void initializeTypeConverters() {
-        final List<TypeConverter<?>> converters = getPluginList(new @TypeConverters Key<>() {});
-        converters.forEach(converter -> registerTypeConverter(getTypeConverterSupportedType(converter.getClass()), converter));
-        registerTypeConverter(Boolean.class, Boolean::valueOf);
-        registerTypeAlias(Boolean.class, Boolean.TYPE);
-        registerTypeConverter(Byte.class, Byte::valueOf);
-        registerTypeAlias(Byte.class, Byte.TYPE);
-        registerTypeConverter(Character.class, s -> {
-            if (s.length() != 1) {
-                throw new IllegalArgumentException("Character string must be of length 1: " + s);
-            }
-            return s.toCharArray()[0];
-        });
-        registerTypeAlias(Character.class, Character.TYPE);
-        registerTypeConverter(Double.class, Double::valueOf);
-        registerTypeAlias(Double.class, Double.TYPE);
-        registerTypeConverter(Float.class, Float::valueOf);
-        registerTypeAlias(Float.class, Float.TYPE);
-        registerTypeConverter(Integer.class, Integer::valueOf);
-        registerTypeAlias(Integer.class, Integer.TYPE);
-        registerTypeConverter(Long.class, Long::valueOf);
-        registerTypeAlias(Long.class, Long.TYPE);
-        registerTypeConverter(Short.class, Short::valueOf);
-        registerTypeAlias(Short.class, Short.TYPE);
-        registerTypeConverter(String.class, s -> s);
-    }
-
-    private TypeConverter<?> registerTypeConverter(final Type type, final TypeConverter<?> converter) {
-        final TypeConverter<?> conflictingConverter = typeConverters.get(type);
-        if (conflictingConverter != null) {
-            final boolean overridable;
-            if (converter instanceof Comparable) {
-                @SuppressWarnings("unchecked") final Comparable<TypeConverter<?>> comparableConverter =
-                        (Comparable<TypeConverter<?>>) converter;
-                overridable = comparableConverter.compareTo(conflictingConverter) < 0;
-            } else if (conflictingConverter instanceof Comparable) {
-                @SuppressWarnings("unchecked") final Comparable<TypeConverter<?>> comparableConflictingConverter =
-                        (Comparable<TypeConverter<?>>) conflictingConverter;
-                overridable = comparableConflictingConverter.compareTo(converter) > 0;
-            } else {
-                overridable = false;
-            }
-            if (overridable) {
-                LOGGER.debug(
-                        "Replacing TypeConverter [{}] for type [{}] with [{}] after comparison.",
-                        conflictingConverter, type, converter);
-                typeConverters.put(type, converter);
-                return converter;
-            } else {
-                LOGGER.warn(
-                        "Ignoring TypeConverter [{}] for type [{}] that conflicts with [{}], since they are not comparable.",
-                        converter, type, conflictingConverter);
-                return conflictingConverter;
-            }
-        } else {
-            typeConverters.put(type, converter);
-            return converter;
-        }
-    }
-
-    private void registerTypeAlias(final Type knownType, final Type aliasType) {
-        final TypeConverter<?> converter = typeConverters.get(knownType);
-        if (converter != null) {
-            typeConverters.put(aliasType, converter);
-        } else {
-            LOGGER.error("Cannot locate type converter for {}", knownType);
-        }
-    }
-
     private void injectMembers(
-            final Key<?> key, final Node node, final Object instance, final Set<Key<?>> chain, final StringBuilder debugLog) {
+            final Key<?> key, final Node node, final Object instance, final DependencyChain chain, final StringBuilder debugLog) {
         injectFields(key.getRawType(), node, instance, debugLog);
         injectMethods(key, node, instance, chain, debugLog);
     }
@@ -478,7 +390,7 @@ class DefaultInjector implements Injector {
     private void injectFields(final Class<?> rawType, final Node node, final Object instance, final StringBuilder debugLog) {
         for (Class<?> clazz = rawType; clazz != Object.class; clazz = clazz.getSuperclass()) {
             for (final Field field : clazz.getDeclaredFields()) {
-                if (isInjectable(field)) {
+                if (BeanUtils.isInjectable(field)) {
                     injectField(field, node, instance, debugLog);
                 }
             }
@@ -487,7 +399,7 @@ class DefaultInjector implements Injector {
 
     private <T> void injectField(final Field field, final Node node, final Object instance, final StringBuilder debugLog) {
         final InjectionPoint<T> point = InjectionPoint.forField(field);
-        final Supplier<T> factory = getFactory(point, node, Set.of(), debugLog);
+        final Supplier<T> factory = getFactory(point, node, DependencyChain.empty(), debugLog);
         final Key<T> key = point.getKey();
         final Object value = key.getRawType() == Supplier.class ? factory : factory.get();
         if (value != null) {
@@ -500,12 +412,12 @@ class DefaultInjector implements Injector {
     }
 
     private void injectMethods(
-            final Key<?> key, final Node node, final Object instance, final Set<Key<?>> chain, final StringBuilder debugLog) {
+            final Key<?> key, final Node node, final Object instance, final DependencyChain chain, final StringBuilder debugLog) {
         final Class<?> rawType = key.getRawType();
         final List<Method> injectMethodsWithNoArgs = new ArrayList<>();
         for (Class<?> clazz = rawType; clazz != Object.class; clazz = clazz.getSuperclass()) {
             for (final Method method : clazz.getDeclaredMethods()) {
-                if (isInjectable(method)) {
+                if (BeanUtils.isInjectable(method)) {
                     accessor.makeAccessible(method, instance);
                     if (method.getParameterCount() == 0) {
                         injectMethodsWithNoArgs.add(method);
@@ -544,7 +456,7 @@ class DefaultInjector implements Injector {
             final Object instance = getInjectablePluginInstance(node, debugLog);
             if (instance instanceof Supplier<?>) {
                 // configure plugin builder class and obtain plugin from that
-                injectMembers(Key.forClass(instance.getClass()), node, instance, Set.of(), debugLog);
+                injectMembers(Key.forClass(instance.getClass()), node, instance, DependencyChain.empty(), debugLog);
                 node.setObject(((Supplier<?>) instance).get());
             } else {
                 // usually created via static plugin factory method, but otherwise assume this is the final plugin instance
@@ -567,12 +479,12 @@ class DefaultInjector implements Injector {
                 .allMatch(condition -> condition.matches(key, rawType))) {
             return null;
         }
-        final Executable factory = getInjectablePluginFactory(rawType);
+        final Executable factory = BeanUtils.getInjectableFactory(rawType);
         final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(factory);
         if (!factory.canAccess(null)) {
             accessor.makeAccessible(factory);
         }
-        final var args = getArguments(key, node, points, Set.of(), debugLog);
+        final var args = getArguments(key, node, points, DependencyChain.empty(), debugLog);
         if (factory instanceof Method) {
             return accessor.invokeMethod((Method) factory, null, args);
         } else {
@@ -593,7 +505,7 @@ class DefaultInjector implements Injector {
                         final var bindings = createMethodBindings(bundle, method);
                         if (!bindings.isEmpty()) {
                             providerMethods.add(method);
-                            bindings.forEach(binding -> bindingMap.merge(binding.getKey(), binding.getSupplier()));
+                            bindings.forEach(binding -> merge(binding.getKey(), binding));
                         }
                     }
                 });
@@ -611,7 +523,7 @@ class DefaultInjector implements Injector {
             return List.of();
         }
         final List<InjectionPoint<?>> points = InjectionPoint.fromExecutable(method);
-        final var argumentFactories = getArgumentFactories(primaryKey, null, points, Set.of(primaryKey), null);
+        final var argumentFactories = getArgumentFactories(primaryKey, null, points, DependencyChain.of(primaryKey), null);
         final Supplier<T> unscoped = () -> {
             final var args = argumentFactories.entrySet()
                     .stream()
@@ -628,15 +540,15 @@ class DefaultInjector implements Injector {
         final Supplier<T> factory = getScopeForMethod(method).get(primaryKey, unscoped);
         final Collection<String> aliases = Keys.getAliases(method);
         final List<Binding<T>> bindings = new ArrayList<>(1 + aliases.size());
-        bindings.add(Binding.bind(primaryKey, factory));
+        bindings.add(Binding.from(primaryKey).to(factory));
         for (final String alias : aliases) {
-            bindings.add(Binding.bind(primaryKey.withName(alias), factory));
+            bindings.add(Binding.from(primaryKey.withName(alias)).to(factory));
         }
         return bindings;
     }
 
     private Object[] getArguments(
-            final Key<?> key, final Node node, final List<InjectionPoint<?>> points, final Set<Key<?>> chain,
+            final Key<?> key, final Node node, final List<InjectionPoint<?>> points, final DependencyChain chain,
             final StringBuilder debugLog) {
         return getArgumentFactories(key, node, points, chain, debugLog)
                 .entrySet()
@@ -652,7 +564,7 @@ class DefaultInjector implements Injector {
     }
 
     private Map<Parameter, Supplier<?>> getArgumentFactories(
-            final Key<?> key, final Node node, final List<InjectionPoint<?>> points, final Set<Key<?>> chain,
+            final Key<?> key, final Node node, final List<InjectionPoint<?>> points, final DependencyChain chain,
             final StringBuilder debugLog) {
         final Map<Parameter, Supplier<?>> argFactories = new LinkedHashMap<>();
         for (final InjectionPoint<?> point : points) {
@@ -661,14 +573,9 @@ class DefaultInjector implements Injector {
             if (parameterKey.getRawType().equals(Supplier.class)) {
                 argFactories.put(parameter, () -> getFactory(point, node, chain, debugLog));
             } else {
-                final var newChain = chain(chain, key);
-                if (newChain.contains(parameterKey)) {
-                    final StringBuilder sb = new StringBuilder("Circular dependency encountered: ");
-                    for (final Key<?> chainKey : newChain) {
-                        sb.append(chainKey).append(" -> ");
-                    }
-                    sb.append(parameterKey);
-                    throw new InjectException(sb.toString());
+                final var newChain = chain.withDependency(key);
+                if (newChain.hasDependency(parameterKey)) {
+                    throw new CircularDependencyException(parameterKey, newChain);
                 }
                 argFactories.put(parameter, () -> getFactory(point, node, newChain, debugLog).get());
             }
@@ -707,18 +614,6 @@ class DefaultInjector implements Injector {
         ((ConstraintValidator) validator).initialize(annotation);
     }
 
-    private static Type getTypeConverterSupportedType(final Class<?> clazz) {
-        for (final Type type : clazz.getGenericInterfaces()) {
-            if (type instanceof ParameterizedType) {
-                final ParameterizedType parameterizedType = (ParameterizedType) type;
-                if (parameterizedType.getRawType() == TypeConverter.class) {
-                    return parameterizedType.getActualTypeArguments()[0];
-                }
-            }
-        }
-        return Void.TYPE;
-    }
-
     private static void verifyAttributesConsumed(final Node node) {
         final Map<String, String> attrs = node.getAttributes();
         if (!attrs.isEmpty()) {
@@ -749,101 +644,6 @@ class DefaultInjector implements Injector {
                 final String start = nodeType.equalsIgnoreCase(node.getName()) ? node.getName() : nodeType + ' ' + node.getName();
                 LOGGER.error("{} has no field or parameter that matches element {}", start, child.getName());
             }
-        }
-    }
-
-    private static Set<Key<?>> chain(final Set<Key<?>> chain, final Key<?> newKey) {
-        if (chain == null || chain.isEmpty()) {
-            return Set.of(newKey);
-        }
-        final var newChain = new LinkedHashSet<>(chain);
-        newChain.add(newKey);
-        return newChain;
-    }
-
-    private static Executable getInjectablePluginFactory(final Class<?> pluginClass) {
-        return Stream.of(pluginClass.getDeclaredMethods())
-                .filter(method -> Modifier.isStatic(method.getModifiers()) &&
-                        AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
-                .min(Comparator.comparingInt(Method::getParameterCount).thenComparing(Method::getReturnType, (c1, c2) -> {
-                    if (c1.equals(c2)) {
-                        return 0;
-                    } else if (Supplier.class.isAssignableFrom(c1)) {
-                        return -1;
-                    } else if (Supplier.class.isAssignableFrom(c2)) {
-                        return 1;
-                    } else {
-                        return c1.getName().compareTo(c2.getName());
-                    }
-                }))
-                .map(Executable.class::cast)
-                .orElseGet(() -> getInjectableConstructor(Key.forClass(pluginClass), Set.of()));
-    }
-
-    private static <T> Constructor<T> getInjectableConstructor(final Key<T> key, final Set<Key<?>> chain) {
-        final Class<T> rawType = key.getRawType();
-        final List<Constructor<?>> injectConstructors = Stream.of(rawType.getDeclaredConstructors())
-                .filter(constructor -> constructor.isAnnotationPresent(Inject.class))
-                .collect(Collectors.toList());
-        if (injectConstructors.size() > 1) {
-            throw new InjectException("Multiple @Inject constructors found in " + rawType);
-        }
-        if (injectConstructors.size() == 1) {
-            return Cast.cast(injectConstructors.get(0));
-        }
-        try {
-            return rawType.getDeclaredConstructor();
-        } catch (final NoSuchMethodException ignored) {
-        }
-        try {
-            return rawType.getConstructor();
-        } catch (final NoSuchMethodException ignored) {
-        }
-        final List<Key<?>> keys = new ArrayList<>(chain);
-        keys.add(0, key);
-        final String prefix = chain.isEmpty() ? "" : "chain ";
-        final String keysToString =
-                prefix + keys.stream().map(Key::toString).collect(Collectors.joining(" -> "));
-        throw new InjectException(
-                "No @Inject constructors or no-arg constructor found for " + keysToString);
-    }
-
-    private static boolean isInjectable(final Field field) {
-        return field.isAnnotationPresent(Inject.class) || AnnotationUtil.isMetaAnnotationPresent(field, QualifierType.class);
-    }
-
-    private static boolean isInjectable(final Method method) {
-        return method.isAnnotationPresent(Inject.class) ||
-                !AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class) &&
-                        Stream.of(method.getParameters()).anyMatch(
-                                parameter -> AnnotationUtil.isMetaAnnotationPresent(parameter, QualifierType.class));
-    }
-
-    private static class SingletonScope implements Scope {
-        private final Map<Key<?>, Supplier<?>> singletonProviders = new ConcurrentHashMap<>();
-
-        @Override
-        public <T> Supplier<T> get(final Key<T> key, final Supplier<T> unscoped) {
-            return Cast.cast(singletonProviders.computeIfAbsent(key, ignored -> Lazy.lazy(unscoped)::value));
-        }
-
-        @Override
-        public String toString() {
-            return "[SingletonScope; size=" + singletonProviders.size() + "]";
-        }
-    }
-
-    private enum DefaultScope implements Scope {
-        INSTANCE;
-
-        @Override
-        public <T> Supplier<T> get(final Key<T> key, final Supplier<T> unscoped) {
-            return unscoped;
-        }
-
-        @Override
-        public String toString() {
-            return "[Unscoped]";
         }
     }
 }

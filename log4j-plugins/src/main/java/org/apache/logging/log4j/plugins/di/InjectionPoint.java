@@ -14,7 +14,6 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.di;
 
 import java.lang.reflect.AnnotatedElement;
@@ -27,13 +26,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class InjectionPoint<T> {
+public class InjectionPoint<T> {
     private final Key<T> key;
     private final Collection<String> aliases;
     private final Member member;
     private final AnnotatedElement element;
 
-    InjectionPoint(final Key<T> key, final Collection<String> aliases, final Member member, final AnnotatedElement element) {
+    private InjectionPoint(final Key<T> key, final Collection<String> aliases, final Member member, final AnnotatedElement element) {
         this.key = key;
         this.aliases = aliases;
         this.member = member;
@@ -56,19 +55,19 @@ class InjectionPoint<T> {
         return element;
     }
 
-    static <T> InjectionPoint<T> forField(final Field field) {
+    public static <T> InjectionPoint<T> forField(final Field field) {
         final Key<T> key = Key.forField(field);
         final Collection<String> aliases = Keys.getAliases(field);
         return new InjectionPoint<>(key, aliases, field, field);
     }
 
-    static <T> InjectionPoint<T> forParameter(final Executable executable, final Parameter parameter) {
+    public static <T> InjectionPoint<T> forParameter(final Executable executable, final Parameter parameter) {
         final Key<T> key = Key.forParameter(parameter);
         final Collection<String> aliases = Keys.getAliases(parameter);
         return new InjectionPoint<>(key, aliases, executable, parameter);
     }
 
-    static List<InjectionPoint<?>> fromExecutable(final Executable executable) {
+    public static List<InjectionPoint<?>> fromExecutable(final Executable executable) {
         return Stream.of(executable.getParameters())
                 .map(parameter -> forParameter(executable, parameter))
                 .collect(Collectors.toList());

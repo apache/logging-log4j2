@@ -1700,10 +1700,10 @@
         </configuration>
         <executions>
           <execution>
-            <phase>validate</phase>
             <goals>
               <goal>validate</goal>
             </goals>
+            <phase>validate</phase>
           </execution>
         </executions>
       </plugin>

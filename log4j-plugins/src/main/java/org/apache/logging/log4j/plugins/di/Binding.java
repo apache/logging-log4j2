@@ -14,29 +14,60 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.plugins.di;
 
 import java.util.function.Supplier;
 
-class Binding<T> {
-    private final Key<T> key;
-    private final Supplier<T> supplier;
+import org.apache.logging.log4j.util.Lazy;
 
-    private Binding(final Key<T> key, final Supplier<T> supplier) {
+/**
+ * Bindings combine a {@link Key} with a factory {@link Supplier} to get instances of the key's type.
+ *
+ * @param <T> type of key to bind instance factory
+ */
+public final class Binding<T> implements Supplier<T> {
+    private final Key<T> key;
+    private final Supplier<? extends T> factory;
+
+    private Binding(final Key<T> key, final Supplier<? extends T> factory) {
         this.key = key;
-        this.supplier = supplier;
+        this.factory = factory;
     }
 
     public Key<T> getKey() {
         return key;
     }
 
-    public Supplier<T> getSupplier() {
-        return supplier;
+    @Override
+    public T get() {
+        return factory.get();
     }
 
-    public static <T> Binding<T> bind(final Key<T> key, final Supplier<T> supplier) {
-        return new Binding<>(key, supplier);
+    public static <T> DSL<T> from(final Key<T> key) {
+        return new DSL<>(key);
+    }
+
+    public static <T> DSL<T> from(final Class<T> type) {
+        return new DSL<>(Key.forClass(type));
+    }
+
+    public static class DSL<T> {
+        private final Key<T> key;
+
+        private DSL(final Key<T> key) {
+            this.key = key;
+        }
+
+        public Binding<T> to(final Supplier<? extends T> factory) {
+            return new Binding<>(key, factory);
+        }
+
+        public Binding<T> toSingleton(final Supplier<? extends T> factory) {
+            return new Binding<>(key, Lazy.lazy(factory));
+        }
+
+        public Binding<T> toInstance(final T instance) {
+            return new Binding<>(key, () -> instance);
+        }
     }
 }

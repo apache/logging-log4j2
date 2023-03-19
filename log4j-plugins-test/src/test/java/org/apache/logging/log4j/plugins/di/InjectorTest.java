@@ -289,7 +289,7 @@ class InjectorTest {
     void unknownInstanceError() {
         final Key<UnknownInstance> key = new Key<>() {};
         assertThatThrownBy(() -> DI.createInjector().getInstance(key))
-                .hasMessage("No @Inject constructors or no-arg constructor found for " + key);
+                .hasMessage("No @Inject constructor or default constructor found for " + key);
     }
 
     @Test
@@ -483,7 +483,10 @@ class InjectorTest {
         final Injector injector = DI.createInjector(new UppercaseBundle());
         final Function<String, String> function = injector.getInstance(Keys.SUBSTITUTOR_KEY);
         assertThat(function.apply("foo")).isEqualTo("FOO");
-        assertThatThrownBy(() -> injector.getInstance(Function.class)).hasMessageContaining("No @Inject constructors");
+        final Key<Function<String, String>> unqualifiedFunctionKey = new Key<>() {};
+        assertThatThrownBy(() -> injector.getInstance(unqualifiedFunctionKey))
+                .isInstanceOf(NotInjectableException.class)
+                .hasMessage("No @Inject constructor or default constructor found for " + unqualifiedFunctionKey);
     }
 
     @Namespace("Test")
