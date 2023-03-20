@@ -1960,7 +1960,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             logMessageTrackRecursion(fqcn, level, marker, msg, throwable);
         } finally {
             // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
-            ReusableMessageFactory.release(msg);
+            messageFactory.recycle(msg);
         }
     }
 
