@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.layout.template.json.resolver;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -90,19 +91,20 @@ final class StackTraceStringResolver implements StackTraceResolver {
         final TruncatingBufferedPrintWriter srcWriter = srcWriterRecycler.acquire();
         try {
             throwable.printStackTrace(srcWriter);
-            final TruncatingBufferedPrintWriter dstWriter = truncate(srcWriter);
-            jsonWriter.writeString(dstWriter);
+            truncate(srcWriter, jsonWriter::writeString);
         } finally {
             srcWriterRecycler.release(srcWriter);
         }
     }
 
-    private TruncatingBufferedPrintWriter truncate(
-            final TruncatingBufferedPrintWriter srcWriter) {
+    private void truncate(
+            final TruncatingBufferedPrintWriter srcWriter,
+            final Consumer<TruncatingBufferedPrintWriter> effectiveWriterConsumer) {
 
         // Short-circuit if truncation is not enabled.
         if (!truncationEnabled) {
-            return srcWriter;
+            effectiveWriterConsumer.accept(srcWriter);
+            return;
         }
 
         // Allocate temporary buffers and truncate the input.
@@ -116,10 +118,10 @@ final class StackTraceStringResolver implements StackTraceResolver {
             } finally {
                 sequencePointerRecycler.release(sequencePointer);
             }
+            effectiveWriterConsumer.accept(dstWriter);
         } finally {
             dstWriterRecycler.release(dstWriter);
         }
-        return dstWriter;
 
     }
 

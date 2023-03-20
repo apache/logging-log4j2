@@ -39,7 +39,7 @@ public interface RecyclerFactory {
      * @return a new recycler for V-type instances
      */
     default <V> Recycler<V> create(final Supplier<V> supplier) {
-        return create(supplier, getDefaultCleaner());
+        return create(supplier, ignored -> {});
     }
 
     /**
@@ -54,29 +54,6 @@ public interface RecyclerFactory {
      * @param <V> the recyclable type
      * @return a new recycler for V-type instances
      */
-    default <V> Recycler<V> create(Supplier<V> supplier, Consumer<V> cleaner) {
-        return create(supplier, cleaner, getDefaultCleaner());
-    }
-
-    /**
-     * Creates a new recycler using the given functions for providing fresh instances and for cleaning recycled
-     * instances lazily or eagerly. The lazy cleaner function is invoked on recycled instances before being
-     * returned by {@link Recycler#acquire()}. The eager cleaner function is invoked on recycled instances
-     * during {@link Recycler#release(Object)}.
-     *
-     * @param supplier function to provide new instances of a recyclable object
-     * @param lazyCleaner function to invoke to clean a recycled object before being acquired
-     * @param eagerCleaner function to invoke to clean a recycled object after being released
-     * @param <V> the recyclable type
-     * @return a new recycler for V-type instances
-     */
-    <V> Recycler<V> create(Supplier<V> supplier, Consumer<V> lazyCleaner, Consumer<V> eagerCleaner);
-
-    /**
-     * Creates a default cleaner function that does nothing.
-     */
-    static <V> Consumer<V> getDefaultCleaner() {
-        return ignored -> {};
-    }
+    <V> Recycler<V> create(Supplier<V> supplier, Consumer<V> cleaner);
 
 }

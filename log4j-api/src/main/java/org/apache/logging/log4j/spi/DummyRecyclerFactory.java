@@ -35,10 +35,7 @@ public class DummyRecyclerFactory implements RecyclerFactory {
     }
 
     @Override
-    public <V> Recycler<V> create(
-            final Supplier<V> supplier,
-            final Consumer<V> lazyCleaner,
-            final Consumer<V> eagerCleaner) {
+    public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
         return new DummyRecycler<>(supplier);
     }
 
@@ -59,4 +56,5 @@ public class DummyRecyclerFactory implements RecyclerFactory {
         public void release(final V value) {}
 
     }
+
 }

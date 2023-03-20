@@ -488,8 +488,11 @@ public final class GelfLayout extends AbstractStringLayout {
         this.layout = patternLayout;
         stacktraceRecycler = recyclerFactory.create(
                 () -> new StringBuilderWriter(MAX_STRING_BUILDER_SIZE),
-                writer -> writer.getBuilder().setLength(0),
-                writer -> StringBuilders.trimToMaxSize(writer.getBuilder(), MAX_STRING_BUILDER_SIZE)
+                writer -> {
+                    final StringBuilder stringBuilder = writer.getBuilder();
+                    StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_SIZE);
+                    stringBuilder.setLength(0);
+                }
         );
     }
 

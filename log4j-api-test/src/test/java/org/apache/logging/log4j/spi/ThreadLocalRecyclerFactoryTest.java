@@ -43,14 +43,10 @@ class ThreadLocalRecyclerFactoryTest {
 
     @BeforeEach
     void setUp() {
-        recycler = ThreadLocalRecyclerFactory.getInstance()
-                .create(RecyclableObject::new, o -> {
-                    o.using = true;
-                    o.returned = false;
-                }, o -> {
-                    o.returned = true;
-                    o.using = false;
-                });
+        recycler = ThreadLocalRecyclerFactory.getInstance().create(RecyclableObject::new, object -> {
+            object.using = true;
+            object.returned = false;
+        });
     }
 
     @ParameterizedTest

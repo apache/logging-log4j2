@@ -55,15 +55,12 @@ public final class ReusableMessageFactory implements MessageFactory {
         super();
         parameterizedMessageRecycler = recyclerFactory.create(
                 ReusableParameterizedMessage::new,
-                RecyclerFactory.getDefaultCleaner(),
                 ReusableParameterizedMessage::clear);
         simpleMessageRecycler = recyclerFactory.create(
                 ReusableSimpleMessage::new,
-                RecyclerFactory.getDefaultCleaner(),
                 ReusableSimpleMessage::clear);
         objectMessageRecycler = recyclerFactory.create(
                 ReusableObjectMessage::new,
-                RecyclerFactory.getDefaultCleaner(),
                 ReusableObjectMessage::clear);
     }
 

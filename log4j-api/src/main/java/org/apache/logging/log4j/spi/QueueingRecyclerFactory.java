@@ -31,12 +31,9 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
     }
 
     @Override
-    public <V> Recycler<V> create(
-            final Supplier<V> supplier,
-            final Consumer<V> lazyCleaner,
-            final Consumer<V> eagerCleaner) {
+    public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
         final Queue<V> queue = queueFactory.create();
-        return new QueueingRecycler<>(supplier, lazyCleaner, eagerCleaner, queue);
+        return new QueueingRecycler<>(supplier, cleaner, queue);
     }
 
     // Visible for tests.
@@ -44,20 +41,16 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
 
         private final Supplier<V> supplier;
 
-        private final Consumer<V> lazyCleaner;
-
-        private final Consumer<V> eagerCleaner;
+        private final Consumer<V> cleaner;
 
         private final Queue<V> queue;
 
         private QueueingRecycler(
                 final Supplier<V> supplier,
-                final Consumer<V> lazyCleaner,
-                final Consumer<V> eagerCleaner,
+                final Consumer<V> cleaner,
                 final Queue<V> queue) {
             this.supplier = supplier;
-            this.lazyCleaner = lazyCleaner;
-            this.eagerCleaner = eagerCleaner;
+            this.cleaner = cleaner;
             this.queue = queue;
         }
 
@@ -69,19 +62,15 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
         @Override
         public V acquire() {
             final V value = queue.poll();
-            if (value == null) {
-                return supplier.get();
-            } else {
-                lazyCleaner.accept(value);
-                return value;
-            }
+            return value != null ? value : supplier.get();
         }
 
         @Override
         public void release(final V value) {
-            eagerCleaner.accept(value);
+            cleaner.accept(value);
             queue.offer(value);
         }
 
     }
+
 }

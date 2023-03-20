@@ -61,8 +61,10 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
                     final int currentPatternLength = messagePattern == null ? 0 : messagePattern.length();
                     return new StringBuilder(Math.max(MIN_BUILDER_SIZE, currentPatternLength * 2));
                 },
-                buffer -> buffer.setLength(0),
-                buffer -> StringBuilders.trimToMaxSize(buffer, Constants.MAX_REUSABLE_MESSAGE_SIZE)
+                buffer -> {
+                    StringBuilders.trimToMaxSize(buffer, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+                    buffer.setLength(0);
+                }
         );
     }
 

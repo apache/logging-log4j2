@@ -49,11 +49,8 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
     }
 
     @Override
-    public <V> Recycler<V> create(
-            final Supplier<V> supplier,
-            final Consumer<V> lazyCleaner,
-            final Consumer<V> eagerCleaner) {
-        return new ThreadLocalRecycler<>(supplier, lazyCleaner, eagerCleaner);
+    public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
+        return new ThreadLocalRecycler<>(supplier, cleaner);
     }
 
     // Visible for testing
@@ -61,19 +58,13 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
 
         private final Supplier<V> supplier;
 
-        private final Consumer<V> lazyCleaner;
-
-        private final Consumer<V> eagerCleaner;
+        private final Consumer<V> cleaner;
 
         private final ThreadLocal<Queue<V>> holder;
 
-        private ThreadLocalRecycler(
-                final Supplier<V> supplier,
-                final Consumer<V> lazyCleaner,
-                final Consumer<V> eagerCleaner) {
+        private ThreadLocalRecycler(final Supplier<V> supplier, final Consumer<V> cleaner) {
             this.supplier = supplier;
-            this.lazyCleaner = lazyCleaner;
-            this.eagerCleaner = eagerCleaner;
+            this.cleaner = cleaner;
             this.holder = ThreadLocal.withInitial(() -> Queues.SPSC.create(MAX_QUEUE_SIZE));
         }
 
@@ -81,17 +72,12 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
         public V acquire() {
             final Queue<V> queue = holder.get();
             final V value = queue.poll();
-            if (value == null) {
-                return supplier.get();
-            } else {
-                lazyCleaner.accept(value);
-                return value;
-            }
+            return value != null ? value : supplier.get();
         }
 
         @Override
         public void release(final V value) {
-            eagerCleaner.accept(value);
+            cleaner.accept(value);
             holder.get().offer(value);
         }
 
@@ -101,4 +87,5 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
         }
 
     }
+
 }

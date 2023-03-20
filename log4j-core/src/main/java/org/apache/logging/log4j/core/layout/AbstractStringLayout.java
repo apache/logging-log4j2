@@ -123,8 +123,10 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
     protected static Recycler<StringBuilder> createRecycler(final RecyclerFactory recyclerFactory) {
         return recyclerFactory.create(
                 () -> new StringBuilder(DEFAULT_STRING_BUILDER_SIZE),
-                stringBuilder -> stringBuilder.setLength(0),
-                stringBuilder -> StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_SIZE)
+                stringBuilder -> {
+                    StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_SIZE);
+                    stringBuilder.setLength(0);
+                }
         );
     }
 
