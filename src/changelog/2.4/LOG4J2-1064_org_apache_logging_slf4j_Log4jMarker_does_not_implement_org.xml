@@ -15,7 +15,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<entry type="fixed">
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
+       type="fixed">
   <issue id="LOG4J2-1064" link="https://issues.apache.org/jira/browse/LOG4J2-1064"/>
   <author id="ggregory"/>
   <description format="asciidoc">org.apache.logging.slf4j.Log4jMarker does not implement org.slf4j.Marker.equals(Object) org.slf4j.Marker.hashCode().</description>

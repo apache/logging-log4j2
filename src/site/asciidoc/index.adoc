@@ -138,7 +138,7 @@ available to allow applications to continue to use the Log4j 1.x API. Adapters a
 Logging, SLF4J, and java.util.logging.
 
 Log4j {Log4jReleaseVersion} is the latest release of Log4j and contains several bug fixes that were found after the release of Log4j 2.6.
-This release contains new features and fixes which are explained further in xref:changelog/{Log4jReleaseVersion}.adoc[changelogs].
+This release contains new features and fixes which are explained further in xref:release-notes/{Log4jReleaseVersion}.adoc[the release notes].
 
 Note that subsequent to the release of Log4j 2.6 a minor source incompatibility with prior release was found due to the
 addition of new methods to the Logger interface. If you have code that does:

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.util;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
 
 /**
@@ -64,9 +65,7 @@ final class PrivateSecurityManagerStackTraceUtil {
     static Deque<Class<?>> getCurrentStackTrace() {
         final Class<?>[] array = SECURITY_MANAGER.getClassContext();
         final Deque<Class<?>> classes = new ArrayDeque<>(array.length);
-        for (final Class<?> clazz : array) {
-            classes.push(clazz);
-        }
+        Collections.addAll(classes, array);
         return classes;
     }
 

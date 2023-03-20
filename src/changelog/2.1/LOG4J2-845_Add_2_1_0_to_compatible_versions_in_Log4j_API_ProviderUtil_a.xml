@@ -15,7 +15,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<entry type="changed">
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
+       type="changed">
   <issue id="LOG4J2-845" link="https://issues.apache.org/jira/browse/LOG4J2-845"/>
   <author id="mattsicker"/>
   <description format="asciidoc">Add 2.1.0 to compatible versions in Log4j API ProviderUtil and update Log4jAPIVersion to 2.1.0 in

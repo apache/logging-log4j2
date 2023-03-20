@@ -15,7 +15,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<entry type="changed">
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
+       type="changed">
   <author id="ggregory"/>
   <description format="asciidoc">Update com.fasterxml.jackson.* 2.10.2 -&gt; 2.11.0.</description>
 </entry>

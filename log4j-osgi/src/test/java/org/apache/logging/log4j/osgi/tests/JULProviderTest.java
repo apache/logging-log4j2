@@ -58,7 +58,7 @@ public class JULProviderTest {
                 junitBundles());
     }
 
-    @Test
+    @Test(timeout = 10_000L)
     public void testJulFactoryResolves() {
         final Optional<Bundle> julBundle = Stream.of(context.getBundles())
                 .filter(b -> "org.apache.logging.log4j.to-jul".equals(b.getSymbolicName()))

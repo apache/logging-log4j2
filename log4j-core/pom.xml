@@ -30,6 +30,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
+    <javadoc.skip>false</javadoc.skip>
   </properties>
   <dependencies>
     <!-- Used for OSGi bundle support -->
@@ -136,15 +137,13 @@
             <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
             <!-- TODO: exclude internal classes from export -->
             <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
-            <Import-Package>
-              javax.activation;version="[1.2,2)";resolution:=optional,
+            <Import-Package>javax.activation;version="[1.2,2)";resolution:=optional,
               javax.jms;version="[1.1,3)";resolution:=optional,
               javax.mail;version="[1.6,2)";resolution:=optional,
               javax.mail.internet;version="[1.6,2)";resolution:=optional,
               javax.mail.util;version="[1.6,2)";resolution:=optional,
               sun.reflect;resolution:=optional,
-              *
-            </Import-Package>
+              *</Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
@@ -200,99 +199,4 @@
       </plugin>
     </plugins>
   </build>
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <!--<propertiesLocation>${vfs.parent.dir}/checkstyle.properties</propertiesLocation> -->
-          <configLocation>${log4jParentDir}/checkstyle.xml</configLocation>
-          <suppressionsLocation>${log4jParentDir}/checkstyle-suppressions.xml</suppressionsLocation>
-          <enableRulesSummary>false</enableRulesSummary>
-          <propertyExpansion>basedir=${basedir}</propertyExpansion>
-          <propertyExpansion>licensedir=${log4jParentDir}/checkstyle-header.txt</propertyExpansion>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <failOnError>false</failOnError>
-          <source>8</source>
-          <bottom>&lt;p align="center"&gt;Copyright &amp;#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.&lt;br /&gt;
-            Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
-            and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
-          <!-- module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating
-               project -->
-          <detectOfflineLinks>false</detectOfflineLinks>
-          <linksource>true</linksource>
-          <links>
-            <link>http://docs.oracle.com/javaee/6/api/</link>
-            <link>http://www.osgi.org/javadoc/r4v43/core/</link>
-            <link>https://commons.apache.org/proper/commons-lang/javadocs/api-release/</link>
-          </links>
-          <groups>
-            <group>
-              <title>Core API</title>
-              <packages>org.apache.logging.log4j.core</packages>
-            </group>
-            <group>
-              <title>Configuration</title>
-              <packages>org.apache.logging.log4j.core.config*:org.apache.logging.log4j.core.selector</packages>
-            </group>
-            <group>
-              <title>Core Plugins</title>
-              <packages>org.apache.logging.log4j.core.appender*:org.apache.logging.log4j.core.filter:org.apache.logging.log4j.core.layout:org.apache.logging.log4j.core.lookup:org.apache.logging.log4j.core.pattern:org.apache.logging.log4j.core.script</packages>
-            </group>
-            <group>
-              <title>Tools</title>
-              <packages>org.apache.logging.log4j.core.net*:org.apache.logging.log4j.core.tools</packages>
-            </group>
-            <group>
-              <title>Internals</title>
-              <packages>org.apache.logging.log4j.core.async:org.apache.logging.log4j.core.impl:org.apache.logging.log4j.core.util*:org.apache.logging.log4j.core.osgi:org.apache.logging.log4j.core.jackson:org.apache.logging.log4j.core.jmx</packages>
-            </group>
-          </groups>
-        </configuration>
-        <reportSets>
-          <reportSet>
-            <id>non-aggregate</id>
-            <reports>
-              <report>javadoc</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <id>non-aggregate</id>
-            <reports>
-              <report>jxr</report>
-            </reports>
-          </reportSet>
-          <reportSet>
-            <id>aggregate</id>
-            <reports>
-              <report>aggregate</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <configuration>
-          <targetJdk>${maven.compiler.target}</targetJdk>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </reporting>
 </project>

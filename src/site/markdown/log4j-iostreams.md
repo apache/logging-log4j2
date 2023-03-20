@@ -20,11 +20,11 @@
 
 ## Log4j IOStreams
 
-The IOStreams component is a [Log4j API](../log4j-api/index.html) extension that provides numerous
+The IOStreams component is a [Log4j API](javadoc/log4j-api/index.html) extension that provides numerous
 classes from
 [`java.io`](http://docs.oracle.com/javase/6/docs/api/java/io/package-summary.html)
 that can either write to a
-[`Logger`](../log4j-api/apidocs/org/apache/logging/log4j/Logger.html)
+[`Logger`](javadoc/log4j-api/org/apache/logging/log4j/Logger.html)
 while writing to another `OutputStream` or `Writer`, or the contents read by an
 `InputStream` or `Reader` can be
 [wiretapped](http://www.eaipatterns.com/WireTap.html) by a `Logger`.
@@ -32,11 +32,11 @@ while writing to another `OutputStream` or `Writer`, or the contents read by an
 ## Requirements
 
 The Log4j IOStreams API extension requires the Log4j 2 API. This component was introduced in Log4j 2.1.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).
 
 ## Usage
 The main entry point for the IOStreams module is the builder class
-[`IoBuilder`](apidocs/org/apache/logging/log4j/io/IoBuilder.html), and in particular,
+`IoBuilder`, and in particular,
 the `IoBuilder.forLogger()` methods. One primary usage of this API extension is for setting up
 loggers in the JDBC API. For example:
 

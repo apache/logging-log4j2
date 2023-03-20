@@ -63,9 +63,14 @@
     <shared-cache-mode>NONE</shared-cache-mode>
     <properties>
       <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
-      <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:Log4j"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:Log4j;MODE=PostgreSQL"/>
       <property name="javax.persistence.jdbc.user" value="sa"/>
       <property name="javax.persistence.jdbc.password" value=""/>
+      <!--
+        Until the issue in https://github.com/eclipse-ee4j/eclipselink/issues/1393
+        we run in PostgreSQL compatibility mode.
+       -->
+      <property name="eclipselink.target-database" value="PostgreSQL"/>
       <!--<property name="eclipselink.logging.level" value="FINE"/>
       <property name="eclipselink.logging.level.sql" value="FINE"/>
       <property name="eclipselink.logging.parameters" value="true"/> uncomment to troubleshoot SQL-->

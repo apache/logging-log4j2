@@ -21,10 +21,10 @@
 
 The Web module provides support for automatically enabling Log4j in Servlet containers.
 
-See the user manual page on [Web Applications and JSPs](../manual/webapp.html)
+See the user manual page on [Web Applications and JSPs](manual/webapp.html)
 for details on using Log4j 2 in Web Applications.
 
 ## Requirements
 
 The Web module requires Servlet 5.0 at minimum and is dependent on the Log4j 2 API and implementation.
-For more information, see [Runtime Dependencies](../runtime-dependencies.html).
+For more information, see [Runtime Dependencies](runtime-dependencies.html).

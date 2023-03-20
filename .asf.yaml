@@ -13,21 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# .asf.yaml documentation:
-# https://cwiki.apache.org/confluence/display/INFRA/Git+-+.asf.yaml+features
+# `.asf.yaml` is a branch-specific YAML configuration file for Git repositories to control features such as notifications, GitHub settings, etc.
+# See its documentation for details: https://cwiki.apache.org/confluence/display/INFRA/Git+-+.asf.yaml+features
+
 notifications:
+  # GitHub already provides notifications for PRs and issues.
+  # Please don't duplicate that noise here!
   commits: commits@logging.apache.org
-  # issues and PRs send their own emails to devs
-  issues: notifications@logging.apache.org
-  pullrequests: notifications@logging.apache.org
-  jira_options: link label
+  pullrequests_bot_dependabot: robots@logging.apache.org
 github:
-  description: "Apache Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture."
+  description: "Apache Log4j 2 is a versatile, feature-rich, efficient logging API and backend for Java."
   homepage: https://logging.apache.org/log4j/2.x/
-  # enable GitHub Issues and Projects
-  issues: true
-  projects: true
-  # and enable support for our old Jira instance
+  features:
+    issues: true
+  del_branch_on_merge: true
   autolink_jira:
     - LOG4J2
   labels:
@@ -41,16 +40,18 @@ github:
     - logging
     - logger
     - api
-    - async
-    - asynchronous
     - syslog
-    - structured-logging
-    - json
-    - performance
-    - high-performance
-    #  ultra-high-max-plus-performance
-    - concurrency
   protected_branches:
-    # Prevent force pushes to primary branches
-    master: {}
-    release-2.x: {}
+    main: {}
+    2.x: {}
+  # Attempt to make the auto-generated github emails more easily readable in email clients.
+  custom_subjects:
+    new_pr: "[PR] {title} ({repository})"
+    close_pr: "Re: [PR] {title} ({repository})"
+    comment_pr: "Re: [PR] {title} ({repository})"
+    diffcomment: "Re: [PR] {title} ({repository})"
+    merge_pr: "Re: [PR] {title} ({repository})"
+    new_issue: "[I] {title} ({repository})"
+    comment_issue: "Re: [I] {title} ({repository})"
+    close_issue: "Re: [I] {title} ({repository})"
+    catchall: "[GH] {title} ({repository})"

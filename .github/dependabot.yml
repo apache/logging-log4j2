@@ -19,14 +19,68 @@ updates:
 - package-ecosystem: maven
   directory: "/"
   schedule:
-    interval: monthly
-  open-pull-requests-limit: 50
+    interval: "daily"
+  target-branch: "2.x"
+  ignore:
+    # Jetty 10.x does not have an internal logging API
+    - dependency-name: "org.eclipse.jetty:*"
+      update-types: ["version-update:semver-major"]
+    # EclipseLink 3.x is Jakarta EE 9
+    - dependency-name: "org.eclipse.persitence:*"
+      update-types: ["version-update:semver-major"]
+    # Spring 6.x is Jakarta EE 9
+    - dependency-name: "org.springframework:*"
+      update-types: ["version-update:semver-major"]
+    # Spring Boot 3.x is Jakarta EE 9
+    - dependency-name: "org.springframework.boot:*"
+      update-types: ["version-update:semver-major"]
+    # Spring Cloud 2022.x is Jakarta EE 9
+    - dependency-name: "org.springframework.cloud:*"
+      update-types: ["version-update:semver-major"]
+    # Tomcat Juli 10.1.x requires Java 11
+    - dependency-name: "org.apache.tomcat:*"
+      update-types: ["version-update:semver-major"]
+    # Always update SLF4J manually
+    - dependency-name: "org.slf4j:*"
+    # Keep Logback version 1.2.x
+    - dependency-name: "ch.qos.logback:*"
+      update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
 - package-ecosystem: github-actions
-  directory: /
-  schedule:
-    interval: monthly
-  open-pull-requests-limit: 5
-- package-ecosystem: "docker"
   directory: "/"
   schedule:
-    interval: weekly
+    interval: "daily"
+  target-branch: "2.x"
+
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: "daily"
+  target-branch: "main"
+  ignore:
+    # Jetty 10.x does not have an internal logging API
+    - dependency-name: "org.eclipse.jetty:*"
+      update-types: ["version-update:semver-major"]
+    # EclipseLink 3.x is Jakarta EE 9
+    - dependency-name: "org.eclipse.persitence:*"
+      update-types: ["version-update:semver-major"]
+    # Spring 6.x is Jakarta EE 9
+    - dependency-name: "org.springframework:*"
+      update-types: ["version-update:semver-major"]
+    # Spring Boot 3.x is Jakarta EE 9
+    - dependency-name: "org.springframework.boot:*"
+      update-types: ["version-update:semver-major"]
+    # Spring Cloud 2022.x is Jakarta EE 9
+    - dependency-name: "org.springframework.cloud:*"
+      update-types: ["version-update:semver-major"]
+    # Always update SLF4J manually
+    - dependency-name: "org.slf4j:*"
+    # Keep Logback version 1.2.x
+    - dependency-name: "ch.qos.logback:*"
+      update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: "daily"
+  target-branch: "main"

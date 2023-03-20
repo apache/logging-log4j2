@@ -16,25 +16,31 @@
   limitations under the license.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>7</version>
+    <version>8</version>
     <relativePath/>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
-  <name>Apache Log4j BOM</name>
-  <description>Apache Log4j Bill of Materials</description>
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-bom</artifactId>
   <version>3.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <name>Apache Log4j BOM</name>
+  <description>Apache Log4j Bill of Materials</description>
+
+  <scm>
+    <tag>log4j-2.20.1-rc1</tag>
+  </scm>
 
   <properties>
     <!-- reproducible build setting -->
     <project.build.outputTimestamp>10</project.build.outputTimestamp>
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
+    <project.build.outputTimestamp>0</project.build.outputTimestamp>
+    <spotless-maven-plugin.version>2.27.2</spotless-maven-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -323,6 +329,26 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>${spotless-maven-plugin.version}</version>
+        <configuration>
+          <pom>
+            <sortPom>
+              <expandEmptyElements>false</expandEmptyElements>
+            </sortPom>
+          </pom>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default-spotless</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

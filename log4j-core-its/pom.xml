@@ -30,8 +30,8 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Integration Tests Documentation</docLabel>
     <projectDir>/log4j-core-its</projectDir>
-    <revapi.skip>true</revapi.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.install.skip>true</maven.install.skip>
     <maven.test.skip>true</maven.test.skip>
   </properties>
   <dependencies>
@@ -236,10 +236,8 @@
           <excludes>
             <exclude>**/ForceNoDefClassFoundError.*</exclude>
           </excludes>
-          <groups>
-            org.apache.logging.log4j.core.test.categories.PerformanceTests,
-            org.apache.logging.log4j.core.test.categories.Appenders$Jms
-          </groups>
+          <groups>org.apache.logging.log4j.core.test.categories.PerformanceTests,
+            org.apache.logging.log4j.core.test.categories.Appenders$Jms</groups>
         </configuration>
       </plugin>
       <plugin>

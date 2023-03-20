@@ -16,14 +16,16 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.util.ArrayDeque;
 import java.util.Deque;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.engine.execution.InterceptingExecutableInvoker;
 import org.junit.jupiter.engine.execution.InvocationInterceptorChain;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class StackLocatorUtilTest {
 
@@ -75,15 +77,20 @@ public class StackLocatorUtilTest {
     @Test
     public void testGetCurrentStackTrace() throws Exception {
         final Deque<Class<?>> classes = StackLocatorUtil.getCurrentStackTrace();
-        final Deque<Class<?>> reversed = new ArrayDeque<>(classes.size());
-        while (!classes.isEmpty()) {
-            reversed.push(classes.pop());
+        while (classes.peekFirst() != StackLocatorUtil.class) {
+            classes.removeFirst();
         }
-        while (reversed.peek() != StackLocatorUtil.class) {
-            reversed.pop();
-        }
-        reversed.pop(); // ReflectionUtil
-        assertSame(StackLocatorUtilTest.class, reversed.pop());
+        classes.removeFirst(); // StackLocatorUtil
+        assertSame(StackLocatorUtilTest.class, classes.removeFirst());
+    }
+
+    @Test
+    public void testTopElementInStackTrace() {
+        final StackLocator stackLocator = StackLocator.getInstance();
+        final Deque<Class<?>> classes = stackLocator.getCurrentStackTrace();
+        //Removing private class in "PrivateSecurityManagerStackTraceUtil"
+        classes.removeFirst();
+        assertSame(PrivateSecurityManagerStackTraceUtil.class, classes.getFirst());
     }
 
     @Test
@@ -110,6 +117,64 @@ public class StackLocatorUtilTest {
         final Class<?> clazz = locator.locateClass();
         assertNotNull(clazz, "Could not locate class");
         assertEquals(this.getClass(), clazz, "Incorrect class");
+    }
+
+    private final class Foo {
+
+        private StackTraceElement foo() {
+            return new Bar().bar(); // <--- testCalcLocation() line
+        }
+
+    }
+
+    private final class Bar {
+
+        private StackTraceElement bar() {
+            return baz();
+        }
+
+        private StackTraceElement baz() {
+            return quux();
+        }
+
+    }
+
+    private StackTraceElement quux() {
+        final StackLocator stackLocator = StackLocator.getInstance();
+        return stackLocator.calcLocation("org.apache.logging.log4j.util.StackLocatorUtilTest$Bar");
+    }
+
+    @Test
+    public void testCalcLocation() {
+        /*
+         * We are setting up a stack trace that looks like:
+         *  - org.apache.logging.log4j.util.test.StackLocatorTest#quux(line:118)
+         *  - org.apache.logging.log4j.util.test.StackLocatorTest$Bar#baz(line:112)
+         *  - org.apache.logging.log4j.util.test.StackLocatorTest$Bar#bar(line:108)
+         *  - org.apache.logging.log4j.util.test.StackLocatorTest$Foo(line:100)
+         *
+         * We are pretending that org.apache.logging.log4j.util.test.StackLocatorTest$Bar is the logging class, and
+         * org.apache.logging.log4j.util.test.StackLocatorTest$Foo is where the log line emanated.
+         */
+        final StackTraceElement element = new Foo().foo();
+        assertEquals("org.apache.logging.log4j.util.StackLocatorUtilTest$Foo", element.getClassName());
+        // The line number below may need adjustment if this file is changed.
+        assertEquals(125, element.getLineNumber());
+    }
+
+    @Test
+    public void testCalcLocationWhenNotInTheStack() {
+        final StackLocator stackLocator = StackLocator.getInstance();
+        final StackTraceElement stackTraceElement = stackLocator.calcLocation("java.util.Logger");
+        assertNull(stackTraceElement);
+    }
+
+    static class ClassLocator {
+
+        public Class<?> locateClass() {
+            final StackLocator stackLocator = StackLocator.getInstance();
+            return stackLocator.getCallerClass(ClassLocator.class);
+        }
     }
 
 }

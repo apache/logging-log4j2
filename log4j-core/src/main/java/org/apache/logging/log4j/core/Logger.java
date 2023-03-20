@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -410,6 +411,10 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
         // LOG4J2-151: changed visibility to public
         public void logEvent(final LogEvent event) {
             loggerConfig.log(event);
+        }
+
+        boolean hasFilter() {
+            return config.getFilter() != null;
         }
 
         boolean filter(final Level level, final Marker marker, final String msg) {

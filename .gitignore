@@ -21,7 +21,7 @@ felix-cache/
 .idea
 **/*.iml
 /.metadata/
-.mvn/wrapper/MavenWrapperDownloader.java
+/.mvn/wrapper/maven-wrapper.jar
 .project
 .settings
 .surefire-*

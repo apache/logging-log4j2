@@ -17,6 +17,7 @@
 package org.apache.logging.slf4j;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
@@ -30,7 +31,6 @@ import org.slf4j.spi.LocationAwareLogger;
  */
 public class SLF4JLogger extends AbstractLogger {
 
-    private static final long serialVersionUID = 1L;
     private final org.slf4j.Logger logger;
     private final LocationAwareLogger locationAwareLogger;
 
@@ -257,6 +257,41 @@ public class SLF4JLogger extends AbstractLogger {
                     break;
             }
         }
+    }
+
+    @Override
+    public LogBuilder always() {
+        return atLevel(Level.OFF);
+    }
+
+    @Override
+    public LogBuilder atTrace() {
+        return atLevel(Level.TRACE);
+    }
+
+    @Override
+    public LogBuilder atDebug() {
+        return atLevel(Level.DEBUG);
+    }
+
+    @Override
+    public LogBuilder atInfo() {
+        return atLevel(Level.INFO);
+    }
+
+    @Override
+    public LogBuilder atWarn() {
+        return atLevel(Level.WARN);
+    }
+
+    @Override
+    public LogBuilder atError() {
+        return atLevel(Level.ERROR);
+    }
+
+    @Override
+    public LogBuilder atFatal() {
+        return atLevel(Level.TRACE);
     }
 
 }

@@ -85,7 +85,7 @@ class ThrowableProxyHelper {
             stackLength = stackTrace.length;
         }
         final ExtendedStackTraceElement[] extStackTrace = new ExtendedStackTraceElement[stackLength];
-        Class<?> clazz = stack.isEmpty() ? null : stack.peek();
+        Class<?> clazz = stack.isEmpty() ? null : stack.peekLast();
         ClassLoader lastLoader = null;
         for (int i = stackLength - 1; i >= 0; --i) {
             final StackTraceElement stackTraceElement = stackTrace[i];
@@ -98,8 +98,8 @@ class ThrowableProxyHelper {
                 final CacheEntry entry = toCacheEntry(clazz, true);
                 extClassInfo = entry.element;
                 lastLoader = entry.loader;
-                stack.pop();
-                clazz = stack.isEmpty() ? null : stack.peek();
+                stack.pollLast();
+                clazz = stack.peekLast();
             } else {
                 final CacheEntry cacheEntry = map.get(className);
                 if (cacheEntry != null) {

@@ -15,7 +15,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<entry type="changed">
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
+       type="changed">
   <issue id="LOG4J2-2472" link="https://issues.apache.org/jira/browse/LOG4J2-2472"/>
   <author id="ggregory"/>
   <description format="asciidoc">Update mongo-java-driver 3 from 3.8.0 to 3.8.2.</description>

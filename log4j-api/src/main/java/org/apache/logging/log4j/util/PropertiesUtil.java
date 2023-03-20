@@ -189,14 +189,9 @@ public class PropertiesUtil implements PropertyEnvironment {
 
         private final Set<PropertySource> sources = new ConcurrentSkipListSet<>(new PropertySource.Comparator());
         /**
-         * Maps a key to its value in the lowest priority source that contains it.
+         * Maps a key to its value or the value of its normalization in the lowest priority source that contains it.
          */
         private final Map<String, String> literal = new ConcurrentHashMap<>();
-        /**
-         * Maps a key to the value associated to its normalization in the lowest
-         * priority source that contains it.
-         */
-        private final Map<String, String> normalized = new ConcurrentHashMap<>();
         private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
 
         private Environment(final PropertySource propertySource) {
@@ -224,7 +219,6 @@ public class PropertiesUtil implements PropertyEnvironment {
 
         private synchronized void reload() {
             literal.clear();
-            normalized.clear();
             tokenized.clear();
             // 1. Collects all property keys from enumerable sources.
             final Set<String> keys = new HashSet<>();
@@ -240,7 +234,6 @@ public class PropertiesUtil implements PropertyEnvironment {
                     sources.forEach(source -> {
                         if (source.containsProperty(key)) {
                             final String value = source.getProperty(key);
-                            literal.putIfAbsent(key, value);
                             if (hasTokens) {
                                 tokenized.putIfAbsent(tokens, value);
                             }
@@ -248,7 +241,10 @@ public class PropertiesUtil implements PropertyEnvironment {
                         if (hasTokens) {
                             final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
                             if (normalKey != null && source.containsProperty(normalKey)) {
-                                normalized.putIfAbsent(key, source.getProperty(normalKey));
+                                literal.putIfAbsent(key, source.getProperty(normalKey));
+                            }
+                            else if(source.containsProperty(key)) {
+                                literal.putIfAbsent(key, source.getProperty(key));
                             }
                         }
                     });
@@ -257,9 +253,6 @@ public class PropertiesUtil implements PropertyEnvironment {
 
         @Override
         public String getStringProperty(final String key) {
-            if (normalized.containsKey(key)) {
-                return normalized.get(key);
-            }
             if (literal.containsKey(key)) {
                 return literal.get(key);
             }
@@ -282,8 +275,7 @@ public class PropertiesUtil implements PropertyEnvironment {
         @Override
         public boolean hasProperty(final String key) {
             List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-            return normalized.containsKey(key) ||
-                   literal.containsKey(key) ||
+            return literal.containsKey(key) ||
                    tokenized.containsKey(tokens) ||
                    sources.stream().anyMatch(s -> {
                         final CharSequence normalizedKey = s.getNormalForm(tokens);

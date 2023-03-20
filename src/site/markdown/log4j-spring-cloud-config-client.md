@@ -132,8 +132,4 @@ TLS can be enabled by adding the following system properties or defining them in
 
 The Log4j 2 Spring Cloud Configuration integration has a dependency on Log4j 2 API, Log4j 2 Core, and 
 Spring Cloud Configuration versions 2.0.3.RELEASE or 2.1.1.RELEASE or later versions it either release series.
-For more information, see [Runtime Dependencies](../../runtime-dependencies.html).
-
-
-
-
+For more information, see [Runtime Dependencies](runtime-dependencies.html).

@@ -18,8 +18,14 @@ name: build
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
+
+env:
+  # Maven JVM arguments
+  MAVEN_OPTS: -XX:InitialRAMPercentage=50.0
+  # Common Maven arguments since Maven 3.9.0
+  MAVEN_ARGS: --show-version --batch-mode --errors --no-transfer-progress
 
 permissions: read-all
 
@@ -28,58 +34,76 @@ jobs:
   build:
 
     runs-on: ${{ matrix.os }}
-
+    # Based on: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
     strategy:
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8   # 3.1.0
+        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f   # 3.2.0
         with:
           fetch-depth: 32
 
       - name: Setup JDK 11
-        uses: actions/setup-java@de1bb2b0c5634f0fc4438d7aa9944e68f9bf86cc   # 3.6.0
+        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98   # 3.9.0
         with:
           distribution: temurin
           java-version: 11
-          java-package: jdk
-          architecture: x64
           cache: maven
 
-      - name: Inspect environment (Linux)
-        if: runner.os == 'Linux'
-        run: env | grep '^JAVA'
-
-      - name: Inspect environment (Windows)
-        if: runner.os == 'Windows'
-        run: set java
-
-      - name: Inspect environment (MacOS)
-        if: runner.os == 'macOS'
-        run: env | grep '^JAVA'
-
-      - name: Maven "verify"
+      # We could have used `verify`, but `clean install` is required for the following:
+      # 1. The build reproducibility report
+      #    For details, see: https://maven.apache.org/guides/mini/guide-reproducible-builds.html#how-to-test-my-maven-build-reproducibility
+      # 2. `javadoc:javadoc-no-fork`, which is attached to the `site` goal
+      - name: Build
         timeout-minutes: 60
         shell: bash
-        run: |
-          ./mvnw \
-            --show-version --batch-mode --errors --no-transfer-progress --fail-at-end \
-            -DtrimStackTrace=false \
-            -Dsurefire.rerunFailingTestsCount=2 \
-            -Dlog4j2.junit.fileCleanerSleepPeriodMillis=1000 \
-            verify
+        run: ./mvnw clean install
 
-      - name: Maven "site"
+      # `clean verify artifact:compare` is required to generate the build reproducibility report.
+      # For details, see: https://maven.apache.org/guides/mini/guide-reproducible-builds.html#how-to-test-my-maven-build-reproducibility
+      - name: Report build reproducibility
+        id: report-reproducible
         timeout-minutes: 10
         shell: bash
         run: |
           ./mvnw \
-            --show-version --batch-mode --errors --no-transfer-progress --fail-at-end \
-            --non-recursive \
-            site
+          -DskipTests=true \
+          clean package artifact:compare
+
+      - name: Upload reproducibility failure context artifacts
+        if: failure()
+        uses: actions/upload-artifact@v3   # 3.1.2
+        with:
+          name: reproducibility-failure-context-${{matrix.os}}
+          path: |
+            **/target/*.buildcompare
+            **/target/*.jar
+            **/target/reference/*.jar
+
+      - name: Build site
+        timeout-minutes: 10
+        shell: bash
+        run: ./mvnw site
+
+  merge:
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+    needs: build
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: "[dependabot] Auto-merge the PR"
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
 
@@ -90,33 +114,36 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8   # 3.1.0
+        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f   # 3.2.0
         with:
           fetch-depth: 32
 
       - name: Setup JDK 11
-        uses: actions/setup-java@de1bb2b0c5634f0fc4438d7aa9944e68f9bf86cc   # 3.6.0
+        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98   # 3.9.0
         with:
           distribution: temurin
           java-version: 11
-          java-package: jdk
-          architecture: x64
           cache: maven
 
-      - name: Inspect environment
-        run: env | grep '^JAVA'
+      - name: Inspect project version
+        run: |
+          echo ::set-output name=version::$(./mvnw \
+            -q -Dexec.executable=echo \
+            -Dexec.args='${project.version}' --non-recursive exec:exec)
+        id: get_version
 
-      - name: Maven "deploy"
+      - name: Deploy artifacts
+        # Do not deploy release versions
+        if: ${{ endsWith(steps.get_version.outputs.version, '-SNAPSHOT') }}
         timeout-minutes: 15
         shell: bash
         # `package install:install deploy:deploy` goal is needed to deploy without configuring the plugin in the POM.
-        # For details see: https://maven.apache.org/plugins/maven-gpg-plugin/examples/deploy-signed-artifacts.html
+        # For details, see: https://maven.apache.org/plugins/maven-gpg-plugin/examples/deploy-signed-artifacts.html
         run: |
           ./mvnw \
-            --show-version --batch-mode --errors --no-transfer-progress \
+            --settings .github/workflows/maven-settings.xml \
             -Dgpg.skip=true \
             -DskipTests=true \
-            --settings .github/workflows/maven-settings.xml \
             package install:install deploy:deploy
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}

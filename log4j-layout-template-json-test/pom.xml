@@ -193,6 +193,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
         <executions>
           <execution>
             <goals>
@@ -201,9 +204,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -263,22 +263,6 @@
           <plugin>
             <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>start</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>stop</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>stop</goal>
-                </goals>
-              </execution>
-            </executions>
             <configuration>
               <verbose>all</verbose>
               <startParallel>true</startParallel>
@@ -292,7 +276,8 @@
                       <xpack.security.enabled>false</xpack.security.enabled>
                       <discovery.type>single-node</discovery.type>
                     </env>
-                    <memory>1000000000</memory> <!-- 1g -->
+                    <memory>1000000000</memory>
+                    <!-- 1g -->
                     <ports>
                       <port>9200:9200</port>
                     </ports>
@@ -337,9 +322,7 @@
                         <arg>--pipeline.batch.size</arg>
                         <arg>1</arg>
                         <arg>-e</arg>
-                        <arg>
-                          
-                          input {
+                        <arg>input {
                             gelf {
                               host =&gt; "logstash"
                               use_tcp =&gt; true
@@ -382,9 +365,7 @@
                               hosts =&gt; ["http://elasticsearch:9200"]
                               index =&gt; "log4j"
                             }
-                          }
-                          
-                        </arg>
+                          }</arg>
                       </exec>
                     </entrypoint>
                     <wait>
@@ -395,10 +376,32 @@
                 </image>
               </images>
             </configuration>
+            <executions>
+              <execution>
+                <id>start</id>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+                <phase>pre-integration-test</phase>
+              </execution>
+              <execution>
+                <id>stop</id>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+                <phase>post-integration-test</phase>
+              </execution>
+            </executions>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <skip>false</skip>
+              <includes>
+                <include>**/*IT.java</include>
+              </includes>
+            </configuration>
             <executions>
               <execution>
                 <goals>
@@ -407,81 +410,10 @@
                 </goals>
               </execution>
             </executions>
-            <configuration>
-              <skip>false</skip>
-              <includes>
-                <include>**/*IT.java</include>
-              </includes>
-            </configuration>
           </plugin>
         </plugins>
       </build>
     </profile>
   </profiles>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <configLocation>${log4jParentDir}/checkstyle.xml</configLocation>
-          <suppressionsLocation>${log4jParentDir}/checkstyle-suppressions.xml</suppressionsLocation>
-          <enableRulesSummary>false</enableRulesSummary>
-          <propertyExpansion>basedir=${basedir}</propertyExpansion>
-          <propertyExpansion>licensedir=${log4jParentDir}/checkstyle-header.txt</propertyExpansion>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <bottom>&lt;p align="center"&gt;Copyright &amp;#169; {inceptionYear}-{currentYear} {organizationName}. All Rights Reserved.&lt;br /&gt;
-            Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo,
-            and the Apache Log4j logo are trademarks of The Apache Software Foundation.&lt;/p&gt;</bottom>
-          <!-- Module link generation is completely broken in the javadoc plugin for a multi-module non-aggregating project: -->
-          <detectOfflineLinks>false</detectOfflineLinks>
-          <linksource>true</linksource>
-        </configuration>
-        <reportSets>
-          <reportSet>
-            <id>non-aggregate</id>
-            <reports>
-              <report>javadoc</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-        <reportSets>
-          <reportSet>
-            <id>non-aggregate</id>
-            <reports>
-              <report>jxr</report>
-            </reports>
-          </reportSet>
-          <reportSet>
-            <id>aggregate</id>
-            <reports>
-              <report>aggregate</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <configuration>
-          <targetJdk>${maven.compiler.target}</targetJdk>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </reporting>
 
 </project>
