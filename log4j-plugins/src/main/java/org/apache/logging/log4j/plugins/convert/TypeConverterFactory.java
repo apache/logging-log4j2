@@ -27,6 +27,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.spi.RecyclerFactories;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.EnglishEnums;
 
@@ -57,6 +59,7 @@ public class TypeConverterFactory {
         registerTypeAlias(Integer.class, Integer.TYPE);
         registerTypeConverter(Long.class, Long::valueOf);
         registerTypeAlias(Long.class, Long.TYPE);
+        registerTypeConverter(RecyclerFactory.class, RecyclerFactories::ofSpec);
         registerTypeConverter(Short.class, Short::valueOf);
         registerTypeAlias(Short.class, Short.TYPE);
         registerTypeConverter(String.class, s -> s);
