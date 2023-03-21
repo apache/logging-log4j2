@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,11 +35,6 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public final class TestHelpers {
 
@@ -74,11 +74,18 @@ public final class TestHelpers {
             final LogEvent logEvent,
             final Consumer<MapAccessor> accessorConsumer) {
         final String serializedLogEventJson = layout.toSerializable(logEvent);
-        @SuppressWarnings("unchecked")
-        final Map<String, Object> deserializedLogEvent =
-                (Map<String, Object>) readJson(serializedLogEventJson);
-        final MapAccessor serializedLogEventAccessor = new MapAccessor(deserializedLogEvent);
-        accessorConsumer.accept(serializedLogEventAccessor);
+
+        try {
+            @SuppressWarnings("unchecked")
+            final Map<String, Object> deserializedLogEvent =
+                    (Map<String, Object>) readJson(serializedLogEventJson);
+
+            final MapAccessor serializedLogEventAccessor = new MapAccessor(deserializedLogEvent);
+            accessorConsumer.accept(serializedLogEventAccessor);
+        } catch (Exception e) {
+            throw new RuntimeException("failed to deserialize log event (" + e
+                + "). Serialized Log Event:\n" + serializedLogEventJson);
+        }
     }
 
     public static Object readJson(final String json) {
