@@ -743,6 +743,8 @@ Each `pointMatcherRegexes` item triggers a `Pattern#matcher()` call, which is
 not garbage-free either.
 ====
 
+====== Examples
+
 Resolve `logEvent.getThrown().getClass().getCanonicalName()`:
 
 [source,json]
@@ -849,6 +851,8 @@ severity-field = "field" -> ( "keyword" | "code" )
 
 Resolves the fields of the `logEvent.getLevel()`.
 
+====== Examples
+
 Resolve the level name:
 
 [source,json]
@@ -897,6 +901,8 @@ config = "field" -> ( "name" | "fqcn" )
 
 Resolves `logEvent.getLoggerFqcn()` and `logEvent.getLoggerName()`.
 
+====== Examples
+
 Resolve the logger name:
 
 [source,json]
@@ -930,6 +936,8 @@ key    = "key" -> string
 Performs link:lookups.html#AppMainArgsLookup[Main Argument Lookup] for the
 given `index` or `key`.
 
+====== Examples
+
 Resolve the 1st `main()` method argument:
 
 [source,json]
@@ -955,6 +963,38 @@ Resolve the argument coming right after `--userId`:
 
 Resolves ``MapMessage``s. See link:#map-resolver-template[Map Resolver Template]
 for details.
+
+[#event-template-resolver-marker]
+===== `marker`
+
+[source]
+----
+config = "field" -> ( "name" | "parents" )
+----
+
+Resolves `logEvent.getMarker()`.
+
+====== Examples
+
+Resolve the marker name:
+
+[source,json]
+----
+{
+  "$resolver": "marker",
+  "field": "name"
+}
+----
+
+Resolve the names of the marker's parents:
+
+[source,json]
+----
+{
+  "$resolver": "marker",
+  "field": "parents"
+}
+----
 
 [#event-template-resolver-mdc]
 ===== `mdc`
@@ -985,6 +1025,8 @@ Resolves `logEvent.getMessage()`.
 For simple string messages, the resolution is performed without allocations.
 For ``ObjectMessage``s and ``MultiformatMessage``s, it depends.
 ====
+
+====== Examples
 
 Resolve the message into a string:
 
@@ -1047,6 +1089,8 @@ Regarding garbage footprint, `stringified` flag translates to
 which is the case if `log4j2.enableThreadLocals` property set to true.
 ====
 
+====== Examples
+
 Resolve the message parameters into an array:
 
 [source,json]
@@ -1099,6 +1143,8 @@ pattern = "pattern" -> string
 Resolves the Nested Diagnostic Context (NDC), aka. Thread Context Stack,
 `String[]` returned by `logEvent.getContextStack()`.
 
+====== Examples
+
 Resolve all NDC values into a list:
 
 [source,json]
@@ -1133,6 +1179,8 @@ Resolver delegating to link:layouts.html#PatternLayout[`PatternLayout`].
 The default value of `stackTraceEnabled` is inherited from the parent
 `JsonTemplateLayout`.
 
+====== Examples
+
 Resolve the string produced by `%p %c{1.} [%t] %X{userId} %X %m%ex` pattern:
 
 [source,json]
@@ -1161,6 +1209,8 @@ Resolves the fields of the `StackTraceElement` returned by
 Note that this resolver is toggled by
 `log4j.layout.jsonTemplate.locationInfoEnabled` property.
 
+====== Examples
+
 Resolve the line number:
 
 [source,json]
@@ -1181,6 +1231,8 @@ config = "field" -> ( "name" | "id" | "priority" )
 
 Resolves `logEvent.getThreadId()`, `logEvent.getThreadName()`,
 `logEvent.getThreadPriority()`.
+
+====== Examples
 
 Resolve the thread name:
 
@@ -1220,6 +1272,8 @@ rounded       = "rounded" -> boolean
 ----
 
 Resolves `logEvent.getInstant()` in various forms.
+
+====== Examples
 
 .`timestamp` template resolver examples
 [cols="5,2m"]

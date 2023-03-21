@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
 
-import java.util.Arrays;
-
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
@@ -30,74 +28,67 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MarkerResolverTest {
 
-  @Test
-  void should_have_a_marker_name() {
-    final String eventTemplate = writeJson(asMap(
-      "marker",
-      asMap(
-        "$resolver", "marker",
-        "field", "name"
-      )
-    ));
+    @Test
+    void should_have_a_marker_name() {
 
-    // Create the layout.
-    final JsonTemplateLayout layout = JsonTemplateLayout
-            .newBuilder()
-            .setConfiguration(CONFIGURATION)
-            .setEventTemplate(eventTemplate)
-            .build();
+        // Create the event template
+        final String eventTemplate = writeJson(asMap(
+                "marker", asMap(
+                        "$resolver", "marker",
+                        "field", "name")));
 
-    // Create the log event.
-    final Marker marker = MarkerManager.getMarker("MARKER");
-    final LogEvent logEvent = Log4jLogEvent
-            .newBuilder()
-            .setMarker(marker)
-            .build();
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .build();
 
-    // Check the serialized event.
-    usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-      assertThat(accessor.getString("marker")).isEqualTo("MARKER");
-    });
-  }
+        // Create the log event.
+        final Marker marker = MarkerManager.getMarker("MARKER");
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setMarker(marker)
+                .build();
 
-  @Test
-  void should_list_parents_as_array() {
-    final String eventTemplate = writeJson(asMap(
-      "parents",
-      asMap(
-        "$resolver", "marker",
-        "field", "parents"
-      )
-    ));
+        // Check the serialized event.
+        usingSerializedLogEventAccessor(layout, logEvent, accessor ->
+                assertThat(accessor.getString("marker")).isEqualTo("MARKER"));
 
-    // Create the layout.
-    final JsonTemplateLayout layout = JsonTemplateLayout
-            .newBuilder()
-            .setConfiguration(CONFIGURATION)
-            .setEventTemplate(eventTemplate)
-            .build();
+    }
 
-      // Create the log event.
-    final Marker PARENT_MARKER_1 = MarkerManager.getMarker("PARENT_MARKER_NAME_1");
-    final Marker PARENT_MARKER_2 = MarkerManager.getMarker("PARENT_MARKER_NAME_2");
-    final Marker CHILD_MARKER = MarkerManager.getMarker("CHILD_MARKER_NAME");
-    CHILD_MARKER.setParents(PARENT_MARKER_1, PARENT_MARKER_2);
+    @Test
+    void should_list_parents_as_array() {
 
-    final LogEvent logEvent = Log4jLogEvent
-            .newBuilder()
-            .setMarker(CHILD_MARKER)
-            .build();
+        // Create the event template
+        final String eventTemplate = writeJson(asMap(
+                "parents", asMap(
+                        "$resolver", "marker",
+                        "field", "parents")));
 
-    // Check the serialized event.
-    usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-      assertThat(accessor.getList("parents", String.class)).hasSize(2);
-      assertThat(accessor.getList("parents", String.class)).containsAll(
-        Arrays.asList(
-          "PARENT_MARKER_NAME_1",
-          "PARENT_MARKER_NAME_2"
-        )
-      );
-    });
-  }
+        // Create the layout.
+        final JsonTemplateLayout layout = JsonTemplateLayout
+                .newBuilder()
+                .setConfiguration(CONFIGURATION)
+                .setEventTemplate(eventTemplate)
+                .build();
+
+        // Create the log event.
+        final Marker parentMarker1 = MarkerManager.getMarker("PARENT_MARKER_NAME_1");
+        final Marker parentMarker2 = MarkerManager.getMarker("PARENT_MARKER_NAME_2");
+        final Marker childMarker = MarkerManager.getMarker("CHILD_MARKER_NAME");
+        childMarker.setParents(parentMarker1, parentMarker2);
+
+        final LogEvent logEvent = Log4jLogEvent
+                .newBuilder()
+                .setMarker(childMarker)
+                .build();
+
+        // Check the serialized event.
+        usingSerializedLogEventAccessor(layout, logEvent, accessor ->
+                assertThat(accessor.getList("parents", String.class))
+                        .containsOnly(parentMarker1.getName(), parentMarker2.getName()));
+
+    }
 
 }

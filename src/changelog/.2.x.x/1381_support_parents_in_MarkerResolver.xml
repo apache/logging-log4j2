@@ -18,10 +18,9 @@
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
-       type="changed">
-  <author id="eherot"/>
-  <description format="asciidoc">
-    PatternLayout can display the marker's parents with `%marker`.
-    This will add that same capability to JSON Template Layout
-  </description>
+       type="added">
+  <issue id="1381" link="https://github.com/apache/logging-log4j2/pull/1381"/>
+  <author name="Eric Herot"/>
+  <author id="vy"/>
+  <description format="asciidoc">Add marker parent support to `JsonTemplateLayout`</description>
 </entry>
