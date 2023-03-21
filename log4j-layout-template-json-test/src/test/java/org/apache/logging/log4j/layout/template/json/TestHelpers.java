@@ -74,22 +74,18 @@ public final class TestHelpers {
             final LogEvent logEvent,
             final Consumer<MapAccessor> accessorConsumer) {
         final String serializedLogEventJson = layout.toSerializable(logEvent);
-
-        try {
-            @SuppressWarnings("unchecked")
-            final Map<String, Object> deserializedLogEvent =
-                    (Map<String, Object>) readJson(serializedLogEventJson);
-
-            final MapAccessor serializedLogEventAccessor = new MapAccessor(deserializedLogEvent);
-            accessorConsumer.accept(serializedLogEventAccessor);
-        } catch (Exception e) {
-            throw new RuntimeException("failed to deserialize log event (" + e
-                + "). Serialized Log Event:\n" + serializedLogEventJson);
-        }
+        @SuppressWarnings("unchecked")
+        final Map<String, Object> deserializedLogEvent = (Map<String, Object>) readJson(serializedLogEventJson);
+        final MapAccessor serializedLogEventAccessor = new MapAccessor(deserializedLogEvent);
+        accessorConsumer.accept(serializedLogEventAccessor);
     }
 
     public static Object readJson(final String json) {
-        return JsonReader.read(json);
+        try {
+            return JsonReader.read(json);
+        } catch (final Exception error) {
+            throw new RuntimeException("failed to deserialize the JSON: " + json, error);
+        }
     }
 
     public static Map<String, Object> asMap(final Object... pairs) {
