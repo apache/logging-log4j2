@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.message;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Time;
 import java.util.Arrays;
 import java.util.Collections;
@@ -318,6 +319,14 @@ public class MapMessageTest {
         final ObjectMapMessage message = new ObjectMapMessage().with("time", time);
         assertEquals("time=\"" + time.toString() + "\"",
                 message.getFormattedMessage(), "Incorrect time format");
+    }
+
+    @Test
+    public void testDate() {
+        final Date date = new Date(System.currentTimeMillis());
+        final ObjectMapMessage message = new ObjectMapMessage().with("date", date);
+        assertEquals("date=\"" + date + "\"",
+                message.getFormattedMessage(), "Incorrect date format");
     }
 
     private static final class FormattableTestType implements StringBuilderFormattable {
