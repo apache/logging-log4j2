@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -32,13 +33,12 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("zeromq")
-@Tag("sleepy")
-@Timeout(value = 200)
+@Timeout(value = 10, unit = TimeUnit.SECONDS)
 @LoggerContextSource(value = "JeroMqAppenderTest.xml", timeout = 60)
 public class JeroMqAppenderTest {
 
@@ -63,7 +63,7 @@ public class JeroMqAppenderTest {
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             final Future<List<String>> future = executor.submit(client);
-            Thread.sleep(100);
+            waitForSubscription(appender, 1000);
             appender.resetSendRcs();
             logger.info("Hello");
             logger.info("Again");
@@ -90,7 +90,7 @@ public class JeroMqAppenderTest {
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             final Future<List<String>> future = executor.submit(client);
-            Thread.sleep(100);
+            waitForSubscription(appender, 1000);
             appender.resetSendRcs();
             final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(nThreads);
             for (int i = 0; i < 10.; i++) {
@@ -132,5 +132,16 @@ public class JeroMqAppenderTest {
         logger.info("Again");
         assertEquals(2, appender.getSendRcTrue());
         assertEquals(0, appender.getSendRcFalse());
+    }
+
+    private void waitForSubscription(JeroMqAppender appender, int timeoutMs) throws Exception {
+        final long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() - start < timeoutMs) {
+            byte[] msg = appender.recv(timeoutMs);
+            if (msg != null && msg.length > 0 && msg[0] == 1) {
+                return;
+            }
+        }
+        throw new TimeoutException();
     }
 }
