@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.lang.reflect.Array;
-import java.util.Collections;
 import java.util.Map.Entry;
 
 import static java.lang.Character.toLowerCase;
@@ -28,18 +26,28 @@ import static java.lang.Character.toLowerCase;
 @InternalApi
 public final class StringBuilders {
 
-    private static final Object timeClass;
+    private static final Object timeObj;
+    private static final Object dateObj;
 
     static {
+        Class<?> clazz;
         Object obj;
+        final long current = System.currentTimeMillis();
         try {
-            Class<?> clazz = Class.forName("java.sql.Time");
-            long current = System.currentTimeMillis();
+            clazz = Class.forName("java.sql.Time");
             obj = clazz.getDeclaredConstructor(Long.TYPE).newInstance(current);
         } catch(Exception ex) {
             obj = null;
         }
-        timeClass = obj;
+        timeObj = obj;
+
+        try {
+            clazz = Class.forName("java.sql.Date");
+            obj = clazz.getDeclaredConstructor(Long.TYPE).newInstance(current);
+        } catch(Exception ex) {
+            obj = null;
+        }
+        dateObj = obj;
     }
 
     private StringBuilders() {
@@ -135,7 +143,7 @@ public final class StringBuilders {
             stringBuilder.append(((Float) obj).floatValue());
         } else if (obj instanceof Byte) {
             stringBuilder.append(((Byte) obj).byteValue());
-        } else if (isTime(obj) || obj instanceof java.time.temporal.Temporal) {
+        } else if (isTime(obj) || isDate(obj) || obj instanceof java.time.temporal.Temporal) {
             stringBuilder.append(obj);
         } else {
             return false;
@@ -144,10 +152,17 @@ public final class StringBuilders {
     }
 
     /*
-        Check to see if obj is an instance of java.sql.time without requiring the java.sql module.
+        Check to see if obj is an instance of java.sql.Time without requiring the java.sql module.
      */
     private static boolean isTime(final Object obj) {
-        return obj.getClass().isInstance(timeClass);
+        return obj.getClass().isInstance(timeObj);
+    }
+
+    /*
+        Check to see if obj is an instance of java.sql.Date without requiring the java.sql module.
+    */
+    private static boolean isDate(final Object obj) {
+        return obj.getClass().isInstance(dateObj);
     }
 
     /**

@@ -26,7 +26,7 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
  * <h3>Configuration</h3>
  *
  * <pre>
- * config = "field" -> "name"
+ * config = "field" -> ( "name" | "parents" )
  * </pre>
  *
  * <h3>Examples</h3>
@@ -37,6 +37,15 @@ import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
  * {
  *   "$resolver": "marker",
  *   "field": "name"
+ * }
+ * </pre>
+ *
+ * Resolve the names of the marker's parents:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "marker",
+ *   "field": "parents"
  * }
  * </pre>
  */
@@ -52,6 +61,30 @@ public final class MarkerResolver implements EventResolver {
                 }
             };
 
+    private static final TemplateResolver<LogEvent> PARENTS_RESOLVER =
+            (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
+
+                // Short-circuit if there are no parents
+                final Marker marker = logEvent.getMarker();
+                if (marker == null || !marker.hasParents()) {
+                    jsonWriter.writeNull();
+                    return;
+                }
+
+                // Write parents
+                final Marker[] parents = marker.getParents();
+                jsonWriter.writeArrayStart();
+                for (int parentIndex = 0; parentIndex < parents.length; parentIndex++) {
+                    if (parentIndex > 0) {
+                        jsonWriter.writeSeparator();
+                    }
+                    final Marker parentMarker = parents[parentIndex];
+                    jsonWriter.writeString(parentMarker.getName());
+                }
+                jsonWriter.writeArrayEnd();
+
+            };
+
     private final TemplateResolver<LogEvent> internalResolver;
 
     MarkerResolver(final TemplateResolverConfig config) {
@@ -61,9 +94,15 @@ public final class MarkerResolver implements EventResolver {
     private TemplateResolver<LogEvent> createInternalResolver(
             final TemplateResolverConfig config) {
         final String fieldName = config.getString("field");
+
         if ("name".equals(fieldName)) {
             return NAME_RESOLVER;
         }
+
+        if ("parents".equals(fieldName)) {
+            return PARENTS_RESOLVER;
+        }
+
         throw new IllegalArgumentException("unknown field: " + config);
     }
 
