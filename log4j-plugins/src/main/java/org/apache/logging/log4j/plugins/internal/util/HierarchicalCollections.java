@@ -16,13 +16,8 @@
  */
 package org.apache.logging.log4j.plugins.internal.util;
 
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 class HierarchicalCollections {
     static <K, V> HierarchicalMap<K, V> newRootMap() {
@@ -30,7 +25,7 @@ class HierarchicalCollections {
     }
 
     private static class RootMap<K, V> extends AbstractMap<K, V> implements HierarchicalMap<K, V> {
-        private final Map<K, V> map = new LinkedHashMap<>();
+        private final Map<K, V> map = new ConcurrentHashMap<>();
 
         @Override
         public Set<Entry<K, V>> entrySet() {
