@@ -16,11 +16,11 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AbstractAppenderBuilderTest {
 

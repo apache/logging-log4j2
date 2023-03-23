@@ -16,15 +16,15 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.ContextAnchor;
-import org.apache.logging.log4j.core.selector.ContextSelector;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.core.selector.ContextSelector;
 
 /**
  * Returns either this Thread's context or the default {@link AsyncLoggerContext}.

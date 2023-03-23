@@ -72,7 +72,7 @@ public class OutputStreamAppenderTest {
         final OutputStreamAppender appender = builder.build();
         Assert.assertEquals(filter, appender.getFilter());
     }
-    
+
     @Test
     public void testOutputStreamAppenderToBufferedOutputStream() throws SQLException {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
