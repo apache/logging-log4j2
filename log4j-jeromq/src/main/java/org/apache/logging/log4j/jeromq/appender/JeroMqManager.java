@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
 
 /**
@@ -60,7 +61,7 @@ public class JeroMqManager extends AbstractManager {
 
         final boolean enableShutdownHook = PropertiesUtil.getProperties().getBooleanProperty(
             SYS_PROPERTY_ENABLE_SHUTDOWN_HOOK, true);
-        if (enableShutdownHook) {
+        if (enableShutdownHook && LogManager.getFactory() instanceof ShutdownCallbackRegistry) {
             SHUTDOWN_HOOK = ((ShutdownCallbackRegistry) LogManager.getFactory()).addShutdownCallback(CONTEXT::close);
         } else {
             SHUTDOWN_HOOK = null;
@@ -71,7 +72,7 @@ public class JeroMqManager extends AbstractManager {
 
     private JeroMqManager(final String name, final JeroMqConfiguration config) {
         super(null, name);
-        publisher = CONTEXT.socket(ZMQ.PUB);
+        publisher = CONTEXT.socket(SocketType.XPUB);
         publisher.setAffinity(config.affinity);
         publisher.setBacklog(config.backlog);
         publisher.setDelayAttachOnConnect(config.delayAttachOnConnect);
@@ -102,6 +103,17 @@ public class JeroMqManager extends AbstractManager {
 
     public boolean send(final byte[] data) {
         return publisher.send(data);
+    }
+
+    // not public, handy for testing
+    byte[] recv(int timeoutMs) {
+        int oldTimeoutMs = publisher.getReceiveTimeOut();
+        try {
+            publisher.setReceiveTimeOut(timeoutMs);
+            return publisher.recv();
+        } finally {
+            publisher.setReceiveTimeOut(oldTimeoutMs);
+        }
     }
 
     @Override

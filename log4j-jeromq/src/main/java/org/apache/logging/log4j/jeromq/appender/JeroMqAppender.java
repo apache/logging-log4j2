@@ -172,6 +172,11 @@ public final class JeroMqAppender extends AbstractAppender {
         sendRcTrue = sendRcFalse = 0;
     }
 
+    // not public, handy for testing
+    byte[] recv(int timeoutMs) {
+        return manager.recv(timeoutMs);
+    }
+
     @Override
     public String toString() {
         return "JeroMqAppender{" +
