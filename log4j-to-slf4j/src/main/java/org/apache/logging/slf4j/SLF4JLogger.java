@@ -40,10 +40,12 @@ public class SLF4JLogger extends AbstractLogger {
      */
     private static final boolean LAZY_LEVEL_CHECK = "ch.qos.logback.classic.LoggerContext"
             .equals(LoggerFactory.getILoggerFactory().getClass().getName());
-    private static final Recycler<SLF4JLogBuilder> logBuilderRecycler =
+
+    private static final Recycler<SLF4JLogBuilder> LOG_BUILDER_RECYCLER =
             LoggingSystem.getRecyclerFactory().create(SLF4JLogBuilder::new);
 
     private final org.slf4j.Logger logger;
+
     private final LocationAwareLogger locationAwareLogger;
 
     public SLF4JLogger(final String name, final MessageFactory messageFactory, final org.slf4j.Logger logger) {
@@ -272,6 +274,11 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
+    public LogBuilder always() {
+        return atLevel(Level.OFF);
+    }
+
+    @Override
     public LogBuilder atTrace() {
         return atLevel(Level.TRACE);
     }
@@ -303,7 +310,7 @@ public class SLF4JLogger extends AbstractLogger {
 
     @Override
     protected LogBuilder getLogBuilder(Level level) {
-        SLF4JLogBuilder builder = logBuilderRecycler.acquire();
+        SLF4JLogBuilder builder = LOG_BUILDER_RECYCLER.acquire();
         return builder.reset(this, level);
     }
 

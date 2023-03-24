@@ -27,38 +27,40 @@ import org.jctools.queues.SpmcArrayQueue;
 import org.jctools.queues.SpscArrayQueue;
 
 /**
- * Provides {@link QueueFactory} and {@link Queue} instances for different use cases. When the
- * <a href="https://jctools.github.io/JCTools/">JCTools</a> library is included at runtime, then
- * the specialized lock free or wait free queues are used from there. Otherwise, {@link ArrayBlockingQueue}
- * is provided as a fallback for thread-safety. Custom implementations of {@link QueueFactory} may also be
- * created via {@link #createQueueFactory(String, int)}.
+ * Provides {@link QueueFactory} and {@link Queue} instances for different use cases.
+ * <p>
+ * Implementations provided by <a href="https://jctools.github.io/JCTools/">JCTools</a> will be preferred, if available at runtime.
+ * Otherwise, {@link ArrayBlockingQueue} will be used.
+ * </p>
+ *
+ * @since 3.0.0
  */
 @InternalApi
-public enum Queues {
+public enum QueueFactories {
+
     /**
-     * Provides a bounded queue for single-producer/single-consumer usage. Only one thread may offer objects
-     * while only one thread may poll for them.
+     * Provides a bounded queue for single-producer/single-consumer usage.
      */
     SPSC(Lazy.lazy(JCToolsQueueFactory.SPSC::load)),
+
     /**
-     * Provides a bounded queue for multi-producer/single-consumer usage. Any thread may offer objects while only
-     * one thread may poll for them.
+     * Provides a bounded queue for multi-producer/single-consumer usage.
      */
     MPSC(Lazy.lazy(JCToolsQueueFactory.MPSC::load)),
+
     /**
-     * Provides a bounded queue for single-producer/multi-consumer usage. Only one thread may offer objects but
-     * any thread may poll for them.
+     * Provides a bounded queue for single-producer/multi-consumer usage.
      */
     SPMC(Lazy.lazy(JCToolsQueueFactory.SPMC::load)),
+
     /**
-     * Provides a bounded queue for multi-producer/multi-consumer usage. Any thread may offer objects and any thread
-     * may poll for them.
+     * Provides a bounded queue for multi-producer/multi-consumer usage.
      */
     MPMC(Lazy.lazy(JCToolsQueueFactory.MPMC::load));
 
     private final Lazy<BoundedQueueFactory> queueFactory;
 
-    Queues(final Lazy<BoundedQueueFactory> queueFactory) {
+    QueueFactories(final Lazy<BoundedQueueFactory> queueFactory) {
         this.queueFactory = queueFactory;
     }
 
@@ -70,10 +72,25 @@ public enum Queues {
         return queueFactory.get().create(capacity);
     }
 
+    /**
+     * Creates a {@link QueueFactory} producing queues of provided capacity from the provided supplier.
+     * <p>
+     * A supplier path must be formatted as follows:
+     * <ul>
+     * <li>{@code <fully-qualified-class-name>.new} – the class constructor accepting a single {@code int} argument (denoting the capacity) will be used (e.g., {@code org.jctools.queues.MpmcArrayQueue.new})</li>
+     * <li>{@code <fully-qualified-class-name>.<static-factory-method>} – the static factory method accepting a single {@code int} argument (denoting the capacity) will be used (e.g., {@code com.acme.Queues.createBoundedQueue})</li>
+     * </ul>
+     * </p>
+     *
+     * @param supplierPath a queue supplier path (e.g., {@code org.jctools.queues.MpmcArrayQueue.new}, {@code com.acme.Queues.createBoundedQueue})
+     * @param capacity the capacity that will be passed to the queue supplier
+     * @return a new {@link QueueFactory} instance
+     */
     public static QueueFactory createQueueFactory(final String supplierPath, final int capacity) {
         final int supplierPathSplitterIndex = supplierPath.lastIndexOf('.');
         if (supplierPathSplitterIndex < 0) {
-            throw new IllegalArgumentException("invalid supplier in queue factory: " + supplierPath);
+            final String message = String.format("invalid queue factory supplier path: `%s`", supplierPath);
+            throw new IllegalArgumentException(message);
         }
         final String supplierClassName = supplierPath.substring(0, supplierPathSplitterIndex);
         final String supplierMethodName = supplierPath.substring(supplierPathSplitterIndex + 1);
@@ -81,22 +98,24 @@ public enum Queues {
             final Class<?> supplierClass = LoaderUtil.loadClass(supplierClassName);
             final BoundedQueueFactory queueFactory;
             if ("new".equals(supplierMethodName)) {
-                final Constructor<?> supplierCtor =
-                        supplierClass.getDeclaredConstructor(int.class);
+                final Constructor<?> supplierCtor = supplierClass.getDeclaredConstructor(int.class);
                 queueFactory = new ConstructorProvidedQueueFactory(supplierCtor);
             } else {
-                final Method supplierMethod =
-                        supplierClass.getMethod(supplierMethodName, int.class);
+                final Method supplierMethod = supplierClass.getMethod(supplierMethodName, int.class);
                 queueFactory = new StaticMethodProvidedQueueFactory(supplierMethod);
             }
             return new ProxyQueueFactory(queueFactory, capacity);
         } catch (final ReflectiveOperationException | LinkageError | SecurityException error) {
-            throw new RuntimeException("failed executing queue factory", error);
+            final String message = String.format(
+                    "failed to create the queue factory using the supplier path `%s`", supplierPath);
+            throw new RuntimeException(message, error);
         }
     }
 
-    private static class ProxyQueueFactory implements QueueFactory {
+    private static final class ProxyQueueFactory implements QueueFactory {
+
         private final BoundedQueueFactory factory;
+
         private final int capacity;
 
         private ProxyQueueFactory(final BoundedQueueFactory factory, final int capacity) {
@@ -108,38 +127,52 @@ public enum Queues {
         public <E> Queue<E> create() {
             return factory.create(capacity);
         }
+
     }
 
+    @FunctionalInterface
     private interface BoundedQueueFactory {
+
         <E> Queue<E> create(final int capacity);
+
     }
 
-    private static class ArrayBlockingQueueFactory implements BoundedQueueFactory {
+    private static final class ArrayBlockingQueueFactory implements BoundedQueueFactory {
+
+        private static final ArrayBlockingQueueFactory INSTANCE = new ArrayBlockingQueueFactory();
+
+        private ArrayBlockingQueueFactory() {}
+
         @Override
         public <E> Queue<E> create(final int capacity) {
             return new ArrayBlockingQueue<>(capacity);
         }
+
     }
 
     private enum JCToolsQueueFactory implements BoundedQueueFactory {
+
         SPSC {
             @Override
             public <E> Queue<E> create(final int capacity) {
                 return new SpscArrayQueue<>(capacity);
             }
         },
+
         MPSC {
             @Override
             public <E> Queue<E> create(final int capacity) {
                 return new MpscArrayQueue<>(capacity);
             }
         },
+
         SPMC {
             @Override
             public <E> Queue<E> create(final int capacity) {
                 return new SpmcArrayQueue<>(capacity);
             }
         },
+
         MPMC {
             @Override
             public <E> Queue<E> create(final int capacity) {
@@ -147,21 +180,20 @@ public enum Queues {
             }
         };
 
-        BoundedQueueFactory load() {
+        private BoundedQueueFactory load() {
             try {
-                // if JCTools is unavailable at runtime, then we'll only find out once we attempt to invoke
-                // BoundedQueueFactory::create which is the first time the ClassLoader will try to link the
-                // referenced JCTools class causing a NoClassDefFoundError or some other LinkageError potentially.
-                // also, test with a large enough capacity to avoid any IllegalArgumentExceptions from trivial queues
+                // Test with a large enough capacity to avoid any `IllegalArgumentExceptions` from trivial queues
                 create(16);
                 return this;
             } catch (final LinkageError ignored) {
-                return new ArrayBlockingQueueFactory();
+                return ArrayBlockingQueueFactory.INSTANCE;
             }
         }
+
     }
 
-    private static class ConstructorProvidedQueueFactory implements BoundedQueueFactory {
+    private static final class ConstructorProvidedQueueFactory implements BoundedQueueFactory {
+
         private final Constructor<?> constructor;
 
         private ConstructorProvidedQueueFactory(final Constructor<?> constructor) {
@@ -173,13 +205,15 @@ public enum Queues {
             final Constructor<Queue<E>> typedConstructor = Cast.cast(constructor);
             try {
                 return typedConstructor.newInstance(capacity);
-            } catch (final ReflectiveOperationException e) {
-                throw new RuntimeException("queue construction failed for factory", e);
+            } catch (final ReflectiveOperationException error) {
+                throw new RuntimeException("queue construction failure", error);
             }
         }
+
     }
 
-    private static class StaticMethodProvidedQueueFactory implements BoundedQueueFactory {
+    private static final class StaticMethodProvidedQueueFactory implements BoundedQueueFactory {
+
         private final Method method;
 
         private StaticMethodProvidedQueueFactory(final Method method) {
@@ -190,9 +224,11 @@ public enum Queues {
         public <E> Queue<E> create(final int capacity) {
             try {
                 return Cast.cast(method.invoke(null, capacity));
-            } catch (final ReflectiveOperationException e) {
-                throw new RuntimeException("queue construction failed for factory", e);
+            } catch (final ReflectiveOperationException error) {
+                throw new RuntimeException("queue construction failure", error);
             }
         }
+
     }
+
 }

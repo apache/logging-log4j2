@@ -22,21 +22,28 @@ import java.util.function.Supplier;
 
 import org.apache.logging.log4j.util.QueueFactory;
 
+import static java.util.Objects.requireNonNull;
+
+/**
+ * A {@link RecyclerFactory} pooling objects in a queue created using the provided {@link QueueFactory}.
+ */
 public class QueueingRecyclerFactory implements RecyclerFactory {
 
     private final QueueFactory queueFactory;
 
     public QueueingRecyclerFactory(final QueueFactory queueFactory) {
-        this.queueFactory = queueFactory;
+        this.queueFactory = requireNonNull(queueFactory, "queueFactory");
     }
 
     @Override
     public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
+        requireNonNull(supplier, "supplier");
+        requireNonNull(cleaner, "cleaner");
         final Queue<V> queue = queueFactory.create();
         return new QueueingRecycler<>(supplier, cleaner, queue);
     }
 
-    // Visible for tests.
+    // Visible for tests
     static class QueueingRecycler<V> implements Recycler<V> {
 
         private final Supplier<V> supplier;
@@ -54,7 +61,7 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
             this.queue = queue;
         }
 
-        // Visible for tests.
+        // Visible for tests
         Queue<V> getQueue() {
             return queue;
         }
@@ -67,6 +74,7 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
 
         @Override
         public void release(final V value) {
+            requireNonNull(value, "value");
             cleaner.accept(value);
             queue.offer(value);
         }

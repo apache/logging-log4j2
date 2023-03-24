@@ -18,6 +18,15 @@ package org.apache.logging.log4j.util;
 
 import java.util.Queue;
 
+/**
+ * A {@link Queue} factory contract.
+ *
+ * @see QueueFactories
+ * @since 3.0.0
+ */
+@FunctionalInterface
 public interface QueueFactory {
+
     <E> Queue<E> create();
+
 }

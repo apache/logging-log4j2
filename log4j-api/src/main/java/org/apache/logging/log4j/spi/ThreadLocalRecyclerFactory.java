@@ -20,13 +20,14 @@ import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.util.Queues;
+import org.apache.logging.log4j.util.QueueFactories;
 
 /**
- * Recycling strategy that caches instances in a ThreadLocal value to allow threads to reuse objects. This strategy
- * may not be appropriate in workloads where units of work are independent of operating system threads such as
- * reactive streams, coroutines, or virtual threads; a {@linkplain QueueingRecyclerFactory queue-based approach}
- * is more flexible.
+ * A {@link RecyclerFactory} pooling objects in a queue stored in a {@link ThreadLocal}.
+ * <p>
+ * This strategy may not be appropriate in workloads where units of work are independent of operating system threads such as reactive streams, coroutines, or virtual threads.
+ * For such use cases, see {@link QueueingRecyclerFactory}.
+ * </p>
  *
  * @since 3.0.0
  */
@@ -39,8 +40,7 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
     // Visible for testing
     static final int MAX_QUEUE_SIZE = 8;
 
-    private static final ThreadLocalRecyclerFactory INSTANCE =
-            new ThreadLocalRecyclerFactory();
+    private static final ThreadLocalRecyclerFactory INSTANCE = new ThreadLocalRecyclerFactory();
 
     private ThreadLocalRecyclerFactory() {}
 
@@ -65,7 +65,7 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
         private ThreadLocalRecycler(final Supplier<V> supplier, final Consumer<V> cleaner) {
             this.supplier = supplier;
             this.cleaner = cleaner;
-            this.holder = ThreadLocal.withInitial(() -> Queues.SPSC.create(MAX_QUEUE_SIZE));
+            this.holder = ThreadLocal.withInitial(() -> QueueFactories.SPSC.create(MAX_QUEUE_SIZE));
         }
 
         @Override

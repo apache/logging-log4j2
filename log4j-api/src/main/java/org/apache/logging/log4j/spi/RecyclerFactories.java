@@ -19,26 +19,24 @@ package org.apache.logging.log4j.spi;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.util.QueueFactories;
 import org.apache.logging.log4j.util.QueueFactory;
-import org.apache.logging.log4j.util.Queues;
 import org.apache.logging.log4j.util.StringParameterParser;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 public final class RecyclerFactories {
 
-    private RecyclerFactories() {}
+    private static final int DEFAULT_QUEUE_CAPACITY = Math.max(
+            2 * Runtime.getRuntime().availableProcessors() + 1,
+            8);
 
-    private static int getDefaultCapacity() {
-        return Math.max(
-                2 * Runtime.getRuntime().availableProcessors() + 1,
-                8);
-    }
+    private RecyclerFactories() {}
 
     public static RecyclerFactory getDefault() {
         return isThreadLocalsEnabled()
                 ? ThreadLocalRecyclerFactory.getInstance()
-                : new QueueingRecyclerFactory(Queues.MPMC.factory(getDefaultCapacity()));
+                : new QueueingRecyclerFactory(QueueFactories.MPMC.factory(DEFAULT_QUEUE_CAPACITY));
     }
 
     public static RecyclerFactory ofSpec(final String recyclerFactorySpec) {
@@ -60,11 +58,7 @@ public final class RecyclerFactories {
 
         // Is a queueing factory requested?
         else if (recyclerFactorySpec.startsWith("queue")) {
-
-            // Determine the default capacity.
-            final int defaultCapacity = getDefaultCapacity();
-
-            return readQueueingRecyclerFactory(recyclerFactorySpec, defaultCapacity);
+            return readQueueingRecyclerFactory(recyclerFactorySpec);
         }
 
         // Bogus input, bail out.
@@ -75,53 +69,41 @@ public final class RecyclerFactories {
 
     }
 
-    private static RecyclerFactory readQueueingRecyclerFactory(
-            final String recyclerFactorySpec,
-            final int defaultCapacity) {
+    private static RecyclerFactory readQueueingRecyclerFactory(final String recyclerFactorySpec) {
 
         // Parse the spec.
         final String queueFactorySpec = recyclerFactorySpec.substring(
-                "queue".length() +
-                        (recyclerFactorySpec.startsWith("queue:")
-                                ? 1
-                                : 0));
+                "queue".length() + (recyclerFactorySpec.startsWith("queue:") ? 1 : 0));
         final Map<String, StringParameterParser.Value> parsedValues =
-                StringParameterParser.parse(
-                        queueFactorySpec, Set.of("supplier", "capacity"));
+                StringParameterParser.parse(queueFactorySpec, Set.of("supplier", "capacity"));
 
         // Read the capacity.
         final StringParameterParser.Value capacityValue = parsedValues.get("capacity");
         final int capacity;
         if (capacityValue == null || capacityValue instanceof StringParameterParser.NullValue) {
-            capacity = defaultCapacity;
+            capacity = DEFAULT_QUEUE_CAPACITY;
         } else {
             try {
                 capacity = Integer.parseInt(capacityValue.toString());
             } catch (final NumberFormatException error) {
                 throw new IllegalArgumentException(
-                        "failed reading capacity in queueing recycler " +
-                                "factory: " + queueFactorySpec, error);
+                        "failed reading capacity in queueing recycler factory: " + queueFactorySpec,
+                        error);
             }
         }
 
-        // Read the supplier path.
+        // Read the supplier path
         final StringParameterParser.Value supplierValue = parsedValues.get("supplier");
-        final String supplierPath;
-        if (supplierValue == null || supplierValue instanceof StringParameterParser.NullValue) {
-            supplierPath = null;
-        } else {
-            supplierPath = supplierValue.toString();
-        }
+        final String supplierPath = supplierValue == null || supplierValue instanceof StringParameterParser.NullValue
+                ? null
+                : supplierValue.toString();
 
-        // Execute the read spec.
-        final QueueFactory queueFactory;
-        if (supplierPath != null) {
-            queueFactory = Queues.createQueueFactory(supplierPath, capacity);
-        } else {
-            queueFactory = Queues.MPMC.factory(capacity);
-        }
-
+        // Execute the read spec
+        final QueueFactory queueFactory = supplierPath != null
+                ? QueueFactories.createQueueFactory(supplierPath, capacity)
+                : QueueFactories.MPMC.factory(capacity);
         return new QueueingRecyclerFactory(queueFactory);
+
     }
 
 }

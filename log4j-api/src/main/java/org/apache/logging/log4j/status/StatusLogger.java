@@ -34,7 +34,7 @@ import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.util.LowLevelLogUtil;
-import org.apache.logging.log4j.util.Queues;
+import org.apache.logging.log4j.util.QueueFactories;
 
 /**
  * Records events that occur in the logging system. By default, only error messages are logged to {@link System#err}.
@@ -97,7 +97,7 @@ public final class StatusLogger extends AbstractLogger {
         this.logger = logger;
         this.configuration = configuration;
         this.listenersLevel = configuration.getDefaultLevel().intLevel();
-        messages = Queues.MPMC.create(configuration.getMaxEntries());
+        messages = QueueFactories.MPMC.create(configuration.getMaxEntries());
     }
 
     /**

@@ -35,6 +35,7 @@ import org.apache.logging.log4j.message.ParameterVisitable;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
+import org.apache.logging.log4j.spi.Recycler;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
@@ -43,7 +44,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Mutable implementation of the {@code ReusableLogEvent} interface.
  * @since 2.6
- * @see org.apache.logging.log4j.spi.Recycler
+ * @see Recycler
  */
 public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, ParameterVisitable {
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);

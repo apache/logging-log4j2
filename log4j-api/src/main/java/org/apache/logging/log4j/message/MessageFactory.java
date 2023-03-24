@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.spi.Recycler;
+
 /**
  * Creates messages. Implementations can provide different message format syntaxes.
  * If messages created by an implementation are reusable, then the {@link #recycle(Message)} method must
@@ -243,7 +245,7 @@ public interface MessageFactory {
      * Recycles a message back for potential reuse or cleanup.
      *
      * @since 3.0.0
-     * @see org.apache.logging.log4j.spi.Recycler
+     * @see Recycler
      */
     default void recycle(Message message) {
         if (message instanceof ReusableMessage) {

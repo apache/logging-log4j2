@@ -16,18 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import org.apache.logging.log4j.util.StringParameterParser;
-import org.apache.logging.log4j.util.StringParameterParser.DoubleQuotedStringValue;
-import org.apache.logging.log4j.util.StringParameterParser.NullValue;
-import org.apache.logging.log4j.util.StringParameterParser.StringValue;
-import org.apache.logging.log4j.util.StringParameterParser.Value;
-import org.apache.logging.log4j.util.StringParameterParser.Values;
+import org.apache.logging.log4j.util.StringParameterParser.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -94,7 +85,7 @@ class StringParameterParserTest {
     void test_null_value_2() {
         testSuccess(
                 "a,b=c,d=",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.nullValue());
                     put("b", Values.stringValue("c"));
                     put("d", Values.nullValue());
@@ -105,7 +96,7 @@ class StringParameterParserTest {
     void test_null_value_3() {
         testSuccess(
                 "a,b=c,d",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.nullValue());
                     put("b", Values.stringValue("c"));
                     put("d", Values.nullValue());
@@ -116,7 +107,7 @@ class StringParameterParserTest {
     void test_null_value_4() {
         testSuccess(
                 "a,b=\"c,=\\\"\",d=,e=f",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.nullValue());
                     put("b", Values.doubleQuotedStringValue("c,=\""));
                     put("d", Values.nullValue());
@@ -128,7 +119,7 @@ class StringParameterParserTest {
     void test_two_pairs() {
         testSuccess(
                 "a=b,c=d",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.stringValue("b"));
                     put("c", Values.stringValue("d"));
                 }});
@@ -145,7 +136,7 @@ class StringParameterParserTest {
     void test_quoted_string_02() {
         testSuccess(
                 "a=\"b\",c=d",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.doubleQuotedStringValue("b"));
                     put("c", Values.stringValue("d"));
                 }});
@@ -155,7 +146,7 @@ class StringParameterParserTest {
     void test_quoted_string_03() {
         testSuccess(
                 "a=b,c=\"d\"",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.stringValue("b"));
                     put("c", Values.doubleQuotedStringValue("d"));
                 }});
@@ -165,7 +156,7 @@ class StringParameterParserTest {
     void test_quoted_string_04() {
         testSuccess(
                 "a=\"b\",c=\"d\"",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.doubleQuotedStringValue("b"));
                     put("c", Values.doubleQuotedStringValue("d"));
                 }});
@@ -189,7 +180,7 @@ class StringParameterParserTest {
     void test_quoted_string_07() {
         testSuccess(
                 "a=\"\\\"b\",c=d",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.doubleQuotedStringValue("\"b"));
                     put("c", Values.stringValue("d"));
                 }});
@@ -209,7 +200,7 @@ class StringParameterParserTest {
     void test_quoted_string_09() {
         testSuccess(
                 "a=\"\\\"b,\",c=d",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.doubleQuotedStringValue("\"b,"));
                     put("c", Values.stringValue("d"));
                 }});
@@ -219,7 +210,7 @@ class StringParameterParserTest {
     void test_quoted_string_10() {
         testSuccess(
                 "a=\"\\\"b\\\",\",c=d",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.doubleQuotedStringValue("\"b\","));
                     put("c", Values.stringValue("d"));
                 }});
@@ -229,7 +220,7 @@ class StringParameterParserTest {
     void test_quoted_string_11() {
         testSuccess(
                 "a=\"\\\"b\",c=\"d\"",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.doubleQuotedStringValue("\"b"));
                     put("c", Values.doubleQuotedStringValue("d"));
                 }});
@@ -239,7 +230,7 @@ class StringParameterParserTest {
     void test_quoted_string_12() {
         testSuccess(
                 "a=\"\\\"b\\\"\",c=\"d\"",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.doubleQuotedStringValue("\"b\""));
                     put("c", Values.doubleQuotedStringValue("d"));
                 }});
@@ -259,7 +250,7 @@ class StringParameterParserTest {
     void test_quoted_string_14() {
         testSuccess(
                 "a=\"\\\"b\\\",\",c=\"\\\"d\\\"\"",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.doubleQuotedStringValue("\"b\","));
                     put("c", Values.doubleQuotedStringValue("\"d\""));
                 }});
@@ -269,7 +260,7 @@ class StringParameterParserTest {
     void test_quoted_string_15() {
         testSuccess(
                 "a=\"\\\"b\",c=\",d\"",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.doubleQuotedStringValue("\"b"));
                     put("c", Values.doubleQuotedStringValue(",d"));
                 }});
@@ -279,7 +270,7 @@ class StringParameterParserTest {
     void test_quoted_string_16() {
         testSuccess(
                 "a=\"\\\"b\\\"\",c=\",d\"",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.doubleQuotedStringValue("\"b\""));
                     put("c", Values.doubleQuotedStringValue(",d"));
                 }});
@@ -289,7 +280,7 @@ class StringParameterParserTest {
     void test_quoted_string_17() {
         testSuccess(
                 "a=\"\\\"b,\",c=\"\\\"d,\"",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.doubleQuotedStringValue("\"b,"));
                     put("c", Values.doubleQuotedStringValue("\"d,"));
                 }});
@@ -299,7 +290,7 @@ class StringParameterParserTest {
     void test_quoted_string_18() {
         testSuccess(
                 "a=\"\\\"b\\\",\",c=\"\\\"d\\\",\"",
-                new LinkedHashMap<String, Value>() {{
+                new LinkedHashMap<>() {{
                     put("a", Values.doubleQuotedStringValue("\"b\","));
                     put("c", Values.doubleQuotedStringValue("\"d\","));
                 }});

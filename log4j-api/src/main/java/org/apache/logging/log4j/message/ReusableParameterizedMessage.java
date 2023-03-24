@@ -46,7 +46,7 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
     private Object[] params = new Object[MAX_PARMS];
     private Throwable throwable;
 
-    private final Recycler<StringBuilder> bufferRecycler; // non-static: LOG4J2-1583
+    private final Recycler<StringBuilder> bufferRecycler;
 
     /**
      * Creates a reusable message.
@@ -59,7 +59,8 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         bufferRecycler = recyclerFactory.create(
                 () -> {
                     final int currentPatternLength = messagePattern == null ? 0 : messagePattern.length();
-                    return new StringBuilder(Math.max(MIN_BUILDER_SIZE, currentPatternLength * 2));
+                    int capacity = Math.max(MIN_BUILDER_SIZE, Math.multiplyExact(currentPatternLength, 2));
+                    return new StringBuilder(capacity);
                 },
                 buffer -> {
                     StringBuilders.trimToMaxSize(buffer, Constants.MAX_REUSABLE_MESSAGE_SIZE);
