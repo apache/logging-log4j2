@@ -59,6 +59,11 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
             return new MongoDb4Provider(connectionStringSource, capped, collectionSize);
         }
 
+        public B setConnectionStringSource(final String connectionStringSource) {
+            this.connectionStringSource = connectionStringSource;
+            return asBuilder();
+        }
+
         public B setCapped(final boolean isCapped) {
             this.capped = isCapped;
             return asBuilder();
