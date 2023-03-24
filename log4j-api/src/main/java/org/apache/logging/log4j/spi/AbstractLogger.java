@@ -2892,9 +2892,13 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * @since 2.20.0
      */
     protected LogBuilder getLogBuilder(Level level) {
-        DefaultLogBuilder builder = logBuilder.get();
-        return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder.reset(this, level)
-                : new DefaultLogBuilder(this, level);
+        if (Constants.ENABLE_THREADLOCALS) {
+            DefaultLogBuilder builder = logBuilder.get();
+            if (!builder.isInUse()) {
+                return builder.reset(this, level);
+            }
+        }
+        return new DefaultLogBuilder(this, level);
     }
 
 }
