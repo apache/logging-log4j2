@@ -16,15 +16,13 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import org.apache.logging.log4j.spi.RecyclerFactories;
-import org.apache.logging.log4j.spi.RecyclerFactory;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 
 public final class JsonTemplateLayoutDefaults {
 
@@ -136,12 +134,6 @@ public final class JsonTemplateLayoutDefaults {
         return PROPERTIES.getStringProperty(
                 "log4j.layout.jsonTemplate.truncatedStringSuffix",
                 "…");
-    }
-
-    public static RecyclerFactory getRecyclerFactory() {
-        final String recyclerFactorySpec = PROPERTIES.getStringProperty(
-                "log4j.layout.jsonTemplate.recyclerFactory");
-        return RecyclerFactories.ofSpec(recyclerFactorySpec);
     }
 
 }

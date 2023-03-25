@@ -42,7 +42,7 @@ public class ReusableLogEventFactoryTest {
     }
 
     @Test
-    public void testCreateEventReturnsDifferentInstanceIfNotReleased() throws Exception {
+    public void testCreateEventReturnsDifferentInstanceIfNotReleased() {
         final LogEvent event1 = callCreateEvent("a", Level.DEBUG, new SimpleMessage("abc"), null);
         final LogEvent event2 = callCreateEvent("b", Level.INFO, new SimpleMessage("xyz"), null);
         assertNotSame(event1, event2);
@@ -51,7 +51,7 @@ public class ReusableLogEventFactoryTest {
     }
 
     @Test
-    public void testCreateEventReturnsSameInstance() throws Exception {
+    public void testCreateEventReturnsSameInstance() {
         final LogEvent event1 = callCreateEvent("a", Level.DEBUG, new SimpleMessage("abc"), null);
         factory.recycle(event1);
         final LogEvent event2 = callCreateEvent("b", Level.INFO, new SimpleMessage("xyz"), null);
@@ -64,7 +64,7 @@ public class ReusableLogEventFactoryTest {
     }
 
     @Test
-    public void testCreateEventOverwritesFields() throws Exception {
+    public void testCreateEventOverwritesFields() {
         final LogEvent event1 = callCreateEvent("a", Level.DEBUG, new SimpleMessage("abc"), null);
         assertEquals("a", event1.getLoggerName(), "logger");
         assertEquals(Level.DEBUG, event1.getLevel(), "level");
@@ -125,7 +125,7 @@ public class ReusableLogEventFactoryTest {
     }
 
     @Test
-    public void testCreateEventInitFieldsProperly() throws Exception {
+    public void testCreateEventInitFieldsProperly() {
         final LogEvent event = callCreateEvent("logger", Level.INFO, new SimpleMessage("xyz"), null);
         try {
             assertNotNull(event.getContextData());

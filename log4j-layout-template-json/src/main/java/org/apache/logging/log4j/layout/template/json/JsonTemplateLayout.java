@@ -16,16 +16,6 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.CodingErrorAction;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
@@ -42,9 +32,18 @@ import org.apache.logging.log4j.layout.template.json.util.Uris;
 import org.apache.logging.log4j.plugins.*;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.spi.Recycler;
-import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CodingErrorAction;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Configurable(elementType = Layout.ELEMENT_TYPE)
 @Plugin
@@ -94,11 +93,7 @@ public class JsonTemplateLayout implements StringLayout {
                 .setMaxStringLength(builder.maxStringLength)
                 .setTruncatedStringSuffix(builder.truncatedStringSuffix)
                 .build();
-        this.eventResolver = createEventResolver(
-                builder,
-                configuration,
-                charset,
-                jsonWriter);
+        this.eventResolver = createEventResolver(builder, configuration, charset, jsonWriter);
         this.contextRecycler = createContextRecycler(builder, jsonWriter);
     }
 
@@ -149,7 +144,6 @@ public class JsonTemplateLayout implements StringLayout {
                 .setSubstitutor(substitutor)
                 .setCharset(charset)
                 .setJsonWriter(jsonWriter)
-                .setRecyclerFactory(builder.recyclerFactory)
                 .setMaxStringByteCount(maxStringByteCount)
                 .setTruncatedStringSuffix(builder.truncatedStringSuffix)
                 .setLocationInfoEnabled(builder.locationInfoEnabled)
@@ -187,14 +181,9 @@ public class JsonTemplateLayout implements StringLayout {
                 : template;
     }
 
-    private static Recycler<Context> createContextRecycler(
-            final Builder builder,
-            final JsonWriter jsonWriter) {
-        final Supplier<Context> supplier =
-                createContextSupplier(builder.charset, jsonWriter);
-        return builder
-                .recyclerFactory
-                .create(supplier, Context::close);
+    private static Recycler<Context> createContextRecycler(final Builder builder, final JsonWriter jsonWriter) {
+        final Supplier<Context> supplier = createContextSupplier(builder.charset, jsonWriter);
+        return builder.configuration.getRecyclerFactory().create(supplier, Context::close);
     }
 
     private static Supplier<Context> createContextSupplier(
@@ -393,10 +382,6 @@ public class JsonTemplateLayout implements StringLayout {
         private String truncatedStringSuffix =
                 JsonTemplateLayoutDefaults.getTruncatedStringSuffix();
 
-        @PluginBuilderAttribute
-        private RecyclerFactory recyclerFactory =
-                JsonTemplateLayoutDefaults.getRecyclerFactory();
-
         private Builder() {
             // Do nothing.
         }
@@ -531,15 +516,6 @@ public class JsonTemplateLayout implements StringLayout {
             return this;
         }
 
-        public RecyclerFactory getRecyclerFactory() {
-            return recyclerFactory;
-        }
-
-        public Builder setRecyclerFactory(final RecyclerFactory recyclerFactory) {
-            this.recyclerFactory = recyclerFactory;
-            return this;
-        }
-
         @Override
         public JsonTemplateLayout build() {
             validate();
@@ -547,7 +523,7 @@ public class JsonTemplateLayout implements StringLayout {
         }
 
         private void validate() {
-            Objects.requireNonNull(configuration, "config");
+            Objects.requireNonNull(configuration, "configuration");
             if (Strings.isBlank(eventTemplate) && Strings.isBlank(eventTemplateUri)) {
                     throw new IllegalArgumentException(
                             "both eventTemplate and eventTemplateUri are blank");
@@ -564,7 +540,6 @@ public class JsonTemplateLayout implements StringLayout {
                                 maxStringLength);
             }
             Objects.requireNonNull(truncatedStringSuffix, "truncatedStringSuffix");
-            Objects.requireNonNull(recyclerFactory, "recyclerFactory");
         }
 
     }

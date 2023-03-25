@@ -145,6 +145,7 @@ public class CounterResolver implements EventResolver {
     private static Recycler<StringBuilder> createStringBuilderRecycler(
             final EventResolverContext context) {
         return context
+                .getConfiguration()
                 .getRecyclerFactory()
                 .create(
                         StringBuilder::new,

@@ -212,7 +212,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
         if (key != null) {
             return createKeyResolver(key, stringified, mapAccessor);
         } else {
-            final RecyclerFactory recyclerFactory = context.getRecyclerFactory();
+            final RecyclerFactory recyclerFactory = context.getConfiguration().getRecyclerFactory();
             return createResolver(
                     recyclerFactory,
                     flatten,

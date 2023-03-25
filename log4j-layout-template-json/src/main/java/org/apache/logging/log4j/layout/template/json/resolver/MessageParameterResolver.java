@@ -83,6 +83,7 @@ public final class MessageParameterResolver implements EventResolver {
             final EventResolverContext context,
             final TemplateResolverConfig config) {
         this.parameterConsumerStateRecycler = context
+                .getConfiguration()
                 .getRecyclerFactory()
                 .create(ParameterConsumerState::new);
         this.stringified = config.getBoolean("stringified", false);

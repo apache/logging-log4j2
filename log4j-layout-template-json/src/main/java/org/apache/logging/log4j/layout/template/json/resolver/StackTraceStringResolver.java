@@ -56,7 +56,7 @@ final class StackTraceStringResolver implements StackTraceResolver {
         final Supplier<TruncatingBufferedPrintWriter> writerSupplier =
                 () -> TruncatingBufferedPrintWriter.ofCapacity(
                         context.getMaxStringByteCount());
-        final RecyclerFactory recyclerFactory = context.getRecyclerFactory();
+        final RecyclerFactory recyclerFactory = context.getConfiguration().getRecyclerFactory();
         this.srcWriterRecycler =
                 recyclerFactory.create(
                         writerSupplier, TruncatingBufferedPrintWriter::close);

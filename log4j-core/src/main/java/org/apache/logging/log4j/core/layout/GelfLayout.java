@@ -16,19 +16,6 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.GZIPOutputStream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -38,27 +25,25 @@ import org.apache.logging.log4j.core.layout.internal.IncludeChecker;
 import org.apache.logging.log4j.core.layout.internal.ListChecker;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Severity;
-import org.apache.logging.log4j.core.util.JsonUtils;
-import org.apache.logging.log4j.core.util.KeyValuePair;
-import org.apache.logging.log4j.core.util.NetUtils;
-import org.apache.logging.log4j.core.util.Patterns;
-import org.apache.logging.log4j.core.util.StringBuilderWriter;
+import org.apache.logging.log4j.core.util.*;
 import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.plugins.*;
 import org.apache.logging.log4j.spi.Recycler;
-import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.TriConsumer;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * Lays out events in the Graylog Extended Log Format (GELF) 1.1.
@@ -176,8 +161,6 @@ public final class GelfLayout extends AbstractStringLayout {
         @PluginElement("PatternSelector")
         private PatternSelector patternSelector = null;
 
-        private RecyclerFactory recyclerFactory;
-
         public Builder() {
             super();
             setCharset(StandardCharsets.UTF_8);
@@ -206,13 +189,10 @@ public final class GelfLayout extends AbstractStringLayout {
                         .setConfiguration(config)
                         .build();
             }
-            if (recyclerFactory == null) {
-                recyclerFactory = config != null ? config.getRecyclerFactory() : LoggingSystem.getRecyclerFactory();
-            }
             return new GelfLayout(config, host, additionalFields, compressionType, compressionThreshold,
                     includeStacktrace, includeThreadContext, includeMapMessage, includeNullDelimiter,
                     includeNewLineDelimiter, omitEmptyFields, mdcChecker, mapChecker, patternLayout,
-                    threadContextPrefix, mapPrefix, recyclerFactory);
+                    threadContextPrefix, mapPrefix);
         }
 
         private ListChecker createChecker(final String excludes, final String includes) {
@@ -449,11 +429,6 @@ public final class GelfLayout extends AbstractStringLayout {
             return asBuilder();
         }
 
-        @Inject
-        public B setRecyclerFactory(final RecyclerFactory recyclerFactory) {
-            this.recyclerFactory = recyclerFactory;
-            return asBuilder();
-        }
     }
 
     private GelfLayout(final Configuration config, final String host, final KeyValuePair[] additionalFields,
@@ -461,7 +436,7 @@ public final class GelfLayout extends AbstractStringLayout {
             final boolean includeThreadContext, final boolean includeMapMessage, final boolean includeNullDelimiter,
             final boolean includeNewLineDelimiter, final boolean omitEmptyFields, final ListChecker mdcChecker,
             final ListChecker mapChecker, final PatternLayout patternLayout, final String mdcPrefix,
-            final String mapPrefix, final RecyclerFactory recyclerFactory) {
+            final String mapPrefix) {
         super(config, StandardCharsets.UTF_8, null, null);
         this.host = host != null ? host : NetUtils.getLocalHostname();
         this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
@@ -486,7 +461,7 @@ public final class GelfLayout extends AbstractStringLayout {
         this.mdcWriter = new FieldWriter(mdcChecker, mdcPrefix);
         this.mapWriter = new FieldWriter(mapChecker, mapPrefix);
         this.layout = patternLayout;
-        stacktraceRecycler = recyclerFactory.create(
+        stacktraceRecycler = config.getRecyclerFactory().create(
                 () -> new StringBuilderWriter(MAX_STRING_BUILDER_SIZE),
                 writer -> {
                     final StringBuilder stringBuilder = writer.getBuilder();

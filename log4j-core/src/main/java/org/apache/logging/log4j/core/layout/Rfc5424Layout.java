@@ -594,25 +594,25 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     /**
      * Create the RFC 5424 Layout.
      *
-     * @param facility            The Facility is used to try to classify the message.
-     * @param id                  The default structured data id to use when formatting according to RFC 5424.
-     * @param enterpriseNumber    The IANA enterprise number.
-     * @param includeMDC          Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog
-     *                            record. Defaults to "true:.
-     * @param mdcId               The id to use for the MDC Structured Data Element.
-     * @param mdcPrefix           The prefix to add to MDC key names.
-     * @param eventPrefix         The prefix to add to event key names.
-     * @param newLine             If true, a newline will be appended to the end of the syslog record. The default is false.
-     * @param escapeNL            String that should be used to replace newlines within the message text.
-     * @param appName             The value to use as the APP-NAME in the RFC 5424 syslog record.
-     * @param msgId               The default value to be used in the MSGID field of RFC 5424 syslog records.
-     * @param excludes            A comma separated list of MDC keys that should be excluded from the LogEvent.
-     * @param includes            A comma separated list of MDC keys that should be included in the FlumeEvent.
-     * @param required            A comma separated list of MDC keys that must be present in the MDC.
-     * @param exceptionPattern    The pattern for formatting exceptions.
+     * @param facility The Facility is used to try to classify the message.
+     * @param id The default structured data id to use when formatting according to RFC 5424.
+     * @param enterpriseNumber The IANA enterprise number.
+     * @param includeMDC Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog
+     *            record. Defaults to "true:.
+     * @param mdcId The id to use for the MDC Structured Data Element.
+     * @param mdcPrefix The prefix to add to MDC key names.
+     * @param eventPrefix The prefix to add to event key names.
+     * @param newLine If true, a newline will be appended to the end of the syslog record. The default is false.
+     * @param escapeNL String that should be used to replace newlines within the message text.
+     * @param appName The value to use as the APP-NAME in the RFC 5424 syslog record.
+     * @param msgId The default value to be used in the MSGID field of RFC 5424 syslog records.
+     * @param excludes A comma separated list of MDC keys that should be excluded from the LogEvent.
+     * @param includes A comma separated list of MDC keys that should be included in the FlumeEvent.
+     * @param required A comma separated list of MDC keys that must be present in the MDC.
+     * @param exceptionPattern The pattern for formatting exceptions.
      * @param useTlsMessageFormat If true the message will be formatted according to RFC 5425.
-     * @param loggerFields        Container for the KeyValuePairs containing the patterns
-     * @param config              The Configuration. Some Converters require access to the Interpolator.
+     * @param loggerFields Container for the KeyValuePairs containing the patterns
+     * @param config The Configuration. Some Converters require access to the Interpolator.
      * @return An Rfc5424Layout.
      * @deprecated Use {@link Rfc5424LayoutBuilder instead}
      */
