@@ -375,7 +375,7 @@
     <!-- =====================================================
          Dependency version properties (in alphabetical order)
          ===================================================== -->
-    <activemq.version>5.17.4</activemq.version>
+    <activemq.version>5.18.0</activemq.version>
     <angus-activation.version>2.0.0</angus-activation.version>
     <angus-mail.version>2.0.1</angus-mail.version>
     <asm.version>9.4</asm.version>
