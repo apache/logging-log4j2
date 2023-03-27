@@ -101,8 +101,6 @@ public class PluginElementVisitor extends AbstractPluginVisitor<PluginElement> {
             boolean elementNameMatch = childType != null && name.equalsIgnoreCase(childType.getElementName());
             boolean isAssignableByPluginClass = childType != null &&
                     this.conversionType.isAssignableFrom(childType.getPluginClass());
-            // FIXME: check child.getObject() for null?
-            // doing so would be more consistent with the array version
             if (elementNameMatch || isAssignableByPluginClass) {
                 return child;
             }
