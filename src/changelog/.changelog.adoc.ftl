@@ -24,7 +24,7 @@
 <#list entry.issues as issue>${issue.link}[${issue.id}]<#if issue?has_next>, </#if></#list> by
 <#list entry.authors as author>
 <@compress single_line=true>
-<#if !author.id?has_content>${author.name}
+<#if author.name?has_content>${author.name}
 <#elseif author.id == "rgoers">Ralph Goers
 <#elseif author.id == "ggregory">Gary Gregory
 <#elseif author.id == "sdeboy">Scott Deboy
