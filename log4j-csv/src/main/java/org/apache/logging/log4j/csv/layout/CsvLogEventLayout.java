@@ -77,7 +77,7 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buffer = acquireStringBuilder();
+        final StringBuilder buffer = stringBuilderRecycler.acquire();
         final CSVFormat format = getFormat();
         try {
             format.print(event.getNanoTime(), buffer, true);
@@ -100,7 +100,7 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
             StatusLogger.getLogger().error(event.toString(), e);
             return format.getCommentMarker() + " " + e;
         } finally {
-            releaseStringBuilder(buffer);
+            stringBuilderRecycler.release(buffer);
         }
     }
 

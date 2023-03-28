@@ -33,12 +33,6 @@ public class TextEncoderHelper {
     private TextEncoderHelper() {
     }
 
-    static void encodeTextFallBack(final Charset charset, final StringBuilder text,
-            final ByteBufferDestination destination) {
-        final byte[] bytes = text.toString().getBytes(charset);
-        destination.writeBytes(bytes, 0, bytes.length);
-    }
-
     /**
      * Converts the specified text to bytes and writes the resulting bytes to the specified destination.
      * Attempts to postpone synchronizing on the destination as long as possible to minimize lock contention.

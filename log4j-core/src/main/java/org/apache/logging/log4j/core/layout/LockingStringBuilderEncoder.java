@@ -30,6 +30,8 @@ import java.util.Objects;
  */
 public class LockingStringBuilderEncoder implements Encoder<StringBuilder> {
 
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
+
     private final Charset charset;
     private final CharsetEncoder charsetEncoder;
     private final CharBuffer cachedCharBuffer;
@@ -57,15 +59,12 @@ public class LockingStringBuilderEncoder implements Encoder<StringBuilder> {
                 TextEncoderHelper.encodeText(charsetEncoder, cachedCharBuffer, destination.getByteBuffer(), source,
                     destination);
             }
-        } catch (final Exception ex) {
-            logEncodeTextException(ex, source, destination);
-            TextEncoderHelper.encodeTextFallBack(charset, source, destination);
+        } catch (final Exception error) {
+            LOGGER.error("Due to `TextEncoderHelper.encodeText()` failure, falling back to `String#getBytes(Charset)`", error);
+            byte[] sourceBytes = source.toString().getBytes(charset);
+            destination.writeBytes(sourceBytes, 0, sourceBytes.length);
         }
 
     }
 
-    private void logEncodeTextException(final Exception ex, final StringBuilder text,
-                                        final ByteBufferDestination destination) {
-        StatusLogger.getLogger().error("Recovering from LockingStringBuilderEncoder.encode('{}') error", text, ex);
-    }
 }

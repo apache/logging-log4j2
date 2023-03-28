@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.layout;
 import java.nio.charset.Charset;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +34,7 @@ public class AbstractStringLayoutTest {
         public static int MAX_STRING_BUILDER_SIZE = AbstractStringLayout.MAX_STRING_BUILDER_SIZE;
 
         public ConcreteStringLayout() {
-            super(Charset.defaultCharset());
+            super(new DefaultConfiguration(), Charset.defaultCharset());
         }
 
         @Override
@@ -46,7 +47,7 @@ public class AbstractStringLayoutTest {
     public void testGetStringBuilderCapacityRestrictedToMax() {
 
         final ConcreteStringLayout layout = new ConcreteStringLayout();
-        final StringBuilder sb = layout.acquireStringBuilder();
+        final StringBuilder sb = layout.stringBuilderRecycler.acquire();
         final int initialCapacity = sb.capacity();
         try {
             assertEquals(ConcreteStringLayout.DEFAULT_STRING_BUILDER_SIZE, sb.capacity(), "initial capacity");
@@ -57,10 +58,10 @@ public class AbstractStringLayoutTest {
             assertEquals(initialCapacity, sb.capacity(), "capacity not grown");
             assertEquals(SMALL, sb.length(), "length=msg length");
         } finally {
-            layout.releaseStringBuilder(sb);
+            layout.stringBuilderRecycler.release(sb);
         }
 
-        final StringBuilder sb2 = layout.acquireStringBuilder();
+        final StringBuilder sb2 = layout.stringBuilderRecycler.acquire();
         try {
             assertEquals(sb2.capacity(), initialCapacity, "capacity unchanged");
             assertEquals(0, sb2.length(), "empty, ready for use");
@@ -76,16 +77,16 @@ public class AbstractStringLayoutTest {
             assertEquals(0, sb2.length(), "empty, cleared");
             assertTrue(sb2.capacity() >= ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, "capacity remains very large");
         } finally {
-            layout.releaseStringBuilder(sb2);
+            layout.stringBuilderRecycler.release(sb2);
         }
 
-        final StringBuilder sb3 = layout.acquireStringBuilder();
+        final StringBuilder sb3 = layout.stringBuilderRecycler.acquire();
         try {
             assertEquals(ConcreteStringLayout.MAX_STRING_BUILDER_SIZE, sb3.capacity(),
                     "capacity, trimmed to MAX_STRING_BUILDER_SIZE");
             assertEquals(0, sb3.length(), "empty, ready for use");
         } finally {
-            layout.releaseStringBuilder(sb3);
+            layout.stringBuilderRecycler.release(sb3);
         }
 
     }

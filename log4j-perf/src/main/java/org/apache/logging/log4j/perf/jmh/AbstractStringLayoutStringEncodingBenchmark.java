@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
@@ -204,7 +205,7 @@ public class AbstractStringLayoutStringEncodingBenchmark {
 
     private static class GetBytesLayout extends AbstractStringLayout {
         public GetBytesLayout(final Charset charset) {
-            super(charset);
+            super(new DefaultConfiguration(), charset);
         }
 
         @Override
@@ -214,19 +215,19 @@ public class AbstractStringLayoutStringEncodingBenchmark {
 
         @Override
         public byte[] toByteArray(final LogEvent event) {
-            final StringBuilder sb = acquireStringBuilder();
+            final StringBuilder sb = stringBuilderRecycler.acquire();
             try {
                 ((StringBuilderFormattable) event.getMessage()).formatTo(sb);
                 return getBytes(sb.toString());
             } finally {
-                releaseStringBuilder(sb);
+                stringBuilderRecycler.release(sb);
             }
         }
     }
 
     private static class EncodeLayout extends AbstractStringLayout {
         public EncodeLayout(final Charset charset) {
-            super(charset);
+            super(new DefaultConfiguration(), charset);
         }
 
         @Override
@@ -241,13 +242,17 @@ public class AbstractStringLayoutStringEncodingBenchmark {
 
         @Override
         public void encode(final LogEvent event, final ByteBufferDestination destination) {
-            final StringBuilder sb = acquireStringBuilder();
+            final StringBuilder sb = stringBuilderRecycler.acquire();
             try {
                 ((StringBuilderFormattable) event.getMessage()).formatTo(sb);
-                final Encoder<StringBuilder> helper = getStringBuilderEncoder();
-                helper.encode(sb, destination);
+                final Encoder<StringBuilder> helper = stringBuilderEncoderRecycler.acquire();
+                try {
+                    helper.encode(sb, destination);
+                } finally {
+                    stringBuilderEncoderRecycler.release(helper);
+                }
             } finally {
-                releaseStringBuilder(sb);
+                stringBuilderRecycler.release(sb);
             }
         }
     }

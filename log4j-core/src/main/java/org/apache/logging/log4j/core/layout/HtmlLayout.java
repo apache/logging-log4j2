@@ -31,7 +31,9 @@ import java.util.Date;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
 import org.apache.logging.log4j.core.util.Transform;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -102,9 +104,18 @@ public final class HtmlLayout extends AbstractStringLayout {
         }
     }
 
-    private HtmlLayout(final boolean locationInfo, final String title, final String contentType, final Charset charset,
-            final String font, final String fontSize, final String headerSize, final String datePattern, final String timezone) {
-        super(charset);
+    private HtmlLayout(
+            final Configuration configuration,
+            final boolean locationInfo,
+            final String title,
+            final String contentType,
+            final Charset charset,
+            final String font,
+            final String fontSize,
+            final String headerSize,
+            final String datePattern,
+            final String timezone) {
+        super(configuration, charset);
         this.locationInfo = locationInfo;
         this.title = title;
         this.contentType = addCharsetToContentType(contentType);
@@ -149,7 +160,7 @@ public final class HtmlLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder sbuf = acquireStringBuilder();
+        final StringBuilder sbuf = stringBuilderRecycler.acquire();
         try {
 
             sbuf.append(Strings.LINE_SEPARATOR).append("<tr>").append(Strings.LINE_SEPARATOR);
@@ -230,14 +241,11 @@ public final class HtmlLayout extends AbstractStringLayout {
 
             return sbuf.toString();
         } finally {
-            releaseStringBuilder(sbuf);
+            stringBuilderRecycler.release(sbuf);
         }
     }
 
     @Override
-    /**
-     * @return The content type.
-     */
     public String getContentType() {
         return contentType;
     }
@@ -293,7 +301,7 @@ public final class HtmlLayout extends AbstractStringLayout {
      */
     @Override
     public byte[] getHeader() {
-        final StringBuilder sbuf = acquireStringBuilder();
+        final StringBuilder sbuf = stringBuilderRecycler.acquire();
         try {
             append(sbuf, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" ");
             appendLs(sbuf, "\"http://www.w3.org/TR/html4/loose.dtd\">");
@@ -330,7 +338,7 @@ public final class HtmlLayout extends AbstractStringLayout {
             appendLs(sbuf, "</tr>");
             return sbuf.toString().getBytes(getCharset());
         } finally {
-            releaseStringBuilder(sbuf);
+            stringBuilderRecycler.release(sbuf);
         }
     }
 
@@ -340,14 +348,14 @@ public final class HtmlLayout extends AbstractStringLayout {
      */
     @Override
     public byte[] getFooter() {
-        final StringBuilder sbuf = acquireStringBuilder();
+        final StringBuilder sbuf = stringBuilderRecycler.acquire();
         try {
             appendLs(sbuf, "</table>");
             appendLs(sbuf, "<br>");
             appendLs(sbuf, "</body></html>");
             return getBytes(sbuf.toString());
         } finally {
-            releaseStringBuilder(sbuf);
+            stringBuilderRecycler.release(sbuf);
         }
     }
 
@@ -366,6 +374,9 @@ public final class HtmlLayout extends AbstractStringLayout {
     }
 
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<HtmlLayout> {
+
+        @PluginConfiguration
+        private Configuration configuration;
 
         @PluginBuilderAttribute
         private boolean locationInfo = false;
@@ -392,6 +403,11 @@ public final class HtmlLayout extends AbstractStringLayout {
         private String timezone = null; // null means default timezone
 
         private Builder() {
+        }
+
+        public Builder setConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return this;
         }
 
         public Builder setLocationInfo(final boolean locationInfo) {
@@ -440,8 +456,9 @@ public final class HtmlLayout extends AbstractStringLayout {
             if (contentType == null) {
                 contentType = DEFAULT_CONTENT_TYPE + "; charset=" + charset;
             }
-            return new HtmlLayout(locationInfo, title, contentType, charset, fontName, fontSize.getFontSize(),
-                fontSize.larger().getFontSize(), datePattern, timezone);
+            return new HtmlLayout(
+                    configuration, locationInfo, title, contentType, charset, fontName, fontSize.getFontSize(),
+                    fontSize.larger().getFontSize(), datePattern, timezone);
         }
     }
 }

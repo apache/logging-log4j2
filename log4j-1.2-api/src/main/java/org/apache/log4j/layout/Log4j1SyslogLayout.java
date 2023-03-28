@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.net.Facility;
@@ -83,7 +84,7 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
                 LOGGER.error("Log4j1SyslogLayout: the message layout must be a StringLayout.");
                 return null;
             }
-            return new Log4j1SyslogLayout(facility, facilityPrinting, header, (StringLayout) messageLayout, getCharset());
+            return new Log4j1SyslogLayout(getConfiguration(), facility, facilityPrinting, header, (StringLayout) messageLayout, getCharset());
         }
 
         public Facility getFacility() {
@@ -145,9 +146,14 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
     private final LogEventPatternConverter dateConverter =  DatePatternConverter.newInstance(dateFormatOptions);
 
 
-    private Log4j1SyslogLayout(final Facility facility, final boolean facilityPrinting, final boolean header,
-            final StringLayout messageLayout, final Charset charset) {
-        super(charset);
+    private Log4j1SyslogLayout(
+            final Configuration config,
+            final Facility facility,
+            final boolean facilityPrinting,
+            final boolean header,
+            final StringLayout messageLayout,
+            final Charset charset) {
+        super(config, charset);
         this.facility = facility;
         this.facilityPrinting = facilityPrinting;
         this.header = header;
@@ -166,7 +172,7 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
         // so we generate the message first
         final String message = messageLayout != null ? messageLayout.toSerializable(event)
                 : event.getMessage().getFormattedMessage();
-        final StringBuilder buf = acquireStringBuilder();
+        final StringBuilder buf = stringBuilderRecycler.acquire();
 
         try {
             buf.append('<');
@@ -194,7 +200,7 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
             // TODO: splitting message into 1024 byte chunks?
             return buf.toString();
         } finally {
-            releaseStringBuilder(buf);
+            stringBuilderRecycler.release(buf);
         }
     }
 

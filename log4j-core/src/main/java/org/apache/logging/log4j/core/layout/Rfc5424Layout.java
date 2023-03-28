@@ -137,7 +137,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
               final String mdcPrefix, final String eventPrefix, final String appName, final String messageId,
               final String excludes, final String includes, final String required, final Charset charset,
               final String exceptionPattern, final boolean useTLSMessageFormat, final LoggerFields[] loggerFields) {
-        super(charset);
+        super(config, charset);
         final PatternParser exceptionParser = createPatternParser(config, ThrowablePatternConverter.class);
         exceptionFormatters = exceptionPattern == null ? null : exceptionParser.parse(exceptionPattern);
         this.facility = facility;
@@ -274,7 +274,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buf = acquireStringBuilder();
+        final StringBuilder buf = stringBuilderRecycler.acquire();
         try {
             appendPriority(buf, event.getLevel());
             appendTimestamp(buf, event.getTimeMillis());
@@ -294,7 +294,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             }
             return buf.toString();
         } finally {
-            releaseStringBuilder(buf);
+            stringBuilderRecycler.release(buf);
         }
     }
 

@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.util.HashMap;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Layout;
@@ -33,6 +36,8 @@ import org.apache.logging.log4j.util.Cast;
  */
 public abstract class AbstractLayout implements Layout {
 
+    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+
     /**
      * Subclasses can extend this abstract Builder.
      *
@@ -42,6 +47,9 @@ public abstract class AbstractLayout implements Layout {
 
         @PluginConfiguration
         private Configuration configuration;
+
+        @PluginBuilderAttribute
+        private Charset charset;
 
         @PluginBuilderAttribute
         private byte[] footer;
@@ -57,6 +65,10 @@ public abstract class AbstractLayout implements Layout {
             return configuration;
         }
 
+        public Charset getCharset() {
+            return charset;
+        }
+
         public byte[] getFooter() {
             return footer;
         }
@@ -67,6 +79,11 @@ public abstract class AbstractLayout implements Layout {
 
         public B setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
+            return asBuilder();
+        }
+
+        public B setCharset(final Charset charset) {
+            this.charset = charset;
             return asBuilder();
         }
 
@@ -93,6 +110,11 @@ public abstract class AbstractLayout implements Layout {
     protected final Configuration configuration;
 
     /**
+     * The character set used for encoding log events.
+     */
+    protected final Charset charset;
+
+    /**
      * The number of events successfully processed by this layout.
      */
     protected long eventCount;
@@ -108,18 +130,37 @@ public abstract class AbstractLayout implements Layout {
     protected final byte[] header;
 
     /**
+     * Constructs a UTF-8 encoded layout with an optional header and footer.
+     *
+     * @param configuration a configuration
+     * @param header a header to include when the stream is opened, may be null
+     * @param footer the footer to add when the stream is closed, may be null
+     * @deprecated use {@link AbstractLayout#AbstractLayout(Configuration, Charset, byte[], byte[])} instead
+     */
+    @Deprecated
+    public AbstractLayout(
+            final Configuration configuration,
+            final byte[] header,
+            final byte[] footer) {
+        this(configuration, DEFAULT_CHARSET, header, footer);
+    }
+
+    /**
      * Constructs a layout with an optional header and footer.
      *
-     * @param configuration
-     *            The configuration
-     * @param header
-     *            The header to include when the stream is opened. May be null.
-     * @param footer
-     *            The footer to add when the stream is closed. May be null.
+     * @param configuration a configuration
+     * @param charset a character set used for encoding log events; if null, UTF-8 will be used
+     * @param header a header to include when the stream is opened, may be null
+     * @param footer the footer to add when the stream is closed, may be null
      */
-    public AbstractLayout(final Configuration configuration, final byte[] header, final byte[] footer) {
+    public AbstractLayout(
+            final Configuration configuration,
+            final Charset charset,
+            final byte[] header,
+            final byte[] footer) {
         super();
-        this.configuration = configuration;
+        this.configuration = Objects.requireNonNull(configuration, "configuration");
+        this.charset = charset != null ? charset : DEFAULT_CHARSET;
         this.header = header;
         this.footer = footer;
     }
@@ -129,8 +170,13 @@ public abstract class AbstractLayout implements Layout {
     }
 
     @Override
+    public Charset getCharset() {
+        return charset;
+    }
+
+    @Override
     public Map<String, String> getContentFormat() {
-        return new HashMap<>();
+        return Collections.emptyMap();
     }
 
     /**
@@ -189,13 +235,11 @@ public abstract class AbstractLayout implements Layout {
      *
      * @param event the LogEvent to encode.
      * @param destination holds the ByteBuffer to write into.
-     * @see AbstractStringLayout#acquireStringBuilder()
-     * @see AbstractStringLayout#releaseStringBuilder(StringBuilder)
-     * @see AbstractStringLayout#getStringBuilderEncoder()
      */
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
         final byte[] data = toByteArray(event);
         destination.writeBytes(data, 0, data.length);
     }
+
 }

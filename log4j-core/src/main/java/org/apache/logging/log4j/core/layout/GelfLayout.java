@@ -16,6 +16,15 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPOutputStream;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -35,15 +44,6 @@ import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 import org.apache.logging.log4j.util.TriConsumer;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.GZIPOutputStream;
 
 /**
  * Lays out events in the Graylog Extended Log Format (GELF) 1.1.
@@ -437,7 +437,7 @@ public final class GelfLayout extends AbstractStringLayout {
             final boolean includeNewLineDelimiter, final boolean omitEmptyFields, final ListChecker mdcChecker,
             final ListChecker mapChecker, final PatternLayout patternLayout, final String mdcPrefix,
             final String mapPrefix) {
-        super(config, StandardCharsets.UTF_8, null, null);
+        super(config, StandardCharsets.UTF_8);
         this.host = host != null ? host : NetUtils.getLocalHostname();
         this.additionalFields = additionalFields != null ? additionalFields : new KeyValuePair[0];
         if (config == null) {
@@ -512,12 +512,12 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public byte[] toByteArray(final LogEvent event) {
-        final StringBuilder text = acquireStringBuilder();
+        final StringBuilder text = stringBuilderRecycler.acquire();
         final byte[] bytes;
         try {
             bytes = getBytes(toText(event, text, false).toString());
         } finally {
-            releaseStringBuilder(text);
+            stringBuilderRecycler.release(text);
         }
         return compressionType != CompressionType.OFF && bytes.length > compressionThreshold ? compress(bytes) : bytes;
     }
@@ -528,12 +528,17 @@ public final class GelfLayout extends AbstractStringLayout {
             super.encode(event, destination);
             return;
         }
-        final StringBuilder text = acquireStringBuilder();
+        final StringBuilder text = stringBuilderRecycler.acquire();
         try {
-            final Encoder<StringBuilder> helper = getStringBuilderEncoder();
-            helper.encode(toText(event, text, true), destination);
+            final StringBuilder encodedEvent = toText(event, text, true);
+            final Encoder<StringBuilder> helper = stringBuilderEncoderRecycler.acquire();
+            try {
+                helper.encode(encodedEvent, destination);
+            } finally {
+                stringBuilderEncoderRecycler.release(helper);
+            }
         } finally {
-            releaseStringBuilder(text);
+            stringBuilderRecycler.release(text);
         }
     }
 
@@ -561,11 +566,11 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder text = acquireStringBuilder();
+        final StringBuilder text = stringBuilderRecycler.acquire();
         try {
             return toText(event, text, false).toString();
         } finally {
-            releaseStringBuilder(text);
+            stringBuilderRecycler.release(text);
         }
     }
 
@@ -614,12 +619,12 @@ public final class GelfLayout extends AbstractStringLayout {
         if (event.getThrown() != null || layout != null) {
             builder.append("\"full_message\":\"");
             if (layout != null) {
-                final StringBuilder messageBuffer = acquireStringBuilder();
+                final StringBuilder messageBuffer = stringBuilderRecycler.acquire();
                 try {
                     layout.serialize(event, messageBuffer);
                     JsonUtils.quoteAsString(messageBuffer, builder);
                 } finally {
-                    releaseStringBuilder(messageBuffer);
+                    stringBuilderRecycler.release(messageBuffer);
                 }
             } else {
                 if (includeStacktrace) {
@@ -642,12 +647,12 @@ public final class GelfLayout extends AbstractStringLayout {
         if (message instanceof CharSequence) {
             JsonUtils.quoteAsString(((CharSequence) message), builder);
         } else if (gcFree && message instanceof StringBuilderFormattable) {
-            final StringBuilder messageBuffer = acquireStringBuilder();
+            final StringBuilder messageBuffer = stringBuilderRecycler.acquire();
             try {
                 ((StringBuilderFormattable) message).formatTo(messageBuffer);
                 JsonUtils.quoteAsString(messageBuffer, builder);
             } finally {
-                releaseStringBuilder(messageBuffer);
+                stringBuilderRecycler.release(messageBuffer);
             }
         } else {
             JsonUtils.quoteAsString(toNullSafeString(message.getFormattedMessage()), builder);

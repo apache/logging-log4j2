@@ -88,7 +88,7 @@ public class CsvParameterLayout extends AbstractCsvLayout {
     public String toSerializable(final LogEvent event) {
         final Message message = event.getMessage();
         final Object[] parameters = message.getParameters();
-        final StringBuilder buffer = acquireStringBuilder();
+        final StringBuilder buffer = stringBuilderRecycler.acquire();
         try {
             getFormat().printRecord(buffer, parameters);
             return buffer.toString();
@@ -96,7 +96,7 @@ public class CsvParameterLayout extends AbstractCsvLayout {
             StatusLogger.getLogger().error(message, e);
             return getFormat().getCommentMarker() + " " + e;
         } finally {
-            releaseStringBuilder(buffer);
+            stringBuilderRecycler.release(buffer);
         }
     }
 

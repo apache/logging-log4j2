@@ -205,14 +205,18 @@ public final class PatternLayout extends AbstractStringLayout {
 
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
-        final StringBuilder builder = acquireStringBuilder();
+        final StringBuilder builder = stringBuilderRecycler.acquire();
         StringBuilder text = builder;
         try {
             text = eventSerializer.toSerializable(event, builder);
-            final Encoder<StringBuilder> encoder = getStringBuilderEncoder();
-            encoder.encode(text, destination);
+            final Encoder<StringBuilder> encoder = stringBuilderEncoderRecycler.acquire();
+            try {
+                encoder.encode(text, destination);
+            } finally {
+                stringBuilderEncoderRecycler.release(encoder);
+            }
         } finally {
-            releaseStringBuilder(text);
+            stringBuilderRecycler.release(text);
         }
     }
 
@@ -379,7 +383,6 @@ public final class PatternLayout extends AbstractStringLayout {
     public static class SerializerBuilder implements org.apache.logging.log4j.plugins.util.Builder<Serializer> {
 
         private Configuration configuration;
-        private RecyclerFactory recyclerFactory;
         private RegexReplacement replace;
         private String pattern;
         private String defaultPattern;
@@ -393,12 +396,7 @@ public final class PatternLayout extends AbstractStringLayout {
             if (Strings.isEmpty(pattern) && Strings.isEmpty(defaultPattern)) {
                 return null;
             }
-            if (recyclerFactory == null) {
-                recyclerFactory = configuration != null
-                        ? configuration.getRecyclerFactory()
-                        : LoggingSystem.getRecyclerFactory();
-            }
-            final Recycler<StringBuilder> recycler = createRecycler(recyclerFactory);
+            final Recycler<StringBuilder> recycler = createStringBuilderRecycler(configuration.getRecyclerFactory());
             if (patternSelector == null) {
                 try {
                     final PatternParser parser = createPatternParser(configuration);
@@ -428,11 +426,6 @@ public final class PatternLayout extends AbstractStringLayout {
 
         public SerializerBuilder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
-            return this;
-        }
-
-        public SerializerBuilder setRecyclerFactory(final RecyclerFactory recyclerFactory) {
-            this.recyclerFactory = recyclerFactory;
             return this;
         }
 
@@ -603,6 +596,7 @@ public final class PatternLayout extends AbstractStringLayout {
         private String footer;
 
         private Builder() {
+            setCharset(Charset.defaultCharset());   // LOG4J2-783 Default should not be UTF-8
         }
 
         private boolean useAnsiEscapeCodes() {

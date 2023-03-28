@@ -16,6 +16,12 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
@@ -23,8 +29,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
-import org.apache.logging.log4j.core.layout.TextEncoderHelper;
-import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.layout.StringBuilderEncoder;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.layout.template.json.resolver.*;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
@@ -32,18 +37,7 @@ import org.apache.logging.log4j.layout.template.json.util.Uris;
 import org.apache.logging.log4j.plugins.*;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.spi.Recycler;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
-
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.CodingErrorAction;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 @Configurable(elementType = Layout.ELEMENT_TYPE)
 @Plugin
@@ -194,54 +188,6 @@ public class JsonTemplateLayout implements StringLayout {
             final Encoder<StringBuilder> encoder = new StringBuilderEncoder(charset);
             return new Context(clonedJsonWriter, encoder);
         };
-    }
-
-    /**
-     * {@link org.apache.logging.log4j.core.layout.StringBuilderEncoder} clone replacing thread-local allocations with instance fields.
-     */
-    private static final class StringBuilderEncoder implements Encoder<StringBuilder> {
-
-        private final Charset charset;
-
-        private final CharsetEncoder charsetEncoder;
-
-        private final CharBuffer charBuffer;
-
-        private final ByteBuffer byteBuffer;
-
-        private StringBuilderEncoder(final Charset charset) {
-            this.charset = charset;
-            this.charsetEncoder = charset
-                    .newEncoder()
-                    .onMalformedInput(CodingErrorAction.REPLACE)
-                    .onUnmappableCharacter(CodingErrorAction.REPLACE);
-            this.charBuffer = CharBuffer.allocate(Constants.ENCODER_CHAR_BUFFER_SIZE);
-            this.byteBuffer = ByteBuffer.allocate(Constants.ENCODER_BYTE_BUFFER_SIZE);
-        }
-
-        @Override
-        public void encode(
-                final StringBuilder source,
-                final ByteBufferDestination destination) {
-            try {
-                TextEncoderHelper.encodeText(charsetEncoder, charBuffer, byteBuffer, source, destination);
-            } catch (final Exception error) {
-                fallbackEncode(charset, source, destination, error);
-            }
-        }
-
-        private /* for JIT-ergonomics: */ static void fallbackEncode(
-                final Charset charset,
-                final StringBuilder source,
-                final ByteBufferDestination destination,
-                final Exception error) {
-            StatusLogger
-                    .getLogger()
-                    .error("TextEncoderHelper.encodeText() failure", error);
-            final byte[] bytes = source.toString().getBytes(charset);
-            destination.writeBytes(bytes, 0, bytes.length);
-        }
-
     }
 
     @Override

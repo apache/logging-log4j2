@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.util.NetUtils;
@@ -74,7 +75,7 @@ public final class SyslogLayout extends AbstractStringLayout {
 
         @Override
         public SyslogLayout build() {
-            return new SyslogLayout(facility, includeNewLine, escapeNL, getCharset());
+            return new SyslogLayout(getConfiguration(), facility, includeNewLine, escapeNL, getCharset());
         }
 
         public Facility getFacility() {
@@ -130,8 +131,13 @@ public final class SyslogLayout extends AbstractStringLayout {
      */
     private final String localHostname = NetUtils.getLocalHostname();
 
-    protected SyslogLayout(final Facility facility, final boolean includeNL, final String escapeNL, final Charset charset) {
-        super(charset);
+    private SyslogLayout(
+            final Configuration configuration,
+            final Facility facility,
+            final boolean includeNL,
+            final String escapeNL,
+            final Charset charset) {
+        super(configuration, charset);
         this.facility = facility;
         this.includeNewLine = includeNL;
         this.escapeNewLine = escapeNL == null ? null : Matcher.quoteReplacement(escapeNL);
@@ -145,7 +151,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buf = acquireStringBuilder();
+        final StringBuilder buf = stringBuilderRecycler.acquire();
 
         try {
             buf.append('<');
@@ -167,7 +173,7 @@ public final class SyslogLayout extends AbstractStringLayout {
             }
             return buf.toString();
         } finally {
-            releaseStringBuilder(buf);
+            stringBuilderRecycler.release(buf);
         }
     }
 
