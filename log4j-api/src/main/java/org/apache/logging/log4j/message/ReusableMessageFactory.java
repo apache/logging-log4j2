@@ -82,6 +82,9 @@ public final class ReusableMessageFactory implements MessageFactory {
 
     @Override
     public void recycle(final Message message) {
+        if (message instanceof ReusableMessage) {
+            ((ReusableMessage) message).clear();
+        }
         // related to LOG4J2-1583 and nested log messages clobbering each other. recycle messages today!
         if (message instanceof ReusableParameterizedMessage) {
             parameterizedMessageRecycler.release((ReusableParameterizedMessage) message);

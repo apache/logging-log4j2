@@ -25,7 +25,6 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.spi.RecyclerFactory;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * {@link Encoder} for {@link StringBuilder}s.
@@ -35,8 +34,6 @@ import org.apache.logging.log4j.status.StatusLogger;
  * </p>
  */
 public class StringBuilderEncoder implements Encoder<StringBuilder> {
-
-    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private final CharsetEncoder charsetEncoder;
 
@@ -75,9 +72,7 @@ public class StringBuilderEncoder implements Encoder<StringBuilder> {
         try {
             TextEncoderHelper.encodeText(charsetEncoder, charBuffer, byteBuffer, source, destination);
         } catch (final Exception error) {
-            LOGGER.error("Due to `TextEncoderHelper.encodeText()` failure, falling back to `String#getBytes(Charset)`", error);
-            byte[] sourceBytes = source.toString().getBytes(charset);
-            destination.writeBytes(sourceBytes, 0, sourceBytes.length);
+            TextEncoderHelper.encodeTextFallback(charset, source, destination, error);
         } finally {
             charsetEncoder.reset();
             charBuffer.clear();

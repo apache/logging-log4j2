@@ -45,7 +45,6 @@ import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.spi.ThreadLocalRecyclerFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
@@ -124,7 +123,6 @@ class LogstashIT {
             .setConfiguration(CONFIGURATION)
             .setCharset(CHARSET)
             .setEventTemplateUri("classpath:EcsLayout.json")
-            .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
             .setEventTemplateAdditionalFields(
                     new EventTemplateAdditionalField[]{
                             EventTemplateAdditionalField

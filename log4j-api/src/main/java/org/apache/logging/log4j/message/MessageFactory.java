@@ -247,9 +247,6 @@ public interface MessageFactory {
      * @since 3.0.0
      * @see Recycler
      */
-    default void recycle(Message message) {
-        if (message instanceof ReusableMessage) {
-            ((ReusableMessage) message).clear();
-        }
-    }
+    default void recycle(Message message) {}
+
 }

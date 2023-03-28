@@ -57,7 +57,8 @@
         <configuration>
           <instructions>
             <Export-Package>org.apache.logging.log4j.*</Export-Package>
-            <Import-Package>sun.reflect;resolution:=optional,*</Import-Package>
+            <Import-Package>sun.reflect;resolution:=optional,
+              *</Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
             <_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
           </instructions>

@@ -23,6 +23,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 
+import org.apache.logging.log4j.status.StatusLogger;
+
 /**
  * Helper class to encode text to binary data without allocating temporary objects.
  *
@@ -31,6 +33,18 @@ import java.nio.charset.CoderResult;
 public class TextEncoderHelper {
 
     private TextEncoderHelper() {
+    }
+
+    /* for JIT-ergonomics: */ static void encodeTextFallback(
+            final Charset charset,
+            final StringBuilder source,
+            final ByteBufferDestination destination,
+            final Exception error) {
+        StatusLogger
+                .getLogger()
+                .error("`TextEncoderHelper.encodeText()` failure, falling back to `String#getBytes(Charset)`", error);
+        final byte[] bytes = source.toString().getBytes(charset);
+        destination.writeBytes(bytes, 0, bytes.length);
     }
 
     /**

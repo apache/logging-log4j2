@@ -16,21 +16,18 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.status.StatusLogger;
-
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
 import java.util.Objects;
 
+import org.apache.logging.log4j.core.util.Constants;
+
 /**
  * Encoder for StringBuilders that locks on the ByteBufferDestination.
  */
 public class LockingStringBuilderEncoder implements Encoder<StringBuilder> {
-
-    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private final Charset charset;
     private final CharsetEncoder charsetEncoder;
@@ -60,9 +57,7 @@ public class LockingStringBuilderEncoder implements Encoder<StringBuilder> {
                     destination);
             }
         } catch (final Exception error) {
-            LOGGER.error("Due to `TextEncoderHelper.encodeText()` failure, falling back to `String#getBytes(Charset)`", error);
-            byte[] sourceBytes = source.toString().getBytes(charset);
-            destination.writeBytes(sourceBytes, 0, sourceBytes.length);
+            TextEncoderHelper.encodeTextFallback(charset, source, destination, error);
         }
 
     }

@@ -34,7 +34,7 @@ import org.apache.logging.log4j.spi.Recycler;
 import org.apache.logging.log4j.spi.RecyclerFactory;
 
 /**
- * Garbage-free LogEventFactory that recycles mutable LogEvent instances.
+ * Garbage-free LogEventFactory that recycles mutable {@link LogEvent} instances.
  * @since 2.6
  * @see Recycler
  */

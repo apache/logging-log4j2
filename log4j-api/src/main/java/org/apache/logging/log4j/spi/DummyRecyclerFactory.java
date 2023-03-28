@@ -19,6 +19,8 @@ package org.apache.logging.log4j.spi;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Recycler strategy which doesn't recycle anything; all instances are freshly created.
  *
@@ -36,6 +38,7 @@ public class DummyRecyclerFactory implements RecyclerFactory {
 
     @Override
     public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
+        requireNonNull(supplier, "supplier");
         return new DummyRecycler<>(supplier);
     }
 

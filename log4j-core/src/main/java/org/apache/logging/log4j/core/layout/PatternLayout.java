@@ -38,9 +38,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Recycler;
-import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.Strings;
@@ -106,17 +104,9 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param headerPattern header conversion pattern.
      * @param footerPattern footer conversion pattern.
      */
-    private PatternLayout(
-            final Configuration config,
-            final RecyclerFactory recyclerFactory,
-            final RegexReplacement replace,
-            final String eventPattern,
-            final PatternSelector patternSelector,
-            final Charset charset,
-            final boolean alwaysWriteExceptions,
-            final boolean disableAnsi,
-            final boolean noConsoleNoAnsi,
-            final String headerPattern,
+    private PatternLayout(final Configuration config, final RegexReplacement replace, final String eventPattern,
+            final PatternSelector patternSelector, final Charset charset, final boolean alwaysWriteExceptions,
+            final boolean disableAnsi, final boolean noConsoleNoAnsi, final String headerPattern,
             final String footerPattern) {
         super(config, charset,
                 newSerializerBuilder()
@@ -414,9 +404,7 @@ public final class PatternLayout extends AbstractStringLayout {
                     PatternSerializer serializer = hasFormattingInfo
                             ? new PatternFormatterPatternSerializer(formatters, recycler)
                             : new NoFormatPatternSerializer(formatters, recycler);
-                    return replace == null
-                            ? serializer
-                            : new PatternSerializerWithReplacement(serializer, replace, recycler);
+                    return replace == null ? serializer : new PatternSerializerWithReplacement(serializer, replace, recycler);
                 } catch (final RuntimeException ex) {
                     throw new IllegalArgumentException("Cannot parse pattern '" + pattern + "'", ex);
                 }
@@ -570,9 +558,6 @@ public final class PatternLayout extends AbstractStringLayout {
         @PluginConfiguration
         private Configuration configuration;
 
-        @PluginBuilderAttribute
-        private RecyclerFactory recyclerFactory;
-
         @PluginElement("Replace")
         private RegexReplacement regexReplacement;
 
@@ -596,7 +581,6 @@ public final class PatternLayout extends AbstractStringLayout {
         private String footer;
 
         private Builder() {
-            setCharset(Charset.defaultCharset());   // LOG4J2-783 Default should not be UTF-8
         }
 
         private boolean useAnsiEscapeCodes() {
@@ -630,14 +614,6 @@ public final class PatternLayout extends AbstractStringLayout {
          */
         public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
-            return this;
-        }
-
-        /**
-         * @param recyclerFactory a recycler factory
-         */
-        public Builder setRecyclerFactory(final RecyclerFactory recyclerFactory) {
-            this.recyclerFactory = recyclerFactory;
             return this;
         }
 
@@ -714,8 +690,7 @@ public final class PatternLayout extends AbstractStringLayout {
             if (configuration == null) {
                 configuration = new DefaultConfiguration();
             }
-            return new PatternLayout(
-                    configuration, recyclerFactory, regexReplacement, pattern, patternSelector, charset,
+            return new PatternLayout(configuration, regexReplacement, pattern, patternSelector, charset,
                 alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi, header, footer);
         }
     }

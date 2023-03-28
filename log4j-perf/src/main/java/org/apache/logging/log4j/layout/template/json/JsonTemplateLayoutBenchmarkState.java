@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.jackson.json.layout.JsonLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
-import org.apache.logging.log4j.spi.ThreadLocalRecyclerFactory;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
@@ -86,7 +85,6 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:JsonLayout.json")
-                .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
                 .build();
     }
 
@@ -104,7 +102,6 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:EcsLayout.json")
-                .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
                 .setEventTemplateAdditionalFields(additionalFields)
                 .build();
     }
@@ -115,7 +112,6 @@ public class JsonTemplateLayoutBenchmarkState {
                 .setConfiguration(CONFIGURATION)
                 .setCharset(CHARSET)
                 .setEventTemplateUri("classpath:GelfLayout.json")
-                .setRecyclerFactory(ThreadLocalRecyclerFactory.getInstance())
                 .setEventTemplateAdditionalFields(
                         new EventTemplateAdditionalField[]{
                                 // Adding "host" as a constant rather than using

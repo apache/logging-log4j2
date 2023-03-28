@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.mongodb4;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
@@ -32,6 +27,12 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
+
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
 
 /**
  * The MongoDB implementation of {@link NoSqlProvider} using the MongoDB driver
@@ -57,6 +58,11 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
         @Override
         public MongoDb4Provider build() {
             return new MongoDb4Provider(connection, capped, collectionSize);
+        }
+
+        public B setConnectionStringSource(final String connection) {
+            this.connection = connection;
+            return asBuilder();
         }
 
         public B setCapped(final boolean isCapped) {

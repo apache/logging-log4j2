@@ -113,8 +113,7 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
                 stringBuilder -> {
                     StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_SIZE);
                     stringBuilder.setLength(0);
-                }
-        );
+                });
     }
 
     private final Serializer footerSerializer;
@@ -150,7 +149,7 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
 
     /**
      * Builds a new layout.
-     * @param configuration the configuration
+     * @param configuration a configuration
      * @param charset the charset used to encode the header bytes, footer bytes and anything else that needs to be
      *      converted from strings to bytes.
      * @param headerSerializer the header bytes serializer

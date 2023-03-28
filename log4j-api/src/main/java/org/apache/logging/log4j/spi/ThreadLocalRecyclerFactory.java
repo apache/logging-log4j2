@@ -22,6 +22,8 @@ import java.util.function.Supplier;
 
 import org.apache.logging.log4j.util.QueueFactories;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A {@link RecyclerFactory} pooling objects in a queue stored in a {@link ThreadLocal}.
  * <p>
@@ -50,6 +52,8 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
 
     @Override
     public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
+        requireNonNull(supplier, "supplier");
+        requireNonNull(cleaner, "cleaner");
         return new ThreadLocalRecycler<>(supplier, cleaner);
     }
 
@@ -77,6 +81,7 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
 
         @Override
         public void release(final V value) {
+            requireNonNull(value, "value");
             cleaner.accept(value);
             holder.get().offer(value);
         }

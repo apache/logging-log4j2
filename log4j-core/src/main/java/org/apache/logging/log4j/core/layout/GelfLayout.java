@@ -176,20 +176,19 @@ public final class GelfLayout extends AbstractStringLayout {
                         + "ignoring message pattern");
                 messagePattern = null;
             }
-            final Configuration config = getConfiguration();
             if (messagePattern != null) {
                 patternLayout = PatternLayout.newBuilder().setPattern(messagePattern)
                         .setAlwaysWriteExceptions(includeStacktrace)
-                        .setConfiguration(config)
+                        .setConfiguration(getConfiguration())
                         .build();
             }
             if (patternSelector != null) {
                 patternLayout = PatternLayout.newBuilder().setPatternSelector(patternSelector)
                         .setAlwaysWriteExceptions(includeStacktrace)
-                        .setConfiguration(config)
+                        .setConfiguration(getConfiguration())
                         .build();
             }
-            return new GelfLayout(config, host, additionalFields, compressionType, compressionThreshold,
+            return new GelfLayout(getConfiguration(), host, additionalFields, compressionType, compressionThreshold,
                     includeStacktrace, includeThreadContext, includeMapMessage, includeNullDelimiter,
                     includeNewLineDelimiter, omitEmptyFields, mdcChecker, mapChecker, patternLayout,
                     threadContextPrefix, mapPrefix);
@@ -467,8 +466,7 @@ public final class GelfLayout extends AbstractStringLayout {
                     final StringBuilder stringBuilder = writer.getBuilder();
                     StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_SIZE);
                     stringBuilder.setLength(0);
-                }
-        );
+                });
     }
 
     @Override
@@ -490,7 +488,7 @@ public final class GelfLayout extends AbstractStringLayout {
             sb.append(", ").append(mapVars);
         }
         if (layout != null) {
-            sb.append(", PatternLayout{").append(layout).append("}");
+            sb.append(", PatternLayout{").append(layout.toString()).append("}");
         }
         return sb.toString();
     }

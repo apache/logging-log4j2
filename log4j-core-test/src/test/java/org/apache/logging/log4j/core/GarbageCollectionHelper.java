@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
+import com.google.common.io.ByteStreams;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,23 +28,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.junit.Assert.assertTrue;
 
 public final class GarbageCollectionHelper implements Closeable, Runnable {
-    private static final OutputStream sink = OutputStream.nullOutputStream();
+    private static final OutputStream sink = ByteStreams.nullOutputStream();
     private final AtomicBoolean running = new AtomicBoolean();
     private final CountDownLatch latch = new CountDownLatch(1);
-    private final Thread gcThread = new Thread(() -> {
-        try {
-            while (running.get()) {
-                // Allocate data to help suggest a GC
-                try {
-                    // 1mb of heap
-                    sink.write(new byte[1024 * 1024]);
-                } catch (IOException ignored) {
+    private final Thread gcThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try {
+                while (running.get()) {
+                    // Allocate data to help suggest a GC
+                    try {
+                        // 1mb of heap
+                        sink.write(new byte[1024 * 1024]);
+                    } catch (IOException ignored) {
+                    }
+                    // May no-op depending on the jvm configuration
+                    System.gc();
                 }
-                // May no-op depending on the jvm configuration
-                System.gc();
+            } finally {
+                latch.countDown();
             }
-        } finally {
-            latch.countDown();
         }
     });
 

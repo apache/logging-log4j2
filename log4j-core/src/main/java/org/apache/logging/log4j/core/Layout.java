@@ -97,5 +97,4 @@ public interface Layout extends Encoder<LogEvent> {
     default boolean requiresLocation() {
         return false;
     }
-
 }

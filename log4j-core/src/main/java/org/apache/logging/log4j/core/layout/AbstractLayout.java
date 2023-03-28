@@ -130,22 +130,6 @@ public abstract class AbstractLayout implements Layout {
     protected final byte[] header;
 
     /**
-     * Constructs a UTF-8 encoded layout with an optional header and footer.
-     *
-     * @param configuration a configuration
-     * @param header a header to include when the stream is opened, may be null
-     * @param footer the footer to add when the stream is closed, may be null
-     * @deprecated use {@link AbstractLayout#AbstractLayout(Configuration, Charset, byte[], byte[])} instead
-     */
-    @Deprecated
-    public AbstractLayout(
-            final Configuration configuration,
-            final byte[] header,
-            final byte[] footer) {
-        this(configuration, DEFAULT_CHARSET, header, footer);
-    }
-
-    /**
      * Constructs a layout with an optional header and footer.
      *
      * @param configuration a configuration
@@ -213,17 +197,23 @@ public abstract class AbstractLayout implements Layout {
      * Subclasses can override this method to provide a garbage-free implementation. For text-based layouts,
      * {@code AbstractStringLayout} provides various convenience methods to help with this:
      * </p>
-     * <pre>{@code @Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
+     * <pre>{@code
+     * @Configurable(elementType = Layout.ELEMENT_TYPE, printObject = true)
      * @Plugin("MyLayout")
      * public final class MyLayout extends AbstractStringLayout {
      *     @Override
      *     public void encode(LogEvent event, ByteBufferDestination destination) {
-     *         StringBuilder text = acquireStringBuilder();
+     *         StringBuilder text = stringBuilderRecycler.acquire();
      *         try {
      *             convertLogEventToText(event, text);
-     *             getStringBuilderEncoder().encode(text, destination);
+     *             StringBuilderEncoder encoder = stringBuilderEncoderRecycler.acquire();
+     *             try {
+     *                 encoder.encode(text, destination);
+     *             } finally {
+     *                 stringBuilderEncoderRecycler.release(encoder);
+     *             }
      *         } finally {
-     *             releaseStringBuilder(text);
+     *             stringBuilderRecycler.release(text);
      *         }
      *     }
      *

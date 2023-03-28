@@ -31,7 +31,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests if logging while trying to encode an event causes {@link ThreadLocalRecyclerFactory} to incorrectly share buffers and end up overriding layout's earlier encoding work.
+ * Tests if logging while trying to encode an event causes {@link ThreadLocalRecyclerFactory.ThreadLocalRecycler} to incorrectly share buffers and end up overriding layout's earlier encoding work.
  *
  * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2368">LOG4J2-2368</a>
  */
