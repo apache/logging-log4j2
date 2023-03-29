@@ -16,11 +16,6 @@
  */
 package org.apache.log4j.builders;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -36,6 +31,11 @@ import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.w3c.dom.Element;
+
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Builder for the native Log4j 2.x list appender to be used in the tests.

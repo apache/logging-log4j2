@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.tojul;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class JULLoggerTest {
 

@@ -18,21 +18,21 @@ package org.apache.logging.log4j.message;
 
 /**
  * Flow messages
- * 
+ *
  * @since 2.6
  */
 public interface FlowMessage extends Message {
 
     /**
      * The message text like "Enter" or "Exit" used to prefix the actual Message.
-     * 
+     *
      * @return message text used to prefix the actual Message.
      */
     String getText();
 
     /**
      * The wrapped message
-     * 
+     *
      * @return the wrapped message
      */
     Message getMessage();

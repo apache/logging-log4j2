@@ -18,11 +18,12 @@ package org.apache.logging.slf4j;
 
 import java.util.List;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.testUtil.StringListAppender;
 import org.apache.logging.log4j.LogManager;
 import org.junit.ClassRule;
 import org.junit.Test;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.testUtil.StringListAppender;
 
 import static org.junit.Assert.*;
 

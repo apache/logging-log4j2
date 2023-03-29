@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.jcl;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -26,6 +24,8 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.ClassRule;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class CallerInformationTest {
 

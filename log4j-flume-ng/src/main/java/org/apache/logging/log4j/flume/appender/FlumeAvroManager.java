@@ -269,7 +269,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
 
     @Override
     protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
-    	boolean closed = true;
+        boolean closed = true;
         if (rpcClient != null) {
             try {
                 synchronized(this) {

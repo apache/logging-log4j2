@@ -31,7 +31,7 @@ import org.apache.logging.log4j.util.Constants;
  * <p>
  * {@code logger.debug(new ObjectArrayMessage(1, 2, "Bob"));}
  * </p>
- * 
+ *
  * @since 2.4
  */
 public final class ObjectArrayMessage implements Message {
@@ -43,7 +43,7 @@ public final class ObjectArrayMessage implements Message {
 
     /**
      * Creates the ObjectMessage.
-     * 
+     *
      * @param obj
      *            The Object to format.
      */
@@ -70,7 +70,7 @@ public final class ObjectArrayMessage implements Message {
 
     /**
      * Returns the object formatted using its toString method.
-     * 
+     *
      * @return the String representation of the object.
      */
     @Override
@@ -80,7 +80,7 @@ public final class ObjectArrayMessage implements Message {
 
     /**
      * Returns the formatted object message.
-     * 
+     *
      * @return the formatted object message.
      */
     @Override
@@ -94,7 +94,7 @@ public final class ObjectArrayMessage implements Message {
 
     /**
      * Returns the object as if it were a parameter.
-     * 
+     *
      * @return The object.
      */
     @Override
