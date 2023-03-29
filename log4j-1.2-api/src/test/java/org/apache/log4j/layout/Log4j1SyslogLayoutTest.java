@@ -16,10 +16,6 @@
  */
 package org.apache.log4j.layout;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.stream.Stream;
@@ -27,6 +23,7 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.time.MutableInstant;
@@ -35,6 +32,10 @@ import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class Log4j1SyslogLayoutTest {
 
@@ -71,15 +72,18 @@ public class Log4j1SyslogLayoutTest {
     public void testSimpleLayout(String expected, Facility facility, boolean header, boolean facilityPrinting) {
         final LogEvent logEvent = createLogEvent();
         StringLayout appenderLayout = Log4j1SyslogLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setFacility(facility)
                 .setHeader(header)
                 .setFacilityPrinting(facilityPrinting)
                 .build();
         assertEquals(expected, appenderLayout.toSerializable(logEvent));
         final StringLayout messageLayout = PatternLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setPattern("%m")
                 .build();
         appenderLayout = Log4j1SyslogLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setFacility(facility)
                 .setHeader(header)
                 .setFacilityPrinting(facilityPrinting)
