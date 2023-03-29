@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -538,6 +539,7 @@ public class Rfc5424LayoutTest {
         }
 
         final AbstractStringLayout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
+                .setConfig(new DefaultConfiguration())
                 .setFacility(Facility.LOCAL0)
                 .setId("Event")
                 .setEin("1234.56.7")
@@ -569,7 +571,7 @@ public class Rfc5424LayoutTest {
 
     @Test
     public void testLayoutBuilderDefaultValues() {
-        final Rfc5424Layout layout = new Rfc5424Layout.Rfc5424LayoutBuilder().build();
+        final Rfc5424Layout layout = new Rfc5424Layout.Rfc5424LayoutBuilder().setConfig(new DefaultConfiguration()).build();
         checkDefaultValues(layout);
 
         final PluginNamespace corePlugins = ctx.getInjector().getInstance(Core.PLUGIN_NAMESPACE_KEY);
@@ -599,6 +601,7 @@ public class Rfc5424LayoutTest {
     @ValueSource(strings = { "123456789", "0", "2147483647", "123.45.6.78.9", "0.0.0.0.0.0.0.0.0.0.0.0.0.0" })
     void testLayoutBuilderValidEids(String eid) {
         final AbstractStringLayout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
+                .setConfig(new DefaultConfiguration())
                 .setEin(eid)
                 .build();
 
@@ -609,6 +612,7 @@ public class Rfc5424LayoutTest {
     @ValueSource(strings = { "abc", "someEid", "-1" })
     void testLayoutBuilderInvalidEids(String eid) {
         final AbstractStringLayout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
+                .setConfig(new DefaultConfiguration())
                 .setEin(eid)
                 .build();
 

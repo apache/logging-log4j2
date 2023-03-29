@@ -14,10 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.Facility;
 
@@ -31,7 +31,7 @@ public class SyslogAppenderCustomLayoutTest extends SyslogAppenderTest {
     @Override
     protected Builder newSyslogAppenderBuilder(final String protocol, final String format, final boolean newLine) {
         final Builder builder = super.newSyslogAppenderBuilder(protocol, format, newLine);
-        builder.setLayout(SyslogLayout.newBuilder().setFacility(Facility.LOCAL3).setIncludeNewLine(true).build());
+        builder.setLayout(SyslogLayout.newBuilder().setConfiguration(new DefaultConfiguration()).setFacility(Facility.LOCAL3).setIncludeNewLine(true).build());
         return builder;
     }
 

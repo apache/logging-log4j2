@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.SocketException;
 
 import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.test.net.mock.MockSyslogServerFactory;
 import org.apache.logging.log4j.util.EnglishEnums;
@@ -116,6 +117,7 @@ public class SyslogAppenderTest extends SyslogAppenderTestBase {
     protected Builder newSyslogAppenderBuilder(final String protocol, final String format, final boolean newLine) {
         // @formatter:off
         return SyslogAppender.newSyslogAppenderBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setPort(PORTNUM)
                 .setProtocol(EnglishEnums.valueOf(Protocol.class, protocol))
                 .setReconnectDelayMillis(-1)

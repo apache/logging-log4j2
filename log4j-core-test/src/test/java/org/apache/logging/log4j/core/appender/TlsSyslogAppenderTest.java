@@ -22,6 +22,7 @@ import java.util.List;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
@@ -110,7 +111,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
                 .setName("TestApp")
                 .setImmediateFlush(true)
                 .setIgnoreExceptions(false).setFilter(null)
-                .setConfiguration(null)
+                .setConfiguration(new DefaultConfiguration())
                 .setAdvertise(false)
                 .setFacility(Facility.LOCAL0)
                 .setId("Audit")

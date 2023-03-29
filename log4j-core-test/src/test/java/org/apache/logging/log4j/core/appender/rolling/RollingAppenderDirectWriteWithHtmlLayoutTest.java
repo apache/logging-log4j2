@@ -16,8 +16,16 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -27,13 +35,6 @@ import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
@@ -65,6 +66,7 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
     private void checkAppenderWithHtmlLayout(boolean append, final Configuration config) throws InterruptedException, IOException {
         String prefix = "testHtml_" + (append ? "append_" : "noAppend_");
         RollingFileAppender appender = RollingFileAppender.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setName("RollingHtml")
                 .setFilePattern(DIR + "/" + prefix + "_-%d{MM-dd-yy-HH-mm}-%i.html")
                 .setPolicy(new SizeBasedTriggeringPolicy(500))
