@@ -130,8 +130,8 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
         final boolean bufferedIo = getBooleanProperty(BUFFERED_IO_PARAM, false);
         final int bufferSize = getIntegerProperty(BUFFER_SIZE_PARAM, 8192);
         final String datePattern = getProperty(DATE_PATTERN_PARAM, DEFAULT_DATE_PATTERN);
-        return createAppender(name, layout, filter, fileName, append, immediateFlush,
-                level, bufferedIo, bufferSize, datePattern, configuration);
+        return createAppender(name, layout, filter, fileName, append, immediateFlush, level, bufferedIo, bufferSize,
+                datePattern, configuration);
     }
 
     private <T extends Log4j1Configuration> Appender createAppender(final String name, final Layout layout,

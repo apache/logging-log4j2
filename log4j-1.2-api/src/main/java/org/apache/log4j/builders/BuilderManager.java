@@ -56,9 +56,8 @@ public class BuilderManager {
     public static final Filter INVALID_FILTER = new FilterWrapper(null);
     public static final Layout INVALID_LAYOUT = new LayoutWrapper(null);
     public static final RewritePolicy INVALID_REWRITE_POLICY = new RewritePolicyWrapper(null);
-
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static Class<?>[] CONSTRUCTOR_PARAMS = new Class[] {String.class, Properties.class};
+    private static final Class<?>[] CONSTRUCTOR_PARAMS = new Class[] { String.class, Properties.class };
     private final Map<String, PluginType<?>> plugins;
 
     /**

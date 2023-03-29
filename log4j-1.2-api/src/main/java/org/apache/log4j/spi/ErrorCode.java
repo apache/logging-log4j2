@@ -19,7 +19,7 @@ package org.apache.log4j.spi;
 
 
 /**
-   This interface defines commonly encoutered error codes.
+   This interface defines commonly encountered error codes.
  */
 public interface ErrorCode {
 

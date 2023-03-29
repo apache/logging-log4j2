@@ -158,7 +158,7 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
     }
 
     /**
-     * Formats a {@link org.apache.logging.log4j.core.LogEvent} in conformance with the BSD Log record format.
+     * Formats a {@link LogEvent} in conformance with the BSD Log record format.
      *
      * @param event The LogEvent
      * @return the event formatted as a String.

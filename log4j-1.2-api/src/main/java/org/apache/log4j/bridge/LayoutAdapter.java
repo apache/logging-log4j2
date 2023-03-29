@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.layout.ByteBufferDestination;
  * Class Description goes here.
  */
 public class LayoutAdapter implements org.apache.logging.log4j.core.Layout<String> {
-    private Layout layout;
+    private final Layout layout;
 
     /**
      * Adapts a Log4j 1.x layout into a Log4j 2.x layout. Applying this method to

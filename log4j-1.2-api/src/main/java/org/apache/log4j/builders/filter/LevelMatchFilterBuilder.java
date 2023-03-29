@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.filter.LevelMatchFilter;
 import org.w3c.dom.Element;
 
 /**
- * Build a Level match failter.
+ * Build a Level match filter.
  */
 @Plugin(name = "org.apache.log4j.varia.LevelMatchFilter", category = CATEGORY)
 public class LevelMatchFilterBuilder extends AbstractBuilder<Filter> implements FilterBuilder {

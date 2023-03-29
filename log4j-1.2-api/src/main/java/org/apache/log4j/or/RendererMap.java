@@ -26,7 +26,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Map class objects to an {@link ObjectRenderer}.
- * 
+ *
+ * @author Ceki G&uuml;lc&uuml;
  * @since version 1.0
  */
 public class RendererMap {

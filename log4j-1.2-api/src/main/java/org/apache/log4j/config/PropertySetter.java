@@ -57,13 +57,13 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 public class PropertySetter {
     private static final PropertyDescriptor[] EMPTY_PROPERTY_DESCRIPTOR_ARRAY = {};
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
     protected Object obj;
     protected PropertyDescriptor[] props;
 
     /**
      * Create a new PropertySetter for the specified Object. This is done
-     * in prepartion for invoking {@link #setProperty} one or more times.
+     * in preparation for invoking {@link #setProperty} one or more times.
      *
      * @param obj the object for which to set properties
      */
@@ -99,7 +99,7 @@ public class PropertySetter {
     }
 
     /**
-     * Set the properites for the object that match the
+     * Set the properties for the object that match the
      * <code>prefix</code> passed as parameter.
      * @param properties The properties.
      * @param prefix The prefix of the properties to use.

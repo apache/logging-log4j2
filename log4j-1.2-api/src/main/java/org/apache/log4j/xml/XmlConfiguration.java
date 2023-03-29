@@ -110,9 +110,9 @@ public class XmlConfiguration extends Log4j1Configuration {
     protected static final String DEFAULT_PREFIX = "log4j";
 
     // key: appenderName, value: appender
-    private Map<String, Appender> appenderMap;
+    private final Map<String, Appender> appenderMap;
 
-    private Properties props = null;
+    private final Properties props = null;
 
     public XmlConfiguration(final LoggerContext loggerContext, final ConfigurationSource source,
             int monitorIntervalSeconds) {
@@ -153,7 +153,7 @@ public class XmlConfiguration extends Log4j1Configuration {
         try {
             LOGGER.debug("System property is : {}", OptionConverter.getSystemProperty(dbfKey, null));
             dbf = DocumentBuilderFactory.newInstance();
-            LOGGER.debug("Standard DocumentBuilderFactory search succeded.");
+            LOGGER.debug("Standard DocumentBuilderFactory search succeeded.");
             LOGGER.debug("DocumentBuilderFactory is: " + dbf.getClass().getName());
         } catch (FactoryConfigurationError fce) {
             Exception e = fce.getException();
@@ -352,6 +352,8 @@ public class XmlConfiguration extends Log4j1Configuration {
 
     /**
      * Used internally to parse appenders by IDREF element.
+     * @param appenderRef The Appender Reference Element.
+     * @return The Appender.
      */
     public Appender findAppenderByReference(Element appenderRef) {
         String appenderName = subst(appenderRef.getAttribute(REF_ATTR));
@@ -361,6 +363,8 @@ public class XmlConfiguration extends Log4j1Configuration {
 
     /**
      * Used internally to parse an appender element.
+     * @param appenderElement The Appender Element.
+     * @return The Appender.
      */
     public Appender parseAppender(Element appenderElement) {
         String className = subst(appenderElement.getAttribute(CLASS_ATTR));
@@ -500,6 +504,8 @@ public class XmlConfiguration extends Log4j1Configuration {
 
     /**
      * Used internally to parse a filter element.
+     * @param filterElement The Filter Element.
+     * @return The Filter.
      */
     public void addFilter(final AtomicReference<Filter> ref, final Element filterElement) {
         final Filter value = parseFilters(filterElement);
@@ -567,7 +573,7 @@ public class XmlConfiguration extends Log4j1Configuration {
     }
 
     /**
-     * Used internally to parse the roor category element.
+     * Used internally to parse the root category element.
      */
     private void parseRoot(Element rootElement) {
         LoggerConfig root = getRootLogger();
@@ -613,6 +619,8 @@ public class XmlConfiguration extends Log4j1Configuration {
 
     /**
      * Used internally to parse a layout element.
+     * @param layoutElement The Layout Element.
+     * @return The Layout.
      */
     public Layout parseLayout(Element layoutElement) {
         String className = subst(layoutElement.getAttribute(CLASS_ATTR));

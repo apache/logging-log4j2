@@ -22,6 +22,8 @@ package org.apache.log4j.or;
 public interface ObjectRenderer {
     /**
      * Render the object passed as parameter as a String.
+     * @param o The object to render.
+     * @return The String representation of the object.
      */
 	 String doRender(Object o);
 }

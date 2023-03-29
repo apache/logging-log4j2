@@ -139,8 +139,9 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
     }
 
     private Appender createAppender(final String name, final Log4j1Configuration config, final Layout layout,
-            final Filter filter, final boolean append, final boolean bufferedIo, final int bufferSize, boolean immediateFlush,
-            final String fileName, final String level, final String maxSize, final String maxBackups) {
+            final Filter filter, final boolean append, final boolean bufferedIo, final int bufferSize,
+            boolean immediateFlush, final String fileName, final String level, final String maxSize,
+            final String maxBackups) {
         org.apache.logging.log4j.core.Layout<?> fileLayout = LayoutAdapter.adapt(layout);
         if (!bufferedIo) {
             immediateFlush = false;

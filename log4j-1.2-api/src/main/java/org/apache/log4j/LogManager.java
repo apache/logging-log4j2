@@ -67,8 +67,7 @@ public final class LogManager {
 
     static {
         LOG4J_CORE_PRESENT = checkLog4jCore();
-        //
-        // By default we use a DefaultRepositorySelector which always returns 'hierarchy'.
+        // By default, we use a DefaultRepositorySelector which always returns 'hierarchy'.
         final Hierarchy hierarchy = new Hierarchy(new RootLogger(Level.DEBUG));
         repositorySelector = new DefaultRepositorySelector(hierarchy);
     }
@@ -98,7 +97,7 @@ public final class LogManager {
     /**
      * Gets a LoggerContext.
      *
-     * @param loader The ClassLoader for the context. If null the context will attempt to determine the appropriate
+     * @param classLoader The ClassLoader for the context. If null the context will attempt to determine the appropriate
      *        ClassLoader.
      * @return a LoggerContext.
      */

@@ -53,7 +53,7 @@ public class WriterAppender extends AppenderSkeleton {
 
     /**
      * The encoding to use when writing.  <p>The
-     * <code>encoding</code> variable is set to <code>null</null> by
+     * <code>encoding</code> variable is set to <code>null</code> by
      * default which results in the utilization of the system's default
      * encoding.
      */
@@ -76,6 +76,8 @@ public class WriterAppender extends AppenderSkeleton {
      * Instantiate a WriterAppender and set the output destination to a
      * new {@link OutputStreamWriter} initialized with <code>os</code>
      * as its {@link OutputStream}.
+     * @param layout The Layout.
+     * @param os The OutputStream.
      */
     public WriterAppender(Layout layout, OutputStream os) {
         this(layout, new OutputStreamWriter(os));
@@ -87,6 +89,9 @@ public class WriterAppender extends AppenderSkeleton {
      *
      * <p>The <code>writer</code> must have been previously opened by
      * the user.
+     *
+     * @param layout The Layout.
+     * @param writer The Writer.
      */
     public WriterAppender(Layout layout, Writer writer) {
         this.layout = layout;

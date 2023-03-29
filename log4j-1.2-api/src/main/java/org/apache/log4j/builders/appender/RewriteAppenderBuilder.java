@@ -40,6 +40,7 @@ import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.rewrite.RewritePolicy;
 import org.apache.log4j.spi.Filter;
 import org.apache.log4j.xml.XmlConfiguration;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.rewrite.RewriteAppender;
 import org.apache.logging.log4j.core.config.AppenderRef;
@@ -48,9 +49,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
 
-
 /**
- * Build an Asynch Appender
+ * Build a Rewrite Appender
  */
 @Plugin(name = "org.apache.log4j.rewrite.RewriteAppender", category = CATEGORY)
 public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderBuilder {
@@ -128,8 +128,8 @@ public class RewriteAppenderBuilder extends AbstractBuilder implements AppenderB
             LOGGER.error("No appender references configured for RewriteAppender {}", name);
             return null;
         }
-        final org.apache.logging.log4j.Level logLevel = OptionConverter.convertLevel(level,
-                org.apache.logging.log4j.Level.TRACE);
+        final Level logLevel = OptionConverter.convertLevel(level,
+                Level.TRACE);
         final AppenderRef[] refs = new AppenderRef[appenderRefs.length];
         int index = 0;
         for (final String appenderRef : appenderRefs) {

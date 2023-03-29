@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 
 /**
- * Class Description goes here.
+ * Base Configuration for Log4j 1.
  */
 public class Log4j1Configuration extends AbstractConfiguration implements Reconfigurable {
 

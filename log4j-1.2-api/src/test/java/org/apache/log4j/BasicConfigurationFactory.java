@@ -46,7 +46,7 @@ public class BasicConfigurationFactory extends ConfigurationFactory {
         return new BasicConfiguration(loggerContext);
     }
 
-    public class BasicConfiguration extends AbstractConfiguration {
+    public static class BasicConfiguration extends AbstractConfiguration {
 
         private static final long serialVersionUID = -2716784321395089563L;
 
