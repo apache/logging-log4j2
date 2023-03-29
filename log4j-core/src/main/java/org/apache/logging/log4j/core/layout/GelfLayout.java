@@ -102,7 +102,7 @@ public final class GelfLayout extends AbstractStringLayout {
     private final PatternLayout layout;
     private final FieldWriter mdcWriter;
     private final FieldWriter mapWriter;
-    private final Recycler<StringBuilderWriter> stacktraceRecycler;
+    private final Recycler<StringBuilderWriter> stringBuilderWriterRecycler;
 
     public static class Builder<B extends Builder<B>> extends AbstractStringLayout.Builder<B>
         implements org.apache.logging.log4j.plugins.util.Builder<GelfLayout> {
@@ -460,7 +460,7 @@ public final class GelfLayout extends AbstractStringLayout {
         this.mdcWriter = new FieldWriter(mdcChecker, mdcPrefix);
         this.mapWriter = new FieldWriter(mapChecker, mapPrefix);
         this.layout = patternLayout;
-        stacktraceRecycler = config.getRecyclerFactory().create(
+        stringBuilderWriterRecycler = config.getRecyclerFactory().create(
                 () -> new StringBuilderWriter(MAX_STRING_BUILDER_SIZE),
                 writer -> {
                     final StringBuilder stringBuilder = writer.getBuilder();
@@ -626,12 +626,12 @@ public final class GelfLayout extends AbstractStringLayout {
                 }
             } else {
                 if (includeStacktrace) {
-                    final StringBuilderWriter writer = stacktraceRecycler.acquire();
+                    final StringBuilderWriter writer = stringBuilderWriterRecycler.acquire();
                     try {
                         formatThrowableTo(writer, event.getThrown());
                         JsonUtils.quoteAsString(writer.getBuilder(), builder);
                     } finally {
-                        stacktraceRecycler.release(writer);
+                        stringBuilderWriterRecycler.release(writer);
                     }
                 } else {
                     JsonUtils.quoteAsString(event.getThrown().toString(), builder);
@@ -684,7 +684,15 @@ public final class GelfLayout extends AbstractStringLayout {
             final String stringValue = String.valueOf(value);
             if (checker.check(key) && (Strings.isNotEmpty(stringValue) || !omitEmptyFields)) {
                 stringBuilder.append(QU);
-                JsonUtils.quoteAsString(Strings.concat(prefix, key), stringBuilder);
+                final StringBuilderWriter stringBuilderWriter = stringBuilderWriterRecycler.acquire();
+                final StringBuilder tmpStringBuilder = stringBuilderWriter.getBuilder();
+                try {
+                    tmpStringBuilder.append(prefix);
+                    tmpStringBuilder.append(key);
+                    JsonUtils.quoteAsString(tmpStringBuilder, stringBuilder);
+                } finally {
+                    stringBuilderWriterRecycler.release(stringBuilderWriter);
+                }
                 stringBuilder.append("\":\"");
                 JsonUtils.quoteAsString(toNullSafeString(stringValue), stringBuilder);
                 stringBuilder.append(QC);

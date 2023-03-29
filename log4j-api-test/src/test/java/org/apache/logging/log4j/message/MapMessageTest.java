@@ -19,17 +19,13 @@ package org.apache.logging.log4j.message;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  *
@@ -175,11 +171,7 @@ public class MapMessageTest {
     @Test
     public void testJsonFormatterMaxDepthConformance() {
         int depth = MapMessageJsonFormatter.MAX_DEPTH - 2;
-        String expectedJson = String
-                .format("{'key':%s1%s}",
-                        Strings.repeat("[", depth),
-                        Strings.repeat("]", depth))
-                .replace('\'', '"');
+        String expectedJson = String.format("{'key':%s1%s}", "[".repeat(depth), "]".repeat(depth)).replace('\'', '"');
         String actualJson = testJsonFormatterMaxDepth(depth);
         assertEquals(expectedJson, actualJson);
     }

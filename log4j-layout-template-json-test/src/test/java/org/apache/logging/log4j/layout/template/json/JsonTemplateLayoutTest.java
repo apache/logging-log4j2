@@ -16,12 +16,7 @@
  */
 package org.apache.logging.log4j.layout.template.json;
 
-import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -30,11 +25,7 @@ import java.nio.charset.Charset;
 import java.time.Instant;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -56,24 +47,12 @@ import org.apache.logging.log4j.core.net.Severity;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolver;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
-import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactory;
-import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
-import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverConfig;
-import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverFactory;
+import org.apache.logging.log4j.layout.template.json.resolver.*;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ObjectMessage;
-import org.apache.logging.log4j.message.ParameterizedMessageFactory;
-import org.apache.logging.log4j.message.ReusableMessageFactory;
-import org.apache.logging.log4j.message.SimpleMessage;
-import org.apache.logging.log4j.message.StringMapMessage;
+import org.apache.logging.log4j.message.*;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -721,7 +700,7 @@ class JsonTemplateLayoutTest {
 
         // Create the log event.
         final int maxStringLength = 30;
-        final String excessiveMessageString = Strings.repeat("m", maxStringLength) + 'M';
+        final String excessiveMessageString = "m".repeat(maxStringLength) + 'M';
         final SimpleMessage message = new SimpleMessage(excessiveMessageString);
         final Throwable thrown = new RuntimeException();
         final LogEvent logEvent = Log4jLogEvent
@@ -734,8 +713,8 @@ class JsonTemplateLayoutTest {
 
         // Create the event template node with map values.
         final String messageKey = "message";
-        final String excessiveKey = Strings.repeat("k", maxStringLength) + 'K';
-        final String excessiveValue = Strings.repeat("v", maxStringLength) + 'V';
+        final String excessiveKey = "k".repeat(maxStringLength) + 'K';
+        final String excessiveValue = "v".repeat(maxStringLength) + 'V';
         final String nullValueKey = "nullValueKey";
         final String eventTemplate = writeJson(asMap(
                 messageKey, asMap("$resolver", "message"),

@@ -14,14 +14,13 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.util;
-
-import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -53,15 +52,6 @@ public class StringsTest {
     public void testEMPTY() {
         assertEquals("", Strings.EMPTY);
         assertEquals(0, Strings.EMPTY.length());
-    }
-
-    @Test
-    public void testConcat() {
-        assertEquals("ab", Strings.concat("a", "b"));
-        assertEquals("a", Strings.concat("a", ""));
-        assertEquals("a", Strings.concat("a", null));
-        assertEquals("b", Strings.concat("", "b"));
-        assertEquals("b", Strings.concat(null, "b"));
     }
 
     @Test
