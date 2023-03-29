@@ -16,11 +16,11 @@
  */
 package liquibase.ext.logging.log4j2;
 
-import liquibase.logging.core.AbstractLogger;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+
+import liquibase.logging.core.AbstractLogger;
 
 /**
  * Logs Liquibase messages to Log4j 2.x.
