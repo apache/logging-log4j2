@@ -69,9 +69,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
     private static final ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
-    protected final Recycler<DefaultLogBuilder> recycler = LoggingSystem
-            .getRecyclerFactory()
-            .create(() -> new DefaultLogBuilder(this, null));
+    private final Recycler<DefaultLogBuilder> recycler = LoggingSystem.getRecyclerFactory().create(() -> new DefaultLogBuilder(this, null));
 
     /**
      * Creates a new logger named after this class (or subclass).
