@@ -16,13 +16,6 @@
  */
 package org.apache.log4j.builders.appender;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -48,6 +41,13 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
+
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build an Async Appender

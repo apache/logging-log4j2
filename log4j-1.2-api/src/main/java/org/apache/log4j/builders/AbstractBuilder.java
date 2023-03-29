@@ -16,9 +16,6 @@
  */
 package org.apache.log4j.builders;
 
-import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
-import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -37,6 +34,9 @@ import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 import org.w3c.dom.Element;
+
+import static org.apache.log4j.xml.XmlConfiguration.NAME_ATTR;
+import static org.apache.log4j.xml.XmlConfiguration.VALUE_ATTR;
 
 /**
  * Base class for Log4j 1 component builders.

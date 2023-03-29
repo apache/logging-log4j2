@@ -16,9 +16,6 @@
  */
 package org.apache.log4j.builders.filter;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,6 +30,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.filter.LevelMatchFilter;
 import org.w3c.dom.Element;
+
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build a Level match filter.

@@ -1,20 +1,19 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
+ * contributor license agreements. See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to You under the Apache license, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * the License. You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * See the license for the specific language governing permissions and
+ * limitations under the license.
  */
-
 package org.apache.log4j.helpers;
 
 import java.io.InputStream;
@@ -64,7 +63,7 @@ public class OptionConverter {
             + 100 * (StandardLevel.FATAL.intLevel() - StandardLevel.OFF.intLevel() - 1) + 1;
     /**
      * A Log4j 1.x level below or equal to this value is considered as ALL.
-     * 
+     *
      * Log4j 2.x ALL to TRACE interval is shorter. This is {@link Priority#ALL_INT}
      * plus the difference.
      */
@@ -540,12 +539,12 @@ public class OptionConverter {
      * character is present, then the default {@link org.apache.log4j.Level} class
      * is used to process the level value.
      * </p>
-     * 
+     *
      * <p>
      * As a special case, if the <code>value</code> parameter is equal to the string
      * "NULL", then the value <code>null</code> will be returned.
      * </p>
-     * 
+     *
      * <p>
      * As a Log4j 2.x extension, a {@code value}
      * "level#org.apache.logging.log4j.Level" retrieves the corresponding custom
@@ -562,7 +561,7 @@ public class OptionConverter {
      * Case of <code>value</code> is insignificant for the level, but is
      * significant for the class name part, if present.
      * </p>
-     * 
+     *
      * @param value        The value to convert.
      * @param defaultValue The default value.
      * @return the value of the result.
@@ -606,12 +605,12 @@ public class OptionConverter {
 
     /**
      * Converts a custom priority level to a Level object.
-     * 
+     *
      * <p>
      * If {@code clazz} has the special value "org.apache.logging.log4j.Level" a
      * wrapper of the corresponding Log4j 2.x custom level object is returned.
      * </p>
-     * 
+     *
      * @param clazz        a custom level class,
      * @param levelName    the name of the level,
      * @param defaultValue the value to return in case an error occurs,

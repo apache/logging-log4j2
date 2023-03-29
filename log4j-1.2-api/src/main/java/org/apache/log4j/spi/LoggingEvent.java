@@ -53,7 +53,7 @@ public class LoggingEvent {
 
     /**
      * Create new instance.
-     * 
+     *
      * @since 1.2.15
      * @param fqnOfCategoryClass Fully qualified class name of Logger implementation.
      * @param logger The logger generating this event.
@@ -73,11 +73,11 @@ public class LoggingEvent {
 
     /**
      * Instantiate a LoggingEvent from the supplied parameters.
-     * 
+     *
      * <p>
      * Except {@link #timeStamp} all the other fields of <code>LoggingEvent</code> are filled when actually needed.
      * <p>
-     * 
+     *
      * @param logger The logger generating this event.
      * @param timeStamp the timestamp of this logging event
      * @param level The level of this event.
@@ -90,11 +90,11 @@ public class LoggingEvent {
 
     /**
      * Instantiate a LoggingEvent from the supplied parameters.
-     * 
+     *
      * <p>
      * Except {@link #timeStamp} all the other fields of <code>LoggingEvent</code> are filled when actually needed.
      * <p>
-     * 
+     *
      * @param logger The logger generating this event.
      * @param level The level of this event.
      * @param message The message of this event.

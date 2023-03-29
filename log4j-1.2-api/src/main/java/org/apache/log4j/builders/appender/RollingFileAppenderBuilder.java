@@ -16,13 +16,6 @@
  */
 package org.apache.log4j.builders.appender;
 
-import static org.apache.log4j.builders.BuilderManager.CATEGORY;
-import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
-import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
-
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -47,6 +40,13 @@ import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
+
+import static org.apache.log4j.builders.BuilderManager.CATEGORY;
+import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.LAYOUT_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build a File Appender

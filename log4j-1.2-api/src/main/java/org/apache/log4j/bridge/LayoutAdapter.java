@@ -34,7 +34,7 @@ public class LayoutAdapter implements org.apache.logging.log4j.core.Layout<Strin
      * the result of
      * {@link LayoutWrapper#adapt(org.apache.logging.log4j.core.Layout)} should
      * return the original Log4j 2.x layout.
-     * 
+     *
      * @param layout a Log4j 1.x layout
      * @return a Log4j 2.x layout or {@code null} if the parameter is {@code null}
      */
