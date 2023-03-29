@@ -27,11 +27,6 @@ import org.apache.log4j.Logger;
  * Error handling is a particularly tedious to get right because by
  * definition errors are hard to predict and to reproduce.
  * </p>
- * <p>
- * Please take the time to contact the author in case you discover
- * that errors are not properly handled. You are most welcome to
- * suggest new error handling policies or criticize existing policies.
- * </p>
  */
 public interface ErrorHandler {
 

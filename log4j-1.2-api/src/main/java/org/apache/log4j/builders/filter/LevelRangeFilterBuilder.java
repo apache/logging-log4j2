@@ -36,7 +36,10 @@ import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
- * Build a Level match filter.
+ * Build a Level range filter.
+ * In this class, order of {@link Level} is log4j1 way, i.e.,
+ * {@link Level#ALL} and {@link Level#OFF} have minimum and maximum order, respectively.
+ * (see: LOG4J2-2315)
  */
 @Namespace(NAMESPACE)
 @Plugin("org.apache.log4j.varia.LevelRangeFilter")
