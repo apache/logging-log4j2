@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core;
 
-import com.google.common.io.ByteStreams;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.google.common.io.ByteStreams;
 
 import static org.junit.Assert.assertTrue;
 
