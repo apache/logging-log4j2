@@ -90,4 +90,3 @@ public interface ErrorHandler {
      */
     void setBackupAppender(Appender appender);
 }
-
