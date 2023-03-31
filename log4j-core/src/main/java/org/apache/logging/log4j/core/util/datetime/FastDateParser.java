@@ -58,7 +58,7 @@ import org.apache.logging.log4j.core.util.Integers;
  * This class is especially useful in multi-threaded server environments.
  * <code>SimpleDateFormat</code> is not thread-safe in any JDK version,
  * nor will it be as Sun has closed the
- * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4228335">bug</a>/RFE.
+ * <a href="https://bugs.java.com/bugdatabase/view_bug?bug_id=4228335">bug</a>/RFE.
  * </p>
  *
  * <p>Only parsing is supported by this class, but all patterns are compatible with
