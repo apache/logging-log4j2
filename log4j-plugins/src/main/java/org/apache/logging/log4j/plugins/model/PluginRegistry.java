@@ -23,7 +23,6 @@ import java.text.DecimalFormat;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -93,16 +92,10 @@ public class PluginRegistry {
     private final Map<Long, Namespaces> namespacesByBundleId = new ConcurrentHashMap<>();
 
     /**
-     * Contains plugins found by searching for annotated classes at runtime.
-     */
-    private final Map<String, Namespaces> namespacesByPackage = new ConcurrentHashMap<>();
-
-    /**
      * Resets the registry to an empty state.
      */
     public void clear() {
         mainPluginNamespaces.set(null);
-        namespacesByPackage.clear();
         namespacesByBundleId.clear();
     }
 
