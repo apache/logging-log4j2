@@ -48,6 +48,15 @@ final class DisruptorUtil {
             .getBooleanProperty("AsyncLogger.SynchronizeEnqueueWhenQueueFull", true);
     static final boolean ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
             .getBooleanProperty("AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", true);
+    /**
+     * AsyncLogger will tryPublish to RingBuffer and if that fails it will handleRingBufferFull. HandleRingBufferFull
+     * flow makes sure that appropriate policy is applied (ENQUEUE, DISCARD, etc). SynchronizeEnqueueWhenQueueFull was
+     * added to synchronize publishing to the RingBuffer when it's full, however requests that succeed initial
+     * tryPublish avoid the synchronization. This flags introduces additional buffer that when the RingBuffer is almost
+     * full (90% capacity) routes all requests through handleRingBufferFull preventing un-sychronized access.
+     */
+    static final boolean ASYNC_LOGGER_USE_DISCARD_BUFFER = PropertiesUtil.getProperties()
+            .getBooleanProperty("AsyncLoggerConfig.UseDiscardBuffer", false);
 
     private DisruptorUtil() {
     }
