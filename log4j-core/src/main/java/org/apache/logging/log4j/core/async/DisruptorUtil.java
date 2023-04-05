@@ -14,11 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.core.async;
 
-import com.lmax.disruptor.ExceptionHandler;
-import com.lmax.disruptor.WaitStrategy;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Integers;
@@ -26,8 +26,8 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
+import com.lmax.disruptor.ExceptionHandler;
+import com.lmax.disruptor.WaitStrategy;
 
 /**
  * Utility methods for getting Disruptor related configuration.
