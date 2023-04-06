@@ -40,7 +40,7 @@
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <project.build.outputTimestamp>0</project.build.outputTimestamp>
-    <spotless-maven-plugin.version>2.27.2</spotless-maven-plugin.version>
+    <spotless-maven-plugin.version>2.36.0</spotless-maven-plugin.version>
   </properties>
 
   <dependencyManagement>
