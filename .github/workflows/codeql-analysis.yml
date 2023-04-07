@@ -52,7 +52,7 @@ jobs:
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@cc7986c02bac29104a72998e67239bb5ee2ee110    # 2.1.28
+        uses: github/codeql-action/init@d186a2a36cc67bfa1b860e6170d37fb9634742c7    # 2.2.11
         with:
           languages: ${{ matrix.language }}
           # If you wish to specify custom queries, you can do so here or in a config file.
@@ -76,4 +76,4 @@ jobs:
           -DskipTests
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@cc7986c02bac29104a72998e67239bb5ee2ee110    # 2.1.28
+        uses: github/codeql-action/analyze@d186a2a36cc67bfa1b860e6170d37fb9634742c7    # 2.2.11
