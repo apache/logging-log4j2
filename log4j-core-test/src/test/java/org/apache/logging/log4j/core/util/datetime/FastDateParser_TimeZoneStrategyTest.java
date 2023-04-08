@@ -22,8 +22,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Copied from Apache Commons Lang 3 on 2016-11-16.
@@ -36,7 +38,7 @@ public class FastDateParser_TimeZoneStrategyTest {
 
         final Date summer = parser.parse("26.10.2014 02:00:00 MESZ");
         final Date standard = parser.parse("26.10.2014 02:00:00 MEZ");
-        Assert.assertNotEquals(summer.getTime(), standard.getTime());
+        assertNotEquals(summer.getTime(), standard.getTime());
     }
 
     @Test
@@ -54,7 +56,7 @@ public class FastDateParser_TimeZoneStrategyTest {
                         parser.parse(tzDisplay);
                     }
                     catch(final Exception ex) {
-                        Assert.fail("'" + tzDisplay + "'"
+                        fail("'" + tzDisplay + "'"
                                 + " Locale: '" + locale.getDisplayName() + "'"
                                 + " TimeZone: " + zone[0]
                                 + " offset: " + t

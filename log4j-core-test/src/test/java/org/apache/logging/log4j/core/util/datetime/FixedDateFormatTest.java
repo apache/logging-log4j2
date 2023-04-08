@@ -25,13 +25,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat.DEFAULT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests {@link FixedDateFormat}.
@@ -43,14 +44,14 @@ public class FixedDateFormatTest {
         return pattern.endsWith("n") || pattern.matches(".+n+X*") || pattern.matches(".+n+Z*");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorDisallowsNullFormat() {
-        new FixedDateFormat(null, TimeZone.getDefault());
+        assertThrows(NullPointerException.class, () -> new FixedDateFormat(null, TimeZone.getDefault()));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorDisallowsNullTimeZone() {
-        new FixedDateFormat(FixedFormat.ABSOLUTE, null);
+        assertThrows(NullPointerException.class, () ->new FixedDateFormat(FixedFormat.ABSOLUTE, null));
     }
 
     @Test
@@ -89,29 +90,29 @@ public class FixedDateFormatTest {
     @Test
     public void testCreateIfSupported_nonNullIfNameMatches() {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
-            final String[] options = {format.name()};
-            assertNotNull(format.name(), FixedDateFormat.createIfSupported(options));
+            final String[] options = { format.name() };
+            assertNotNull(FixedDateFormat.createIfSupported(options), format.name());
         }
     }
 
     @Test
     public void testCreateIfSupported_nonNullIfPatternMatches() {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
-            final String[] options = {format.getPattern()};
-            assertNotNull(format.name(), FixedDateFormat.createIfSupported(options));
+            final String[] options = { format.getPattern() };
+            assertNotNull(FixedDateFormat.createIfSupported(options), format.name());
         }
     }
 
     @Test
     public void testCreateIfSupported_nullIfNameDoesNotMatch() {
         final String[] options = {"DEFAULT3"};
-        assertNull("DEFAULT3", FixedDateFormat.createIfSupported(options));
+        assertNull(FixedDateFormat.createIfSupported(options), "DEFAULT3");
     }
 
     @Test
     public void testCreateIfSupported_nullIfPatternDoesNotMatch() {
         final String[] options = {"y M d H m s"};
-        assertNull("y M d H m s", FixedDateFormat.createIfSupported(options));
+        assertNull(FixedDateFormat.createIfSupported(options), "y M d H m s");
     }
 
     @Test
@@ -168,7 +169,6 @@ public class FixedDateFormatTest {
                 { "2017-03-13 06:00:00,000", "2017-03-13 11:00:00,000" }, //
         };
 
-        final TimeZone tz = TimeZone.getTimeZone("US/Central");
         for (int i = 0; i < 36; i++) {
             final Date date = calendar.getTime();
             assertEquals("SimpleDateFormat TZ=US Central", expectedDstAndNoDst[i][0], usCentral.format(date));
@@ -233,7 +233,6 @@ public class FixedDateFormatTest {
                 { "2017-11-06 05:00:00,000", "2017-11-06 11:00:00,000" }, //
         };
 
-        final TimeZone tz = TimeZone.getTimeZone("US/Central");
         for (int i = 0; i < 36; i++) {
             final Date date = calendar.getTime();
             //System.out.println(usCentral.format(date) + ", Fixed: " + fixedUsCentral.format(date.getTime()) + ", utc: " + utc.format(date));
