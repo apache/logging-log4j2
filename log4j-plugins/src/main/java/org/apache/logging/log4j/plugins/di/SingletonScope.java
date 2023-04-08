@@ -28,7 +28,7 @@ class SingletonScope implements Scope {
 
     @Override
     public <T> Supplier<T> get(final Key<T> key, final Supplier<T> unscoped) {
-        return Cast.cast(singletonProviders.computeIfAbsent(key, ignored -> Lazy.lazy(unscoped)::value));
+        return Cast.cast(singletonProviders.computeIfAbsent(key, ignored -> Lazy.lazy(unscoped)));
     }
 
     @Override

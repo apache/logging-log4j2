@@ -67,7 +67,7 @@ public final class Binding<T> implements Supplier<T> {
         }
 
         public Binding<T> toInstance(final T instance) {
-            return new Binding<>(key, () -> instance);
+            return new Binding<>(key, Lazy.value(instance));
         }
     }
 }
