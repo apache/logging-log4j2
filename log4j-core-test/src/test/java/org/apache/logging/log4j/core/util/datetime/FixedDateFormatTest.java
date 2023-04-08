@@ -183,10 +183,11 @@ public class FixedDateFormatTest {
 
         for (int i = 0; i < 36; i++) {
             final Date date = calendar.getTime();
-            assertEquals("SimpleDateFormat TZ=US Central", expectedDstAndNoDst[i][0], usCentral.format(date));
-            assertEquals("SimpleDateFormat TZ=UTC", expectedDstAndNoDst[i][1], utc.format(date));
-            assertEquals("FixedDateFormat TZ=US Central", expectedDstAndNoDst[i][0], fixedUsCentral.format(date.getTime()));
-            assertEquals("FixedDateFormat TZ=UTC", expectedDstAndNoDst[i][1], fixedUtc.format(date.getTime()));
+            assertEquals(expectedDstAndNoDst[i][0], usCentral.format(date), "SimpleDateFormat TZ=US Central");
+            assertEquals(expectedDstAndNoDst[i][1], utc.format(date), "SimpleDateFormat TZ=UTC");
+            assertEquals(expectedDstAndNoDst[i][0], fixedUsCentral.format(date.getTime()),
+                    "FixedDateFormat TZ=US Central");
+            assertEquals(expectedDstAndNoDst[i][1], fixedUtc.format(date.getTime()), "FixedDateFormat TZ=UTC");
             calendar.add(Calendar.HOUR_OF_DAY, 1);
         }
     }
@@ -248,10 +249,11 @@ public class FixedDateFormatTest {
         for (int i = 0; i < 36; i++) {
             final Date date = calendar.getTime();
             //System.out.println(usCentral.format(date) + ", Fixed: " + fixedUsCentral.format(date.getTime()) + ", utc: " + utc.format(date));
-            assertEquals("SimpleDateFormat TZ=US Central", expectedDstAndNoDst[i][0], usCentral.format(date));
-            assertEquals("SimpleDateFormat TZ=UTC", expectedDstAndNoDst[i][1], utc.format(date));
-            assertEquals("FixedDateFormat TZ=US Central", expectedDstAndNoDst[i][0], fixedUsCentral.format(date.getTime()));
-            assertEquals("FixedDateFormat TZ=UTC", expectedDstAndNoDst[i][1], fixedUtc.format(date.getTime()));
+            assertEquals(expectedDstAndNoDst[i][0], usCentral.format(date), "SimpleDateFormat TZ=US Central");
+            assertEquals(expectedDstAndNoDst[i][1], utc.format(date), "SimpleDateFormat TZ=UTC");
+            assertEquals(expectedDstAndNoDst[i][0], fixedUsCentral.format(date.getTime()),
+                    "FixedDateFormat TZ=US Central");
+            assertEquals(expectedDstAndNoDst[i][1], fixedUtc.format(date.getTime()), "FixedDateFormat TZ=US Central");
             calendar.add(Calendar.HOUR_OF_DAY, 1);
         }
     }
@@ -309,7 +311,7 @@ public class FixedDateFormatTest {
             for (long time = start; time < end; time += 12345) {
                 final String actual = customTF.format(time);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "(" + pattern + ")" + "/" + time, expected, actual);
+                assertEquals(expected, actual, format + "(" + pattern + ")" + "/" + time);
             }
         }
     }
@@ -329,7 +331,7 @@ public class FixedDateFormatTest {
             for (long time = end; time > start; time -= 12345) {
                 final String actual = customTF.format(time);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "(" + pattern + ")" + "/" + time, expected, actual);
+                assertEquals(expected, actual, format + "(" + pattern + ")" + "/" + time);
             }
         }
     }
@@ -357,7 +359,7 @@ public class FixedDateFormatTest {
             for (long time = end; time > start; time -= 12345) {
                 final String actual = customTF.format(time);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "(" + pattern + ")" + "/" + time, expected, actual);
+                assertEquals(expected, actual, format + "(" + pattern + ")" + "/" + time);
             }
         }
     }
@@ -381,7 +383,7 @@ public class FixedDateFormatTest {
                 final int length = customTF.format(time, buffer, 23);
                 final String actual = new String(buffer, 23, length);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "(" + pattern + ")" + "/" + time, expected, actual);
+                assertEquals(expected, actual, format + "(" + pattern + ")" + "/" + time);
             }
         }
     }
@@ -403,7 +405,7 @@ public class FixedDateFormatTest {
                 final int length = customTF.format(time, buffer, 23);
                 final String actual = new String(buffer, 23, length);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "(" + pattern + ")" + "/" + time, expected, actual);
+                assertEquals(expected, actual, format + "(" + pattern + ")" + "/" + time);
             }
         }
     }
