@@ -17,15 +17,26 @@
 package org.apache.logging.log4j.core.util.datetime;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junitpioneer.jupiter.DefaultLocale;
 
 import static org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat.DEFAULT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * Tests {@link FixedDateFormat}.
  */
+@ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class FixedDateFormatTest {
 
     private boolean containsNanos(final FixedFormat fixedFormat) {
@@ -400,5 +412,21 @@ public class FixedDateFormatTest {
     public void testGetFormatReturnsConstructorFixedFormatPattern() {
         final FixedDateFormat format = new FixedDateFormat(FixedDateFormat.FixedFormat.ABSOLUTE, TimeZone.getDefault());
         assertSame(FixedDateFormat.FixedFormat.ABSOLUTE.getPattern(), format.getFormat());
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.apache.logging.log4j.core.util.datetime.FixedDateFormat$FixedFormat#values")
+    @DefaultLocale(language = "en")
+    public void testFixedFormatLength(FixedFormat format) {
+        LocalDate date = LocalDate.of(2023, 4, 8);
+        LocalTime time = LocalTime.of(19, 5, 14);
+        ZoneId zone = ZoneId.of("Europe/Warsaw");
+        long epochMillis = ZonedDateTime.of(date, time, zone).toInstant().toEpochMilli();
+        MutableInstant instant = new MutableInstant();
+        instant.initFromEpochMilli(epochMillis, 0);
+        FixedDateFormat formatter = FixedDateFormat.create(format);
+
+        String formatted = formatter.formatInstant(instant);
+        assertEquals(formatter.getLength(), formatted.length(), formatted);
     }
 }
