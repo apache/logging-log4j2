@@ -423,7 +423,7 @@ public class FixedDateFormatTest {
         ZoneId zone = ZoneId.of("Europe/Warsaw");
         long epochMillis = ZonedDateTime.of(date, time, zone).toInstant().toEpochMilli();
         MutableInstant instant = new MutableInstant();
-        instant.initFromEpochMilli(epochMillis, 0);
+        instant.initFromEpochMilli(epochMillis, 123_456);
         FixedDateFormat formatter = FixedDateFormat.create(format);
 
         String formatted = formatter.formatInstant(instant);

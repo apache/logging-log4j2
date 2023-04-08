@@ -323,7 +323,8 @@ public final class InstantFormatter {
 
         private Log4jFixedFormatter(final FixedDateFormat formatter) {
             this.formatter = formatter;
-            this.buffer = new char[formatter.getFormat().length()];
+            // double size for locales with lengthy DateFormatSymbols
+            this.buffer = new char[formatter.getLength() << 1];
         }
 
         @Override

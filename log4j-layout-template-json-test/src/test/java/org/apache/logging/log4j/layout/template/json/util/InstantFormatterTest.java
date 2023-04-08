@@ -19,9 +19,12 @@ package org.apache.logging.log4j.layout.template.json.util;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.datetime.FastDateFormat;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
+import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -104,4 +107,21 @@ class InstantFormatterTest {
 
     }
 
+    @Test
+    @UsingStatusListener
+    void FixedFormatter_large_enough_buffer(ListStatusListener listener) {
+        final String pattern = "yyyy-MM-dd'T'HH:mm:ss,SSSXXX";
+        final TimeZone timeZone = TimeZone.getTimeZone("America/Chicago");
+        final Locale locale = Locale.ENGLISH;
+        final InstantFormatter formatter = InstantFormatter.newBuilder()
+                .setPattern(pattern)
+                .setTimeZone(timeZone)
+                .setLocale(locale)
+                .build();
+
+        // On this pattern the FixedFormatter used a buffer shorter than necessary,
+        // which caused exceptions and warnings.
+        Assertions.assertThat(listener.findStatusData(Level.WARN)).hasSize(0);
+        Assertions.assertThat(formatter.getInternalImplementationClass()).asString().endsWith(".FixedDateFormat");
+    }
 }
