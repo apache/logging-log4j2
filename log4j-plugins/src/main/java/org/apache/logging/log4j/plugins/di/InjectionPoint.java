@@ -55,6 +55,16 @@ public class InjectionPoint<T> {
         return element;
     }
 
+    @Override
+    public String toString() {
+        return "InjectionPoint{" +
+                "key=" + key +
+                ", aliases=" + aliases +
+                ", member=" + member +
+                ", element=" + element +
+                '}';
+    }
+
     public static <T> InjectionPoint<T> forField(final Field field) {
         final Key<T> key = Key.forField(field);
         final Collection<String> aliases = Keys.getAliases(field);
