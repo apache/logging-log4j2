@@ -22,6 +22,6 @@
   <author id="mernst"/>
   <author id="vy"/>
   <description format="asciidoc">
-    Prevent a resource leak in `CommonsCompressAction.execute()`.
+    Ensure `FileOutputStream` is closed in `CommonsCompressAction.execute()`
   </description>
 </entry>
