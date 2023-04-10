@@ -827,7 +827,7 @@ public class StrSubstitutor implements ConfigurationAware {
      * with their matching values from the resolver.
      * The buffer is updated with the result.
      *
-     * @param source  the buffer to replace in, updated, null returns zero
+     * @param source  the buffer to replace in, updated, null returns false
      * @return true if altered
      */
     public boolean replaceIn(final StringBuffer source) {
@@ -846,7 +846,7 @@ public class StrSubstitutor implements ConfigurationAware {
      * The rest of the buffer is not processed, but it is not deleted.
      * </p>
      *
-     * @param source  the buffer to replace in, updated, null returns zero
+     * @param source  the buffer to replace in, updated, null returns false
      * @param offset  the start offset within the array, must be valid
      * @param length  the length within the buffer to be processed, must be valid
      * @return true if altered
@@ -865,7 +865,7 @@ public class StrSubstitutor implements ConfigurationAware {
      * </p>
      *
      * @param event the current LogEvent, if one exists.
-     * @param source  the buffer to replace in, updated, null returns zero
+     * @param source  the buffer to replace in, updated, null returns false
      * @param offset  the start offset within the array, must be valid
      * @param length  the length within the buffer to be processed, must be valid
      * @return true if altered
@@ -892,7 +892,7 @@ public class StrSubstitutor implements ConfigurationAware {
      * Replaces all the occurrences of variables within the given source
      * builder with their matching values from the resolver.
      *
-     * @param source  the builder to replace in, updated, null returns zero
+     * @param source  the builder to replace in, updated, null returns false
      * @return true if altered
      */
     public boolean replaceIn(final StringBuilder source) {
@@ -905,7 +905,7 @@ public class StrSubstitutor implements ConfigurationAware {
      * builder with their matching values from the resolver.
      *
      * @param event the current LogEvent, if one exists.
-     * @param source  the builder to replace in, updated, null returns zero
+     * @param source  the builder to replace in, updated, null returns false
      * @return true if altered
      */
     public boolean replaceIn(final LogEvent event, final StringBuilder source) {
@@ -922,7 +922,7 @@ public class StrSubstitutor implements ConfigurationAware {
      * The rest of the builder is not processed, but it is not deleted.
      * </p>
      *
-     * @param source  the builder to replace in, null returns zero
+     * @param source  the builder to replace in, null returns false
      * @param offset  the start offset within the array, must be valid
      * @param length  the length within the builder to be processed, must be valid
      * @return true if altered
@@ -940,7 +940,7 @@ public class StrSubstitutor implements ConfigurationAware {
      * </p>
      *
      * @param event   the current LogEvent, if one is present.
-     * @param source  the builder to replace in, null returns zero
+     * @param source  the builder to replace in, null returns false
      * @param offset  the start offset within the array, must be valid
      * @param length  the length within the builder to be processed, must be valid
      * @return true if altered
