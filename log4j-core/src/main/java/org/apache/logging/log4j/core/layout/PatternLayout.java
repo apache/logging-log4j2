@@ -659,7 +659,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         /**
          * @param header
-         *        The footer to place at the top of the document, once.
+         *        The header to place at the top of the document, once.
          */
         public Builder setHeader(final String header) {
             this.header = header;
