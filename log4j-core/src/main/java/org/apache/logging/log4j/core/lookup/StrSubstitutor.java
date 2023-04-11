@@ -1235,13 +1235,13 @@ public class StrSubstitutor implements ConfigurationAware {
      * allowing advanced prefix matches.
      * </p>
      *
-     * @param prefixMatcher  the prefix matcher to use, null ignored
+     * @param prefixMatcher  the prefix matcher to use, must not be null
      * @return this, to enable chaining
      * @throws IllegalArgumentException if the prefix matcher is null
      */
     public StrSubstitutor setVariablePrefixMatcher(final StrMatcher prefixMatcher) {
         if (prefixMatcher == null) {
-            throw new IllegalArgumentException("Variable prefix matcher must not be null!");
+            throw new IllegalArgumentException("Parameter prefixMatcher must not be null!");
         }
         this.prefixMatcher = prefixMatcher;
         return this;
@@ -1304,13 +1304,13 @@ public class StrSubstitutor implements ConfigurationAware {
      * allowing advanced suffix matches.
      * </p>
      *
-     * @param suffixMatcher  the suffix matcher to use, null ignored
+     * @param suffixMatcher  the suffix matcher to use, must not be null
      * @return this, to enable chaining
      * @throws IllegalArgumentException if the suffix matcher is null
      */
     public StrSubstitutor setVariableSuffixMatcher(final StrMatcher suffixMatcher) {
         if (suffixMatcher == null) {
-            throw new IllegalArgumentException("Variable suffix matcher must not be null!");
+            throw new IllegalArgumentException("Parameter suffixMatcher must not be null!");
         }
         this.suffixMatcher = suffixMatcher;
         return this;
