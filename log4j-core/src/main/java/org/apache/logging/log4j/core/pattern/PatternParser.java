@@ -450,16 +450,16 @@ public final class PatternParser {
 
                 default:
 
-	                if (c >= '0' && c <= '9') {
-	                    formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
-	                            c - '0', formattingInfo.isLeftTruncate(), formattingInfo.isZeroPad());
-	                    state = ParserState.MAX_STATE;
-	                } else {
-	                    LOGGER.error("Error occurred in position " + i + ".\n Was expecting digit, instead got char \"" + c
-	                            + "\".");
+                    if (c >= '0' && c <= '9') {
+                        formattingInfo = new FormattingInfo(formattingInfo.isLeftAligned(), formattingInfo.getMinLength(),
+                                c - '0', formattingInfo.isLeftTruncate(), formattingInfo.isZeroPad());
+                        state = ParserState.MAX_STATE;
+                    } else {
+                        LOGGER.error("Error occurred in position " + i + ".\n Was expecting digit, instead got char \"" + c
+                                + "\".");
 
-	                    state = ParserState.LITERAL_STATE;
-	                }
+                        state = ParserState.LITERAL_STATE;
+                    }
                 }
 
                 break;
