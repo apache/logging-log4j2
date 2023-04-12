@@ -27,7 +27,7 @@ public interface LogEventParser {
      *
      * @param input  the byte array
      *
-     * @return the parsed LogEvent, never {@literal null}.
+     * @return the parsed LogEvent, never {@code null}.
      * @throws ParseException if the input is malformed and cannot be parsed as a LogEvent
      */
     LogEvent parseFrom(byte[] input) throws ParseException;
@@ -40,7 +40,7 @@ public interface LogEventParser {
      * @param offset  the initial offset
      * @param length  the length
      *
-     * @return the parsed LogEvent, never {@literal null}.
+     * @return the parsed LogEvent, never {@code null}.
      * @throws ParseException if the input is malformed and cannot be parsed as a LogEvent
      */
     LogEvent parseFrom(byte[] input, int offset, int length) throws ParseException;
