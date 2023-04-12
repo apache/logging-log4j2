@@ -116,7 +116,7 @@ public interface LogBuilder {
      * Causes all the data collected to be logged along with the message.
      *
      * @param messageSupplier The supplier of the message to log.
-     * @return the message logger or {@literal null} if no logging occurred.
+     * @return the message logger or {@code null} if no logging occurred.
      * @since 2.20
      */
     default Message logAndGet(final Supplier<Message> messageSupplier) {

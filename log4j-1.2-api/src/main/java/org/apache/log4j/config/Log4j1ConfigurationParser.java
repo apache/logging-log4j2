@@ -83,7 +83,7 @@ public class Log4j1ConfigurationParser {
      *
      * @param input
      *            InputStream to read from is assumed to be ISO 8859-1, and will not be closed.
-     * @return the populated ConfigurationBuilder, never {@literal null}
+     * @return the populated ConfigurationBuilder, never {@code null}
      * @throws IOException
      *             if unable to read the input
      * @throws ConfigurationException

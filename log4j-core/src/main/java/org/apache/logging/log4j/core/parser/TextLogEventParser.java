@@ -28,7 +28,7 @@ public interface TextLogEventParser extends LogEventParser {
      *
      * @param input  the string
      *
-     * @return the parsed LogEvent, never {@literal null}.
+     * @return the parsed LogEvent, never {@code null}.
      * @throws ParseException if the input is malformed and cannot be parsed as a LogEvent
      */
     LogEvent parseFrom(String input) throws ParseException;
