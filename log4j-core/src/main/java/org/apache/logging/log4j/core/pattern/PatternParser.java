@@ -212,14 +212,6 @@ public final class PatternParser {
 
     /**
      * Extracts the converter identifier found at the given start position.
-     * <p>
-     * After this function returns, the variable i will point to the first char after the end of the converter
-     * identifier.
-     * </p>
-     * <p>
-     * If i points to a char which is not a character acceptable at the start of a unicode identifier, the value null is
-     * returned.
-     * </p>
      *
      * @param lastChar
      *        last processed character.
