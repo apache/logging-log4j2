@@ -43,7 +43,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f   # 3.2.0
+        uses: actions/checkout@83b7061638ee4956cf7545a6f7efe594e5ad0247   # 3.2.0
         with:
           fetch-depth: 32
 
@@ -114,7 +114,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@24cb9080177205b6e8c946b17badbe402adc938f   # 3.2.0
+        uses: actions/checkout@83b7061638ee4956cf7545a6f7efe594e5ad0247   # 3.2.0
         with:
           fetch-depth: 32
 
