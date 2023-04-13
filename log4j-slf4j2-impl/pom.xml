@@ -108,6 +108,7 @@
           <instructions>
             <Export-Package>org.apache.logging.slf4j,
               org.slf4j.impl</Export-Package>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
             <Require-Capability>osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
             <Provide-Capability>osgi.serviceloader;osgi.serviceloader=org.slf4j.spi.SLF4JServiceProvider</Provide-Capability>
           </instructions>
