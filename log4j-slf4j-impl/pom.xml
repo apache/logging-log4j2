@@ -111,6 +111,7 @@
           <instructions>
             <Export-Package>org.apache.logging.slf4j,
               org.slf4j.impl</Export-Package>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
           </instructions>
         </configuration>
       </plugin>

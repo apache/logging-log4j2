@@ -71,6 +71,7 @@
               sun.reflect;resolution:=optional,
               *</Import-Package>
             <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
             <_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
           </instructions>
         </configuration>

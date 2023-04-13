@@ -192,6 +192,7 @@
               javax.mail.util;version="[1.6,2)";resolution:=optional,
               sun.reflect;resolution:=optional,
               *</Import-Package>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
             <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
