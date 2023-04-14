@@ -3592,12 +3592,12 @@ public interface Logger {
     /**
      * Logs entry to a method along with its parameters. For example,
      *
-     * <pre>
+     * <pre>{@code
      * public void doSomething(Request foo) {
      *     LOGGER.traceEntry(()->gson.toJson(foo));
      *     // do something
      * }
-     * </pre>
+     * }</pre>
      *
      * @param paramSuppliers The Suppliers for the parameters to the method.
      * @return built message
@@ -3609,12 +3609,12 @@ public interface Logger {
     /**
      * Logs entry to a method along with its parameters. For example,
      *
-     * <pre>
+     * <pre>{@code
      * public void doSomething(String foo, int bar) {
      *     LOGGER.traceEntry("Parameters: {} and {}", ()->gson.toJson(foo), ()-> bar);
      *     // do something
      * }
-     * </pre>
+     * }</pre>
      *
      * @param format The format String for the parameters.
      * @param paramSuppliers The Suppliers for the parameters to the method.
