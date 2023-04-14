@@ -84,7 +84,7 @@ public interface ComponentBuilder<T extends ComponentBuilder<T>> extends Builder
 
     /**
      * Returns the name of the component, if any.
-     * @return The components name or null if it doesn't have one.
+     * @return The component's name or null if it doesn't have one.
      */
     String getName();
 
