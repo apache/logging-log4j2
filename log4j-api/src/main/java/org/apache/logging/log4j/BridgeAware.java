@@ -28,7 +28,6 @@ public interface BridgeAware {
      * class will not appear in the location information.
      * 
      * @param fqcn
-     * @return this
      */
     public void setEntryPoint(final String fqcn);
 }
