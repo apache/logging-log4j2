@@ -139,7 +139,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
     @Deprecated
     protected JsonLayout(final Configuration config, final boolean locationInfo, final boolean properties,
             final boolean encodeThreadContextAsList,
-            final boolean complete, final boolean compact, final boolean eventEol, final String endOfLine,final String headerPattern,
+            final boolean complete, final boolean compact, final boolean eventEol, final String endOfLine, final String headerPattern,
             final String footerPattern, final Charset charset, final boolean includeStacktrace) {
         super(config, new JacksonFactory.JSON(encodeThreadContextAsList, includeStacktrace, false, false).newWriter(
                 locationInfo, properties, compact),

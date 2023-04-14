@@ -19,7 +19,7 @@ package org.apache.logging.log4j.test.junit;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
 /**
- * Constants to use the the {@link ResourceLock} annotation.
+ * Constants to use the {@link ResourceLock} annotation.
  *
  */
 public class Resources {
