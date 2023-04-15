@@ -26,7 +26,7 @@ public interface BridgeAware {
     /**
      * Fully qualified class name of the entry point to the logging system. This
      * class will not appear in the location information.
-     * 
+     *
      * @param fqcn
      */
     public void setEntryPoint(final String fqcn);
