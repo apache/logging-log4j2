@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>8</version>
+    <version>9</version>
     <relativePath/>
   </parent>
 
@@ -370,7 +370,6 @@
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <spotbugs-maven-plugin.version>4.7.2.1</spotbugs-maven-plugin.version>
-    <spotless-maven-plugin.version>2.27.2</spotless-maven-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.0.0-M7</surefire.version>
     <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
@@ -1495,12 +1494,6 @@
         </plugin>
 
         <plugin>
-          <groupId>com.diffplug.spotless</groupId>
-          <artifactId>spotless-maven-plugin</artifactId>
-          <version>${spotless-maven-plugin.version}</version>
-        </plugin>
-
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>xml-maven-plugin</artifactId>
           <version>${xml-maven-plugin.version}</version>
@@ -1601,41 +1594,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>com.diffplug.spotless</groupId>
-        <artifactId>spotless-maven-plugin</artifactId>
-        <configuration>
-          <ratchetFrom>HEAD~31</ratchetFrom>
-          <java>
-            <licenseHeader>
-              <file>${log4jParentDir}/checkstyle-header.txt</file>
-            </licenseHeader>
-            <trimTrailingWhitespace/>
-            <endWithNewline/>
-            <indent>
-              <spaces>true</spaces>
-              <spacesPerTab>4</spacesPerTab>
-            </indent>
-            <importOrder>
-              <order>java,org,com,\#</order>
-            </importOrder>
-          </java>
-          <pom>
-            <sortPom>
-              <expandEmptyElements>false</expandEmptyElements>
-            </sortPom>
-          </pom>
-        </configuration>
-        <executions>
-          <execution>
-            <id>default-spotless</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
