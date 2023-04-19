@@ -16,7 +16,7 @@
  limitations under the License.
 
 -->
-Configuration status="OFF">
+<Configuration status="OFF"
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d [%t] %-5level: %msg%n%throwable" />

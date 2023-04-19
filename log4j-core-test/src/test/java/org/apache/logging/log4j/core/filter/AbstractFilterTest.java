@@ -1,4 +1,3 @@
-package org.apache.logging.log4j.core.filter;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements. See the NOTICE file distributed with
@@ -15,6 +14,7 @@ package org.apache.logging.log4j.core.filter;
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+package org.apache.logging.log4j.core.filter;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;

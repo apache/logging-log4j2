@@ -15,10 +15,6 @@
  * limitations under the License.
  */
 
-// WARNING This class MUST not have references to the Category or
-// WARNING RootCategory classes in its static initialization neither
-// WARNING directly nor indirectly.
-
 package org.apache.log4j;
 
 import java.util.Enumeration;
@@ -44,6 +40,9 @@ import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
+// WARNING This class MUST not have references to the Category or
+// WARNING RootCategory classes in its static initialization neither
+// WARNING directly nor indirectly.
 /**
  * This class is specialized in retrieving loggers by name and also maintaining the logger hierarchy.
  *
