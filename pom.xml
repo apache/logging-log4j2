@@ -363,6 +363,7 @@
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
+    <rewrite-maven-plugin.version>5.0.0</rewrite-maven-plugin.version>
     <spotbugs-maven-plugin.version>4.7.2.1</spotbugs-maven-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.0.0-M9</surefire.version>
@@ -457,6 +458,8 @@
     <osgi.api.version>6.0.0</osgi.api.version>
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.0</plexus-utils.version>
+    <rewrite-java.version>8.0.0</rewrite-java.version>
+    <rewrite-static-analysis.version>1.0.0</rewrite-static-analysis.version>
     <slf4j.version>1.7.36</slf4j.version>
     <spring-boot.version>2.7.9</spring-boot.version>
     <spring-framework.version>5.3.25</spring-framework.version>
@@ -1458,6 +1461,24 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-toolchains-plugin</artifactId>
           <version>${maven-toolchains-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.openrewrite.maven</groupId>
+          <artifactId>rewrite-maven-plugin</artifactId>
+          <version>${rewrite-maven-plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.openrewrite</groupId>
+              <artifactId>rewrite-java</artifactId>
+              <version>${rewrite-java.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.openrewrite.recipe</groupId>
+              <artifactId>rewrite-static-analysis</artifactId>
+              <version>${rewrite-static-analysis.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
 
         <plugin>
