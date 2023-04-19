@@ -14,12 +14,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-  <appender name="A1" class="org.apache.log4j.FileAppender">
+<appender name="A1" class="org.apache.log4j.FileAppender">
 
-    <param name="File"   value="output/temp.A1.4" />
-    <param name="Append" value="false" />
+  <param name="File"   value="output/temp.A1.4" />
+  <param name="Append" value="false" />
 
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
-    </layout>
-  </appender>
+  <layout class="org.apache.log4j.PatternLayout">
+    <param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
+  </layout>
+</appender>

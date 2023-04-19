@@ -1,4 +1,3 @@
-<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -15,6 +14,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
   <appender name="ConsoleCapitalized" class="org.apache.log4j.ConsoleAppender">
     <param name="Encoding" value="ISO-8859-1" />
