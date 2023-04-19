@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>8</version>
+    <version>9</version>
   </parent>
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-bom</artifactId>
@@ -37,7 +37,6 @@
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <project.build.outputTimestamp>1676697577</project.build.outputTimestamp>
-    <spotless-maven-plugin.version>2.27.2</spotless-maven-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -241,26 +240,6 @@
           <skip>true</skip>
           <skipDeploy>true</skipDeploy>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.diffplug.spotless</groupId>
-        <artifactId>spotless-maven-plugin</artifactId>
-        <version>${spotless-maven-plugin.version}</version>
-        <configuration>
-          <pom>
-            <sortPom>
-              <expandEmptyElements>false</expandEmptyElements>
-            </sortPom>
-          </pom>
-        </configuration>
-        <executions>
-          <execution>
-            <id>default-spotless</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
