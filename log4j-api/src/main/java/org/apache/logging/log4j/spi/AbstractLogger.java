@@ -69,16 +69,13 @@ public abstract class AbstractLogger implements ExtendedLogger {
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
     private static final ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
-    private final Recycler<DefaultLogBuilder> recycler = LoggingSystem.getRecyclerFactory().create(() -> new DefaultLogBuilder(this, null));
+    private final Recycler<DefaultLogBuilder> recycler;
 
     /**
      * Creates a new logger named after this class (or subclass).
      */
     public AbstractLogger() {
-        final String canonicalName = getClass().getCanonicalName();
-        this.name = canonicalName != null ? canonicalName : getClass().getName();
-        this.messageFactory = LoggingSystem.getMessageFactory();
-        this.flowMessageFactory = LoggingSystem.getFlowMessageFactory();
+        this(null, null, null, null);
     }
 
     /**
@@ -87,7 +84,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
      * @param name the logger name
      */
     public AbstractLogger(final String name) {
-        this(name, LoggingSystem.getMessageFactory());
+        this(name, LoggingSystem.getMessageFactory(), null, null);
     }
 
     /**
@@ -97,9 +94,30 @@ public abstract class AbstractLogger implements ExtendedLogger {
      * @param messageFactory the message factory, if null then use the default message factory.
      */
     public AbstractLogger(final String name, final MessageFactory messageFactory) {
-        this.name = name;
-        this.messageFactory = messageFactory == null ? LoggingSystem.getMessageFactory() : messageFactory;
-        this.flowMessageFactory = LoggingSystem.getFlowMessageFactory();
+        this(name, messageFactory, null, null);
+    }
+
+    private AbstractLogger(
+            final String name,
+            final MessageFactory messageFactory,
+            final FlowMessageFactory flowMessageFactory,
+            final RecyclerFactory recyclerFactory) {
+        this.name = name != null ? name : createNameFromClass(getClass());
+        this.messageFactory = messageFactory != null ? messageFactory : LoggingSystem.getMessageFactory();
+        this.flowMessageFactory = flowMessageFactory != null ? flowMessageFactory : LoggingSystem.getFlowMessageFactory();
+        RecyclerFactory effectiveRecyclerFactory = recyclerFactory != null ? recyclerFactory : LoggingSystem.getRecyclerFactory();
+        this.recycler = effectiveRecyclerFactory.create(() -> new DefaultLogBuilder(this, null, this::recycleLogBuilder));
+    }
+
+    private static String createNameFromClass(Class<?> clazz) {
+        final String canonicalName = clazz.getCanonicalName();
+        return canonicalName != null ? canonicalName : clazz.getName();
+    }
+
+    private void recycleLogBuilder(DefaultLogBuilder logBuilder) {
+        if (recycler != null) {
+            recycler.release(logBuilder);
+        }
     }
 
     /**
