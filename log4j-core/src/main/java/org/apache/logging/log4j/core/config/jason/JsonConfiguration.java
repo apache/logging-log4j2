@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.config.jason;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -32,12 +31,11 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
-import org.apache.logging.log4j.core.util.JsonReader;
-import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
 import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.JsonReader;
 
 public class JsonConfiguration extends AbstractConfiguration implements Reconfigurable {
     private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };

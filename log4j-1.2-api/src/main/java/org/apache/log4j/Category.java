@@ -174,12 +174,10 @@ public class Category implements AppenderAttachable {
         this.name = name;
         this.logger = context.getLogger(name);
         this.repository = LogManager.getLoggerRepository();
-        // this.rendererMap = ((RendererSupport) repository).getRendererMap();
     }
 
     Category(final org.apache.logging.log4j.Logger logger) {
         this.logger = logger;
-        // rendererMap = ((RendererSupport) LogManager.getLoggerRepository()).getRendererMap();
     }
 
     /**

@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.core.util.JsonReader;
+import org.apache.logging.log4j.util.JsonReader;
 import org.apache.logging.log4j.util.Strings;
 
 /**

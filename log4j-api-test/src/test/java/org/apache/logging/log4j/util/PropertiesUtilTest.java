@@ -112,6 +112,17 @@ public class PropertiesUtilTest {
     }
 
     @Test
+    @ResourceLock(Resources.SYSTEM_PROPERTIES)
+    public void testJsonProperties() {
+        final PropertiesUtil util = new PropertiesUtil("PropertiesUtilTest.json");
+        assertNull(util.getStringProperty("log4j2"));
+        assertEquals(true, util.getBooleanProperty("log4j2.My-App.JNDI.enableJMS"));
+        assertEquals("Groovy,JavaScript", util.getStringProperty("log4j2.My-App.Script.enableLanguages"));
+        assertEquals("com.acme.log4j.CustomMergeStrategy", util.getStringProperty("log4j2.My-App.Configuration.mergeStrategy"));
+        assertEquals("Info", util.getStringProperty("log4j2.*.StatusLogger.defaultStatusLevel"));
+    }
+
+    @Test
     @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     public void testPublish() {
         final Properties props = new Properties();

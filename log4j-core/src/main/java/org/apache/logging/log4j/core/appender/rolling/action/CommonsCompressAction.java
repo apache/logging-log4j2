@@ -104,9 +104,9 @@ public final class CommonsCompressAction extends AbstractAction {
         }
         LOGGER.debug("Starting {} compression of {}", name, source.getPath() );
         try (final FileInputStream input = new FileInputStream(source);
+             final FileOutputStream fileOutput = new FileOutputStream(destination);
                 final BufferedOutputStream output = new BufferedOutputStream(
-                        new CompressorStreamFactory().createCompressorOutputStream(name, new FileOutputStream(
-                                destination)))) {
+                        new CompressorStreamFactory().createCompressorOutputStream(name, fileOutput))) {
             IOUtils.copy(input, output, BUF_SIZE);
             LOGGER.debug("Finished {} compression of {}", name, source.getPath() );
         } catch (final CompressorException e) {
