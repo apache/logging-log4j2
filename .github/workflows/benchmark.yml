@@ -184,7 +184,7 @@ jobs:
           ref: gh-pages
 
       - name: Setup Python 3
-        uses: actions/setup-python@13ae5bb136fac2878aff31522b9efb785519f984   # 4.3.0
+        uses: actions/setup-python@57ded4d7d5e986d7296eab16560982c6dd7c923b   # 4.6.0
         with:
           python-version: 3.x
 
