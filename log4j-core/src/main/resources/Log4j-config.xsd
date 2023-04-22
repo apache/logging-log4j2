@@ -16,149 +16,245 @@
  limitations under the License.
 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://logging.apache.org/log4j/2.0/config" targetNamespace="http://logging.apache.org/log4j/2.0/config" elementFormDefault="qualified" attributeFormDefault="unqualified">
-    <xs:element name="Configuration" type="ConfigurationType"/>
-    <xs:complexType name="ConfigurationType">
-        <xs:sequence>
-            <xs:choice minOccurs="0" maxOccurs="1">
-                <xs:element name="CustomLevels" type="CustomLevelsType"/>
-                <xs:element name="CustomLevel" type="CustomLevelType"/>
-            </xs:choice>
-            <xs:element name="Properties" type="PropertiesType" minOccurs="0"/>
-            <xs:choice minOccurs="0" maxOccurs="1">
-                <xs:element name="Filters" type="FiltersType"/>
-                <xs:element name="Filter" type="FilterType"/>
-            </xs:choice>
-            <xs:element name="ThresholdFilter" type="ThresholdFilterType" minOccurs="0"/>
-            <xs:element name="Appenders" type="AppendersType"/>
-            <xs:element name="Loggers" type="LoggersType"/>
-        </xs:sequence>
-        <xs:attribute name="packages" type="xs:string"/>
-        <xs:attribute name="status" type="xs:string"/>
-        <xs:attribute name="strict" type="xs:string"/>
-        <xs:attribute name="name" type="xs:string"/>
-        <xs:attribute name="advertiser" type="xs:string"/>
-        <xs:attribute name="shutdownTimeout" type="xs:string" use="optional"/>
-        <xs:attribute name="schema" type="xs:string"/>
-    </xs:complexType>
-    <xs:complexType name="PropertiesType">
-        <xs:sequence>
-            <xs:element name="Property" type="PropertyType" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="AppenderType">
-        <xs:sequence>
-            <xs:element name="Layout" type="LayoutType" minOccurs="0"/>
-            <xs:choice minOccurs="0" maxOccurs="1">
-                <xs:element name="Filters" type="FiltersType"/>
-                <xs:element name="Filter" type="FilterType"/>
-            </xs:choice>
-        </xs:sequence>
-        <xs:attribute name="type" type="xs:string" use="required"/>
-        <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="fileName" type="xs:string" use="optional"/>
-    </xs:complexType>
-    <xs:complexType name="RootType">
-        <xs:sequence>
-            <xs:element name="AppenderRef" type="AppenderRefType" minOccurs="1" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="level" type="xs:string"/>
-    </xs:complexType>
-    <xs:complexType name="PropertyType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute name="name" type="xs:string"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="KeyValuePairType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute name="key" type="xs:string"/>
-                <xs:attribute name="value" type="xs:string"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="AppendersType">
-        <xs:sequence>
-          <xs:element name="Appender" type="AppenderType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="Console" type="ConsoleType" minOccurs="0"/>
-        </xs:sequence>
-    </xs:complexType>
- <xs:complexType name="ConsoleType">
-        <xs:sequence>
-            <xs:element name="PatternLayout" type="PatternLayoutType" minOccurs="1" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute type="xs:string" name="name" use="required"/>
-        <xs:attribute type="xs:string" name="target" use="required"/>
-        <xs:attribute type="xs:string" name="follow" use="optional"/>
-  </xs:complexType>
-     <xs:complexType name="PatternLayoutType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="pattern" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-               <xs:complexType name="AppenderRefType">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute name="ref" type="xs:string" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-    <xs:complexType name="LoggerType">
-        <xs:sequence>
-            <xs:choice minOccurs="0" maxOccurs="1">
-                <xs:element name="Filters" type="FiltersType"/>
-                <xs:element name="Filter" type="FilterType"/>
-            </xs:choice>
-            <xs:element name="AppenderRef" type="AppenderRefType" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="level" type="xs:string" use="optional"/>
-        <xs:attribute name="additivity" type="xs:string" use="optional"/>
-    </xs:complexType>
-    <xs:complexType name="FilterType" mixed="true">
-        <xs:sequence>
-            <xs:element name="KeyValuePair" type="KeyValuePairType" minOccurs="0"/>
-        </xs:sequence>
-        <xs:attribute name="type" type="xs:string" use="required"/>
-        <xs:attribute name="level" type="xs:string" use="optional"/>
-        <xs:attribute name="marker" type="xs:string" use="optional"/>
-        <xs:attribute name="onMatch" type="xs:string" use="optional"/>
-        <xs:attribute name="onMismatch" type="xs:string" use="optional"/>
-    </xs:complexType>
-    <xs:complexType name="FiltersType">
-        <xs:sequence>
-            <xs:element name="Filter" type="FilterType" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="CustomLevelType">
-        <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="intLevel" type="xs:string" use="required"/>
-    </xs:complexType>
-    <xs:complexType name="CustomLevelsType">
-        <xs:sequence>
-            <xs:element name="CustomLevel" type="CustomLevelType" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="LoggersType" mixed="true">
-        <xs:sequence>
-            <xs:element name="Logger" type="LoggerType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="Root" type="RootType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-    </xs:complexType>
-    <xs:complexType name="LayoutType" mixed="true">
-        <xs:sequence>
-            <xs:element name="Pattern" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-        <xs:attribute name="type" type="xs:string" use="required"/>
-        <xs:attribute name="pattern" type="xs:string" use="optional"/>
-    </xs:complexType>
-    <xs:complexType name="ThresholdFilterType">
-        <xs:attribute name="level" type="xs:string" use="optional"/>
-        <xs:attribute name="onMatch" type="xs:string" use="optional"/>
-        <xs:attribute name="onMismatch" type="xs:string" use="optional"/>
-    </xs:complexType>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://logging.apache.org/log4j/2.0/config"
+	targetNamespace="http://logging.apache.org/log4j/2.0/config" elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+	<xs:element name="Configuration" type="ConfigurationType" />
+	<xs:complexType name="ConfigurationType">
+		<xs:sequence>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element name="CustomLevels" type="CustomLevelsType" />
+				<xs:element name="CustomLevel" type="CustomLevelType" />
+			</xs:choice>
+			<xs:element name="Properties" type="PropertiesType" minOccurs="0" />
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element name="Filters" type="FiltersType" />
+				<xs:element name="Filter" type="FilterType" />
+			</xs:choice>
+			<xs:element name="ThresholdFilter" type="ThresholdFilterType" minOccurs="0" />
+			<xs:element name="Appenders" type="AppendersType" />
+			<xs:element name="Loggers" type="LoggersType" />
+		</xs:sequence>
+		<xs:attribute name="packages" type="xs:string" />
+		<xs:attribute name="status" type="xs:string" />
+		<xs:attribute name="strict" type="xs:string" />
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="advertiser" type="xs:string" />
+		<xs:attribute name="shutdownTimeout" type="xs:string" use="optional" />
+		<xs:attribute name="schema" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="PropertiesType">
+		<xs:sequence>
+			<xs:element name="Property" type="PropertyType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AppenderType">
+		<xs:sequence>
+			<xs:element name="Layout" type="LayoutType" minOccurs="0" />
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element name="Filters" type="FiltersType" />
+				<xs:element name="Filter" type="FilterType" />
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string" use="required" />
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="fileName" type="xs:string" use="optional" />
+	</xs:complexType>
+	<xs:complexType name="RootType">
+		<xs:sequence>
+			<xs:element name="AppenderRef" type="AppenderRefType" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="level" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="PropertyType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="KeyValuePairType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="key" type="xs:string" />
+				<xs:attribute name="value" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="AppendersType">
+		<xs:sequence>
+			<xs:element name="Appender" type="AppenderType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="ScriptAppenderSelector" type="ScriptAppenderSelectorAppenderType"
+				minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="RollingFile" type="RollingFileAppenderType" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="File" type="FileAppenderType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Null" type="NullAppenderType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="Console" type="ConsoleType" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FileAppenderType">
+		<xs:sequence>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element name="PatternLayout" type="PatternLayoutType" />
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute type="xs:string" name="name" use="required" />
+		<xs:attribute type="xs:string" name="fileName" use="required" />
+		<xs:attribute type="xs:boolean" name="append" use="optional" default="true" />
+		<xs:attribute type="xs:boolean" name="bufferedIO" use="optional" default="true" />
+		<xs:attribute type="xs:integer" name="bufferSize" use="optional" default="8192" />
+		<xs:attribute type="xs:boolean" name="createOnDemand" use="optional" default="false" />
+		<xs:attribute type="xs:boolean" name="immediateFlush" use="optional" default="true" />
+		<xs:attribute type="xs:boolean" name="locking" use="optional" default="false" />
+		<xs:attribute type="xs:boolean" name="ignoreExceptions" use="optional" default="true" />
+		<xs:attribute type="xs:string" name="filePermissions" use="optional" />
+		<xs:attribute type="xs:string" name="fileOwner" use="optional" />
+		<xs:attribute type="xs:string" name="fileGroup" use="optional" />
+	</xs:complexType>
+	<xs:complexType name="NullAppenderType">
+		<xs:attribute type="xs:string" name="name" use="required" />
+	</xs:complexType>
+	<xs:complexType name="RollingFileAppenderType">
+		<xs:sequence>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element name="PatternLayout" type="PatternLayoutType" />
+				<xs:element name="CsvParameterLayout" />
+			</xs:choice>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element name="TimeBasedTriggeringPolicy">
+					<xs:complexType>
+						<xs:attribute type="xs:integer" name="interval" use="optional" default="1" />
+						<xs:attribute type="xs:boolean" name="modulate" use="optional" default="false" />
+						<xs:attribute type="xs:integer" name="maxRandomDelay" use="optional" default="0" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="SizeBasedTriggeringPolicy">
+					<xs:complexType>
+						<xs:attribute type="xs:string" name="size" use="required" />
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element name="DefaultRolloverStrategy">
+					<xs:complexType>
+						<xs:attribute type="xs:string" name="fileIndex" use="optional" default="max" />
+						<xs:attribute type="xs:integer" name="min" use="optional" default="1" />
+						<xs:attribute type="xs:integer" name="max" use="optional" default="7" />
+						<xs:attribute type="xs:integer" name="compressionLevel" use="optional" />
+						<xs:attribute type="xs:string" name="tempCompressedFilePattern" use="optional" />
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute type="xs:string" name="name" use="required" />
+		<xs:attribute type="xs:string" name="fileName" use="required" />
+		<xs:attribute type="xs:string" name="filePattern" use="required" />
+		<xs:attribute type="xs:boolean" name="append" use="optional" />
+		<xs:attribute type="xs:boolean" name="bufferedIO" use="optional" />
+		<xs:attribute type="xs:integer" name="bufferSize" use="optional" />
+		<xs:attribute type="xs:boolean" name="createOnDemand" use="optional" />
+		<xs:attribute type="xs:string" name="filter" use="optional" />
+		<xs:attribute type="xs:boolean" name="immediateFlush" use="optional" />
+<!-- 		<xs:attribute type="xs:string" name="strategy" use="optional" /> -->
+		<xs:attribute type="xs:boolean" name="ignoreExceptions" use="optional" />
+		<xs:attribute type="xs:string" name="filePermissions" use="optional" />
+		<xs:attribute type="xs:string" name="fileOwner" use="optional" />
+		<xs:attribute type="xs:string" name="fileGroup" use="optional" />
+	</xs:complexType>
+	<xs:complexType name="ScriptAppenderSelectorAppenderType">
+		<xs:sequence>
+			<xs:element name="Script">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute type="xs:string" name="language" use="required" />
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="AppenderSet" type="AppendersType" />
+		</xs:sequence>
+		<xs:attribute type="xs:string" name="name" use="required" />
+	</xs:complexType>
+	<xs:complexType name="ConsoleType">
+		<xs:sequence>
+			<xs:element name="PatternLayout" type="PatternLayoutType" minOccurs="1"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute type="xs:string" name="name" use="required" />
+		<xs:attribute type="xs:string" name="target" use="required" />
+		<xs:attribute type="xs:string" name="follow" use="optional" />
+	</xs:complexType>
+	<xs:complexType name="PatternLayoutType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute type="xs:string" name="charset" use="optional" />
+				<xs:attribute type="xs:string" name="pattern" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="AppenderRefType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="ref" type="xs:string" use="required" />
+				<xs:attribute name="level" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="LoggerType">
+		<xs:sequence>
+			<xs:choice minOccurs="0" maxOccurs="1">
+				<xs:element name="Filters" type="FiltersType" />
+				<xs:element name="Filter" type="FilterType" />
+			</xs:choice>
+			<xs:element name="AppenderRef" type="AppenderRefType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="level" type="xs:string" use="optional" />
+		<xs:attribute name="additivity" type="xs:string" use="optional" />
+	</xs:complexType>
+	<xs:complexType name="FilterType" mixed="true">
+		<xs:sequence>
+			<xs:element name="KeyValuePair" type="KeyValuePairType" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string" use="required" />
+		<xs:attribute name="level" type="xs:string" use="optional" />
+		<xs:attribute name="marker" type="xs:string" use="optional" />
+		<xs:attribute name="onMatch" type="xs:string" use="optional" />
+		<xs:attribute name="onMismatch" type="xs:string" use="optional" />
+	</xs:complexType>
+	<xs:complexType name="FiltersType">
+		<xs:sequence>
+			<xs:element name="Filter" type="FilterType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CustomLevelType">
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="intLevel" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="CustomLevelsType">
+		<xs:sequence>
+			<xs:element name="CustomLevel" type="CustomLevelType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LoggersType" mixed="true">
+		<xs:sequence>
+			<xs:element name="Logger" type="LoggerType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Root" type="RootType" minOccurs="1" maxOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LayoutType" mixed="true">
+		<xs:sequence>
+			<xs:element name="Pattern" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string" use="required" />
+		<xs:attribute name="pattern" type="xs:string" use="optional" />
+	</xs:complexType>
+	<xs:complexType name="ThresholdFilterType">
+		<xs:attribute name="level" type="xs:string" use="optional" />
+		<xs:attribute name="onMatch" type="xs:string" use="optional" />
+		<xs:attribute name="onMismatch" type="xs:string" use="optional" />
+	</xs:complexType>
 </xs:schema>
