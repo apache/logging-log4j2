@@ -42,17 +42,15 @@ public class DummyRecyclerFactory implements RecyclerFactory {
         return new DummyRecycler<>(supplier);
     }
 
-    private static class DummyRecycler<V> implements Recycler<V> {
-
-        private final Supplier<V> supplier;
+    private static class DummyRecycler<V> extends AbstractRecycler<V> {
 
         private DummyRecycler(final Supplier<V> supplier) {
-            this.supplier = supplier;
+            super(supplier, null);
         }
 
         @Override
         public V acquire() {
-            return supplier.get();
+            return createObject();
         }
 
         @Override

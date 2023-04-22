@@ -106,7 +106,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
         this.messageFactory = messageFactory != null ? messageFactory : LoggingSystem.getMessageFactory();
         this.flowMessageFactory = flowMessageFactory != null ? flowMessageFactory : LoggingSystem.getFlowMessageFactory();
         RecyclerFactory effectiveRecyclerFactory = recyclerFactory != null ? recyclerFactory : LoggingSystem.getRecyclerFactory();
-        this.recycler = effectiveRecyclerFactory.create(() -> new DefaultLogBuilder(this, null, this::recycleLogBuilder));
+        this.recycler = effectiveRecyclerFactory.create(DefaultLogBuilder::new);
     }
 
     private static String createNameFromClass(Class<?> clazz) {

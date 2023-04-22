@@ -26,36 +26,36 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.ExtendedLogger;
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerAware;
 import org.apache.logging.log4j.util.*;
 
 /**
  * Collects data for a log event and then logs it. This class should be considered private.
  */
 @InternalApi
-public class DefaultLogBuilder implements BridgeAware, LogBuilder {
+public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware<LogBuilder> {
 
     private static final String FQCN = DefaultLogBuilder.class.getName();
     private static final Message EMPTY_MESSAGE = new SimpleMessage(Strings.EMPTY);
 
-    private final Consumer<DefaultLogBuilder> postUsageCallback;
     private ExtendedLogger logger;
     private Level level;
     private Marker marker;
     private Throwable throwable;
     private StackTraceElement location;
     private String fqcn = FQCN;
+    private Recycler<LogBuilder> recycler;
 
     public DefaultLogBuilder(
             final ExtendedLogger logger,
-            final Level level,
-            final Consumer<DefaultLogBuilder> postUsageCallback) {
+            final Level level) {
         this.logger = logger;
         this.level = level;
-        this.postUsageCallback = postUsageCallback;
     }
 
     public DefaultLogBuilder() {
-        this(null, null, null);
+        this(null, null);
     }
 
     @Override
@@ -246,8 +246,8 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
             this.marker = null;
             this.throwable = null;
             this.location = null;
-            if (postUsageCallback != null) {
-                postUsageCallback.accept(this);
+            if (recycler != null) {
+                recycler.release(this);
             }
         }
     }
@@ -333,5 +333,10 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
         return throwable != null
                 ? logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, throwable)
                 : logger.isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+    }
+
+    @Override
+    public void setRecycler(Recycler<LogBuilder> recycler) {
+        this.recycler = recycler;
     }
 }

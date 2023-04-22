@@ -44,11 +44,7 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
     }
 
     // Visible for tests
-    static class QueueingRecycler<V> implements Recycler<V> {
-
-        private final Supplier<V> supplier;
-
-        private final Consumer<V> cleaner;
+    static class QueueingRecycler<V> extends AbstractRecycler<V> {
 
         private final Queue<V> queue;
 
@@ -56,8 +52,7 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
                 final Supplier<V> supplier,
                 final Consumer<V> cleaner,
                 final Queue<V> queue) {
-            this.supplier = supplier;
-            this.cleaner = cleaner;
+            super(supplier, cleaner);
             this.queue = queue;
         }
 
@@ -69,13 +64,13 @@ public class QueueingRecyclerFactory implements RecyclerFactory {
         @Override
         public V acquire() {
             final V value = queue.poll();
-            return value != null ? value : supplier.get();
+            return value != null ? value : createObject();
         }
 
         @Override
         public void release(final V value) {
             requireNonNull(value, "value");
-            cleaner.accept(value);
+            cleanObject(value);
             queue.offer(value);
         }
 
