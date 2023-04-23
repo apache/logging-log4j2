@@ -68,4 +68,12 @@ public abstract class LogEventPatternConverter extends AbstractPatternConverter 
     public boolean isVariable() {
         return true;
     }
+
+    /**
+     * @return the formatted output when the input variable (MDC, NDC, etc.) is empty
+     */
+    public String emptyVariableOutput() {
+        return "";
+    }
+
 }

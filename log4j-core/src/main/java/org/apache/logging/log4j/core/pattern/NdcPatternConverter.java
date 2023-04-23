@@ -55,4 +55,10 @@ public final class NdcPatternConverter extends LogEventPatternConverter {
     public void format(final LogEvent event, final StringBuilder toAppendTo) {
         toAppendTo.append(event.getContextStack());
     }
+
+    @Override
+    public String emptyVariableOutput() {
+        return "[]";
+    }
+
 }
