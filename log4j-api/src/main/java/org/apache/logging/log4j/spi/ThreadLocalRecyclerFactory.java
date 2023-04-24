@@ -60,24 +60,27 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
     // Visible for testing
     static class ThreadLocalRecycler<V> extends AbstractRecycler<V> {
 
+        private final Consumer<V> cleaner;
+
         private final ThreadLocal<Queue<V>> holder;
 
         private ThreadLocalRecycler(final Supplier<V> supplier, final Consumer<V> cleaner) {
-            super(supplier, cleaner);
+            super(supplier);
             this.holder = ThreadLocal.withInitial(() -> QueueFactories.SPSC.create(MAX_QUEUE_SIZE));
+            this.cleaner = cleaner;
         }
 
         @Override
         public V acquire() {
             final Queue<V> queue = holder.get();
             final V value = queue.poll();
-            return value != null ? value : createObject();
+            return value != null ? value : createInstance();
         }
 
         @Override
         public void release(final V value) {
             requireNonNull(value, "value");
-            cleanObject(value);
+            cleaner.accept(value);
             holder.get().offer(value);
         }
 

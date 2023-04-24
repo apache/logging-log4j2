@@ -45,12 +45,12 @@ public class DummyRecyclerFactory implements RecyclerFactory {
     private static class DummyRecycler<V> extends AbstractRecycler<V> {
 
         private DummyRecycler(final Supplier<V> supplier) {
-            super(supplier, null);
+            super(supplier);
         }
 
         @Override
         public V acquire() {
-            return createObject();
+            return createInstance();
         }
 
         @Override

@@ -47,9 +47,7 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
     private String fqcn = FQCN;
     private Recycler<LogBuilder> recycler;
 
-    public DefaultLogBuilder(
-            final ExtendedLogger logger,
-            final Level level) {
+    public DefaultLogBuilder(final ExtendedLogger logger, final Level level) {
         this.logger = logger;
         this.level = level;
     }
@@ -339,4 +337,5 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
     public void setRecycler(Recycler<LogBuilder> recycler) {
         this.recycler = recycler;
     }
+
 }

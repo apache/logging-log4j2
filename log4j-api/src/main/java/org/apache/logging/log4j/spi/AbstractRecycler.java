@@ -16,30 +16,24 @@
  */
 package org.apache.logging.log4j.spi;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class AbstractRecycler<V> implements Recycler<V> {
 
     private final Supplier<V> supplier;
-    private final Consumer<V> cleaner;
 
-    public AbstractRecycler(final Supplier<V> supplier, final Consumer<V> cleaner) {
+    public AbstractRecycler(final Supplier<V> supplier) {
         this.supplier = supplier;
-        this.cleaner = cleaner;
     }
 
-    protected final V createObject() {
-        final V obj = supplier.get();
-        if (obj instanceof RecyclerAware) {
-            ((RecyclerAware<V>) obj).setRecycler(this);
+    protected final V createInstance() {
+        final V instance = supplier.get();
+        if (instance instanceof RecyclerAware) {
+            @SuppressWarnings("unchecked")
+            RecyclerAware<V> recyclerAware = (RecyclerAware<V>) instance;
+            recyclerAware.setRecycler(this);
         }
-        return obj;
+        return instance;
     }
 
-    protected final void cleanObject(V obj) {
-        if (cleaner != null) {
-            cleaner.accept(obj);
-        }
-    }
 }
