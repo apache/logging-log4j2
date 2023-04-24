@@ -30,6 +30,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ThreadLocalRecyclerFactoryTest {
 
+    private static final int CAPACITY = 8;
+
     private static class RecyclableObject {}
 
     private Recycler<RecyclableObject> recycler;
@@ -38,12 +40,12 @@ class ThreadLocalRecyclerFactoryTest {
 
     @BeforeEach
     void setUp() {
-        recycler = ThreadLocalRecyclerFactory.getInstance().create(RecyclableObject::new);
+        recycler = new ThreadLocalRecyclerFactory(CAPACITY).create(RecyclableObject::new);
         recyclerQueue = ((ThreadLocalRecyclerFactory.ThreadLocalRecycler<RecyclableObject>) recycler).getQueue();
     }
 
     @ParameterizedTest
-    @IntRangeSource(from = 1, to = ThreadLocalRecyclerFactory.MAX_QUEUE_SIZE, closed = true)
+    @IntRangeSource(from = 1, to = CAPACITY, closed = true)
     void nested_acquires_should_not_interfere(final int acquisitionCount) {
 
         // pool should start empty
@@ -90,8 +92,8 @@ class ThreadLocalRecyclerFactoryTest {
         assertThat(acquiredObjects).containsOnlyOnceElementsOf(acquiredObjects);
         acquiredObjects.forEach(recycler::release);
 
-        // upon return, we should only have ThreadLocalRecyclerFactory.MAX_QUEUE_SIZE retained for future use
-        assertThat(recyclerQueue).hasSize(ThreadLocalRecyclerFactory.MAX_QUEUE_SIZE);
+        // upon return, we should only have `CAPACITY` retained for future use
+        assertThat(recyclerQueue).hasSize(CAPACITY);
 
     }
 

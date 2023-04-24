@@ -27,7 +27,8 @@ import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 public final class RecyclerFactories {
 
-    private static final int DEFAULT_QUEUE_CAPACITY = Math.max(
+    // Visible for testing
+    static final int DEFAULT_QUEUE_CAPACITY = Math.max(
             2 * Runtime.getRuntime().availableProcessors() + 1,
             8);
 
@@ -35,7 +36,7 @@ public final class RecyclerFactories {
 
     public static RecyclerFactory getDefault() {
         return isThreadLocalsEnabled()
-                ? ThreadLocalRecyclerFactory.getInstance()
+                ? new ThreadLocalRecyclerFactory(DEFAULT_QUEUE_CAPACITY)
                 : new QueueingRecyclerFactory(QueueFactories.MPMC.factory(DEFAULT_QUEUE_CAPACITY));
     }
 
@@ -52,8 +53,8 @@ public final class RecyclerFactories {
         }
 
         // Is a TLA factory requested?
-        else if (recyclerFactorySpec.equals("threadLocal")) {
-            return ThreadLocalRecyclerFactory.getInstance();
+        else if (recyclerFactorySpec.startsWith("threadLocal")) {
+            return readThreadLocalRecyclerFactory(recyclerFactorySpec);
         }
 
         // Is a queueing factory requested?
@@ -69,28 +70,32 @@ public final class RecyclerFactories {
 
     }
 
+    private static RecyclerFactory readThreadLocalRecyclerFactory(final String recyclerFactorySpec) {
+
+        // Parse the spec
+        final String queueFactorySpec = recyclerFactorySpec.substring(
+                "threadLocal".length() + (recyclerFactorySpec.startsWith("threadLocal:") ? 1 : 0));
+        final Map<String, StringParameterParser.Value> parsedValues =
+                StringParameterParser.parse(queueFactorySpec, Set.of("capacity"));
+
+        // Read the capacity
+        final int capacity = readQueueCapacity(queueFactorySpec, parsedValues);
+
+        // Execute the read spec
+        return new ThreadLocalRecyclerFactory(capacity);
+
+    }
+
     private static RecyclerFactory readQueueingRecyclerFactory(final String recyclerFactorySpec) {
 
-        // Parse the spec.
+        // Parse the spec
         final String queueFactorySpec = recyclerFactorySpec.substring(
                 "queue".length() + (recyclerFactorySpec.startsWith("queue:") ? 1 : 0));
         final Map<String, StringParameterParser.Value> parsedValues =
                 StringParameterParser.parse(queueFactorySpec, Set.of("supplier", "capacity"));
 
-        // Read the capacity.
-        final StringParameterParser.Value capacityValue = parsedValues.get("capacity");
-        final int capacity;
-        if (capacityValue == null || capacityValue instanceof StringParameterParser.NullValue) {
-            capacity = DEFAULT_QUEUE_CAPACITY;
-        } else {
-            try {
-                capacity = Integer.parseInt(capacityValue.toString());
-            } catch (final NumberFormatException error) {
-                throw new IllegalArgumentException(
-                        "failed reading capacity in queueing recycler factory: " + queueFactorySpec,
-                        error);
-            }
-        }
+        // Read the capacity
+        final int capacity = readQueueCapacity(queueFactorySpec, parsedValues);
 
         // Read the supplier path
         final StringParameterParser.Value supplierValue = parsedValues.get("supplier");
@@ -104,6 +109,23 @@ public final class RecyclerFactories {
                 : QueueFactories.MPMC.factory(capacity);
         return new QueueingRecyclerFactory(queueFactory);
 
+    }
+
+    private static int readQueueCapacity(
+            final String factorySpec,
+            final Map<String, StringParameterParser.Value> parsedValues) {
+        final StringParameterParser.Value capacityValue = parsedValues.get("capacity");
+        if (capacityValue == null || capacityValue instanceof StringParameterParser.NullValue) {
+            return DEFAULT_QUEUE_CAPACITY;
+        } else {
+            try {
+                return Integer.parseInt(capacityValue.toString());
+            } catch (final NumberFormatException error) {
+                throw new IllegalArgumentException(
+                        "failed reading `capacity` in recycler factory: " + factorySpec,
+                        error);
+            }
+        }
     }
 
 }

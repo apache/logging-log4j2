@@ -31,7 +31,7 @@ public class ReusableMessageFactoryTest {
 
     @BeforeEach
     void setUp() {
-        factory = new ReusableMessageFactory(ThreadLocalRecyclerFactory.getInstance());
+        factory = new ReusableMessageFactory(new ThreadLocalRecyclerFactory(8));
     }
 
     @Test

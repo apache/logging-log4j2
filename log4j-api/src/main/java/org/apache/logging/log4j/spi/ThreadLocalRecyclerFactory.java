@@ -35,26 +35,33 @@ import static java.util.Objects.requireNonNull;
  */
 public class ThreadLocalRecyclerFactory implements RecyclerFactory {
 
-    // This determines the maximum number of recyclable objects we may retain per thread.
-    // This allows us to acquire recyclable objects in recursive method calls and maintain
-    // minimal overhead in the scenarios where the active instance count goes far beyond this
-    // for a brief moment.
-    // Visible for testing
-    static final int MAX_QUEUE_SIZE = 8;
+    /**
+     * Maximum number of objects retained per thread.
+     * <p>
+     * This allows to acquire objects in recursive method calls and maintain minimal overhead in the scenarios where the active instance count goes far beyond this for a brief moment.
+     * </p>
+     */
+    private final int capacity;
 
-    private static final ThreadLocalRecyclerFactory INSTANCE = new ThreadLocalRecyclerFactory();
+    public ThreadLocalRecyclerFactory(int capacity) {
+        if (capacity < 1) {
+            throw new IllegalArgumentException("was expecting a `capacity` greater than 1, found: " + capacity);
+        }
+        this.capacity = capacity;
+    }
 
-    private ThreadLocalRecyclerFactory() {}
-
-    public static ThreadLocalRecyclerFactory getInstance() {
-        return INSTANCE;
+    /**
+     * @return maximum number of objects retained per thread in recyclers created
+     */
+    public int getCapacity() {
+        return capacity;
     }
 
     @Override
     public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
         requireNonNull(supplier, "supplier");
         requireNonNull(cleaner, "cleaner");
-        return new ThreadLocalRecycler<>(supplier, cleaner);
+        return new ThreadLocalRecycler<>(supplier, cleaner, capacity);
     }
 
     // Visible for testing
@@ -64,9 +71,12 @@ public class ThreadLocalRecyclerFactory implements RecyclerFactory {
 
         private final ThreadLocal<Queue<V>> holder;
 
-        private ThreadLocalRecycler(final Supplier<V> supplier, final Consumer<V> cleaner) {
+        private ThreadLocalRecycler(
+                final Supplier<V> supplier,
+                final Consumer<V> cleaner,
+                final int capacity) {
             super(supplier);
-            this.holder = ThreadLocal.withInitial(() -> QueueFactories.SPSC.create(MAX_QUEUE_SIZE));
+            this.holder = ThreadLocal.withInitial(() -> QueueFactories.SPSC.create(capacity));
             this.cleaner = cleaner;
         }
 
