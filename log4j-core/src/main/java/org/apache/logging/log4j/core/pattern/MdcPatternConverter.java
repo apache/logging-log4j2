@@ -147,4 +147,10 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
         }
         sb.append('}');
     }
+
+    @Override
+    public String emptyVariableOutput() {
+        return "{}";
+    }
+
 }

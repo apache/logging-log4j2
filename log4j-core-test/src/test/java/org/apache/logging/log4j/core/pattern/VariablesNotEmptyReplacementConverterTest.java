@@ -58,6 +58,21 @@ public class VariablesNotEmptyReplacementConverterTest {
         testReplacement("%logger", "[" + VariablesNotEmptyReplacementConverterTest.class.getName() + "]");
     }
 
+    @Test
+    void empty_NDC_should_be_replaced() {
+        testReplacement("%NDC", "");
+    }
+
+    @Test
+    void empty_MDC_should_be_replaced() {
+        testReplacement("%mdc", "");
+    }
+
+    @Test
+    void MDC_with_non_existent_keys_should_be_replaced() {
+        testReplacement("%mdc{noSuchKey1,noSuchKey2}", "");
+    }
+
     private void testReplacement(final String tag, final String expectedValue) {
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(VariablesNotEmptyReplacementConverterTest.class.getName()) //
@@ -73,4 +88,5 @@ public class VariablesNotEmptyReplacementConverterTest {
         converter.format(event, sb);
         assertEquals(expectedValue, sb.toString());
     }
+
 }
