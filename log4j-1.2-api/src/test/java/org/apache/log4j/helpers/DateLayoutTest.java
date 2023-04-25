@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j.helpers;
 
 import java.text.DateFormat;
@@ -33,7 +32,7 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Construct a new instance of LayoutTest.
-     * 
+     *
      * @param testName test name.
      */
     public DateLayoutTest(final String testName) {
@@ -42,7 +41,7 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Constructor for use by derived tests.
-     * 
+     *
      * @param testName name of test.
      * @param expectedContentType expected value for getContentType().
      * @param expectedIgnoresThrowable expected value for ignoresThrowable().
@@ -77,7 +76,7 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Tests DateLayout.DATE_FORMAT_OPTION constant.
-     * 
+     *
      * @deprecated since constant is deprecated
      */
     public void testDateFormatOption() {
@@ -86,7 +85,7 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Tests DateLayout.TIMEZONE_OPTION constant.
-     * 
+     *
      * @deprecated since constant is deprecated
      */
     public void testTimeZoneOption() {
@@ -95,7 +94,7 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Tests getOptionStrings().
-     * 
+     *
      * @deprecated since getOptionStrings is deprecated.
      *
      */
@@ -106,7 +105,7 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Tests setting DateFormat through setOption method.
-     * 
+     *
      * @deprecated since setOption is deprecated.
      */
     public void testSetOptionDateFormat() {
@@ -117,7 +116,7 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Tests setting TimeZone through setOption method.
-     * 
+     *
      * @deprecated since setOption is deprecated.
      */
     public void testSetOptionTimeZone() {
@@ -221,7 +220,7 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Tests IS08601DateFormat class.
-     * 
+     *
      * @deprecated since ISO8601DateFormat is deprecated
      */
     public void testISO8601Format() {
@@ -235,7 +234,7 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Tests DateTimeDateFormat class.
-     * 
+     *
      * @deprecated since DateTimeDateFormat is deprecated
      */
     public void testDateTimeFormat() {
