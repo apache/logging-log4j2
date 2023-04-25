@@ -1,21 +1,20 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Licensed to the Apache Software Foundation (ASF) under one or more
-    contributor license agreements.  See the NOTICE file distributed with
-    this work for additional information regarding copyright ownership.
-    The ASF licenses this file to You under the Apache License, Version 2.0
-    (the "License"); you may not use this file except in compliance with
-    the License.  You may obtain a copy of the License at
-
-         http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
-
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to you under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <document xmlns="http://maven.apache.org/XDOC/2.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
@@ -53,7 +52,7 @@
             </p>
             <p>
               ConfigurationBuilder has convenience methods for the base components that can be configured such as
-              Loggers, Appenders, Filter, Properties, etc. 
+              Loggers, Appenders, Filter, Properties, etc.
               However, Log4j 2's plugin mechanism means that users can create any number of custom components.
               As a trade-off, the ConfigurationBuilder API provides only a limited number of "strongly typed"
               convenience methods like <code>newLogger()</code>, <code>newLayout()</code> etc.
@@ -62,7 +61,7 @@
             </p>
             <p>
               For example, the builder does not know what subcomponents can be configured on specific components
-              such as the RollingFileAppender vs. the RoutingAppender. To specify a triggering policy on a 
+              such as the RollingFileAppender vs. the RoutingAppender. To specify a triggering policy on a
               RollingFileAppender you would use builder.newComponent().
             </p>
             <p>
@@ -83,12 +82,12 @@
               ConfigurationFactory to be used. This must be called before any other calls to Log4j.</li>
               <li>A ConfigurationFactory implementation can be added to the classpath and configured as a plugin
                 in the "ConfigurationFactory" category.
-                The Order annotation can be used to specify the relative priority when multiple applicable 
+                The Order annotation can be used to specify the relative priority when multiple applicable
                 ConfigurationFactories are found.</li>
             </ol>
             <p>
               ConfigurationFactories have the concept of "supported types", which basically maps to the
-              file extension of the configuration file that the ConfigurationFactory can handle. 
+              file extension of the configuration file that the ConfigurationFactory can handle.
               If a configuration file location is specified, ConfigurationFactories whose supported type
               does not include "*" or the matching file extension will not be used.
             </p>
@@ -144,7 +143,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
     }
 }]]></pre>
             <p>
-              As of version 2.7, the <code>ConfigurationFactory.getConfiguration()</code> methods take an 
+              As of version 2.7, the <code>ConfigurationFactory.getConfiguration()</code> methods take an
               additional <code>LoggerContext</code> parameter.
             </p>
           </subsection>
@@ -152,7 +151,7 @@ public class CustomConfigurationFactory extends ConfigurationFactory {
           <subsection name="Reconfigure Log4j Using ConfigurationBuilder with the Configurator">
             <p>
               An alternative to a custom ConfigurationFactory is to configure with the <code>Configurator</code>.
-              Once a Configuration object has been constructed, it can be passed to one of the 
+              Once a Configuration object has been constructed, it can be passed to one of the
               <code>Configurator.initialize</code> methods to set up the Log4j configuration.
             </p>
             <p>
@@ -218,7 +217,7 @@ LoggerContext ctx = Configurator.initialize(builder.build());
           <subsection name="Initialize Log4j by Combining Configuration File with Programmatic Configuration">
             <p>
               Sometimes you want to configure with a configuration file but do some additional programmatic
-              configuration. A possible use case might be that you want to allow for a flexible configuration using XML 
+              configuration. A possible use case might be that you want to allow for a flexible configuration using XML
               but at the same time make sure there are a few configuration elements that are always present that can't be removed.
             </p>
             <p>
@@ -322,14 +321,14 @@ public class MyXMLConfiguration extends XMLConfiguration {
         <a name="AppendingToWritersAndOutputStreams"/>
         <subsection name="Appending Log Events to Writers and OutputStreams Programmatically">
             <p>
-              Log4j 2.5 provides facilities to append log events to Writers and OutputStreams. For example, this 
-              provides simple integration for JDBC Driver implementors that use Log4j internally and still want 
-              to support the JDBC APIs <code>CommonDataSource.setLogWriter(PrintWriter)</code>, 
-              <code>java.sql.DriverManager.setLogWriter(PrintWriter)</code>, and 
-              <code>java.sql.DriverManager.setLogStream(PrintStream)</code>.              
+              Log4j 2.5 provides facilities to append log events to Writers and OutputStreams. For example, this
+              provides simple integration for JDBC Driver implementors that use Log4j internally and still want
+              to support the JDBC APIs <code>CommonDataSource.setLogWriter(PrintWriter)</code>,
+              <code>java.sql.DriverManager.setLogWriter(PrintWriter)</code>, and
+              <code>java.sql.DriverManager.setLogStream(PrintStream)</code>.
             </p>
             <p>
-              Given any <code>Writer</code>, like a <code>PrintWriter</code>, you tell Log4j to append events to 
+              Given any <code>Writer</code>, like a <code>PrintWriter</code>, you tell Log4j to append events to
               that writer by creating a <code>WriterAppender</code> and updating the Log4j configuration:
             </p>
             <pre class="prettyprint linenums"><![CDATA[
@@ -353,7 +352,7 @@ private void updateLoggers(final Appender appender, final Configuration config) 
 }]]></pre>
             <p>
               You can achieve the same effect with an <code>OutputStream</code>, like a <code>PrintStream</code>:
-            </p>            
+            </p>
             <pre class="prettyprint linenums"><![CDATA[
 void addAppender(final OutputStream outputStream, final String outputStreamName) {
     final LoggerContext context = LoggerContext.getContext(false);
@@ -367,7 +366,7 @@ void addAppender(final OutputStream outputStream, final String outputStreamName)
         </subsection>
             <p>
               The difference is the use of <code>OutputStreamAppender</code> instead of <code>WriterAppender</code>.
-            </p>            
+            </p>
       </section>
 
     </body>

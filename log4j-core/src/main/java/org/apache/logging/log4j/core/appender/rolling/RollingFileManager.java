@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
@@ -103,7 +103,7 @@ public class RollingFileManager extends FileManager {
             final RolloverStrategy rolloverStrategy, final String advertiseURI,
             final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer buffer) {
         super(fileName != null ? fileName : pattern, os, append, false, advertiseURI, layout, writeHeader,
-			buffer);
+            buffer);
         this.size = size;
         this.initialTime = initialTime;
         this.triggeringPolicy = triggeringPolicy;
@@ -120,7 +120,7 @@ public class RollingFileManager extends FileManager {
             final TriggeringPolicy triggeringPolicy, final RolloverStrategy rolloverStrategy,
             final String advertiseURI, final Layout<? extends Serializable> layout, final boolean writeHeader, final ByteBuffer buffer) {
         super(loggerContext, fileName != null ? fileName : pattern, os, append, false, createOnDemand,
-			advertiseURI, layout, writeHeader, buffer);
+            advertiseURI, layout, writeHeader, buffer);
         this.size = size;
         this.initialTime = initialTime;
         this.triggeringPolicy = triggeringPolicy;
@@ -141,7 +141,7 @@ public class RollingFileManager extends FileManager {
             final String filePermissions, final String fileOwner, final String fileGroup,
             final boolean writeHeader, final ByteBuffer buffer) {
         super(loggerContext, fileName != null ? fileName : pattern, os, append, false, createOnDemand,
-			advertiseURI, layout, filePermissions, fileOwner, fileGroup, writeHeader, buffer);
+            advertiseURI, layout, filePermissions, fileOwner, fileGroup, writeHeader, buffer);
         this.size = size;
         this.initialTime = initialTime;
         this.patternProcessor = new PatternProcessor(pattern);
@@ -246,7 +246,7 @@ public class RollingFileManager extends FileManager {
         }
         return fileName;
     }
-    
+
     @Override
     protected void createParentDir(File file) {
         if (directWrite) {
@@ -364,10 +364,10 @@ public class RollingFileManager extends FileManager {
     public synchronized void rollover(Date prevFileTime, Date prevRollTime) {
         LOGGER.debug("Rollover PrevFileTime: {}, PrevRollTime: {}", prevFileTime.getTime(),
                 prevRollTime.getTime());
-		getPatternProcessor().setPrevFileTime(prevFileTime.getTime());
-		getPatternProcessor().setCurrentFileTime(prevRollTime.getTime());
-		rollover();
-	}
+        getPatternProcessor().setPrevFileTime(prevFileTime.getTime());
+        getPatternProcessor().setCurrentFileTime(prevRollTime.getTime());
+        rollover();
+    }
 
     public synchronized void rollover() {
         if (!hasOutputStream() && !isCreateOnDemand() && !isDirectWrite()) {

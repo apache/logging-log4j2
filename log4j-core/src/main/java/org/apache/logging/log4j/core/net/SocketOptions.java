@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.net;
 
@@ -123,7 +123,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setTrafficClass(int)}.
-     * 
+     *
      * @return the value to apply to a {@link Socket}.
      */
     public Integer getActualTrafficClass() {
@@ -141,7 +141,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setPerformancePreferences(int, int, int)}.
-     * 
+     *
      * @return this.
      */
     public SocketPerformancePreferences getPerformancePreferences() {
@@ -150,7 +150,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setReceiveBufferSize(int)}.
-     * 
+     *
      * @return the value to apply to a {@link Socket}.
      */
     public Integer getReceiveBufferSize() {
@@ -159,7 +159,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setTrafficClass(int)}.
-     * 
+     *
      * @return the value to apply to a {@link Socket}.
      */
     public Rfc1349TrafficClass getRfc1349TrafficClass() {
@@ -168,7 +168,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setSendBufferSize(int)}.
-     * 
+     *
      * @return the value to apply to a {@link Socket}.
      */
     public Integer getSendBufferSize() {
@@ -177,7 +177,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setSoLinger(boolean, int)}.
-     * 
+     *
      * @return the value to apply to a {@link Socket}.
      */
     public Integer getSoLinger() {
@@ -186,7 +186,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setSoTimeout(int)}.
-     * 
+     *
      * @return the value to apply to a {@link Socket}.
      */
     public Integer getSoTimeout() {
@@ -195,7 +195,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setTrafficClass(int)}.
-     * 
+     *
      * @return the value to apply to a {@link Socket}.
      */
     public Integer getTrafficClass() {
@@ -204,7 +204,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setKeepAlive(boolean)}.
-     * 
+     *
      * @return the value to apply to a {@link Socket}.
      */
     public Boolean isKeepAlive() {
@@ -213,7 +213,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setOOBInline(boolean)}.
-     * 
+     *
      * @return the value to apply to a {@link Socket}.
      */
     public Boolean isOobInline() {
@@ -222,7 +222,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setReuseAddress(boolean)}.
-     * 
+     *
      * @return the value to apply to a {@link Socket}.
      */
     public Boolean isReuseAddress() {
@@ -231,7 +231,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setTcpNoDelay(boolean)}.
-     * 
+     *
      * @return the value to apply to a {@link Socket}.
      */
     public Boolean isTcpNoDelay() {
@@ -240,7 +240,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setKeepAlive(boolean)}.
-     * 
+     *
      * @param keepAlive See {@link Socket#setKeepAlive(boolean)}.
      * @return this.
      */
@@ -251,7 +251,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setOOBInline(boolean)}.
-     * 
+     *
      * @param oobInline See {@link Socket#setOOBInline(boolean)}.
      * @return this.
      */
@@ -262,7 +262,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setPerformancePreferences(int, int, int)}.
-     * 
+     *
      * @param performancePreferences See {@link Socket#setPerformancePreferences(int, int, int)}.
      * @return this.
      */
@@ -273,7 +273,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setReceiveBufferSize(int)}.
-     * 
+     *
      * @param receiveBufferSize See {@link Socket#setReceiveBufferSize(int)}.
      * @return this.
      */
@@ -284,7 +284,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setReuseAddress(boolean)}.
-     * 
+     *
      * @param reuseAddress See {@link Socket#setReuseAddress(boolean)}.
      * @return this.
      */
@@ -295,7 +295,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setTrafficClass(int)}.
-     * 
+     *
      * @param trafficClass See {@link Socket#setTrafficClass(int)}.
      * @return the value to apply to a {@link Socket}.
      */
@@ -306,7 +306,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setSendBufferSize(int)}.
-     * 
+     *
      * @param sendBufferSize See {@link Socket#setSendBufferSize(int)}.
      * @return this.
      */
@@ -317,7 +317,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setSoLinger(boolean, int)}.
-     * 
+     *
      * @param soLinger See {@link Socket#setSoLinger(boolean, int)}.
      * @return this.
      */
@@ -328,7 +328,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setSoTimeout(int)}.
-     * 
+     *
      * @param soTimeout See {@link Socket#setSoTimeout(int)}.
      * @return this.
      */
@@ -339,7 +339,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setTcpNoDelay(boolean)}.
-     * 
+     *
      * @param tcpNoDelay See {@link Socket#setTcpNoDelay(boolean)}.
      * @return this.
      */
@@ -350,7 +350,7 @@ public class SocketOptions implements Builder<SocketOptions>, Cloneable {
 
     /**
      * See {@link Socket#setTrafficClass(int)}.
-     * 
+     *
      * @param trafficClass See {@link Socket#setTrafficClass(int)}.
      * @return this.
      */

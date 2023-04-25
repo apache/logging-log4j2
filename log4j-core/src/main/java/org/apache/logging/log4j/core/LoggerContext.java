@@ -1,22 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core;
-
-import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -55,6 +53,8 @@ import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.spi.ThreadContextMapFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
+
+import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
 
 /**
@@ -422,7 +422,7 @@ public class LoggerContext extends AbstractLifeCycle
      * @throws NullPointerException if the specified name is {@code null}
      */
     public void setName(final String name) {
-    	contextName = Objects.requireNonNull(name);
+        contextName = Objects.requireNonNull(name);
     }
 
     @Override
@@ -562,15 +562,15 @@ public class LoggerContext extends AbstractLifeCycle
         return loggerRegistry.hasLogger(name, messageFactoryClass);
     }
 
-	/**
-	 * Returns the current Configuration. The Configuration will be replaced when a reconfigure occurs.
-	 *
-	 * @return The current Configuration, never {@code null}, but may be
-	 * {@link org.apache.logging.log4j.core.config.NullConfiguration}.
-	 */
-	public Configuration getConfiguration() {
-		return configuration;
-	}
+    /**
+     * Returns the current Configuration. The Configuration will be replaced when a reconfigure occurs.
+     *
+     * @return The current Configuration, never {@code null}, but may be
+     * {@link org.apache.logging.log4j.core.config.NullConfiguration}.
+     */
+    public Configuration getConfiguration() {
+        return configuration;
+    }
 
     /**
      * Adds a Filter to the Configuration. Filters that are added through the API will be lost when a reconfigure
@@ -748,20 +748,20 @@ public class LoggerContext extends AbstractLifeCycle
      * @param reconfigurable The Configuration that can be reconfigured.
      */
     @Override
-	public synchronized void onChange(final Reconfigurable reconfigurable) {
-		final long startMillis = System.currentTimeMillis();
-		LOGGER.debug("Reconfiguration started for context {} ({})", contextName, this);
-		initApiModule();
-		final Configuration newConfig = reconfigurable.reconfigure();
-		if (newConfig != null) {
-			setConfiguration(newConfig);
-			LOGGER.debug("Reconfiguration completed for {} ({}) in {} milliseconds.", contextName, this,
-					System.currentTimeMillis() - startMillis);
-		} else {
-			LOGGER.debug("Reconfiguration failed for {} ({}) in {} milliseconds.", contextName, this,
-					System.currentTimeMillis() - startMillis);
-		}
-	}
+    public synchronized void onChange(final Reconfigurable reconfigurable) {
+        final long startMillis = System.currentTimeMillis();
+        LOGGER.debug("Reconfiguration started for context {} ({})", contextName, this);
+        initApiModule();
+        final Configuration newConfig = reconfigurable.reconfigure();
+        if (newConfig != null) {
+            setConfiguration(newConfig);
+            LOGGER.debug("Reconfiguration completed for {} ({}) in {} milliseconds.", contextName, this,
+                    System.currentTimeMillis() - startMillis);
+        } else {
+            LOGGER.debug("Reconfiguration failed for {} ({}) in {} milliseconds.", contextName, this,
+                    System.currentTimeMillis() - startMillis);
+        }
+    }
 
     private void initApiModule() {
         ThreadContextMapFactory.init(); // Or make public and call ThreadContext.init() which calls ThreadContextMapFactory.init().

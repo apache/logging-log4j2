@@ -1,25 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.tools.picocli;
-
-import static java.util.Locale.ENGLISH;
-import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.SPAN;
-import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.TRUNCATE;
-import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.WRAP;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -74,6 +69,12 @@ import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.IStyle;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Style;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;
 import org.apache.logging.log4j.core.util.Integers;
+
+import static java.util.Locale.ENGLISH;
+
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.SPAN;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.TRUNCATE;
+import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.WRAP;
 
 /**
  * <p>
@@ -4310,7 +4311,7 @@ public class CommandLine {
                 @Override
                 public String off() { return CSI + endCode + "m"; }
 
-				/** Returns the concatenated ANSI escape codes for turning all specified styles on.
+                /** Returns the concatenated ANSI escape codes for turning all specified styles on.
                  * @param styles the styles to generate ANSI escape codes for
                  * @return the concatenated ANSI escape codes for turning all specified styles on */
                 public static String on(final IStyle... styles) {
@@ -4320,7 +4321,7 @@ public class CommandLine {
                     }
                     return result.toString();
                 }
-				/** Returns the concatenated ANSI escape codes for turning all specified styles off.
+                /** Returns the concatenated ANSI escape codes for turning all specified styles off.
                  * @param styles the styles to generate ANSI escape codes for
                  * @return the concatenated ANSI escape codes for turning all specified styles off */
                 public static String off(final IStyle... styles) {
@@ -4330,25 +4331,25 @@ public class CommandLine {
                     }
                     return result.toString();
                 }
-				/** Parses the specified style markup and returns the associated style.
-				 *  The markup may be one of the Style enum value names, or it may be one of the Style enum value
-				 *  names when {@code "fg_"} is prepended, or it may be one of the indexed colors in the 256 color palette.
+                /** Parses the specified style markup and returns the associated style.
+                 *  The markup may be one of the Style enum value names, or it may be one of the Style enum value
+                 *  names when {@code "fg_"} is prepended, or it may be one of the indexed colors in the 256 color palette.
                  * @param str the case-insensitive style markup to convert, e.g. {@code "blue"} or {@code "fg_blue"},
                  *          or {@code "46"} (indexed color) or {@code "0;5;0"} (RGB components of an indexed color)
-				 * @return the IStyle for the specified converter
-				 */
+                 * @return the IStyle for the specified converter
+                 */
                 public static IStyle fg(final String str) {
                     try { return Style.valueOf(str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
                     try { return Style.valueOf("fg_" + str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
                     return new Palette256Color(true, str);
                 }
-				/** Parses the specified style markup and returns the associated style.
-				 *  The markup may be one of the Style enum value names, or it may be one of the Style enum value
-				 *  names when {@code "bg_"} is prepended, or it may be one of the indexed colors in the 256 color palette.
-				 * @param str the case-insensitive style markup to convert, e.g. {@code "blue"} or {@code "bg_blue"},
+                /** Parses the specified style markup and returns the associated style.
+                 *  The markup may be one of the Style enum value names, or it may be one of the Style enum value
+                 *  names when {@code "bg_"} is prepended, or it may be one of the indexed colors in the 256 color palette.
+                 * @param str the case-insensitive style markup to convert, e.g. {@code "blue"} or {@code "bg_blue"},
                  *          or {@code "46"} (indexed color) or {@code "0;5;0"} (RGB components of an indexed color)
-				 * @return the IStyle for the specified converter
-				 */
+                 * @return the IStyle for the specified converter
+                 */
                 public static IStyle bg(final String str) {
                     try { return Style.valueOf(str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
                     try { return Style.valueOf("bg_" + str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}

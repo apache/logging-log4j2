@@ -1,27 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.impl;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,6 +36,8 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.IvParameterSpec;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.convert.Base64Converter;
@@ -53,8 +48,12 @@ import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -249,24 +248,24 @@ public class ThrowableProxyTest {
     }
 
     @Test
-	public void testSerialization_getExtendedStackTraceAsStringWithNestedThrowableDepth1() throws Exception {
-		final Throwable throwable = new RuntimeException(new IllegalArgumentException("This is a test"));
-		testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(throwable);
-	}
+    public void testSerialization_getExtendedStackTraceAsStringWithNestedThrowableDepth1() throws Exception {
+        final Throwable throwable = new RuntimeException(new IllegalArgumentException("This is a test"));
+        testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(throwable);
+    }
 
     @Test
-	public void testSerialization_getExtendedStackTraceAsStringWithNestedThrowableDepth2() throws Exception {
-		final Throwable throwable = new RuntimeException(
-				new IllegalArgumentException("This is a test", new IOException("level 2")));
-		testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(throwable);
-	}
+    public void testSerialization_getExtendedStackTraceAsStringWithNestedThrowableDepth2() throws Exception {
+        final Throwable throwable = new RuntimeException(
+                new IllegalArgumentException("This is a test", new IOException("level 2")));
+        testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(throwable);
+    }
 
     @Test
-	public void testSerialization_getExtendedStackTraceAsStringWithNestedThrowableDepth3() throws Exception {
-		final Throwable throwable = new RuntimeException(new IllegalArgumentException("level 1",
-				new IOException("level 2", new IllegalStateException("level 3"))));
-		testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(throwable);
-	}
+    public void testSerialization_getExtendedStackTraceAsStringWithNestedThrowableDepth3() throws Exception {
+        final Throwable throwable = new RuntimeException(new IllegalArgumentException("level 1",
+                new IOException("level 2", new IllegalStateException("level 3"))));
+        testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(throwable);
+    }
 
     private void testSerialization_getExtendedStackTraceAsStringWithNestedThrowable(final Throwable throwable) throws Exception {
         final ThrowableProxy proxy = new ThrowableProxy(throwable);
@@ -413,28 +412,28 @@ public class ThrowableProxyTest {
     }
 
     @Test
-	public void testSuppressedExceptions() {
-		final Exception e = new Exception("Root exception");
-		e.addSuppressed(new IOException("Suppressed #1"));
-		e.addSuppressed(new IOException("Suppressed #2"));
-		LogManager.getLogger().error("Error", e);
-		final ThrowableProxy proxy = new ThrowableProxy(e);
-		final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString("same suffix");
-		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
-		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
-	}
+    public void testSuppressedExceptions() {
+        final Exception e = new Exception("Root exception");
+        e.addSuppressed(new IOException("Suppressed #1"));
+        e.addSuppressed(new IOException("Suppressed #2"));
+        LogManager.getLogger().error("Error", e);
+        final ThrowableProxy proxy = new ThrowableProxy(e);
+        final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString("same suffix");
+        assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
+        assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
+    }
 
     @Test
-	public void testCauseSuppressedExceptions() {
-		final Exception cause = new Exception("Nested exception");
-		cause.addSuppressed(new IOException("Suppressed #1"));
-		cause.addSuppressed(new IOException("Suppressed #2"));
-		LogManager.getLogger().error("Error", new Exception(cause));
-		final ThrowableProxy proxy = new ThrowableProxy(new Exception("Root exception", cause));
-		final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString("same suffix");
-		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
-		assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
-	}
+    public void testCauseSuppressedExceptions() {
+        final Exception cause = new Exception("Nested exception");
+        cause.addSuppressed(new IOException("Suppressed #1"));
+        cause.addSuppressed(new IOException("Suppressed #2"));
+        LogManager.getLogger().error("Error", new Exception(cause));
+        final ThrowableProxy proxy = new ThrowableProxy(new Exception("Root exception", cause));
+        final String extendedStackTraceAsString = proxy.getExtendedStackTraceAsString("same suffix");
+        assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
+        assertTrue(extendedStackTraceAsString.contains("\tSuppressed: java.io.IOException: Suppressed #1"));
+    }
 
     /**
      * Tests LOG4J2-934.

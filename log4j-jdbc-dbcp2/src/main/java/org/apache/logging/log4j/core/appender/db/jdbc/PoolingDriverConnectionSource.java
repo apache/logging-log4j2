@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
@@ -61,33 +61,33 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
         private String poolName = DEFAULT_POOL_NAME;
 
         @Override
-		public PoolingDriverConnectionSource build() {
-			try {
-				return new PoolingDriverConnectionSource(getDriverClassName(), getConnectionString(), getUserName(),
-						getPassword(), getProperties(), poolName, poolableConnectionFactoryConfig);
-			} catch (final SQLException e) {
-				getLogger().error("Exception constructing {} to '{}' with {}", PoolingDriverConnectionSource.class,
-						getConnectionString(), this, e);
-				return null;
-			}
-		}
+        public PoolingDriverConnectionSource build() {
+            try {
+                return new PoolingDriverConnectionSource(getDriverClassName(), getConnectionString(), getUserName(),
+                        getPassword(), getProperties(), poolName, poolableConnectionFactoryConfig);
+            } catch (final SQLException e) {
+                getLogger().error("Exception constructing {} to '{}' with {}", PoolingDriverConnectionSource.class,
+                        getConnectionString(), this, e);
+                return null;
+            }
+        }
 
         public B setPoolableConnectionFactoryConfig(final PoolableConnectionFactoryConfig poolableConnectionFactoryConfig) {
             this.poolableConnectionFactoryConfig = poolableConnectionFactoryConfig;
             return asBuilder();
         }
 
-		public B setPoolName(final String poolName) {
+        public B setPoolName(final String poolName) {
             this.poolName = poolName;
             return asBuilder();
         }
 
         @Override
-		public String toString() {
-			return "Builder [poolName=" + poolName + ", connectionString=" + connectionString + ", driverClassName="
-					+ driverClassName + ", properties=" + Arrays.toString(properties) + ", userName="
-					+ Arrays.toString(userName) + "]";
-		}
+        public String toString() {
+            return "Builder [poolName=" + poolName + ", connectionString=" + connectionString + ", driverClassName="
+                    + driverClassName + ", properties=" + Arrays.toString(properties) + ", userName="
+                    + Arrays.toString(userName) + "]";
+        }
     }
 
     public static final String URL_PREFIX = "jdbc:apache:commons:dbcp:";
@@ -146,10 +146,10 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
         // using the connect string passed in the command line
         // arguments.
         //
-    	final Property[] properties = getProperties();
-    	final char[] userName = getUserName();
-    	final char[] password = getPassword();
-    	final ConnectionFactory connectionFactory;
+        final Property[] properties = getProperties();
+        final char[] userName = getUserName();
+        final char[] password = getPassword();
+        final ConnectionFactory connectionFactory;
         if (properties != null && properties.length > 0) {
             if (userName != null || password != null) {
                 throw new SQLException("Either set the userName and password, or set the Properties, but not both.");

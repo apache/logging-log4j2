@@ -1,20 +1,19 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.apache.logging.log4j.util;
 
 import java.io.FilePermission;
@@ -39,7 +38,7 @@ import static org.junit.Assert.assertTrue;
  * integration tests (classes that end in "IT" instead of "Test" and
  * "TestCase".)
  * </p>
- * 
+ *
  * @see PropertyFilePropertySource
  * @see SecurityManager
  * @see System#setSecurityManager(SecurityManager)
@@ -52,7 +51,7 @@ public class PropertyFilePropertySourceSecurityManagerIT {
     public static void beforeClass() {
         assertTrue(TEST_FIXTURE_PATH, Files.exists(Paths.get(TEST_FIXTURE_PATH)));
     }
-    
+
     @Rule
     public final SecurityManagerTestRule rule = new SecurityManagerTestRule(new TestSecurityManager());
 
@@ -76,7 +75,7 @@ public class PropertyFilePropertySourceSecurityManagerIT {
      * Makes sure we do not blow up with exception below due to a security manager
      * rejecting environment variable access in
      * {@link SystemPropertiesPropertySource}.
-     * 
+     *
      * <pre>
      * </pre>
      */
