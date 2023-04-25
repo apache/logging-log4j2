@@ -16,14 +16,14 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,7 +49,7 @@ public class LoggerConfigTest {
         final LoggerConfig loggerConfig = createForProperties(all);
         final List<Property> list = loggerConfig.getPropertyList();
         assertEquals(new HashSet<>(list),
-        		     new HashSet<>(loggerConfig.getPropertyList()), "map and list contents equal");
+                     new HashSet<>(loggerConfig.getPropertyList()), "map and list contents equal");
 
         final AtomicReference<Object> actualList = new AtomicReference<>();
         loggerConfig.setLogEventFactory((loggerName, marker, fqcn, level, data, properties, t) -> {
@@ -69,7 +69,7 @@ public class LoggerConfigTest {
         final LoggerConfig loggerConfig = createForProperties(all);
         final List<Property> list = loggerConfig.getPropertyList();
         assertEquals(new HashSet<>(list),
-        		     new HashSet<>(loggerConfig.getPropertyList()), "map and list contents equal");
+                     new HashSet<>(loggerConfig.getPropertyList()), "map and list contents equal");
 
         final AtomicReference<Object> actualListHolder = new AtomicReference<>();
         loggerConfig.setLogEventFactory((loggerName, marker, fqcn, level, data, properties, t) -> {
@@ -80,7 +80,7 @@ public class LoggerConfigTest {
         assertNotSame(list, actualListHolder.get(), "propertiesList with substitutions");
 
         @SuppressWarnings("unchecked")
-		final List<Property> actualList = (List<Property>) actualListHolder.get();
+        final List<Property> actualList = (List<Property>) actualListHolder.get();
 
         for (int i = 0; i < list.size(); i++) {
             assertEquals(list.get(i).getName(), actualList.get(i).getName(), "name[" + i + "]");
