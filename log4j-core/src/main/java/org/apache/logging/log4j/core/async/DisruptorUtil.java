@@ -20,11 +20,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyKey;
 
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.WaitStrategy;
@@ -47,27 +48,27 @@ final class DisruptorUtil {
      * CPU utilization is significantly reduced by restricting access to the enqueue operation.
      */
     static final boolean ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
-            .getBooleanProperty(Log4jProperties.ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, true);
+            .getBooleanProperty(Log4jPropertyKey.ASYNC_LOGGER_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, true);
     static final boolean ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL = PropertiesUtil.getProperties()
-            .getBooleanProperty(Log4jProperties.ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, true);
+            .getBooleanProperty(Log4jPropertyKey.ASYNC_CONFIG_SYNCHRONIZE_ENQUEUE_WHEN_QUEUE_FULL, true);
 
     private DisruptorUtil() {
     }
 
-    static WaitStrategy createWaitStrategy(final String propertyName,
+    static WaitStrategy createWaitStrategy(final PropertyKey key,
                                            final AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
 
         if (asyncWaitStrategyFactory == null) {
             LOGGER.debug("No AsyncWaitStrategyFactory was configured in the configuration, using default factory...");
-            return new DefaultAsyncWaitStrategyFactory(propertyName).createWaitStrategy();
+            return new DefaultAsyncWaitStrategyFactory(key).createWaitStrategy();
         }
         LOGGER.debug("Using configured AsyncWaitStrategyFactory {}", asyncWaitStrategyFactory.getClass().getName());
         return asyncWaitStrategyFactory.createWaitStrategy();
     }
 
-    static int calculateRingBufferSize(final String propertyName) {
+    static int calculateRingBufferSize(final PropertyKey key) {
         int ringBufferSize = isThreadLocalsEnabled() ? RINGBUFFER_NO_GC_DEFAULT_SIZE : RINGBUFFER_DEFAULT_SIZE;
-        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(propertyName,
+        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(key,
                 String.valueOf(ringBufferSize));
         try {
             int size = Integer.parseInt(userPreferredRBSize);
@@ -84,7 +85,7 @@ final class DisruptorUtil {
     }
 
     static ExceptionHandler<RingBufferLogEvent> getAsyncLoggerExceptionHandler() {
-        final String cls = PropertiesUtil.getProperties().getStringProperty(Log4jProperties.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME);
+        final String cls = PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME);
         if (cls == null) {
             return new AsyncLoggerDefaultExceptionHandler();
         }
@@ -94,13 +95,13 @@ final class DisruptorUtil {
                 (Class<? extends ExceptionHandler<RingBufferLogEvent>>) Loader.loadClass(cls);
             return klass.newInstance();
         } catch (final Exception e) {
-            LOGGER.debug("Invalid {} value: error creating {}: ", Log4jProperties.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME, cls, e);
+            LOGGER.debug("Invalid {} value: error creating {}: ", Log4jPropertyKey.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME, cls, e);
             return new AsyncLoggerDefaultExceptionHandler();
         }
     }
 
     static ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper> getAsyncLoggerConfigExceptionHandler() {
-        final String cls = PropertiesUtil.getProperties().getStringProperty(Log4jProperties.ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME);
+        final String cls = PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME);
         if (cls == null) {
             return new AsyncLoggerConfigDefaultExceptionHandler();
         }
@@ -110,7 +111,7 @@ final class DisruptorUtil {
                     (Class<? extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>>) Loader.loadClass(cls);
             return klass.newInstance();
         } catch (final Exception e) {
-            LOGGER.debug("Invalid {} value: error creating {}: ", Log4jProperties.ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME, cls, e);
+            LOGGER.debug("Invalid {} value: error creating {}: ", Log4jPropertyKey.ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME, cls, e);
             return new AsyncLoggerConfigDefaultExceptionHandler();
         }
     }

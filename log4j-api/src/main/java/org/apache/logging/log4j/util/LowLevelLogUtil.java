@@ -90,6 +90,8 @@ public final class LowLevelLogUtil {
         errorLogger = new DelegateErrorLogger(logger);
     }
 
+    private static final ThreadLocal<Boolean> guard = ThreadLocal.withInitial(() -> false);
+
     /**
      * Logs the given message.
      *
@@ -97,19 +99,44 @@ public final class LowLevelLogUtil {
      * @since 2.9.2
      */
     public static void log(final String message) {
-        if (message != null) {
-            errorLogger.error(message);
+        if (guard.get()) {
+            return;
         }
+        guard.set(true);
+        try {
+            if (message != null) {
+                errorLogger.error(message);
+            }
+        } finally {
+            guard.set(false);
+        }
+
     }
 
     public static void logException(final Throwable exception) {
-        if (exception != null) {
-            errorLogger.error(exception);
+        if (guard.get()) {
+            return;
+        }
+        guard.set(true);
+        try {
+            if (exception != null) {
+                errorLogger.error(exception);
+            }
+        } finally {
+            guard.set(false);
         }
     }
 
     public static void logException(final String message, final Throwable exception) {
-        errorLogger.error(message, exception);
+        if (guard.get()) {
+            return;
+        }
+        guard.set(true);
+        try {
+            errorLogger.error(message, exception);
+        } finally {
+            guard.set(false);
+        }
     }
 
     private LowLevelLogUtil() {

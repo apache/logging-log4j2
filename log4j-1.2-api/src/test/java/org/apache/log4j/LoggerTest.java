@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Property;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterAll;
@@ -67,12 +68,13 @@ public class LoggerTest {
         rbCH = ResourceBundle.getBundle("L7D", new Locale("fr", "CH"));
         assertNotNull(rbCH, "Got a null resource bundle.");
 
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY, BasicConfigurationFactory.class.getName());
+        System.setProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
+                BasicConfigurationFactory.class.getName());
     }
 
     @AfterAll
     public static void tearDownClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY);
+        System.clearProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey());
     }
 
     @AfterEach

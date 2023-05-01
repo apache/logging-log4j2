@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.config.xml;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.AfterAll;
@@ -34,7 +35,7 @@ public class XmlConfigurationPropsTest {
 
     @AfterAll
     public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();
@@ -42,7 +43,7 @@ public class XmlConfigurationPropsTest {
 
     @Test
     public void testNoProps() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), CONFIG);
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
         final Configuration config = ctx.getConfiguration();
@@ -51,21 +52,21 @@ public class XmlConfigurationPropsTest {
 
     @Test
     public void testDefaultStatus() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG1);
-        System.setProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, "WARN");
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), CONFIG1);
+        System.setProperty(Log4jPropertyKey.CONFIG_DEFAULT_LEVEL.getSystemKey(), "WARN");
         try {
             final LoggerContext ctx = LoggerContext.getContext();
             ctx.reconfigure();
             final Configuration config = ctx.getConfiguration();
             assertThat(config, instanceOf(XmlConfiguration.class));
         } finally {
-            System.clearProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL);
+            System.clearProperty(Log4jPropertyKey.CONFIG_DEFAULT_LEVEL.getSystemKey());
         }
     }
 
     @Test
     public void testWithConfigProp() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), CONFIG);
         System.setProperty("log4j.level", "warn");
         try {
             final LoggerContext ctx = LoggerContext.getContext();
@@ -79,7 +80,7 @@ public class XmlConfigurationPropsTest {
 
     @Test
     public void testWithProps() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), CONFIG);
         System.setProperty("log4j.level", "warn");
         System.setProperty("log.level", "warn");
         try {

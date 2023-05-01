@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 
-import static org.apache.logging.log4j.spi.LoggingSystemProperties.*;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.*;
 
 public class StatusLoggerConfiguration {
     private final PropertyEnvironment environment;
@@ -40,7 +40,7 @@ public class StatusLoggerConfiguration {
     }
 
     public boolean isDebugEnabled() {
-        return environment.getBooleanProperty(SYSTEM_DEBUG, false, true);
+        return environment.getBooleanProperty(STATUS_LOGGER_DEBUG, false, true);
     }
 
     public DateFormat getDateTimeFormat() {

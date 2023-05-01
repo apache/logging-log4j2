@@ -33,7 +33,7 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.StringMapMessage;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 
 import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
 import com.google.monitoring.runtime.instrumentation.Sampler;
@@ -52,9 +52,9 @@ public enum GcFreeLoggingTestUtil {;
     public static void executeLogging(final String configurationFile,
                                       final Class<?> testClass) throws Exception {
 
-        System.setProperty(LoggingSystemProperties.SYSTEM_THREAD_LOCALS_ENABLED, "true");
+        System.setProperty(LoggingSystemProperty.SYSTEM_THREAD_LOCALS_ENABLED, "true");
         System.setProperty("log4j2.enable.direct.encoders", "true");
-        System.setProperty(LoggingSystemProperties.SYSTEM_IS_WEBAPP, "false");
+        System.setProperty(LoggingSystemProperty.SYSTEM_IS_WEBAPP, "false");
         System.setProperty("log4j.configurationFile", configurationFile);
 
         assertTrue(isThreadLocalsEnabled(), "Constants.ENABLE_THREADLOCALS");

@@ -25,8 +25,10 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -35,6 +37,9 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
  * <em>Consider this class private.</em>
@@ -52,11 +57,13 @@ import java.util.concurrent.ConcurrentSkipListSet;
 @InternalApi
 public class PropertiesUtil implements PropertyEnvironment {
 
-    private static final String LOG4J_PROPERTIES_FILE_NAME = "log4j2.component.properties";
-    private static final String LOG4J_JSON_FILE_NAME = "log4j2.component.json";
+    private static final String LOG4J_NAMESPACE = "component";
+    private static final String LOG4J_PREFIX = "log4j2.";
+    private static final String LOG4J_CONTEXT_PREFIX = "log4j2.context.";
+    private static final String DELIMITER = ".";
+    private static final String META_INF = "META-INF/";
     private static final String LOG4J_SYSTEM_PROPERTIES_FILE_NAME = "log4j2.system.properties";
-    private static final Lazy<PropertiesUtil> COMPONENT_PROPERTIES =
-            Lazy.lazy(() -> new PropertiesUtil(LOG4J_PROPERTIES_FILE_NAME));
+    private static final Lazy<PropertiesUtil> COMPONENT_PROPERTIES = Lazy.lazy(PropertiesUtil::new);
 
     private final Environment environment;
 
@@ -70,32 +77,65 @@ public class PropertiesUtil implements PropertyEnvironment {
     }
 
     /**
+     * Constructs a PropertiesUtil using a given Properties object as its source of defined properties.
+     *
+     * @param props the Properties to use by default
+     * @param includeInvalid includes invalid properties.
+     */
+    public PropertiesUtil(final Properties props, final boolean includeInvalid) {
+        this(new PropertiesPropertySource(props, PropertySource.SYSTEM_CONTEXT,
+                PropertySource.DEFAULT_PRIORITY, includeInvalid));
+    }
+
+    /**
      * Constructs a PropertiesUtil for a given properties file name on the classpath. The properties specified in this
      * file are used by default. If a property is not defined in this file, then the equivalent system property is used.
      *
      * @param propertiesFileName the location of properties file to load
      */
     public PropertiesUtil(final String propertiesFileName) {
-        this(propertiesFileName, true);
+        this(PropertySource.SYSTEM_CONTEXT, propertiesFileName, true);
+    }
+    /**
+     * Constructs a PropertiesUtil for a given properties file name on the classpath. The properties specified in this
+     * file are used by default. If a property is not defined in this file, then the equivalent system property is used.
+     *
+     * @param propertiesFileName the location of properties file to load
+     */
+    public PropertiesUtil(final String contextName, final String propertiesFileName) {
+        this(contextName, propertiesFileName, true);
     }
 
-    private PropertiesUtil(final String propertiesFileName, final boolean useTccl) {
+    private PropertiesUtil(final String contextName, final String propertiesFileName, final boolean useTccl) {
         List<PropertySource> sources = new ArrayList<>();
         if (propertiesFileName.endsWith(".json") || propertiesFileName.endsWith(".jsn")) {
-            sources.addAll(getJsonPropertySources(propertiesFileName, true));
+            PropertySource source = getJsonPropertySource(propertiesFileName, useTccl, 50);
+            if (source != null) {
+                sources.add(source);
+            }
         } else {
-            sources.add(new PropertyFilePropertySource(propertiesFileName, useTccl));
+            PropertySource source = new PropertiesPropertySource(loadPropertiesFile(propertiesFileName, useTccl),
+                    null, 60, true);
+            sources.add(source);
         }
-        this.environment = new Environment(sources);
+        this.environment = new Environment(contextName, sources);
+    }
+
+    private PropertiesUtil() {
+        this.environment = getEnvironment(LOG4J_NAMESPACE, true);
     }
 
     /**
-     * Constructs a PropertiesUtil for a give property source as source of additional properties.
+     * Constructs a PropertiesUtil for a given property source as source of additional properties.
      * @param source a property source
      */
-    PropertiesUtil(final PropertySource source) {
+    public PropertiesUtil(final PropertySource source) {
         List<PropertySource> sources = Collections.singletonList(source);
-        this.environment = new Environment(sources);
+        this.environment = new Environment(PropertySource.SYSTEM_CONTEXT, sources);
+    }
+
+    private PropertiesUtil(final String contextName, final List<PropertySource> sources) {
+        this.environment = new Environment(contextName, sources);
     }
 
     /**
@@ -108,10 +148,19 @@ public class PropertiesUtil implements PropertyEnvironment {
     }
 
     public static PropertyEnvironment getProperties(final String namespace) {
+        return getEnvironment(namespace, true);
+    }
+
+    private static Environment getEnvironment(final String namespace, final boolean useTccl) {
         List<PropertySource> sources = new ArrayList<>();
-        sources.add(new PropertyFilePropertySource(String.format("log4j2.%s.properties", namespace)));
-        sources.addAll(getJsonPropertySources(String.format("log4j2.%s.json", namespace), true));
-        return new Environment(sources);
+        PropertySource source = new PropertiesPropertySource(loadPropertiesFile(
+                        String.format("log4j2.%s.properties", namespace), useTccl), 50);
+        sources.add(source);
+        source = getJsonPropertySource(String.format("log4j2.%s.json", namespace), useTccl, 60);
+        if (source != null) {
+            sources.add(source);
+        }
+        return new Environment(PropertySource.SYSTEM_CONTEXT, sources);
     }
 
     public static ResourceBundle getCharsetsResourceBundle() {
@@ -190,13 +239,121 @@ public class PropertiesUtil implements PropertyEnvironment {
         environment.reload();
     }
 
-    private static List<PropertySource> getJsonPropertySources(String fileName, boolean useTccl) {
+    /**
+     * Locates the PropertyEnvironment for the LoggerContext, if available.
+     * @param classLoader The ClassLoader to use.
+     * @return the located PropertyEnvironment or null if one has not been created.
+     */
+    public static PropertyEnvironment locateProperties(ClassLoader classLoader) {
+        if (LogManager.getFactory().hasContext(Activator.class.getName(), classLoader, false)) {
+            LoggerContext ctx = LogManager.getFactory().getContext(Activator.class.getName(),
+                    classLoader, null, false);
+            return ctx.getProperties();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the properties for a LoggerContext just by the name. This ALWAYS creates a new PropertiesUtil. Use
+     * locateProperties to obtain the current properties.
+     * @param contextName The context name.
+     * @return The PropertiesUtil that was created.
+     */
+    public static PropertiesUtil getContextProperties(String contextName) {
+        return getContextProperties(contextName, getProperties());
+    }
+
+    /**
+     * Get the properties for a LoggerContext just by the name. This method is used for testing.
+     * @param contextName The context name.
+     * @return The PropertiesUtil that was created.
+     */
+    public static PropertiesUtil getContextProperties(String contextName, PropertiesUtil propertiesUtil) {
+        ClassLoader classLoader = PropertiesUtil.class.getClassLoader();
+        String filePrefix = META_INF + LOG4J_PREFIX + contextName + ".";
+        List<PropertySource> contextSources = new ArrayList<>();
+        contextSources.addAll(getContextPropertySources(classLoader, filePrefix, contextName));
+        contextSources.addAll(propertiesUtil.environment.sources);
+        return new PropertiesUtil(contextName, contextSources);
+    }
+
+    /**
+     * Get the properties associated with a LoggerContext that is associated with a ClassLoader. This ALWAYS creates
+     * a new PropertiesUtil. Use locateProperties to obtain the current properties.
+     * @param classLoader The ClassLoader.
+     * @param contextName The context name.
+     * @return The PropertiesUtil created.
+     */
+    public static PropertiesUtil getContextProperties(final ClassLoader classLoader, final String contextName) {
+        String filePrefix = META_INF + LOG4J_CONTEXT_PREFIX;
+        List<PropertySource> contextSources = new ArrayList<>();
+        contextSources.addAll(getContextPropertySources(classLoader, filePrefix, contextName));
+        contextSources.addAll(getProperties().environment.sources);
+        return new PropertiesUtil(contextName, contextSources);
+    }
+
+    private static Properties loadPropertiesFile(final String fileName, final boolean useTccl) {
+        final Properties props = new Properties();
+        for (final URL url : LoaderUtil.findResources(fileName, useTccl)) {
+            try (final InputStream in = url.openStream()) {
+                props.load(in);
+            } catch (final IOException e) {
+                LowLevelLogUtil.logException("Unable to read " + url, e);
+            }
+        }
+        return props;
+    }
+
+    private static List<PropertySource> getContextPropertySources(final ClassLoader classLoader,
+                                                                  final String filePrefix, final String contextName) {
         List<PropertySource> sources = new ArrayList<>();
+        String fileName = filePrefix + "json";
+        try {
+            Enumeration<URL> urls = classLoader.getResources(fileName);
+            while (urls.hasMoreElements()) {
+                URL url = urls.nextElement();
+                try (InputStream is = url.openStream()) {
+                    String json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+                    PropertySource propertySource = parseJsonProperties(json, contextName, 10);
+                    if (propertySource != null) {
+                        sources.add(propertySource);
+                    }
+                } catch (Exception ex) {
+                    LowLevelLogUtil.logException("Unable to parse JSON for " + url.toString(), ex);
+                }
+            }
+        } catch (Exception ex) {
+            LowLevelLogUtil.logException("Unable to access " + fileName, ex);
+        }
+        fileName = filePrefix + "properties";
+        try {
+            Enumeration<URL> urls = classLoader.getResources(fileName);
+            while (urls.hasMoreElements()) {
+                URL url = urls.nextElement();
+                try (InputStream is = url.openStream()) {
+                    Properties props = new Properties();
+                    props.load(is);
+                    PropertySource source = new PropertiesPropertySource(props, contextName, 20);
+                    sources.add(source);
+                } catch (Exception ex) {
+                    LowLevelLogUtil.logException("Unable to access properties for " + url.toString(), ex);
+                }
+            }
+        } catch (Exception ex) {
+            LowLevelLogUtil.logException("Unable to access " + fileName, ex);
+        }
+        return sources;
+    }
+
+    private static PropertySource getJsonPropertySource(final String fileName, final boolean useTccl, int priority) {
         if (fileName.startsWith("file://")) {
             try {
                 URL url = new URL(fileName);
-                sources.add(new JsonPropertySource(new String(url.openStream().readAllBytes(),
-                        StandardCharsets.UTF_8)));
+                try (InputStream is = url.openStream()) {
+                    return parseJsonProperties(new String(is.readAllBytes(), StandardCharsets.UTF_8), "*",
+                            priority);
+                }
             } catch (Exception ex) {
                 LowLevelLogUtil.logException("Unable to read " + fileName, ex);
             }
@@ -204,22 +361,59 @@ public class PropertiesUtil implements PropertyEnvironment {
             File file = new File(fileName);
             if (file.exists()) {
                 try {
-                    sources.add(new JsonPropertySource(new String(new FileInputStream(file).readAllBytes(),
-                            StandardCharsets.UTF_8)));
+                    return parseJsonProperties(new String(new FileInputStream(file).readAllBytes(),
+                            StandardCharsets.UTF_8), "*", priority);
                 } catch (IOException ioe) {
                     LowLevelLogUtil.logException("Unable to read " + fileName, ioe);
                 }
             } else {
                 for (final URL url : LoaderUtil.findResources(fileName, useTccl)) {
                     try (final InputStream in = url.openStream()) {
-                        sources.add(new JsonPropertySource(new String(in.readAllBytes(), StandardCharsets.UTF_8)));
+                        return parseJsonProperties(new String(in.readAllBytes(),
+                                StandardCharsets.UTF_8), "*", priority);
                     } catch (final IOException e) {
                         LowLevelLogUtil.logException("Unable to read " + url, e);
                     }
                 }
             }
         }
-        return sources;
+        return null;
+    }
+
+    private static PropertySource parseJsonProperties(final String json, final String contextName, final int priority) {
+        final Map<String, Object> root = Cast.cast(JsonReader.read(json));
+        Properties props = new Properties();
+        populateProperties(props, "", root);
+        return new PropertiesPropertySource(props, contextName, priority);
+    }
+
+    private static void populateProperties(Properties props, String prefix, Map<String, Object> root) {
+        if (!root.isEmpty()) {
+            for (Map.Entry<String, Object> entry : root.entrySet()) {
+                if (entry.getValue() instanceof String) {
+                    props.setProperty(createKey(prefix, entry.getKey()), (String) entry.getValue());
+                } else if (entry.getValue() instanceof List) {
+                    final StringBuilder sb = new StringBuilder();
+                    List<Object> entries = Cast.cast(entry.getValue());
+                    entries.forEach((obj) -> {
+                        if (sb.length() > 0) {
+                            sb.append(",");
+                        }
+                        sb.append(obj.toString());
+                    });
+                    props.setProperty(createKey(prefix, entry.getKey()), sb.toString());
+                } else {
+                    populateProperties(props, createKey(prefix, entry.getKey()), Cast.cast(entry.getValue()));
+                }
+            }
+        }
+    }
+
+    private static String createKey(String prefix, String suffix) {
+        if (prefix.isEmpty()) {
+            return suffix;
+        }
+        return prefix + "." + suffix;
     }
 
     /**
@@ -242,16 +436,17 @@ public class PropertiesUtil implements PropertyEnvironment {
          * Maps a key to its value or the value of its normalization in the lowest priority source that contains it.
          */
         private final Map<String, String> literal = new ConcurrentHashMap<>();
-        private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
 
-        private Environment(final List<PropertySource> propertySources) {
-            final PropertyFilePropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME);
+        private final String contextName;
+
+        private Environment(final String contextName, final List<PropertySource> propertySources) {
             try {
-                sysProps.forEach((key, value) -> {
+                Properties sysProps = loadPropertiesFile(LOG4J_SYSTEM_PROPERTIES_FILE_NAME, false);
+                for (String key : sysProps.stringPropertyNames()) {
                     if (System.getProperty(key) == null) {
-                        System.setProperty(key, value);
+                        System.setProperty(key, sysProps.getProperty(key));
                     }
-                });
+                };
             } catch (final SecurityException ex) {
                 // Access to System Properties is restricted so just skip it.
             }
@@ -259,6 +454,7 @@ public class PropertiesUtil implements PropertyEnvironment {
             final ServiceRegistry registry = ServiceRegistry.getInstance();
             // Does not log errors using StatusLogger, which depends on PropertiesUtil being initialized.
             sources.addAll(registry.getServices(PropertySource.class, MethodHandles.lookup(), null, /*verbose=*/false));
+            this.contextName = contextName;
             reload();
         }
 
@@ -269,7 +465,11 @@ public class PropertiesUtil implements PropertyEnvironment {
 
         private synchronized void reload() {
             literal.clear();
-            tokenized.clear();
+            sources.forEach((s) -> {
+                if (s instanceof ReloadablePropertySource) {
+                    ((ReloadablePropertySource)s).reload();
+                }
+            });
             // 1. Collects all property keys from enumerable sources.
             final Set<String> keys = new HashSet<>();
             sources.stream()
@@ -279,23 +479,20 @@ public class PropertiesUtil implements PropertyEnvironment {
             keys.stream()
                 .filter(Objects::nonNull)
                 .forEach(key -> {
-                    final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-                    final boolean hasTokens = !tokens.isEmpty();
+                    String contextKey = getContextKey(key);
+                    if (contextName != null && !contextName.equals(PropertySource.SYSTEM_CONTEXT)) {
+                        sources.forEach(source -> {
+                            if (source instanceof ContextAwarePropertySource) {
+                                ContextAwarePropertySource src = Cast.cast(source);
+                                if (src.containsProperty(contextName, contextKey)) {
+                                    literal.putIfAbsent(key, src.getProperty(contextName, contextKey));
+                                }
+                            }
+                        });
+                    }
                     sources.forEach(source -> {
-                        if (source.containsProperty(key)) {
-                            final String value = source.getProperty(key);
-                            if (hasTokens) {
-                                tokenized.putIfAbsent(tokens, value);
-                            }
-                        }
-                        if (hasTokens) {
-                            final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
-                            if (normalKey != null && source.containsProperty(normalKey)) {
-                                literal.putIfAbsent(key, source.getProperty(normalKey));
-                            }
-                            else if(source.containsProperty(key)) {
-                                literal.putIfAbsent(key, source.getProperty(key));
-                            }
+                        if (source.containsProperty(contextKey)) {
+                            literal.putIfAbsent(key, source.getProperty(contextKey));
                         }
                     });
                 });
@@ -306,31 +503,70 @@ public class PropertiesUtil implements PropertyEnvironment {
             if (literal.containsKey(key)) {
                 return literal.get(key);
             }
-            final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-            final boolean hasTokens = !tokens.isEmpty();
-            for (final PropertySource source : sources) {
-                if (hasTokens) {
-                    final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
-                    if (normalKey != null && source.containsProperty(normalKey)) {
-                        return source.getProperty(normalKey);
+            String result = null;
+            String contextKey = getContextKey(key);
+            if (contextName != null && !contextName.equals(PropertySource.SYSTEM_CONTEXT)) {
+                for (final PropertySource source : sources) {
+                    if (source instanceof ContextAwarePropertySource) {
+                        ContextAwarePropertySource src = Cast.cast(source);
+                        result = src.getProperty(contextName, contextKey);
+                    }
+                    if (result != null) {
+                        return result;
                     }
                 }
-                if (source.containsProperty(key)) {
-                    return source.getProperty(key);
+            }
+            for (final PropertySource source : sources) {
+                result = source.getProperty(contextKey);
+                if (result != null) {
+                    return result;
                 }
             }
-            return tokenized.get(tokens);
+            return result;
         }
 
         @Override
         public boolean hasProperty(final String key) {
-            List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-            return literal.containsKey(key) ||
-                   tokenized.containsKey(tokens) ||
-                   sources.stream().anyMatch(s -> {
-                        final CharSequence normalizedKey = s.getNormalForm(tokens);
-                        return s.containsProperty(key) || normalizedKey != null && s.containsProperty(normalizedKey.toString());
-                   });
+            if (literal.containsKey(key)) {
+                return true;
+            }
+            String contextKey = getContextKey(key);
+            if (!contextName.equals(PropertySource.SYSTEM_CONTEXT)) {
+                for (final PropertySource source : sources) {
+                    if (source instanceof ContextAwarePropertySource) {
+                        ContextAwarePropertySource src = Cast.cast(source);
+                        if (src.containsProperty(contextName, contextKey)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            for (final PropertySource source : sources) {
+                if (source instanceof ContextAwarePropertySource) {
+                    ContextAwarePropertySource src = Cast.cast(source);
+                    if (src.containsProperty(contextName, contextKey)
+                            || (!contextName.equals(PropertySource.SYSTEM_CONTEXT)
+                            && src.containsProperty(PropertySource.SYSTEM_CONTEXT, contextKey))) {
+                        return true;
+                    }
+                } else {
+                    if (source.containsProperty(key)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private String getContextKey(String key) {
+            String keyToCheck = key;
+            if (keyToCheck.startsWith(LOG4J_PREFIX)) {
+                List<CharSequence> tokens = PropertySource.Util.tokenize(key);
+                if (tokens.size() > 3) {
+                    keyToCheck = PropertySource.Util.join(tokens.subList(2, tokens.size())).toString();
+                }
+            }
+            return keyToCheck;
         }
     }
 
@@ -409,6 +645,4 @@ public class PropertiesUtil implements PropertyEnvironment {
         }
         return parts;
     }
-
-
 }

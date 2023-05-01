@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.gctests;
 
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +34,7 @@ public class JsonTemplateLayoutGcFreeTest {
      */
     public static void main(final String[] args) throws Exception {
         System.setProperty("log4j.layout.jsonTemplate.recyclerFactory", "threadLocal");
-        System.setProperty(LoggingSystemProperties.THREAD_CONTEXT_GARBAGE_FREE_ENABLED, "true");
+        System.setProperty(LoggingSystemProperty.THREAD_CONTEXT_GARBAGE_FREE_ENABLED, "true");
         GcFreeLoggingTestUtil.executeLogging(
                 "gcFreeJsonTemplateLayoutLogging.xml",
                 JsonTemplateLayoutGcFreeTest.class);

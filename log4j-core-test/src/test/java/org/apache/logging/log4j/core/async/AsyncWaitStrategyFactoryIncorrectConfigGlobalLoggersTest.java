@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("async")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
-@SetSystemProperty(key = Log4jProperties.CONFIG_LOCATION, value = "AsyncWaitStrategyIncorrectFactoryConfigGlobalLoggerTest.xml")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "AsyncWaitStrategyIncorrectFactoryConfigGlobalLoggerTest.xml")
 public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
 
     @Test

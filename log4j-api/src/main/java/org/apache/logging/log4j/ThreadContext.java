@@ -27,7 +27,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.message.ParameterizedMessage;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggingSystem;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
@@ -38,7 +38,7 @@ import org.apache.logging.log4j.util.Strings;
  * The ThreadContext allows applications to store information either in a Map or a Stack.
  * <p>
  * <b><em>The MDC is managed on a per thread basis</em></b>. To enable automatic inheritance of <i>copies</i> of the MDC
- * to newly created threads, enable the {@value LoggingSystemProperties#THREAD_CONTEXT_MAP_INHERITABLE}
+ * to newly created threads, enable the {@value LoggingSystemProperty#THREAD_CONTEXT_MAP_INHERITABLE}
  * Log4j system property.
  * </p>
  * @see <a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html">Thread Context Manual</a>

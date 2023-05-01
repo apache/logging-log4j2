@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 
 /**
  * The default configuration writes all output to the Console using the default logging level. You configure default
@@ -30,11 +30,6 @@ public class DefaultConfiguration extends AbstractConfiguration {
      * The name of the default configuration.
      */
     public static final String DEFAULT_NAME = "Default";
-
-    /**
-     * The System Property used to specify the logging level.
-     */
-    public static final String DEFAULT_LEVEL = Log4jProperties.CONFIG_DEFAULT_LEVEL;
 
     /**
      * The default Pattern used for the default Layout.

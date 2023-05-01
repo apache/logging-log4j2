@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.CoreContextSelectors;
@@ -56,12 +57,12 @@ public class JsonCompleteFileAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ClockFactory.PROPERTY_NAME, FixedTimeClock.class.getName());
+        System.setProperty(Log4jPropertyKey.CONFIG_CLOCK.getKey(), FixedTimeClock.class.getName());
     }
 
     @AfterClass
     public static void afterClass() {
-        System.clearProperty(ClockFactory.PROPERTY_NAME);
+        System.clearProperty(Log4jPropertyKey.CONFIG_CLOCK.getKey());
     }
 
     @Parameters(name = "{0}")

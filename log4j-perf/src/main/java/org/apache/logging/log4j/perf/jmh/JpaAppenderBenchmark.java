@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.jpa.appender.JpaAppender;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -63,7 +64,7 @@ public class JpaAppenderBenchmark {
         connectionHSQLDB = getConnectionHSQLDB();
         connectionH2 = getConnectionH2();
 
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j2-jpa-appender.xml");
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "log4j2-jpa-appender.xml");
         final LoggerContext context = LoggerContext.getContext(false);
         if (context.getConfiguration() instanceof DefaultConfiguration) {
             context.reconfigure();
@@ -136,7 +137,7 @@ public class JpaAppenderBenchmark {
             ((JpaAppender) context.getConfiguration().getAppender("H2Appender")).getManager().close();
             ((JpaAppender) context.getConfiguration().getAppender("HSQLDBAppender")).getManager().close();
         } finally {
-            System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+            System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
             // context.reconfigure();
             // StatusLogger.getLogger().reset();
 

@@ -1,0 +1,8 @@
+{
+  "log4j2": {
+    "julLoggerAdapter": ["JUL", "loggerAdapter"]
+  },
+  "LOG4J": {
+    "JUL_LOGGER_ADAPTER": ["JUL", "loggerAdapter"]
+  }
+}

@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.test.ThreadContextUtilityClass;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -61,15 +61,15 @@ public class ThreadContextDataInjectorTest {
 
     @Before
     public void before() {
-        System.setProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS, threadContextMapClassName);
+        System.setProperty(LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_CLASS, threadContextMapClassName);
     }
 
     @After
     public void after() {
         ThreadContext.remove("foo");
         ThreadContext.remove("baz");
-        System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS);
-        System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_INHERITABLE);
+        System.clearProperty(LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_CLASS);
+        System.clearProperty(LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_INHERITABLE);
     }
 
     private void testContextDataInjector() {
@@ -102,7 +102,7 @@ public class ThreadContextDataInjectorTest {
     }
 
     private void prepareThreadContext(boolean isThreadContextMapInheritable) {
-        System.setProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_INHERITABLE, Boolean.toString(isThreadContextMapInheritable));
+        System.setProperty(LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_INHERITABLE, Boolean.toString(isThreadContextMapInheritable));
         ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
         ThreadContextUtilityClass.reset();
         ThreadContext.remove("baz");

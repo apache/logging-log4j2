@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.categories.PerformanceTests;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.junit.After;
@@ -51,13 +52,13 @@ public class FilterPerformanceComparison {
 
     @BeforeClass
     public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), CONFIG);
         System.setProperty(LOGBACK_CONF, LOGBACK_CONFIG);
     }
 
     @AfterClass
     public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
         System.clearProperty(LOGBACK_CONF);
     }
 

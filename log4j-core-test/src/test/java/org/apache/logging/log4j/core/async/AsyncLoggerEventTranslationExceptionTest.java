@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.async;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.message.Message;
@@ -42,7 +42,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @Tag("async")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
-@SetSystemProperty(key = Log4jProperties.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME, value = "org.apache.logging.log4j.core.async.AsyncLoggerEventTranslationExceptionTest$TestExceptionHandler")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME,
+        value = "org.apache.logging.log4j.core.async.AsyncLoggerEventTranslationExceptionTest$TestExceptionHandler")
 class AsyncLoggerEventTranslationExceptionTest {
 
     @Test

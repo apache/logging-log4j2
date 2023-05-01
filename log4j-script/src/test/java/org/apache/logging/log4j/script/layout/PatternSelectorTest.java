@@ -19,6 +19,7 @@ package org.apache.logging.log4j.script.layout;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
@@ -31,7 +32,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SetSystemProperty(key = ScriptManagerFactoryImpl.SCRIPT_LANGUAGES, value = "bsh, Javascript")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.SCRIPT_ENABLE_LANGUAGES, value = "bsh, Javascript")
 @LoggerContextSource(value = "log4j-patternSelector.xml", reconfigure = ReconfigurationPolicy.BEFORE_EACH)
 public class PatternSelectorTest {
 

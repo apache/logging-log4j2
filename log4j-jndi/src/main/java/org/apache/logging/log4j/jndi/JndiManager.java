@@ -28,6 +28,7 @@ import javax.naming.NamingException;
 
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.jndi.util.JndiCloser;
 
@@ -213,7 +214,8 @@ public class JndiManager extends AbstractManager {
         @Override
         public JndiManager createManager(final String name, final Properties data) {
             if (!isJndiEnabled()) {
-                throw new IllegalStateException(String.format("JNDI must be enabled by setting one of the %s* properties to true", Constants.JNDI_PREFIX));
+                throw new IllegalStateException(String.format("JNDI must be enabled by setting one of the %s* properties to true",
+                        Log4jPropertyKey.Constant.JNDI_ENABLED));
             }
             try {
                 return new JndiManager(name, new InitialContext(data));

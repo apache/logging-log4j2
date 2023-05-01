@@ -27,12 +27,12 @@ import java.util.Optional;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -66,7 +66,8 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
 
         if (configLocation == null) {
             final PropertyEnvironment properties = PropertiesUtil.getProperties();
-            final String configLocationStr = substitutor.replace(properties.getStringProperty(CONFIGURATION_FILE_PROPERTY));
+            final String configLocationStr =
+                    substitutor.replace(properties.getStringProperty(Log4jPropertyKey.CONFIG_LOCATION));
             if (configLocationStr != null) {
                 final String[] sources = parseConfigLocations(configLocationStr);
                 if (sources.length > 1) {
@@ -95,7 +96,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 final String log4j1ConfigStr =
                         substitutor.replace(properties.getStringProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY));
                 if (log4j1ConfigStr != null) {
-                    System.setProperty(LOG4J1_EXPERIMENTAL, "true");
+                    System.setProperty(LOG4J1_EXPERIMENTAL.getSystemKey(), "true");
                     return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr);
                 }
             }
@@ -163,7 +164,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 "Set system property 'log4j2.*.{}' " +
                 "to show Log4j 2 internal initialization logging. " +
                 "See https://logging.apache.org/log4j/2.x/manual/configuration.html for instructions on how to configure Log4j 2",
-                LoggingSystemProperties.SYSTEM_DEBUG);
+                LoggingSystemProperty.STATUS_LOGGER_DEBUG);
         return new DefaultConfiguration();
     }
 
@@ -296,7 +297,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     private static List<ConfigurationFactory> loadConfigurationFactories(final Injector injector) {
         final List<ConfigurationFactory> factories = new ArrayList<>();
 
-        Optional.ofNullable(PropertiesUtil.getProperties().getStringProperty(Log4jProperties.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME))
+        Optional.ofNullable(PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME))
                 .flatMap(DefaultConfigurationFactory::tryLoadFactoryClass)
                 .map(clazz -> {
                     try {

@@ -29,8 +29,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
@@ -42,6 +44,7 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.SystemPropertiesPropertySource;
 
 /**
  * Appends log events to <code>System.out</code> or <code>System.err</code> using a layout specified by the user. The
@@ -62,8 +65,9 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     private static final ConsoleManagerFactory factory = new ConsoleManagerFactory();
     private static final Target DEFAULT_TARGET = Target.SYSTEM_OUT;
     private static final AtomicInteger COUNT = new AtomicInteger();
-
     private final Target target;
+
+    private static final PropertiesUtil sysProps = new PropertiesUtil(new SystemPropertiesPropertySource());
 
     /**
      * Enumeration of console destinations.
@@ -91,13 +95,14 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         public abstract Charset getDefaultCharset();
 
         protected Charset getCharset(final String property, final Charset defaultCharset) {
-            return new PropertiesUtil(PropertiesUtil.getSystemProperties()).getCharsetProperty(property, defaultCharset);
+            return sysProps.getCharsetProperty(property, defaultCharset);
         }
 
     }
 
     private ConsoleAppender(final String name, final Layout layout, final Filter filter,
-                            final OutputStreamManager manager, final boolean ignoreExceptions, final Target target, final Property[] properties) {
+                            final OutputStreamManager manager, final boolean ignoreExceptions, final Target target,
+                            final Property[] properties) {
         super(name, layout, filter, ignoreExceptions, true, properties, manager);
         this.target = target;
     }
@@ -129,6 +134,8 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         @PluginBuilderAttribute
         private boolean direct;
+        @PluginConfiguration
+        private Configuration configuration;
 
         public B setTarget(final Target aTarget) {
             this.target = aTarget;
@@ -145,20 +152,32 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             return asBuilder();
         }
 
+        /**
+         * @param configuration
+         *        The Configuration. Used to access properties.
+         */
+        public B setConfiguration(final Configuration configuration) {
+            this.configuration = configuration;
+            return asBuilder();
+        }
+
         @Override
         public ConsoleAppender build() {
             if (follow && direct) {
                 throw new IllegalArgumentException("Cannot use both follow and direct on ConsoleAppender '" + getName() + "'");
             }
             final Layout layout = getOrCreateLayout(target.getDefaultCharset());
-            return new ConsoleAppender(getName(), layout, getFilter(), getManager(target, follow, direct, layout),
+            PropertyEnvironment propertyEnvironment = configuration != null
+                    ? configuration.getLoggerContext().getProperties() : PropertiesUtil.getProperties();
+            return new ConsoleAppender(getName(), layout, getFilter(),
+                    getManager(target, follow, direct, layout, propertyEnvironment),
                     isIgnoreExceptions(), target, getPropertyArray());
         }
     }
 
     private static OutputStreamManager getDefaultManager(final Target target, final boolean follow, final boolean direct,
             final Layout layout) {
-        final OutputStream os = getOutputStream(follow, direct, target);
+        final OutputStream os = getOutputStream(follow, direct, target, PropertiesUtil.getProperties());
 
         // LOG4J2-1176 DefaultConfiguration should not share OutputStreamManager instances to avoid memory leaks.
         final String managerName = target.name() + '.' + follow + '.' + direct + "-" + COUNT.get();
@@ -166,13 +185,14 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
     }
 
     private static OutputStreamManager getManager(final Target target, final boolean follow, final boolean direct,
-            final Layout layout) {
-        final OutputStream os = getOutputStream(follow, direct, target);
+            final Layout layout, final PropertyEnvironment properties) {
+        final OutputStream os = getOutputStream(follow, direct, target, properties);
         final String managerName = target.name() + '.' + follow + '.' + direct;
         return OutputStreamManager.getManager(managerName, new FactoryData(os, managerName, layout), factory);
     }
 
-    private static OutputStream getOutputStream(final boolean follow, final boolean direct, final Target target) {
+    private static OutputStream getOutputStream(final boolean follow, final boolean direct, final Target target,
+                                                final PropertyEnvironment properties) {
         final String enc = Charset.defaultCharset().name();
         OutputStream outputStream;
         try {
@@ -187,8 +207,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
         } catch (final UnsupportedEncodingException ex) { // should never happen
             throw new IllegalStateException("Unsupported default encoding " + enc, ex);
         }
-        final PropertyEnvironment properties = PropertiesUtil.getProperties();
-        if (!properties.isOsWindows() || properties.getBooleanProperty(Log4jProperties.JANSI_DISABLED, true) || direct) {
+        if (!properties.isOsWindows() || properties.getBooleanProperty(Log4jPropertyKey.CONSOLE_JANSI_ENABLED, true) || direct) {
             return outputStream;
         }
         try {

@@ -21,7 +21,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
@@ -46,13 +46,13 @@ public class Log4j2Jira1688AsyncTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME,
+        System.setProperty(Log4jPropertyKey.Constant.CONTEXT_SELECTOR_CLASS_NAME,
                 AsyncLoggerContextSelector.class.getName());
     }
 
     @AfterClass
     public static void afterClass() {
-        System.clearProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME);
+        System.clearProperty(Log4jPropertyKey.Constant.CONTEXT_SELECTOR_CLASS_NAME);
     }
 
     @Rule

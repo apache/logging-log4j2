@@ -26,7 +26,7 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 
 /**
  * <em>Consider this class private.</em> Utility class for ClassLoaders.
@@ -212,7 +212,7 @@ public final class LoaderUtil {
     }
 
     /**
-     * Loads a class by name. This method respects the {@value LoggingSystemProperties#LOADER_IGNORE_THREAD_CONTEXT_LOADER}
+     * Loads a class by name. This method respects the {@value LoggingSystemProperty#LOADER_IGNORE_THREAD_CONTEXT_LOADER}
      * Log4j property. If this property is specified and set to anything besides {@code false}, then this class's
      * ClassLoader will be used as specified by {@link Class#forName(String)}.
      *
@@ -321,7 +321,7 @@ public final class LoaderUtil {
     private static boolean isIgnoreTccl() {
         // we need to lazily initialize this, but concurrent access is not an issue
         if (ignoreTCCL == null) {
-            final String ignoreTccl = PropertiesUtil.getProperties().getStringProperty(LoggingSystemProperties.LOADER_IGNORE_THREAD_CONTEXT_LOADER, null);
+            final String ignoreTccl = PropertiesUtil.getProperties().getStringProperty(LoggingSystemProperty.LOADER_IGNORE_THREAD_CONTEXT_LOADER, null);
             ignoreTCCL = ignoreTccl != null && !"false".equalsIgnoreCase(ignoreTccl.trim());
         }
         return ignoreTCCL;
@@ -332,8 +332,9 @@ public final class LoaderUtil {
             // PropertiesUtil.getProperties() uses that code path so don't use that!
             try {
                 forceTcclOnly = System.getSecurityManager() == null ?
-                    Boolean.getBoolean(LoggingSystemProperties.LOADER_FORCE_THREAD_CONTEXT_LOADER) :
-                    AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> Boolean.getBoolean(LoggingSystemProperties.LOADER_FORCE_THREAD_CONTEXT_LOADER));
+                    Boolean.getBoolean(LoggingSystemProperty.LOADER_FORCE_THREAD_CONTEXT_LOADER.getSystemKey()) :
+                    AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> Boolean.getBoolean(
+                            LoggingSystemProperty.LOADER_FORCE_THREAD_CONTEXT_LOADER.getSystemKey()));
             } catch (final SecurityException se) {
                 forceTcclOnly = false;
             }

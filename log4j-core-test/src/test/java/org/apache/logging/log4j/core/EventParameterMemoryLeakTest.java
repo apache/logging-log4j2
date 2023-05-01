@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -36,8 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("functional")
-@SetSystemProperty(key = "log4j2.enable.direct.encoders", value = "true")
-@SetSystemProperty(key = "log4j2.configurationFile", value = "EventParameterMemoryLeakTest.xml")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.GC_ENABLE_DIRECT_ENCODERS, value = "true")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "EventParameterMemoryLeakTest.xml")
 public class EventParameterMemoryLeakTest {
 
     @Test

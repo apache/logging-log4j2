@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.test.junit.TypeBasedParameterResolver;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -126,7 +127,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         final String configLocation = source.value();
         final URI configUri;
         if (source.v1config()) {
-            System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, configLocation);
+            System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY.getSystemKey(), configLocation);
             configUri = null; // handled by system property
         } else {
             configUri = configLocation.isEmpty() ? null : NetUtils.toURI(configLocation);
@@ -160,8 +161,8 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
             try {
                 context.stop(shutdownTimeout, unit);
             } finally {
-                System.clearProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL);
-                System.clearProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY);
+                System.clearProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL.getSystemKey());
+                System.clearProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY.getSystemKey());
             }
         }
     }

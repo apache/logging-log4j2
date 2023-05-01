@@ -27,7 +27,7 @@ import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
 import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY;
-import static org.apache.logging.log4j.spi.LoggingSystemProperties.*;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.*;
 
 /**
  * {@code SortedArrayStringMap}-based implementation of the {@code ThreadContextMap} interface that creates a copy of

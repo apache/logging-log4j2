@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.impl.ThreadContextDataInjector;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,7 +43,7 @@ public class ContextDataProviderTest {
     @BeforeAll
     public static void beforeClass() {
         ThreadContextDataInjector.contextDataProviders.add(new TestContextDataProvider());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "log4j-contextData.xml");
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "log4j-contextData.xml");
         LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
         logger = loggerContext.getLogger(ContextDataProviderTest.class.getName());
         appender = loggerContext.getConfiguration().getAppender("List");

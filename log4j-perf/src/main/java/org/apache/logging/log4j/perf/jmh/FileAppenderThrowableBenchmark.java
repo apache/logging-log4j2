@@ -17,9 +17,7 @@
 package org.apache.logging.log4j.perf.jmh;
 
 import java.io.File;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.FileHandler;
@@ -29,8 +27,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -60,7 +58,7 @@ import org.slf4j.LoggerFactory;
 public class FileAppenderThrowableBenchmark {
     static {
         // log4j2
-        System.setProperty(LoggingSystemProperties.SYSTEM_IS_WEBAPP, "false");
+        System.setProperty(LoggingSystemProperty.SYSTEM_IS_WEBAPP, "false");
         System.setProperty("log4j.configurationFile", "log4j2-perf-file-throwable.xml");
         // log4j 1.2
         System.setProperty("log4j.configuration", "log4j12-perf-file-throwable.xml");
@@ -196,7 +194,7 @@ public class FileAppenderThrowableBenchmark {
             Logger logger;
             @Override
             void setUp() throws Exception {
-                System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+                System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
                         AsyncLoggerContextSelector.class.getName());
                 logger = LogManager.getLogger("RAFExtendedException");
                 if (!AsyncLoggerContext.class.equals(LogManager.getContext(false).getClass())) {
@@ -252,7 +250,7 @@ public class FileAppenderThrowableBenchmark {
             Logger logger;
             @Override
             void setUp() throws Exception {
-                System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+                System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
                         AsyncLoggerContextSelector.class.getName());
                 logger = LogManager.getLogger("RAFSimpleException");
                 if (!AsyncLoggerContext.class.equals(LogManager.getContext(false).getClass())) {

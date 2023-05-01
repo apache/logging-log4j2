@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.AfterAll;
@@ -38,7 +39,7 @@ public class AdvertiserTest {
 
     @BeforeAll
     public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), CONFIG);
         final LoggerContext ctx = LoggerContext.getContext();
         final Configuration config = ctx.getConfiguration();
         if (config instanceof XmlConfiguration) {
@@ -53,7 +54,7 @@ public class AdvertiserTest {
 
     @AfterAll
     public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
         final LoggerContext ctx = LoggerContext.getContext();
         ctx.reconfigure();
         StatusLogger.getLogger().reset();

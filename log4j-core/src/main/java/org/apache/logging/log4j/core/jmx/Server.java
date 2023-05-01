@@ -38,7 +38,7 @@ import org.apache.logging.log4j.core.async.AsyncLoggerConfig;
 import org.apache.logging.log4j.core.async.AsyncLoggerContext;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
@@ -75,7 +75,7 @@ public final class Server {
      */
     private static ExecutorService createExecutor() {
         final boolean defaultAsync = !Constants.isWebApp();
-        final boolean async = PropertiesUtil.getProperties().getBooleanProperty(Log4jProperties.JMX_NOTIFY_ASYNC, defaultAsync);
+        final boolean async = PropertiesUtil.getProperties().getBooleanProperty(Log4jPropertyKey.JMX_NOTIFY_ASYNC, defaultAsync);
         return async ? Executors.newFixedThreadPool(1, Log4jThreadFactory.createDaemonThreadFactory(THREAD_NAME_PREFIX))
                 : null;
     }
@@ -126,7 +126,7 @@ public final class Server {
     }
 
     private static boolean isJmxDisabled() {
-        return PropertiesUtil.getProperties().getBooleanProperty(Log4jProperties.JMX_DISABLED);
+        return !PropertiesUtil.getProperties().getBooleanProperty(Log4jPropertyKey.JMX_ENABLED);
     }
 
     public static void reregisterMBeansAfterReconfigure() {

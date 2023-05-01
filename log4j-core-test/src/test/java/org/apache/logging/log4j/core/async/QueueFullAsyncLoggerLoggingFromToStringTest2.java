@@ -20,7 +20,7 @@ import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
@@ -48,14 +48,14 @@ public class QueueFullAsyncLoggerLoggingFromToStringTest2 extends QueueFullAbstr
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, "true");
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE, "128"); // minimum ringbuffer size
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND.getKey(), "true");
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE.getKey(), "128"); // minimum ringbuffer size
     }
 
     @AfterClass
     public static void afterClass() {
-        System.clearProperty(Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND);
-        System.clearProperty(Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE);
+        System.clearProperty(Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND.getKey());
+        System.clearProperty(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE.getKey());
     }
 
     @Rule

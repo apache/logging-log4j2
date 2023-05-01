@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
@@ -102,9 +102,9 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         }
         setStarting();
         LOGGER.trace("[{}] AsyncLoggerDisruptor creating new disruptor for this context.", contextName);
-        ringBufferSize = DisruptorUtil.calculateRingBufferSize(Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE);
+        ringBufferSize = DisruptorUtil.calculateRingBufferSize(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE);
         AsyncWaitStrategyFactory factory = waitStrategyFactorySupplier.get(); // get factory from configuration
-        waitStrategy = DisruptorUtil.createWaitStrategy(Log4jProperties.ASYNC_LOGGER_WAIT_STRATEGY, factory);
+        waitStrategy = DisruptorUtil.createWaitStrategy(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY, factory);
 
         final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLogger[" + contextName + "]", true, Thread.NORM_PRIORITY) {
             @Override

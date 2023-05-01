@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender.Target;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
@@ -41,7 +42,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.atLeastOnce;
 
 @ExtendWith(MockitoExtension.class)
-@SetSystemProperty(key = "log4j.skipJansi", value = "true")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_JANSI_ENABLED, value = "false")
 public class ConsoleAppenderTest {
 
     ByteArrayOutputStream baos;

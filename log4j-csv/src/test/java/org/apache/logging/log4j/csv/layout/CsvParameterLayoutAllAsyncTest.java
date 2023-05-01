@@ -18,6 +18,7 @@ package org.apache.logging.log4j.csv.layout;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
@@ -39,15 +40,14 @@ public class CsvParameterLayoutAllAsyncTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+        System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
                 AsyncLoggerContextSelector.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerTest.xml");
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "AsyncLoggerTest.xml");
     }
 
     @AfterClass
     public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
+        System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(), Strings.EMPTY);
     }
 
 

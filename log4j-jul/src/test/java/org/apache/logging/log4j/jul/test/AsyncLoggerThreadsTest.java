@@ -18,6 +18,7 @@ package org.apache.logging.log4j.jul.test;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Constants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -36,14 +37,14 @@ public class AsyncLoggerThreadsTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+        System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
                 AsyncLoggerContextSelector.class.getName());
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
     }
 
     @AfterClass
     public static void afterClass() {
-        System.clearProperty(Constants.LOG4J_CONTEXT_SELECTOR);
+        System.clearProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey());
         System.clearProperty("java.util.logging.manager");
     }
 

@@ -24,6 +24,7 @@ import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyKey;
 
 @Singleton
 public class OnPropertyCondition implements Condition {

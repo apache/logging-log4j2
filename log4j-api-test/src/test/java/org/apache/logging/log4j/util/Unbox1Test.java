@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Unbox1Test {
     @BeforeAll
     public static void beforeClass() {
-        System.clearProperty(LoggingSystemProperties.UNBOX_RING_BUFFER_SIZE);
+        System.clearProperty(LoggingSystemProperty.Constant.GC_UNBOX_RING_BUFFER_SIZE);
     }
 
     @Test

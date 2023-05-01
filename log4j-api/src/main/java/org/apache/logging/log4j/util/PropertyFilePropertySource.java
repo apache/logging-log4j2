@@ -29,11 +29,15 @@ import java.util.Properties;
 public class PropertyFilePropertySource extends PropertiesPropertySource {
 
     public PropertyFilePropertySource(final String fileName) {
-        this(fileName, true);
+        this(fileName, true, false);
     }
 
     public PropertyFilePropertySource(final String fileName, final boolean useTccl) {
-        super(loadPropertiesFile(fileName, useTccl));
+        this(fileName, useTccl, false);
+    }
+
+    public PropertyFilePropertySource(final String fileName, final boolean useTccl, final boolean includeInvalid) {
+        super(loadPropertiesFile(fileName, useTccl), SYSTEM_CONTEXT, 20, includeInvalid);
     }
 
     private static Properties loadPropertiesFile(final String fileName, final boolean useTccl) {

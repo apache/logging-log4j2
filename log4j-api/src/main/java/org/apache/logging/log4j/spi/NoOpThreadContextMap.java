@@ -21,8 +21,8 @@ import java.util.Map;
 
 /**
  * {@code ThreadContextMap} implementation used when either of system properties
- * {@value LoggingSystemProperties#THREAD_CONTEXT_MAP_DISABLED} or
- * {@value LoggingSystemProperties#THREAD_CONTEXT_DISABLED} is {@code true}. This implementation does nothing.
+ * {@value LoggingSystemProperty#THREAD_CONTEXT_MAP_DISABLED} or
+ * {@value LoggingSystemProperty#THREAD_CONTEXT_DISABLED} is {@code true}. This implementation does nothing.
  *
  * @since 2.7
  */

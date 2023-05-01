@@ -1,0 +1,16 @@
+{
+  "JNDI": {
+    "enableJMS": "true"
+  },
+  "Script": {
+    "enableLanguages": [
+      "Groovy",
+      "JavaScript"
+    ]
+  },
+  "Configuration": {
+    "mergeStrategy": "com.acme.log4j.CustomMergeStrategy",
+    "location": "classpath:log4j2-My-App.xml",
+    "statusLoggerLevel": "debug"
+  }
+}
