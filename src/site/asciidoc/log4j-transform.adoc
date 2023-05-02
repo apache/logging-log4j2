@@ -29,3 +29,31 @@ resource transformer for the
 https://maven.apache.org/plugins/maven-shade-plugin/[Apache Maven Shade Plugin]
 that merges the plugin caches used by Log4j 2.x artifacts.
 
+== Download
+
+* Binary artifacts are available on https://central.sonatype.com/search?namespace=org.apache.logging.log4j[Maven Central].
+* The source code of the project is available on https://github.com/apache/logging-log4j-transform[Github].
+* Additionally the following source distributions are available:
++
+[cols="1,1,1,1"]
+|===
+|Distribution|Mirrors|Checksum|Signature
+
+|Source distribution (zip)
+|https://www.apache.org/dyn/closer.lua/logging/log4j/0.1.0/apache-log4j-transform-0.1.0-src.zip[apache-log4j-transform-0.1.0-src.zip]
+|https://www.apache.org/dist/logging/log4j-transform/0.1.0/apache-log4j-transform-0.1.0-src.zip.sha512[apache-log4j-transform-0.1.0-src.zip.sha512]
+|https://www.apache.org/dist/logging/log4j-transform/0.1.0/apache-log4j-transform-0.1.0-src.zip.asc[apache-log4j-transform-0.1.0-src.zip.asc]
+|===
+
+The PGP signatures can be verified using PGP or GPG.
+First download the https://www.apache.org/dist/logging/KEYS[KEYS] as well as the asc signature file for the relevant distribution.
+Make sure you get these files from the https://www.apache.org/dist/logging/[main distribution directory], rather than from a mirror.
+Then verify the signatures using
+
+[source,console]
+----
+gpg --import KEYS
+gpg --verify apache-log4j-transform-0.1.0-src.zip.asc
+----
+
+The distribution is signed by `ASF Logging Services RM`.

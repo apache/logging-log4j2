@@ -305,6 +305,7 @@
       <item name="Log4j Audit" href="https://logging.apache.org/log4j-audit/latest/index.html"/>
       <item name="Log4j Kotlin" href="https://logging.apache.org/log4j/kotlin/index.html"/>
       <item name="Log4j Scala" href="https://logging.apache.org/log4j/scala/index.html"/>
+      <item name="Log4j Transformation Tools" href="log4j-transform"/>
       <item name="Log4Net" href="https://logging.apache.org/log4net/index.html"/>
     </menu>
 
@@ -337,7 +338,6 @@
       <item name="Log4j Kubernetes Support" href="log4j-kubernetes.html"/>
       <item name="Log4j Spring Boot" href="log4j-spring-boot.html"/>
       <item name="Log4j Spring Cloud Config Client" href="log4j-spring-cloud-config-client.html"/>
-      <item name="Log4j Transformation Tools" href="log4j-transform"/>
     </menu>
 
     <menu name="Project Information" img="img/glyphicons/info.png">
