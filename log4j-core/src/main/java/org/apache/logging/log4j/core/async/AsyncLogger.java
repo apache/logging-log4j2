@@ -226,7 +226,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     }
 
     private void publish(final RingBufferLogEventTranslator translator) {
-        if (!loggerDisruptor.tryPublish(translator)) {
+        if (!getAsyncLoggerDisruptor().isDiscardBufferEmpty() || !loggerDisruptor.tryPublish(translator)) {
             handleRingBufferFull(translator);
         }
     }
@@ -339,7 +339,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         }
         StackTraceElement location = null;
         // calls the translateTo method on this AsyncLogger
-        if (!disruptor.getRingBuffer().tryPublishEvent(this,
+        if (!getAsyncLoggerDisruptor().isDiscardBufferEmpty() || !disruptor.getRingBuffer().tryPublishEvent(this,
                 this, // asyncLogger: 0
                 (location = calcLocationIfRequested(fqcn)), // location: 1
                 fqcn, // 2
@@ -378,7 +378,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             InternalAsyncUtil.makeMessageImmutable(message);
         }
         // calls the translateTo method on this AsyncLogger
-        if (!disruptor.getRingBuffer().tryPublishEvent(this,
+        if (!getAsyncLoggerDisruptor().isDiscardBufferEmpty() || !disruptor.getRingBuffer().tryPublishEvent(this,
             this, // asyncLogger: 0
             location, // location: 1
             fqcn, // 2
