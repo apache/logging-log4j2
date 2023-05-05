@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one or more
-  ~ contributor license agreements. See the NOTICE file distributed with
+  ~ contributor license agreements.  See the NOTICE file distributed with
   ~ this work for additional information regarding copyright ownership.
-  ~ The ASF licenses this file to You under the Apache license, Version 2.0
+  ~ The ASF licenses this file to you under the Apache License, Version 2.0
   ~ (the "License"); you may not use this file except in compliance with
-  ~ the License. You may obtain a copy of the License at
+  ~ the License.  You may obtain a copy of the License at
   ~
   ~      http://www.apache.org/licenses/LICENSE-2.0
   ~
   ~ Unless required by applicable law or agreed to in writing, software
   ~ distributed under the License is distributed on an "AS IS" BASIS,
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the license for the specific language governing permissions and
-  ~ limitations under the license.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -22,8 +22,8 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>8</version>
-    <relativePath/>
+    <version>9</version>
+    <relativePath />
   </parent>
 
   <groupId>org.apache.logging.log4j</groupId>
@@ -310,8 +310,8 @@
     <!-- Fixed `project.build.outputTimestamp` is required for reproducible builds: https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
     <project.build.outputTimestamp>1676697577</project.build.outputTimestamp>
     <docLabel>Site Documentation</docLabel>
-    <projectDir/>
-    <module.name/>
+    <projectDir />
+    <module.name />
 
     <!-- ========================
          Site-specific properties
@@ -364,7 +364,6 @@
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
     <spotbugs-maven-plugin.version>4.7.2.1</spotbugs-maven-plugin.version>
-    <spotless-maven-plugin.version>2.27.2</spotless-maven-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.0.0-M9</surefire.version>
     <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
@@ -1384,7 +1383,7 @@
             <maxmem>1024</maxmem>
             <compilerArguments>
               <Xmaxwarns>10000</Xmaxwarns>
-              <Xlint/>
+              <Xlint />
             </compilerArguments>
           </configuration>
         </plugin>
@@ -1468,12 +1467,6 @@
         </plugin>
 
         <plugin>
-          <groupId>com.diffplug.spotless</groupId>
-          <artifactId>spotless-maven-plugin</artifactId>
-          <version>${spotless-maven-plugin.version}</version>
-        </plugin>
-
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>xml-maven-plugin</artifactId>
           <version>${xml-maven-plugin.version}</version>
@@ -1553,7 +1546,7 @@
             </goals>
             <configuration>
               <rules>
-                <requireUpperBoundDeps/>
+                <requireUpperBoundDeps />
               </rules>
             </configuration>
           </execution>
@@ -1584,41 +1577,6 @@
             <version>${checkstyle.version}</version>
           </dependency>
         </dependencies>
-      </plugin>
-
-      <plugin>
-        <groupId>com.diffplug.spotless</groupId>
-        <artifactId>spotless-maven-plugin</artifactId>
-        <configuration>
-          <ratchetFrom>HEAD~31</ratchetFrom>
-          <java>
-            <licenseHeader>
-              <file>${log4jParentDir}/checkstyle-header.txt</file>
-            </licenseHeader>
-            <trimTrailingWhitespace/>
-            <endWithNewline/>
-            <indent>
-              <spaces>true</spaces>
-              <spacesPerTab>4</spacesPerTab>
-            </indent>
-            <importOrder>
-              <order>java,org,com,\#</order>
-            </importOrder>
-          </java>
-          <pom>
-            <sortPom>
-              <expandEmptyElements>false</expandEmptyElements>
-            </sortPom>
-          </pom>
-        </configuration>
-        <executions>
-          <execution>
-            <id>default-spotless</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
@@ -1918,7 +1876,6 @@
       </modules>
       <properties>
         <maven.test.skip>true</maven.test.skip>
-        <spotless.check.skip>true</spotless.check.skip>
       </properties>
       <build>
         <plugins>

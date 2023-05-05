@@ -1,17 +1,19 @@
+#
 # Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements. See the NOTICE file distributed with
+# contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache license, Version 2.0
+# The ASF licenses this file to you under the Apache License, Version 2.0
 # (the "License"); you may not use this file except in compliance with
-# the License. You may obtain a copy of the License at
+# the License.  You may obtain a copy of the License at
 #
 #      http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the license for the specific language governing permissions and
-# limitations under the license.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 name: "Scorecards supply-chain security"
 
@@ -65,6 +67,6 @@ jobs:
           retention-days: 5
 
       - name: "Upload to code-scanning"
-        uses: github/codeql-action/upload-sarif@67a35a08586135a9573f4327e904ecbf517a882d    # 2.1.22
+        uses: github/codeql-action/upload-sarif@8662eabe0e9f338a07350b7fd050732745f93848    # 2.1.22
         with:
           sarif_file: results.sarif

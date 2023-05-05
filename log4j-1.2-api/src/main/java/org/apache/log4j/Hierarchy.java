@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -14,11 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// WARNING This class MUST not have references to the Category or
-// WARNING RootCategory classes in its static initialization neither
-// WARNING directly nor indirectly.
-
 package org.apache.log4j;
 
 import java.util.Enumeration;
@@ -44,6 +39,9 @@ import org.apache.logging.log4j.spi.AbstractLoggerAdapter;
 import org.apache.logging.log4j.spi.LoggerContext;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
+// WARNING This class MUST not have references to the Category or
+// WARNING RootCategory classes in its static initialization neither
+// WARNING directly nor indirectly.
 /**
  * This class is specialized in retrieving loggers by name and also maintaining the logger hierarchy.
  *

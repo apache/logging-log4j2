@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
@@ -145,7 +145,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             final int compressionLevel = Integers.parseInt(trimmedCompressionLevelStr, Deflater.DEFAULT_COMPRESSION);
             // The config object can be null when this object is built programmatically.
             final StrSubstitutor nonNullStrSubstitutor = config != null ? config.getStrSubstitutor() : new StrSubstitutor();
-			return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, nonNullStrSubstitutor,
+            return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, nonNullStrSubstitutor,
                     customActions, stopCustomActionsOnError, tempCompressedFilePattern);
         }
 
@@ -519,11 +519,11 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
     @Override
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
         int fileIndex;
-		final StringBuilder buf = new StringBuilder(255);
+        final StringBuilder buf = new StringBuilder(255);
         if (minIndex == Integer.MIN_VALUE) {
             final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
             fileIndex = eligibleFiles.size() > 0 ? eligibleFiles.lastKey() + 1 : 1;
-			manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
+            manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
         } else {
             if (maxIndex < 0) {
                 return null;
@@ -533,7 +533,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             if (fileIndex < 0) {
                 return null;
             }
-			manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
+            manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
             if (LOGGER.isTraceEnabled()) {
                 final double durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
                 LOGGER.trace("DefaultRolloverStrategy.purge() took {} milliseconds", durationMillis);

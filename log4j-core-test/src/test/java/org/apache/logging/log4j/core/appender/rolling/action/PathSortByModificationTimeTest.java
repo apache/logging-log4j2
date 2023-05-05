@@ -1,20 +1,19 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.nio.file.Path;
@@ -50,15 +49,15 @@ public class PathSortByModificationTimeTest {
         final DummyFileAttributes a2 = new DummyFileAttributes();
         a1.lastModified = FileTime.fromMillis(100);
         a2.lastModified = FileTime.fromMillis(222);
-        
+
         assertEquals(1, sorter.compare(path(p1, a1), path(p1, a2)), "same path, 2nd more recent");
         assertEquals(1, sorter.compare(path(p1, a1), path(p2, a2)), "path ignored, 2nd more recent");
         assertEquals(1, sorter.compare(path(p2, a1), path(p1, a2)), "path ignored, 2nd more recent");
-        
+
         assertEquals(-1, sorter.compare(path(p1, a2), path(p1, a1)), "same path, 1st more recent");
         assertEquals(-1, sorter.compare(path(p1, a2), path(p2, a1)), "path ignored, 1st more recent");
         assertEquals(-1, sorter.compare(path(p2, a2), path(p1, a1)), "path ignored, 1st more recent");
-        
+
         assertEquals(0, sorter.compare(path(p1, a1), path(p1, a1)), "same path, same time");
         assertEquals(1, sorter.compare(path(p1, a1), path(p2, a1)), "p2 < p1, same time");
         assertEquals(-1, sorter.compare(path(p2, a1), path(p1, a1)), "p2 < p1, same time");
@@ -73,15 +72,15 @@ public class PathSortByModificationTimeTest {
         final DummyFileAttributes a2 = new DummyFileAttributes();
         a1.lastModified = FileTime.fromMillis(100);
         a2.lastModified = FileTime.fromMillis(222);
-        
+
         assertEquals(-1, sorter.compare(path(p1, a1), path(p1, a2)), "same path, 2nd more recent");
         assertEquals(-1, sorter.compare(path(p1, a1), path(p2, a2)), "path ignored, 2nd more recent");
         assertEquals(-1, sorter.compare(path(p2, a1), path(p1, a2)), "path ignored, 2nd more recent");
-        
+
         assertEquals(1, sorter.compare(path(p1, a2), path(p1, a1)), "same path, 1st more recent");
         assertEquals(1, sorter.compare(path(p1, a2), path(p2, a1)), "path ignored, 1st more recent");
         assertEquals(1, sorter.compare(path(p2, a2), path(p1, a1)), "path ignored, 1st more recent");
-        
+
         assertEquals(0, sorter.compare(path(p1, a1), path(p1, a1)), "same path, same time");
         assertEquals(-1, sorter.compare(path(p1, a1), path(p2, a1)), "p1 < p2, same time");
         assertEquals(1, sorter.compare(path(p2, a1), path(p1, a1)), "p1 < p2, same time");

@@ -1,0 +1,59 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= Log4j Transformation Tools
+
+Log4j Transformation Tools is set of build utilities to transform source and binary artifacts that use Log4j 2.x libraries.
+The full documentation is available on https://github.com/apache/logging-log4j-transform/blob/main/README.adoc[Github].
+
+== Available Tools
+
+https://github.com/apache/logging-log4j-transform/blob/main/log4j-transform-maven-plugin/README.adoc[Log4j Transform Maven Plugin]::
+Apache Maven plugin that precomputes the location of logging statements to prevent expensive runtime lookup calls.
+
+https://github.com/apache/logging-log4j-transform/blob/main/log4j-transform-maven-shade-plugin-extensions/README.adoc[Log4j Plugin Cache Transformer]::
+resource transformer for the
+https://maven.apache.org/plugins/maven-shade-plugin/[Apache Maven Shade Plugin]
+that merges the plugin caches used by Log4j 2.x artifacts.
+
+== Download
+
+* Binary artifacts are available on https://central.sonatype.com/search?namespace=org.apache.logging.log4j[Maven Central].
+* The source code of the project is available on https://github.com/apache/logging-log4j-transform[Github].
+* Additionally the following source distributions are available:
++
+[cols="1,1,1,1"]
+|===
+|Distribution|Mirrors|Checksum|Signature
+
+|Source distribution (zip)
+|https://www.apache.org/dyn/closer.lua/logging/log4j/0.1.0/apache-log4j-transform-0.1.0-src.zip[apache-log4j-transform-0.1.0-src.zip]
+|https://www.apache.org/dist/logging/log4j-transform/0.1.0/apache-log4j-transform-0.1.0-src.zip.sha512[apache-log4j-transform-0.1.0-src.zip.sha512]
+|https://www.apache.org/dist/logging/log4j-transform/0.1.0/apache-log4j-transform-0.1.0-src.zip.asc[apache-log4j-transform-0.1.0-src.zip.asc]
+|===
+
+The PGP signatures can be verified using PGP or GPG.
+First download the https://www.apache.org/dist/logging/KEYS[KEYS] as well as the asc signature file for the relevant distribution.
+Make sure you get these files from the https://www.apache.org/dist/logging/[main distribution directory], rather than from a mirror.
+Then verify the signatures using
+
+[source,console]
+----
+gpg --import KEYS
+gpg --verify apache-log4j-transform-0.1.0-src.zip.asc
+----
+
+The distribution is signed by `ASF Logging Services RM`.

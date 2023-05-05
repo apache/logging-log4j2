@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.message;
 
@@ -201,7 +201,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
         if (value == null) {
             throw new IllegalArgumentException("No value provided for key " + candidateKey);
         }
-    	final String key = toKey(candidateKey);
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
     }
@@ -594,7 +594,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      * @since 2.12
      */
     protected String toKey(final String candidateKey) {
-    	return candidateKey;
+        return candidateKey;
     }
 
     /**
@@ -606,7 +606,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      */
     @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final boolean value) {
-    	final String key = toKey(candidateKey);
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -621,7 +621,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      */
     @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final byte value) {
-    	final String key = toKey(candidateKey);
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -636,7 +636,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      */
     @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final char value) {
-    	final String key = toKey(candidateKey);
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -652,7 +652,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      */
     @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final double value) {
-    	final String key = toKey(candidateKey);
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -667,7 +667,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      */
     @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final float value) {
-    	final String key = toKey(candidateKey);
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -682,7 +682,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      */
     @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final int value) {
-    	final String key = toKey(candidateKey);
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -697,7 +697,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      */
     @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final long value) {
-    	final String key = toKey(candidateKey);
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -712,7 +712,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      */
     @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final Object value) {
-    	final String key = toKey(candidateKey);
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -727,7 +727,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      */
     @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final short value) {
-    	final String key = toKey(candidateKey);
+        final String key = toKey(candidateKey);
         validate(key, value);
         data.putValue(key, value);
         return (M) this;
@@ -741,7 +741,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      */
     @SuppressWarnings("unchecked")
     public M with(final String candidateKey, final String value) {
-    	final String key = toKey(candidateKey);
+        final String key = toKey(candidateKey);
         put(key, value);
         return (M) this;
     }

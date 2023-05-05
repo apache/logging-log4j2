@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.impl;
 
@@ -64,7 +64,7 @@ public class Log4jLogEventNanoTimeTest {
         Log4jLogEvent.setNanoClock(new DummyNanoClock(DUMMYNANOTIME));
         log.info("Use dummy nano clock");
         assertTrue(Log4jLogEvent.getNanoClock() instanceof DummyNanoClock, "using SystemNanoClock");
-        
+
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
         String line1;
@@ -84,7 +84,7 @@ public class Log4jLogEventNanoTimeTest {
         assertEquals(line1Parts[0], line1Parts[1]);
         final long loggedNanoTime = Long.parseLong(line1Parts[0]);
         assertTrue(loggedNanoTime - before < TimeUnit.SECONDS.toNanos(1), "used system nano time");
-        
+
         final String[] line2Parts = line2.split(" AND ");
         assertEquals("Use dummy nano clock", line2Parts[2]);
         assertEquals(String.valueOf(DUMMYNANOTIME), line2Parts[0]);

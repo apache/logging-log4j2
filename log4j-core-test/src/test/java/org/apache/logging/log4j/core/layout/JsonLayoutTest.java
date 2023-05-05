@@ -1,27 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.layout;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -62,6 +55,13 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the JsonLayout class.
@@ -519,21 +519,21 @@ public class JsonLayoutTest {
 
     @Test
     public void testObjectMessageAsJsonString() {
-    		final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, false);
-		assertTrue(str, str.contains("\"message\":\"" + this.getClass().getCanonicalName() + "$TestClass@"));
+            final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, false);
+        assertTrue(str, str.contains("\"message\":\"" + this.getClass().getCanonicalName() + "$TestClass@"));
     }
 
     @Test
     public void testObjectMessageAsJsonObject() {
-    		final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, true);
-    		assertTrue(str, str.contains("\"message\":{\"value\":1234}"));
+            final String str = prepareJSONForObjectMessageAsJsonObjectTests(1234, true);
+            assertTrue(str, str.contains("\"message\":{\"value\":1234}"));
     }
 
     private String prepareJSONForObjectMessageAsJsonObjectTests(final int value, final boolean objectMessageAsJsonObject) {
-    	final TestClass testClass = new TestClass();
-		testClass.setValue(value);
-		// @formatter:off
-		final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
+        final TestClass testClass = new TestClass();
+        testClass.setValue(value);
+        // @formatter:off
+        final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
             .setLoggerName("a.B")
             .setLoggerFqcn("f.q.c.n")
             .setLevel(Level.DEBUG)
@@ -541,10 +541,10 @@ public class JsonLayoutTest {
             .setThreadName("threadName")
             .setTimeMillis(1).build();
         // @formatter:off
-		final AbstractJacksonLayout layout = JsonLayout.newBuilder()
-				.setCompact(true)
-				.setObjectMessageAsJsonObject(objectMessageAsJsonObject)
-				.build();
+        final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setCompact(true)
+                .setObjectMessageAsJsonObject(objectMessageAsJsonObject)
+                .build();
         // @formatter:off
         return layout.toSerializable(expected);
     }
@@ -649,15 +649,15 @@ public class JsonLayoutTest {
         return compact ? ":" : " : ";
     }
 
-	private static class TestClass {
-		private int value;
+    private static class TestClass {
+        private int value;
 
-		public int getValue() {
-			return value;
-		}
+        public int getValue() {
+            return value;
+        }
 
-		public void setValue(final int value) {
-			this.value = value;
-		}
-	}
+        public void setValue(final int value) {
+            this.value = value;
+        }
+    }
 }

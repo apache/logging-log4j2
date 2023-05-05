@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.message;
 
@@ -153,7 +153,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Set the name of the Logger.
-     * 
+     *
      * @param name The name of the Logger.
      */
     @Override
@@ -163,7 +163,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Returns the name of the Logger.
-     * 
+     *
      * @return the name of the Logger.
      */
     @Override
@@ -173,7 +173,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Returns the formatted message after looking up the format in the resource bundle.
-     * 
+     *
      * @return The formatted message String.
      */
     @Override
@@ -218,7 +218,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
 
     /**
      * Override this to use a ResourceBundle.Control in Java 6
-     * 
+     *
      * @param rbBaseName The base name of the resource bundle, a fully qualified class name.
      * @param resourceBundleLocale The locale to use when formatting the message.
      * @param loop If true the key will be treated as a package or class name and a resource bundle will be located

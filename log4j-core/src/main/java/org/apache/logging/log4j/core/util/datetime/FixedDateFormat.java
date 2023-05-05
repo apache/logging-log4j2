@@ -1,29 +1,28 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.apache.logging.log4j.core.util.datetime;
-
-import org.apache.logging.log4j.core.time.Instant;
 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.core.time.Instant;
 
 /**
  * Custom time formatter that trades flexibility for performance. This formatter only supports the date patterns defined
@@ -42,7 +41,7 @@ public class FixedDateFormat {
      * </p>
      */
     public enum FixedFormat {
-        
+
         /**
          * ABSOLUTE time format: {@code "HH:mm:ss,SSS"}.
          */
@@ -229,7 +228,7 @@ public class FixedDateFormat {
         }
 
         private final static int[] EMPTY_RANGE = { -1, -1 };
-        
+
         /**
          * @return int[0] start index inclusive; int[1] end index exclusive
          */
@@ -239,7 +238,7 @@ public class FixedDateFormat {
             if (indexStart >= 0) {
                 indexEnd = pattern.indexOf('Z', indexStart);
                 indexEnd = indexEnd < 0 ? pattern.indexOf('X', indexStart) : indexEnd;
-                indexEnd = indexEnd < 0 ? pattern.length() : indexEnd; 
+                indexEnd = indexEnd < 0 ? pattern.length() : indexEnd;
                 for (int i = indexStart + 1; i < indexEnd; i++) {
                     if (pattern.charAt(i) != SECOND_FRACTION_PATTERN) {
                         return EMPTY_RANGE;
@@ -310,7 +309,7 @@ public class FixedDateFormat {
     /**
      * Fixed time zone formats. The enum names are symbols from Java's <a href=
      * "https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter</a>.
-     * 
+     *
      * @see <a href=
      * "https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter</a>
      */
@@ -324,13 +323,13 @@ public class FixedDateFormat {
         /**
          * Offset like {@code -0700}.
          */
-        HHMM(NONE, true, 5), 
-        
-        /** 
+        HHMM(NONE, true, 5),
+
+        /**
          * Offset like {@code -07:00}.
          */
         HHCMM(':', true, 6);
-        
+
         private FixedTimeZoneFormat() {
             this(NONE, true, 4);
         }
@@ -345,7 +344,7 @@ public class FixedDateFormat {
         private final char timeSeparatorChar;
         private final int timeSeparatorCharLen;
         private final boolean useMinutes;
-        // The length includes 1 for the leading sign 
+        // The length includes 1 for the leading sign
         private final int length;
 
         public int getLength() {

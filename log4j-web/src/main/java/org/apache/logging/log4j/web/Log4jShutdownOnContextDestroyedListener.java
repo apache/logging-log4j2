@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.web;
 
@@ -43,12 +43,12 @@ public class Log4jShutdownOnContextDestroyedListener implements ServletContextLi
 
     @Override
     public void contextInitialized(final ServletContextEvent event) {
-        LOGGER.debug(Log4jShutdownOnContextDestroyedListener.class.getSimpleName() + 
+        LOGGER.debug(Log4jShutdownOnContextDestroyedListener.class.getSimpleName() +
                 " ensuring that Log4j started up properly.");
         servletContext = event.getServletContext();
         if (null == servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)) {
             throw new IllegalStateException(
-                    "Context did not contain required Log4jWebLifeCycle in the " 
+                    "Context did not contain required Log4jWebLifeCycle in the "
                     + Log4jWebSupport.SUPPORT_ATTRIBUTE + " attribute.");
         }
         this.initializer = WebLoggerContextUtils.getWebLifeCycle(servletContext);
