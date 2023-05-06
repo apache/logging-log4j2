@@ -50,8 +50,8 @@ public enum LoggingSystemProperty implements PropertyKey {
      *
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1270">LOG4J2-1270</a>
      */
-    // GC.enableThreadLocals : calculate | true | false
-    GC_THREAD_LOCALS_ENABLED(PropertyComponent.GC, Constant.ENABLE_THREAD_LOCALS),
+    // ThreadLocals.enabled : calculate | true | false
+    THREAD_LOCALS_ENABLE(PropertyComponent.THREAD_LOCALs, Constant.ENABLE),
 
     /**
      * Property to ignore the thread context ClassLoader when set to {@code true}.
@@ -226,7 +226,7 @@ public enum LoggingSystemProperty implements PropertyKey {
     }
 
     public static class Constant {
-        static final String DELIM = ".";
+        private static final String DELIM = ".";
         /**
          * Property to enable TRACE-level debug logging in the Log4j system itself.
          * <p>
@@ -235,7 +235,7 @@ public enum LoggingSystemProperty implements PropertyKey {
          * configuration's {@code <Configuration status="<level>" ...>} status attribute.
          * </p>
          */
-        static String DEBUG = "debug";
+        static final String DEBUG = "debug";
         public static String SYSTEM_DEBUG = SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.SYSTEM + DELIM + DEBUG;
 
         /**
@@ -243,8 +243,8 @@ public enum LoggingSystemProperty implements PropertyKey {
          * (from either {@code javax} or {@code jakarta}) is checked to see if this is a webapp.
          */
         // Web.enableWebApp : calculate | true | false
-        static String IS_WEBAPP = "isWebapp";
-        public static final String SYSTEM_IS_WEBAPP =
+        static final String IS_WEBAPP = "isWebApp";
+        public static final String WEB_IS_WEBAPP =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.WEB + DELIM + IS_WEBAPP;
 
         /**
@@ -252,10 +252,10 @@ public enum LoggingSystemProperty implements PropertyKey {
          *
          * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1270">LOG4J2-1270</a>
          */
-        // GC.enableThreadLocals : calculate | true | false
-        static final String ENABLE_THREAD_LOCALS = "enableThreadLocals";
-        public static final String SYSTEM_THREAD_LOCALS_ENABLED =
-                SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.THREAD_LOCALS + DELIM + ENABLE_THREAD_LOCALS;
+        // ThreadLocals.enabled : calculate | true | false
+        static final String ENABLE = "enable";
+        public static final String THREAD_LOCALS_ENABLE =
+                SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.THREAD_LOCALS + DELIM + ENABLE;
 
         /**
          * Property to ignore the thread context ClassLoader when set to {@code true}.
@@ -400,7 +400,6 @@ public enum LoggingSystemProperty implements PropertyKey {
          * thread context map and stack will be disabled.
          */
         // ThreadContext.enable
-        static final String ENABLE = "enable";
         public static final String THREAD_CONTEXT_ENABLED =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.THREAD_CONTEXT + DELIM + ENABLE;
 

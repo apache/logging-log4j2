@@ -26,8 +26,8 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.h2.util.IOUtils;
 import org.junit.BeforeClass;
@@ -52,7 +52,7 @@ public abstract class AbstractJdbcAppenderDataSourceTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.enableJndiJdbc", "true");
+        System.setProperty("log4j2.*.JNDI.enableJDBC", "true");
     }
 
     protected AbstractJdbcAppenderDataSourceTest(final JdbcRule jdbcRule) {

@@ -16,6 +16,13 @@
  */
 package org.apache.logging.log4j.core;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.lang.ref.Cleaner;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
@@ -23,13 +30,6 @@ import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.lang.ref.Cleaner;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;

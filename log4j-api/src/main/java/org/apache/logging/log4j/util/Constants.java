@@ -54,7 +54,7 @@ public final class Constants {
     public static final boolean IS_WEB_APP = isWebApp();
 
     private static final LazyBoolean threadLocalsEnabled = new LazyBoolean(
-            () -> !isWebApp() && PropertiesUtil.getProperties().getBooleanProperty(LoggingSystemProperty.GC_THREAD_LOCALS_ENABLED, true));
+            () -> !isWebApp() && PropertiesUtil.getProperties().getBooleanProperty(LoggingSystemProperty.THREAD_LOCALS_ENABLE, true));
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.

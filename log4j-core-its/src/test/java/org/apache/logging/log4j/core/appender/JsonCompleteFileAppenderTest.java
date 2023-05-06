@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -25,13 +23,13 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.CoreContextSelectors;
+import org.apache.logging.log4j.core.test.categories.Layouts;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.test.util.FixedTimeClock;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.test.junit.CleanFiles;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -41,6 +39,8 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests a "complete" JSON file.

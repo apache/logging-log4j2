@@ -33,34 +33,34 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class Log4j1222Test
 {
 
-	@Test
-	@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "log4j2-console.xml")
-	public void homepageRendersSuccessfully() {
-		Runtime.getRuntime().addShutdownHook(new ShutdownHook());
-	}
+    @Test
+    @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "log4j2-console.xml")
+    public void homepageRendersSuccessfully() {
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+    }
 
-	private static class ShutdownHook extends Thread {
+    private static class ShutdownHook extends Thread {
 
-		private static class Holder {
-			private static final Logger LOGGER = LogManager.getLogger(Log4j1222Test.class);
-		}
+        private static class Holder {
+            private static final Logger LOGGER = LogManager.getLogger(Log4j1222Test.class);
+        }
 
-		@Override
-		public void run()
-		{
-			super.run();
-			trigger();
-		}
+        @Override
+        public void run()
+        {
+            super.run();
+            trigger();
+        }
 
-		private void trigger() {
-			Holder.LOGGER.info("Attempt to trigger");
-			assertTrue(Holder.LOGGER instanceof TestLogger, "Logger is of type " + Holder.LOGGER.getClass().getName());
-			if (((TestLogger) Holder.LOGGER).getEntries().size() == 0) {
-				System.out.println("Logger contains no messages");
-			}
-			for (final String msg : ((TestLogger) Holder.LOGGER).getEntries()) {
-				System.out.println(msg);
-			}
-		}
-	}
+        private void trigger() {
+            Holder.LOGGER.info("Attempt to trigger");
+            assertTrue(Holder.LOGGER instanceof TestLogger, "Logger is of type " + Holder.LOGGER.getClass().getName());
+            if (((TestLogger) Holder.LOGGER).getEntries().size() == 0) {
+                System.out.println("Logger contains no messages");
+            }
+            for (final String msg : ((TestLogger) Holder.LOGGER).getEntries()) {
+                System.out.println(msg);
+            }
+        }
+    }
 }

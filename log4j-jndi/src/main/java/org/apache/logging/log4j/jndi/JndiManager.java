@@ -14,14 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.jndi;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -215,7 +213,7 @@ public class JndiManager extends AbstractManager {
         public JndiManager createManager(final String name, final Properties data) {
             if (!isJndiEnabled()) {
                 throw new IllegalStateException(String.format("JNDI must be enabled by setting one of the %s* properties to true",
-                        Log4jPropertyKey.Constant.JNDI_ENABLED));
+                        "JNDI.enable{SubKey}"));
             }
             try {
                 return new JndiManager(name, new InitialContext(data));

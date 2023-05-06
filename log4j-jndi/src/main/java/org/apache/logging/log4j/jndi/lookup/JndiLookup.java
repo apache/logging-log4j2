@@ -16,10 +16,14 @@
  */
 package org.apache.logging.log4j.jndi.lookup;
 
+import java.util.Objects;
+import javax.naming.NamingException;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
 import org.apache.logging.log4j.core.lookup.Lookup;
 import org.apache.logging.log4j.jndi.JndiManager;
@@ -27,15 +31,13 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.validation.constraints.RequiredProperty;
 import org.apache.logging.log4j.status.StatusLogger;
 
-import javax.naming.NamingException;
-import java.util.Objects;
-
 /**
  * Looks up keys from JNDI resources.
  */
 @Lookup
 @Plugin("jndi")
-@RequiredProperty(name = "log4j2.enableJndiLookup", value = "true", message = "JNDI must be enabled by setting log4j2.enableJndiLookup=true")
+@RequiredProperty(name = Log4jPropertyKey.Constant.JNDI_ENABLE_LOOKUP, value = "true",
+        message = "JNDI must be enabled by setting JNDI.enableLookup=true")
 public class JndiLookup extends AbstractLookup {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

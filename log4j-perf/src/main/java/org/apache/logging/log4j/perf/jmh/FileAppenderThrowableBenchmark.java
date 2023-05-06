@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
 public class FileAppenderThrowableBenchmark {
     static {
         // log4j2
-        System.setProperty(LoggingSystemProperty.SYSTEM_IS_WEBAPP, "false");
+        System.setProperty(LoggingSystemProperty.Constant.WEB_IS_WEBAPP, "false");
         System.setProperty("log4j.configurationFile", "log4j2-perf-file-throwable.xml");
         // log4j 1.2
         System.setProperty("log4j.configuration", "log4j12-perf-file-throwable.xml");

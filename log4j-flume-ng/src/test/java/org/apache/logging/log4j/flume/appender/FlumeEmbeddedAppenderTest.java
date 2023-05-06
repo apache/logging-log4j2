@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
-
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
@@ -48,9 +47,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -237,23 +236,23 @@ public class FlumeEmbeddedAppenderTest {
 
     }
 
-	private static boolean deleteFiles(final File file) {
-		boolean result = true;
-		if (file.isDirectory()) {
+    private static boolean deleteFiles(final File file) {
+        boolean result = true;
+        if (file.isDirectory()) {
 
-			final File[] files = file.listFiles();
-			if (files != null) {
-				for (final File child : files) {
-					result &= deleteFiles(child);
-				}
-			}
+            final File[] files = file.listFiles();
+            if (files != null) {
+                for (final File child : files) {
+                    result &= deleteFiles(child);
+                }
+            }
 
-		} else if (!file.exists()) {
-			return true;
-		}
+        } else if (!file.exists()) {
+            return true;
+        }
 
-		return result && file.delete();
-	}
+        return result && file.delete();
+    }
 
     private static class EventCollector implements AvroSourceProtocol {
         private final LinkedBlockingQueue<AvroFlumeEvent> eventQueue = new LinkedBlockingQueue<>();

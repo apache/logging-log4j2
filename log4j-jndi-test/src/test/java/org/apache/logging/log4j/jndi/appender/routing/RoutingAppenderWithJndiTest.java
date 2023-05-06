@@ -23,10 +23,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.EventLogger;
-import org.apache.logging.log4j.jndi.test.junit.JndiRule;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.jndi.test.junit.JndiRule;
+import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -47,7 +47,7 @@ public class RoutingAppenderWithJndiTest {
     public static LoggerContextRule loggerContextRule = new LoggerContextRule(getLocation());
 
     private static String getLocation() {
-        System.setProperty("log4j2.enableJndiLookup", "true");
+        System.setProperty("log4j2.*.JNDI.enableLookup", "true");
         return "log4j-routing-by-jndi.xml";
     }
 

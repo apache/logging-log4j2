@@ -32,7 +32,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
-
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
@@ -52,9 +51,9 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -351,14 +350,14 @@ public class FlumePersistentAppenderTest {
 
     @Test
     public void testLogInterrupted() {
-    	final ExecutorService executor = Executors.newSingleThreadExecutor();
+        final ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-        	executor.shutdownNow();
-        	final Logger logger = LogManager.getLogger("EventLogger");
+            executor.shutdownNow();
+            final Logger logger = LogManager.getLogger("EventLogger");
             final Marker marker = MarkerManager.getMarker("EVENT");
             logger.info(marker, "This is a test message");
             Assert.assertTrue("Interruption status not preserved",
-            		Thread.currentThread().isInterrupted());
+                    Thread.currentThread().isInterrupted());
         });
     }
 
@@ -388,22 +387,22 @@ public class FlumePersistentAppenderTest {
 
     }
 
-	private static boolean deleteFiles(final File file) {
-		boolean result = true;
-		if (file.isDirectory()) {
+    private static boolean deleteFiles(final File file) {
+        boolean result = true;
+        if (file.isDirectory()) {
 
-			final File[] files = file.listFiles();
-			if (files != null) {
-				for (final File child : files) {
-					result &= deleteFiles(child);
-				}
-			}
-		} else if (!file.exists()) {
-			return true;
-		}
+            final File[] files = file.listFiles();
+            if (files != null) {
+                for (final File child : files) {
+                    result &= deleteFiles(child);
+                }
+            }
+        } else if (!file.exists()) {
+            return true;
+        }
 
-		return result && file.delete();
-	}
+        return result && file.delete();
+    }
 
     private static class EventCollector implements AvroSourceProtocol {
         private final LinkedBlockingQueue<AvroFlumeEvent> eventQueue = new LinkedBlockingQueue<>();

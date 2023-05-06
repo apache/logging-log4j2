@@ -54,6 +54,7 @@ public abstract class QueueFullAbstractTest {
         @Override
         public void run() {
             try {
+                TRACE("Waiting for unlocker CountDownLatch. count: " + countDownLatch.getCount());
                 countDownLatch.await();
                 TRACE("Unlocker activated. Sleeping 500 millis before taking action...");
                 Thread.sleep(500);
@@ -85,14 +86,19 @@ public abstract class QueueFullAbstractTest {
     }
 
     static Stack transform(final List<LogEvent> logEvents) {
-        final List<String> filtered = new ArrayList<>(logEvents.size());
-        for (LogEvent event : logEvents) {
-            filtered.add(event.getMessage().getFormattedMessage());
-        }
+        final List<String> filtered = getMessages(logEvents);
         Collections.reverse(filtered);
         Stack<String> result = new Stack<>();
         result.addAll(filtered);
         return result;
+    }
+
+    static List<String> getMessages(final List<LogEvent> logEvents) {
+        final List<String> filtered = new ArrayList<>(logEvents.size());
+        for (LogEvent event : logEvents) {
+            filtered.add(event.getMessage().getFormattedMessage());
+        }
+        return filtered;
     }
 
     static long asyncRemainingCapacity(Logger logger) {

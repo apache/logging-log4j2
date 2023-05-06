@@ -34,21 +34,21 @@ public final class Constants {
 
     /**
      * Check to determine if the JNDI feature is available.
-     * @param subKey The feature to check.
+     * @param key The feature to check.
      * @return true if the feature is available.
      */
-    private static boolean isJndiEnabled(final String subKey) {
-        return PropertiesUtil.getProperties().getBooleanProperty(Log4jPropertyKey.JNDI_ENABLED, false)
+    private static boolean isJndiEnabled(final PropertyKey key) {
+        return PropertiesUtil.getProperties().getBooleanProperty(key, false)
                 && isClassAvailable(JNDI_MANAGER_CLASS);
     }
 
-    public static boolean JNDI_CONTEXT_SELECTOR_ENABLED = isJndiEnabled("ContextSelector");
+    public static boolean JNDI_CONTEXT_SELECTOR_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_CONTEXT_SELECTOR);
 
-    public static boolean JNDI_JMS_ENABLED = isJndiEnabled("Jms");
+    public static boolean JNDI_JMS_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_ENABLE_JMS);
 
-    public static boolean JNDI_LOOKUP_ENABLED = isJndiEnabled("Lookup");
+    public static boolean JNDI_LOOKUP_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_ENABLE_LOOKUP);
 
-    public static boolean JNDI_JDBC_ENABLED = isJndiEnabled("Jdbc");
+    public static boolean JNDI_JDBC_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_ENABLE_JDBC);
 
     public static final Key<Level> DEFAULT_STATUS_LEVEL_KEY = new @Named("StatusLogger") Key<>() {};
 

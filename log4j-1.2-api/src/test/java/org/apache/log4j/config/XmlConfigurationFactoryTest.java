@@ -16,17 +16,17 @@
  */
 package org.apache.log4j.config;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

@@ -45,6 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @CleanUpFiles("target/test.log")
+@SetSystemProperty(key = "log4j.level", value = "info")
 @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_DEFAULT_LEVEL, value = "info")
 @SetSystemProperty(key = Log4jPropertyKey.Constant.STATUS_DEFAULT_LEVEL, value = "info")
 public class CustomConfigurationTest {

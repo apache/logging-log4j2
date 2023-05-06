@@ -126,7 +126,7 @@ public final class Server {
     }
 
     private static boolean isJmxDisabled() {
-        return !PropertiesUtil.getProperties().getBooleanProperty(Log4jPropertyKey.JMX_ENABLED);
+        return !PropertiesUtil.getProperties().getBooleanProperty(Log4jPropertyKey.JMX_ENABLED, true);
     }
 
     public static void reregisterMBeansAfterReconfigure() {

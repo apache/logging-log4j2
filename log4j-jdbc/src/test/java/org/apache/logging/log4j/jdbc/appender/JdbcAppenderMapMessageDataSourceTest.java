@@ -16,11 +16,6 @@
  */
 package org.apache.logging.log4j.jdbc.appender;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,7 +23,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.sql.DataSource;
 
 import org.apache.commons.lang3.StringUtils;
@@ -47,6 +41,11 @@ import org.junit.rules.RuleChain;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 /**
  * Unit tests {@link MapMessage}s for JdbcAppender using a {@link DataSource} configuration.
  */
@@ -58,7 +57,7 @@ public class JdbcAppenderMapMessageDataSourceTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.enableJndiJdbc", "true");
+        System.setProperty("log4j2.*.JNDI.enableJDBC", "true");
     }
 
     public JdbcAppenderMapMessageDataSourceTest() {

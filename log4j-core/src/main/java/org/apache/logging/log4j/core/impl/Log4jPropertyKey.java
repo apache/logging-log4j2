@@ -51,7 +51,7 @@ public enum Log4jPropertyKey implements PropertyKey {
     CONFIG_RELIABILITY_STRATEGY_AWAIT_UNCONDITIONALLY_MILLIS(PropertyComponent.CONFIGURATION,
             Constant.WAIT_MILLIS_BEFORE_STOP_OLD_CONFIG),
     CONFIG_V1_COMPATIBILITY_ENABLED(PropertyComponent.LOG4J1, Constant.COMPATIBILITY),
-    CONFIG_V1_FILE_NAME(PropertyComponent.LOG4J1, Constant.CONFIGURATION),
+    CONFIG_V1_FILE_NAME(PropertyComponent.LOG4J, Constant.CONFIGURATION),
     CONTEXT_SELECTOR_CLASS_NAME(PropertyComponent.LOG4J, Constant.CONTEXT_SELECTOR),
     GC_ENABLE_DIRECT_ENCODERS(PropertyComponent.GC, Constant.ENABLE_DIRECT_ENCODERS),
     GC_ENCODER_BYTE_BUFFER_SIZE(PropertyComponent.GC, Constant.ENCODER_BYTE_BUFFER_SIZE),
@@ -61,7 +61,10 @@ public enum Log4jPropertyKey implements PropertyKey {
     GC_REUSABLE_MESSAGE_MAX_SIZE(PropertyComponent.GC,Constant.MAX_REUSABLE_MSG_SIZE),
     JMX_ENABLED(PropertyComponent.JMX, Constant.ENABLED),
     JMX_NOTIFY_ASYNC(PropertyComponent.JMX, Constant.NOTIFY_ASYNC),
-    JNDI_ENABLED(PropertyComponent.JNDI, Constant.ENABLED),
+    JNDI_CONTEXT_SELECTOR(PropertyComponent.JNDI, Constant.CONTEXT_SELECTOR),
+    JNDI_ENABLE_JDBC(PropertyComponent.JNDI, Constant.ENABLE_JDBC),
+    JNDI_ENABLE_JMS(PropertyComponent.JNDI, Constant.ENABLE_JMS),
+    JNDI_ENABLE_LOOKUP(PropertyComponent.JNDI, Constant.ENABLE_LOOKUP),
     LOG_EVENT_FACTORY_CLASS_NAME(PropertyComponent.LOGGER, Constant.LOG_EVENT_FACTORY),
     SCRIPT_ENABLE_LANGUAGES(PropertyComponent.SCRIPT, Constant.ENABLE_LANGUAGES),
     SHUTDOWN_CALLBACK_REGISTRY(PropertyComponent.LOGGER_CONTEXT, Constant.SHUT_DOWN_CALLBACK_REGISTRY),
@@ -231,8 +234,17 @@ public enum Log4jPropertyKey implements PropertyKey {
         static final String NOTIFY_ASYNC = "notifyAsync";
         public static final String JMX_NOTIFY_ASYNC = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
                 + PropertyComponent.Constant.JMX + DELIM + NOTIFY_ASYNC;
-        public static final String JNDI_ENABLED = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
-                + PropertyComponent.Constant.JNDI + DELIM + ENABLED;
+        public static final String JNDI_CONTEXT_SELECTOR = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
+                + PropertyComponent.Constant.JNDI + DELIM + CONTEXT_SELECTOR;
+        static final String ENABLE_JDBC = "enableJDBC";
+        public static final String JNDI_ENABLE_JDBC = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
+                + PropertyComponent.Constant.JNDI + DELIM + ENABLE_JDBC;
+        static final String ENABLE_JMS = "enableJMS";
+        public static final String JNDI_ENABLE_JMS = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
+                + PropertyComponent.Constant.JNDI + DELIM + ENABLE_JMS;
+        static final String ENABLE_LOOKUP = "enableLookup";
+        public static final String JNDI_ENABLE_LOOKUP = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
+                + PropertyComponent.Constant.JNDI + DELIM + ENABLE_LOOKUP;
         static final String LOG_EVENT_FACTORY = "logEventFactory";
         public static final String LOG_EVENT_FACTORY_CLASS_NAME = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
                 + PropertyComponent.Constant.LOGGER_CONTEXT + DELIM + LOG_EVENT_FACTORY;

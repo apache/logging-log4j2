@@ -30,12 +30,11 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
-
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.apache.avro.ipc.netty.NettyServer;
 import org.apache.avro.ipc.Server;
+import org.apache.avro.ipc.netty.NettyServer;
 import org.apache.avro.ipc.specific.SpecificResponder;
 import org.apache.flume.Event;
 import org.apache.flume.event.EventBuilder;
@@ -48,9 +47,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;

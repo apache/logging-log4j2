@@ -33,6 +33,8 @@ import org.apache.logging.log4j.spi.PropertyComponent;
 public abstract class ContextAwarePropertySource implements PropertySource {
 
     protected final Map<String, Properties> propertiesMap;
+    private final String contextName;
+    private boolean includeInvalid;
 
     public ContextAwarePropertySource(final Properties properties, final String contextName,
                                       final boolean includeInvalid) {
@@ -41,12 +43,19 @@ public abstract class ContextAwarePropertySource implements PropertySource {
         } else {
             propertiesMap = new ConcurrentHashMap<>();
         }
+        this.contextName = contextName;
+        this.includeInvalid = includeInvalid;
     }
 
+    /**
+     * Used only for System Environment properties.
+     * @param properties The map from the Environment.
+     */
     public ContextAwarePropertySource(final Map<String, String> properties) {
         this.propertiesMap = parseProperties(properties);
+        this.contextName = SYSTEM_CONTEXT;
+        this.includeInvalid = false;
     }
-
 
     @Override
     public Collection<String> getPropertyNames() {
@@ -104,6 +113,10 @@ public abstract class ContextAwarePropertySource implements PropertySource {
             }
         }
         return propertiesMap;
+    }
+
+    protected Map<String, Properties> parseProperties(Properties properties) {
+        return parseProperties(properties, contextName, includeInvalid);
     }
 
     /**

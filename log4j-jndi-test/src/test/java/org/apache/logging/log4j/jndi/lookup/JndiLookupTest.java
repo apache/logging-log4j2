@@ -46,7 +46,7 @@ public class JndiLookupTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.enableJndiLookup", "true");
+        System.setProperty("log4j2.*.JNDI.enableLookup", "true");
     }
 
     private Map<String, Object> createBindings() {

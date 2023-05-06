@@ -168,6 +168,7 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             }
             final Layout layout = getOrCreateLayout(target.getDefaultCharset());
             PropertyEnvironment propertyEnvironment = configuration != null
+                && configuration.getLoggerContext() != null
                     ? configuration.getLoggerContext().getProperties() : PropertiesUtil.getProperties();
             return new ConsoleAppender(getName(), layout, getFilter(),
                     getManager(target, follow, direct, layout, propertyEnvironment),

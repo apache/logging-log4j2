@@ -31,6 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
@@ -52,10 +53,10 @@ public enum GcFreeLoggingTestUtil {;
     public static void executeLogging(final String configurationFile,
                                       final Class<?> testClass) throws Exception {
 
-        System.setProperty(LoggingSystemProperty.SYSTEM_THREAD_LOCALS_ENABLED, "true");
-        System.setProperty("log4j2.enable.direct.encoders", "true");
-        System.setProperty(LoggingSystemProperty.SYSTEM_IS_WEBAPP, "false");
-        System.setProperty("log4j.configurationFile", configurationFile);
+        System.setProperty(LoggingSystemProperty.THREAD_LOCALS_ENABLE.getSystemKey(), "true");
+        System.setProperty(Log4jPropertyKey.GC_ENABLE_DIRECT_ENCODERS.getSystemKey(), "true");
+        System.setProperty(LoggingSystemProperty.IS_WEBAPP.getSystemKey(), "false");
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), configurationFile);
 
         assertTrue(isThreadLocalsEnabled(), "Constants.ENABLE_THREADLOCALS");
         assertTrue(Constants.ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");

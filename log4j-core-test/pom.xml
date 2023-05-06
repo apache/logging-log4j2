@@ -406,7 +406,7 @@
         <configuration>
           <runOrder>random</runOrder>
           <systemPropertyVariables>
-            <log4j2.is.webapp>false</log4j2.is.webapp>
+            <Web.isWebApp>false</Web.isWebApp>
           </systemPropertyVariables>
           <useModulePath>false</useModulePath>
         </configuration>

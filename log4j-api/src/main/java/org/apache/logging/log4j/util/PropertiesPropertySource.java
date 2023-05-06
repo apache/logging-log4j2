@@ -26,9 +26,11 @@ import java.util.Properties;
  *
  * @since 2.10.0
  */
-public class PropertiesPropertySource extends ContextAwarePropertySource implements PropertySource {
+public class PropertiesPropertySource extends ContextAwarePropertySource
+        implements ReloadablePropertySource {
 
     private final int priority;
+    private final Properties properties;
 
     public PropertiesPropertySource(final Properties properties) {
         this(properties, SYSTEM_CONTEXT, DEFAULT_PRIORITY, false);
@@ -46,6 +48,7 @@ public class PropertiesPropertySource extends ContextAwarePropertySource impleme
                                     final boolean includeInvalid) {
         super(properties, contextName, includeInvalid);
         this.priority = priority;
+        this.properties = properties;
     }
 
 
@@ -68,6 +71,12 @@ public class PropertiesPropertySource extends ContextAwarePropertySource impleme
     public CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
         final CharSequence result = Util.join(tokens);
         return result.length() > 0 ? PREFIX + result : null;
+    }
+
+    @Override
+    public void reload() {
+        Map<String, Properties> map = parseProperties(properties);
+        propertiesMap.putAll(map);
     }
 
     @Override
