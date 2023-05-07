@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.spring.boot;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
@@ -28,9 +31,6 @@ import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.boot.logging.log4j2.Log4J2LoggingSystem;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class Log4j2SpringBootLoggingSystemTest {
 

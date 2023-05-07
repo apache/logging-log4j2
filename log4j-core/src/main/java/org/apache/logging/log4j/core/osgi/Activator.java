@@ -56,7 +56,6 @@ public final class Activator implements BundleActivator {
         pluginRegistry = context.getService(pluginRegistryServiceRegistration.getReference());
         final Bundle bundle = context.getBundle();
         final ClassLoader classLoader = bundle.adapt(BundleWiring.class).getClassLoader();
-        final PropertyEnvironment props = PropertiesUtil.locateProperties(classLoader);
 
         injectorCallbackServiceRegistration = context.registerService(InjectorCallback.class, new InjectorCallback() {
             @Override
@@ -64,7 +63,7 @@ public final class Activator implements BundleActivator {
                 injector.registerBinding(Key.forClass(PluginRegistry.class),
                         () -> context.getService(pluginRegistryServiceRegistration.getReference()));
                 // allow the user to override the default ContextSelector (e.g., by using BasicContextSelector for a global cfg)
-                if (props.getStringProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME) == null) {
+                if (PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME) == null) {
                     injector.registerBinding(ContextSelector.KEY, () -> new BundleContextSelector(injector));
                 }
             }

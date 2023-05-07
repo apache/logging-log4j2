@@ -359,6 +359,9 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 }
                 ContextAnchor.THREAD_CONTEXT.remove();
             } else {
+                if (ctx.getProperties() == null) {
+                    ctx.setProperties(PropertiesUtil.getContextProperties(classLoader, name));
+                }
                 ctx.start();
             }
         }

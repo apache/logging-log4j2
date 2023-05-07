@@ -33,7 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SetSystemProperty(key = "spring.profiles.active", value = "prod")
-@SetSystemProperty(key = LoggingSystemProperty.LOGGER_CONTEXT_FACTORY_CLASS, value = "org.apache.logging.log4j.core.impl.Log4jContextFactory")
+@SetSystemProperty(key = LoggingSystemProperty.Constant.LOGGER_CONTEXT_FACTORY_CLASS,
+        value = "org.apache.logging.log4j.core.impl.Log4jContextFactory")
 @SpringBootTest
 public class Log4j2SpringBootInitTest {
 

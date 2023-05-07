@@ -14,8 +14,12 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
 package org.apache.logging.log4j.script.appender.rolling.action;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.core.appender.rolling.action.PathWithAttributes;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -26,11 +30,6 @@ import org.apache.logging.log4j.script.ScriptPlugin;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 

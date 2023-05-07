@@ -45,7 +45,7 @@ class JsonTemplateLayoutNullEventDelimiterTest {
                     "serverPort",
                     String.valueOf(server.getPort()));
             System.setProperty(
-                    Log4jPropertyKey.CONFIG_LOCATION,
+                    Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(),
                     "nullEventDelimitedJsonTemplateLayoutLogging.xml");
 
             // Produce log events.
