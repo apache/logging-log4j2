@@ -1,27 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.apache.log4j.helpers;
-
-import static org.apache.log4j.helpers.OptionConverter.toLog4j1Level;
-import static org.apache.log4j.helpers.OptionConverter.toLog4j2Level;
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -35,6 +28,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import static org.apache.log4j.helpers.OptionConverter.toLog4j1Level;
+import static org.apache.log4j.helpers.OptionConverter.toLog4j2Level;
+import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 public class OptionConverterLevelTest {
 
     static Stream<Arguments> standardLevels() {
@@ -45,7 +44,7 @@ public class OptionConverterLevelTest {
 
     /**
      * Test if the standard levels are transformed correctly.
-     * 
+     *
      * @param log4j1Level
      * @param log4j2Level
      */
@@ -58,7 +57,7 @@ public class OptionConverterLevelTest {
 
     /**
      * Test if the conversion works at an integer level.
-     * 
+     *
      * @param log4j1Level
      * @param log4j2Level
      */

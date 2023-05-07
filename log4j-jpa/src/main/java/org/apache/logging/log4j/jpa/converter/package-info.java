@@ -29,4 +29,3 @@
  */
 //CHECKSTYLE:ON
 package org.apache.logging.log4j.jpa.converter;
-

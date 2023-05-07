@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.pattern;
 
@@ -93,11 +93,11 @@ public class ExtendedThrowablePatternConverterTest {
     }
 
     @Test
-	public void testDeserializedLogEventWithThrowableProxyButNoThrowable() {
-		final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null, null);
-		final Throwable originalThrowable = new Exception("something bad happened");
-		final ThrowableProxy throwableProxy = new ThrowableProxy(originalThrowable);
-		final Throwable deserializedThrowable = null;
+    public void testDeserializedLogEventWithThrowableProxyButNoThrowable() {
+        final ExtendedThrowablePatternConverter converter = ExtendedThrowablePatternConverter.newInstance(null, null);
+        final Throwable originalThrowable = new Exception("something bad happened");
+        final ThrowableProxy throwableProxy = new ThrowableProxy(originalThrowable);
+        final Throwable deserializedThrowable = null;
         final Log4jLogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("testLogger") //
                 .setLoggerFqcn(this.getClass().getName()) //
@@ -106,12 +106,12 @@ public class ExtendedThrowablePatternConverterTest {
                 .setThrown(deserializedThrowable) //
                 .setThrownProxy(throwableProxy) //
                 .setTimeMillis(0).build();
-		final StringBuilder sb = new StringBuilder();
-		converter.format(event, sb);
-		final String result = sb.toString();
-		assertTrue(result.contains(originalThrowable.getMessage()), result);
-		assertTrue(result.contains(originalThrowable.getStackTrace()[0].getMethodName()), result);
-	}
+        final StringBuilder sb = new StringBuilder();
+        converter.format(event, sb);
+        final String result = sb.toString();
+        assertTrue(result.contains(originalThrowable.getMessage()), result);
+        assertTrue(result.contains(originalThrowable.getStackTrace()[0].getMethodName()), result);
+    }
 
     @Test
     public void testFiltering() {

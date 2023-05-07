@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -14,12 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j;
 
-import org.apache.log4j.spi.LoggingEvent;
-
 import junit.framework.TestCase;
+import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * Tests for Layout.
@@ -74,7 +72,7 @@ public class LayoutTest extends TestCase {
 
     /**
      * Construct a new instance of LayoutTest.
-     * 
+     *
      * @param testName test name.
      */
     public LayoutTest(final String testName) {
@@ -87,7 +85,7 @@ public class LayoutTest extends TestCase {
 
     /**
      * Constructor for use by derived tests.
-     * 
+     *
      * @param testName name of test.
      * @param expectedContentType expected value for getContentType().
      * @param expectedIgnoresThrowable expected value for ignoresThrowable().
@@ -105,7 +103,7 @@ public class LayoutTest extends TestCase {
 
     /**
      * Creates layout for test.
-     * 
+     *
      * @return new instance of Layout.
      */
     protected Layout createLayout() {
@@ -114,7 +112,7 @@ public class LayoutTest extends TestCase {
 
     /**
      * Tests format.
-     * 
+     *
      * @throws Exception derived tests, particular XMLLayoutTest, may throw exceptions.
      */
     public void testFormat() throws Exception {

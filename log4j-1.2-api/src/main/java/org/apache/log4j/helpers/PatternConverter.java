@@ -2,19 +2,18 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j.helpers;
 
 import org.apache.log4j.spi.LoggingEvent;
@@ -41,7 +40,7 @@ public abstract class PatternConverter {
 
   protected
   PatternConverter() {  }
-  
+
   protected
   PatternConverter(FormattingInfo fi) {
     min = fi.min;
@@ -66,7 +65,7 @@ public abstract class PatternConverter {
 
     if(s == null) {
       if(0 < min)
-	spacePad(sbuf, min);
+    spacePad(sbuf, min);
       return;
     }
 
@@ -75,22 +74,22 @@ public abstract class PatternConverter {
     if(len > max)
       sbuf.append(s.substring(len-max));
     else if(len < min) {
-      if(leftAlign) {	
-	sbuf.append(s);
-	spacePad(sbuf, min-len);
+      if(leftAlign) {
+    sbuf.append(s);
+    spacePad(sbuf, min-len);
       }
       else {
-	spacePad(sbuf, min-len);
-	sbuf.append(s);
+    spacePad(sbuf, min-len);
+    sbuf.append(s);
       }
     }
     else
       sbuf.append(s);
-  }	
+  }
 
   static String[] SPACES = {" ", "  ", "    ", "        ", //1,2,4,8 spaces
-			    "                ", // 16 spaces
-			    "                                " }; // 32 spaces
+                "                ", // 16 spaces
+                "                                " }; // 32 spaces
 
   /**
      Fast space padding method.
@@ -101,10 +100,10 @@ public abstract class PatternConverter {
       sbuf.append(SPACES[5]);
       length -= 32;
     }
-    
-    for(int i = 4; i >= 0; i--) {	
+
+    for(int i = 4; i >= 0; i--) {
       if((length & (1<<i)) != 0) {
-	sbuf.append(SPACES[i]);
+    sbuf.append(SPACES[i]);
       }
     }
   }

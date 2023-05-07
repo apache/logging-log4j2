@@ -1,20 +1,40 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.flume.appender;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
 
 import com.sleepycat.je.Cursor;
 import com.sleepycat.je.CursorConfig;
@@ -40,25 +60,6 @@ import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.util.Strings;
-
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Supplier;
 
 /**
  * Manager that persists data to Berkeley DB before passing it on to Flume.
@@ -196,10 +197,10 @@ public class FlumePersistentManager extends FlumeAvroManager {
             final Future<Integer> future = threadPool.submit(new BDBWriter(keyData, eventData, environment, database,
                 gate, dbCount, getBatchSize(), lockTimeoutRetryCount));
             try {
-            	future.get();
+                future.get();
             } catch (final InterruptedException ie) {
-            	// preserve interruption status
-            	Thread.currentThread().interrupt();
+                // preserve interruption status
+                Thread.currentThread().interrupt();
             }
         } catch (final Exception ex) {
             throw new LoggingException("Exception occurred writing log event", ex);
@@ -208,12 +209,12 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     @Override
     protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
-    	boolean closed = true;
+        boolean closed = true;
         LOGGER.debug("Shutting down FlumePersistentManager");
         worker.shutdown();
         final long requestedTimeoutMillis = timeUnit.toMillis(timeout);
         final long shutdownWaitMillis = requestedTimeoutMillis > 0 ? requestedTimeoutMillis : SHUTDOWN_WAIT_MILLIS;
-		try {
+        try {
             worker.join(shutdownWaitMillis);
         } catch (final InterruptedException ie) {
             // Ignore the exception and shutdown.
@@ -642,23 +643,23 @@ public class FlumePersistentManager extends FlumeAvroManager {
             OperationStatus status;
             Cursor cursor = null;
             try {
-            	final BatchEvent batch = new BatchEvent();
-            	for (int retryIndex = 0; retryIndex < lockTimeoutRetryCount; ++retryIndex) {
-            		try {
-            			cursor = database.openCursor(null, CursorConfig.DEFAULT);
-            			status = cursor.getFirst(key, data, null);
+                final BatchEvent batch = new BatchEvent();
+                for (int retryIndex = 0; retryIndex < lockTimeoutRetryCount; ++retryIndex) {
+                    try {
+                        cursor = database.openCursor(null, CursorConfig.DEFAULT);
+                        status = cursor.getFirst(key, data, null);
 
-            			for (int i = 0; status == OperationStatus.SUCCESS && i < batchSize; ++i) {
-            				final SimpleEvent event = createEvent(data);
-            				if (event != null) {
-            					batch.addEvent(event);
-            				}
-            				status = cursor.getNext(key, data, null);
-            			}
-            			break;
-            		} catch (final LockConflictException lce) {
-            			if (cursor != null) {
-            				try {
+                        for (int i = 0; status == OperationStatus.SUCCESS && i < batchSize; ++i) {
+                            final SimpleEvent event = createEvent(data);
+                            if (event != null) {
+                                batch.addEvent(event);
+                            }
+                            status = cursor.getNext(key, data, null);
+                        }
+                        break;
+                    } catch (final LockConflictException lce) {
+                        if (cursor != null) {
+                            try {
                                 cursor.close();
                                 cursor = null;
                             } catch (final Exception ex) {
@@ -666,7 +667,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                             }
                         }
                     }
-            	}
+                }
 
                 try {
                     manager.send(batch);
@@ -675,10 +676,10 @@ public class FlumePersistentManager extends FlumeAvroManager {
                     errors = true;
                 }
                 if (!errors) {
-                	if (cursor != null) {
-	                    cursor.close();
-	                    cursor = null;
-                	}
+                    if (cursor != null) {
+                        cursor.close();
+                        cursor = null;
+                    }
                     Transaction txn = null;
                     Exception exception = null;
                     for (int retryIndex = 0; retryIndex < lockTimeoutRetryCount; ++retryIndex) {

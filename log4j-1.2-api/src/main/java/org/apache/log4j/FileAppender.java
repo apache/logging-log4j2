@@ -2,19 +2,18 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j;
 
 import java.io.BufferedWriter;
@@ -112,7 +111,7 @@ public class FileAppender extends WriterAppender {
     /**
      * If the value of <b>File</b> is not <code>null</code>, then {@link #setFile} is called with the values of <b>File</b>
      * and <b>Append</b> properties.
-     * 
+     *
      * @since 0.8.1
      */
     public void activateOptions() {
@@ -156,7 +155,7 @@ public class FileAppender extends WriterAppender {
 
     /**
      * Get the value of the <b>BufferedIO</b> option.
-     * 
+     *
      * <p>
      * BufferedIO will significatnly increase performance on heavily loaded systems.
      * </p>
@@ -190,7 +189,7 @@ public class FileAppender extends WriterAppender {
      * The <b>Append</b> option takes a boolean value. It is set to <code>true</code> by default. If true, then
      * <code>File</code> will be opened in append mode by {@link #setFile setFile} (see above). Otherwise, {@link #setFile
      * setFile} will open <code>File</code> in truncate mode.
-     * 
+     *
      * <p>
      * Note: Actual opening of the file is made when {@link #activateOptions} is called, not when the options are set.
      * </p>
@@ -202,9 +201,9 @@ public class FileAppender extends WriterAppender {
     /**
      * The <b>BufferedIO</b> option takes a boolean value. It is set to <code>false</code> by default. If true, then
      * <code>File</code> will be opened and the resulting {@link java.io.Writer} wrapped around a {@link BufferedWriter}.
-     * 
+     *
      * BufferedIO will significatnly increase performance on heavily loaded systems.
-     * 
+     *
      */
     public void setBufferedIO(boolean bufferedIO) {
         this.bufferedIO = bufferedIO;
@@ -245,7 +244,7 @@ public class FileAppender extends WriterAppender {
      * <b>Do not use this method directly. To configure a FileAppender or one of its subclasses, set its properties one by
      * one and then call activateOptions.</b>
      * </p>
-     * 
+     *
      * @param fileName The path to the log file.
      * @param append If true will append to fileName. Otherwise will truncate fileName.
      */
@@ -297,7 +296,7 @@ public class FileAppender extends WriterAppender {
 
     /**
      * Sets the quiet writer being used.
-     * 
+     *
      * This method is overriden by {@link RollingFileAppender}.
      */
     protected void setQWForFiles(Writer writer) {
