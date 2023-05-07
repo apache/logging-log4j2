@@ -18,6 +18,7 @@ package org.apache.logging.log4j.jdbc.appender;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;

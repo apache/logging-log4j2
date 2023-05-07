@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 
 /**
  * The default configuration writes all output to the Console using the default logging level. You configure default

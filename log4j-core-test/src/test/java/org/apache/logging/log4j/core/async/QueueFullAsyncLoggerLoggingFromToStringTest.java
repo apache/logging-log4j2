@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.async;
 
 import java.util.List;
-import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.Logger;
@@ -36,7 +35,6 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests queue full scenarios with pure AsyncLoggers (all loggers async).

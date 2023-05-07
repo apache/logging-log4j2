@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.selector.CoreContextSelectors;
 import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.test.util.FixedTimeClock;
-import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.test.junit.CleanFiles;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

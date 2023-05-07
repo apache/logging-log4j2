@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.plugins.di.Key;
 
 /**

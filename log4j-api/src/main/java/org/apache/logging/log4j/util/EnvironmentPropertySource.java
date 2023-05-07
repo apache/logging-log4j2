@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.util.Map;
 import java.util.Properties;
 
 /**
