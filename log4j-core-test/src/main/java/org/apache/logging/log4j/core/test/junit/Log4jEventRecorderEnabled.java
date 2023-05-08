@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Enables JUnit support resolving test method parameters of type {@link Log4jEventRecorder}.

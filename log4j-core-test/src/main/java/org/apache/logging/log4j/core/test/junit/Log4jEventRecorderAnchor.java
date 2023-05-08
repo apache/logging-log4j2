@@ -16,12 +16,12 @@
  */
 package org.apache.logging.log4j.core.test.junit;
 
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
 
 final class Log4jEventRecorderAnchor {
 
