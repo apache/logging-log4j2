@@ -57,7 +57,6 @@ import org.apache.logging.log4j.spi.LoggerContextShutdownEnabled;
 import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
@@ -82,7 +81,7 @@ public class LoggerContext extends AbstractLifeCycle
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
     private volatile List<LoggerContextShutdownAware> listeners;
     private final Injector injector;
-    private PropertyEnvironment properties;
+    private PropertiesUtil properties;
 
     /**
      * The Configuration is volatile to guarantee that initialization of the Configuration has completed before the
@@ -195,7 +194,7 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     @Override
-    public PropertyEnvironment getProperties() {
+    public PropertiesUtil getProperties() {
         return properties;
     }
 
@@ -734,19 +733,29 @@ public class LoggerContext extends AbstractLifeCycle
         final ClassLoader cl = externalContext instanceof ClassLoader ? (ClassLoader) externalContext : null;
         LOGGER.debug("Reconfiguration started for {} at URI {} with optional ClassLoader: {}",
                 this, configURI, cl);
-        final Configuration instance =
-                injector.getInstance(ConfigurationFactory.KEY).getConfiguration(this, contextName, configURI, cl);
-        if (instance == null) {
-            LOGGER.error("Reconfiguration failed: No configuration found for '{}' at '{}' in '{}'", contextName, configURI, cl);
-        } else {
-            setConfiguration(instance);
-            /*
-             * instance.start(); Configuration old = setConfiguration(instance); updateLoggers(); if (old != null) {
-             * old.stop(); }
-             */
-            final String location = configuration == null ? "?" : String.valueOf(configuration.getConfigurationSource());
-            LOGGER.debug("Reconfiguration complete for {} at URI {} with optional ClassLoader: {}",
-                    this, location, cl);
+        boolean setProperties = false;
+        if (properties != null && !PropertiesUtil.hasThreadProperties()) {
+            PropertiesUtil.setThreadProperties(properties);
+        }
+        try {
+            final Configuration instance =
+                    injector.getInstance(ConfigurationFactory.KEY).getConfiguration(this, contextName, configURI, cl);
+            if (instance == null) {
+                LOGGER.error("Reconfiguration failed: No configuration found for '{}' at '{}' in '{}'", contextName, configURI, cl);
+            } else {
+                setConfiguration(instance);
+                /*
+                 * instance.start(); Configuration old = setConfiguration(instance); updateLoggers(); if (old != null) {
+                 * old.stop(); }
+                 */
+                final String location = configuration == null ? "?" : String.valueOf(configuration.getConfigurationSource());
+                LOGGER.debug("Reconfiguration complete for {} at URI {} with optional ClassLoader: {}",
+                        this, location, cl);
+            }
+        } finally {
+            if (setProperties) {
+                PropertiesUtil.clearThreadProperties();
+            }
         }
     }
 

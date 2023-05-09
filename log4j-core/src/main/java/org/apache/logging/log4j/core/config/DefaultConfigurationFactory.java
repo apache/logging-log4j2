@@ -65,7 +65,10 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
 
         if (configLocation == null) {
-            final PropertyEnvironment properties = PropertiesUtil.getProperties();
+            PropertyEnvironment properties = loggerContext.getProperties();
+            if (properties == null) {
+                properties = PropertiesUtil.getProperties();
+            }
             final String configLocationStr =
                     substitutor.replace(properties.getStringProperty(Log4jPropertyKey.CONFIG_LOCATION));
             if (configLocationStr != null) {

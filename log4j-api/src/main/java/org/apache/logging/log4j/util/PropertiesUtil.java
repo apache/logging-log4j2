@@ -37,8 +37,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.spi.LoggerContext;
 
 /**
  * <em>Consider this class private.</em>
@@ -63,6 +61,8 @@ public class PropertiesUtil implements PropertyEnvironment {
     private static final String META_INF = "META-INF/";
     private static final String LOG4J_SYSTEM_PROPERTIES_FILE_NAME = "log4j2.system.properties";
     private static final Lazy<PropertiesUtil> COMPONENT_PROPERTIES = Lazy.lazy(PropertiesUtil::new);
+
+    private static final ThreadLocal<PropertiesUtil> environments = new InheritableThreadLocal<>();
 
     private final Environment environment;
 
@@ -137,12 +137,28 @@ public class PropertiesUtil implements PropertyEnvironment {
         this.environment = new Environment(contextName, sources);
     }
 
+    public static boolean hasThreadProperties() {
+        return environments.get() != null;
+    }
+
+    public static void setThreadProperties(PropertiesUtil properties) {
+        environments.set(properties);
+    }
+
+    public static void clearThreadProperties() {
+        environments.remove();
+    }
+
     /**
      * Returns the PropertiesUtil used by Log4j.
      *
      * @return the main Log4j PropertiesUtil instance.
      */
     public static PropertiesUtil getProperties() {
+        PropertiesUtil props = environments.get();
+        if (props != null) {
+            return props;
+        }
         return COMPONENT_PROPERTIES.value();
     }
 
@@ -239,21 +255,6 @@ public class PropertiesUtil implements PropertyEnvironment {
     }
 
     /**
-     * Locates the PropertyEnvironment for the LoggerContext, if available.
-     * @param classLoader The ClassLoader to use.
-     * @return the located PropertyEnvironment or null if one has not been created.
-     */
-    public static PropertyEnvironment locateProperties(ClassLoader classLoader) {
-        if (LogManager.getFactory().hasContext(Activator.class.getName(), classLoader, false)) {
-            LoggerContext ctx = LogManager.getFactory().getContext(Activator.class.getName(),
-                    classLoader, null, false);
-            return ctx.getProperties();
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Get the properties for a LoggerContext just by the name. This ALWAYS creates a new PropertiesUtil. Use
      * locateProperties to obtain the current properties.
      * @param contextName The context name.
@@ -285,8 +286,10 @@ public class PropertiesUtil implements PropertyEnvironment {
      * @return The PropertiesUtil created.
      */
     public static PropertiesUtil getContextProperties(final ClassLoader classLoader, final String contextName) {
-        String filePrefix = META_INF + LOG4J_CONTEXT_PREFIX;
         List<PropertySource> contextSources = new ArrayList<>();
+        String filePrefix = META_INF + LOG4J_PREFIX + contextName + ".";
+        contextSources.addAll(getContextPropertySources(classLoader, filePrefix, contextName));
+        filePrefix = META_INF + LOG4J_CONTEXT_PREFIX;
         contextSources.addAll(getContextPropertySources(classLoader, filePrefix, contextName));
         contextSources.addAll(getProperties().environment.sources);
         return new PropertiesUtil(contextName, contextSources);

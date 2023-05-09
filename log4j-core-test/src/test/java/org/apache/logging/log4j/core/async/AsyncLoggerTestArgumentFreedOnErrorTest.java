@@ -32,6 +32,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "log4j2-console.xml")
 @SetSystemProperty(key = Log4jPropertyKey.Constant.GC_ENABLE_DIRECT_ENCODERS, value = "true")
 @SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, value = "true")
 @ContextSelectorType(AsyncLoggerContextSelector.class)

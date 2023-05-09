@@ -41,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @Tag("async")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
+@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "log4j2-console.xml")
 @SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME,
         value = "org.apache.logging.log4j.core.async.AsyncLoggerEventTranslationExceptionTest$TestExceptionHandler")
 class AsyncLoggerEventTranslationExceptionTest {

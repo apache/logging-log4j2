@@ -9,6 +9,7 @@
     "asyncLoggerConfigRingBufferSize": ["AsyncLoggerConfig", "ringBufferSize"],
     "asyncLoggerConfigWaitStrategy": ["AsyncLoggerConfig", "waitStrategy"],
     "asyncQueueFullPolicy": ["AsyncLogger", "queueFullPolicy"],
+    "authorizationProvider": ["Configuration", "authorizationProvider"],
     "clock": ["Configuration", "clock"],
     "Configuration.allowedProtocols": ["Configuration", "allowedProtocols"],
     "Configuration.authorizationProvider": ["Configuration", "authorizationProvider"],

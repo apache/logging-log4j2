@@ -114,7 +114,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     public static AuthorizationProvider authorizationProvider(final PropertyEnvironment props) {
-        final String authClass = props.getStringProperty(PREFIXES, "authorizationProvider", null);
+        final String authClass = props.getStringProperty(Log4jPropertyKey.CONFIG_AUTH_PROVIDER);
         AuthorizationProvider provider = null;
         if (authClass != null) {
             try {

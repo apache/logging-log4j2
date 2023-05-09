@@ -41,6 +41,7 @@ public enum Log4jPropertyKey implements PropertyKey {
     ASYNC_LOGGER_THREAD_NAME_STRATEGY(PropertyComponent.ASYNC_LOGGER, Constant.THREAD_NAME_STRATEGY),
     ASYNC_LOGGER_TIMEOUT(PropertyComponent.ASYNC_LOGGER, Constant.TIMEOUT),
     ASYNC_LOGGER_WAIT_STRATEGY(PropertyComponent.ASYNC_LOGGER, Constant.WAIT_STRATEGY),
+    CONFIG_AUTH_PROVIDER(PropertyComponent.CONFIGURATION, Constant.AUTH_PROVIDER),
     CONFIG_CLOCK(PropertyComponent.CONFIGURATION, Constant.CLOCK),
     CONFIG_CONFIGURATION_FACTORY_CLASS_NAME(PropertyComponent.CONFIGURATION, Constant.CONFIGURATION_FACTORY),
     CONFIG_DEFAULT_LEVEL(PropertyComponent.CONFIGURATION, Constant.LEVEL),
@@ -175,6 +176,9 @@ public enum Log4jPropertyKey implements PropertyKey {
                 + PropertyComponent.Constant.ASYNC_LOGGER + DELIM + TIMEOUT;
         public static final String ASYNC_LOGGER_WAIT_STRATEGY = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
                 + PropertyComponent.Constant.ASYNC_LOGGER + DELIM + WAIT_STRATEGY;
+        static final String AUTH_PROVIDER = "authorizationProvider";
+        public static final String CONFIG_AUTH_PROVIDER = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
+                + PropertyComponent.CONFIGURATION + DELIM + AUTH_PROVIDER;
         static final String CLOCK = "clock";
         public static final String CONFIG_CLOCK = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
                 + PropertyComponent.Constant.CONFIGURATION + DELIM + CLOCK;
