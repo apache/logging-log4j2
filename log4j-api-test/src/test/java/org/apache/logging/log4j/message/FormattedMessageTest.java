@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
 import java.util.Locale;
 
 import org.apache.logging.log4j.test.junit.Mutable;
@@ -131,6 +132,16 @@ public class FormattedMessageTest {
         msg = new FormattedMessage(testMsg, array, null);
         result = msg.getFormattedMessage();
         assertEquals(testMsg, result);
+    }
+
+    @Test
+    public void testSqlDateArg() {
+        final String testMsg = "Test message {0}";
+        java.sql.Date date = java.sql.Date.valueOf("2023-5-11");
+        final FormattedMessage msg = new FormattedMessage(testMsg, Collections.singletonList(date));
+        final String result = msg.getFormattedMessage();
+        final String expected = "Test message Apache 2023-05-11";
+        assertEquals(expected, result);
     }
 
     @Test
