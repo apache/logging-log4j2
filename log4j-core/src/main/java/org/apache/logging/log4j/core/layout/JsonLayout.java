@@ -242,7 +242,7 @@ public final class JsonLayout extends AbstractJacksonLayout {
      * @param headerPattern
      *            The header pattern, defaults to {@code "["} if null.
      * @param footerPattern
-     *            The header pattern, defaults to {@code "]"} if null.
+     *            The footer pattern, defaults to {@code "]"} if null.
      * @param charset
      *            The character set to use, if {@code null}, uses "UTF-8".
      * @param includeStacktrace
