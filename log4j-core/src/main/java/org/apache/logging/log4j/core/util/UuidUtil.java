@@ -22,7 +22,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -38,7 +38,8 @@ public final class UuidUtil {
     private static final byte VARIANT = (byte) 0x80;
     private static final int SEQUENCE_MASK = 0x3FFF;
     private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
-    private static final long INITIAL_UUID_SEQNO = PropertiesUtil.getProperties().getLongProperty(Log4jProperties.UUID_SEQUENCE, 0);
+    private static final long INITIAL_UUID_SEQNO =
+            PropertiesUtil.getProperties().getLongProperty(LoggingSystemProperty.UUID_SEQUENCE, 0);
 
     private static final long LOW_MASK = 0xffffffffL;
     private static final long MID_MASK = 0xffff00000000L;

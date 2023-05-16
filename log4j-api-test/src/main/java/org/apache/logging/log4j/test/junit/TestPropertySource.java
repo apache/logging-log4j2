@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.test.junit;
 
+
 import org.apache.logging.log4j.test.TestProperties;
 import org.apache.logging.log4j.util.PropertySource;
 import org.junit.jupiter.api.extension.ExtensionContext;

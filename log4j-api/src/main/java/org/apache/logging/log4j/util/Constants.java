@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 
 /**
  * Log4j API Constants.
@@ -27,7 +27,7 @@ import org.apache.logging.log4j.spi.LoggingSystemProperties;
 public final class Constants {
 
     private static final LazyBoolean isWebApp = new LazyBoolean(() -> PropertiesUtil.getProperties()
-            .getBooleanProperty(LoggingSystemProperties.SYSTEM_IS_WEBAPP,
+            .getBooleanProperty(LoggingSystemProperty.IS_WEBAPP,
                     isClassAvailable("javax.servlet.Servlet") || isClassAvailable("jakarta.servlet.Servlet")));
 
     /**
@@ -54,7 +54,7 @@ public final class Constants {
     public static final boolean IS_WEB_APP = isWebApp();
 
     private static final LazyBoolean threadLocalsEnabled = new LazyBoolean(
-            () -> !isWebApp() && PropertiesUtil.getProperties().getBooleanProperty(LoggingSystemProperties.SYSTEM_THREAD_LOCALS_ENABLED, true));
+            () -> !isWebApp() && PropertiesUtil.getProperties().getBooleanProperty(LoggingSystemProperty.THREAD_LOCALS_ENABLE, true));
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
@@ -88,13 +88,14 @@ public final class Constants {
      * After a large message has been delivered to the appenders, the StringBuilder is trimmed to this size.
      * <p>
      * The default value is 518, which allows the StringBuilder to resize three times from its initial size.
-     * Users can override with system property {@value LoggingSystemProperties#GC_REUSABLE_MESSAGE_MAX_SIZE}.
+     * Users can override with system property {@value LoggingSystemProperty#GC_REUSABLE_MESSAGE_MAX_SIZE}.
      * </p>
      * @since 2.9
      */
-    public static final int MAX_REUSABLE_MESSAGE_SIZE = size(LoggingSystemProperties.GC_REUSABLE_MESSAGE_MAX_SIZE, (128 * 2 + 2) * 2 + 2);
+    public static final int MAX_REUSABLE_MESSAGE_SIZE = size(LoggingSystemProperty.GC_REUSABLE_MESSAGE_MAX_SIZE,
+            (128 * 2 + 2) * 2 + 2);
 
-    private static int size(final String property, final int defaultValue) {
+    private static int size(final PropertyKey property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
     }
 

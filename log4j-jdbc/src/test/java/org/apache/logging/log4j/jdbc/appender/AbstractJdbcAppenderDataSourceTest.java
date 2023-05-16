@@ -53,7 +53,7 @@ public abstract class AbstractJdbcAppenderDataSourceTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.enableJndiJdbc", "true");
+        System.setProperty("log4j2.*.JNDI.enableJDBC", "true");
     }
 
     protected AbstractJdbcAppenderDataSourceTest(final JdbcRule jdbcRule) {

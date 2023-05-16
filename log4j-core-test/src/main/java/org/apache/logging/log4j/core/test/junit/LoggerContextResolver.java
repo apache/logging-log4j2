@@ -126,7 +126,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         final String configLocation = source.value();
         final URI configUri;
         if (source.v1config()) {
-            System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, configLocation);
+            System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY.getSystemKey(), configLocation);
             configUri = null; // handled by system property
         } else {
             configUri = configLocation.isEmpty() ? null : NetUtils.toURI(configLocation);
@@ -160,8 +160,8 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
             try {
                 context.stop(shutdownTimeout, unit);
             } finally {
-                System.clearProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL);
-                System.clearProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY);
+                System.clearProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL.getSystemKey());
+                System.clearProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY.getSystemKey());
             }
         }
     }

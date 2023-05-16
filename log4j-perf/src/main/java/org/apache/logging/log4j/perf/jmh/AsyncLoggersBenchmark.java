@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.perf.util.BenchmarkMessageParams;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -57,10 +57,10 @@ public class AsyncLoggersBenchmark {
 
     @Setup(Level.Trial)
     public void up() {
-        System.setProperty(Log4jProperties.CONFIG_LOCATION, "perf-WithoutAnyAppender.xml");
-        System.setProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME, "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE, "262144");
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_WAIT_STRATEGY, "Yield");
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "perf-WithoutAnyAppender.xml");
+        System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(), "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE.getSystemKey(), "262144");
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY.getSystemKey(), "Yield");
         //System.setProperty(LoggingSystemProperties.SYSTEM_THREAD_LOCALS_ENABLED, "true");
         //System.setProperty(Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, "true");
 

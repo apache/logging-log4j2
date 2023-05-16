@@ -27,8 +27,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -53,8 +53,7 @@ public abstract class AbstractJpaAppenderTest {
 
         final String resource = "org/apache/logging/log4j/jpa/appender/" + configFileName;
         assertNotNull(getClass().getClassLoader().getResource(resource));
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                resource);
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), resource);
         ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
         final LoggerContext context = LoggerContext.getContext(false);
         if (context.getConfiguration() instanceof DefaultConfiguration) {
@@ -72,7 +71,7 @@ public abstract class AbstractJpaAppenderTest {
             assertTrue("The appender should be a JpaAppender.", appender instanceof JpaAppender);
             ((JpaAppender) appender).getManager().close();
         } finally {
-            System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+            System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
             ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
             context.reconfigure();
             StatusLogger.getLogger().reset();

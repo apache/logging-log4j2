@@ -29,7 +29,7 @@ import javax.xml.validation.Validator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.junit.BeforeClass;
@@ -47,7 +47,7 @@ public class XmlCompactFileAsyncAppenderValidationTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(),
                 "XmlCompactFileAsyncAppenderValidationTest.xml");
     }
 

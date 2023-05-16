@@ -26,15 +26,16 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -42,8 +43,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Tag("async")
 @ContextSelectorType(AsyncLoggerCustomSelectorLocationTest.CustomAsyncContextSelector.class)
 @CleanUpFiles("target/AsyncLoggerCustomSelectorLocationTest.log")
-@SetSystemProperty(key = ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, value = "AsyncLoggerCustomSelectorLocationTest.xml")
 public class AsyncLoggerCustomSelectorLocationTest {
+
+    @BeforeEach
+    public void beforeEach() throws Exception {
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "AsyncLoggerCustomSelectorLocationTest.xml");
+    }
+
+    @AfterEach
+    public void afterEach() throws Exception {
+        System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
+    }
 
     @Test
     public void testCustomAsyncSelectorLocation() throws Exception {

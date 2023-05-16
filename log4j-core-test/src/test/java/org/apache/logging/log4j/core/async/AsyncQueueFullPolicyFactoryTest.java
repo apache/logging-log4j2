@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.async;
 import java.util.Locale;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,8 +37,8 @@ public class AsyncQueueFullPolicyFactoryTest {
     @BeforeEach
     @AfterEach
     public void resetProperties() {
-        System.clearProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY);
-        System.clearProperty(Log4jProperties.ASYNC_LOGGER_DISCARD_THRESHOLD);
+        System.clearProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey());
+        System.clearProperty(Log4jPropertyKey.ASYNC_LOGGER_DISCARD_THRESHOLD.getKey());
         PropertiesUtil.getProperties().reload();
     }
 
@@ -50,22 +50,22 @@ public class AsyncQueueFullPolicyFactoryTest {
 
     @Test
     public void testCreateReturnsDiscardingRouterIfSpecified() {
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(),
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
         assertEquals(DiscardingAsyncQueueFullPolicy.class, AsyncQueueFullPolicyFactory.create().getClass());
 
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(),
                 DiscardingAsyncQueueFullPolicy.class.getSimpleName());
         assertEquals(DiscardingAsyncQueueFullPolicy.class, AsyncQueueFullPolicyFactory.create().getClass());
 
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(),
                 DiscardingAsyncQueueFullPolicy.class.getName());
         assertEquals(DiscardingAsyncQueueFullPolicy.class, AsyncQueueFullPolicyFactory.create().getClass());
     }
 
     @Test
     public void testCreateDiscardingRouterDefaultThresholdLevelInfo() {
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(),
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
         assertEquals(Level.INFO, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
                 getThresholdLevel());
@@ -73,7 +73,7 @@ public class AsyncQueueFullPolicyFactoryTest {
 
     @Test
     public void testCreateDiscardingRouterCaseInsensitive() {
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(),
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER.toLowerCase(Locale.ENGLISH));
         assertEquals(Level.INFO, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
                 getThresholdLevel());
@@ -81,11 +81,11 @@ public class AsyncQueueFullPolicyFactoryTest {
 
     @Test
     public void testCreateDiscardingRouterThresholdLevelCustomizable() {
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(),
                 AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER);
 
         for (final Level level : Level.values()) {
-            System.setProperty(Log4jProperties.ASYNC_LOGGER_DISCARD_THRESHOLD,
+            System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_DISCARD_THRESHOLD.getKey(),
                     level.name());
             assertEquals(level, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
                     getThresholdLevel());
@@ -107,14 +107,14 @@ public class AsyncQueueFullPolicyFactoryTest {
 
     @Test
     public void testCreateReturnsCustomRouterIfSpecified() {
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(),
                 CustomRouterDefaultConstructor.class.getName());
         assertEquals(CustomRouterDefaultConstructor.class, AsyncQueueFullPolicyFactory.create().getClass());
     }
 
     @Test
     public void testCreateReturnsDefaultRouterIfSpecifiedCustomRouterFails() {
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY,
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(),
                 DoesNotImplementInterface.class.getName());
         assertEquals(DefaultAsyncQueueFullPolicy.class, AsyncQueueFullPolicyFactory.create().getClass());
     }

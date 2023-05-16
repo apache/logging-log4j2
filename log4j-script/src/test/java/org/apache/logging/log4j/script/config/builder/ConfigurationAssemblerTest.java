@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.CustomLevelConfig;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -36,8 +35,8 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-import org.apache.logging.log4j.core.util.Constants;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -49,7 +48,7 @@ public class ConfigurationAssemblerTest {
     @Test
     public void testBuildConfiguration() throws Exception {
         try {
-            System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+            System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
                     "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
             final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
             CustomConfigurationFactory.addTestFixtures("config name", builder);
@@ -58,22 +57,22 @@ public class ConfigurationAssemblerTest {
                 validate(configuration);
             }
         } finally {
-            System.getProperties().remove(Constants.LOG4J_CONTEXT_SELECTOR);
+            System.getProperties().remove(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey());
         }
     }
 
     @Test
     public void testCustomConfigurationFactory() throws Exception {
         try {
-            System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY,
+            System.setProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
                     "org.apache.logging.log4j.script.config.builder.CustomConfigurationFactory");
-            System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+            System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
                     "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
             final Configuration config = ((LoggerContext) LogManager.getContext(false)).getConfiguration();
             validate(config);
         } finally {
-            System.getProperties().remove(Constants.LOG4J_CONTEXT_SELECTOR);
-            System.getProperties().remove(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY);
+            System.getProperties().remove(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey());
+            System.getProperties().remove(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey());
         }
     }
 

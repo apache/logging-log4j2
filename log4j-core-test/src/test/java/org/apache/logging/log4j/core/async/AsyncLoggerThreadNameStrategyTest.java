@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
@@ -34,21 +34,21 @@ public class AsyncLoggerThreadNameStrategyTest {
     }
 
     @Test
-    @SetSystemProperty(key = Log4jProperties.ASYNC_LOGGER_THREAD_NAME_STRATEGY, value = "\\%%InValid ")
+    @SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_LOGGER_THREAD_NAME_STRATEGY, value = "\\%%InValid ")
     public void testDefaultIfInvalidConfig() throws Exception {
         final ThreadNameCachingStrategy tns = ThreadNameCachingStrategy.create();
         assertSame(ThreadNameCachingStrategy.DEFAULT_STRATEGY, tns);
     }
 
     @Test
-    @SetSystemProperty(key = Log4jProperties.ASYNC_LOGGER_THREAD_NAME_STRATEGY, value = "CACHED")
+    @SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_LOGGER_THREAD_NAME_STRATEGY, value = "CACHED")
     public void testUseCachedThreadNameIfConfigured() throws Exception {
         final ThreadNameCachingStrategy tns = ThreadNameCachingStrategy.create();
         assertSame(ThreadNameCachingStrategy.CACHED, tns);
     }
 
     @Test
-    @SetSystemProperty(key = Log4jProperties.ASYNC_LOGGER_THREAD_NAME_STRATEGY, value = "UNCACHED")
+    @SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_LOGGER_THREAD_NAME_STRATEGY, value = "UNCACHED")
     public void testUseUncachedThreadNameIfConfigured() throws Exception {
         final ThreadNameCachingStrategy tns = ThreadNameCachingStrategy.create();
         assertSame(ThreadNameCachingStrategy.UNCACHED, tns);

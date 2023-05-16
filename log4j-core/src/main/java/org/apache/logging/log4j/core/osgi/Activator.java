@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.plugins.di.Injector;
@@ -51,17 +51,19 @@ public final class Activator implements BundleActivator {
     public void start(final BundleContext context) throws Exception {
         pluginRegistryServiceRegistration = context.registerService(PluginRegistry.class, new PluginRegistry(), new Hashtable<>());
         pluginRegistry = context.getService(pluginRegistryServiceRegistration.getReference());
+        final Bundle bundle = context.getBundle();
+        final ClassLoader classLoader = bundle.adapt(BundleWiring.class).getClassLoader();
+
         injectorCallbackServiceRegistration = context.registerService(InjectorCallback.class, new InjectorCallback() {
             @Override
             public void configure(final Injector injector) {
                 injector.registerBinding(Key.forClass(PluginRegistry.class),
                         () -> context.getService(pluginRegistryServiceRegistration.getReference()));
                 // allow the user to override the default ContextSelector (e.g., by using BasicContextSelector for a global cfg)
-                if (PropertiesUtil.getProperties().getStringProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME) == null) {
+                if (PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME) == null) {
                     injector.registerBinding(ContextSelector.KEY, () -> new BundleContextSelector(injector));
                 }
             }
-
             @Override
             public int getOrder() {
                 return -50;
@@ -69,9 +71,7 @@ public final class Activator implements BundleActivator {
         }, new Hashtable<>());
         injectorCallback = context.getService(injectorCallbackServiceRegistration.getReference());
         final ServiceRegistry registry = ServiceRegistry.getInstance();
-        final Bundle bundle = context.getBundle();
         final long bundleId = bundle.getBundleId();
-        final ClassLoader classLoader = bundle.adapt(BundleWiring.class).getClassLoader();
         registry.registerBundleServices(InjectorCallback.class, bundleId, List.of(injectorCallback));
         registry.loadServicesFromBundle(PluginService.class, bundleId, classLoader);
         registry.loadServicesFromBundle(ContextDataProvider.class, bundleId, classLoader);

@@ -212,7 +212,8 @@ public class JndiManager extends AbstractManager {
         @Override
         public JndiManager createManager(final String name, final Properties data) {
             if (!isJndiEnabled()) {
-                throw new IllegalStateException(String.format("JNDI must be enabled by setting one of the %s* properties to true", Constants.JNDI_PREFIX));
+                throw new IllegalStateException(String.format("JNDI must be enabled by setting one of the %s* properties to true",
+                        "JNDI.enable{SubKey}"));
             }
             try {
                 return new JndiManager(name, new InitialContext(data));

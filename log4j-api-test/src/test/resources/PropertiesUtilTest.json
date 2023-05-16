@@ -1,6 +1,6 @@
 {
   "log4j2": {
-    "My-App": {
+    "my-app": {
       "JNDI": {
         "enableJMS": "true"
       },

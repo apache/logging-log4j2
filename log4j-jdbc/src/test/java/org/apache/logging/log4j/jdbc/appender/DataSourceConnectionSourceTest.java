@@ -41,7 +41,7 @@ public class DataSourceConnectionSourceTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[][] data() {
-        System.setProperty("log4j2.enableJndiJdbc", "true");
+        System.setProperty("log4j2.*.JNDI.enableJDBC", "true");
         return new Object[][]{
             {"java:/comp/env/jdbc/Logging01"},
             {"java:/comp/env/jdbc/Logging02"}

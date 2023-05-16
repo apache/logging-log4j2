@@ -33,7 +33,7 @@ import org.apache.logging.log4j.perf.nogc.OpenHashStringMap;
 import org.apache.logging.log4j.spi.CopyOnWriteOpenHashMapThreadContextMap;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.GarbageFreeOpenHashMapThreadContextMap;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
@@ -103,7 +103,8 @@ public class ThreadContextBenchmark {
 
     @Setup
     public void setup() {
-        System.setProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS, IMPLEMENTATIONS.get(threadContextMapAlias).getName());
+        System.setProperty(LoggingSystemProperty.THREAD_CONTEXT_MAP_CLASS.getSystemKey(),
+                IMPLEMENTATIONS.get(threadContextMapAlias).getName());
         ThreadContextBenchmarkAccess.init();
 
         injector = ContextDataInjectorFactory.createInjector();
@@ -139,7 +140,7 @@ public class ThreadContextBenchmark {
 
     @TearDown
     public void tearDown() {
-        System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS);
+        System.clearProperty(LoggingSystemProperty.THREAD_CONTEXT_MAP_CLASS.getSystemKey());
         ThreadContextBenchmarkAccess.init();
     }
 

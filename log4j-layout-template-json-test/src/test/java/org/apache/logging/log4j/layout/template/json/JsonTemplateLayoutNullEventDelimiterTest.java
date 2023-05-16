@@ -27,7 +27,7 @@ import java.time.Duration;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class JsonTemplateLayoutNullEventDelimiterTest {
                     "serverPort",
                     String.valueOf(server.getPort()));
             System.setProperty(
-                    Log4jProperties.CONFIG_LOCATION,
+                    Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(),
                     "nullEventDelimitedJsonTemplateLayoutLogging.xml");
 
             // Produce log events.

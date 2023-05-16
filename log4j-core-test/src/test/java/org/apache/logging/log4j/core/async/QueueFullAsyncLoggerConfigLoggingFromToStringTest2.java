@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.async;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.AfterClass;
@@ -40,14 +40,14 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest2 extends QueueFul
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, "true");
-        System.setProperty(Log4jProperties.ASYNC_CONFIG_RING_BUFFER_SIZE, "128");
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND.getSystemKey(), "true");
+        System.setProperty(Log4jPropertyKey.ASYNC_CONFIG_RING_BUFFER_SIZE.getSystemKey(), "128");
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-        System.clearProperty(Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND);
-        System.clearProperty(Log4jProperties.ASYNC_CONFIG_RING_BUFFER_SIZE);
+        System.clearProperty(Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND.getSystemKey());
+        System.clearProperty(Log4jPropertyKey.ASYNC_CONFIG_RING_BUFFER_SIZE.getSystemKey());
     }
 
     @Rule

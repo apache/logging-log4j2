@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.async;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 
 @Tag("async")
-@SetSystemProperty(key = Log4jProperties.CONFIG_LOCATION, value = "AsyncLoggerConfigTest.xml")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "AsyncLoggerConfigTest.xml")
 public class AsyncLoggerConfigUseAfterShutdownTest {
 
     @Test

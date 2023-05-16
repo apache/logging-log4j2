@@ -39,6 +39,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
@@ -65,7 +66,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     /**
      * Property that disables the usage of this {@link LoggingSystem}.
      */
-    public static final String LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM = "log4j2.disableCloudConfigLoggingSystem";
+    public static final String LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM = "SpringBoot.disableCloudConfigLoggingSystem";
 
     public static final String ENVIRONMENT_KEY = "SpringEnvironment";
     private static final String HTTPS = "https";
@@ -97,7 +98,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     protected String[] getStandardConfigLocations() {
         String[] locations = super.getStandardConfigLocations();
         PropertiesUtil props = new PropertiesUtil(new Properties());
-        String location = props.getStringProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        String location = props.getStringProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
         if (location != null) {
             List<String> list = new ArrayList<>(Arrays.asList(super.getStandardConfigLocations()));
             list.add(location);

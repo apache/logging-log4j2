@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j;
 
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.test.junit.InitializesThreadContext;
 import org.apache.logging.log4j.test.junit.UsingThreadContextMap;
 import org.junit.jupiter.api.Test;
@@ -30,8 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class NoopThreadContextTest {
 
     @Test
-    @SetSystemProperty(key = LoggingSystemProperties.THREAD_CONTEXT_DISABLED, value = "true")
-    @SetSystemProperty(key = LoggingSystemProperties.THREAD_CONTEXT_MAP_DISABLED, value = "true")
+    @SetSystemProperty(key = LoggingSystemProperty.Constant.THREAD_CONTEXT_ENABLED, value = "false")
+    @SetSystemProperty(key = LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_ENABLED, value = "false")
     @InitializesThreadContext
     @UsingThreadContextMap
     public void testNoop() {

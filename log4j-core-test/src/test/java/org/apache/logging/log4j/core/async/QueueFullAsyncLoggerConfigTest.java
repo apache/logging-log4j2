@@ -20,7 +20,7 @@ import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -45,12 +45,12 @@ public class QueueFullAsyncLoggerConfigTest extends QueueFullAbstractTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(Log4jProperties.ASYNC_CONFIG_RING_BUFFER_SIZE, "128"); // minimum ringbuffer size
+        System.setProperty(Log4jPropertyKey.ASYNC_CONFIG_RING_BUFFER_SIZE.getSystemKey(), "128"); // minimum ringbuffer size
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-        System.clearProperty(Log4jProperties.ASYNC_CONFIG_RING_BUFFER_SIZE);
+        System.clearProperty(Log4jPropertyKey.ASYNC_CONFIG_RING_BUFFER_SIZE.getSystemKey());
     }
 
     @Rule

@@ -40,13 +40,13 @@ import javax.script.SimpleBindings;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.script.Script;
 import org.apache.logging.log4j.core.script.ScriptBindings;
 import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.util.FileWatcher;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -86,7 +86,7 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
 
     public ScriptManagerImpl(final Configuration configuration, final WatchManager watchManager) {
         String scriptLanguages =
-                PropertiesUtil.getProperties().getStringProperty(ScriptManagerFactoryImpl.SCRIPT_LANGUAGES);
+                PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.SCRIPT_ENABLE_LANGUAGES);
         this.configuration = configuration;
         this.watchManager = watchManager;
         final List<ScriptEngineFactory> factories = manager.getEngineFactories();

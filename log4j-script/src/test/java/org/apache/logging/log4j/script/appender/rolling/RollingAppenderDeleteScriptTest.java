@@ -19,8 +19,8 @@ package org.apache.logging.log4j.script.appender.rolling;
 import java.io.File;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class RollingAppenderDeleteScriptTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ScriptManagerFactoryImpl.SCRIPT_LANGUAGES, "Groovy, Javascript");
+        System.setProperty(Log4jPropertyKey.SCRIPT_ENABLE_LANGUAGES.getSystemKey(), "Groovy, Javascript");
     }
 
     @Rule

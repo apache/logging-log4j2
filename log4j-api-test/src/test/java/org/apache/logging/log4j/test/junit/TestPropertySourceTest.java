@@ -36,11 +36,11 @@ public class TestPropertySourceTest {
 
         // Test that per-class properties are overridden by per-test properties
         final PropertyEnvironment env = PropertiesUtil.getProperties();
-        staticProperties.setProperty("log4j2.staticProperty", "static");
-        staticProperties.setProperty("log4j2.instanceProperty", "static");
-        instanceProperties.setProperty("log4j2.instanceProperty", "instance");
-        assertThat(env.getStringProperty("log4j2.staticProperty")).isEqualTo("static");
-        assertThat(env.getStringProperty("log4j.instanceProperty")).isEqualTo("instance");
+        staticProperties.setProperty("static.Property", "static");
+        staticProperties.setProperty("instance.Property", "static");
+        instanceProperties.setProperty("instance.Property", "instance");
+        assertThat(env.getStringProperty("static.Property")).isEqualTo("static");
+        assertThat(env.getStringProperty("instance.Property")).isEqualTo("instance");
     }
 
     @Test
@@ -49,9 +49,9 @@ public class TestPropertySourceTest {
     }
 
     @Test
-    @SetTestProperty(key = "log4j2.testSetTestProperty", value = "true")
+    @SetTestProperty(key = "test.SetTestProperty", value = "true")
     public void testSetTestProperty() {
         final PropertyEnvironment env = PropertiesUtil.getProperties();
-        assertThat(env.getBooleanProperty("log4j2.testSetTestProperty")).isTrue();
+        assertThat(env.getBooleanProperty("test.SetTestProperty")).isTrue();
     }
 }

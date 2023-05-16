@@ -223,7 +223,12 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
         final RingBufferLogEventTranslator translator = getCachedTranslator();
         initTranslator(translator, fqcn, location, level, marker, message, thrown);
         initTranslatorThreadValues(translator);
-        publish(translator);
+        try {
+            publish(translator);
+        } catch (Throwable ex) {
+            translator.clear();
+            throw ex;
+        }
     }
 
     private void publish(final RingBufferLogEventTranslator translator) {

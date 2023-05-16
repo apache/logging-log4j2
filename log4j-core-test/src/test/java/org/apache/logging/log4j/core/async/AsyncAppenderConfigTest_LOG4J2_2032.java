@@ -22,9 +22,9 @@ import java.io.FileReader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -33,9 +33,9 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
-@SetSystemProperty(key = Log4jProperties.LOG_EVENT_FACTORY_CLASS_NAME, value = "org.apache.logging.log4j.core.impl.ReusableLogEventFactory")
-@SetSystemProperty(key = LoggingSystemProperties.LOGGER_MESSAGE_FACTORY_CLASS, value = "org.apache.logging.log4j.message.ReusableMessageFactory")
-@SetSystemProperty(key = Log4jProperties.CONFIG_LOCATION, value = "AsyncAppenderConfigTest-LOG4J2-2032.xml")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.LOG_EVENT_FACTORY_CLASS_NAME, value = "org.apache.logging.log4j.core.impl.ReusableLogEventFactory")
+@SetSystemProperty(key = LoggingSystemProperty.Constant.LOGGER_MESSAGE_FACTORY_CLASS, value = "org.apache.logging.log4j.message.ReusableMessageFactory")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "AsyncAppenderConfigTest-LOG4J2-2032.xml")
 public class AsyncAppenderConfigTest_LOG4J2_2032 {
 
     @Test

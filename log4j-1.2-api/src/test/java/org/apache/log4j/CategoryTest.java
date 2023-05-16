@@ -28,7 +28,7 @@ import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.message.MapMessage;
@@ -59,13 +59,14 @@ public class CategoryTest {
     public static void setupClass() {
         appender.start();
         version1Appender.setName(VERSION1_APPENDER_NAME);
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY, BasicConfigurationFactory.class.getName());
+        System.setProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
+                BasicConfigurationFactory.class.getName());
     }
 
     @AfterAll
     public static void cleanupClass() {
         appender.stop();
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY);
+        System.clearProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey());
     }
 
     @BeforeEach

@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.Cancellable;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
@@ -41,6 +40,7 @@ import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.StackLocatorUtil;
 
 import static org.apache.logging.log4j.util.Constants.isWebApp;
 
@@ -57,7 +57,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     private final ShutdownCallbackRegistry shutdownCallbackRegistry;
 
     /**
-     * Initializes the ContextSelector from system property {@link Constants#LOG4J_CONTEXT_SELECTOR}.
+     * Initializes the ContextSelector from system property {@link Log4jPropertyKey#CONTEXT_SELECTOR_CLASS_NAME}.
      */
     public Log4jContextFactory() {
         injector = DI.createInjector();
@@ -84,7 +84,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     }
 
     /**
-     * Constructs a Log4jContextFactory using the ContextSelector from {@link Constants#LOG4J_CONTEXT_SELECTOR}
+     * Constructs a Log4jContextFactory using the ContextSelector from {@link Log4jPropertyKey#CONTEXT_SELECTOR_CLASS_NAME}
      * and the provided ShutdownRegistrationStrategy.
      *
      * @param shutdownCallbackRegistry the ShutdownRegistrationStrategy to use
@@ -160,12 +160,13 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
                                     final boolean currentContext) {
-        final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext);
+        ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
+        final LoggerContext ctx = selector.getContext(fqcn, classLoader, currentContext);
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
         }
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
-            ctx.start();
+            startContext(ctx, classLoader);
         }
         return ctx;
     }
@@ -182,19 +183,33 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      */
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
                                     final boolean currentContext, final ConfigurationSource source) {
-        final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, null);
+        ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
+        final LoggerContext ctx = selector.getContext(fqcn, classLoader, currentContext, null);
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
         }
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (source != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final Configuration config = injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, source);
-                LOGGER.debug("Starting {} from configuration {}", ctx, source);
-                ctx.start(config);
-                ContextAnchor.THREAD_CONTEXT.remove();
+                boolean setProperties = false;
+                try {
+                    if (ctx.getProperties() == null) {
+                        PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                        ctx.setProperties(props);
+                        PropertiesUtil.setThreadProperties(props);
+                        setProperties = true;
+                    }
+                    final Configuration config = injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, source);
+                    LOGGER.debug("Starting {} from configuration {}", ctx, source);
+                    ctx.start(config);
+                } finally {
+                    if (setProperties) {
+                        PropertiesUtil.clearThreadProperties();
+                    }
+                    ContextAnchor.THREAD_CONTEXT.remove();
+                }
             } else {
-                ctx.start();
+                startContext(ctx, classLoader);
             }
         }
         return ctx;
@@ -212,15 +227,26 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      */
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
             final boolean currentContext, final Configuration configuration) {
-        final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, null);
+        ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
+        final LoggerContext ctx = selector.getContext(fqcn, classLoader, currentContext, null);
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
         }
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             ContextAnchor.THREAD_CONTEXT.set(ctx);
+            boolean setProperties = false;
             try {
+                if (ctx.getProperties() == null) {
+                    PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                    ctx.setProperties(props);
+                    PropertiesUtil.setThreadProperties(props);
+                    setProperties = true;
+                }
                 ctx.start(configuration);
             } finally {
+                if (setProperties) {
+                    PropertiesUtil.clearThreadProperties();
+                }
                 ContextAnchor.THREAD_CONTEXT.remove();
             }
         }
@@ -240,7 +266,8 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
                                     final boolean currentContext, final URI configLocation, final String name) {
-        final LoggerContext ctx = selector.getContext(fqcn, loader, currentContext, configLocation);
+        ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
+        final LoggerContext ctx = selector.getContext(fqcn, classLoader, currentContext, configLocation);
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
         }
@@ -250,13 +277,26 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (configLocation != null || name != null) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final Configuration config =
-                        injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, name, configLocation);
-                LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
-                ctx.start(config);
-                ContextAnchor.THREAD_CONTEXT.remove();
+                boolean setProperties = false;
+                try {
+                    if (ctx.getProperties() == null) {
+                        PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                        ctx.setProperties(props);
+                        PropertiesUtil.setThreadProperties(props);
+                        setProperties = true;
+                    }
+                    final Configuration config =
+                            injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, name, configLocation);
+                    LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
+                    ctx.start(config);
+                } finally {
+                    if (setProperties) {
+                        PropertiesUtil.clearThreadProperties();
+                    }
+                    ContextAnchor.THREAD_CONTEXT.remove();
+                }
             } else {
-                ctx.start();
+                startContext(ctx, classLoader);
             }
         }
         return ctx;
@@ -264,20 +304,34 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
 
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
             final boolean currentContext, final URI configLocation, final String name) {
-        final LoggerContext ctx = selector.getContext(fqcn, loader, entry, currentContext, configLocation);
+        ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
+        final LoggerContext ctx = selector.getContext(fqcn, classLoader, entry, currentContext, configLocation);
         if (name != null) {
             ctx.setName(name);
         }
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if (configLocation != null || name != null) {
-                ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final Configuration config =
-                        injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, name, configLocation);
-                LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
-                ctx.start(config);
-                ContextAnchor.THREAD_CONTEXT.remove();
+                boolean setProperties = false;
+                try {
+                    if (ctx.getProperties() == null) {
+                        PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                        ctx.setProperties(props);
+                        PropertiesUtil.setThreadProperties(props);
+                        setProperties = true;
+                    }
+                    ContextAnchor.THREAD_CONTEXT.set(ctx);
+                    final Configuration config =
+                            injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, name, configLocation);
+                    LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
+                    ctx.start(config);
+                } finally {
+                    if (setProperties) {
+                        PropertiesUtil.clearThreadProperties();
+                    }
+                    ContextAnchor.THREAD_CONTEXT.remove();
+                }
             } else {
-                ctx.start();
+                startContext(ctx, classLoader);
             }
         }
         return ctx;
@@ -285,8 +339,9 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
 
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
             final boolean currentContext, final List<URI> configLocations, final String name) {
+        ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
         final LoggerContext ctx = selector
-                .getContext(fqcn, loader, currentContext, null/*this probably needs to change*/);
+                .getContext(fqcn, classLoader, currentContext, null/*this probably needs to change*/);
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
         }
@@ -296,39 +351,73 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         if (ctx.getState() == LifeCycle.State.INITIALIZED) {
             if ((configLocations != null && !configLocations.isEmpty())) {
                 ContextAnchor.THREAD_CONTEXT.set(ctx);
-                final List<AbstractConfiguration> configurations = new ArrayList<>(configLocations.size());
-                for (final URI configLocation : configLocations) {
-                    final Configuration currentReadConfiguration = injector.getInstance(ConfigurationFactory.KEY)
-                            .getConfiguration(ctx, name, configLocation);
-                    if (currentReadConfiguration != null) {
-                        if (currentReadConfiguration instanceof DefaultConfiguration) {
-                            LOGGER.warn("Unable to locate configuration {}, ignoring", configLocation.toString());
-                        }
-                        else if (currentReadConfiguration instanceof AbstractConfiguration) {
-                            configurations.add((AbstractConfiguration) currentReadConfiguration);
-                        } else {
-                            LOGGER.error(
-                                    "Found configuration {}, which is not an AbstractConfiguration and can't be handled by CompositeConfiguration",
-                                    configLocation);
-                        }
-                    } else {
-                        LOGGER.info("Unable to access configuration {}, ignoring", configLocation.toString());
+                boolean setProperties = false;
+                try {
+                    final List<AbstractConfiguration> configurations = new ArrayList<>(configLocations.size());
+                    if (ctx.getProperties() == null) {
+                        PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                        ctx.setProperties(props);
+                        PropertiesUtil.setThreadProperties(props);
+                        setProperties = true;
                     }
+                    for (final URI configLocation : configLocations) {
+                        final Configuration currentReadConfiguration = injector.getInstance(ConfigurationFactory.KEY)
+                                .getConfiguration(ctx, name, configLocation);
+                        if (currentReadConfiguration != null) {
+                            if (currentReadConfiguration instanceof DefaultConfiguration) {
+                                LOGGER.warn("Unable to locate configuration {}, ignoring", configLocation.toString());
+                            } else if (currentReadConfiguration instanceof AbstractConfiguration) {
+                                configurations.add((AbstractConfiguration) currentReadConfiguration);
+                            } else {
+                                LOGGER.error(
+                                        "Found configuration {}, which is not an AbstractConfiguration and can't be handled by CompositeConfiguration",
+                                        configLocation);
+                            }
+                        } else {
+                            LOGGER.info("Unable to access configuration {}, ignoring", configLocation.toString());
+                        }
+                    }
+                    if (configurations.size() == 0) {
+                        LOGGER.error("No configurations could be created for {}", configLocations.toString());
+                    } else if (configurations.size() == 1) {
+                        ctx.start(configurations.get(0));
+                    } else {
+                        final CompositeConfiguration compositeConfiguration = new CompositeConfiguration(configurations);
+                        ctx.start(compositeConfiguration);
+                    }
+                } finally {
+                    if (setProperties) {
+                        PropertiesUtil.clearThreadProperties();
+                    }
+                    ContextAnchor.THREAD_CONTEXT.remove();
                 }
-                if (configurations.size() == 0) {
-                    LOGGER.error("No configurations could be created for {}", configLocations.toString());
-                } else if (configurations.size() == 1) {
-                    ctx.start(configurations.get(0));
-                } else {
-                    final CompositeConfiguration compositeConfiguration = new CompositeConfiguration(configurations);
-                    ctx.start(compositeConfiguration);
-                }
-                ContextAnchor.THREAD_CONTEXT.remove();
             } else {
-                ctx.start();
+                startContext(ctx, classLoader);
             }
         }
         return ctx;
+    }
+
+    private void startContext(LoggerContext ctx, ClassLoader classLoader) {
+        boolean setProperties = false;
+        try {
+            if (ctx.getProperties() == null) {
+                PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                ctx.setProperties(props);
+                PropertiesUtil.setThreadProperties(props);
+                setProperties = true;
+            }
+            final Configuration config = injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, ctx.getName(), null);
+            if (config != null) {
+                ctx.start(config);
+            } else {
+                ctx.start();
+            }
+        } finally {
+            if (setProperties) {
+                PropertiesUtil.clearThreadProperties();
+            }
+        }
     }
 
     @Override
@@ -394,6 +483,6 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
 
     public boolean isShutdownHookEnabled() {
         return !isWebApp() && PropertiesUtil.getProperties()
-                .getBooleanProperty(Log4jProperties.SHUTDOWN_HOOK_ENABLED, true);
+                .getBooleanProperty(Log4jPropertyKey.SHUTDOWN_HOOK_ENABLED, true);
     }
 }

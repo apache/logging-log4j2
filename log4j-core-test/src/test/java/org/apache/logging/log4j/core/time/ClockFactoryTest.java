@@ -16,7 +16,7 @@
  */
 package org.apache.logging.log4j.core.time;
 
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.time.internal.CachedClock;
 import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
@@ -41,42 +41,42 @@ public class ClockFactoryTest {
     }
 
     @Test
-    @SetSystemProperty(key = Log4jProperties.CONFIG_CLOCK, value = "SystemClock")
+    @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_CLOCK, value = "SystemClock")
     public void testSpecifySystemClockShort() {
         injector.init();
         assertThat(injector.getInstance(Clock.class)).isInstanceOf(SystemClock.class);
     }
 
     @Test
-    @SetSystemProperty(key = Log4jProperties.CONFIG_CLOCK, value = "org.apache.logging.log4j.core.time.internal.SystemClock")
+    @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_CLOCK, value = "org.apache.logging.log4j.core.time.internal.SystemClock")
     public void testSpecifySystemClockLong() {
         injector.init();
         assertThat(injector.getInstance(Clock.class)).isInstanceOf(SystemClock.class);
     }
 
     @Test
-    @SetSystemProperty(key = Log4jProperties.CONFIG_CLOCK, value = "CachedClock")
+    @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_CLOCK, value = "CachedClock")
     public void testSpecifyCachedClockShort() {
         injector.init();
         assertThat(injector.getInstance(Clock.class)).isInstanceOf(CachedClock.class);
     }
 
     @Test
-    @SetSystemProperty(key = Log4jProperties.CONFIG_CLOCK, value = "org.apache.logging.log4j.core.time.internal.CachedClock")
+    @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_CLOCK, value = "org.apache.logging.log4j.core.time.internal.CachedClock")
     public void testSpecifyCachedClockLong() {
         injector.init();
         assertThat(injector.getInstance(Clock.class)).isInstanceOf(CachedClock.class);
     }
 
     @Test
-    @SetSystemProperty(key = Log4jProperties.CONFIG_CLOCK, value = "CoarseCachedClock")
+    @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_CLOCK, value = "CoarseCachedClock")
     public void testSpecifyCoarseCachedClockShort() {
         injector.init();
         assertThat(injector.getInstance(Clock.class)).isInstanceOf(CoarseCachedClock.class);
     }
 
     @Test
-    @SetSystemProperty(key = Log4jProperties.CONFIG_CLOCK, value = "org.apache.logging.log4j.core.time.internal.CoarseCachedClock")
+    @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_CLOCK, value = "org.apache.logging.log4j.core.time.internal.CoarseCachedClock")
     public void testSpecifyCoarseCachedClockLong() {
         injector.init();
         assertThat(injector.getInstance(Clock.class)).isInstanceOf(CoarseCachedClock.class);
@@ -90,7 +90,7 @@ public class ClockFactoryTest {
     }
 
     @Test
-    @SetSystemProperty(key = Log4jProperties.CONFIG_CLOCK, value = "org.apache.logging.log4j.core.time.ClockFactoryTest$MyClock")
+    @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_CLOCK, value = "org.apache.logging.log4j.core.time.ClockFactoryTest$MyClock")
     public void testCustomClock() {
         injector.init();
         assertThat(injector.getInstance(Clock.class)).isInstanceOf(MyClock.class);

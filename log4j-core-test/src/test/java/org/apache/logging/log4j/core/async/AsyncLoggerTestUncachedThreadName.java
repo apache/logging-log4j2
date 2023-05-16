@@ -22,7 +22,7 @@ import java.io.FileReader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.junit.jupiter.api.Test;
@@ -31,8 +31,8 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SetSystemProperty(key = Log4jProperties.ASYNC_LOGGER_THREAD_NAME_STRATEGY, value = "UNCACHED")
-@SetSystemProperty(key = Log4jProperties.CONFIG_LOCATION, value = "AsyncLoggerTest.xml")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_LOGGER_THREAD_NAME_STRATEGY, value = "UNCACHED")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "AsyncLoggerTest.xml")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
 public class AsyncLoggerTestUncachedThreadName {
 

@@ -22,7 +22,7 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
 import static org.apache.logging.log4j.spi.LoggingSystem.THREAD_CONTEXT_DEFAULT_INITIAL_CAPACITY;
-import static org.apache.logging.log4j.spi.LoggingSystemProperties.THREAD_CONTEXT_INITIAL_CAPACITY;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_INITIAL_CAPACITY;
 
 /**
  * {@code OpenHashStringMap}-based implementation of the {@code ThreadContextMap} interface that attempts not to

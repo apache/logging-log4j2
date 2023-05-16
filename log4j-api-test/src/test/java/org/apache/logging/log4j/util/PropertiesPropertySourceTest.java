@@ -32,10 +32,10 @@ public class PropertiesPropertySourceTest {
 
     public static Object[][] data() {
         return new Object[][]{
-            {"log4j2.configurationFile", Arrays.asList("configuration", "file")},
-            {"log4j2.fooBarProperty", Arrays.asList("foo", "bar", "property")},
-            {"log4j2.EXACT", Collections.singletonList("EXACT")},
-            {"log4j2.testPropertyName", PropertySource.Util.tokenize("Log4jTestPropertyName")},
+            {"log4j2.configuration.file", Arrays.asList("configuration", "file")},
+            {"log4j2.foo.bar.property", Arrays.asList("foo", "bar", "property")},
+            {"log4j2.LOWER", Collections.singletonList("LOWER")},
+            {"log4j2.Log4jTestPropertyName", PropertySource.Util.tokenize("Log4jTestPropertyName")},
             {null, Collections.emptyList()}
         };
     }

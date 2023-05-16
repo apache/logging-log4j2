@@ -25,7 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Tests the ContextDataFactory class.
  */
-@SetSystemProperty(key = Log4jProperties.THREAD_CONTEXT_DATA_CLASS_NAME, value = "org.apache.logging.log4j.core.impl.FactoryTestStringMap")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.THREAD_CONTEXT_DATA_CLASS_NAME,
+        value = "org.apache.logging.log4j.core.impl.FactoryTestStringMap")
 public class ContextDataFactoryPropertySetTest {
 
     @Test

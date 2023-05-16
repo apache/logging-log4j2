@@ -20,8 +20,8 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Tests basic condition processing.
  */
-@SetSystemProperty(key = ScriptManagerFactoryImpl.SCRIPT_LANGUAGES, value = "Groovy, Javascript")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.SCRIPT_ENABLE_LANGUAGES, value = "Groovy, Javascript")
 public class ScriptArbiterTest {
 
     static final String CONFIG = "log4j2-scriptArbiters.xml";

@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.async;
 import java.net.URI;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
@@ -43,7 +43,7 @@ public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
     public static boolean isSelected() {
         // FIXME(ms): this should check Injector bindings
         return AsyncLoggerContextSelector.class.getName().equals(
-                PropertiesUtil.getProperties().getStringProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME));
+                PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME));
     }
 
     @Inject

@@ -66,7 +66,7 @@ public class ContextDataInjectorFactory {
      * @see ContextDataInjector
      */
     public static ContextDataInjector createInjector() {
-        final String className = PropertiesUtil.getProperties().getStringProperty(Log4jProperties.THREAD_CONTEXT_DATA_INJECTOR_CLASS_NAME);
+        final String className = PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.THREAD_CONTEXT_DATA_INJECTOR_CLASS_NAME);
         if (className == null) {
             return createDefaultInjector();
         }

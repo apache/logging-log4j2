@@ -17,53 +17,37 @@
 package org.apache.logging.log4j.core.util;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyKey;
 
 /**
  * Log4j Constants.
  */
 public final class Constants {
 
-    public static final String JNDI_PREFIX = "log4j2.enableJndi";
     private static final String JNDI_MANAGER_CLASS = "org.apache.logging.log4j.jndi.JndiManager";
 
     /**
      * Check to determine if the JNDI feature is available.
-     * @param subKey The feature to check.
+     * @param key The feature to check.
      * @return true if the feature is available.
      */
-    private static boolean isJndiEnabled(final String subKey) {
-        return PropertiesUtil.getProperties().getBooleanProperty(JNDI_PREFIX + subKey, false)
+    private static boolean isJndiEnabled(final PropertyKey key) {
+        return PropertiesUtil.getProperties().getBooleanProperty(key, false)
                 && isClassAvailable(JNDI_MANAGER_CLASS);
     }
 
-    public static boolean JNDI_CONTEXT_SELECTOR_ENABLED = isJndiEnabled("ContextSelector");
+    public static boolean JNDI_CONTEXT_SELECTOR_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_CONTEXT_SELECTOR);
 
-    public static boolean JNDI_JMS_ENABLED = isJndiEnabled("Jms");
+    public static boolean JNDI_JMS_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_ENABLE_JMS);
 
-    public static boolean JNDI_LOOKUP_ENABLED = isJndiEnabled("Lookup");
+    public static boolean JNDI_LOOKUP_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_ENABLE_LOOKUP);
 
-    public static boolean JNDI_JDBC_ENABLED = isJndiEnabled("Jdbc");
-
-    /**
-     * Name of the system property to use to identify the LogEvent factory.
-     */
-    public static final String LOG4J_LOG_EVENT_FACTORY = Log4jProperties.LOG_EVENT_FACTORY_CLASS_NAME;
-
-    /**
-     * Name of the system property to use to identify the ContextSelector Class.
-     */
-    public static final String LOG4J_CONTEXT_SELECTOR = Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME;
-
-    /**
-     * Property name for the default status (internal log4j logging) level to use if not specified in configuration.
-     */
-    public static final String LOG4J_DEFAULT_STATUS_LEVEL = Log4jProperties.STATUS_DEFAULT_LEVEL;
+    public static boolean JNDI_JDBC_ENABLED = isJndiEnabled(Log4jPropertyKey.JNDI_ENABLE_JDBC);
 
     public static final Key<Level> DEFAULT_STATUS_LEVEL_KEY = new @Named("StatusLogger") Key<>() {};
 
@@ -81,7 +65,7 @@ public final class Constants {
      * Supports user request LOG4J2-898 to have the option to format a message in the background thread.
      */
     public static final boolean FORMAT_MESSAGES_IN_BACKGROUND = PropertiesUtil.getProperties().getBooleanProperty(
-            Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, false);
+            Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, false);
 
     /**
      * Kill switch for garbage-free Layout behaviour that encodes LogEvents directly into
@@ -95,7 +79,7 @@ public final class Constants {
      * @since 2.6
      */
     public static final boolean ENABLE_DIRECT_ENCODERS = PropertiesUtil.getProperties().getBooleanProperty(
-            Log4jProperties.GC_ENABLE_DIRECT_ENCODERS, true); // enable GC-free text encoding by default
+            Log4jPropertyKey.GC_ENABLE_DIRECT_ENCODERS, true); // enable GC-free text encoding by default
             // the alternative is to enable GC-free encoding only by default only when using all-async loggers:
             //AsyncLoggerContextSelector.class.getName().equals(PropertiesUtil.getProperties().getStringProperty(LOG4J_CONTEXT_SELECTOR)));
 
@@ -106,7 +90,7 @@ public final class Constants {
      * </p>
      * @since 2.6
      */
-    public static final int INITIAL_REUSABLE_MESSAGE_SIZE = size(Log4jProperties.GC_INITIAL_REUSABLE_MESSAGE_SIZE, 128);
+    public static final int INITIAL_REUSABLE_MESSAGE_SIZE = size(Log4jPropertyKey.GC_INITIAL_REUSABLE_MESSAGE_SIZE, 128);
 
     /**
      * Maximum size of the StringBuilders used in RingBuffer LogEvents to store the contents of reusable Messages.
@@ -117,7 +101,7 @@ public final class Constants {
      * </p>
      * @since 2.6
      */
-    public static final int MAX_REUSABLE_MESSAGE_SIZE = size(LoggingSystemProperties.GC_REUSABLE_MESSAGE_MAX_SIZE, (128 * 2 + 2) * 2 + 2);
+    public static final int MAX_REUSABLE_MESSAGE_SIZE = size(Log4jPropertyKey.GC_REUSABLE_MESSAGE_MAX_SIZE, (128 * 2 + 2) * 2 + 2);
 
     /**
      * Size of CharBuffers used by text encoders.
@@ -126,7 +110,7 @@ public final class Constants {
      * </p>
      * @since 2.6
      */
-    public static final int ENCODER_CHAR_BUFFER_SIZE = size(Log4jProperties.GC_ENCODER_CHAR_BUFFER_SIZE, 2048);
+    public static final int ENCODER_CHAR_BUFFER_SIZE = size(Log4jPropertyKey.GC_ENCODER_CHAR_BUFFER_SIZE, 2048);
 
     /**
      * Default size of ByteBuffers used to encode LogEvents without allocating temporary objects.
@@ -136,10 +120,10 @@ public final class Constants {
      * @see org.apache.logging.log4j.core.layout.ByteBufferDestination
      * @since 2.6
      */
-    public static final int ENCODER_BYTE_BUFFER_SIZE = size(Log4jProperties.GC_ENCODER_BYTE_BUFFER_SIZE, 8 * 1024);
+    public static final int ENCODER_BYTE_BUFFER_SIZE = size(Log4jPropertyKey.GC_ENCODER_BYTE_BUFFER_SIZE, 8 * 1024);
 
 
-    private static int size(final String property, final int defaultValue) {
+    private static int size(final PropertyKey property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
     }
 

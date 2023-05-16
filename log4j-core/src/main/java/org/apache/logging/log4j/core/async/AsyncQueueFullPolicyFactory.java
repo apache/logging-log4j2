@@ -18,7 +18,7 @@ package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -29,12 +29,12 @@ import org.apache.logging.log4j.util.PropertyEnvironment;
  * created by this factory is used in AsyncLogger, AsyncLoggerConfig and AsyncAppender
  * to control if events are logged in the current thread, the background thread, or discarded.
  * <p>
- * Property {@value Log4jProperties#ASYNC_LOGGER_QUEUE_FULL_POLICY} controls the routing behaviour. If this property is not specified or has
+ * Property {@value Log4jPropertyKey#ASYNC_LOGGER_QUEUE_FULL_POLICY} controls the routing behaviour. If this property is not specified or has
  * value {@code "Default"}, this factory creates {@link DefaultAsyncQueueFullPolicy} objects.
  * </p> <p>
  * If this property has value {@code "Discard"}, this factory creates {@link DiscardingAsyncQueueFullPolicy} objects.
  * By default, this router discards events of level {@code INFO}, {@code DEBUG} and {@code TRACE} if the queue is full.
- * This can be adjusted with property {@value Log4jProperties#ASYNC_LOGGER_DISCARD_THRESHOLD} (name of the level at which to start
+ * This can be adjusted with property {@value Log4jPropertyKey#ASYNC_LOGGER_DISCARD_THRESHOLD} (name of the level at which to start
  * discarding).
  * </p> <p>
  * For any other value, this
@@ -65,7 +65,7 @@ public class AsyncQueueFullPolicyFactory {
      * @return a new AsyncQueueFullPolicy
      */
     public static AsyncQueueFullPolicy create() {
-        final String router = PropertiesUtil.getProperties().getStringProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY);
+        final String router = PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY);
         if (router == null || isRouterSelected(
                 router, DefaultAsyncQueueFullPolicy.class, PROPERTY_VALUE_DEFAULT_ASYNC_EVENT_ROUTER)) {
             return new DefaultAsyncQueueFullPolicy();
@@ -100,7 +100,7 @@ public class AsyncQueueFullPolicyFactory {
 
     private static AsyncQueueFullPolicy createDiscardingAsyncQueueFullPolicy() {
         final PropertyEnvironment properties = PropertiesUtil.getProperties();
-        final String level = properties.getStringProperty(Log4jProperties.ASYNC_LOGGER_DISCARD_THRESHOLD, Level.INFO.name());
+        final String level = properties.getStringProperty(Log4jPropertyKey.ASYNC_LOGGER_DISCARD_THRESHOLD, Level.INFO.name());
         final Level thresholdLevel = Level.toLevel(level, Level.INFO);
         LOGGER.debug("Creating custom DiscardingAsyncQueueFullPolicy(discardThreshold:{})", thresholdLevel);
         return new DiscardingAsyncQueueFullPolicy(thresholdLevel);

@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.time;
 
-import org.apache.logging.log4j.core.impl.Log4jProperties;
 import org.apache.logging.log4j.core.time.internal.CachedClock;
 import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
@@ -31,11 +30,6 @@ import org.apache.logging.log4j.util.Lazy;
  */
 public final class ClockFactory {
 
-    /**
-     * Name of the system property that can be used to specify a {@code Clock}
-     * implementation class. The value of this property is {@value}.
-     */
-    public static final String PROPERTY_NAME = Log4jProperties.CONFIG_CLOCK;
     private static final Lazy<Clock> FALLBACK = Lazy.lazy(() -> {
         // TODO(ms): split out clock bindings for smaller fallback init
         final Injector injector = DI.createInjector();

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.test.TestLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ public class Log4j1222Test
 {
 
     @Test
-    @SetSystemProperty(key = "log4j.configurationFile", value = "log4j2-console.xml")
+    @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "log4j2-console.xml")
     public void homepageRendersSuccessfully() {
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
     }

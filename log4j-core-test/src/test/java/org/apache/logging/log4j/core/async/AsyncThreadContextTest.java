@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.ThreadContextTestAccess;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
@@ -36,7 +36,7 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -51,8 +51,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Tag("sleepy")
-@SetSystemProperty(key = Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE, value = "128") // minimum ringbuffer size
-@SetSystemProperty(key = Log4jProperties.ASYNC_CONFIG_RING_BUFFER_SIZE, value = "128") // minimum ringbuffer size
+@SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_LOGGER_RING_BUFFER_SIZE, value = "128") // minimum ringbuffer size
+@SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_CONFIG_RING_BUFFER_SIZE, value = "128") // minimum ringbuffer size
 public class AsyncThreadContextTest {
 
     private final static int LINE_COUNT = 130;
@@ -65,8 +65,8 @@ public class AsyncThreadContextTest {
 
     @AfterAll
     public static void afterClass() {
-        System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_GARBAGE_FREE_ENABLED);
-        System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS);
+        System.clearProperty(LoggingSystemProperty.Constant.THREAD_CONTEXT_GARBAGE_FREE_ENABLED);
+        System.clearProperty(LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_CLASS);
     }
 
     enum Mode {
@@ -87,9 +87,9 @@ public class AsyncThreadContextTest {
         WEBAPP, GARBAGE_FREE, COPY_ON_WRITE;
 
         void init() {
-            System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS);
+            System.clearProperty(LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_CLASS);
             final String PACKAGE = "org.apache.logging.log4j.spi.";
-            System.setProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS, PACKAGE + implClassSimpleName());
+            System.setProperty(LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_CLASS, PACKAGE + implClassSimpleName());
             PropertiesUtil.getProperties().reload();
             ThreadContextTestAccess.init();
         }

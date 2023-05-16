@@ -45,7 +45,7 @@ import org.apache.flume.source.avro.AvroSourceProtocol;
 import org.apache.flume.source.avro.Status;
 import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -98,14 +98,14 @@ public class FlumePersistentPerf {
         System.setProperty("alternatePort", Integer.toString(altPort));
         primary = new EventCollector(primaryPort);
         alternate = new EventCollector(altPort);
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), CONFIG);
         ctx = LoggerContext.getContext(false);
         ctx.reconfigure();
     }
 
     @After
     public void teardown() throws Exception {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
         ctx.reconfigure();
         primary.stop();
         alternate.stop();

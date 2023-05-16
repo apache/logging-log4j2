@@ -27,7 +27,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
-import static org.apache.logging.log4j.spi.LoggingSystemProperties.THREAD_CONTEXT_MAP_INHERITABLE;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_MAP_INHERITABLE;
 
 /**
  * The actual ThreadContext Map. A new ThreadContext Map is created each time it is updated and the Map stored is always
@@ -36,12 +36,6 @@ import static org.apache.logging.log4j.spi.LoggingSystemProperties.THREAD_CONTEX
  * should be much better than if the Map was copied for each event.
  */
 public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyStringMap {
-
-    /**
-     * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
-     * {@code ThreadLocal} (value is not "true") in the implementation.
-     */
-    public static final String INHERITABLE_MAP = THREAD_CONTEXT_MAP_INHERITABLE;
 
     private final boolean useMap;
     private final ThreadLocal<Map<String, String>> localMap;

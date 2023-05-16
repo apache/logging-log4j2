@@ -40,7 +40,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.jmx.Server;
 import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ExecutorServices;
@@ -81,6 +81,7 @@ public class LoggerContext extends AbstractLifeCycle
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
     private volatile List<LoggerContextShutdownAware> listeners;
     private final Injector injector;
+    private PropertiesUtil properties;
 
     /**
      * The Configuration is volatile to guarantee that initialization of the Configuration has completed before the
@@ -188,6 +189,15 @@ public class LoggerContext extends AbstractLifeCycle
         this.injector.registerBindingIfAbsent(KEY, () -> new WeakReference<>(this));
     }
 
+    public void setProperties(PropertiesUtil properties) {
+        this.properties = properties;
+    }
+
+    @Override
+    public PropertiesUtil getProperties() {
+        return properties;
+    }
+
     public void addShutdownListener(final LoggerContextShutdownAware listener) {
         if (listeners == null) {
             synchronized(this) {
@@ -274,7 +284,7 @@ public class LoggerContext extends AbstractLifeCycle
     @Override
     public void start() {
         LOGGER.debug("Starting {}...", this);
-        if (PropertiesUtil.getProperties().getBooleanProperty(Log4jProperties.LOGGER_CONTEXT_STACKTRACE_ON_START, false)) {
+        if (getProperties().getBooleanProperty(Log4jPropertyKey.STACKTRACE_ON_START, false)) {
             LOGGER.debug("Stack trace to locate invoker",
                     new Exception("Not a real error, showing stack trace to locate invoker"));
         }
@@ -429,6 +439,7 @@ public class LoggerContext extends AbstractLifeCycle
      *
      * @return the name.
      */
+    @Override
     public String getName() {
         return contextName;
     }
@@ -722,19 +733,29 @@ public class LoggerContext extends AbstractLifeCycle
         final ClassLoader cl = externalContext instanceof ClassLoader ? (ClassLoader) externalContext : null;
         LOGGER.debug("Reconfiguration started for {} at URI {} with optional ClassLoader: {}",
                 this, configURI, cl);
-        final Configuration instance =
-                injector.getInstance(ConfigurationFactory.KEY).getConfiguration(this, contextName, configURI, cl);
-        if (instance == null) {
-            LOGGER.error("Reconfiguration failed: No configuration found for '{}' at '{}' in '{}'", contextName, configURI, cl);
-        } else {
-            setConfiguration(instance);
-            /*
-             * instance.start(); Configuration old = setConfiguration(instance); updateLoggers(); if (old != null) {
-             * old.stop(); }
-             */
-            final String location = configuration == null ? "?" : String.valueOf(configuration.getConfigurationSource());
-            LOGGER.debug("Reconfiguration complete for {} at URI {} with optional ClassLoader: {}",
-                    this, location, cl);
+        boolean setProperties = false;
+        if (properties != null && !PropertiesUtil.hasThreadProperties()) {
+            PropertiesUtil.setThreadProperties(properties);
+        }
+        try {
+            final Configuration instance =
+                    injector.getInstance(ConfigurationFactory.KEY).getConfiguration(this, contextName, configURI, cl);
+            if (instance == null) {
+                LOGGER.error("Reconfiguration failed: No configuration found for '{}' at '{}' in '{}'", contextName, configURI, cl);
+            } else {
+                setConfiguration(instance);
+                /*
+                 * instance.start(); Configuration old = setConfiguration(instance); updateLoggers(); if (old != null) {
+                 * old.stop(); }
+                 */
+                final String location = configuration == null ? "?" : String.valueOf(configuration.getConfigurationSource());
+                LOGGER.debug("Reconfiguration complete for {} at URI {} with optional ClassLoader: {}",
+                        this, location, cl);
+            }
+        } finally {
+            if (setProperties) {
+                PropertiesUtil.clearThreadProperties();
+            }
         }
     }
 

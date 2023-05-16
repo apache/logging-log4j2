@@ -40,6 +40,7 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFact
 import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
 import org.junit.jupiter.api.AfterEach;
@@ -91,7 +92,7 @@ public class TestConfigurator {
 
     @AfterEach
     public void cleanup() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
         if (ctx != null) {
             Configurator.shutdown(ctx);
             ctx = null;
@@ -205,7 +206,7 @@ public class TestConfigurator {
 
     @Test
     public void testFromClassPathProperty() throws Exception {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "classpath:log4j2-config.xml");
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "classpath:log4j2-config.xml");
         ctx = Configurator.initialize("Test1", null);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();

@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
@@ -202,9 +202,9 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
             return;
         }
         LOGGER.trace("AsyncLoggerConfigDisruptor creating new disruptor for this configuration.");
-        ringBufferSize = DisruptorUtil.calculateRingBufferSize(Log4jProperties.ASYNC_CONFIG_RING_BUFFER_SIZE);
+        ringBufferSize = DisruptorUtil.calculateRingBufferSize(Log4jPropertyKey.ASYNC_CONFIG_RING_BUFFER_SIZE);
         waitStrategy = DisruptorUtil.createWaitStrategy(
-                Log4jProperties.ASYNC_CONFIG_WAIT_STRATEGY, asyncWaitStrategyFactory);
+                Log4jPropertyKey.ASYNC_CONFIG_WAIT_STRATEGY, asyncWaitStrategyFactory);
 
         final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLoggerConfig", true, Thread.NORM_PRIORITY) {
             @Override

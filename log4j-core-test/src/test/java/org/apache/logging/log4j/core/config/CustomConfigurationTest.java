@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.config.xml.XmlConfiguration;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.status.StatusConsoleListener;
@@ -44,7 +45,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @CleanUpFiles("target/test.log")
 @SetSystemProperty(key = "log4j.level", value = "info")
-@SetSystemProperty(key = "log.level", value = "info")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_DEFAULT_LEVEL, value = "info")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.STATUS_DEFAULT_LEVEL, value = "info")
 public class CustomConfigurationTest {
 
     public static final Path LOG_FILE = Paths.get("target", "test.log");

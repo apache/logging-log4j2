@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -36,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @EnabledIfSystemProperty(named = "test", matches = ".*Unbox2ConfigurableTest.*")
 @Isolated
-@SetSystemProperty(key = "log4j.unbox.ringbuffer.size", value = "65")
+@SetSystemProperty(key = LoggingSystemProperty.Constant.GC_UNBOX_RING_BUFFER_SIZE, value = "65")
 public class Unbox2ConfigurableTest {
     @AfterAll
     public static void afterClass() throws Exception {

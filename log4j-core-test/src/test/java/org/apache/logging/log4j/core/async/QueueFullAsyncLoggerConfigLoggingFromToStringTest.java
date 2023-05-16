@@ -23,7 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.status.StatusData;
@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @Tag("async")
 @DisabledOnOs(value = OS.WINDOWS, disabledReason = "https://issues.apache.org/jira/browse/LOG4J2-3513")
-@SetSystemProperty(key = Log4jProperties.ASYNC_CONFIG_RING_BUFFER_SIZE, value = "128")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_CONFIG_RING_BUFFER_SIZE, value = "128")
 public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFullAbstractTest {
 
     @Test

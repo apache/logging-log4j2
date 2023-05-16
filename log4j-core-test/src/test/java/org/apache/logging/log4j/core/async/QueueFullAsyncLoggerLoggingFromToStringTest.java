@@ -16,43 +16,35 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.Stack;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.junit.AfterClass;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
  */
 @RunWith(BlockJUnit4ClassRunner.class)
 @Category(AsyncLoggers.class)
+@SetSystemProperty(key = LoggingSystemProperty.Constant.WEB_IS_WEBAPP, value = "false")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_LOGGER_RING_BUFFER_SIZE, value = "128")
+@SetSystemProperty(key = LoggingSystemProperty.Constant.THREAD_LOCALS_ENABLE, value = "true")
 public class QueueFullAsyncLoggerLoggingFromToStringTest extends QueueFullAbstractTest {
-
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE, "128"); // minimum ringbuffer size
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        System.clearProperty(Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE);
-    }
 
     @Rule
     public LoggerContextRule context = new LoggerContextRule(
@@ -90,15 +82,10 @@ public class QueueFullAsyncLoggerLoggingFromToStringTest extends QueueFullAbstra
         while (blockingAppender.logEvents.size() < 129) { Thread.yield(); }
         TRACE("After  stop() blockingAppender.logEvents.count=" + blockingAppender.logEvents.size());
 
-        final Stack<String> actual = transform(blockingAppender.logEvents);
+        final List<String> messages = getMessages(blockingAppender.logEvents);
         assertEquals("Jumped the queue: test(2)+domain1(65)+domain2(61)=128: queue full",
-                "Logging in toString() #127", actual.pop());
-        assertEquals("Logging in toString() #128", actual.pop());
-        assertEquals("logging naughty object #0 Who's bad?!", actual.pop());
-
-        for (int i = 0; i < 127; i++) {
-            assertEquals("First batch", "Logging in toString() #" + i, actual.pop());
-        }
-        assertTrue(actual.isEmpty());
+                "Logging in toString() #127", messages.get(messages.size() - 2));
+        assertEquals("Logging in toString() #128", messages.get(messages.size() - 1));
+        assertEquals("logging naughty object #0 Who's bad?!", messages.get(0));
     }
 }

@@ -17,7 +17,7 @@
 package org.apache.logging.log4j.gctests;
 
 import org.apache.logging.log4j.core.test.categories.GarbageFree;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class GcFreeSynchronousLoggingTest {
      * This code runs in a separate process, instrumented with the Google Allocation Instrumenter.
      */
     public static void main(final String[] args) throws Exception {
-        System.setProperty(LoggingSystemProperties.THREAD_CONTEXT_GARBAGE_FREE_ENABLED, "true");
+        System.setProperty(LoggingSystemProperty.THREAD_CONTEXT_GARBAGE_FREE_ENABLED.getSystemKey(), "true");
         GcFreeLoggingTestUtil.executeLogging("gcFreeLogging.xml", GcFreeSynchronousLoggingTest.class);
     }
 }

@@ -58,7 +58,7 @@ public class JdbcAppenderMapMessageDataSourceTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.enableJndiJdbc", "true");
+        System.setProperty("log4j2.*.JNDI.enableJDBC", "true");
     }
 
     public JdbcAppenderMapMessageDataSourceTest() {

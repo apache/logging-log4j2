@@ -39,7 +39,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.ExtendedLogger;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.test.TestLogger;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Strings;
@@ -52,7 +52,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("functional")
-@SetSystemProperty(key = LoggingSystemProperties.LOGGER_CONTEXT_FACTORY_CLASS, value = "org.apache.logging.log4j.test.TestLoggerContextFactory")
+@SetSystemProperty(key = LoggingSystemProperty.Constant.LOGGER_CONTEXT_FACTORY_CLASS, value = "org.apache.logging.log4j.test.TestLoggerContextFactory")
 public class GenerateExtendedLoggerTest {
 
     private static final String TEST_SOURCE = "target/test-classes/org/apache/logging/log4j/core/MyExtendedLogger.java";

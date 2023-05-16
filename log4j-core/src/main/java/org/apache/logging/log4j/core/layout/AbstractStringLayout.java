@@ -24,13 +24,14 @@ import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyKey;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
 
@@ -112,7 +113,7 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
     protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
 
     protected static final int MAX_STRING_BUILDER_SIZE = Math.max(DEFAULT_STRING_BUILDER_SIZE,
-            size(Log4jProperties.GC_LAYOUT_STRING_BUILDER_MAX_SIZE, 2 * 1024));
+            size(Log4jPropertyKey.GC_LAYOUT_STRING_BUILDER_MAX_SIZE, 2 * 1024));
 
     private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
 
@@ -136,7 +137,7 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
         return result;
     }
 
-    private static int size(final String property, final int defaultValue) {
+    private static int size(final PropertyKey property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
     }
 

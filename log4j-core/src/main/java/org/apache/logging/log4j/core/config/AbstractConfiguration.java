@@ -53,7 +53,7 @@ import org.apache.logging.log4j.core.async.AsyncWaitStrategyFactoryConfig;
 import org.apache.logging.log4j.core.config.arbiters.Arbiter;
 import org.apache.logging.log4j.core.config.arbiters.SelectArbiter;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.Interpolator;
@@ -83,6 +83,7 @@ import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ServiceRegistry;
 
 /**
@@ -149,6 +150,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
     private AsyncWaitStrategyFactory asyncWaitStrategyFactory;
     private final WeakReference<LoggerContext> loggerContext;
+    private PropertyEnvironment contextProperties;
 
     /**
      * Constructor.
@@ -160,10 +162,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
         if (loggerContext != null) {
             injector = loggerContext.getInjector();
+            this.contextProperties = loggerContext.getProperties();
         } else {
             // for NullConfiguration
             injector = DI.createInjector();
             injector.init();
+            this.contextProperties = PropertiesUtil.getProperties();
         }
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
         interpolatorFactory = injector.getInstance(InterpolatorFactory.class);
@@ -752,7 +756,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         rootLoggerConfig.addAppender(appender, null, null);
 
         final Level defaultLevel = Level.ERROR;
-        final String levelName = PropertiesUtil.getProperties().getStringProperty(Log4jProperties.CONFIG_DEFAULT_LEVEL,
+        final String levelName = contextProperties.getStringProperty(Log4jPropertyKey.CONFIG_DEFAULT_LEVEL,
                 defaultLevel.name());
         final Level level = Level.valueOf(levelName);
         rootLoggerConfig.setLevel(level != null ? level : defaultLevel);

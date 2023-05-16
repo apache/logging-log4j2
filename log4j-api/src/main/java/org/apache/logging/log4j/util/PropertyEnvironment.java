@@ -37,6 +37,16 @@ public interface PropertyEnvironment {
     boolean hasProperty(String name);
 
     /**
+     * Returns {@code true} if the specified property is defined, regardless of its value (it may not have a value).
+     *
+     * @param nkey the key of the property to verify
+     * @return {@code true} if the specified property is defined, regardless of its value
+     */
+    default boolean hasProperty(final PropertyKey key) {
+        return hasProperty(key.getKey());
+    }
+
+    /**
      * Gets the named property as a boolean value. If the property matches the string {@code "true"} (case-insensitive),
      * then it is returned as the boolean value {@code true}. Any other non-{@code null} text in the property is
      * considered {@code false}.
@@ -63,6 +73,33 @@ public interface PropertyEnvironment {
     /**
      * Gets the named property as a boolean value.
      *
+     * @param key         the key of the property to look up
+     * @return the boolean value of the property or {@code defaultValue} if undefined.
+     */
+    default boolean getBooleanProperty(PropertyKey key) {
+        if (key == null) {
+            return false;
+        }
+        return getBooleanProperty(key.getKey());
+    }
+
+    /**
+     * Gets the named property as a boolean value.
+     *
+     * @param key         the key of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the boolean value of the property or {@code defaultValue} if undefined.
+     */
+    default boolean getBooleanProperty(PropertyKey key, boolean defaultValue) {
+        if (key == null) {
+            return defaultValue;
+        }
+        return getBooleanProperty(key.getKey(), defaultValue);
+    }
+
+    /**
+     * Gets the named property as a boolean value.
+     *
      * @param name                  the name of the property to look up
      * @param defaultValueIfAbsent  the default value to use if the property is undefined
      * @param defaultValueIfPresent the default value to use if the property is defined but not assigned
@@ -73,6 +110,22 @@ public interface PropertyEnvironment {
         final String prop = getStringProperty(name);
         return prop == null ? defaultValueIfAbsent
             : prop.isEmpty() ? defaultValueIfPresent : "true".equalsIgnoreCase(prop);
+    }
+
+    /**
+     * Gets the named property as a boolean value.
+     *
+     * @param key                  the key of the property to look up
+     * @param defaultValueIfAbsent  the default value to use if the property is undefined
+     * @param defaultValueIfPresent the default value to use if the property is defined but not assigned
+     * @return the boolean value of the property or {@code defaultValue} if undefined.
+     */
+    default boolean getBooleanProperty(PropertyKey key, boolean defaultValueIfAbsent,
+                                       boolean defaultValueIfPresent) {
+        if (key == null) {
+            return defaultValueIfAbsent;
+        }
+        return getBooleanProperty(key.getKey(), defaultValueIfAbsent, defaultValueIfPresent);
     }
 
     /**
@@ -102,6 +155,34 @@ public interface PropertyEnvironment {
     default Charset getCharsetProperty(String name) {
         return getCharsetProperty(name, Charset.defaultCharset());
     }
+
+    /**
+     * Gets the named property as a Charset value.
+     *
+     * @param key the key of the property to look up
+     * @return the Charset value of the property or {@link Charset#defaultCharset()} if undefined.
+     */
+    default Charset getCharsetProperty(PropertyKey key) {
+        if (key == null) {
+            return null;
+        }
+        return getCharsetProperty(key.getKey());
+    }
+
+    /**
+     * Gets the named property as a Charset value.
+     *
+     * @param key the key of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the Charset value of the property or {@link Charset#defaultCharset()} if undefined.
+     */
+    default Charset getCharsetProperty(PropertyKey key, Charset defaultValue) {
+        if (key == null) {
+            return defaultValue;
+        }
+        return getCharsetProperty(key.getKey(), defaultValue);
+    }
+
 
     /**
      * Gets the named property as a Charset value. If we cannot find the named Charset, see if it is mapped in
@@ -150,6 +231,20 @@ public interface PropertyEnvironment {
         }
         return defaultValue;
     }
+    /**
+     * Gets the named property as an integer.
+     *
+     * @param key          the key of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the parsed integer value of the property or {@code defaultValue} if it was undefined or could not be
+     * parsed.
+     */
+    default int getIntegerProperty(PropertyKey key, int defaultValue) {
+        if (key == null) {
+            return defaultValue;
+        }
+        return getIntegerProperty(key.getKey(), defaultValue);
+    }
 
     /**
      * Retrieves a property that may be prefixed by more than one string.
@@ -172,6 +267,21 @@ public interface PropertyEnvironment {
     /**
      * Gets the named property as a long.
      *
+     * @param key         the key of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the parsed long value of the property or {@code defaultValue} if it was undefined or could not be parsed.
+     */
+    default long getLongProperty(PropertyKey key, long defaultValue) {
+        if (key == null) {
+            return defaultValue;
+        }
+        return getLongProperty(key.getKey(), defaultValue);
+    }
+
+    /**
+     * Gets the named property as a long.
+     *
+     * @param component the owning component of the property
      * @param name         the name of the property to look up
      * @param defaultValue the default value to use if the property is undefined
      * @return the parsed long value of the property or {@code defaultValue} if it was undefined or could not be parsed.
@@ -204,6 +314,22 @@ public interface PropertyEnvironment {
             }
         }
         return supplier != null ? supplier.get() : null;
+    }
+
+
+    /**
+     * Retrieves a Duration where the String is of the format nnn[unit] where nnn represents an integer value
+     * and unit represents a time unit.
+     * @param key The key for the property.
+     * @param defaultValue The default value.
+     * @return The value of the String as a Duration or the default value, which may be null.
+     * @since 2.13.0
+     */
+    default Duration getDurationProperty(PropertyKey key, Duration defaultValue) {
+        if (key == null) {
+            return defaultValue;
+        }
+        return getDurationProperty(key.getKey(), defaultValue);
     }
 
     /**
@@ -262,10 +388,38 @@ public interface PropertyEnvironment {
     /**
      * Gets the named property as a String.
      *
+     * @param key the key of the property to look up
+     * @return the String value of the property or {@code null} if undefined.
+     */
+    default String getStringProperty(PropertyKey key) {
+        if (key == null) {
+            return null;
+        }
+        return getStringProperty(key.getKey());
+    }
+
+    /**
+     * Gets the named property as a String.
+     *
      * @param name the name of the property to look up
      * @return the String value of the property or {@code null} if undefined.
      */
     String getStringProperty(String name);
+
+    /**
+     * Gets the named property as a String.
+     *
+     * @param key         the key of the property to look up
+     * @param defaultValue the default value to use if the property is undefined
+     * @return the String value of the property or {@code defaultValue} if undefined.
+     */
+    default String getStringProperty(PropertyKey key, String defaultValue) {
+        if (key == null) {
+            return defaultValue;
+        }
+        return getStringProperty(key.getKey(), defaultValue);
+    }
+
 
     /**
      * Gets the named property as a String.

@@ -20,8 +20,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.spi.LoggerContext;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
 import org.springframework.boot.logging.LoggingSystem;
@@ -36,7 +37,7 @@ public class Log4j2SpringBootLoggingSystemTest {
         String customLog4j2Location = "classpath:my_custom_log4j2.properties";
         LoggerContext lc = LogManager.getContext(); // Initialize LogManager to here to prevent a failure trying to
                                                     // initialize it from StatusLogger.
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, customLog4j2Location);
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), customLog4j2Location);
         Log4j2SpringBootLoggingSystem cloudLoggingSystem = new Log4j2SpringBootLoggingSystem(
                 this.getClass().getClassLoader());
         List<String> standardConfigLocations = Arrays.asList(cloudLoggingSystem.getStandardConfigLocations());
@@ -45,7 +46,7 @@ public class Log4j2SpringBootLoggingSystemTest {
     }
 
     @Test
-    @SetSystemProperty(key = Log4j2SpringBootLoggingSystem.LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM, value = "true")
+    @SetSystemProperty(key = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX + Log4j2SpringBootLoggingSystem.LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM, value = "true")
     public void testUseLog4j2LoggingSystem() {
         LoggingSystem loggingSystem = LoggingSystem.get(getClass().getClassLoader());
         assertTrue(loggingSystem.getClass().equals(Log4J2LoggingSystem.class));

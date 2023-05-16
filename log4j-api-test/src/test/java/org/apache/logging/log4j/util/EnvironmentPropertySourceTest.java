@@ -31,10 +31,10 @@ public class EnvironmentPropertySourceTest {
 
     public static Object[][] data() {
         return new Object[][]{
-            {"LOG4J_CONFIGURATION_FILE", Arrays.asList("configuration", "file")},
-            {"LOG4J_FOO_BAR_PROPERTY", Arrays.asList("foo", "bar", "property")},
-            {"LOG4J_EXACT", Collections.singletonList("EXACT")},
-            {"LOG4J_TEST_PROPERTY_NAME", PropertySource.Util.tokenize("Log4jTestPropertyName")},
+            {"CONFIGURATION_FILE", Arrays.asList("CONFIGURATION", "FILE")},
+            {"LOG4J2_FOO_BAR_PROPERTY", Arrays.asList("LOG4J2", "FOO", "BAR", "PROPERTY")},
+            {"LOG4J2_EXACT", Arrays.asList("LOG4J2", "EXACT")},
+            {"LOG4J2_TEST_PROPERTY_NAME", Arrays.asList("LOG4J2", "TEST", "PROPERTY", "NAME")},
             {null, Collections.emptyList()}
         };
     }

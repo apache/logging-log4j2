@@ -25,7 +25,7 @@ import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.categories.PerformanceTests;
 import org.apache.logging.log4j.core.test.util.Profiler;
 import org.junit.AfterClass;
@@ -59,14 +59,14 @@ public class PerformanceComparison {
 
     @BeforeClass
     public static void setupClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), CONFIG);
         System.setProperty(LOGBACK_CONF, LOGBACK_CONFIG);
         System.setProperty(LOG4J_CONF, LOG4J_CONFIG);
     }
 
     @AfterClass
     public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
         System.clearProperty(LOGBACK_CONF);
         System.clearProperty(LOG4J_CONF);
         new File("target/testlog4j.log").deleteOnExit();

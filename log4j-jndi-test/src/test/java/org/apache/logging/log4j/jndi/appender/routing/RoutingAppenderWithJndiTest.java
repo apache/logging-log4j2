@@ -48,7 +48,7 @@ public class RoutingAppenderWithJndiTest {
     public static LoggerContextRule loggerContextRule = new LoggerContextRule(getLocation());
 
     private static String getLocation() {
-        System.setProperty("log4j2.enableJndiLookup", "true");
+        System.setProperty("log4j2.*.JNDI.enableLookup", "true");
         return "log4j-routing-by-jndi.xml";
     }
 

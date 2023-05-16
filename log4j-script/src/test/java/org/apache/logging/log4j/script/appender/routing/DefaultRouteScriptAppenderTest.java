@@ -24,9 +24,9 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.appender.routing.RoutingAppender;
 import org.apache.logging.log4j.core.config.AppenderControl;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.script.factory.ScriptManagerFactoryImpl;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -57,7 +57,7 @@ public class DefaultRouteScriptAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ScriptManagerFactoryImpl.SCRIPT_LANGUAGES, "Groovy, Javascript");
+        System.setProperty(Log4jPropertyKey.SCRIPT_ENABLE_LANGUAGES.getSystemKey(), "Groovy, Javascript");
     }
 
     @Rule
