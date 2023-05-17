@@ -426,7 +426,7 @@
     <javax-servlet.version>4.0.1</javax-servlet.version>
     <javax-servlet-jsp.version>2.3.3</javax-servlet-jsp.version>
     <jansi.version>2.4.0</jansi.version>
-    <java-allocation-instrumenter.version>3.3.0</java-allocation-instrumenter.version>
+    <java-allocation-instrumenter.version>3.3.2</java-allocation-instrumenter.version>
     <jctools.version>3.3.0</jctools.version>
     <je.version>18.3.12</je.version>
     <jeromq.version>0.5.3</jeromq.version>
