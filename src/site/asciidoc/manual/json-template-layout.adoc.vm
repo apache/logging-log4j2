@@ -118,8 +118,8 @@ or with the below `log4j2.properties` configuration:
 
 [source,ini]
 ----
-appender.console.json.type = JsonTemplateLayout
-appender.console.json.eventTemplateUri = classpath:EcsLayout.json
+appender.console.layout.type = JsonTemplateLayout
+appender.console.layout.eventTemplateUri = classpath:EcsLayout.json
 ----
 
 `JsonTemplateLayout` generates JSON as follows:
