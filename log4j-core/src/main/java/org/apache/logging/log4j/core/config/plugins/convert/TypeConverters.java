@@ -41,6 +41,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 /**
  * Collection of basic TypeConverter implementations. May be used to register additional TypeConverters or find
  * registered TypeConverters.
@@ -177,7 +179,7 @@ public final class TypeConverters {
     public static class ClassConverter implements TypeConverter<Class<?>> {
         @Override
         public Class<?> convert(final String s) throws ClassNotFoundException {
-            switch (s.toLowerCase()) {
+            switch (toRootLowerCase(s)) {
                 case "boolean":
                     return boolean.class;
                 case "byte":

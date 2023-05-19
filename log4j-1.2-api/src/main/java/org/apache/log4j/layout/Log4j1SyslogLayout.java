@@ -38,6 +38,8 @@ import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.util.Chars;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 /**
  * Port of the layout used by SyslogAppender in Log4j 1.x. Provided for
  * compatibility with existing Log4j 1 configurations.
@@ -189,7 +191,7 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
         }
 
         if (facilityPrinting) {
-            buf.append(facility != null ? facility.name().toLowerCase() : "user").append(':');
+            buf.append(facility != null ? toRootLowerCase(facility.name()) : "user").append(':');
         }
 
         buf.append(message);

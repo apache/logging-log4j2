@@ -34,6 +34,8 @@ import org.apache.logging.log4j.core.net.JndiManager;
 import org.apache.logging.log4j.core.util.ReflectionUtil;
 import org.apache.logging.log4j.status.StatusLogger;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 /**
  * Proxies all the other {@link StrLookup}s.
  */
@@ -83,7 +85,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
                 if (!clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup") || JndiManager.isJndiLookupEnabled()) {
-                    strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
+                    strLookupMap.put(toRootLowerCase(entry.getKey()), ReflectionUtil.instantiate(clazz));
                 }
             } catch (final Throwable t) {
                 handleError(entry.getKey(), t);

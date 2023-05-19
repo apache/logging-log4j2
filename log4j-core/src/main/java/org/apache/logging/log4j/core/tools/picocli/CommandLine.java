@@ -75,6 +75,7 @@ import static java.util.Locale.ENGLISH;
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.SPAN;
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.TRUNCATE;
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.WRAP;
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * <p>
@@ -3881,7 +3882,7 @@ public class CommandLine {
                 if (o1 == null) { return 1; } else if (o2 == null) { return -1; } // options before params
                 final String[] names1 = ShortestFirst.sort(o1.names());
                 final String[] names2 = ShortestFirst.sort(o2.names());
-                int result = names1[0].toUpperCase().compareTo(names2[0].toUpperCase()); // case insensitive sort
+                int result = toRootUpperCase(names1[0]).compareTo(toRootUpperCase(names2[0])); // case insensitive sort
                 result = result == 0 ? -names1[0].compareTo(names2[0]) : result; // lower case before upper case
                 return o1.help() == o2.help() ? result : o2.help() ? -1 : 1; // help options come last
             }

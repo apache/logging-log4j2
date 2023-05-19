@@ -40,6 +40,8 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 /**
  * Registry singleton for PluginType maps partitioned by source type and then by category names.
  */
@@ -226,7 +228,7 @@ public final class PluginRegistry {
         final Map<String, List<PluginType<?>>> newPluginsByCategory = new HashMap<>();
         for (final Class<?> clazz : resolver.getClasses()) {
             final Plugin plugin = clazz.getAnnotation(Plugin.class);
-            final String categoryLowerCase = plugin.category().toLowerCase();
+            final String categoryLowerCase = toRootLowerCase(plugin.category());
             List<PluginType<?>> list = newPluginsByCategory.get(categoryLowerCase);
             if (list == null) {
                 newPluginsByCategory.put(categoryLowerCase, list = new ArrayList<>());
@@ -234,7 +236,7 @@ public final class PluginRegistry {
             final PluginEntry mainEntry = new PluginEntry();
             final String mainElementName = plugin.elementType().equals(
                 Plugin.EMPTY) ? plugin.name() : plugin.elementType();
-            mainEntry.setKey(plugin.name().toLowerCase());
+            mainEntry.setKey(toRootLowerCase(plugin.name()));
             mainEntry.setName(plugin.name());
             mainEntry.setCategory(plugin.category());
             mainEntry.setClassName(clazz.getName());
@@ -248,7 +250,7 @@ public final class PluginRegistry {
                     final PluginEntry aliasEntry = new PluginEntry();
                     final String aliasElementName = plugin.elementType().equals(
                         Plugin.EMPTY) ? alias.trim() : plugin.elementType();
-                    aliasEntry.setKey(alias.trim().toLowerCase());
+                    aliasEntry.setKey(toRootLowerCase(alias.trim()));
                     aliasEntry.setName(plugin.name());
                     aliasEntry.setCategory(plugin.category());
                     aliasEntry.setClassName(clazz.getName());

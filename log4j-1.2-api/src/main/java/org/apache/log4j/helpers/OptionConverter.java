@@ -37,6 +37,8 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 /**
  * A convenience class to convert property values to specific types.
  */
@@ -158,7 +160,7 @@ public final class OptionConverter {
     }
 
     public static org.apache.logging.log4j.Level createLevel(final Priority level) {
-        final String name = level.toString().toUpperCase() + "#" + level.getClass().getName();
+        final String name = toRootUpperCase(level.toString()) + "#" + level.getClass().getName();
         return org.apache.logging.log4j.Level.forName(name, toLog4j2Level(level.toInt()));
     }
 
@@ -493,7 +495,7 @@ public final class OptionConverter {
             return defaultValue;
         }
 
-        String s = value.trim().toUpperCase();
+        String s = toRootUpperCase(value.trim());
         long multiplier = 1;
         int index;
 
@@ -627,7 +629,7 @@ public final class OptionConverter {
 
         // Support for levels defined in Log4j2.
         if (LOG4J2_LEVEL_CLASS.equals(clazz)) {
-            final org.apache.logging.log4j.Level v2Level = org.apache.logging.log4j.Level.getLevel(levelName.toUpperCase());
+            final org.apache.logging.log4j.Level v2Level = org.apache.logging.log4j.Level.getLevel(toRootUpperCase(levelName));
             if (v2Level != null) {
                 return new LevelWrapper(v2Level);
             }

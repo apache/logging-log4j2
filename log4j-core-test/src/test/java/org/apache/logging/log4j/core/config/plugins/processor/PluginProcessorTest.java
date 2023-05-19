@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
@@ -54,7 +55,7 @@ public class PluginProcessorTest {
 
     @Test
     public void testFakePluginFoundWithCorrectInformation() throws Exception {
-        final PluginEntry fake = pluginCache.getCategory(p.category()).get(p.name().toLowerCase());
+        final PluginEntry fake = pluginCache.getCategory(p.category()).get(toRootLowerCase(p.name()));
         verifyFakePluginEntry(p.name(), fake);
     }
 
@@ -62,15 +63,15 @@ public class PluginProcessorTest {
     public void testFakePluginAliasesContainSameInformation() throws Exception {
         final PluginAliases aliases = FakePlugin.class.getAnnotation(PluginAliases.class);
         for (final String alias : aliases.value()) {
-            final PluginEntry fake = pluginCache.getCategory(p.category()).get(alias.toLowerCase());
+            final PluginEntry fake = pluginCache.getCategory(p.category()).get(toRootLowerCase(alias));
             verifyFakePluginEntry(alias, fake);
         }
     }
 
     private void verifyFakePluginEntry(final String name, final PluginEntry fake) {
-        assertNotNull("The plugin '" + name.toLowerCase() + "' was not found.", fake);
+        assertNotNull("The plugin '" + toRootLowerCase(name) + "' was not found.", fake);
         assertEquals(FakePlugin.class.getName(), fake.getClassName());
-        assertEquals(name.toLowerCase(), fake.getKey());
+        assertEquals(toRootLowerCase(name), fake.getKey());
         assertEquals(Plugin.EMPTY, p.elementType());
         assertEquals(name, fake.getName());
         assertEquals(p.printObject(), fake.isPrintable());
@@ -80,9 +81,9 @@ public class PluginProcessorTest {
     @Test
     public void testNestedPlugin() throws Exception {
         final Plugin p = FakePlugin.Nested.class.getAnnotation(Plugin.class);
-        final PluginEntry nested = pluginCache.getCategory(p.category()).get(p.name().toLowerCase());
+        final PluginEntry nested = pluginCache.getCategory(p.category()).get(toRootLowerCase(p.name()));
         assertNotNull(nested);
-        assertEquals(p.name().toLowerCase(), nested.getKey());
+        assertEquals(toRootLowerCase(p.name()), nested.getKey());
         assertEquals(FakePlugin.Nested.class.getName(), nested.getClassName());
         assertEquals(p.name(), nested.getName());
         assertEquals(Plugin.EMPTY, p.elementType());

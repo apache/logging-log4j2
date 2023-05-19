@@ -27,6 +27,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 /**
  * Loads and manages all the plugins.
  */
@@ -98,7 +100,7 @@ public class PluginManager {
      * @return The plugin's type.
      */
     public PluginType<?> getPluginType(final String name) {
-        return plugins.get(name.toLowerCase());
+        return plugins.get(toRootLowerCase(name));
     }
 
     /**
@@ -127,7 +129,7 @@ public class PluginManager {
         if (isNotEmpty(packages) || isNotEmpty(PACKAGES)) {
             LOGGER.warn("The use of package scanning to locate plugins is deprecated and will be removed in a future release");
         }
-        final String categoryLowerCase = category.toLowerCase();
+        final String categoryLowerCase = toRootLowerCase(category);
         final Map<String, PluginType<?>> newPlugins = new LinkedHashMap<>();
 
         // First, iterate the Log4j2Plugin.dat files found in the main CLASSPATH

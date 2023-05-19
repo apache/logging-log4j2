@@ -28,6 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 /**
  * A source for global configuration properties.
  *
@@ -146,7 +148,7 @@ public interface PropertySource {
                 start = prefixMatcher.end();
                 final Matcher matcher = PROPERTY_TOKENIZER.matcher(value);
                 while (matcher.find(start)) {
-                    tokens.add(matcher.group(1).toLowerCase());
+                    tokens.add(toRootLowerCase(matcher.group(1)));
                     start = matcher.end();
                 }
             }

@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.lookup;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 /**
  * Converts values to lower case. The passed in "key" should be the value of another lookup.
  */
@@ -32,7 +34,7 @@ public class LowerLookup implements StrLookup {
      */
     @Override
     public String lookup(final String key) {
-        return key != null ? key.toLowerCase() : null;
+        return key != null ? toRootLowerCase(key) : null;
     }
 
     /**

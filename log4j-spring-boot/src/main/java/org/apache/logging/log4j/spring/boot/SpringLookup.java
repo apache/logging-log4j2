@@ -29,6 +29,8 @@ import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.springframework.core.env.Environment;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 /**
  * Lookup for Spring properties.
  */
@@ -47,7 +49,7 @@ public class SpringLookup implements LoggerContextAware, StrLookup {
     @Override
     public String lookup(final String key) {
         if (environment != null) {
-            final String lowerKey = key.toLowerCase();
+            final String lowerKey = toRootLowerCase(key);
             if (lowerKey.startsWith(ACTIVE)) {
                 switch (environment.getActiveProfiles().length) {
                     case 0: {

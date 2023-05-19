@@ -24,6 +24,7 @@ import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -43,9 +44,9 @@ public class StructuredDataLookupTest {
         final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.DEBUG).setMessage(msg).build();
 
         assertEquals("Audit", dataLookup.lookup(event, StructuredDataLookup.TYPE_KEY));
-        assertEquals("Audit", dataLookup.lookup(event, StructuredDataLookup.TYPE_KEY.toUpperCase()));
+        assertEquals("Audit", dataLookup.lookup(event, toRootUpperCase(StructuredDataLookup.TYPE_KEY)));
         assertEquals("TestId", dataLookup.lookup(event, StructuredDataLookup.ID_KEY));
-        assertEquals("TestId", dataLookup.lookup(event, StructuredDataLookup.ID_KEY.toUpperCase()));
+        assertEquals("TestId", dataLookup.lookup(event, toRootUpperCase(StructuredDataLookup.ID_KEY)));
         assertNull(dataLookup.lookup(event, "BadKey"));
         assertNull(dataLookup.lookup(event, null));
     }

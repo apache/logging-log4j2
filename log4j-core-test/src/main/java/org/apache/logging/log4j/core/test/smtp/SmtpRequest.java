@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.test.smtp;
 
 import org.apache.logging.log4j.util.Strings;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 /**
  * Contains an SMTP client request. Handles state transitions using the following state transition table.
  * <PRE>
@@ -186,7 +188,7 @@ public class SmtpRequest {
                 }
             }
         } else {
-            final String su = s.toUpperCase();
+            final String su = toRootUpperCase(s);
             if (su.startsWith("EHLO ") || su.startsWith("HELO")) {
                 action = SmtpActionType.EHLO;
                 params = s.substring(5);

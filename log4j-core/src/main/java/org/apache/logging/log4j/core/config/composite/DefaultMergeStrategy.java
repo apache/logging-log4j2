@@ -30,6 +30,9 @@ import org.apache.logging.log4j.core.config.plugins.util.PluginType;
 import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.core.util.Integers;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 /**
  * The default merge strategy for composite configurations.
  * <p>
@@ -76,8 +79,8 @@ public class DefaultMergeStrategy implements MergeStrategy {
             for (final Map.Entry<String, String> targetAttribute : rootNode.getAttributes().entrySet()) {
                 if (targetAttribute.getKey().equalsIgnoreCase(attribute.getKey())) {
                     if (attribute.getKey().equalsIgnoreCase(STATUS)) {
-                        final Level targetLevel = Level.getLevel(targetAttribute.getValue().toUpperCase());
-                        final Level sourceLevel = Level.getLevel(attribute.getValue().toUpperCase());
+                        final Level targetLevel = Level.getLevel(toRootUpperCase(targetAttribute.getValue()));
+                        final Level sourceLevel = Level.getLevel(toRootUpperCase(attribute.getValue()));
                         if (targetLevel != null && sourceLevel != null) {
                             if (sourceLevel.isLessSpecificThan(targetLevel)) {
                                 targetAttribute.setValue(attribute.getValue());
@@ -142,7 +145,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
                     continue;
                 }
 
-                switch (targetChildNode.getName().toLowerCase()) {
+                switch (toRootLowerCase(targetChildNode.getName())) {
                     case PROPERTIES:
                     case SCRIPTS:
                     case APPENDERS: {
@@ -277,11 +280,11 @@ public class DefaultMergeStrategy implements MergeStrategy {
 
     private boolean isSameName(final Node node1, final Node node2) {
         final String value = node1.getAttributes().get(NAME);
-        return value != null && value.toLowerCase().equals(node2.getAttributes().get(NAME).toLowerCase());
+        return value != null && toRootLowerCase(value).equals(toRootLowerCase(node2.getAttributes().get(NAME)));
     }
 
     private boolean isSameReference(final Node node1, final Node node2) {
         final String value = node1.getAttributes().get(REF);
-        return value != null && value.toLowerCase().equals(node2.getAttributes().get(REF).toLowerCase());
+        return value != null && toRootLowerCase(value).equals(toRootLowerCase(node2.getAttributes().get(REF)));
     }
 }

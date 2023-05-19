@@ -25,6 +25,8 @@ import java.util.TimeZone;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 /**
  * This abstract layout takes care of all the date related options and formatting work.
  */
@@ -156,7 +158,7 @@ abstract public class DateLayout extends Layout {
     @Deprecated
     public void setOption(final String option, final String value) {
         if (option.equalsIgnoreCase(DATE_FORMAT_OPTION)) {
-            dateFormatOption = value.toUpperCase();
+            dateFormatOption = toRootUpperCase(value);
         } else if (option.equalsIgnoreCase(TIMEZONE_OPTION)) {
             timeZoneID = value;
         }
