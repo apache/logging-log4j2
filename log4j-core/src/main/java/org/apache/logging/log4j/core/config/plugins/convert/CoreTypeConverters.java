@@ -42,6 +42,8 @@ import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.convert.TypeConverters;
 import org.apache.logging.log4j.util.LoaderUtil;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 /**
  * General {@link TypeConverter} implementations.
  *
@@ -142,7 +144,7 @@ public final class CoreTypeConverters {
     public static class ClassConverter implements TypeConverter<Class<?>> {
         @Override
         public Class<?> convert(final String s) throws ClassNotFoundException {
-            switch (s.toLowerCase()) {
+            switch (toRootLowerCase(s)) {
                 case "boolean":
                     return boolean.class;
                 case "byte":

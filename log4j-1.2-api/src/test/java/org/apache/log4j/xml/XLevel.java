@@ -18,6 +18,8 @@ package org.apache.log4j.xml;
 
 import org.apache.log4j.Level;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 /**
  * This class introduces a new level called TRACE. TRACE has lower level than DEBUG.
  */
@@ -55,7 +57,7 @@ public class XLevel extends Level {
         if (sArg == null) {
             return defaultValue;
         }
-        final String stringVal = sArg.toUpperCase();
+        final String stringVal = toRootUpperCase(sArg);
 
         if (stringVal.equals(TRACE_STR)) {
             return XLevel.TRACE;

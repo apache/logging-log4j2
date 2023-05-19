@@ -34,6 +34,8 @@ import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 /**
  * A Composite Configuration.
  */
@@ -64,7 +66,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
             final String key = entry.getKey();
             final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
             if ("status".equalsIgnoreCase(key)) {
-                statusConfig.setStatus(value.toUpperCase());
+                statusConfig.setStatus(toRootUpperCase(value));
             } else if ("dest".equalsIgnoreCase(key)) {
                 statusConfig.setDestination(value);
             } else if ("shutdownHook".equalsIgnoreCase(key)) {

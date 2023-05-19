@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.web;
 
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
@@ -26,6 +25,8 @@ import javax.servlet.ServletContextListener;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * In environments older than Servlet 3.0, this initializer is responsible for starting up Log4j logging before anything
@@ -82,7 +83,7 @@ public class Log4jServletContextListener implements ServletContextListener {
                 : Long.parseLong(stopTimeoutStr);
         final String timeoutTimeUnitStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT_TIMEUNIT);
         final TimeUnit timeoutTimeUnit = Strings.isEmpty(timeoutTimeUnitStr) ? DEFAULT_STOP_TIMEOUT_TIMEUNIT
-                : TimeUnit.valueOf(timeoutTimeUnitStr.toUpperCase(Locale.ROOT));
+                : TimeUnit.valueOf(toRootUpperCase(timeoutTimeUnitStr));
         this.initializer.stop(stopTimeout, timeoutTimeUnit);
     }
 }

@@ -36,6 +36,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 /**
  * <p>FastDateParser is a fast and thread-safe version of
  * {@link java.text.SimpleDateFormat}.</p>
@@ -867,7 +869,7 @@ public class FastDateParser implements DateParser {
                 final TimeZone tz = TimeZone.getTimeZone("GMT" + value);
                 cal.setTimeZone(tz);
             } else if (value.regionMatches(true, 0, "GMT", 0, 3)) {
-                final TimeZone tz = TimeZone.getTimeZone(value.toUpperCase());
+                final TimeZone tz = TimeZone.getTimeZone(toRootUpperCase(value));
                 cal.setTimeZone(tz);
             } else {
                 final TzInfo tzInfo = tzNames.get(value.toLowerCase(locale));

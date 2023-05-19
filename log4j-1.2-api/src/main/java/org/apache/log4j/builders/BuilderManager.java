@@ -16,7 +16,6 @@
  */
 package org.apache.log4j.builders;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Function;
@@ -44,6 +43,8 @@ import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
 import org.w3c.dom.Element;
+
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  *
@@ -95,7 +96,7 @@ public class BuilderManager {
     private <T> PluginType<T> getPlugin(final String className) {
         Objects.requireNonNull(plugins, "plugins");
         Objects.requireNonNull(className, "className");
-        final String key = className.toLowerCase(Locale.ROOT).trim();
+        final String key = toRootLowerCase(className).trim();
         final PluginType<?> pluginType = plugins.get(key);
         if (pluginType == null) {
             LOGGER.warn("Unable to load plugin class name {} with key {}", className, key);

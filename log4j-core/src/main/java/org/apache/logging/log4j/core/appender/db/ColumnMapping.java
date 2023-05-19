@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.db;
 
 import java.util.Date;
-import java.util.Locale;
 import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Logger;
@@ -38,6 +37,8 @@ import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * A configuration element for specifying a database column name mapping.
@@ -209,7 +210,7 @@ public final class ColumnMapping {
     }
 
     public static String toKey(final String name) {
-        return name.toUpperCase(Locale.ROOT);
+        return toRootUpperCase(name);
     }
 
     private final StringLayout layout;

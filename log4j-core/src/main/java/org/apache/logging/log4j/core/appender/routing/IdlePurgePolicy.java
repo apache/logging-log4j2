@@ -33,6 +33,8 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 /**
  * Policy is purging appenders that were not in use specified time in minutes
  */
@@ -145,7 +147,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
             units = TimeUnit.MINUTES;
         } else {
             try {
-                units = TimeUnit.valueOf(timeUnit.toUpperCase());
+                units = TimeUnit.valueOf(toRootUpperCase(timeUnit));
             } catch (final Exception ex) {
                 LOGGER.error("Invalid timeUnit value {}. timeUnit set to MINUTES", timeUnit, ex);
                 units = TimeUnit.MINUTES;

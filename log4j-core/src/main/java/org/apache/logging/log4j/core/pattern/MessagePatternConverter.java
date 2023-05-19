@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -32,6 +31,8 @@ import org.apache.logging.log4j.util.MultiFormatStringBuilderFormattable;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Returns the event's rendered message in a StringBuilder.
@@ -52,7 +53,7 @@ public abstract class MessagePatternConverter extends LogEventPatternConverter {
     private static TextRenderer loadMessageRenderer(final String[] options) {
         if (options != null) {
             for (final String option : options) {
-                switch (option.toUpperCase(Locale.ROOT)) {
+                switch (toRootUpperCase(option)) {
                 case "ANSI":
                     if (Loader.isJansiAvailable()) {
                         return new JAnsiTextRenderer(options, JAnsiTextRenderer.DefaultMessageStyleMap);

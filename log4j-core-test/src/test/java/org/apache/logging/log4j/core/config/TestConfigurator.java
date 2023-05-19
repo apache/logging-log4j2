@@ -48,6 +48,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.apache.logging.log4j.core.test.hamcrest.MapMatchers.hasSize;
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
@@ -393,7 +394,7 @@ public class TestConfigurator {
 
         for (final String element : CHARS) {
             dir.append(element);
-            dir.append(element.toUpperCase());
+            dir.append(toRootUpperCase(element));
         }
         final String value = FILESEP.equals("/") ? dir.toString() + "/test.log" : "1:/target/bad:file.log";
         System.setProperty("testfile", value);

@@ -21,6 +21,8 @@ import java.util.List;
 
 import org.apache.log4j.Level;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 /**
  * An extension of the Level class that provides support for java.util.logging Levels.
  */
@@ -199,7 +201,7 @@ public class UtilLoggingLevel extends Level {
             return defaultLevel;
         }
 
-        final String s = sArg.toUpperCase();
+        final String s = toRootUpperCase(sArg);
 
         if (s.equals("SEVERE")) {
             return SEVERE;

@@ -46,6 +46,7 @@ import org.junit.runners.Parameterized;
 
 import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.*;
@@ -147,7 +148,7 @@ public class RollingAppenderSizeTest {
                 CompressorInputStream in = null;
                 try (final FileInputStream fis = new FileInputStream(file)) {
                     try {
-                        in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(), fis);
+                        in = new CompressorStreamFactory().createCompressorInputStream(toRootLowerCase(ext.name()), fis);
                     } catch (final CompressorException ce) {
                         ce.printStackTrace();
                         fail("Error creating input stream from " + file.toString() + ": " + ce.getMessage());

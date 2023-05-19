@@ -44,6 +44,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -91,7 +92,7 @@ public class RollingAppenderTempCompressedFilePatternTest {
                         if (ext != null) {
                             gzippedFiles++;
                             try {
-                                in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(),
+                                in = new CompressorStreamFactory().createCompressorInputStream(toRootLowerCase(ext.name()),
                                         fis);
                             } catch (final CompressorException ce) {
                                 ce.printStackTrace();

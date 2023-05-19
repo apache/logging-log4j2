@@ -34,6 +34,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 public final class Uris {
 
     private Uris() {}
@@ -79,7 +81,7 @@ public final class Uris {
             final URI uri,
             final Charset charset)
             throws Exception {
-        final String uriScheme = uri.getScheme().toLowerCase();
+        final String uriScheme = toRootLowerCase(uri.getScheme());
         switch (uriScheme) {
             case "classpath":
                 return readClassPathUri(uri, charset);

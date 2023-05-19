@@ -29,6 +29,9 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 /**
  * The default merge strategy for composite configurations.
  * <p>
@@ -75,8 +78,8 @@ public class DefaultMergeStrategy implements MergeStrategy {
             for (final Map.Entry<String, String> targetAttribute : rootNode.getAttributes().entrySet()) {
                 if (targetAttribute.getKey().equalsIgnoreCase(attribute.getKey())) {
                     if (attribute.getKey().equalsIgnoreCase(STATUS)) {
-                        final Level targetLevel = Level.getLevel(targetAttribute.getValue().toUpperCase());
-                        final Level sourceLevel = Level.getLevel(attribute.getValue().toUpperCase());
+                        final Level targetLevel = Level.getLevel(toRootUpperCase(targetAttribute.getValue()));
+                        final Level sourceLevel = Level.getLevel(toRootUpperCase(attribute.getValue()));
                         if (targetLevel != null && sourceLevel != null) {
                             if (sourceLevel.isLessSpecificThan(targetLevel)) {
                                 targetAttribute.setValue(attribute.getValue());
@@ -131,7 +134,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
                     continue;
                 }
 
-                switch (targetChildNode.getName().toLowerCase()) {
+                switch (toRootLowerCase(targetChildNode.getName())) {
                     case PROPERTIES:
                     case SCRIPTS:
                     case APPENDERS: {

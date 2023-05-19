@@ -35,6 +35,8 @@ import org.apache.logging.log4j.util.Strings;
 import org.lightcouch.CouchDbClient;
 import org.lightcouch.CouchDbProperties;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 /**
  * The Apache CouchDB implementation of {@link NoSqlProvider}.
  */
@@ -134,7 +136,7 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
             }
         } else if (Strings.isNotEmpty(databaseName)) {
             if (protocol != null && protocol.length() > 0) {
-                protocol = protocol.toLowerCase();
+                protocol = toRootLowerCase(protocol);
                 if (!protocol.equals("http") && !protocol.equals("https")) {
                     LOGGER.error("Only protocols [http] and [https] are supported, [{}] specified.", protocol);
                     return null;

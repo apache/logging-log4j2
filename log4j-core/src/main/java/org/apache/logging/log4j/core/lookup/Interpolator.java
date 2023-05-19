@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.lookup;
 
 import java.lang.ref.WeakReference;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -31,6 +30,8 @@ import org.apache.logging.log4j.core.config.LoggerContextAware;
 import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.status.StatusLogger;
+
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * Proxies other {@link StrLookup}s using a keys within ${} markers.
@@ -167,7 +168,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
 
         final int prefixPos = var.indexOf(PREFIX_SEPARATOR);
         if (prefixPos >= 0) {
-            final String prefix = var.substring(0, prefixPos).toLowerCase(Locale.US);
+            final String prefix = toRootLowerCase(var.substring(0, prefixPos));
             final String name = var.substring(prefixPos + 1);
             final Supplier<? extends StrLookup> lookupSupplier = strLookups.get(prefix);
             String value = null;

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.appender.rewrite;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -29,6 +28,8 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Rewrites log event levels for a given logger name.
@@ -63,7 +64,7 @@ public final class LoggerNameLevelRewritePolicy implements RewritePolicy {
     }
 
     private static Level getLevel(final String name) {
-        return Level.getLevel(name.toUpperCase(Locale.ROOT));
+        return Level.getLevel(toRootUpperCase(name));
     }
 
     private final String loggerName;

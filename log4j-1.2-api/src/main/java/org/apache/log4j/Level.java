@@ -21,10 +21,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.Locale;
 
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.logging.log4j.util.Strings;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Defines the minimum set of levels recognized by the system, that is
@@ -181,7 +182,7 @@ public class Level extends Priority implements Serializable {
         if (sArg == null) {
             return defaultLevel;
         }
-        final String s = sArg.toUpperCase(Locale.ROOT);
+        final String s = toRootUpperCase(sArg);
         switch (s) {
         case "ALL":
             return Level.ALL;

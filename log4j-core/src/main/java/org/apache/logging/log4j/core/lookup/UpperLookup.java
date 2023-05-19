@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.lookup;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.plugins.Plugin;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 /**
  * Converts values to upper case. The passed in "key" should be the value of another lookup.
  */
@@ -33,7 +35,7 @@ public class UpperLookup implements StrLookup {
      */
     @Override
     public String lookup(final String key) {
-        return key != null ? key.toUpperCase() : null;
+        return key != null ? toRootUpperCase(key) : null;
     }
 
     /**
