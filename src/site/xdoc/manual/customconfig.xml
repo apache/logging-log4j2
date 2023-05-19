@@ -222,34 +222,36 @@ LoggerContext ctx = Configurator.initialize(builder.build());
             </p>
             <p>
               The easiest way to achieve this is to extend one of the standard Configuration classes
-              (XMLConfiguration, JSONConfiguration) and then create a new ConfigurationFactory for the extended class.
+              (XmlConfiguration, JSONConfiguration) and then create a new ConfigurationFactory for the extended class.
               After the standard configuration completes the custom configuration can be added to it.
             </p>
             <p>
-              The example below shows how to extend XMLConfiguration to manually add an Appender and a LoggerConfig
+              The example below shows how to extend XmlConfiguration to manually add an Appender and a LoggerConfig
               to the configuration.
             </p>
             <pre class="prettyprint linenums">
-@Plugin(name = "MyXMLConfigurationFactory", category = "ConfigurationFactory")
+@Plugin(name = "MyXmlConfigurationFactory", category = "ConfigurationFactory")
 @Order(10)
-public class MyXMLConfigurationFactory extends ConfigurationFactory {
+public class MyXmlConfigurationFactory extends ConfigurationFactory {
 
     /**
      * Valid file extensions for XML files.
      */
-    public static final String[] SUFFIXES = new String[] {".xml", "*"};
+    public static final String[] SUFFIXES = new String[]{".xml", "*"};
 
     /**
      * Return the Configuration.
+     *
      * @param source The InputSource.
      * @return The Configuration.
      */
-    public Configuration getConfiguration(InputSource source) {
-        return new MyXMLConfiguration(source, configFile);
+    public Configuration getConfiguration(LoggerContext loggerContext, ConfigurationSource source) {
+        return new MyXmlConfiguration(loggerContext, source);
     }
 
     /**
      * Returns the file suffixes for XML files.
+     *
      * @return An array of File extensions.
      */
     public String[] getSupportedTypes() {
@@ -257,9 +259,9 @@ public class MyXMLConfigurationFactory extends ConfigurationFactory {
     }
 }
 
-public class MyXMLConfiguration extends XMLConfiguration {
-    public MyXMLConfiguration(final ConfigurationFactory.ConfigurationSource configSource) {
-      super(configSource);
+public class MyXmlConfiguration extends XmlConfiguration {
+    public MyXmlConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
+        super(loggerContext, configSource);
     }
 
     @Override
@@ -268,13 +270,16 @@ public class MyXMLConfiguration extends XMLConfiguration {
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
         final Configuration config = context.getConfiguration();
         final Layout layout = PatternLayout.createDefaultLayout(config);
-        final Appender appender = FileAppender.createAppender("target/test.log", "false", "false", "File", "true",
-              "false", "false", "4000", layout, null, "false", null, config);
-        appender.start();
-        addAppender(appender);
-        LoggerConfig loggerConfig = LoggerConfig.createLogger("false", "info", "org.apache.logging.log4j",
-              "true", refs, null, config, null );
-        loggerConfig.addAppender(appender, null, null);
+        final Appender fileAppender = FileAppender.newBuilder().setName("target/test.log").withFileName("File")
+                .withImmediateFlush(true).setIgnoreExceptions(false).withBufferedIo(false).withBufferSize(4000)
+                .setLayout(layout).withAdvertise(false).setConfiguration(config)
+                .build();
+        fileAppender.start();
+        addAppender(fileAppender);
+        AppenderRef[] refs = new AppenderRef[]{AppenderRef.createAppenderRef(fileAppender.getName(), null, null)};
+        LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, "org.apache.logging.log4j",
+                "true", refs, null, config, null);
+        loggerConfig.addAppender(fileAppender, null, null);
         addLogger("org.apache.logging.log4j", loggerConfig);
     }
 }</pre>
