@@ -60,11 +60,11 @@
                   name of the class that implements <code>org.apache.logging.spi.Provider</code>.
                 </li>
               </ol></li>
-              <li>Setting the system property <var>log4j2.loggerContextFactory</var> to the name of the
+              <li>Setting the system property <code>log4j2.loggerContextFactory</code> to the name of the
                 <code>LoggerContextFactory</code> class to use.
               </li>
-              <li>Setting the property "log4j2.loggerContextFactory" in a properties file named
-                "log4j2.LogManager.properties" to the name of the LoggerContextFactory class to use. The properties
+              <li>Setting the property <code>log4j2.loggerContextFactory</code> in a properties file named
+                <code>log4j2.component.properties</code> to the name of the LoggerContextFactory class to use. The properties
                 file must be on the classpath.
               </li>
             </ol>
