@@ -148,7 +148,7 @@ public class RollingAppenderSizeTest {
                 CompressorInputStream in = null;
                 try (FileInputStream fis = new FileInputStream(file)) {
                     try {
-                        in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(), fis);
+                        in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toRootLowerCase(), fis);
                     } catch (final CompressorException ce) {
                         ce.printStackTrace();
                         fail("Error creating input stream from " + file.toString() + ": " + ce.getMessage());

@@ -3858,7 +3858,7 @@ public class CommandLine {
                 if (o1 == null) { return 1; } else if (o2 == null) { return -1; } // options before params
                 final String[] names1 = ShortestFirst.sort(o1.names());
                 final String[] names2 = ShortestFirst.sort(o2.names());
-                int result = names1[0].toUpperCase().compareTo(names2[0].toUpperCase()); // case insensitive sort
+                int result = names1[0].toRootUpperCase().compareTo(names2[0].toRootUpperCase()); // case insensitive sort
                 result = result == 0 ? -names1[0].compareTo(names2[0]) : result; // lower case before upper case
                 return o1.help() == o2.help() ? result : o2.help() ? -1 : 1; // help options come last
             }
@@ -4339,8 +4339,8 @@ public class CommandLine {
                  * @return the IStyle for the specified converter
                  */
                 public static IStyle fg(final String str) {
-                    try { return Style.valueOf(str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
-                    try { return Style.valueOf("fg_" + str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
+                    try { return Style.valueOf(str.toRootLowerCase(ENGLISH)); } catch (final Exception ignored) {}
+                    try { return Style.valueOf("fg_" + str.toRootLowerCase(ENGLISH)); } catch (final Exception ignored) {}
                     return new Palette256Color(true, str);
                 }
                 /** Parses the specified style markup and returns the associated style.
@@ -4351,8 +4351,8 @@ public class CommandLine {
                  * @return the IStyle for the specified converter
                  */
                 public static IStyle bg(final String str) {
-                    try { return Style.valueOf(str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
-                    try { return Style.valueOf("bg_" + str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
+                    try { return Style.valueOf(str.toRootLowerCase(ENGLISH)); } catch (final Exception ignored) {}
+                    try { return Style.valueOf("bg_" + str.toRootLowerCase(ENGLISH)); } catch (final Exception ignored) {}
                     return new Palette256Color(false, str);
                 }
                 /** Parses the specified comma-separated sequence of style descriptors and returns the associated
@@ -4365,10 +4365,10 @@ public class CommandLine {
                     final String[] codes = commaSeparatedCodes.split(",");
                     final IStyle[] styles = new IStyle[codes.length];
                     for(int i = 0; i < codes.length; ++i) {
-                        if (codes[i].toLowerCase(ENGLISH).startsWith("fg(")) {
+                        if (codes[i].toRootLowerCase(ENGLISH).startsWith("fg(")) {
                             final int end = codes[i].indexOf(')');
                             styles[i] = Style.fg(codes[i].substring(3, end < 0 ? codes[i].length() : end));
-                        } else if (codes[i].toLowerCase(ENGLISH).startsWith("bg(")) {
+                        } else if (codes[i].toRootLowerCase(ENGLISH).startsWith("bg(")) {
                             final int end = codes[i].indexOf(')');
                             styles[i] = Style.bg(codes[i].substring(3, end < 0 ? codes[i].length() : end));
                         } else {

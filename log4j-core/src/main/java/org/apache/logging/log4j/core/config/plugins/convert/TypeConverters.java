@@ -177,7 +177,7 @@ public final class TypeConverters {
     public static class ClassConverter implements TypeConverter<Class<?>> {
         @Override
         public Class<?> convert(final String s) throws ClassNotFoundException {
-            switch (s.toLowerCase()) {
+            switch (s.toRootLowerCase()) {
                 case "boolean":
                     return boolean.class;
                 case "byte":

@@ -95,7 +95,7 @@ public class BuilderManager {
     private <T> PluginType<T> getPlugin(final String className) {
         Objects.requireNonNull(plugins, "plugins");
         Objects.requireNonNull(className, "className");
-        final String key = className.toLowerCase(Locale.ROOT).trim();
+        final String key = className.toRootLowerCase(Locale.ROOT).trim();
         final PluginType<?> pluginType = plugins.get(key);
         if (pluginType == null) {
             LOGGER.warn("Unable to load plugin class name {} with key {}", className, key);

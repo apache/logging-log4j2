@@ -32,7 +32,7 @@ public class UpperLookup implements StrLookup {
      */
     @Override
     public String lookup(final String key) {
-        return key != null ? key.toUpperCase() : null;
+        return key != null ? key.toRootUpperCase() : null;
     }
 
     /**

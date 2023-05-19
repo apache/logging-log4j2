@@ -199,7 +199,7 @@ public class UtilLoggingLevel extends Level {
             return defaultLevel;
         }
 
-        final String s = sArg.toUpperCase();
+        final String s = sArg.toRootUpperCase();
 
         if (s.equals("SEVERE")) {
             return SEVERE;

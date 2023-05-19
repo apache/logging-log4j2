@@ -203,12 +203,12 @@ public class FastDateParserSDFTest {
 
     @Test
     public void testLowerCase() throws Exception {
-        checkParse(input.toLowerCase(locale));
+        checkParse(input.toRootLowerCase(locale));
     }
 
     @Test
     public void testLowerCasePP() throws Exception {
-        checkParsePosition(input.toLowerCase(locale));
+        checkParsePosition(input.toRootLowerCase(locale));
     }
 
     @Test
@@ -223,10 +223,10 @@ public class FastDateParserSDFTest {
 
     @Test
     public void testUpperCase() throws Exception {
-        checkParse(input.toUpperCase(locale));
+        checkParse(input.toRootUpperCase(locale));
     }
     @Test
     public void testUpperCasePP() throws Exception {
-        checkParsePosition(input.toUpperCase(locale));
+        checkParsePosition(input.toRootUpperCase(locale));
     }
 }

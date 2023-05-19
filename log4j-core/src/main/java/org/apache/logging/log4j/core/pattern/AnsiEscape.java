@@ -426,7 +426,7 @@ public enum AnsiEscape {
         for (final String string : values) {
             final String[] keyValue = string.split(Patterns.toWhitespaceSeparator("="));
             if (keyValue.length > 1) {
-                final String key = keyValue[0].toUpperCase(Locale.ENGLISH);
+                final String key = keyValue[0].toRootUpperCase(Locale.ENGLISH);
                 final String value = keyValue[1];
                 final boolean escape = Arrays.binarySearch(sortedIgnoreKeys, key) < 0;
                 map.put(key, escape ? createSequence(value.split("\\s")) : value);
@@ -459,7 +459,7 @@ public enum AnsiEscape {
                 }
                 first = false;
                 String hexColor = null;
-                final String trimmedName = name.trim().toUpperCase(Locale.ENGLISH);
+                final String trimmedName = name.trim().toRootUpperCase(Locale.ENGLISH);
                 if (trimmedName.startsWith("#")) {
                     sb.append("38");
                     sb.append(SEPARATOR.getCode());

@@ -61,7 +61,7 @@ public class UrlConnectionFactory {
         throws IOException {
         final PropertiesUtil props = PropertiesUtil.getProperties();
         final List<String> allowed = Arrays.asList(Strings.splitList(props
-                .getStringProperty(ALLOWED_PROTOCOLS, DEFAULT_ALLOWED_PROTOCOLS).toLowerCase(Locale.ROOT)));
+                .getStringProperty(ALLOWED_PROTOCOLS, DEFAULT_ALLOWED_PROTOCOLS).toRootLowerCase(Locale.ROOT)));
         if (allowed.size() == 1 && NO_PROTOCOLS.equals(allowed.get(0))) {
             throw new ProtocolException("No external protocols have been enabled");
         }

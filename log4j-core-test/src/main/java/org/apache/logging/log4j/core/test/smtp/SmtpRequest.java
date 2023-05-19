@@ -186,7 +186,7 @@ public class SmtpRequest {
                 }
             }
         } else {
-            final String su = s.toUpperCase();
+            final String su = s.toRootUpperCase();
             if (su.startsWith("EHLO ") || su.startsWith("HELO")) {
                 action = SmtpActionType.EHLO;
                 params = s.substring(5);

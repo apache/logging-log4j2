@@ -393,7 +393,7 @@ public class TestConfigurator {
 
         for (final String element : CHARS) {
             dir.append(element);
-            dir.append(element.toUpperCase());
+            dir.append(element.toRootUpperCase());
         }
         final String value = FILESEP.equals("/") ? dir.toString() + "/test.log" : "1:/target/bad:file.log";
         System.setProperty("testfile", value);

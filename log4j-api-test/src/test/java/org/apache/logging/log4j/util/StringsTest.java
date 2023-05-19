@@ -98,7 +98,7 @@ public class StringsTest {
     }
 
     @Test
-    public void testToLowerCase() {
+    public void testtoRootLowerCase() {
         assertEquals("a", Strings.toRootLowerCase("A"));
         assertEquals("a", Strings.toRootLowerCase("a"));
     }

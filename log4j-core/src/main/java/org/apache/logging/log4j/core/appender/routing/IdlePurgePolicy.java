@@ -144,7 +144,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
             units = TimeUnit.MINUTES;
         } else {
             try {
-                units = TimeUnit.valueOf(timeUnit.toUpperCase());
+                units = TimeUnit.valueOf(timeUnit.toRootUpperCase());
             } catch (final Exception ex) {
                 LOGGER.error("Invalid timeUnit value {}. timeUnit set to MINUTES", timeUnit, ex);
                 units = TimeUnit.MINUTES;

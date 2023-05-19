@@ -468,7 +468,7 @@ public class FastDateParser implements DateParser, Serializable {
         final Map<String, Integer> displayNames = cal.getDisplayNames(field, Calendar.ALL_STYLES, locale);
         final TreeSet<String> sorted = new TreeSet<>(LONGER_FIRST_LOWERCASE);
         for (final Map.Entry<String, Integer> displayName : displayNames.entrySet()) {
-            final String key = displayName.getKey().toLowerCase(locale);
+            final String key = displayName.getKey().toRootLowerCase(locale);
             if (sorted.add(key)) {
                 values.put(key, displayName.getValue());
             }
@@ -716,7 +716,7 @@ public class FastDateParser implements DateParser, Serializable {
          */
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
-            final Integer iVal = lKeyValues.get(value.toLowerCase(locale));
+            final Integer iVal = lKeyValues.get(value.toRootLowerCase(locale));
             cal.set(field, iVal.intValue());
         }
     }
@@ -866,7 +866,7 @@ public class FastDateParser implements DateParser, Serializable {
                         break;
                     }
                     if (zoneNames[i] != null) {
-                        final String key = zoneNames[i].toLowerCase(locale);
+                        final String key = zoneNames[i].toRootLowerCase(locale);
                         // ignore the data associated with duplicates supplied in
                         // the additional names
                         if (sorted.add(key)) {
@@ -893,10 +893,10 @@ public class FastDateParser implements DateParser, Serializable {
                 final TimeZone tz = TimeZone.getTimeZone("GMT" + value);
                 cal.setTimeZone(tz);
             } else if (value.regionMatches(true, 0, "GMT", 0, 3)) {
-                final TimeZone tz = TimeZone.getTimeZone(value.toUpperCase());
+                final TimeZone tz = TimeZone.getTimeZone(value.toRootUpperCase());
                 cal.setTimeZone(tz);
             } else {
-                final TzInfo tzInfo = tzNames.get(value.toLowerCase(locale));
+                final TzInfo tzInfo = tzNames.get(value.toRootLowerCase(locale));
                 cal.set(Calendar.DST_OFFSET, tzInfo.dstOffset);
                 cal.set(Calendar.ZONE_OFFSET, tzInfo.zone.getRawOffset());
             }

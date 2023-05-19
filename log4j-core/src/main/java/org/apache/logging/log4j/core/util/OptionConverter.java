@@ -234,7 +234,7 @@ public final class OptionConverter {
             return defaultValue;
         }
 
-        String str = value.trim().toUpperCase(Locale.ENGLISH);
+        String str = value.trim().toRootUpperCase(Locale.ENGLISH);
         long multiplier = 1;
         int index;
 

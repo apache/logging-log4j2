@@ -83,7 +83,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
             try {
                 final Class<? extends StrLookup> clazz = entry.getValue().getPluginClass().asSubclass(StrLookup.class);
                 if (!clazz.getName().equals("org.apache.logging.log4j.core.lookup.JndiLookup") || JndiManager.isJndiLookupEnabled()) {
-                    strLookupMap.put(entry.getKey().toLowerCase(), ReflectionUtil.instantiate(clazz));
+                    strLookupMap.put(entry.getKey().toRootLowerCase(), ReflectionUtil.instantiate(clazz));
                 }
             } catch (final Throwable t) {
                 handleError(entry.getKey(), t);
@@ -184,7 +184,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
 
         final int prefixPos = var.indexOf(PREFIX_SEPARATOR);
         if (prefixPos >= 0) {
-            final String prefix = var.substring(0, prefixPos).toLowerCase(Locale.US);
+            final String prefix = var.substring(0, prefixPos).toRootLowerCase(Locale.US);
             final String name = var.substring(prefixPos + 1);
             final StrLookup lookup = strLookupMap.get(prefix);
             if (lookup instanceof ConfigurationAware) {

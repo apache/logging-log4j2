@@ -80,7 +80,7 @@ public class ScriptManager implements FileWatcher {
         this.configuration = configuration;
         this.watchManager = watchManager;
         final List<ScriptEngineFactory> factories = manager.getEngineFactories();
-        allowedLanguages = Arrays.stream(Strings.splitList(scriptLanguages)).map(String::toLowerCase)
+        allowedLanguages = Arrays.stream(Strings.splitList(scriptLanguages)).map(String::toRootLowerCase)
                 .collect(Collectors.toSet());
         if (logger.isDebugEnabled()) {
             final StringBuilder sb = new StringBuilder();
@@ -94,7 +94,7 @@ public class ScriptManager implements FileWatcher {
                 final StringBuilder names = new StringBuilder();
                 final List<String> languageNames = factory.getNames();
                 for (final String name : languageNames) {
-                    if (allowedLanguages.contains(name.toLowerCase(Locale.ROOT))) {
+                    if (allowedLanguages.contains(name.toRootLowerCase(Locale.ROOT))) {
                         if (names.length() > 0) {
                             names.append(", ");
                         }
@@ -117,7 +117,7 @@ public class ScriptManager implements FileWatcher {
             final StringBuilder names = new StringBuilder();
             for (final ScriptEngineFactory factory : factories) {
                 for (final String name : factory.getNames()) {
-                    if (allowedLanguages.contains(name.toLowerCase(Locale.ROOT))) {
+                    if (allowedLanguages.contains(name.toRootLowerCase(Locale.ROOT))) {
                         if (names.length() > 0) {
                             names.append(", ");
                         }
@@ -134,7 +134,7 @@ public class ScriptManager implements FileWatcher {
     }
 
     public boolean addScript(final AbstractScript script) {
-        if (allowedLanguages.contains(script.getLanguage().toLowerCase(Locale.ROOT))) {
+        if (allowedLanguages.contains(script.getLanguage().toRootLowerCase(Locale.ROOT))) {
             final ScriptEngine engine = manager.getEngineByName(script.getLanguage());
             if (engine == null) {
                 logger.error("No ScriptEngine found for language " + script.getLanguage() + ". Available languages are: "

@@ -81,7 +81,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
             final String key = entry.getKey();
             final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
             if ("status".equalsIgnoreCase(key)) {
-                statusConfig.withStatus(value.toUpperCase());
+                statusConfig.withStatus(value.toRootUpperCase());
             } else if ("dest".equalsIgnoreCase(key)) {
                 statusConfig.withDestination(value);
             } else if ("shutdownHook".equalsIgnoreCase(key)) {

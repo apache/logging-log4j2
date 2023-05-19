@@ -47,7 +47,7 @@ public class SpringLookup implements LoggerContextAware, StrLookup {
     @Override
     public String lookup(String key) {
         if (environment != null) {
-            String lowerKey = key.toLowerCase();
+            String lowerKey = key.toRootLowerCase();
             if (lowerKey.startsWith(ACTIVE)) {
                 switch (environment.getActiveProfiles().length) {
                     case 0: {

@@ -43,9 +43,9 @@ public class StructuredDataLookupTest {
         final LogEvent event = Log4jLogEvent.newBuilder().setLevel(Level.DEBUG).setMessage(msg).build();
 
         assertEquals("Audit", dataLookup.lookup(event, StructuredDataLookup.TYPE_KEY));
-        assertEquals("Audit", dataLookup.lookup(event, StructuredDataLookup.TYPE_KEY.toUpperCase()));
+        assertEquals("Audit", dataLookup.lookup(event, StructuredDataLookup.TYPE_KEY.toRootUpperCase()));
         assertEquals("TestId", dataLookup.lookup(event, StructuredDataLookup.ID_KEY));
-        assertEquals("TestId", dataLookup.lookup(event, StructuredDataLookup.ID_KEY.toUpperCase()));
+        assertEquals("TestId", dataLookup.lookup(event, StructuredDataLookup.ID_KEY.toRootUpperCase()));
         assertNull(dataLookup.lookup(event, "BadKey"));
         assertNull(dataLookup.lookup(event, null));
     }

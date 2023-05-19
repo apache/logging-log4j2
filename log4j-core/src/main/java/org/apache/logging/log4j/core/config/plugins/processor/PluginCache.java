@@ -51,7 +51,7 @@ public class PluginCache {
      * @return plugin mapping of names to plugin entries.
      */
     public Map<String, PluginEntry> getCategory(final String category) {
-        final String key = category.toLowerCase();
+        final String key = category.toRootLowerCase();
         return categories.computeIfAbsent(key, ignored -> new TreeMap<>());
     }
 

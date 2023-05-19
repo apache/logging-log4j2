@@ -189,7 +189,7 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
         }
 
         if (facilityPrinting) {
-            buf.append(facility != null ? facility.name().toLowerCase() : "user").append(':');
+            buf.append(facility != null ? facility.name().toRootLowerCase() : "user").append(':');
         }
 
         buf.append(message);

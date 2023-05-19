@@ -72,7 +72,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         AVRO, EMBEDDED, PERSISTENT;
 
         public static ManagerType getType(final String type) {
-            return valueOf(type.toUpperCase(Locale.US));
+            return valueOf(type.toRootUpperCase(Locale.US));
         }
     }
 

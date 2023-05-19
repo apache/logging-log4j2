@@ -84,7 +84,7 @@ public class Log4jServletContextListener implements ServletContextListener {
                     : Long.parseLong(stopTimeoutStr);
             final String timeoutTimeUnitStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT_TIMEUNIT);
             final TimeUnit timeoutTimeUnit = Strings.isEmpty(timeoutTimeUnitStr) ? DEFAULT_STOP_TIMEOUT_TIMEUNIT
-                    : TimeUnit.valueOf(timeoutTimeUnitStr.toUpperCase(Locale.ROOT));
+                    : TimeUnit.valueOf(timeoutTimeUnitStr.toRootUpperCase(Locale.ROOT));
             ((LifeCycle2) this.initializer).stop(stopTimeout, timeoutTimeUnit);
         } else {
             this.initializer.stop();

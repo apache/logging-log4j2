@@ -55,7 +55,7 @@ public class XLevel extends Level {
         if (sArg == null) {
             return defaultValue;
         }
-        final String stringVal = sArg.toUpperCase();
+        final String stringVal = sArg.toRootUpperCase();
 
         if (stringVal.equals(TRACE_STR)) {
             return XLevel.TRACE;

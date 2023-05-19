@@ -62,7 +62,7 @@ public class LoggerNameLevelRewritePolicy implements RewritePolicy {
     }
 
     private static Level getLevel(final String name) {
-        return Level.getLevel(name.toUpperCase(Locale.ROOT));
+        return Level.getLevel(name.toRootUpperCase(Locale.ROOT));
     }
 
     private final String loggerName;

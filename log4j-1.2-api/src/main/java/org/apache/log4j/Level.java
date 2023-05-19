@@ -181,7 +181,7 @@ public class Level extends Priority implements Serializable {
         if (sArg == null) {
             return defaultLevel;
         }
-        final String s = sArg.toUpperCase(Locale.ROOT);
+        final String s = sArg.toRootUpperCase(Locale.ROOT);
         switch (s) {
         case "ALL":
             return Level.ALL;

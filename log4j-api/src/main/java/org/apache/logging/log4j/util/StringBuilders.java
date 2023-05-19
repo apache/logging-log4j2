@@ -18,7 +18,7 @@ package org.apache.logging.log4j.util;
 
 import java.util.Map.Entry;
 
-import static java.lang.Character.toLowerCase;
+import static java.lang.Character.toRootLowerCase;
 
 /**
  * <em>Consider this class private.</em>
@@ -181,7 +181,7 @@ public final class StringBuilders {
                                               final CharSequence right, final int rightOffset, final int rightLength) {
         if (leftLength == rightLength) {
             for (int i = 0; i < rightLength; i++) {
-                if (toLowerCase(left.charAt(i + leftOffset)) != toLowerCase(right.charAt(i + rightOffset))) {
+                if (toRootLowerCase(left.charAt(i + leftOffset)) != toRootLowerCase(right.charAt(i + rightOffset))) {
                     return false;
                 }
             }

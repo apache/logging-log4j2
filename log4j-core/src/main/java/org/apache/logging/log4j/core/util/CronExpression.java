@@ -272,7 +272,7 @@ public final class CronExpression {
             throw new IllegalArgumentException("cronExpression cannot be null");
         }
 
-        this.cronExpression = cronExpression.toUpperCase(Locale.US);
+        this.cronExpression = cronExpression.toRootUpperCase(Locale.US);
 
         buildExpression(this.cronExpression);
     }

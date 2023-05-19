@@ -96,8 +96,8 @@ public class FastDateParserTest {
     private void checkParse(final Locale locale, final Calendar cal, final SimpleDateFormat sdf, final DateParser fdf) throws ParseException {
         final String formattedDate= sdf.format(cal.getTime());
         checkParse(locale, sdf, fdf, formattedDate);
-        checkParse(locale, sdf, fdf, formattedDate.toLowerCase(locale));
-        checkParse(locale, sdf, fdf, formattedDate.toUpperCase(locale));
+        checkParse(locale, sdf, fdf, formattedDate.toRootLowerCase(locale));
+        checkParse(locale, sdf, fdf, formattedDate.toRootUpperCase(locale));
     }
 
     private void checkParse(final Locale locale, final SimpleDateFormat sdf, final DateParser fdf, final String formattedDate) throws ParseException {

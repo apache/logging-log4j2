@@ -50,7 +50,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
     private static TextRenderer loadMessageRenderer(final String[] options) {
         if (options != null) {
             for (final String option : options) {
-                switch (option.toUpperCase(Locale.ROOT)) {
+                switch (option.toRootUpperCase(Locale.ROOT)) {
                 case "ANSI":
                     if (Loader.isJansiAvailable()) {
                         return new JAnsiTextRenderer(options, JAnsiTextRenderer.DefaultMessageStyleMap);

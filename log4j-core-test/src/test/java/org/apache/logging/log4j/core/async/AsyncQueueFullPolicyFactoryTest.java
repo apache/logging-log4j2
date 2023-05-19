@@ -74,7 +74,7 @@ public class AsyncQueueFullPolicyFactoryTest {
     @Test
     public void testCreateDiscardingRouterCaseInsensitive() {
         System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
-                AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER.toLowerCase(Locale.ENGLISH));
+                AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER.toRootLowerCase(Locale.ENGLISH));
         assertEquals(Level.INFO, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
                 getThresholdLevel());
     }

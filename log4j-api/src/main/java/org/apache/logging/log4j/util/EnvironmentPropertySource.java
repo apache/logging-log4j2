@@ -69,7 +69,7 @@ public class EnvironmentPropertySource implements PropertySource {
             empty = false;
             sb.append('_');
             for (int i = 0; i < token.length(); i++) {
-                sb.append(Character.toUpperCase(token.charAt(i)));
+                sb.append(Character.toRootUpperCase(token.charAt(i)));
             }
         }
         return empty ? null : sb.toString();

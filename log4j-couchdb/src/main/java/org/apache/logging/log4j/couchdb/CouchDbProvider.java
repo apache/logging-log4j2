@@ -130,7 +130,7 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
             }
         } else if (Strings.isNotEmpty(databaseName)) {
             if (protocol != null && protocol.length() > 0) {
-                protocol = protocol.toLowerCase();
+                protocol = protocol.toRootLowerCase();
                 if (!protocol.equals("http") && !protocol.equals("https")) {
                     LOGGER.error("Only protocols [http] and [https] are supported, [{}] specified.", protocol);
                     return null;

@@ -106,7 +106,7 @@ public class RollingAppenderTempCompressedFilePatternTest {
                         if (ext != null) {
                             gzippedFiles++;
                             try {
-                                in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(),
+                                in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toRootLowerCase(),
                                         fis);
                             } catch (final CompressorException ce) {
                                 ce.printStackTrace();

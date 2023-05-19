@@ -201,7 +201,7 @@ public class ColumnMapping {
     }
 
     public static String toKey(final String name) {
-        return name.toUpperCase(Locale.ROOT);
+        return name.toRootUpperCase(Locale.ROOT);
     }
 
     private final StringLayout layout;

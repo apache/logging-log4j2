@@ -320,7 +320,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
     }
 
     private Code toCode(final String name) {
-        return Code.valueOf(name.toUpperCase(Locale.ENGLISH));
+        return Code.valueOf(name.toRootUpperCase(Locale.ENGLISH));
     }
 
     @Override

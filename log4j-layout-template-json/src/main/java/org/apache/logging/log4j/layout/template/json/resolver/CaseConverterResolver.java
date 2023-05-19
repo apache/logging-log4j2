@@ -195,9 +195,9 @@ public final class CaseConverterResolver implements EventResolver {
         final Locale locale = config.getLocale("locale");
         final String _case = config.getString("case");
         if ("upper".equals(_case)) {
-            return input -> input.toUpperCase(locale);
+            return input -> input.toRootUpperCase(locale);
         } else if ("lower".equals(_case)) {
-            return input -> input.toLowerCase(locale);
+            return input -> input.toRootLowerCase(locale);
         } else {
             throw new IllegalArgumentException("invalid case: " + config);
         }

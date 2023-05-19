@@ -1164,7 +1164,7 @@ public final class Generate {
                 lower = false;
                 continue;
             }
-            sb.append(lower ? Character.toLowerCase(ch) : Character.toUpperCase(ch));
+            sb.append(lower ? Character.toRootLowerCase(ch) : Character.toRootUpperCase(ch));
             lower = true;
         }
         return sb.toString();

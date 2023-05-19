@@ -156,7 +156,7 @@ abstract public class DateLayout extends Layout {
     @Deprecated
     public void setOption(final String option, final String value) {
         if (option.equalsIgnoreCase(DATE_FORMAT_OPTION)) {
-            dateFormatOption = value.toUpperCase();
+            dateFormatOption = value.toRootUpperCase();
         } else if (option.equalsIgnoreCase(TIMEZONE_OPTION)) {
             timeZoneID = value;
         }

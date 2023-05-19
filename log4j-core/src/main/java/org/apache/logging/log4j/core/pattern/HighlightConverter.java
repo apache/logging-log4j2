@@ -152,10 +152,10 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         final Map<String, String> styles = AnsiEscape.createMap(string, new String[] {STYLE_KEY});
         final Map<String, String> levelStyles = new HashMap<>(DEFAULT_STYLES);
         for (final Map.Entry<String, String> entry : styles.entrySet()) {
-            final String key = entry.getKey().toUpperCase(Locale.ENGLISH);
+            final String key = entry.getKey().toRootUpperCase(Locale.ENGLISH);
             final String value = entry.getValue();
             if (STYLE_KEY.equalsIgnoreCase(key)) {
-                final Map<String, String> enumMap = STYLES.get(value.toUpperCase(Locale.ENGLISH));
+                final Map<String, String> enumMap = STYLES.get(value.toRootUpperCase(Locale.ENGLISH));
                 if (enumMap == null) {
                     LOGGER.error("Unknown level style: " + value + ". Use one of " +
                         Arrays.toString(STYLES.keySet().toArray()));

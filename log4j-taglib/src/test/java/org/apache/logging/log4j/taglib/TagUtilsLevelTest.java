@@ -42,7 +42,7 @@ public class TagUtilsLevelTest {
         final Collection<Object[]> params = new ArrayList<>();
         // this is perhaps the laziest way to test all the known levels
         for (final Level level : Level.values()) {
-            params.add(new Object[]{level, level.name().toLowerCase()});
+            params.add(new Object[]{level, level.name().toRootLowerCase()});
         }
         return params;
     }

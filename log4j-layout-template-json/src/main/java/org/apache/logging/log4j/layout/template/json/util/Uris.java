@@ -79,7 +79,7 @@ public final class Uris {
             final URI uri,
             final Charset charset)
             throws Exception {
-        final String uriScheme = uri.getScheme().toLowerCase();
+        final String uriScheme = uri.getScheme().toRootLowerCase();
         switch (uriScheme) {
             case "classpath":
                 return readClassPathUri(uri, charset);
