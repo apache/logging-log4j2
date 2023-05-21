@@ -42,6 +42,9 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 public class LogManager extends java.util.logging.LogManager {
 
     private static final org.apache.logging.log4j.Logger LOGGER = StatusLogger.getLogger();
+    private static final String CORE_LOGGER_CLASS_NAME = "org.apache.logging.log4j.core.Logger";
+    private static final String CORE_LOGGER_ADAPTER_CLASS_NAME = "org.apache.logging.log4j.jul.CoreLoggerAdapter";
+    private static final String API_LOGGER_ADAPTER_CLASS_NAME = "org.apache.logging.log4j.jul.ApiLoggerAdapter";
     private final AbstractLoggerAdapter loggerAdapter;
     // Contains the set of logger names that are actively being requested using getLogger.
     private final ThreadLocal<Set<String>> recursive = ThreadLocal.withInitial(HashSet::new);
@@ -50,7 +53,7 @@ public class LogManager extends java.util.logging.LogManager {
         super();
         AbstractLoggerAdapter adapter = null;
         final String overrideAdaptorClassName =
-            PropertiesUtil.getProperties().getStringProperty(Constants.LOGGER_ADAPTOR_PROPERTY);
+            PropertiesUtil.getProperties().getStringProperty(JulPropertyKey.LOGGER_ADAPTER);
         if (overrideAdaptorClassName != null) {
             try {
                 LOGGER.info("Trying to use LoggerAdaptor [{}] specified by Log4j property.", overrideAdaptorClassName);
@@ -64,10 +67,10 @@ public class LogManager extends java.util.logging.LogManager {
             String adapterClassName;
             try {
                 // find out if log4j-core is available
-                LoaderUtil.loadClass(Constants.CORE_LOGGER_CLASS_NAME);
-                adapterClassName = Constants.CORE_LOGGER_ADAPTER_CLASS_NAME;
+                LoaderUtil.loadClass(CORE_LOGGER_CLASS_NAME);
+                adapterClassName = CORE_LOGGER_ADAPTER_CLASS_NAME;
             } catch (final ClassNotFoundException ignored) {
-                adapterClassName = Constants.API_LOGGER_ADAPTER_CLASS_NAME;
+                adapterClassName = API_LOGGER_ADAPTER_CLASS_NAME;
             }
             LOGGER.debug("Attempting to use {}", adapterClassName);
             try {

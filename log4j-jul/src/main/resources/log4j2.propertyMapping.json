@@ -1,8 +1,14 @@
 {
   "log4j2": {
+    "julLevelConverter": ["JUL", "levelConverter"],
     "julLoggerAdapter": ["JUL", "loggerAdapter"]
   },
+  "log4j": {
+    "jul.loggerAdapter": ["JUL", "loggerAdapter"],
+    "jul.levelConverter": ["JUL", "levelConverter"]
+  },
   "LOG4J": {
+    "JUL_LEVEL_CONVERTER": ["JUL", "levelConverter"],
     "JUL_LOGGER_ADAPTER": ["JUL", "loggerAdapter"]
   }
 }

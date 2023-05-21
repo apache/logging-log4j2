@@ -32,6 +32,7 @@ module org.apache.logging.log4j.script {
     exports org.apache.logging.log4j.script.layout;
     opens org.apache.logging.log4j.script.layout to
       org.apache.logging.log4j.core;
+    exports org.apache.logging.log4j.script.plugins;
 
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.core;

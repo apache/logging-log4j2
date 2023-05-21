@@ -118,7 +118,7 @@
         <item name="Composite Configurations" href="/manual/configuration.html#CompositeConfiguration"/>
         <item name="Status Messages" href="/manual/configuration.html#StatusMessages"/>
         <item name="Unit Testing in Maven" href="/manual/configuration.html#UnitTestingInMaven"/>
-        <item name="System Properties" href="/manual/configuration.html#SystemProperties"/>
+        <item name="System Properties" href="/manual/systemProperties.html"/>
       </item>
 
       <item name="Usage" href="/manual/usage.html" collapse="true">

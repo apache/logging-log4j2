@@ -19,7 +19,7 @@ package org.apache.logging.log4j.jul.test;
 import java.util.logging.Logger;
 
 import org.apache.logging.log4j.jul.ApiLoggerAdapter;
-import org.apache.logging.log4j.jul.Constants;
+import org.apache.logging.log4j.jul.JulPropertyKey;
 import org.apache.logging.log4j.jul.LogManager;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -37,13 +37,13 @@ public class ApiLoggerTest extends AbstractLoggerTest {
     @BeforeClass
     public static void setUpClass() {
         System.setProperty("java.util.logging.manager", LogManager.class.getName());
-        System.setProperty(Constants.LOGGER_ADAPTOR_PROPERTY, ApiLoggerAdapter.class.getName());
+        System.setProperty(JulPropertyKey.LOGGER_ADAPTER.getSystemKey(), ApiLoggerAdapter.class.getName());
     }
 
     @AfterClass
     public static void tearDownClass() {
         System.clearProperty("java.util.logging.manager");
-        System.clearProperty(Constants.LOGGER_ADAPTOR_PROPERTY);
+        System.clearProperty(JulPropertyKey.LOGGER_ADAPTER.getSystemKey());
     }
 
     @Before

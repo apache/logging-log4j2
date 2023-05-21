@@ -18,9 +18,9 @@ package org.apache.logging.log4j.script.appender;
 
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.script.ScriptPropertyKey;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledForJreRange;
@@ -32,7 +32,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@SetSystemProperty(key = Log4jPropertyKey.Constant.SCRIPT_ENABLE_LANGUAGES, value = "Groovy, Javascript")
+@SetSystemProperty(key = ScriptPropertyKey.Constant.SCRIPT_ENABLE_LANGUAGES, value = "Groovy, Javascript")
 public class ScriptAppenderSelectorTest {
 
     @Test

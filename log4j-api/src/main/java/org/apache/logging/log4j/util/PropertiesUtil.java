@@ -29,13 +29,15 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
+
+import org.apache.logging.log4j.internal.CopyOnWriteNavigableSet;
 
 
 /**
@@ -317,7 +319,7 @@ public class PropertiesUtil implements PropertyEnvironment {
                 URL url = urls.nextElement();
                 try (InputStream is = url.openStream()) {
                     String json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-                    PropertySource propertySource = parseJsonProperties(json, contextName, 10);
+                    PropertySource propertySource = parseJsonProperties(json, contextName, 110);
                     if (propertySource != null) {
                         sources.add(propertySource);
                     }
@@ -336,7 +338,7 @@ public class PropertiesUtil implements PropertyEnvironment {
                 try (InputStream is = url.openStream()) {
                     Properties props = new Properties();
                     props.load(is);
-                    PropertySource source = new PropertiesPropertySource(props, contextName, 20);
+                    PropertySource source = new PropertiesPropertySource(props, contextName, 120);
                     sources.add(source);
                 } catch (Exception ex) {
                     LowLevelLogUtil.logException("Unable to access properties for " + url.toString(), ex);
@@ -433,7 +435,8 @@ public class PropertiesUtil implements PropertyEnvironment {
      */
     private static class Environment implements PropertyEnvironment {
 
-        private final Set<PropertySource> sources = new ConcurrentSkipListSet<>(new PropertySource.Comparator());
+        private final NavigableSet<PropertySource> sources =
+                new CopyOnWriteNavigableSet<>(new PropertySource.Comparator());
         /**
          * Maps a key to its value or the value of its normalization in the lowest priority source that contains it.
          */
@@ -508,7 +511,9 @@ public class PropertiesUtil implements PropertyEnvironment {
             String result = null;
             String contextKey = getContextKey(key);
             if (contextName != null && !contextName.equals(PropertySource.SYSTEM_CONTEXT)) {
-                for (final PropertySource source : sources) {
+                // These loops are a little unconventional but it is garbage free.
+                PropertySource source = sources.first();
+                while (source != null) {
                     if (source instanceof ContextAwarePropertySource) {
                         ContextAwarePropertySource src = Cast.cast(source);
                         result = src.getProperty(contextName, contextKey);
@@ -516,13 +521,16 @@ public class PropertiesUtil implements PropertyEnvironment {
                     if (result != null) {
                         return result;
                     }
+                    source = sources.higher(source);
                 }
             }
-            for (final PropertySource source : sources) {
+            PropertySource source = sources.first();
+            while (source != null) {
                 result = source.getProperty(contextKey);
                 if (result != null) {
                     return result;
                 }
+                source = sources.higher(source);
             }
             return result;
         }
@@ -534,16 +542,20 @@ public class PropertiesUtil implements PropertyEnvironment {
             }
             String contextKey = getContextKey(key);
             if (!contextName.equals(PropertySource.SYSTEM_CONTEXT)) {
-                for (final PropertySource source : sources) {
+                // These loops are a little unconventional but it is garbage free.
+                PropertySource source = sources.first();
+                while (source != null) {
                     if (source instanceof ContextAwarePropertySource) {
                         ContextAwarePropertySource src = Cast.cast(source);
                         if (src.containsProperty(contextName, contextKey)) {
                             return true;
                         }
                     }
+                    source = sources.higher(source);
                 }
             }
-            for (final PropertySource source : sources) {
+            PropertySource source = sources.first();
+            while (source != null) {
                 if (source instanceof ContextAwarePropertySource) {
                     ContextAwarePropertySource src = Cast.cast(source);
                     if (src.containsProperty(contextName, contextKey)
@@ -556,6 +568,7 @@ public class PropertiesUtil implements PropertyEnvironment {
                         return true;
                     }
                 }
+                source = sources.higher(source);
             }
             return false;
         }

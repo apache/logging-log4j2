@@ -185,7 +185,6 @@ public enum LoggingSystemProperty implements PropertyKey {
      */
     // GC.unboxRingBufferSize
     UNBOX_RING_BUFFER_SIZE(PropertyComponent.GC, Constant.UNBOX_RING_BUFFER_SIZE),
-    UUID_SEQUENCE(PropertyComponent.UUID,Constant.SEQUENCE),
     /**
      * Property to override webapp detection. Without this property, the presence of the {@code Servlet} interface
      * (from either {@code javax} or {@code jakarta}) is checked to see if this is a webapp.
@@ -196,18 +195,24 @@ public enum LoggingSystemProperty implements PropertyKey {
     public static final String SIMPLE_LOGGER_LOG_LEVEL = "SimpleLogger.%s.level";
     public static final String SYSTEM_PROPERTY_PREFIX = "log4j2.*.";
 
-    private PropertyComponent component;
-    private String name;
+    private final PropertyComponent component;
+    private final String name;
+
+    private final String key;
+    private final String systemKey;
 
     LoggingSystemProperty(final PropertyComponent component, String name) {
         this.component = component;
         this.name = name;
+        this.key = component.getName() + Constant.DELIM + name;
+        this.systemKey = SYSTEM_PROPERTY_PREFIX + this.key;
     }
 
     public static LoggingSystemProperty findKey(String component, String name) {
-        for (LoggingSystemProperty key : values()) {
-            if (key.getComponent().equals(component) && key.getName().equals(name)) {
-                return key;
+        String toFind = component + Constant.DELIM + name;
+        for (LoggingSystemProperty property : values()) {
+            if (property.key.equals(toFind)) {
+                return property;
             }
         }
         return null;
@@ -219,6 +224,16 @@ public enum LoggingSystemProperty implements PropertyKey {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getKey() {
+        return key;
+    }
+
+    @Override
+    public String getSystemKey() {
+        return systemKey;
     }
 
     public String toString() {
@@ -437,9 +452,6 @@ public enum LoggingSystemProperty implements PropertyKey {
         public static final String THREAD_CONTEXT_GARBAGE_FREE_ENABLED =
                 SYSTEM_PROPERTY_PREFIX + PropertyComponent.Constant.THREAD_CONTEXT + DELIM + GARBAGE_FREE;
 
-        static final String SEQUENCE = "sequence";
-        public static final String UUID_SEQUENCE = SYSTEM_PROPERTY_PREFIX
-                + PropertyComponent.Constant.UUID + DELIM + SEQUENCE;
         static final String IS_WEB_APP = "isWebApp";
         public static final String WEB = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
                 + PropertyComponent.Constant.WEB + DELIM + IS_WEB_APP;

@@ -221,15 +221,15 @@ public enum GcFreeLoggingTestUtil {;
         final String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         final String classpath = getProperty("java.class.path");
         final String javaagent = "-javaagent:" + agentJar();
-        final String usePreciseClock = System.getProperty("log4j2.usePreciseClock");
+        final String usePreciseClock = System.getProperty(Log4jPropertyKey.USE_PRECISE_CLOCK.getSystemKey());
 
         final File tempFile = File.createTempFile("allocations", ".txt");
-        tempFile.deleteOnExit();
+        //tempFile.deleteOnExit();
         List<String> command = new ArrayList<>();
         command.add(javaBin);
         command.add(javaagent);
         if (usePreciseClock != null) {
-            command.add("-Dlog4j2.usePreciseClock=" + usePreciseClock);
+            command.add("-D" + Log4jPropertyKey.USE_PRECISE_CLOCK.getSystemKey()  + "=" + usePreciseClock);
         }
         command.add("-cp");
         command.add(classpath);

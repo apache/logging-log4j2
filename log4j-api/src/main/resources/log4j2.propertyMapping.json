@@ -1,7 +1,6 @@
 {
   "log4j2": {
     "assignedSequences": ["UUID", "assignedSequences"],
-    "contextDataInjector": ["ThreadContext", "contextDataInjector"],
     "debug": ["StatusLogger", "enableDebug"],
     "defaultStatusLevel": ["StatusLogger", "defaultLevel"],
     "garbagefreeThreadContextMap": ["ThreadContext", "garbageFreeMap"],
@@ -25,6 +24,7 @@
     "simplelogStatusLoggerLevel": ["SimpleLogger", "statusLoggerLevel"],
     "statusLoggerLevel": ["StatusLogger", "level"],
     "statusEntries": ["StatusLogger", "entries"],
+    "threadContextMap": ["ThreadContext", "mapClass"],
     "unboxRingbufferSize": ["Unbox", "ringBufferSize"],
     "uuidSequence": ["UUID", "sequence"]
   },
@@ -33,7 +33,6 @@
   },
   "LOG4J": {
     "ASSIGNED_SEQUENCES": ["UUID", "assignedSequences"],
-    "CONTEXT_DATA_INJECTOR": ["ThreadContext", "contextDataInjector"],
     "DEBUG": ["StatusLogger", "enableDebug"],
     "DEFAULT_STATUS_LEVEL": ["StatusLogger", "defaultLevel"],
     "GARBAGEFREE_THREAD_CONTEXT_MAP": ["ThreadContext", "garbageFreeMap"],
@@ -58,6 +57,7 @@
     "LOG4J_SIMPLELOG_STATUS_LOGGER_LEVEL": ["SimpleLogger", "statusLoggerLevel"],
     "STATUS_LOGGER_LEVEL": ["StatusLogger", "level"],
     "STATUS_ENTRIES": ["StatusLogger", "entries"],
+    "THREAD_CONTEXT_MAP": ["ThreadContext", "mapClass"],
     "UNBOX_RINGBUFFER_SIZE": ["Unbox", "ringBufferSize"],
     "UUID_SEQUENCE": ["UUID", "sequence"]
   }

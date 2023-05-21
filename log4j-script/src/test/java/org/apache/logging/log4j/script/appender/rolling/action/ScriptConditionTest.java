@@ -24,9 +24,9 @@ import java.util.List;
 import org.apache.logging.log4j.core.appender.rolling.action.PathWithAttributes;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.appender.rolling.action.DummyFileAttributes;
 import org.apache.logging.log4j.script.ScriptPlugin;
+import org.apache.logging.log4j.script.ScriptPropertyKey;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests the ScriptCondition class.
  */
-@SetSystemProperty(key = Log4jPropertyKey.Constant.SCRIPT_ENABLE_LANGUAGES, value = "js, javascript, groovy")
+@SetSystemProperty(key = ScriptPropertyKey.Constant.SCRIPT_ENABLE_LANGUAGES, value = "js, javascript, groovy")
 public class ScriptConditionTest {
 
     @Test

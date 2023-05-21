@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.time.internal;
 
 import java.time.Instant;
 
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.PreciseClock;
@@ -29,11 +30,12 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  */
 public final class SystemClock implements Clock, PreciseClock {
 
-    /**
-     * The precise clock is not enabled by default, since access to it is not garbage free.
-     */
-    private static final boolean USE_PRECISE_CLOCK = PropertiesUtil.getProperties()
-            .getBooleanProperty("log4j2.usePreciseClock", false);
+    private final boolean usePreciseClock;
+    public SystemClock() {
+        usePreciseClock =
+                PropertiesUtil.getProperties().getBooleanProperty(Log4jPropertyKey.USE_PRECISE_CLOCK, false);
+    }
+
     /**
      * Returns the system time.
      * @return the result of calling {@code System.currentTimeMillis()}
@@ -45,10 +47,11 @@ public final class SystemClock implements Clock, PreciseClock {
 
     /**
      * {@inheritDoc}
+     * The precise clock is not enabled by default, since access to it is not garbage free.
      */
     @Override
     public void init(final MutableInstant mutableInstant) {
-        if (USE_PRECISE_CLOCK) {
+        if (usePreciseClock) {
             final Instant instant = java.time.Clock.systemUTC().instant();
             mutableInstant.initFromEpochSecond(instant.getEpochSecond(), instant.getNano());
         } else {

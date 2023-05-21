@@ -53,7 +53,7 @@ public enum Log4jPropertyKey implements PropertyKey {
             Constant.WAIT_MILLIS_BEFORE_STOP_OLD_CONFIG),
     CONFIG_V1_COMPATIBILITY_ENABLED(PropertyComponent.LOG4J1, Constant.COMPATIBILITY),
     CONFIG_V1_FILE_NAME(PropertyComponent.LOG4J, Constant.CONFIGURATION),
-    CONTEXT_SELECTOR_CLASS_NAME(PropertyComponent.LOG4J, Constant.CONTEXT_SELECTOR),
+    CONTEXT_SELECTOR_CLASS_NAME(PropertyComponent.LOGGER_CONTEXT, Constant.SELECTOR),
     GC_ENABLE_DIRECT_ENCODERS(PropertyComponent.GC, Constant.ENABLE_DIRECT_ENCODERS),
     GC_ENCODER_BYTE_BUFFER_SIZE(PropertyComponent.GC, Constant.ENCODER_BYTE_BUFFER_SIZE),
     GC_ENCODER_CHAR_BUFFER_SIZE(PropertyComponent.GC, Constant.ENCODER_CHAR_BUFFER_SIZE),
@@ -67,7 +67,6 @@ public enum Log4jPropertyKey implements PropertyKey {
     JNDI_ENABLE_JMS(PropertyComponent.JNDI, Constant.ENABLE_JMS),
     JNDI_ENABLE_LOOKUP(PropertyComponent.JNDI, Constant.ENABLE_LOOKUP),
     LOG_EVENT_FACTORY_CLASS_NAME(PropertyComponent.LOGGER, Constant.LOG_EVENT_FACTORY),
-    SCRIPT_ENABLE_LANGUAGES(PropertyComponent.SCRIPT, Constant.ENABLE_LANGUAGES),
     SHUTDOWN_CALLBACK_REGISTRY(PropertyComponent.LOGGER_CONTEXT, Constant.SHUT_DOWN_CALLBACK_REGISTRY),
     SHUTDOWN_HOOK_ENABLED(PropertyComponent.LOGGER_CONTEXT, Constant.SHUT_DOWN_HOOK_ENABLED),
     STACKTRACE_ON_START(PropertyComponent.LOGGER_CONTEXT, Constant.STACK_TRACE_ON_START),
@@ -92,14 +91,22 @@ public enum Log4jPropertyKey implements PropertyKey {
     TRANSPORT_SECURITY_KEY_STORE_TYPE(PropertyComponent.TRANSPORT_SECURITY, Constant.KEYSTORE_TYPE),
     TRANSPORT_SECURITY_KEY_STORE_KEY_MANAGER_FACTORY_ALGORITHM(PropertyComponent.TRANSPORT_SECURITY,
             Constant.KEYSTORE_KEY_MANAGER_FACTORY_ALGORITHM),
-    TRANSPORT_SECURITY_VERIFY_HOST_NAME(PropertyComponent.TRANSPORT_SECURITY,Constant.SSL_VERIFY_HOST_NAME);
+    TRANSPORT_SECURITY_VERIFY_HOST_NAME(PropertyComponent.TRANSPORT_SECURITY,Constant.SSL_VERIFY_HOST_NAME),
+    USE_PRECISE_CLOCK(PropertyComponent.CONFIGURATION, Constant.USE_PRECISE_cLOCK),
+    UUID_SEQUENCE(PropertyComponent.UUID, Constant.SEQUENCE);
 
-    private PropertyComponent component;
-    private String name;
+    private final PropertyComponent component;
+    private final String name;
+
+    private final String key;
+
+    private final String systemKey;
 
     Log4jPropertyKey(final PropertyComponent component, String name) {
         this.component = component;
         this.name = name;
+        this.key = component.getName() + Constant.DELIM + name;
+        this.systemKey = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX + key;
     }
 
     public static PropertyKey findKey(String component, String name) {
@@ -117,6 +124,16 @@ public enum Log4jPropertyKey implements PropertyKey {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getKey() {
+        return key;
+    }
+
+    @Override
+    public String getSystemKey() {
+        return systemKey;
     }
 
     public String toString() {
@@ -211,9 +228,9 @@ public enum Log4jPropertyKey implements PropertyKey {
         static final String CONFIGURATION = "configuration";
         public static final String CONFIG_V1_FILE_NAME = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
                 + PropertyComponent.Constant.LOG4J1 + DELIM + CONFIGURATION;
-        static final String CONTEXT_SELECTOR = "contextSelector";
+        static final String SELECTOR = "selector";
         public static final String CONTEXT_SELECTOR_CLASS_NAME = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
-                + PropertyComponent.Constant.LOG4J + DELIM + CONTEXT_SELECTOR;
+                + PropertyComponent.Constant.LOGGER_CONTEXT + DELIM + SELECTOR;
         static final String ENABLE_DIRECT_ENCODERS = "enableDirectEncoders";
         public static final String GC_ENABLE_DIRECT_ENCODERS = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
                 + PropertyComponent.Constant.GC + DELIM + ENABLE_DIRECT_ENCODERS;
@@ -238,6 +255,7 @@ public enum Log4jPropertyKey implements PropertyKey {
         static final String NOTIFY_ASYNC = "notifyAsync";
         public static final String JMX_NOTIFY_ASYNC = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
                 + PropertyComponent.Constant.JMX + DELIM + NOTIFY_ASYNC;
+        static final String CONTEXT_SELECTOR = "contextSelector";
         public static final String JNDI_CONTEXT_SELECTOR = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
                 + PropertyComponent.Constant.JNDI + DELIM + CONTEXT_SELECTOR;
         static final String ENABLE_JDBC = "enableJDBC";
@@ -252,9 +270,6 @@ public enum Log4jPropertyKey implements PropertyKey {
         static final String LOG_EVENT_FACTORY = "logEventFactory";
         public static final String LOG_EVENT_FACTORY_CLASS_NAME = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
                 + PropertyComponent.Constant.LOGGER_CONTEXT + DELIM + LOG_EVENT_FACTORY;
-        static final String ENABLE_LANGUAGES = "enableLanguages";
-        public static final String SCRIPT_ENABLE_LANGUAGES = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
-                + PropertyComponent.Constant.SCRIPT + DELIM + ENABLE_LANGUAGES;
         static final String SHUT_DOWN_CALLBACK_REGISTRY = "shutdownCallbackRegistry";
         public static final String SHUTDOWN_CALLBACK_REGISTRY = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
                 + PropertyComponent.Constant.LOGGER_CONTEXT + DELIM + SHUT_DOWN_CALLBACK_REGISTRY;
@@ -322,5 +337,13 @@ public enum Log4jPropertyKey implements PropertyKey {
         static final String SSL_VERIFY_HOST_NAME = "sslVerifyHostName";
         public static final String TRANSPORT_SECURITY_VERIFY_HOST_NAME = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
                 + PropertyComponent.Constant.TRANSPORT_SECURITY + DELIM + SSL_VERIFY_HOST_NAME;
+
+        static final String USE_PRECISE_cLOCK = "usePreciseClock";
+        public static final String USE_PRECISE_CLOCK = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
+                + PropertyComponent.Constant.CONFIGURATION + DELIM + USE_PRECISE_cLOCK;
+
+        static final String SEQUENCE = "sequence";
+        public static final String UUID_SEQUENCE = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX
+                + PropertyComponent.Constant.UUID + DELIM + SEQUENCE;
     }
 }

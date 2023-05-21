@@ -36,7 +36,6 @@ public class LegacyPropertiesCompatibilityTest {
             {"log4j2.clock", "Configuration.clock"},
             {"log4j2.level", "Configuration.level"},
             {"log4j2.isThreadContextMapInheritable", "ThreadContext.inheritable"},
-            {"log4j2.contextDataInjector", "ThreadContext.contextDataInjector"},
             {"log4j2.garbagefreeThreadContextMap", "ThreadContext.garbageFreeMap"},
             {"log4j2.jmxNotifyAsync", "JMX.notifyAsync"},
             {"log4j2.ignoreTCL", "Loader.ignoreTCL"},
