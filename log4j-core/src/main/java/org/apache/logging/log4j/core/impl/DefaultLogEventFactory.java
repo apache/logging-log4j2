@@ -36,9 +36,7 @@ import org.apache.logging.log4j.util.StringMap;
 public class DefaultLogEventFactory implements LogEventFactory {
 
     public static DefaultLogEventFactory newInstance() {
-        final var injector = DI.createInjector();
-        injector.init();
-        return injector.getInstance(DefaultLogEventFactory.class);
+        return DI.createInitializedFactory().getInstance(DefaultLogEventFactory.class);
     }
 
     private final ContextDataInjector injector;

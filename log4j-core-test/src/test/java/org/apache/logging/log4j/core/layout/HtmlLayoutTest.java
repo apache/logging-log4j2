@@ -34,26 +34,22 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.util.Lazy;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
+@ConfigurationFactoryType(BasicConfigurationFactory.class)
 public class HtmlLayoutTest {
     private static class MyLogEvent extends AbstractLogEvent {
 
@@ -85,18 +81,6 @@ public class HtmlLayoutTest {
 
     private final LoggerContext ctx = LoggerContext.getContext();
     private final Logger root = ctx.getRootLogger();
-
-    @BeforeAll
-    public static void setupClass() {
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, Lazy.lazy(BasicConfigurationFactory::new)::value);
-        ctx.reconfigure();
-    }
-
-    @AfterAll
-    public static void cleanupClass() {
-        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
-    }
 
     private static final String body = "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";
 

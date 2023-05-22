@@ -25,13 +25,10 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.util.Lazy;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,19 +39,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 2.4
  */
 @UsingAnyThreadContext
+@ConfigurationFactoryType(BasicConfigurationFactory.class)
 public class CsvLogEventLayoutTest {
-
-    @AfterAll
-    public static void cleanupClass() {
-        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
-    }
-
-    @BeforeAll
-    public static void setupClass() {
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, Lazy.lazy(BasicConfigurationFactory::new)::value);
-        ctx.reconfigure();
-    }
 
     private final LoggerContext ctx = LoggerContext.getContext();
 

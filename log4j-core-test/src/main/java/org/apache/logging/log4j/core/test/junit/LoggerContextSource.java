@@ -29,6 +29,8 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
+import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -91,4 +93,10 @@ public @interface LoggerContextSource {
      * Determines whether to bootstrap a fresh LoggerContextFactory.
      */
     boolean bootstrap() default false;
+
+    /**
+     * Overrides the {@link ContextSelector} to use by default. If unset, the test instance can still
+     * define a context selector factory to override the default {@link ClassLoaderContextSelector}.
+     */
+    Class<? extends ContextSelector> selector() default ContextSelector.class;
 }

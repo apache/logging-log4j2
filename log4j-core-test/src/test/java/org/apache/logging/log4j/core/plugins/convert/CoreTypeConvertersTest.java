@@ -17,57 +17,47 @@
 package org.apache.logging.log4j.core.plugins.convert;
 
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CoreTypeConvertersTest {
 
-    private final Injector injector = DI.createInjector();
-
-    @BeforeEach
-    void setUp() {
-        injector.init();
-    }
+    private final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
 
     @Test
     public void testFindNullConverter() {
-        assertThrows(NullPointerException.class, () -> injector.getTypeConverter(null));
+        assertThrows(NullPointerException.class, () -> instanceFactory.getTypeConverter(null));
     }
 
     @Test
     public void testFindBooleanConverter() throws Exception {
-        final TypeConverter<?> converter = injector.getTypeConverter(Boolean.class);
+        final TypeConverter<?> converter = instanceFactory.getTypeConverter(Boolean.class);
         assertNotNull(converter);
         assertTrue((Boolean) converter.convert("TRUE"));
     }
 
     @Test
     public void testFindPrimitiveBooleanConverter() throws Exception {
-        final TypeConverter<?> converter = injector.getTypeConverter(Boolean.TYPE);
+        final TypeConverter<?> converter = instanceFactory.getTypeConverter(Boolean.TYPE);
         assertNotNull(converter);
         assertTrue((Boolean) converter.convert("tRUe"));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testFindCharSequenceConverterUsingStringConverter() throws Exception {
-        final TypeConverter<CharSequence> converter = (TypeConverter<CharSequence>)
-                injector.getTypeConverter(CharSequence.class);
+        final TypeConverter<CharSequence> converter = instanceFactory.getTypeConverter(CharSequence.class);
         assertNotNull(converter);
         final CharSequence expected = "This is a test sequence of characters";
         final CharSequence actual = converter.convert(expected.toString());
         assertEquals(expected, actual);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testFindNumberConverter() throws Exception {
-        final TypeConverter<Number> numberTypeConverter = (TypeConverter<Number>)
-                injector.getTypeConverter(Number.class);
+        final TypeConverter<Number> numberTypeConverter = instanceFactory.getTypeConverter(Number.class);
         assertNotNull(numberTypeConverter);
         // TODO: is there a specific converter this should return?
     }
@@ -76,10 +66,9 @@ public class CoreTypeConvertersTest {
         I, PITY, THE
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testFindEnumConverter() throws Exception {
-        final TypeConverter<Foo> fooTypeConverter = (TypeConverter<Foo>) injector.getTypeConverter(Foo.class);
+        final TypeConverter<Foo> fooTypeConverter = instanceFactory.getTypeConverter(Foo.class);
         assertNotNull(fooTypeConverter);
         assertEquals(Foo.I, fooTypeConverter.convert("i"));
         assertEquals(Foo.PITY, fooTypeConverter.convert("pity"));

@@ -113,8 +113,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
         final PluginType<?> pluginType = corePlugins.get(key);
         final Node node = new Node(parent, key, pluginType);
         processAttributes(node, value);
-        final List<Node> children = node.getChildren();
-
+        final int size = node.getChildren().size();
         value.forEach((k, v) -> {
             if (isValueType(v)) {
                 LOGGER.debug("Node {} is of type {}", k, v != null ? v.getClass() : null);
@@ -134,28 +133,27 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                         final Node child = new Node(node, k, entryType);
                         processAttributes(child, map);
                         if (type.equalsIgnoreCase(k)) {
-                            LOGGER.debug("Processing {}[{}]", k, children.size());
+                            LOGGER.debug("Processing {}[{}]", k, size);
                         } else {
-                            LOGGER.debug("Processing {} {}[{}]", type, k, children.size());
+                            LOGGER.debug("Processing {} {}[{}]", type, k, size);
                         }
-                        final List<Node> grandchildren = child.getChildren();
                         map.forEach((itemKey, itemValue) -> {
                             if (itemValue instanceof Map<?, ?>) {
                                 LOGGER.debug("Processing node for object {}", itemKey);
-                                grandchildren.add(constructNode(itemKey, child, Cast.cast(itemValue)));
+                                child.addChild(constructNode(itemKey, child, Cast.cast(itemValue)));
                             } else if (itemValue instanceof List<?>) {
                                 final List<?> list = (List<?>) itemValue;
                                 LOGGER.debug("Processing array for object {}", itemKey);
-                                list.forEach(subValue -> grandchildren.add(
+                                list.forEach(subValue -> child.addChild(
                                         constructNode(itemKey, child, Cast.cast(subValue))));
                             }
                         });
-                        children.add(child);
+                        node.addChild(child);
                     }
                 });
             } else {
                 LOGGER.debug("Processing node for object {}", k);
-                children.add(constructNode(k, node, Cast.cast(v)));
+                node.addChild(constructNode(k, node, Cast.cast(v)));
             }
         });
 

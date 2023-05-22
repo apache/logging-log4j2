@@ -31,7 +31,7 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.convert.TypeConverterFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
@@ -80,7 +80,7 @@ public final class ColumnMapping {
         @Required(message = "No conversion type provided")
         private Class<?> type = String.class;
 
-        private Injector injector;
+        private TypeConverterFactory typeConverterFactory;
 
         @Override
         public ColumnMapping build() {
@@ -104,7 +104,7 @@ public final class ColumnMapping {
                 LOGGER.error("Only one of 'literal' or 'parameter' can be set on the column mapping {}", this);
                 return null;
             }
-            return new ColumnMapping(name, source, layout, literal, parameter, type, () -> injector.getTypeConverter(type));
+            return new ColumnMapping(name, source, layout, literal, parameter, type, () -> typeConverterFactory.getTypeConverter(type));
         }
 
         public Builder setConfiguration(final Configuration configuration) {
@@ -190,8 +190,8 @@ public final class ColumnMapping {
         }
 
         @Inject
-        public Builder setInjector(final Injector injector) {
-            this.injector = injector;
+        public Builder setTypeConverterFactory(final TypeConverterFactory typeConverterFactory) {
+            this.typeConverterFactory = typeConverterFactory;
             return this;
         }
 

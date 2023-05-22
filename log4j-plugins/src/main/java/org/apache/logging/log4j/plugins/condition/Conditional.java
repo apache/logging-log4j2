@@ -23,12 +23,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates that a {@link org.apache.logging.log4j.plugins.Factory} method or plugin class will only create a binding
- * if all the given {@link Condition} classes match the binding's key.
+ * Meta-annotation for conditional annotations to reference the implementing {@link Condition} class to handle
+ * conditional checks for whether the bindings present in a bundle instance should be registered. When a bundle class is
+ * annotated with one or more conditional annotations, then these conditions are applied to all
+ * {@linkplain org.apache.logging.log4j.plugins.Factory factory methods} from that class. When a bundle method is
+ * annotated with one or more conditional annotations, then these conditions are applied to that method in addition to
+ * any conditions defined on the bundle class.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD })
+@Target(ElementType.ANNOTATION_TYPE)
 @Documented
 public @interface Conditional {
-    Class<? extends Condition>[] value();
+    /**
+     * Implementation class to use for performing conditional checks when a bundle class or bundle method is annotated
+     * with the conditional annotation this annotation is present on.
+     */
+    Class<? extends Condition> value();
 }

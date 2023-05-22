@@ -25,22 +25,20 @@ import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.MainMapLookup;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
+import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
+@ConfigurationFactoryType(BasicConfigurationFactory.class)
 public class PatternLayoutTest {
     public static class FauxLogger {
         public String formatEvent(final LogEvent event, final Layout layout) {
@@ -49,16 +47,7 @@ public class PatternLayoutTest {
     }
     static final String regexPattern = "%replace{%logger %msg}{\\.}{/}";
 
-    @BeforeAll
-    public static void setupClass() {
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, Lazy.lazy(BasicConfigurationFactory::new));
-        ctx.reconfigure();
-    }
-
     LoggerContext ctx = LoggerContext.getContext();
-
-    Logger root = ctx.getRootLogger();
 
     private static class Destination implements ByteBufferDestination {
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[2048]);

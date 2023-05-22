@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
@@ -39,11 +39,11 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     protected final Lazy<LoggerContext> context = Lazy.lazy(this::createContext);
-    protected final Injector injector;
+    protected final ConfigurableInstanceFactory instanceFactory;
 
     @Inject
-    public BasicContextSelector(final Injector injector) {
-        this.injector = injector;
+    public BasicContextSelector(final ConfigurableInstanceFactory instanceFactory) {
+        this.instanceFactory = instanceFactory;
     }
 
     @Override
@@ -112,6 +112,11 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
     }
 
     protected LoggerContext createContext() {
-        return new LoggerContext("Default", null, (URI) null, injector);
+        return new LoggerContext("Default", null, (URI) null, instanceFactory);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
     }
 }

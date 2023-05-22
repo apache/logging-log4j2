@@ -34,12 +34,11 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.convert.TypeConverterFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -129,7 +128,7 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
         @PluginBuilderAttribute
         private String writeConcernConstantClassName;
 
-        private Injector injector;
+        private TypeConverterFactory typeConverterFactory;
 
         @SuppressWarnings("resource")
         @Override
@@ -186,7 +185,7 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
                     mongoCredential = MongoCredential.createCredential(userName, databaseName, password.toCharArray());
                 }
                 try {
-                    final TypeConverter<Integer> converter = Cast.cast(injector.getTypeConverter(Integer.class));
+                    final TypeConverter<Integer> converter = typeConverterFactory.getTypeConverter(Integer.class);
                     final int portInt = converter.convert(port, DEFAULT_PORT);
                     description += ", server=" + server + ", port=" + portInt;
                     final WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
@@ -295,8 +294,8 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
         }
 
         @Inject
-        public B setInjector(final Injector injector) {
-            this.injector = injector;
+        public B setTypeConverterFactory(final TypeConverterFactory typeConverterFactory) {
+            this.typeConverterFactory = typeConverterFactory;
             return asBuilder();
         }
     }

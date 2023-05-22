@@ -26,6 +26,8 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -39,7 +41,8 @@ public class WatcherFactory {
 
     private final PluginNamespace plugins;
 
-    public WatcherFactory(final PluginNamespace watcherPlugins) {
+    @Inject
+    public WatcherFactory(@Namespace(Watcher.CATEGORY) final PluginNamespace watcherPlugins) {
         plugins = watcherPlugins;
     }
 

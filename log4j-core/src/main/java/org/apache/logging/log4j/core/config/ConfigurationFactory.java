@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import java.lang.ref.WeakReference;
 import java.net.URI;
 
 import org.apache.logging.log4j.Logger;
@@ -27,7 +28,7 @@ import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Namespace;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -42,7 +43,7 @@ import org.apache.logging.log4j.util.PropertyKey;
  * <ol>
  * <li>A system property named "log4j.configurationFactory" can be set with the
  * name of the ConfigurationFactory to be used.</li>
- * <li>An {@link Injector} binding for ConfigurationFactory may be registered.</li>
+ * <li>A {@link ConfigurableInstanceFactory} binding for ConfigurationFactory may be registered.</li>
  * <li>
  * A ConfigurationFactory implementation can be added to the classpath and configured as a plugin in the
  * {@link #NAMESPACE ConfigurationFactory} category. The {@link Order} annotation should be used to configure the
@@ -55,7 +56,7 @@ import org.apache.logging.log4j.util.PropertyKey;
  * be called in their respective order. DefaultConfiguration is always called
  * last if no configuration has been returned.
  */
-public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
+public abstract class ConfigurationFactory extends ConfigurationBuilderFactory implements LoggerContextAware {
 
     public ConfigurationFactory() {
         super();
@@ -76,7 +77,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     public static final Key<ConfigurationFactory> KEY = new Key<>() {};
 
-    public static final Key<PluginNamespace> PLUGIN_CATEGORY_KEY = new @Namespace(NAMESPACE) Key<>() {};
+    public static final Key<PluginNamespace> PLUGIN_NAMESPACE_KEY = new @Namespace(NAMESPACE) Key<>() {};
 
     /**
      * Allows subclasses access to the status logger without creating another instance.
@@ -106,13 +107,6 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      */
     private static final String CLASS_PATH_SCHEME = "classpath";
 
-    private static final String[] PREFIXES = {"log4j2.", "log4j2.Configuration."};
-
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static ConfigurationFactory getInstance() {
-        return LoggerContext.getContext(false).getInjector().getInstance(KEY);
-    }
-
     public static AuthorizationProvider authorizationProvider(final PropertyEnvironment props) {
         final String authClass = props.getStringProperty(Log4jPropertyKey.CONFIG_AUTH_PROVIDER);
         AuthorizationProvider provider = null;
@@ -135,10 +129,16 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
     }
 
     protected StrSubstitutor substitutor;
+    protected WeakReference<LoggerContext> loggerContextRef;
 
     @Inject
     public void setSubstitutor(final StrSubstitutor substitutor) {
         this.substitutor = substitutor;
+    }
+
+    @Override
+    public void setLoggerContext(final LoggerContext loggerContext) {
+        loggerContextRef = new WeakReference<>(loggerContext);
     }
 
     protected abstract String[] getSupportedTypes();
@@ -159,6 +159,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         return true;
     }
 
+    // TODO(ms): remove the LoggerContext parameter again and deprecate or remove old idea
     public abstract Configuration getConfiguration(final LoggerContext loggerContext, ConfigurationSource source);
 
     /**

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
+import org.apache.logging.log4j.plugins.di.spi.DependencyChain;
+
 /**
  * Exception thrown when a circular dependency is encountered.
  */

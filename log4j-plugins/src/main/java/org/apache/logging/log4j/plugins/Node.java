@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.util.Cast;
 
@@ -31,8 +32,9 @@ import org.apache.logging.log4j.util.Cast;
  * {@linkplain #getAttributes() attributes}, {@linkplain #getChildren() children nodes},
  * an {@linkplain #getValue() optional value} (which is a special kind of attribute for certain configuration file
  * formats which support the concept), and a {@linkplain #getName() name} which corresponds to a
- * {@link Plugin} class in the {@linkplain Configurable Core namespace}. Configuration factories parse a configuration
- * resource into a tree of Nodes with a single root Node.
+ * {@link Plugin} class in the {@linkplain Configurable Core namespace} and is specified via an element name or
+ * the {@code type} attribute. Configuration factories parse a configuration resource into a tree of Nodes with a
+ * single root Node.
  */
 public class Node {
 
@@ -44,6 +46,11 @@ public class Node {
      * @see Configurable
      */
     public static final String CORE_NAMESPACE = "Core";
+
+    /**
+     * Key describing the current node being configured.
+     */
+    public static final Key<Node> CURRENT_NODE = new @PluginNode Key<>() {};
 
     private Node parent;
     private final String name;
@@ -102,8 +109,17 @@ public class Node {
         return attributes;
     }
 
+    public void setAttribute(final String name, final String value) {
+        attributes.put(name, value);
+    }
+
     public List<Node> getChildren() {
         return children;
+    }
+
+    public void addChild(final Node child) {
+        children.add(child);
+        child.setParent(this);
     }
 
     public boolean hasChildren() {
@@ -134,7 +150,6 @@ public class Node {
         object = obj;
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T getObject() {
         return Cast.cast(object);
     }

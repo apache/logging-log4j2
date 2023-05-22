@@ -43,7 +43,6 @@ import javax.management.ObjectName;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -132,8 +131,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
             LOGGER.debug("Opening config URL {}", configURL);
             configSource = new ConfigurationSource(configURL.openStream(), configURL);
         }
-        final Configuration config =
-                loggerContext.getInjector().getInstance(ConfigurationFactory.KEY).getConfiguration(loggerContext, configSource);
+        final Configuration config = loggerContext.getConfiguration(configSource);
         loggerContext.start(config);
         LOGGER.debug("Completed remote request to reconfigure.");
     }
@@ -198,8 +196,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
         try {
             final InputStream in = new ByteArrayInputStream(configText.getBytes(charsetName));
             final ConfigurationSource source = new ConfigurationSource(in);
-            final Configuration updated =
-                    loggerContext.getInjector().getInstance(ConfigurationFactory.KEY).getConfiguration(loggerContext, source);
+            final Configuration updated = loggerContext.getConfiguration(source);
             loggerContext.start(updated);
             LOGGER.debug("Completed remote request to reconfigure from config text.");
         } catch (final Exception ex) {

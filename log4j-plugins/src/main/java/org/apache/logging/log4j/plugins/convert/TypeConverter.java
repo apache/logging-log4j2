@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.plugins.convert;
 
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
 
@@ -23,6 +24,7 @@ import org.apache.logging.log4j.util.Cast;
  * Interface for doing automatic String conversion to a specific type.
  *
  * @param <T> Converts Strings into the given type {@code T}.
+ * @implSpec Type converter plugins must be annotated with {@link Plugin} and {@link TypeConverters}.
  * @since 3.0.0 Moved to {@code log4j-plugins}.
  */
 @FunctionalInterface

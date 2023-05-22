@@ -15,7 +15,15 @@
  * limitations under the license.
  */
 
-import org.apache.logging.log4j.plugins.di.InjectorCallback;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
+import org.apache.logging.log4j.plugins.di.InstanceFactory;
+import org.apache.logging.log4j.plugins.di.resolver.GenericFactoryResolversPostProcessor;
+import org.apache.logging.log4j.plugins.di.resolver.PluginAnnotationFactoryResolversPostProcessor;
+import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
+import org.apache.logging.log4j.plugins.di.spi.SingletonScopePostProcessor;
 import org.apache.logging.log4j.plugins.model.PluginService;
 
 /**
@@ -25,27 +33,37 @@ import org.apache.logging.log4j.plugins.model.PluginService;
  * parsed tree of {@linkplain org.apache.logging.log4j.plugins.Node configuration nodes} along with other
  * {@linkplain org.apache.logging.log4j.plugins.Namespace namespaces} for different dependency injection purposes.
  *
- * @see org.apache.logging.log4j.plugins.Inject
- * @see org.apache.logging.log4j.plugins.Plugin
- * @see org.apache.logging.log4j.plugins.PluginFactory
- * @see org.apache.logging.log4j.plugins.di.Injector
+ * @see Inject
+ * @see Plugin
+ * @see PluginFactory
+ * @see InstanceFactory
+ * @see ConfigurableInstanceFactory
+ * @see ConfigurableInstanceFactoryPostProcessor
  */
 module org.apache.logging.log4j.plugins {
     exports org.apache.logging.log4j.plugins;
     exports org.apache.logging.log4j.plugins.condition;
     exports org.apache.logging.log4j.plugins.convert;
     exports org.apache.logging.log4j.plugins.di;
+    exports org.apache.logging.log4j.plugins.di.resolver;
+    exports org.apache.logging.log4j.plugins.di.spi;
     exports org.apache.logging.log4j.plugins.model;
     exports org.apache.logging.log4j.plugins.name;
     exports org.apache.logging.log4j.plugins.util;
     exports org.apache.logging.log4j.plugins.validation;
     exports org.apache.logging.log4j.plugins.validation.constraints;
     exports org.apache.logging.log4j.plugins.validation.validators;
-    exports org.apache.logging.log4j.plugins.visit;
 
     requires org.apache.logging.log4j;
     requires static org.osgi.framework;
 
+    // import generated plugin metadata
     uses PluginService;
-    uses InjectorCallback;
+    // extensions to ConfigurableInstanceFactory
+    uses ConfigurableInstanceFactoryPostProcessor;
+
+    provides ConfigurableInstanceFactoryPostProcessor with
+            SingletonScopePostProcessor,
+            PluginAnnotationFactoryResolversPostProcessor,
+            GenericFactoryResolversPostProcessor;
 }

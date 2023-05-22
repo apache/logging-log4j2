@@ -20,13 +20,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
@@ -35,12 +33,15 @@ import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.plugins.di.Binding;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
+
+import static java.util.Objects.requireNonNull;
 
 import static org.apache.logging.log4j.util.Constants.isWebApp;
 
@@ -52,7 +53,6 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
-    private final Injector injector;
     private final ContextSelector selector;
     private final ShutdownCallbackRegistry shutdownCallbackRegistry;
 
@@ -60,12 +60,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * Initializes the ContextSelector from system property {@link Log4jPropertyKey#CONTEXT_SELECTOR_CLASS_NAME}.
      */
     public Log4jContextFactory() {
-        injector = DI.createInjector();
-        injector.init();
-        this.selector = injector.getInstance(ContextSelector.KEY);
-        this.shutdownCallbackRegistry = injector.getInstance(ShutdownCallbackRegistry.KEY);
-        LOGGER.debug("Using ShutdownCallbackRegistry {}", this.shutdownCallbackRegistry.getClass());
-        initializeShutdownCallbackRegistry();
+        this(DI.createInitializedFactory());
     }
 
     /**
@@ -73,14 +68,10 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * @param selector the selector to use
      */
     public Log4jContextFactory(final ContextSelector selector) {
-        Objects.requireNonNull(selector, "No ContextSelector provided");
-        injector = DI.createInjector();
-        injector.init();
-        injector.registerBinding(ContextSelector.KEY, () -> selector);
-        this.selector = injector.getInstance(ContextSelector.KEY);
-        this.shutdownCallbackRegistry = injector.getInstance(ShutdownCallbackRegistry.KEY);
-        LOGGER.debug("Using ShutdownCallbackRegistry {}", this.shutdownCallbackRegistry.getClass());
-        initializeShutdownCallbackRegistry();
+        this(DI.createInitializedFactory(
+                Binding.from(ContextSelector.KEY).toInstance(
+                        requireNonNull(selector, "No ContextSelector provided"))
+        ));
     }
 
     /**
@@ -91,14 +82,10 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      * @since 2.1
      */
     public Log4jContextFactory(final ShutdownCallbackRegistry shutdownCallbackRegistry) {
-        Objects.requireNonNull(shutdownCallbackRegistry, "No ShutdownCallbackRegistry provided");
-        injector = DI.createInjector();
-        injector.init();
-        injector.registerBinding(ShutdownCallbackRegistry.KEY, () -> shutdownCallbackRegistry);
-        this.selector = injector.getInstance(ContextSelector.KEY);
-        this.shutdownCallbackRegistry = injector.getInstance(ShutdownCallbackRegistry.KEY);
-        LOGGER.debug("Using ShutdownCallbackRegistry {}", this.shutdownCallbackRegistry.getClass());
-        initializeShutdownCallbackRegistry();
+        this(DI.createInitializedFactory(
+                Binding.from(ShutdownCallbackRegistry.KEY).toInstance(
+                        requireNonNull(shutdownCallbackRegistry, "No ShutdownCallbackRegistry provided"))
+        ));
     }
 
     /**
@@ -110,29 +97,29 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      */
     public Log4jContextFactory(final ContextSelector selector,
                                final ShutdownCallbackRegistry shutdownCallbackRegistry) {
-        Objects.requireNonNull(selector, "No ContextSelector provided");
-        Objects.requireNonNull(shutdownCallbackRegistry, "No ShutdownCallbackRegistry provided");
-        injector = DI.createInjector();
-        injector.init();
-        injector.registerBinding(ContextSelector.KEY, () -> selector)
-                .registerBinding(ShutdownCallbackRegistry.KEY, () -> shutdownCallbackRegistry);
-        this.selector = injector.getInstance(ContextSelector.KEY);
-        this.shutdownCallbackRegistry = injector.getInstance(ShutdownCallbackRegistry.KEY);
-        LOGGER.debug("Using ShutdownCallbackRegistry {}", this.shutdownCallbackRegistry.getClass());
-        initializeShutdownCallbackRegistry();
+        this(DI.createInitializedFactory(
+                Binding.from(ContextSelector.KEY).toInstance(
+                        requireNonNull(selector, "No ContextSelector provided")),
+                Binding.from(ShutdownCallbackRegistry.KEY).toInstance(
+                        requireNonNull(shutdownCallbackRegistry, "No ShutdownCallbackRegistry provided"))
+        ));
     }
 
     @Inject
-    public Log4jContextFactory(final Injector injector, final ContextSelector selector, final ShutdownCallbackRegistry registry) {
-        this.injector = injector;
+    public Log4jContextFactory(final ConfigurableInstanceFactory instanceFactory,
+                               final ContextSelector selector,
+                               final ShutdownCallbackRegistry registry) {
         this.selector = selector;
         this.shutdownCallbackRegistry = registry;
         LOGGER.debug("Using ShutdownCallbackRegistry {}", this.shutdownCallbackRegistry.getClass());
         initializeShutdownCallbackRegistry();
     }
 
-    public Log4jContextFactory(final Injector injector) {
-        this(injector, injector.getInstance(ContextSelector.KEY), injector.getInstance(ShutdownCallbackRegistry.KEY));
+    public Log4jContextFactory(final ConfigurableInstanceFactory instanceFactory) {
+        selector = instanceFactory.getInstance(ContextSelector.KEY);
+        shutdownCallbackRegistry = instanceFactory.getInstance(ShutdownCallbackRegistry.KEY);
+        LOGGER.debug("Using ShutdownCallbackRegistry {}", shutdownCallbackRegistry.getClass());
+        initializeShutdownCallbackRegistry();
     }
 
     private void initializeShutdownCallbackRegistry() {
@@ -199,7 +186,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                         PropertiesUtil.setThreadProperties(props);
                         setProperties = true;
                     }
-                    final Configuration config = injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, source);
+                    final Configuration config = ctx.getConfiguration(source);
                     LOGGER.debug("Starting {} from configuration {}", ctx, source);
                     ctx.start(config);
                 } finally {
@@ -285,8 +272,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                         PropertiesUtil.setThreadProperties(props);
                         setProperties = true;
                     }
-                    final Configuration config =
-                            injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, name, configLocation);
+                    final Configuration config = ctx.getConfiguration(name, configLocation);
                     LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
                     ctx.start(config);
                 } finally {
@@ -320,8 +306,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                         setProperties = true;
                     }
                     ContextAnchor.THREAD_CONTEXT.set(ctx);
-                    final Configuration config =
-                            injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, name, configLocation);
+                    final Configuration config = ctx.getConfiguration(name, configLocation);
                     LOGGER.debug("Starting {} from configuration at {}", ctx, configLocation);
                     ctx.start(config);
                 } finally {
@@ -361,8 +346,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                         setProperties = true;
                     }
                     for (final URI configLocation : configLocations) {
-                        final Configuration currentReadConfiguration = injector.getInstance(ConfigurationFactory.KEY)
-                                .getConfiguration(ctx, name, configLocation);
+                        final Configuration currentReadConfiguration = ctx.getConfiguration(name, configLocation);
                         if (currentReadConfiguration != null) {
                             if (currentReadConfiguration instanceof DefaultConfiguration) {
                                 LOGGER.warn("Unable to locate configuration {}, ignoring", configLocation.toString());
@@ -407,7 +391,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 PropertiesUtil.setThreadProperties(props);
                 setProperties = true;
             }
-            final Configuration config = injector.getInstance(ConfigurationFactory.KEY).getConfiguration(ctx, ctx.getName(), null);
+            final Configuration config = ctx.getConfiguration(ctx.getName(), null);
             if (config != null) {
                 ctx.start(config);
             } else {

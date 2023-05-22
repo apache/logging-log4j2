@@ -32,7 +32,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Level;
@@ -71,12 +70,14 @@ import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.core.util.WatcherFactory;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.di.Binding;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.di.Keys;
+import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.util.Cast;
@@ -91,6 +92,10 @@ import org.apache.logging.log4j.util.ServiceRegistry;
  */
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
 
+    protected final ConfigurableInstanceFactory instanceFactory;
+
+    protected final ConfigurationProcessor configurationProcessor;
+
     /**
      * The root node of the configuration.
      */
@@ -100,11 +105,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * Listeners for configuration changes.
      */
     protected final List<ConfigurationListener> listeners = new CopyOnWriteArrayList<>();
-
-    /**
-     * Packages found in configuration "packages" attribute.
-     */
-    protected final List<String> pluginPackages = new ArrayList<>();
 
     /**
      * Core plugins.
@@ -126,7 +126,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     protected ScriptManager scriptManager;
 
-    protected final Injector injector;
     /**
      * The Advertiser which exposes appender configurations to external systems.
      */
@@ -138,6 +137,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private ConcurrentMap<String, LoggerConfig> loggerConfigs = new ConcurrentHashMap<>();
     private List<CustomLevelConfig> customLevels = List.of();
     private final ConcurrentMap<String, String> properties = new ConcurrentHashMap<>();
+    // TODO(ms): consider initializing these final fields via injectMembers (and make non-final)
     private final InterpolatorFactory interpolatorFactory;
     private final Interpolator tempLookup;
     private final StrSubstitutor runtimeStrSubstitutor;
@@ -161,33 +161,31 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // this.loggerContext = new WeakReference(Objects.requireNonNull(loggerContext, "loggerContext is null"));
         this.configurationSource = Objects.requireNonNull(configurationSource, "configurationSource is null");
         if (loggerContext != null) {
-            injector = loggerContext.getInjector();
+            instanceFactory = loggerContext.newChildInstanceFactory();
             this.contextProperties = loggerContext.getProperties();
         } else {
             // for NullConfiguration
-            injector = DI.createInjector();
-            injector.init();
+            instanceFactory = DI.createInitializedFactory();
             this.contextProperties = PropertiesUtil.getProperties();
         }
+        configurationProcessor = new ConfigurationProcessor(instanceFactory);
+        final var ref = Lazy.weak(this);
+        instanceFactory.registerBinding(Binding.from(Configuration.KEY).to(ref));
+        instanceFactory.registerInstancePostProcessor(new ConfigurationAwarePostProcessor(ref));
         componentMap.put(Configuration.CONTEXT_PROPERTIES, properties);
-        interpolatorFactory = injector.getInstance(InterpolatorFactory.class);
+        interpolatorFactory = instanceFactory.getInstance(InterpolatorFactory.class);
         tempLookup = interpolatorFactory.newInterpolator(new PropertiesLookup(properties));
-        tempLookup.setLoggerContext(loggerContext);
+        instanceFactory.injectMembers(tempLookup);
         runtimeStrSubstitutor = new RuntimeStrSubstitutor(tempLookup);
         configurationStrSubstitutor = new ConfigurationStrSubstitutor(runtimeStrSubstitutor);
-        configurationScheduler = injector.getInstance(ConfigurationScheduler.class);
-        watchManager = injector.getInstance(WatchManager.class);
+        configurationScheduler = instanceFactory.getInstance(ConfigurationScheduler.class);
+        watchManager = instanceFactory.getInstance(WatchManager.class);
         setState(State.INITIALIZING);
     }
 
     @Override
     public ConfigurationSource getConfigurationSource() {
         return configurationSource;
-    }
-
-    @Override
-    public List<String> getPluginPackages() {
-        return pluginPackages;
     }
 
     @Override
@@ -200,18 +198,20 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return scriptManager;
     }
 
+    @Inject // TODO(ms): consider injecting here
     public void setScriptManager(final ScriptManager scriptManager) {
         this.scriptManager = scriptManager;
-        injector.registerBinding(ScriptManager.KEY, this::getScriptManager);
+        instanceFactory.registerBinding(Binding.from(ScriptManager.KEY).to(this::getScriptManager));
     }
 
     public PluginNamespace getCorePlugins() {
         return corePlugins;
     }
 
-    public void setCorePlugins(final PluginNamespace corePlugins) {
+    @Inject // TODO(ms): consider injecting here
+    public void setCorePlugins(@Namespace(Node.CORE_NAMESPACE) final PluginNamespace corePlugins) {
         this.corePlugins = corePlugins;
-        injector.registerBinding(Core.PLUGIN_NAMESPACE_KEY, this::getCorePlugins);
+        instanceFactory.registerBinding(Binding.from(Core.PLUGIN_NAMESPACE_KEY).to(this::getCorePlugins));
     }
 
     @Override
@@ -249,12 +249,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public void initialize() {
         LOGGER.debug("{} initializing configuration {}", Version.getProductString(), this);
-        injector.registerBinding(Configuration.KEY, () -> this);
         runtimeStrSubstitutor.setConfiguration(this);
         configurationStrSubstitutor.setConfiguration(this);
         initializeScriptManager();
-        corePlugins = injector.getInstance(Core.PLUGIN_NAMESPACE_KEY);
-        final PluginNamespace levelPlugins = injector.getInstance(new @Namespace(Level.CATEGORY) Key<>() {});
+        // TODO(ms): this should use injectMembers()
+        corePlugins = instanceFactory.getInstance(Core.PLUGIN_NAMESPACE_KEY);
+        final PluginNamespace levelPlugins = instanceFactory.getInstance(new @Namespace(Level.CATEGORY) Key<>() {});
         levelPlugins.forEach(type -> {
             final Class<?> pluginClass = type.getPluginClass();
             try {
@@ -310,10 +310,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private void monitorSource(final Reconfigurable reconfigurable, final ConfigurationSource configSource) {
         if (configSource.getLastModified() > 0) {
             final Source cfgSource = new Source(configSource);
-            final Key<WatcherFactory> key = Key.forClass(WatcherFactory.class);
-            injector.registerBindingIfAbsent(key, Lazy.lazy(() ->
-                    new WatcherFactory(injector.getInstance(Watcher.PLUGIN_CATEGORY_KEY))));
-            final Watcher watcher = injector.getInstance(key)
+            final Watcher watcher = instanceFactory.getInstance(WatcherFactory.class)
                     .newWatcher(cfgSource, this, reconfigurable, listeners, configSource.getLastModified());
             if (watcher != null) {
                 watchManager.watch(cfgSource, watcher);
@@ -491,7 +488,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     protected Level getDefaultStatus() {
-        return injector.getInstance(Constants.DEFAULT_STATUS_LEVEL_KEY);
+        return instanceFactory.getInstance(Constants.DEFAULT_STATUS_LEVEL_KEY);
     }
 
     protected void createAdvertiser(final String advertiserString, final ConfigurationSource configSource,
@@ -514,7 +511,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final String nodeName = advertiserNode.getName();
             final PluginType<?> type = corePlugins.get(nodeName);
             if (type != null) {
-                advertiser = injector.getInstance(type.getPluginClass().asSubclass(Advertiser.class));
+                advertiser = instanceFactory.getInstance(type.getPluginClass().asSubclass(Advertiser.class));
                 advertisement = advertiser.advertise(advertiserNode.getAttributes());
             }
         }
@@ -527,7 +524,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     @Override
     public <T> Supplier<T> getFactory(final Key<T> key) {
-        return injector.getFactory(key);
+        return instanceFactory.getFactory(key);
     }
 
     @Override
@@ -573,7 +570,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     } else if (Arbiter.class.isAssignableFrom(clazz)) {
                         removeList.add(child);
                         try {
-                            final Arbiter condition = injector.configure(child);
+                            final Arbiter condition = configurationProcessor.processNodeTree(child);
                             if (condition.isCondition()) {
                                 addList.addAll(child.getChildren());
                                 processConditionals(child);
@@ -614,13 +611,13 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     protected List<Node> processSelect(final Node selectNode, final PluginType<?> type) {
         final List<Node> addList = new ArrayList<>();
-        final SelectArbiter select = injector.configure(selectNode);
+        final SelectArbiter select = configurationProcessor.processNodeTree(selectNode);
         final List<Arbiter> conditions = new ArrayList<>();
         for (final Node child : selectNode.getChildren()) {
             final PluginType<?> nodeType = child.getType();
             if (nodeType != null) {
                 if (Arbiter.class.isAssignableFrom(nodeType.getPluginClass())) {
-                    final Arbiter condition = injector.configure(child);
+                    final Arbiter condition = configurationProcessor.processNodeTree(child);
                     conditions.add(condition);
                 } else {
                     LOGGER.error("Invalid Node {} for Select. Must be a Condition",
@@ -644,8 +641,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
 
     protected void doConfigure() {
-        injector.registerBinding(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
-        injector.registerBinding(LoggerContext.KEY, () -> loggerContext);
+        instanceFactory.registerBinding(Binding.from(StringValueResolver.KEY).toInstance(configurationStrSubstitutor));
         processConditionals(rootNode);
         preConfigure(rootNode);
         configurationScheduler.start();
@@ -653,18 +649,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final Node first = rootNode.getChildren().get(0);
             createConfiguration(first, null);
             if (first.getObject() != null) {
-                final StrLookup lookup = first.getObject();
-                if (lookup instanceof LoggerContextAware) {
-                    ((LoggerContextAware) lookup).setLoggerContext(loggerContext.get());
-                }
+                StrLookup lookup = first.getObject();
                 runtimeStrSubstitutor.setVariableResolver(lookup);
                 configurationStrSubstitutor.setVariableResolver(lookup);
             }
         } else {
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
-            final Interpolator interpolator = interpolatorFactory.newInterpolator(lookup);
-            interpolator.setLoggerContext(loggerContext.get());
+            Interpolator interpolator = interpolatorFactory.newInterpolator(lookup);
+            instanceFactory.injectMembers(interpolator);
             runtimeStrSubstitutor.setVariableResolver(interpolator);
             configurationStrSubstitutor.setVariableResolver(interpolator);
         }
@@ -705,7 +698,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 copy.add(child.getObject(CustomLevelConfig.class));
                 customLevels = copy;
             } else if (child.isInstanceOf(AsyncWaitStrategyFactoryConfig.class)) {
-                final AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
+                AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
                 asyncWaitStrategyFactory = awsfc.createWaitStrategyFactory();
             } else {
                 final List<String> expected = Arrays.asList("\"Appenders\"", "\"Loggers\"", "\"Properties\"",
@@ -1056,14 +1049,18 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     @Override
     public void createConfiguration(final Node node, final LogEvent event) {
-        final Function<String, String> stringSubstitutionStrategy;
+        final StringValueResolver stringSubstitutionStrategy;
         if (event == null) {
-            stringSubstitutionStrategy = configurationStrSubstitutor::replace;
+            stringSubstitutionStrategy = configurationStrSubstitutor;
         } else {
             stringSubstitutionStrategy = str -> runtimeStrSubstitutor.replace(event, str);
         }
-        final Injector injector = this.injector.copy().registerBinding(Keys.SUBSTITUTOR_KEY, () -> stringSubstitutionStrategy);
-        injector.configure(node);
+        instanceFactory.registerBinding(Binding.from(StringValueResolver.KEY).toInstance(stringSubstitutionStrategy));
+        try {
+            configurationProcessor.processNodeTree(node);
+        } finally {
+            instanceFactory.removeBinding(StringValueResolver.KEY);
+        }
     }
 
     /**
@@ -1073,9 +1070,12 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     public Object createPluginObject(final Node node) {
         if (this.getState().equals(State.INITIALIZING)) {
-            final Injector injector =
-                    this.injector.copy().registerBinding(Keys.SUBSTITUTOR_KEY, () -> configurationStrSubstitutor::replace);
-            return injector.configure(node);
+            instanceFactory.registerBinding(Binding.from(StringValueResolver.KEY).toInstance(configurationStrSubstitutor));
+            try {
+                return configurationProcessor.processNodeTree(node);
+            } finally {
+                instanceFactory.removeBinding(StringValueResolver.KEY);
+            }
         }
         LOGGER.warn("Plugin Object creation is not allowed after initialization");
         return null;
@@ -1129,11 +1129,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     @Override
     public NanoClock getNanoClock() {
-        return injector.getInstance(NanoClock.class);
+        return instanceFactory.getInstance(NanoClock.class);
     }
 
-    @Override
+    @Override // TODO(ms): consider injecting here
     public void setNanoClock(final NanoClock nanoClock) {
-        injector.registerBinding(NanoClock.KEY, () -> nanoClock);
+        instanceFactory.registerBinding(Binding.from(NanoClock.KEY).toInstance(nanoClock));
     }
 }

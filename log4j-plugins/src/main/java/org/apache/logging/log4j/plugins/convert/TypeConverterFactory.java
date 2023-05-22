@@ -28,6 +28,7 @@ import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.EnglishEnums;
 
 @Singleton
@@ -62,17 +63,17 @@ public class TypeConverterFactory {
         registerTypeConverter(String.class, s -> s);
     }
 
-    public TypeConverter<?> getTypeConverter(final Type type) {
+    public <T> TypeConverter<T> getTypeConverter(final Type type) {
         final TypeConverter<?> primary = typeConverters.get(type);
         // cached type converters
         if (primary != null) {
-            return primary;
+            return Cast.cast(primary);
         }
         // dynamic enum support
         if (type instanceof Class<?>) {
             final Class<?> clazz = (Class<?>) type;
             if (clazz.isEnum()) {
-                return registerTypeConverter(type, s -> EnglishEnums.valueOf(clazz.asSubclass(Enum.class), s));
+                return Cast.cast(registerTypeConverter(type, s -> EnglishEnums.valueOf(clazz.asSubclass(Enum.class), s)));
             }
         }
         // look for compatible converters
@@ -81,7 +82,7 @@ public class TypeConverterFactory {
             if (TypeUtil.isAssignable(type, key)) {
                 LOGGER.debug("Found compatible TypeConverter<{}> for type [{}].", key, type);
                 final TypeConverter<?> value = entry.getValue();
-                return registerTypeConverter(type, value);
+                return Cast.cast(registerTypeConverter(type, value));
             }
         }
         throw new UnknownFormatConversionException(type.toString());

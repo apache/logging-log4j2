@@ -19,6 +19,7 @@ package org.apache.logging.log4j.plugins.util;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
@@ -63,7 +64,7 @@ class AnnotationUtilTest {
         return Stream.of(HasMetaAnnotation.class, HasAliasedMetaAnnotation.class)
                 .map(clazz -> DynamicTest.dynamicTest("getMetaAnnotation(" + clazz.getSimpleName() + ", MetaAnnotation.class)",
                         () -> {
-                            final Annotation annotation = AnnotationUtil.getMetaAnnotation(clazz, MetaAnnotation.class);
+                            final Annotation annotation = AnnotationUtil.getElementAnnotationHavingMetaAnnotation(clazz, MetaAnnotation.class);
                             assertNotNull(annotation);
                             assertEquals(StereotypeAnnotation.class, annotation.annotationType());
                         }));
@@ -135,6 +136,28 @@ class AnnotationUtilTest {
                 .map(clazz -> DynamicTest.dynamicTest(clazz.getSimpleName(), () -> {
                     final Method method = assertDoesNotThrow(() -> clazz.getMethod("method"));
                     final LogicalAnnotation annotation = AnnotationUtil.getLogicalAnnotation(method, LogicalAnnotation.class);
+                    assertNotNull(annotation);
+                }));
+    }
+
+    static class HasAnnotatedField {
+        @LogicalAnnotation String field;
+    }
+
+    static class HasAliasedAnnotatedField {
+        @AliasedAnnotation String field;
+    }
+
+    static class HasMetaAliasedAnnotatedField {
+        @MetaAliasedAnnotation String field;
+    }
+
+    @TestFactory
+    Stream<DynamicTest> getLogicalAnnotationOnField() {
+        return Stream.of(HasAnnotatedField.class, HasAliasedAnnotatedField.class, HasMetaAliasedAnnotatedField.class)
+                .map(clazz -> DynamicTest.dynamicTest(clazz.getSimpleName(), () -> {
+                    final Field field = assertDoesNotThrow(() -> clazz.getDeclaredField("field"));
+                    final LogicalAnnotation annotation = AnnotationUtil.getLogicalAnnotation(field, LogicalAnnotation.class);
                     assertNotNull(annotation);
                 }));
     }

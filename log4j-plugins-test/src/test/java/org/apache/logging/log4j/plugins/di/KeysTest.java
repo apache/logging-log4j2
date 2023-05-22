@@ -16,17 +16,55 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
 import java.util.function.Function;
 
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Named;
+import org.apache.logging.log4j.plugins.Node;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class KeysTest {
     @Test
     void annotatedTypeUsage() {
-        assertEquals(Keys.SUBSTITUTOR_KEY, new Key<Function<String, String>>() {
-        }.withName("StringSubstitutor").withQualifierType(Named.class));
+        Key<Function<String, String>> substitutorKey = new @Named("StringSubstitutor") Key<>() {};
+        var actualKey = new Key<Function<String, String>>() {
+        }.withName("StringSubstitutor").withQualifierType(Named.class);
+        assertEquals(substitutorKey, actualKey);
+    }
+
+    @Test
+    void configurableNamespace() {
+        final Key<String> key = new @Configurable Key<>() {};
+        assertEquals(Node.CORE_NAMESPACE, key.getNamespace());
+    }
+
+    static class ConfigurableField {
+        @Configurable String field;
+    }
+
+    @Test
+    void fieldWithMetaNamespace() {
+        final Field field = assertDoesNotThrow(() -> ConfigurableField.class.getDeclaredField("field"));
+        final Key<String> key = Key.forField(field);
+        assertEquals(Node.CORE_NAMESPACE, key.getNamespace());
+    }
+
+    static class ConfigurableParameter {
+        ConfigurableParameter(@Configurable String parameter) {
+        }
+    }
+
+    @Test
+    void parameterWithMetaNamespace() {
+        final Constructor<ConfigurableParameter> constructor = assertDoesNotThrow(() -> ConfigurableParameter.class.getDeclaredConstructor(String.class));
+        final Parameter parameter = constructor.getParameters()[0];
+        final Key<String> key = Key.forParameter(parameter);
+        assertEquals(Node.CORE_NAMESPACE, key.getNamespace());
     }
 }

@@ -21,31 +21,43 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Supplier;
 
+import org.apache.logging.log4j.plugins.convert.TypeConverter;
+import org.apache.logging.log4j.plugins.di.resolver.PluginAttributeFactoryResolver;
 import org.apache.logging.log4j.plugins.name.NameProvider;
 import org.apache.logging.log4j.plugins.name.PluginAttributeNameProvider;
-import org.apache.logging.log4j.plugins.visit.NodeVisitor;
-import org.apache.logging.log4j.plugins.visit.PluginAttributeVisitor;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Identifies a Plugin Attribute along with optional metadata. Plugin attributes can be injected as parameters to
- * a static {@linkplain PluginFactory factory method}, or as fields and single-parameter methods in a plugin
- * {@linkplain org.apache.logging.log4j.plugins.util.Builder builder class}.
+ * Qualifier for a plugin attribute for configuration options of a plugin. A plugin attribute has a case-insensitive
+ * name and a string value which may be converted to a different type when a {@link TypeConverter} plugin exists for
+ * a target type. In a {@linkplain Plugin plugin class}, attributes can be injected via several means:
+ *
+ * <ul>
+ *     <li>a static method annotated with {@link Factory} or some other {@link FactoryType} annotation can have
+ *     parameters annotated with {@code @PluginAttribute}</li>
+ *     <li>a constructor annotated with {@link Inject} can have parameters annotated with {@code @PluginAttribute}</li>
+ *     <li>a field can be annotated with {@code PluginAttribute} — note that any default value specified for this
+ *     field may be overwritten with the default value specified in this annotation when the configuration attribute
+ *     has no specified value</li>
+ *     <li>a method parameter can be annotated with {@code PluginAttribute}</li>
+ *     <li>an instance returned from a static {@link Factory} method may have its fields and methods injected
+ *     if the instance implements {@link Supplier}</li>
+ * </ul>
  *
  * <p>Default values may be specified via one of the <code>default<var>Type</var></code> attributes depending on the
  * annotated type. Unlisted types that are supported by a corresponding
- * {@link org.apache.logging.log4j.plugins.convert.TypeConverter} may use the {@link #defaultString()} attribute.
- * When annotating a field, a default value can be specified by the field's initial value instead of using one of the
- * annotation attributes.</p>
+ * {@link TypeConverter} may use the {@link #defaultString()} attribute.</p>
  *
- * <p>Plugin attributes with sensitive data such as passwords should specify {@link #sensitive()} to avoid having
- * their values logged in debug logs.</p>
+ * <p>Plugin attributes with sensitive data such as passwords should set {@link #sensitive()} to {@code true} to avoid
+ * having their values output in debug logs.</p>
+ *
+ * @see PluginAttributeFactoryResolver
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
-@NodeVisitor.Kind(PluginAttributeVisitor.class)
+@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD, ElementType.TYPE_USE})
 @NameProvider(PluginAttributeNameProvider.class)
 @QualifierType
 public @interface PluginAttribute {

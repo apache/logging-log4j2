@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Comparator;
+import java.util.OptionalInt;
 
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.Keys;
@@ -38,17 +39,18 @@ public class OrderedComparator implements Comparator<AnnotatedElement> {
         if (lhs == rhs) {
             return 0;
         }
-        final Ordered lhsOrder = lhs.getAnnotation(Ordered.class);
-        final Ordered rhsOrder = rhs.getAnnotation(Ordered.class);
-        if (lhsOrder != null && rhsOrder != null) {
-            return Integer.compare(lhsOrder.value(), rhsOrder.value());
-        } else if (lhsOrder != null) {
-            return -1;
-        } else if (rhsOrder != null) {
-            return 1;
-        } else {
-            return getName(lhs).compareToIgnoreCase(getName(rhs));
+        final OptionalInt lhsOrder = AnnotationUtil.getOrder(lhs);
+        final OptionalInt rhsOrder = AnnotationUtil.getOrder(rhs);
+        if (lhsOrder.isPresent() && rhsOrder.isPresent()) {
+            return Integer.compare(lhsOrder.getAsInt(), rhsOrder.getAsInt());
         }
+        if (lhsOrder.isPresent()) {
+            return -1;
+        }
+        if (rhsOrder.isPresent()) {
+            return 1;
+        }
+        return getName(lhs).compareToIgnoreCase(getName(rhs));
     }
 
     private static String getName(final AnnotatedElement element) {

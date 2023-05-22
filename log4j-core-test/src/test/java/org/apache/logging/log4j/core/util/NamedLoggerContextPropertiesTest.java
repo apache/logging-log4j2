@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.selector.BasicContextSelector;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +37,7 @@ public class NamedLoggerContextPropertiesTest {
 
     @Test
     public void testProperties() {
-        final LoggerContext context = (LoggerContext) LogManager.getContext();
+        final LoggerContext context = LoggerContext.getContext();
         assertEquals(LifeCycle.State.STARTED, context.getState());
         final PropertiesUtil props = context.getProperties();
         assertNotNull(props, "Logger Context Properties were not loaded");
@@ -50,15 +50,15 @@ public class NamedLoggerContextPropertiesTest {
         assertEquals(LifeCycle.State.STOPPED, context.getState());
     }
 
-    public class TestContextSelector extends BasicContextSelector {
+    public static class TestContextSelector extends BasicContextSelector {
 
         @Inject
-        public TestContextSelector(final Injector injector) {
+        public TestContextSelector(final ConfigurableInstanceFactory injector) {
             super(injector);
         }
 
         protected LoggerContext createContext() {
-            return new LoggerContext("my-app", null, (URI) null, injector);
+            return new LoggerContext("my-app", null, (URI) null, instanceFactory);
         }
     }
 }

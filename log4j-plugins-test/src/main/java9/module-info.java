@@ -16,6 +16,7 @@
  */
 module org.apache.logging.log4j.plugins.test {
     exports org.apache.logging.log4j.plugins.test.validation;
+    exports org.apache.logging.log4j.plugins.test.validation.di;
 
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.plugins;

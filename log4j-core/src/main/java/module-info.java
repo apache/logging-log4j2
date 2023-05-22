@@ -14,7 +14,10 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-import org.apache.logging.log4j.core.impl.DefaultCallback;
+
+import org.apache.logging.log4j.core.config.plugins.util.LegacyAnnotationFactoryResolversPostProcessor;
+import org.apache.logging.log4j.core.impl.Log4jInstanceFactoryPostProcessor;
+import org.apache.logging.log4j.core.impl.Log4jModuleReflectionPostProcessor;
 import org.apache.logging.log4j.core.impl.Log4jProvider;
 import org.apache.logging.log4j.core.impl.ThreadContextDataProvider;
 import org.apache.logging.log4j.core.message.ExtendedThreadInfoFactory;
@@ -23,7 +26,7 @@ import org.apache.logging.log4j.core.script.ScriptManagerFactory;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.core.util.WatchEventService;
 import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
-import org.apache.logging.log4j.plugins.di.InjectorCallback;
+import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
 import org.apache.logging.log4j.plugins.model.PluginService;
 import org.apache.logging.log4j.spi.Provider;
 
@@ -46,7 +49,6 @@ module org.apache.logging.log4j.core {
     exports org.apache.logging.log4j.core.config.plugins;
     exports org.apache.logging.log4j.core.config.plugins.convert;
     exports org.apache.logging.log4j.core.config.plugins.util;
-    exports org.apache.logging.log4j.core.config.plugins.visit;
     exports org.apache.logging.log4j.core.config.properties;
     exports org.apache.logging.log4j.core.config.status;
     exports org.apache.logging.log4j.core.config.xml;
@@ -100,5 +102,8 @@ module org.apache.logging.log4j.core {
     provides ContextDataProvider with ThreadContextDataProvider;
     provides Provider with Log4jProvider;
     provides PluginService with Log4jPlugins;
-    provides InjectorCallback with DefaultCallback;
+    provides ConfigurableInstanceFactoryPostProcessor with
+            Log4jInstanceFactoryPostProcessor,
+            Log4jModuleReflectionPostProcessor,
+            LegacyAnnotationFactoryResolversPostProcessor;
 }

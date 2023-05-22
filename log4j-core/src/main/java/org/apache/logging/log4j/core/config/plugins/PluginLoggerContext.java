@@ -22,9 +22,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.logging.log4j.core.config.plugins.visit.PluginLoggerContextVisitor;
 import org.apache.logging.log4j.plugins.QualifierType;
-import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 
 /**
  * Identifies a parameter or field as a LoggerContext.
@@ -33,7 +31,6 @@ import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
-@NodeVisitor.Kind(PluginLoggerContextVisitor.class)
 @QualifierType
 public @interface PluginLoggerContext {
     // empty

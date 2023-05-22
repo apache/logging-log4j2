@@ -16,14 +16,12 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
-import java.util.function.Function;
-
+import org.apache.logging.log4j.core.config.ConfigurationProcessor;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
@@ -35,12 +33,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @StatusLoggerLevel("OFF")
 public class ValidPortValidatorTest {
-    private final Injector injector = DI.createInjector().registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity);
+    private final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
+    private final ConfigurationProcessor processor = new ConfigurationProcessor(instanceFactory);
     private Node node;
 
     @BeforeEach
     public void setUp() throws Exception {
-        final PluginNamespace category = injector.getInstance(new @Namespace("Test") Key<>() {});
+        final PluginNamespace category = instanceFactory.getInstance(new @Namespace("Test") Key<>() {});
         final PluginType<?> plugin = category.get("HostAndPort");
         assertNotNull(plugin, "Rebuild this module to ensure annotation processing has been done.");
         node = new Node(null, "HostAndPort", plugin);
@@ -50,19 +49,19 @@ public class ValidPortValidatorTest {
     @Test
     public void testNegativePort() throws Exception {
         node.getAttributes().put("port", "-1");
-        assertNull(injector.configure(node));
+        assertNull(processor.processNodeTree(node));
     }
 
     @Test
     public void testValidPort() throws Exception {
         node.getAttributes().put("port", "10");
-        assertNotNull(injector.configure(node));
+        assertNotNull(processor.processNodeTree(node));
     }
 
     @Test
     public void testInvalidPort() throws Exception {
         node.getAttributes().put("port", "1234567890");
-        assertNull(injector.configure(node));
+        assertNull(processor.processNodeTree(node));
     }
 
 }

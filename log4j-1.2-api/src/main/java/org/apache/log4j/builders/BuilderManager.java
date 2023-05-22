@@ -37,7 +37,7 @@ import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Namespace;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -59,15 +59,15 @@ public class BuilderManager {
     public static final RewritePolicy INVALID_REWRITE_POLICY = new RewritePolicyWrapper(null);
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final Class<?>[] CONSTRUCTOR_PARAMS = new Class[] { String.class, Properties.class };
-    private final Injector injector;
+    private final ConfigurableInstanceFactory instanceFactory;
     private final PluginNamespace plugins;
 
     /**
      * Constructs a new instance.
      */
     @Inject
-    public BuilderManager(final Injector injector, @Namespace(NAMESPACE) final PluginNamespace plugins) {
-        this.injector = injector;
+    public BuilderManager(final ConfigurableInstanceFactory instanceFactory, @Namespace(NAMESPACE) PluginNamespace plugins) {
+        this.instanceFactory = instanceFactory;
         this.plugins = plugins;
     }
 
@@ -80,7 +80,7 @@ public class BuilderManager {
             if (AbstractBuilder.class.isAssignableFrom(clazz)) {
                 return clazz.getConstructor(CONSTRUCTOR_PARAMS).newInstance(prefix, props);
             }
-            final T builder = injector.getInstance(clazz);
+            final T builder = instanceFactory.getInstance(clazz);
             // Reasonable message instead of `ClassCastException`
             if (!Builder.class.isAssignableFrom(clazz)) {
                 LOGGER.warn("Unable to load plugin: builder {} does not implement {}", clazz, Builder.class);
@@ -107,7 +107,7 @@ public class BuilderManager {
     private <T extends Builder<U>, U> U newInstance(final PluginType<T> plugin, final Function<T, U> consumer,
             final U invalidValue) {
         if (plugin != null) {
-            final T builder = injector.getInstance(plugin.getPluginClass());
+            final T builder = instanceFactory.getInstance(plugin.getPluginClass());
             if (builder != null) {
                 final U result = consumer.apply(builder);
                 // returning an empty wrapper is short for "we support this legacy class, but it has validation errors"
@@ -118,7 +118,7 @@ public class BuilderManager {
     }
 
     public <P extends Parser<T>, T> T parse(final String className, final String prefix, final Properties props,
-            final PropertiesConfiguration config, final T invalidValue) {
+            final PropertiesConfiguration config, T invalidValue) {
         final P parser = createBuilder(getPlugin(className), prefix, props);
         if (parser != null) {
             final T value = parser.parse(config);

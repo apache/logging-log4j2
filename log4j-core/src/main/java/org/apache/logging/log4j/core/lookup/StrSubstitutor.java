@@ -28,6 +28,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
+import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -140,7 +141,7 @@ import org.apache.logging.log4j.util.Strings;
  * property to <b>true</b>.
  * </p>
  */
-public class StrSubstitutor implements ConfigurationAware {
+public class StrSubstitutor implements ConfigurationAware, StringValueResolver {
 
     /**
      * Constant for the default escape character.
@@ -460,6 +461,11 @@ public class StrSubstitutor implements ConfigurationAware {
     private static String handleFailedReplacement(final String input, final Throwable throwable) {
         StatusLogger.getLogger().error("Replacement failed on {}", input, throwable);
         return input;
+    }
+
+    @Override
+    public String resolve(final String input) {
+        return replace(null, input);
     }
 
     //-----------------------------------------------------------------------

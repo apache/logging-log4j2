@@ -25,11 +25,10 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.convert.TypeConverterFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.lightcouch.CouchDbClient;
@@ -96,7 +95,7 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
             @PluginAttribute(sensitive = true) final String password,
             @PluginAttribute final String factoryClassName,
             @PluginAttribute final String factoryMethodName,
-            final Injector injector) {
+            final TypeConverterFactory typeConverterFactory) {
         CouchDbClient client;
         String description;
         if (Strings.isNotEmpty(factoryClassName) && Strings.isNotEmpty(factoryMethodName)) {
@@ -146,7 +145,7 @@ public final class CouchDbProvider implements NoSqlProvider<CouchDbConnection> {
                 LOGGER.warn("No protocol specified, using default port [http].");
             }
 
-            final TypeConverter<Integer> converter = Cast.cast(injector.getTypeConverter(Integer.class));
+            final TypeConverter<Integer> converter = typeConverterFactory.getTypeConverter(Integer.class);
             final int portInt = converter.convert(port, protocol.equals("https") ? HTTPS : HTTP);
 
             if (Strings.isEmpty(username) || Strings.isEmpty(password)) {

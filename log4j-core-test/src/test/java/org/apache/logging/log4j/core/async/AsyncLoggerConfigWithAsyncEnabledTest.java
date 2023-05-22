@@ -19,11 +19,13 @@ package org.apache.logging.log4j.core.async;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Files;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetSystemProperty;
@@ -33,9 +35,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
-@SetSystemProperty(key = Log4jPropertyKey.Constant.CONTEXT_SELECTOR_CLASS_NAME,
-        value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
 @SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "AsyncLoggerConfigTest4.xml")
+@ContextSelectorType(AsyncLoggerContextSelector.class)
 public class AsyncLoggerConfigWithAsyncEnabledTest {
 
     @Test
@@ -48,11 +49,12 @@ public class AsyncLoggerConfigWithAsyncEnabledTest {
         log.info(format, 2, 1);
         CoreLoggerContexts.stopLoggerContext(file); // stop async thread
 
-        final BufferedReader reader = new BufferedReader(new FileReader(file));
-        final String line1 = reader.readLine();
-        final String line2 = reader.readLine();
-        reader.close();
-        file.delete();
+        final String line1, line2;
+        try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            line1 = reader.readLine();
+            line2 = reader.readLine();
+        }
+        Files.delete(file.toPath());
 
         final String expected = "Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!";
         assertThat(line1, containsString(expected));

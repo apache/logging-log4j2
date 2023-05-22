@@ -22,14 +22,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Annotates a plugin as being a configurable plugin. Configurable plugins are instantiated from a tree of
- * {@link Node} objects.
+ * Annotates a plugin as being a configurable plugin. A configurable plugin corresponds to a {@code Node} element
+ * of a configuration tree. Each configuration element may have zero or more {@linkplain PluginAttribute attributes}
+ * where attribute values are converted from strings into other types via {@link TypeConverter}, an optional
+ * {@linkplain PluginValue value} (another type of plugin attribute which may have dedicated syntax in some configuration
+ * formats such as XML), and zero or more child elements.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.TYPE_USE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 @Documented
 @Namespace(Node.CORE_NAMESPACE)
 public @interface Configurable {
@@ -37,19 +41,21 @@ public @interface Configurable {
      * Name of the corresponding category of elements this plugin belongs under. For example, {@code appender} would
      * indicate an Appender plugin which would be in the
      * {@code <Appenders/>} element of a Configuration and is injected into a {@link PluginElement} injection point of
-     * the containing plugin.
+     * the containing plugin. When using a strict XML configuration format, the XML element name must match this value
+     * rather than the {@linkplain Named name} of the plugin.
      * @return the element's type.
      */
     String elementType() default Strings.EMPTY;
 
     /**
-     * Indicates if the plugin class implements a useful {@link Object#toString()} method for use in log messages.
+     * Indicates if the plugin class implements a useful {@link Object#toString()} method for use in debug log messages.
      * @return true if the object should print nicely.
      */
     boolean printObject() default false;
 
     /**
      * Indicates if construction and injection of child configuration nodes should be deferred until first use.
+     * When enabled, children plugins may only be injected as {@link Node} instances and handled manually.
      * @return true if child elements should defer instantiation until they are accessed.
      */
     boolean deferChildren() default false;

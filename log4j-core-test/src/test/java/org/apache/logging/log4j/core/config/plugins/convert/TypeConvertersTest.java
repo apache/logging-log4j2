@@ -38,7 +38,6 @@ import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.layout.GelfLayout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -217,9 +216,7 @@ public class TypeConvertersTest {
 
     @Test
     public void testConvert() throws Exception {
-        final Injector injector = DI.createInjector();
-        injector.init();
-        final Object actual = injector.getTypeConverter(clazz).convert(value, defaultValue);
+        final Object actual = DI.createInitializedFactory().getTypeConverter(clazz).convert(value, defaultValue);
         final String assertionMessage = "\nGiven: " + value + "\nDefault: " + defaultValue;
         if (expected != null && expected instanceof char[]) {
             assertArrayEquals(assertionMessage, (char[]) expected, (char[]) actual);

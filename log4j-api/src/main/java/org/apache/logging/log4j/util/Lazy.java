@@ -26,19 +26,36 @@ import java.util.function.Supplier;
  * @param <T> type of value
  */
 public interface Lazy<T> extends Supplier<T> {
+    /**
+     * Returns the value held by this lazy. This may cause the value to initialize if it hasn't been already.
+     */
     T value();
 
+    /**
+     * Returns the value held by this lazy. This may cause the value to initialize if it hasn't been already.
+     */
     @Override
     default T get() {
         return value();
     }
 
+    /**
+     * Creates a new lazy value derived from this lazy value using the provided value mapping function.
+     */
     default <R> Lazy<R> map(final Function<? super T, ? extends R> function) {
         return lazy(() -> function.apply(value()));
     }
 
+    /**
+     * Indicates whether this lazy value has been initialized.
+     */
     boolean isInitialized();
 
+    /**
+     * Sets this lazy value to the provided value.
+     *
+     * @throws UnsupportedOperationException if this type of lazy value cannot be updated
+     */
     void set(final T newValue);
 
     /**
@@ -55,6 +72,13 @@ public interface Lazy<T> extends Supplier<T> {
      */
     static <T> Lazy<T> value(final T value) {
         return new LazyUtil.Constant<>(value);
+    }
+
+    /**
+     * Creates a lazy value using a weak reference to the provided value.
+     */
+    static <T> Lazy<T> weak(final T value) {
+        return new LazyUtil.WeakConstant<>(value);
     }
 
     /**

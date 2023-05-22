@@ -23,10 +23,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.apache.logging.log4j.core.config.plugins.util.PluginAttributeNameProvider;
-import org.apache.logging.log4j.core.config.plugins.visit.PluginAttributeVisitor;
 import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.visit.NodeVisitor;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -40,7 +38,6 @@ import org.apache.logging.log4j.util.Strings;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-@NodeVisitor.Kind(PluginAttributeVisitor.class)
 @NameProvider(PluginAttributeNameProvider.class)
 @QualifierType
 @Deprecated(since = "3.0.0")

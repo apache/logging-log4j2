@@ -19,8 +19,9 @@ package org.apache.logging.log4j.core.test.junit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.plugins.di.Binding;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -32,10 +33,10 @@ public class ContextSelectorCallback implements BeforeAllCallback, AfterAllCallb
         AnnotationSupport.findAnnotation(context.getTestClass(), ContextSelectorType.class)
                 .map(ContextSelectorType::value)
                 .ifPresent(contextSelectorClass -> {
-                    final Injector injector = DI.createInjector();
-                    injector.registerBinding(ContextSelector.KEY, injector.getFactory(contextSelectorClass));
-                    injector.init();
-                    final Log4jContextFactory factory = injector.getInstance(Log4jContextFactory.class);
+                    final ConfigurableInstanceFactory instanceFactory = DI.createFactory();
+                    instanceFactory.registerBinding(Binding.from(ContextSelector.KEY).to(instanceFactory.getFactory(contextSelectorClass)));
+                    DI.initializeFactory(instanceFactory);
+                    final Log4jContextFactory factory = instanceFactory.getInstance(Log4jContextFactory.class);
                     LogManager.setFactory(factory);
                 });
     }

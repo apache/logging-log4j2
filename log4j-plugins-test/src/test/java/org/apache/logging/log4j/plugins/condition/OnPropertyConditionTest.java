@@ -17,61 +17,92 @@
 package org.apache.logging.log4j.plugins.condition;
 
 import org.apache.logging.log4j.plugins.Factory;
-import org.apache.logging.log4j.plugins.Ordered;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.util.PropertiesUtil;
-import org.junit.jupiter.api.Disabled;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.apache.logging.log4j.test.junit.UsingTestProperties;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.ClearSystemProperty;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Disabled // Test still doesn't work.
+@UsingTestProperties
 class OnPropertyConditionTest {
 
-    static class OnProperty {
-        @ConditionalOnProperty(name = "foo.bar", value = "true")
+    static class Default {
         @Factory
-        String truth() {
-            return "truth";
-        }
-
-        @ConditionalOnProperty(name = "foo.bar")
-        @Ordered(Ordered.LAST)
-        @Factory
-        String string() {
-            return "hello";
-        }
-
-        @Ordered(10)
-        @Factory
-        String backup() {
-            return "goodbye";
+        @ConditionalOnMissingBinding
+        String defaultValue() {
+            return "default";
         }
     }
 
+    static class Fixture extends Default {
+        @Factory
+        @ConditionalOnProperty(name = "OnPropertyConditionTest", value = "first")
+        String firstValue() {
+            return "one";
+        }
+
+        @Factory
+        @ConditionalOnProperty(name = "OnPropertyConditionTest", value = "second")
+        String secondValue() {
+            return "two";
+        }
+
+        @Factory
+        @ConditionalOnProperty(name = "PropertyThree")
+        String thirdValue() {
+            return "three";
+        }
+    }
+
+    @ConditionalOnProperty(name = "Applied")
+    static class AppliedToMethods {
+        @Factory
+        String appliedValue() {
+            return "apply";
+        }
+    }
+
+    final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
+
     @Test
-    @ClearSystemProperty(key = "foo.bar")
     void whenPropertyAbsent() {
-        ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
-        final String value = DI.createInjector(OnProperty.class).getInstance(String.class);
-        assertEquals("goodbye", value);
+        instanceFactory.registerBundle(Fixture.class);
+        final String value = instanceFactory.getInstance(String.class);
+        assertEquals("default", value);
     }
 
     @Test
-    @SetSystemProperty(key = "foo.bar", value = "whatever")
+    @SetTestProperty(key = "OnPropertyConditionTest", value = "first")
+    void whenPropertyMatchesFirst() {
+        instanceFactory.registerBundle(Fixture.class);
+        final String value = instanceFactory.getInstance(String.class);
+        assertEquals("one", value);
+    }
+
+    @Test
+    @SetTestProperty(key = "OnPropertyConditionTest", value = "second")
+    void whenPropertyMatchesSecond() {
+        instanceFactory.registerBundle(Fixture.class);
+        final String value = instanceFactory.getInstance(String.class);
+        assertEquals("two", value);
+    }
+
+    @Test
+    @SetTestProperty(key = "PropertyThree", value = "")
     void whenPropertyPresent() {
-        ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
-        final String value = DI.createInjector(OnProperty.class).getInstance(String.class);
-        assertEquals("hello", value);
+        instanceFactory.registerBundle(Fixture.class);
+        final String value = instanceFactory.getInstance(String.class);
+        assertEquals("three", value);
     }
 
     @Test
-    @SetSystemProperty(key = "foo.bar", value = "true")
-    void whenPropertyMatches() {
-        ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
-        final String value = DI.createInjector(OnProperty.class).getInstance(String.class);
-        assertEquals("truth", value);
+    @SetTestProperty(key = "Applied", value = "")
+    void whenPropertyPresentForConditionalClass() {
+        instanceFactory.registerBundle(AppliedToMethods.class);
+        instanceFactory.registerBundle(Fixture.class);
+        final String value = instanceFactory.getInstance(String.class);
+        assertEquals("apply", value);
     }
 }

@@ -127,7 +127,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     public Configuration reconfigure() {
         LOGGER.debug("Reconfiguring composite configuration");
         final List<AbstractConfiguration> configs = new ArrayList<>();
-        final ConfigurationFactory factory = injector.getInstance(ConfigurationFactory.KEY);
+        final ConfigurationFactory factory = instanceFactory.getInstance(ConfigurationFactory.KEY);
         for (final AbstractConfiguration config : configurations) {
             final ConfigurationSource source = config.getConfigurationSource();
             final URI sourceURI = source.getURI();

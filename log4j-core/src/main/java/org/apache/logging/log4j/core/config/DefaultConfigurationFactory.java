@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -50,8 +50,8 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     private final Lazy<List<ConfigurationFactory>> configurationFactories;
 
     @Inject
-    public DefaultConfigurationFactory(final Injector injector) {
-        configurationFactories = Lazy.lazy(() -> loadConfigurationFactories(injector));
+    public DefaultConfigurationFactory(final ConfigurableInstanceFactory instanceFactory) {
+        configurationFactories = Lazy.lazy(() -> loadConfigurationFactories(instanceFactory));
     }
 
     /**
@@ -297,14 +297,14 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         return new String[] { configLocations };
     }
 
-    private static List<ConfigurationFactory> loadConfigurationFactories(final Injector injector) {
+    private static List<ConfigurationFactory> loadConfigurationFactories(final ConfigurableInstanceFactory instanceFactory) {
         final List<ConfigurationFactory> factories = new ArrayList<>();
 
         Optional.ofNullable(PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME))
                 .flatMap(DefaultConfigurationFactory::tryLoadFactoryClass)
                 .map(clazz -> {
                     try {
-                        return injector.getInstance(clazz);
+                        return instanceFactory.getInstance(clazz);
                     } catch (final Exception ex) {
                         LOGGER.error("Unable to create instance of {}", clazz, ex);
                         return null;
@@ -313,7 +313,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 .ifPresent(factories::add);
 
         final List<Class<? extends ConfigurationFactory>> configurationFactoryPluginClasses = new ArrayList<>();
-        injector.getInstance(PLUGIN_CATEGORY_KEY).forEach(type -> {
+        instanceFactory.getInstance(PLUGIN_NAMESPACE_KEY).forEach(type -> {
             try {
                 configurationFactoryPluginClasses.add(type.getPluginClass().asSubclass(ConfigurationFactory.class));
             } catch (final Exception ex) {
@@ -323,7 +323,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         configurationFactoryPluginClasses.sort(OrderComparator.getInstance());
         configurationFactoryPluginClasses.forEach(clazz -> {
             try {
-                factories.add(injector.getInstance(clazz));
+                factories.add(instanceFactory.getInstance(clazz));
             } catch (final Exception ex) {
                 LOGGER.error("Unable to create instance of {}", clazz, ex);
             }

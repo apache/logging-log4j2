@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
+import org.apache.logging.log4j.plugins.di.spi.DependencyChain;
+import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -32,6 +34,10 @@ public class NotInjectableException extends InjectException {
 
     public NotInjectableException(final Key<?> key, final DependencyChain dependencies) {
         this(dependencies, key);
+    }
+
+    public NotInjectableException(final ResolvableKey<?> resolvableKey) {
+        this(resolvableKey.getDependencyChain(), resolvableKey.getKey());
     }
 
     private NotInjectableException(final DependencyChain chain, final Object target) {

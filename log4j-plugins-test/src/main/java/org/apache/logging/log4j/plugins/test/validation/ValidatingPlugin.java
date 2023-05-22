@@ -18,7 +18,7 @@ package org.apache.logging.log4j.plugins.test.validation;
 
 import java.util.Objects;
 
-import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -27,7 +27,7 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
 /**
  *
  */
-@Namespace("Test")
+@Configurable
 @Plugin("Validator")
 public class ValidatingPlugin {
 
@@ -39,12 +39,6 @@ public class ValidatingPlugin {
 
     public String getName() {
         return name;
-    }
-
-    @PluginFactory
-    public static ValidatingPlugin newValidatingPlugin(
-        @Required(message = "The name given by the factory is null") final String name) {
-        return new ValidatingPlugin(name);
     }
 
     @PluginFactory
