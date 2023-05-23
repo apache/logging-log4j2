@@ -19,7 +19,7 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
        type="fixed">
-  <issue id="0" link="https://github.com/apache/logging-log4j2/issues/0"/>
+  <issue id="1485" link="https://github.com/apache/logging-log4j2/issues/1485"/>
   <author name="Stephan Markwalder" id="smarkwal"/>
   <author id="vy"/>
   <description format="asciidoc">Fix concurrent date-time formatting issue in `PatternLayout`</description>
