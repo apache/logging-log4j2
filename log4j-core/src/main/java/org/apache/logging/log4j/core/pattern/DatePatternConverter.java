@@ -328,16 +328,15 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     private void formatWithoutThreadLocals(final Instant instant, final StringBuilder output) {
-        CachedTime cached = cachedTime.get();
+        final CachedTime effective;
+        final CachedTime cached = cachedTime.get();
         if (instant.getEpochSecond() != cached.epochSecond || instant.getNanoOfSecond() != cached.nanoOfSecond) {
-            final CachedTime newTime = new CachedTime(instant);
-            if (cachedTime.compareAndSet(cached, newTime)) {
-                cached = newTime;
-            } else {
-                cached = cachedTime.get();
-            }
+            effective = new CachedTime(instant);
+            cachedTime.compareAndSet(cached, effective);
+        } else {
+            effective = cached;
         }
-        output.append(cached.formatted);
+        output.append(effective.formatted);
     }
 
     /**
