@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -56,16 +55,20 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         public TimeZone getTimeZone() {
             return TimeZone.getDefault();
         }
+
+        public abstract long getNanosPrecision();
     }
 
     private static final class PatternFormatter extends Formatter {
         private final FastDateFormat fastDateFormat;
+        private final long nanosPrecision;
 
         // this field is only used in ThreadLocal caching mode
         private final StringBuilder cachedBuffer = new StringBuilder(64);
 
         PatternFormatter(final FastDateFormat fastDateFormat) {
             this.fastDateFormat = fastDateFormat;
+            this.nanosPrecision = getPrecisionNanos(fastDateFormat.getPattern());
         }
 
         @Override
@@ -92,10 +95,17 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         public TimeZone getTimeZone() {
             return fastDateFormat.getTimeZone();
         }
+
+        @Override
+        public long getNanosPrecision() {
+            return nanosPrecision;
+        }
+
     }
 
     private static final class FixedFormatter extends Formatter {
         private final FixedDateFormat fixedDateFormat;
+        private final long nanosPrecision;
 
         // below fields are only used in ThreadLocal caching mode
         private final char[] cachedBuffer = new char[70]; // max length of formatted date-time in any format < 70
@@ -103,6 +113,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
 
         FixedFormatter(final FixedDateFormat fixedDateFormat) {
             this.fixedDateFormat = fixedDateFormat;
+            this.nanosPrecision = getPrecisionNanos(fixedDateFormat.getFormat());
         }
 
         @Override
@@ -131,6 +142,11 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         public TimeZone getTimeZone() {
             return fixedDateFormat.getTimeZone();
         }
+
+        @Override
+        public long getNanosPrecision() {
+            return nanosPrecision;
+        }
     }
 
     private static final class UnixFormatter extends Formatter {
@@ -144,6 +160,11 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         void formatToBuffer(final Instant instant, final StringBuilder destination) {
             destination.append(instant.getEpochSecond()); // no need for caching
         }
+
+        @Override
+        public long getNanosPrecision() {
+            return 1_000_000_000L;
+        }
     }
 
     private static final class UnixMillisFormatter extends Formatter {
@@ -156,6 +177,11 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         @Override
         void formatToBuffer(final Instant instant, final StringBuilder destination) {
             destination.append(instant.getEpochMillisecond()); // no need for caching
+        }
+
+        @Override
+        public long getNanosPrecision() {
+            return 1_000_000L;
         }
     }
 
@@ -184,7 +210,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     private final String[] options;
     private final ThreadLocal<MutableInstant> threadLocalMutableInstant = new ThreadLocal<>();
     private final ThreadLocal<Formatter> threadLocalFormatter = new ThreadLocal<>();
-    private final AtomicReference<CachedTime> cachedTime;
+    private CachedTime cachedTime;
     private final Formatter formatter;
 
     /**
@@ -196,7 +222,7 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         super("Date", "date");
         this.options = options == null ? null : Arrays.copyOf(options, options.length);
         this.formatter = createFormatter(options);
-        cachedTime = new AtomicReference<>(fromEpochMillis(System.currentTimeMillis()));
+        cachedTime = fromEpochMillis(System.currentTimeMillis());
     }
 
     private CachedTime fromEpochMillis(final long epochMillis) {
@@ -267,6 +293,26 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
         }
     }
 
+    private static long getPrecisionNanos(final String pattern) {
+        boolean quoted = false;
+        long precision = 1_000_000_000L;
+        for (final char c : pattern.toCharArray()) {
+            switch (c) {
+            case 'S':
+            case 'n':
+                if (!quoted) {
+                    precision /= 10L;
+                }
+                break;
+            case '\'':
+                quoted = !quoted;
+                break;
+            default:
+            }
+        }
+        return precision;
+    }
+
     /**
      * Appends formatted date to string buffer.
      *
@@ -325,15 +371,13 @@ public final class DatePatternConverter extends LogEventPatternConverter impleme
     }
 
     private void formatWithoutThreadLocals(final Instant instant, final StringBuilder output) {
-        final CachedTime effective;
-        final CachedTime cached = cachedTime.get();
-        if (instant.getEpochSecond() != cached.epochSecond || instant.getNanoOfSecond() != cached.nanoOfSecond) {
-            effective = new CachedTime(instant);
-            cachedTime.compareAndSet(cached, effective);
-        } else {
-            effective = cached;
+        CachedTime cachedTime = this.cachedTime;
+        final long nanosPrecision = formatter.getNanosPrecision();
+        if (instant.getEpochSecond() != cachedTime.epochSecond
+                || instant.getNanoOfSecond() / nanosPrecision != cachedTime.nanoOfSecond / nanosPrecision) {
+            this.cachedTime = cachedTime = new CachedTime(instant);
         }
-        output.append(effective.formatted);
+        output.append(cachedTime.formatted);
     }
 
     /**
