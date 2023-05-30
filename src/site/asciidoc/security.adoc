@@ -14,8 +14,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-
 = Apache Log4j Security Vulnerabilities
+
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
 
 This page lists all the security vulnerabilities fixed in released versions of Apache Log4j 2.
 Each vulnerability is given a link:#Security_Impact_Levels[security impact rating]

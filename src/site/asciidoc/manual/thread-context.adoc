@@ -17,6 +17,10 @@
 = Log4j 2 API
 Ralph Goers <rgoers@apache.org>; Gary Gregory <ggregory@apache.org>
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 == Thread Context
 
 Log4j introduced the concept of the Mapped Diagnostic Context or MDC. It

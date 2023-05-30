@@ -17,6 +17,10 @@
 = Programmatic Configuration
 Ralph Goers <rgoers@apache.org>
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 Log4j 2 provides a few ways for applications to create their own
 programmatic configuration:
 

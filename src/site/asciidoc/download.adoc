@@ -16,6 +16,10 @@
 ////
 = Download Apache Log4j 2
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 Apache Log4j 2 is distributed under the
 https://www.apache.org/licenses/LICENSE-2.0.html[Apache License, version 2.0].
 

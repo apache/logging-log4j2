@@ -17,6 +17,10 @@
 = Dependency Injection
 Matt Sicker <mattsicker@apache.org>
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 Log4j 3.x uses a more sophisticated dependency injection API inspired by https://javaee.github.io/javaee-spec/javadocs/javax/inject/package-summary.html[`javax.inject`] and its open source implementations such as https://github.com/zsoltherpai/feather[Feather] and https://github.com/google/guice[Guice].
 Dependency injection can be thought of as a replacement for calling `new` or custom factory methods in Java code; alternatively, it can be thought of as a factory for factory instances.
 Classes define _injection points_ which may be fields, method parameters, and constructor parameters, whose values are injected at runtime.

@@ -17,6 +17,10 @@
 = Extending Log4j 3
 Ralph Goers <rgoers@apache.org>
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 Log4j 3 provides numerous ways that it can be manipulated and extended.
 This section includes an overview of the various ways that are directly
 supported by the Log4j 3 implementation.

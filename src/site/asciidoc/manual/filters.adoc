@@ -17,6 +17,10 @@
 = Filters
 Ralph Goers <rgoers@apache.org>
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 Filters allow Log Events to be evaluated to determine if or how they
 should be published. A Filter will be called on one of its `filter`
 methods and will return a `Result`, which is an Enum that has one of 3

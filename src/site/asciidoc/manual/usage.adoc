@@ -14,8 +14,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-
 = Usage
+
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
 
 [#Static_vs_Non_Static]
 == Static vs Non-Static Loggers

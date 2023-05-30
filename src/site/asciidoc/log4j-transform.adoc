@@ -16,6 +16,10 @@
 ////
 = Log4j Transformation Tools
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 Log4j Transformation Tools is set of build utilities to transform source and binary artifacts that use Log4j 2.x libraries.
 The full documentation is available on https://github.com/apache/logging-log4j-transform/blob/main/README.adoc[Github].
 

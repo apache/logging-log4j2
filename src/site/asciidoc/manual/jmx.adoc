@@ -17,6 +17,10 @@
 = JMX
 Remko Popma <remkop@yahoo.com>
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 Log4j 2 has built-in support for JMX. The StatusLogger, ContextSelector,
 and all LoggerContexts, LoggerConfigs and Appenders are instrumented
 with MBeans and can be remotely monitored and controlled.

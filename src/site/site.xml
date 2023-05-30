@@ -25,7 +25,7 @@
   </bannerLeft>
   <bannerRight>
     <src>images/logo.png</src>
-    <href>http://logging.apache.org/log4j/2.x</href>
+    <href>http://logging.apache.org/log4j/3.x</href>
   </bannerRight>
   <skin>
     <groupId>org.apache.maven.skins</groupId>
@@ -41,7 +41,7 @@
       <item name="GitHub" href="https://github.com/apache/logging-log4j2"/>
     </links>
 
-    <menu name="Apache Log4j™ 2" inherit="top" img="img/glyphicons/home.png">
+    <menu name="Apache Log4j™ 3.x" inherit="top" img="img/glyphicons/home.png">
       <item name="About" href="/index.html"/>
       <item name="Download" href="/download.html"/>
       <item name="Javadoc" href="/javadoc.html"/>
@@ -326,6 +326,7 @@
       <item name="Liquibase Binding" href="log4j-liquibase.html"/>
       <item name="Docker Support" href="log4j-docker.html"/>
       <item name="Kubernetes Support" href="log4j-kubernetes.html"/>
+      <item name="Log4j Spring Boot" href="log4j-spring-boot.html"/>
       <item name="Spring Cloud Config Client" href="log4j-spring-cloud-config-client.html"/>
       <item name="Log4j Transformation Tools" href="log4j-transform"/>
     </menu>

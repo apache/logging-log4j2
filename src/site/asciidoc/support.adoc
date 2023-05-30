@@ -14,8 +14,11 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-
 = Support
+
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
 
 The Apache Software Foundation does not employ individuals to develop and support any of its projects.
 The individuals who contribute to Apache projects do it either as part of specific tasks assigned to them by their employer, on their own initiative to benefit their employer, or on their own free time.

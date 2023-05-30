@@ -14,6 +14,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
 [#SystemProperties]
 == System Properties
 
@@ -86,7 +89,7 @@ Properties can be overridden by sources with a lower number priority
 by default:
 
 .PropertySource priorities and descriptions
-[cols="2,1,5"]
+[cols="2,1,5",frame="all"]
 |===
 |Source |Priority |Description
 
@@ -132,7 +135,7 @@ fits into, the alias includes values from Log4j 2.x that are still allowed, the 
 the setting may be applied system wide and/or to a LoggerContext.
 
 .Log4j 2 API configuration properties
-[cols="1,1,3,1,2,3"]
+[cols="1,1,3,1,2,3",frame="all"]
 |===
 |Component Name |Property Key |Alias |Scope |Default Value |Description
 

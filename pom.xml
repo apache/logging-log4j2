@@ -33,7 +33,7 @@
 
   <name>Apache Log4j 2</name>
   <description>Apache Log4j 2</description>
-  <url>https://logging.apache.org/log4j/2.x/</url>
+  <url>https://logging.apache.org/log4j/3.x/</url>
 
   <inceptionYear>1999</inceptionYear>
 
@@ -303,7 +303,7 @@
          Release-specific properties
          =========================== -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <log4jReleaseVersion>3.0.0</log4jReleaseVersion>
+    <log4jReleaseVersion>3.0.0-alpha1</log4jReleaseVersion>
     <log4jReleaseManager>Ralph Goers</log4jReleaseManager>
     <log4jReleaseKey>B3D8E1BA</log4jReleaseKey>
     <log4jSigningUserName>rgoers@apache.org</log4jSigningUserName>
@@ -354,7 +354,7 @@
     <!-- =================================================
          Plugin version properties (in alphabetical order)
          ================================================= -->
-    <asciidoctor-maven-plugin.version>2.2.2</asciidoctor-maven-plugin.version>
+    <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
     <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
     <checksum-maven-plugin.version>1.11</checksum-maven-plugin.version>
     <docker-maven-plugin.version>0.40.2</docker-maven-plugin.version>
@@ -1545,6 +1545,7 @@
             <exclude>**/rabbitmq.config</exclude>
             <exclude>**/MANIFEST.MF</exclude>
             <exclude>.surefire-*</exclude>
+            <exclude>**/*.slim</exclude>
           </excludes>
         </configuration>
         <executions>

@@ -14,10 +14,39 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-= Apache Log4j 2
+= Apache Log4j 3.x
 
-Apache Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x, and
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
+Apache Log4j 3.x is an upgrade to Log4j 1.x and 2.x that provides significant improvements over its predecessors and
 provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
+
+== Major Changes From Log4j 2.x
+
+As the Java ecosystem has evolved, requests have been received from users, and the need for improved security has
+become more apparent, changes were necessariy in Log4j's design:
+
+* With the introduction of the Java Platform Module System (JPMS) changes were needed to how the various log4j modules
+are packaged. While not every log4j module is now a fully compliant JPMS module with its own module-info.java file,
+all the modules likely to be used in a JPMS environment are.
+* Many optional components, such as Scripting, JNDI, JPA and JMS, have been moved to their own modules. This makes
+Log4j-core slightly smaller in 3.x and aids in security by not having jars with unwanted behaviors present, making
+disabling them via system properties unnecessary.
+* All plugins constructed using Log4j 3.x are now located using Java's ServiceLoader. This avoids many of the problems
+users had packaging plugins in "shaded" jars as that technology directly supports ServiceLoader. Plugins constructed
+using Log4j 2.x will still function in Log4j 3.x.
+* Log4j's annotation processor has been individually packaged separate from Log4j-core and the plugin system it enables.
+For applications using the module path this makes it easier to provide the annotation processor since it must be
+explicitly declared in those cases.
+* Log4j 3.x now uses an internal dependency injection framework to allow plugins to be injected with instances of
+classes they are dependent on.
+* Many system properties used by Log4j can now be set to apply to a single LoggerContext making configuration
+in application frameworks that support multiple applications more flexible.
+* Some deprecated classes have been removed. However, every attempt has been made to ensure that user code compiled
+for Log4j 2.x will continue to operate with the Log4j 3.x libraries present instead.
+
 
 == Features
 
@@ -50,22 +79,24 @@ See link:performance.html[Performance] for more information.
 
 === Support for multiple APIs
 
-While the Log4j 2 API will provide the best performance, Log4j 2 provides support for the Log4j 1.2, SLF4J, Commons
+While the Log4j 2.x/3.x API will provide the best performance, Log4j 3.x provides support for the Log4j 1.2, SLF4J, Commons
 Logging and java.util.logging (JUL) APIs.
 
 === Avoid lock-in
 
-Applications coded to the Log4j 2 API always have the option to use any SLF4J-compliant library as their logger
-implementation with the log4j-to-slf4j adapter.
+Applications coded to the Log4j 3.x API have the option to use an SLF4J-compliant library as their logger
+implementation with the log4j-to-slf4j adapter or use java.util.logging with the log4j-to-jul adapter. The
+binding between the Log4j API and a Log4j implementation uses java.util.ServiceLoader making it easy to
+create alternate implementations.
 
 === Automatic Reloading of Configurations
 
-Like Logback, Log4j 2 can automatically reload its configuration upon modification. Unlike Logback, it will do so
+Log4j 3.x can automatically reload its configuration upon modification. Unlike Logback, it will do so
 without losing log events while reconfiguration is taking place.
 
 === Advanced Filtering
 
-Like Logback, Log4j 2 supports filtering based on context data, markers, regular expressions, and other components in
+Log4j 3.x supports filtering based on context data, markers, regular expressions, and other components in
 the Log event. Filtering can be specified to apply to all events before being passed to Loggers or as they pass through
 Appenders. In addition, filters can also be associated with Loggers. Unlike Logback, you can use a common Filter class
 in any of these circumstances.
@@ -83,7 +114,7 @@ underlying component that will dynamically resolve them. Properties come from va
 system properties, environment variables, the ThreadContext Map, and data present in the event. Users can further
 customize the property providers by adding their own link:manual/lookups.html[Lookup] Plugin.
 
-=== Java 8 Lambda Support
+=== Java Lambda Support
 
 Previously, if a log message was expensive to construct, you would often explicitly check if the requested log level is
 enabled before constructing the message. Client code running on Java 8 can benefit from Log4j's
@@ -92,7 +123,7 @@ level is not enabled, the same effect can be achieved with less code.
 
 === Custom Log Levels
 
-In Log4j 2, link:manual/customloglevels.html[custom log levels] can easily be defined in code or in configuration. No
+In Log4j 3.x, link:manual/customloglevels.html[custom log levels] can easily be defined in code or in configuration. No
 subclassing is required.
 
 === Log Builder API
@@ -101,66 +132,36 @@ link:manual/logbuilder.html[Log Builder] for more information.
 
 === Garbage-free
 
-During steady state logging, Log4j 2 is link:manual/garbagefree.html[garbage-free] in stand-alone applications, and low
+During steady state logging, Log4j 3.x is link:manual/garbagefree.html[garbage-free] in stand-alone applications, and low
 garbage in web applications. This reduces pressure on the garbage collector and can give better response time performance.
 
-=== Integrating with Application Servers
+=== Compatibility with Log4j 2.x
 
-Version 2.10.0 introduces a the module log4j-appserver to improve integration with Apache Tomcat and Eclipse Jetty.
+Application code written using the Log4j 2.x API should be binary compatible with Log4j 3.x. Custom plugins
+written for Log4j 2.x may need minor changes when compiling with Log4j 3.x as some package names have changed.
 
-=== Cloud Enabled
+=== Compatibility with Log4j 1.x
 
-Version 2.12.0 introduces support for accessing Docker container information via a Lookup and for accessing
-and updating the Log4j configuration through Spring Cloud Configuration. This support was enhanced in
-version 2.13.0 to add support for accessing Spring Boot properties as well as Kubernetes information.
-See link:manual/cloud.html[Logging in the Cloud] for details.
-
-=== Compatible with Log4j 1.x
-
-The Log4j-1.2-api module of Log4j 2 provides compatiblity for applications using the Log4j 1 logging methods. As
-of Log4j 2.13.0 Log4j 2 also provides experimental support for Log4j 1.x configuration files. See
-link:manual/compatiblity.html[Log4j 2 Compatiblity with Log4j 1] for more information.
+The Log4j-1.2-api module of Log4j 3.x provides compatiblity for applications using the Log4j 1 logging methods.
+Log4j 3.x also provides experimental support for Log4j 1.x configuration files. See
+link:manual/compatiblity.html[Log4j 3.x Compatiblity with Log4j 1] for more information.
 
 == Documentation
 
-The Log4j 2 User's Guide is available on this link:manual/index.html[site].
+The Log4j 3.x User's Guide is available on this link:manual/index.html[site].
 
 == Requirements
 
-Log4j 2.13.0 and greater require Java 8. Version 2.4 through 2.12.1 required Java 7 and versions 2.0-alpha1 to 2.3
-required Java 6. Some features require optional dependencies; the documentation for these features specifies the
-dependencies.
+Log4j 3.x require a minimum of Java 11. For support for older versions of Java see the
+link:http://logging.apache.org/2.x[Log4j 2.x site].
 
 == News
 
-Log4j {Log4jReleaseVersion} is now available for production. The API for Log4j 2 is not compatible with Log4j 1.x, however an adapter is
-available to allow applications to continue to use the Log4j 1.x API. Adapters are also available for Apache Commons
-Logging, SLF4J, and java.util.logging.
+Log4j ${Log4jReleaseVersion} is now available for alpha testing. The API for Log4j 3.x is compatible with 2.x.
 
-Log4j {Log4jReleaseVersion} is the latest release of Log4j and contains several bug fixes that were found after the release of Log4j 2.6.
+Log4j ${Log4jReleaseVersion} is the latest release of Log4j.
 This release contains new features and fixes which are explained further in xref:release-notes/{Log4jReleaseVersion}.adoc[the release notes].
 
-Note that subsequent to the release of Log4j 2.6 a minor source incompatibility with prior release was found due to the
-addition of new methods to the Logger interface. If you have code that does:
-
-[source,java]
-----
-logger.error(null, "This is the log message", throwable);
-----
-
-or similar with any log level you will get a compiler error saying the reference is ambiguous. To correct this either
-do:
-
-[source,java]
-----
-logger.error("This is the log message", throwable);
-----
-
-or
-
-[source,java]
-----
-logger.error((Marker) null, "This is the log message", throwable);
-----
-
-Log4j {Log4jReleaseVersion} maintains binary compatibility with previous releases.
+Unless your application makes use of Log4j internal classes, Log4j {Log4jReleaseVersion} maintains binary
+compatibility with previous releases. However, some code changes will be necessary when migrating plugins
+built for Log4j 2.x to Log4j 3.x

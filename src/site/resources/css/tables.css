@@ -1,0 +1,95 @@
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+div.tableblock {
+    margin-top: 1.0em;
+    margin-bottom: 1.5em;
+}
+div.tableblock > table {
+    border: 3px solid #527bbd;
+}
+thead, p.table.header {
+    font-weight: bold;
+    color: #527bbd;
+}
+p.table {
+    margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+    border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+    border-left-style: none;
+    border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+    border-top-style: none;
+    border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+table.tableblock {
+    margin-top: 1.0em;
+    margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+    font-weight: bold;
+    color: #527bbd;
+}
+p.tableblock {
+    margin-top: 0;
+}
+table.tableblock {
+    border-width: 3px;
+    border-spacing: 0px;
+    border-style: solid;
+    border-color: #527bbd;
+    border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+    border-width: 1px;
+    padding: 4px;
+    border-style: solid;
+    border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+    border-left-style: hidden;
+    border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+    border-top-style: hidden;
+    border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+    border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+    text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+    text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+    text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+    vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+    vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+    vertical-align: bottom;
+}

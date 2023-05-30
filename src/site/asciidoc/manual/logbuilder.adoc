@@ -16,6 +16,10 @@
 ////
 = Log4j 2 API
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 == Log Builder
 
 Log4j has traditionally been used with logging statements like

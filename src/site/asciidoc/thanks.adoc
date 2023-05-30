@@ -16,6 +16,10 @@
 ////
 = Project Thanks
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 Log4j 2 is a successful project because of the large and diverse
 community that contributes to it.
 
