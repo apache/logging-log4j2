@@ -17,7 +17,7 @@
 = Frequently Asked Questions
 
 ++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
+<link rel="stylesheet" type="text/css" href="css/tables.css">
 ++++
 
 :toc:

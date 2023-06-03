@@ -17,7 +17,7 @@
 = Support
 
 ++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
+<link rel="stylesheet" type="text/css" href="css/tables.css">
 ++++
 
 The Apache Software Foundation does not employ individuals to develop and support any of its projects.

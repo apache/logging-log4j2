@@ -17,14 +17,13 @@
 = Runtime Dependencies
 
 ++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
+<link rel="stylesheet" type="text/css" href="css/tables.css">
 ++++
 
 Some Log4j features depend on external libraries. This page lists the
 required and optional dependencies.
 
-As of version 2.10.0 the Log4j API is a Java module (with a
-module-info.java). Many of the other jars are automatic modules. The
+The Log4j API is a Java module (with a module-info.java). Many of the other jars are also JPMS modules. The
 characteristics of the modules are:
 
 [cols="3h,5m,12a"]
@@ -38,31 +37,194 @@ characteristics of the modules are:
 !===
 !Module Directive !Notes
 
-2+!exports org.apache.logging.log4j
+!exports org.apache.logging.log4j
+!
 
-2+!exports org.apache.logging.log4j.message
+!exports org.apache.logging.log4j.message
+!
 
-2+!exports org.apache.logging.log4j.simple
+!exports org.apache.logging.log4j.simple
+!
 
-2+!exports org.apache.logging.log4j.spi
+!exports org.apache.logging.log4j.spi
+!
 
-2+!exports org.apache.logging.log4j.spi
+!exports org.apache.logging.log4j.status
+!
 
 !exports org.apache.logging.log4j.util
 !Some classes in this package are used by the logging implementation and should be considered private.
 The module info definition may be modified in the future to export these only to the logging implementation.
 
+!requires static java.sql
+!
+!requires static org.osgi.framework
+!
+
 !uses org.apache.logging.log4j.spi.Provider
 !Service that must be provided by the logging implementation.
+!uses PropertySource
+!Service that must be provided by the logging implementation.
+!uses org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory
+!Service that must be provided by the logging implementation.
+
+!provides PropertySource with EnvironmentPropertySource, SystemPropertiesPropertySource
+!
 !===
 
 |log4j-core
 |org.apache.logging.log4j.core
-|Automatic Module
+|
+[cols="m,"]
+!===
+!Module Directive !Notes
+
+!exports org.apache.logging.log4j.core
+!
+!exports org.apache.logging.log4j.core.appender
+!
+!exports org.apache.logging.log4j.core.appender.db
+!
+!exports org.apache.logging.log4j.core.appender.nosql
+!
+!exports org.apache.logging.log4j.core.appender.rewrite
+!
+!exports org.apache.logging.log4j.core.appender.rolling
+!
+!exports org.apache.logging.log4j.core.appender.rolling.action
+!
+!exports org.apache.logging.log4j.core.appender.routing
+!
+!exports org.apache.logging.log4j.core.async
+!
+!exports org.apache.logging.log4j.core.config
+!
+!exports org.apache.logging.log4j.core.config.arbiters
+!
+!exports org.apache.logging.log4j.core.config.builder.api
+!
+!exports org.apache.logging.log4j.core.config.builder.impl
+!
+!exports org.apache.logging.log4j.core.config.composite
+!
+!exports org.apache.logging.log4j.core.config.json
+!
+!exports org.apache.logging.log4j.core.config.plugins
+!
+!exports org.apache.logging.log4j.core.config.plugins.convert
+!
+!exports org.apache.logging.log4j.core.config.plugins.util
+!
+!exports org.apache.logging.log4j.core.config.plugins.visit
+!
+!exports org.apache.logging.log4j.core.config.properties
+!
+!exports org.apache.logging.log4j.core.config.status
+!
+!exports org.apache.logging.log4j.core.config.xml
+!
+!exports org.apache.logging.log4j.core.config.yaml
+!
+!exports org.apache.logging.log4j.core.filter
+!
+!exports org.apache.logging.log4j.core.impl
+!
+!exports org.apache.logging.log4j.core.jmx
+!
+!exports org.apache.logging.log4j.core.layout
+!
+!exports org.apache.logging.log4j.core.lookup
+!
+!exports org.apache.logging.log4j.core.message
+!
+!exports org.apache.logging.log4j.core.net
+!
+!exports org.apache.logging.log4j.core.net.ssl
+!
+!exports org.apache.logging.log4j.core.osgi
+!
+!exports org.apache.logging.log4j.core.parser
+!
+!exports org.apache.logging.log4j.core.pattern
+!
+!exports org.apache.logging.log4j.core.script
+!
+!exports org.apache.logging.log4j.core.selector
+!
+!exports org.apache.logging.log4j.core.time
+!
+!exports org.apache.logging.log4j.core.tools
+!
+!exports org.apache.logging.log4j.core.tools.picocli
+!
+!exports org.apache.logging.log4j.core.util
+!
+!exports org.apache.logging.log4j.core.util.datetime
+!
+
+!// Required Dependencies
+!
+!requires transitive org.apache.logging.log4j
+!
+!requires transitive org.apache.logging.log4j.plugins
+!
+!// Optional Dependencies
+!
+!requires static java.desktop
+!
+!requires static java.management
+!
+!requires static java.sql
+!
+!requires static java.rmi
+!
+!requires static java.xml
+!
+!requires static com.lmax.disruptor
+!
+!requires static org.jctools.core
+!
+!requires static org.osgi.framework
+!
+!requires static com.conversantmedia.disruptor
+!
+!requires static com.fasterxml.jackson.core
+!
+!requires static com.fasterxml.jackson.databind
+!
+!requires static com.fasterxml.jackson.dataformat.xml
+!
+!requires static com.fasterxml.jackson.dataformat.yaml
+!
+!requires static org.apache.commons.compress
+!
+!requires static org.fusesource.jansi
+!
+
+!requires static jdk.unsupported
+!
+
+!uses ContextDataProvider
+!
+!uses WatchEventService
+!
+!uses ScriptManagerFactory
+!
+!provides ThreadInfoFactory with ExtendedThreadInfoFactory
+!
+!provides ContextDataProvider with ThreadContextDataProvider
+!
+!provides Provider with Log4jProvider
+!
+!provides PluginService with Log4jPlugins
+!
+!provides InjectorCallback with DefaultCallback
+!
+!===
 
 |log4j-1.2-api
 |org.apache.log4j
-|Automatic Module
+|Automatic Module - It is unlikely any application using JPMS would use Log4j 1.x.
 
 |log4j-appserver
 |org.apache.logging.log4j.appserver
@@ -96,9 +258,75 @@ The module info definition may be modified in the future to export these only to
 |org.apache.logging.log4j.jmx.gui
 |Automatic Module
 
+|log4j-jpl
+|org.apache.logging.log4j.jpl
+|
+[cols="m,"]
+!===
+!Module Directive !Notes
+
+!exports org.apache.logging.log4j.jpl to junit
+!
+!requires org.apache.logging.log4j
+!
+!requires transitive org.apache.logging.log4j.core
+!
+!provides java.lang.System.LoggerFinder with org.apache.logging.log4j.jpl.Log4jSystemLoggerFinder
+!
+!===
+
 |log4j-jul
 |org.apache.logging.log4j.jul
-|Automatic Module
+|
+[cols="m,"]
+!===
+!Module Directive !Notes
+
+!exports org.apache.logging.log4j.jul
+!
+!opens org.apache.logging.log4j.jul to org.apache.logging.log4j
+!
+
+!requires org.apache.logging.log4j
+!
+!requires org.apache.logging.log4j.core
+!
+!requires java.desktop
+!
+!requires java.logging
+!
+!===
+
+|log4j-layout-template-json
+|org.apache.logging.log4j.layout.template.json
+|
+[cols="m,"]
+!===
+!Module Directive !Notes
+
+!exports org.apache.logging.log4j.layout.template.json
+!
+!exports org.apache.logging.log4j.layout.template.json.resolver
+!
+!exports org.apache.logging.log4j.layout.template.json.util
+!
+
+!opens org.apache.logging.log4j.layout.template.json
+!
+!opens org.apache.logging.log4j.layout.template.json.resolver
+!
+!opens org.apache.logging.log4j.layout.template.json.util
+!
+
+!requires org.apache.logging.log4j
+!
+!requires org.apache.logging.log4j.plugins
+!
+!requires org.apache.logging.log4j.core
+!
+!requires org.jctools.core
+!
+!===
 
 |log4j-mongodb
 |org.apache.logging.log4j.mongodb
@@ -108,9 +336,144 @@ The module info definition may be modified in the future to export these only to
 |org.apache.logging.log4j.osgi
 |Automatic Module. Unclear how OSGi will support Java modules.
 
+|log4j-plugin-processor
+|org.apache.logging.log4j.plugin.processor
+|
+[cols="m,"]
+!===
+!Module Directive !Notes
+
+!exports org.apache.logging.log4j.plugin.processor
+!
+
+!requires java.compiler
+!
+!requires org.apache.logging.log4j
+!
+!requires org.apache.logging.log4j.plugins
+!
+!requires transitive org.osgi.framework
+!
+
+!provides javax.annotation.processing.Processor with org.apache.logging.log4j.plugin.processor.PluginProcessor
+!
+!===
+
+|log4j-plugins
+|org.apache.logging.log4j.plugins
+|
+[cols="m,"]
+!===
+!Module Directive !Notes
+
+!exports org.apache.logging.log4j.plugins
+!
+!exports org.apache.logging.log4j.plugins.condition
+!
+!exports org.apache.logging.log4j.plugins.convert
+!
+!exports org.apache.logging.log4j.plugins.di
+!
+!exports org.apache.logging.log4j.plugins.model
+!
+!exports org.apache.logging.log4j.plugins.name
+!
+!exports org.apache.logging.log4j.plugins.util
+!
+!exports org.apache.logging.log4j.plugins.validation
+!
+!exports org.apache.logging.log4j.plugins.validation.constraints
+!
+!exports org.apache.logging.log4j.plugins.validation.validators
+!
+!exports org.apache.logging.log4j.plugins.visit
+!
+
+!requires org.apache.logging.log4j
+!
+!requires static org.osgi.framework
+!
+
+!uses PluginService
+!
+!uses InjectorCallback
+!
+!===
+
+|log4j-script
+|org.apache.logging.log4j.script
+|
+[cols="m,"]
+!===
+!Module Directive !Notes
+
+!exports org.apache.logging.log4j.script
+!
+!exports org.apache.logging.log4j.script.appender
+!
+!opens org.apache.logging.log4j.script.appender to org.junit.platform.commons, org.apache.logging.log4j.core
+!
+!exports org.apache.logging.log4j.script.appender.rolling to junit
+!
+!exports org.apache.logging.log4j.script.appender.rolling.action
+!
+!exports org.apache.logging.log4j.script.appender.routing to junit
+!
+!exports org.apache.logging.log4j.script.config to org.junit.platform.commons
+!
+!exports org.apache.logging.log4j.script.config.arbiter
+!
+!opens org.apache.logging.log4j.script.config.arbiter to org.apache.logging.log4j.core
+!
+!exports org.apache.logging.log4j.script.config.builder to org.junit.platform.commons
+!
+!opens org.apache.logging.log4j.script.config.builder to org.apache.logging.log4j.core
+!
+!exports org.apache.logging.log4j.script.filter
+!
+!exports org.apache.logging.log4j.script.layout
+!
+!opens org.apache.logging.log4j.script.layout to org.apache.logging.log4j.core
+!
+
+!requires org.apache.logging.log4j
+!
+!requires org.apache.logging.log4j.core
+!
+!requires org.apache.logging.log4j.plugins
+!
+!requires java.scripting
+!
+
+!provides PluginService with Log4jPlugins
+!
+!provides ScriptManagerFactory with ScriptManagerFactoryImpl
+!
+!===
+
 |log4j-slf4j-impl
 |org.apache.logging.log4j.slf4j.impl
 |Automatic Module. May require renaming should SLF4J ever require all implementations to have the same module name.
+
+|log4j-to-jul
+|org.apache.logging.log4j.tojul
+|
+[cols="m,"]
+!===
+!Module Directive !Notes
+
+!exports org.apache.logging.log4j.tojul to org.apache.logging.log4j, org.apache.logging.log4j.tojul.test
+!
+
+!requires org.apache.logging.log4j
+!
+!requires java.logging
+!
+
+!provides org.apache.logging.log4j.spi.Provider with org.apache.logging.log4j.tojul.JULProvider
+!
+
+!===
 
 |log4j-to-slf4j
 |org.apache.logging.log4j.slf4j
@@ -125,20 +488,12 @@ The module info definition may be modified in the future to export these only to
 |Automatic Module
 |===
 
-As of version 2.9.1 Log4j supports Java 9 but will still work in Java 7
-or 8. In this version log4j-api is packaged as a multi-release jar and
-supports the use of the StackWalker and Process APIs.
-
-As of version 2.4, Log4j requires Java 7.
-
-Log4j version 2.3 and older require Java 6.
 
 log4j-api[[log4j-api]]::
-The Log4j link:log4j-api/index.html[API] module has no external
-dependencies.
+The Log4j link:log4j-api/index.html[API] module has no required external dependencies.
 
 log4j-core[[log4j-core]]::
-The Log4j link:log4j-core/index.html[Implementation] has several
+The Log4j link:log4j-core/index.html[Implementation] has no required exterbak dependencies but has  several
 optional link:log4j-core/dependencies.html[dependencies]. See the
 link:log4j-core/dependencies.html#Dependency_Tree[Dependency Tree] for
 the exact list of JAR files needed for these features.

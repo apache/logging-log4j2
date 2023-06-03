@@ -26,9 +26,9 @@ directly in code. You can also use the menu links on the left.
 |===
 |Component |Description
 
-|link:javadoc/log4j-api[Log4j 2 API]
+|link:javadoc/log4j-api[Log4j 3.x API]
 |The interface that applications should use and code against.
 
 |link:javadoc/log4j-core[Implementation]
-|The standard implementation, also called the Log4j 2 Core, that contains Appenders, Filters, and more.
+|The standard implementation, also called the Log4j 3.x Core, that contains Appenders, Filters, and more.
 |===

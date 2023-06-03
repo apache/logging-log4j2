@@ -17,7 +17,7 @@
 = Articles and Tutorials
 
 ++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
+<link rel="stylesheet" type="text/css" href="css/tables.css">
 ++++
 
 A collection of external articles and tutorials about Log4j 2. The manual/index.html[Log4j 2 manual] is the ultimate

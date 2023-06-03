@@ -17,7 +17,7 @@
 = Apache Log4j Security Vulnerabilities
 
 ++++
-<link rel="stylesheet" type="text/css" href="../css/tables.css">
+<link rel="stylesheet" type="text/css" href="css/tables.css">
 ++++
 
 This page lists all the security vulnerabilities fixed in released versions of Apache Log4j 2.
