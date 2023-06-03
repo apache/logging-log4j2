@@ -411,29 +411,21 @@ The module info definition may be modified in the future to export these only to
 !
 !exports org.apache.logging.log4j.script.appender
 !
-!opens org.apache.logging.log4j.script.appender to org.junit.platform.commons, org.apache.logging.log4j.core
-!
-!exports org.apache.logging.log4j.script.appender.rolling to junit
+!opens org.apache.logging.log4j.script.appender to org.apache.logging.log4j.core
 !
 !exports org.apache.logging.log4j.script.appender.rolling.action
-!
-!exports org.apache.logging.log4j.script.appender.routing to junit
-!
-!exports org.apache.logging.log4j.script.config to org.junit.platform.commons
 !
 !exports org.apache.logging.log4j.script.config.arbiter
 !
 !opens org.apache.logging.log4j.script.config.arbiter to org.apache.logging.log4j.core
-!
-!exports org.apache.logging.log4j.script.config.builder to org.junit.platform.commons
-!
-!opens org.apache.logging.log4j.script.config.builder to org.apache.logging.log4j.core
 !
 !exports org.apache.logging.log4j.script.filter
 !
 !exports org.apache.logging.log4j.script.layout
 !
 !opens org.apache.logging.log4j.script.layout to org.apache.logging.log4j.core
+!
+!exports org.apache.logging.log4j.script.plugins
 !
 
 !requires org.apache.logging.log4j
