@@ -332,14 +332,9 @@
     </menu>
 
     <menu name="Project Information" img="img/glyphicons/info.png">
-      <item name="Dependency Convergence" href="/dependency-convergence.html" />
-      <item name="Dependency Management" href="/dependency-management.html" />
-      <item name="Project Team" href="/team-list.html" />
-      <item name="Mailing Lists" href="/mail-lists.html" />
-      <item name="Issue Tracking" href="/issue-tracking.html" />
-      <item name="Project License" href="/license.html" />
-      <item name="Source Repository" href="/source-repository.html" />
-      <item name="Project Summary" href="/project-summary.html" />
+      <item name="Project Team" href="/team.html" />
+      <item name="Project License" href="https://www.apache.org/licenses/LICENSE-2.0" />
+      <item name="Source Repository" href="https://github.com/apache/logging-log4j2/tree/main" />
     </menu>
 
     <menu name="Project Reports" img="img/glyphicons/layers.png">

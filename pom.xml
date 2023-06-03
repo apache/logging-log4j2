@@ -1804,6 +1804,21 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>team-list</id>
+            <goals>
+              <goal>team</goal>
+            </goals>
+            <phase>site</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <inherited>false</inherited>
         <configuration combine.self="override">
