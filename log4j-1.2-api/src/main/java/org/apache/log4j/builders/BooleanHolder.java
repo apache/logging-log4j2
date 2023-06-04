@@ -31,7 +31,7 @@ public class BooleanHolder extends Holder<Boolean> {
     }
 
     @Override
-    public void set(Boolean value) {
+    public void set(final Boolean value) {
         if (value != null) {
             super.set(value);
         }

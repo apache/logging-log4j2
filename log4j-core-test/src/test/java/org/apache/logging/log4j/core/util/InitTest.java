@@ -32,11 +32,11 @@ public class InitTest {
 
     @Test
     public void initTest() {
-        Timer timer = new Timer("Log4j Initialization");
+        final Timer timer = new Timer("Log4j Initialization");
         timer.start();
-        Logger logger = LogManager.getLogger();
+        final Logger logger = LogManager.getLogger();
         timer.stop();
-        long elapsed = timer.getElapsedNanoTime();
+        final long elapsed = timer.getElapsedNanoTime();
         System.out.println(timer.toString());
         assertTrue(elapsed < 1000000000, "Initialization time exceeded threshold; elapsed " + elapsed);
     }

@@ -33,7 +33,7 @@ class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private final String propertyName;
 
-    public DefaultAsyncWaitStrategyFactory(String propertyName) {
+    public DefaultAsyncWaitStrategyFactory(final String propertyName) {
         this.propertyName = propertyName;
     }
 
@@ -87,7 +87,7 @@ class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory {
     private static long parseAdditionalLongProperty(
             final String propertyName,
             final String additionalKey,
-            long defaultValue) {
+            final long defaultValue) {
         final String key = getFullPropertyKey(propertyName, additionalKey);
         return PropertiesUtil.getProperties().getLongProperty(key, defaultValue);
     }

@@ -33,7 +33,7 @@ public class DbAppenderLoggingException extends AppenderLoggingException {
      * @param args The reason arguments for the exception, see {@link String#format(String, Object...)}.
      * @since 2.12.1
      */
-    public DbAppenderLoggingException(String format, Object... args) {
+    public DbAppenderLoggingException(final String format, final Object... args) {
         super(format, args);
     }
 
@@ -55,7 +55,7 @@ public class DbAppenderLoggingException extends AppenderLoggingException {
      * @param args The reason arguments for the exception, see {@link String#format(String, Object...)}.
      * @since 2.12.1
      */
-    public DbAppenderLoggingException(Throwable cause, String format, Object... args) {
+    public DbAppenderLoggingException(final Throwable cause, final String format, final Object... args) {
         super(cause, format, args);
     }
 

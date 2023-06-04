@@ -41,7 +41,7 @@ public class PatternParserTestCase extends TestCase {
     static String msgPattern = "%m%n";
 
     public static Test suite() {
-        TestSuite suite = new TestSuite();
+        final TestSuite suite = new TestSuite();
         suite.addTest(new PatternParserTestCase("mdcPattern"));
         return suite;
     }
@@ -49,7 +49,7 @@ public class PatternParserTestCase extends TestCase {
 
     Logger logger;
 
-    public PatternParserTestCase(String name) {
+    public PatternParserTestCase(final String name) {
         super(name);
     }
 
@@ -58,15 +58,15 @@ public class PatternParserTestCase extends TestCase {
      */
     public void mdcPattern() throws Exception {
 
-        String mdcMsgPattern1 = "%m : %X%n";
-        String mdcMsgPattern2 = "%m : %X{key1}%n";
-        String mdcMsgPattern3 = "%m : %X{key2}%n";
-        String mdcMsgPattern4 = "%m : %X{key3}%n";
-        String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
+        final String mdcMsgPattern1 = "%m : %X%n";
+        final String mdcMsgPattern2 = "%m : %X{key1}%n";
+        final String mdcMsgPattern3 = "%m : %X{key2}%n";
+        final String mdcMsgPattern4 = "%m : %X{key3}%n";
+        final String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
 
         // set up appender
-        PatternLayout layout = new PatternLayout(msgPattern);
-        Appender appender = new FileAppender(layout, OUTPUT_FILE + "_mdc", false);
+        final PatternLayout layout = new PatternLayout(msgPattern);
+        final Appender appender = new FileAppender(layout, OUTPUT_FILE + "_mdc", false);
 
         // set appender on root and set level to debug
         root.addAppender(appender);

@@ -35,9 +35,9 @@ public class Log4jEntityResolver implements EntityResolver {
     private static final String PUBLIC_ID = "-//APACHE//DTD LOG4J 1.2//EN";
 
     @Override
-    public InputSource resolveEntity(String publicId, String systemId) {
+    public InputSource resolveEntity(final String publicId, final String systemId) {
         if (systemId.endsWith("log4j.dtd") || PUBLIC_ID.equals(publicId)) {
-            Class<?> clazz = getClass();
+            final Class<?> clazz = getClass();
             InputStream in = clazz.getResourceAsStream("/org/apache/log4j/xml/log4j.dtd");
             if (in == null) {
                 LOGGER.warn("Could not find [log4j.dtd] using [{}] class loader, parsed without DTD.",

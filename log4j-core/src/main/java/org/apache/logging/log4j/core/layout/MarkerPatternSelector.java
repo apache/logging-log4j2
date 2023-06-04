@@ -140,7 +140,7 @@ public class MarkerPatternSelector implements PatternSelector, LocationAware {
             try {
                 final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions,
                         disableAnsi, noConsoleNoAnsi);
-                PatternFormatter[] formatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
+                final PatternFormatter[] formatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
                 formatterMap.put(property.getKey(), formatters);
                 for (int i = 0; !needsLocation && i < formatters.length; ++i) {
                     needsLocation = formatters[i].requiresLocation();

@@ -91,7 +91,7 @@ public class SystemPropertiesPropertySource implements PropertySource {
     }
 
     @Override
-    public String getProperty(String key) {
+    public String getProperty(final String key) {
         try {
             return System.getProperty(key);
         } catch (final SecurityException e) {
@@ -100,7 +100,7 @@ public class SystemPropertiesPropertySource implements PropertySource {
     }
 
     @Override
-    public boolean containsProperty(String key) {
+    public boolean containsProperty(final String key) {
         return getProperty(key) != null;
     }
 

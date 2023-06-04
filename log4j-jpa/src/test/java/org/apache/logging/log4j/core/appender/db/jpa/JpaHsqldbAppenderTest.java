@@ -41,13 +41,13 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     protected Connection setUpConnection() throws SQLException {
         final Connection connection = DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", USER_ID, PASSWORD);
 
-        try (Statement statement = connection.createStatement()) {
+        try (final Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE jpaBaseLogEntry ( "
                     + "id INTEGER IDENTITY, eventDate DATETIME, instant NVARCHAR(64), level VARCHAR(10), "
                     + "logger VARCHAR(255), message VARCHAR(1024), exception VARCHAR(1048576) )");
         }
 
-        try (Statement statement = connection.createStatement()) {
+        try (final Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE jpaBasicLogEntry ( "
                     + "id INTEGER IDENTITY, timemillis BIGINT, instant NVARCHAR(64), nanoTime BIGINT, "
                     + "level VARCHAR(10), loggerName VARCHAR(255), message VARCHAR(1024), thrown VARCHAR(1048576), "

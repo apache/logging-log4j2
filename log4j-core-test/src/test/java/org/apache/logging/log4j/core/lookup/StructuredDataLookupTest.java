@@ -57,7 +57,7 @@ public class StructuredDataLookupTest {
     }
 
     @Test void testWrongEvent() {
-        LogEvent mockEvent = mock(LogEvent.class);
+        final LogEvent mockEvent = mock(LogEvent.class);
         // ensure message is not a StructuredDataMessage
         when(mockEvent.getMessage()).thenReturn(mock(Message.class));
         assertNull(dataLookup.lookup(mockEvent, "ignored"));

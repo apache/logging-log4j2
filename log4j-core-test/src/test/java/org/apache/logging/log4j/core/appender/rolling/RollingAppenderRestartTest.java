@@ -69,7 +69,7 @@ public class RollingAppenderRestartTest {
         tearDown();
         Files.createDirectories(DIR);
         Files.write(FILE, "Hello, world".getBytes(), StandardOpenOption.CREATE);
-        FileTime newTime = FileTime.from(Instant.now().minus(2, ChronoUnit.DAYS));
+        final FileTime newTime = FileTime.from(Instant.now().minus(2, ChronoUnit.DAYS));
         Files
                 .getFileAttributeView(FILE, BasicFileAttributeView.class)
                 .setTimes(newTime, newTime, newTime);
@@ -90,7 +90,7 @@ public class RollingAppenderRestartTest {
         // Make sure it's done before validating.
         Thread.yield();
         final String name = "RollingFile";
-        RollingFileAppender appender = loggerContextRule.getAppender(name);
+        final RollingFileAppender appender = loggerContextRule.getAppender(name);
         assertNotNull(appender, name);
         if (appender.getManager().getSemaphore().tryAcquire(5, TimeUnit.SECONDS)) {
             // If we are in here, either the rollover is done or has not taken place yet.

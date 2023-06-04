@@ -116,9 +116,9 @@ public class LayoutTest extends TestCase {
      * @throws Exception derived tests, particular XMLLayoutTest, may throw exceptions.
      */
     public void testFormat() throws Exception {
-        Logger logger = Logger.getLogger("org.apache.log4j.LayoutTest");
-        LoggingEvent event = new LoggingEvent("org.apache.log4j.Logger", logger, Level.INFO, "Hello, World", null);
-        String result = createLayout().format(event);
+        final Logger logger = Logger.getLogger("org.apache.log4j.LayoutTest");
+        final LoggingEvent event = new LoggingEvent("org.apache.log4j.Logger", logger, Level.INFO, "Hello, World", null);
+        final String result = createLayout().format(event);
         assertEquals("Mock", result);
     }
 

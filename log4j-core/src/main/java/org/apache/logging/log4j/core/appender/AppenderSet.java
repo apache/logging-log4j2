@@ -35,7 +35,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * A deferred plugin for appenders.
  */
 @Plugin(name = "AppenderSet", category = Core.CATEGORY_NAME, printObject = true, deferChildren = true)
-public class AppenderSet {
+public final class AppenderSet {
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<AppenderSet> {
 

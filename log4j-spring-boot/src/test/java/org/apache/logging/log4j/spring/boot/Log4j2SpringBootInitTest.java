@@ -38,8 +38,8 @@ public class Log4j2SpringBootInitTest {
 
     @Test
     public void testEnvironment() {
-        LoggerContext context = (LoggerContext) LogManager.getContext(false);
-        ListAppender app = context.getConfiguration().getAppender("Out");
+        final LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        final ListAppender app = context.getConfiguration().getAppender("Out");
         assertNotNull(app);
         assertEquals(1, app.getMessages().size());
         assertEquals("Started: log4j-spring-boot", app.getMessages().get(0));
@@ -48,14 +48,14 @@ public class Log4j2SpringBootInitTest {
     @SpringBootApplication
     public static class SpringTestApplication implements ApplicationRunner {
         private final Logger LOGGER = LogManager.getLogger("org.apache.logging.log4j.core.springtest");
-        public static void main(String[] args) {
+        public static void main(final String[] args) {
             SpringApplication.run(SpringTestApplication.class, args);
         }
 
         @Override
-        public void run(ApplicationArguments args) throws Exception {
-            LoggerContext context = (LoggerContext) LogManager.getContext(false);
-            SpringLookup lookup = new SpringLookup();
+        public void run(final ApplicationArguments args) throws Exception {
+            final LoggerContext context = (LoggerContext) LogManager.getContext(false);
+            final SpringLookup lookup = new SpringLookup();
             lookup.setLoggerContext(context);
             LOGGER.info("Started: {}", lookup.lookup("spring.application.name"));
         }

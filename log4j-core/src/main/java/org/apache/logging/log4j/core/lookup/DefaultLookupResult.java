@@ -23,7 +23,7 @@ final class DefaultLookupResult implements LookupResult {
 
     private final String value;
 
-    DefaultLookupResult(String value) {
+    DefaultLookupResult(final String value) {
         this.value = Objects.requireNonNull(value, "value is required");
     }
 

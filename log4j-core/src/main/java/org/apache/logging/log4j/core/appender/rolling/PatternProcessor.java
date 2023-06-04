@@ -119,7 +119,7 @@ public class PatternProcessor {
         return patternConverters;
     }
 
-    public void setTimeBased(boolean isTimeBased) {
+    public void setTimeBased(final boolean isTimeBased) {
         this.isTimeBased = isTimeBased;
     }
 

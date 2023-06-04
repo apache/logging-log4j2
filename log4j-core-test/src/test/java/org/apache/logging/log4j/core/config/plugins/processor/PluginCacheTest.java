@@ -34,13 +34,13 @@ public class PluginCacheTest {
 
     @Test
     public void testOutputIsReproducibleWhenInputOrderingChanges() throws IOException {
-        PluginCache cacheA = new PluginCache();
+        final PluginCache cacheA = new PluginCache();
         createCategory(cacheA, "one", Arrays.asList("bravo", "alpha", "charlie"));
         createCategory(cacheA, "two", Arrays.asList("alpha", "charlie", "bravo"));
         assertEquals(cacheA.getAllCategories().size(), 2);
         assertEquals(cacheA.getAllCategories().get("one").size(), 3);
         assertEquals(cacheA.getAllCategories().get("two").size(), 3);
-        PluginCache cacheB = new PluginCache();
+        final PluginCache cacheB = new PluginCache();
         createCategory(cacheB, "two", Arrays.asList("bravo", "alpha", "charlie"));
         createCategory(cacheB, "one", Arrays.asList("alpha", "charlie", "bravo"));
         assertEquals(cacheB.getAllCategories().size(), 2);
@@ -49,10 +49,10 @@ public class PluginCacheTest {
         assertArrayEquals(cacheData(cacheA), cacheData(cacheB));
     }
 
-    private void createCategory(PluginCache cache, String categoryName, List<String> entryNames) {
-        Map<String, PluginEntry> category = cache.getCategory(categoryName);
+    private void createCategory(final PluginCache cache, final String categoryName, final List<String> entryNames) {
+        final Map<String, PluginEntry> category = cache.getCategory(categoryName);
         for (String entryName: entryNames) {
-            PluginEntry entry = new PluginEntry();
+            final PluginEntry entry = new PluginEntry();
             entry.setKey(entryName);
             entry.setClassName("com.example.Plugin");
             entry.setName("name");
@@ -61,8 +61,8 @@ public class PluginCacheTest {
         }
     }
 
-    private byte[] cacheData(PluginCache cache) throws IOException {
-        ByteArrayOutputStream outputB = new ByteArrayOutputStream();
+    private byte[] cacheData(final PluginCache cache) throws IOException {
+        final ByteArrayOutputStream outputB = new ByteArrayOutputStream();
         cache.writeCache(outputB);
         return outputB.toByteArray();
     }

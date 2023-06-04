@@ -36,7 +36,7 @@ public class JndiRestrictedLookupTest {
     @Test
     public void testDnsLookup() throws Exception {
         final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup("dns:/" + DOMAIN);
+        final String result = lookup.lookup("dns:/" + DOMAIN);
         assertNull("DNS data returend", result);
 
     }

@@ -50,12 +50,12 @@ public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements 
     public LevelRangeFilterBuilder() {
     }
 
-    public LevelRangeFilterBuilder(String prefix, Properties props) {
+    public LevelRangeFilterBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
     @Override
-    public Filter parse(Element filterElement, XmlConfiguration config) {
+    public Filter parse(final Element filterElement, final XmlConfiguration config) {
         final AtomicReference<String> levelMax = new AtomicReference<>();
         final AtomicReference<String> levelMin = new AtomicReference<>();
         final AtomicBoolean acceptOnMatch = new AtomicBoolean();
@@ -78,14 +78,14 @@ public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements 
     }
 
     @Override
-    public Filter parse(PropertiesConfiguration config) {
-        String levelMax = getProperty(LEVEL_MAX);
-        String levelMin = getProperty(LEVEL_MIN);
-        boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);
+    public Filter parse(final PropertiesConfiguration config) {
+        final String levelMax = getProperty(LEVEL_MAX);
+        final String levelMin = getProperty(LEVEL_MIN);
+        final boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);
         return createFilter(levelMax, levelMin, acceptOnMatch);
     }
 
-    private Filter createFilter(String levelMax, String levelMin, boolean acceptOnMatch) {
+    private Filter createFilter(final String levelMax, final String levelMin, final boolean acceptOnMatch) {
         Level max = Level.OFF;
         Level min = Level.ALL;
         if (levelMax != null) {
@@ -94,9 +94,9 @@ public class LevelRangeFilterBuilder extends AbstractBuilder<Filter> implements 
         if (levelMin != null) {
             min = OptionConverter.toLevel(levelMin, org.apache.log4j.Level.ALL).getVersion2Level();
         }
-        org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
-                ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
-                : org.apache.logging.log4j.core.Filter.Result.NEUTRAL;
+        final org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
+        ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
+        : org.apache.logging.log4j.core.Filter.Result.NEUTRAL;
 
         // XXX: LOG4J2-2315
         // log4j1 order: ALL < TRACE < DEBUG < ... < FATAL < OFF

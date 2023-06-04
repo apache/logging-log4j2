@@ -76,7 +76,7 @@ public abstract class AbstractJpaAppenderTest {
             StatusLogger.getLogger().reset();
 
             if (this.connection != null) {
-                try (Statement statement = this.connection.createStatement();) {
+                try (final Statement statement = this.connection.createStatement();) {
                     statement.execute("SHUTDOWN");
                 }
                 this.connection.close();

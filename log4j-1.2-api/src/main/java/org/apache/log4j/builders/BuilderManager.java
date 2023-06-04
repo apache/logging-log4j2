@@ -109,7 +109,7 @@ public class BuilderManager {
             try {
                 final T builder = LoaderUtil.newInstanceOf(plugin.getPluginClass());
                 if (builder != null) {
-                    U result = consumer.apply(builder);
+                    final U result = consumer.apply(builder);
                     // returning an empty wrapper is short for "we support this legacy class, but it has validation errors"
                     return result != null ? result : invalidValue;
                 }
@@ -121,7 +121,7 @@ public class BuilderManager {
     }
 
     public <P extends Parser<T>, T> T parse(final String className, final String prefix, final Properties props,
-            final PropertiesConfiguration config, T invalidValue) {
+            final PropertiesConfiguration config, final T invalidValue) {
         final P parser = createBuilder(getPlugin(className), prefix, props);
         if (parser != null) {
             final T value = parser.parse(config);

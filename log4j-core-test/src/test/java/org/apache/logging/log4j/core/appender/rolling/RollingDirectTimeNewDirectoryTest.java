@@ -65,8 +65,8 @@ public class RollingDirectTimeNewDirectoryTest {
             logger.info("nHq6p9kgfvWfjzDRYbZp");
         }
 
-        File logDir = new File(DIR);
-        File[] logFolders = logDir.listFiles();
+        final File logDir = new File(DIR);
+        final File[] logFolders = logDir.listFiles();
         assertNotNull(logFolders);
         Arrays.sort(logFolders);
         int totalFiles = 0;
@@ -79,7 +79,7 @@ public class RollingDirectTimeNewDirectoryTest {
                     logFolders.length >= minExpectedLogFolderCount);
 
             for (File logFolder : logFolders) {
-                File[] logFiles = logFolder.listFiles();
+                final File[] logFiles = logFolder.listFiles();
                 if (logFiles != null) {
                     assertTrue("Only 1 file per folder expected: got " + logFiles.length,
                             logFiles.length <= 1);

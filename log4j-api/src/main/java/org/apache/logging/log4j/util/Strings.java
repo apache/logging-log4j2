@@ -69,7 +69,7 @@ public final class Strings {
             return true;
         }
         for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
+            final char c = s.charAt(i);
             if (!Character.isWhitespace(c)) {
                 return false;
             }
@@ -200,7 +200,7 @@ public final class Strings {
         return buf.toString();
     }
 
-    public static String[] splitList(String string) {
+    public static String[] splitList(final String string) {
         return string != null ? string.split(COMMA_DELIMITED_RE) : new String[0];
     }
 
@@ -310,13 +310,13 @@ public final class Strings {
      * @param str2 the second string.
      * @return the concatenated String.
      */
-    public static String concat(String str1, String str2) {
+    public static String concat(final String str1, final String str2) {
         if (isEmpty(str1)) {
             return str2;
         } else if (isEmpty(str2)) {
             return str1;
         }
-        StringBuilder sb = tempStr.get();
+        final StringBuilder sb = tempStr.get();
         try {
             return sb.append(str1).append(str2).toString();
         } finally {
@@ -336,7 +336,7 @@ public final class Strings {
         if (count < 0) {
             throw new IllegalArgumentException("count");
         }
-        StringBuilder sb = tempStr.get();
+        final StringBuilder sb = tempStr.get();
         try {
             for (int index = 0; index < count; index++) {
                 sb.append(str);

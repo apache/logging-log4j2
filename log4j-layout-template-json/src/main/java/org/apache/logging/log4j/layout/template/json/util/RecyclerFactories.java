@@ -54,7 +54,7 @@ public final class RecyclerFactories {
     public static RecyclerFactory ofSpec(final String recyclerFactorySpec) {
 
         // Determine the default capacity.
-        int defaultCapacity = Math.max(
+        final int defaultCapacity = Math.max(
                 2 * Runtime.getRuntime().availableProcessors() + 1,
                 8);
 

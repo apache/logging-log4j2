@@ -77,7 +77,7 @@ public class ReusableLogEventFactory implements LogEventFactory, LocationAwareLo
     public LogEvent createEvent(final String loggerName, final Marker marker, final String fqcn,
                                 final StackTraceElement location, final Level level, final Message message,
                                 final List<Property> properties, final Throwable t) {
-        MutableLogEvent result = getOrCreateMutableLogEvent();
+        final MutableLogEvent result = getOrCreateMutableLogEvent();
         result.reserved = true;
         // No need to clear here, values are cleared in release when reserved is set to false.
         // If the event was dirty we'd create a new one.
@@ -101,12 +101,12 @@ public class ReusableLogEventFactory implements LogEventFactory, LocationAwareLo
     }
 
     private static MutableLogEvent getOrCreateMutableLogEvent() {
-        MutableLogEvent result = mutableLogEventThreadLocal.get();
+        final MutableLogEvent result = mutableLogEventThreadLocal.get();
         return result == null || result.reserved ? createInstance(result) : result;
     }
 
-    private static MutableLogEvent createInstance(MutableLogEvent existing) {
-        MutableLogEvent result = new MutableLogEvent();
+    private static MutableLogEvent createInstance(final MutableLogEvent existing) {
+        final MutableLogEvent result = new MutableLogEvent();
 
         // usually no need to re-initialize thread-specific fields since the event is stored in a ThreadLocal
         result.setThreadId(Thread.currentThread().getId());

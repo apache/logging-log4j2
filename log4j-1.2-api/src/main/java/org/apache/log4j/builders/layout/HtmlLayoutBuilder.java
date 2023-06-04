@@ -46,13 +46,13 @@ public class HtmlLayoutBuilder extends AbstractBuilder<Layout> implements Layout
     public HtmlLayoutBuilder() {
     }
 
-    public HtmlLayoutBuilder(String prefix, Properties props) {
+    public HtmlLayoutBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
 
     @Override
-    public Layout parse(Element layoutElement, XmlConfiguration config) {
+    public Layout parse(final Element layoutElement, final XmlConfiguration config) {
         final AtomicReference<String> title = new AtomicReference<>("Log4J Log Messages");
         final AtomicBoolean locationInfo = new AtomicBoolean();
         forEachElement(layoutElement.getElementsByTagName("param"), currentElement -> {
@@ -68,13 +68,13 @@ public class HtmlLayoutBuilder extends AbstractBuilder<Layout> implements Layout
     }
 
     @Override
-    public Layout parse(PropertiesConfiguration config) {
-        String title = getProperty(TITLE_PARAM, DEFAULT_TITLE);
-        boolean locationInfo = getBooleanProperty(LOCATION_INFO_PARAM);
+    public Layout parse(final PropertiesConfiguration config) {
+        final String title = getProperty(TITLE_PARAM, DEFAULT_TITLE);
+        final boolean locationInfo = getBooleanProperty(LOCATION_INFO_PARAM);
         return createLayout(title, locationInfo);
     }
 
-    private Layout createLayout(String title, boolean locationInfo) {
+    private Layout createLayout(final String title, final boolean locationInfo) {
         return LayoutWrapper.adapt(HtmlLayout.newBuilder()
                 .withTitle(title)
                 .withLocationInfo(locationInfo)

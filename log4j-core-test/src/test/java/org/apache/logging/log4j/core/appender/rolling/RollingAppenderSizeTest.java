@@ -146,7 +146,7 @@ public class RollingAppenderSizeTest {
         for (final File file : files) {
             if (file.getName().endsWith(fileExtension)) {
                 CompressorInputStream in = null;
-                try (FileInputStream fis = new FileInputStream(file)) {
+                try (final FileInputStream fis = new FileInputStream(file)) {
                     try {
                         in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(), fis);
                     } catch (final CompressorException ce) {

@@ -93,8 +93,8 @@ public class DefaultMergeStrategy implements MergeStrategy {
                             targetAttribute.setValue(attribute.getValue());
                         }
                     } else if (attribute.getKey().equalsIgnoreCase("packages")) {
-                        String sourcePackages = attribute.getValue();
-                        String targetPackages = targetAttribute.getValue();
+                        final String sourcePackages = attribute.getValue();
+                        final String targetPackages = targetAttribute.getValue();
                         if (sourcePackages != null) {
                             if (targetPackages != null) {
                                 targetAttribute.setValue(targetPackages + "," + sourcePackages);

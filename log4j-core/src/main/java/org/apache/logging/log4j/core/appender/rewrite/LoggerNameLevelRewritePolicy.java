@@ -36,7 +36,7 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
  * @since 2.4
  */
 @Plugin(name = "LoggerNameLevelRewritePolicy", category = Core.CATEGORY_NAME, elementType = "rewritePolicy", printObject = true)
-public class LoggerNameLevelRewritePolicy implements RewritePolicy {
+public final class LoggerNameLevelRewritePolicy implements RewritePolicy {
 
     /**
      * Creates a policy to rewrite levels for a given logger name.

@@ -27,174 +27,174 @@ import java.util.logging.Logger;
  */
 public class NoOpLogger extends Logger {
 
-    protected NoOpLogger(String name) {
+    protected NoOpLogger(final String name) {
         super(name, null);
     }
 
     @Override
-    public void log(LogRecord record) {
+    public void log(final LogRecord record) {
     }
 
     @Override
-    public void log(Level level, String msg) {
+    public void log(final Level level, final String msg) {
     }
 
     @Override
-    public void log(Level level, Supplier<String> msgSupplier) {
+    public void log(final Level level, final Supplier<String> msgSupplier) {
     }
 
     @Override
-    public void log(Level level, String msg, Object param1) {
+    public void log(final Level level, final String msg, final Object param1) {
     }
 
     @Override
-    public void log(Level level, String msg, Object[] params) {
+    public void log(final Level level, final String msg, final Object[] params) {
     }
 
     @Override
-    public void log(Level level, String msg, Throwable thrown) {
+    public void log(final Level level, final String msg, final Throwable thrown) {
     }
 
     @Override
-    public void log(Level level, Throwable thrown, Supplier<String> msgSupplier) {
+    public void log(final Level level, final Throwable thrown, final Supplier<String> msgSupplier) {
     }
 
     @Override
-    public void logp(Level level, String sourceClass, String sourceMethod, String msg) {
+    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg) {
     }
 
     @Override
-    public void logp(Level level, String sourceClass, String sourceMethod, Supplier<String> msgSupplier) {
+    public void logp(final Level level, final String sourceClass, final String sourceMethod, final Supplier<String> msgSupplier) {
     }
 
     @Override
-    public void logp(Level level, String sourceClass, String sourceMethod, String msg, Object param1) {
+    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg, final Object param1) {
     }
 
     @Override
-    public void logp(Level level, String sourceClass, String sourceMethod, String msg, Object[] params) {
+    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg, final Object[] params) {
     }
 
     @Override
-    public void logp(Level level, String sourceClass, String sourceMethod, String msg, Throwable thrown) {
+    public void logp(final Level level, final String sourceClass, final String sourceMethod, final String msg, final Throwable thrown) {
     }
 
     @Override
-    public void logp(Level level, String sourceClass, String sourceMethod, Throwable thrown,
-            Supplier<String> msgSupplier) {
+    public void logp(final Level level, final String sourceClass, final String sourceMethod, final Throwable thrown,
+            final Supplier<String> msgSupplier) {
     }
 
     @Override
-    public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName, String msg) {
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName, final String msg) {
     }
 
     @Override
-    public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName, String msg,
-            Object param1) {
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName, final String msg,
+            final Object param1) {
     }
 
     @Override
-    public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName, String msg,
-            Object[] params) {
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName, final String msg,
+            final Object[] params) {
     }
 
     @Override
-    public void logrb(Level level, String sourceClass, String sourceMethod, ResourceBundle bundle, String msg,
-            Object... params) {
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final ResourceBundle bundle, final String msg,
+            final Object... params) {
     }
 
     @Override
-    public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName, String msg,
-            Throwable thrown) {
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final String bundleName, final String msg,
+            final Throwable thrown) {
     }
 
     @Override
-    public void logrb(Level level, String sourceClass, String sourceMethod, ResourceBundle bundle, String msg,
-            Throwable thrown) {
+    public void logrb(final Level level, final String sourceClass, final String sourceMethod, final ResourceBundle bundle, final String msg,
+            final Throwable thrown) {
     }
 
     @Override
-    public void entering(String sourceClass, String sourceMethod) {
+    public void entering(final String sourceClass, final String sourceMethod) {
     }
 
     @Override
-    public void entering(String sourceClass, String sourceMethod, Object param1) {
+    public void entering(final String sourceClass, final String sourceMethod, final Object param1) {
     }
 
     @Override
-    public void entering(String sourceClass, String sourceMethod, Object[] params) {
+    public void entering(final String sourceClass, final String sourceMethod, final Object[] params) {
     }
 
     @Override
-    public void exiting(String sourceClass, String sourceMethod) {
+    public void exiting(final String sourceClass, final String sourceMethod) {
     }
 
     @Override
-    public void exiting(String sourceClass, String sourceMethod, Object result) {
+    public void exiting(final String sourceClass, final String sourceMethod, final Object result) {
     }
 
     @Override
-    public void throwing(String sourceClass, String sourceMethod, Throwable thrown) {
+    public void throwing(final String sourceClass, final String sourceMethod, final Throwable thrown) {
     }
 
     @Override
-    public void severe(String msg) {
+    public void severe(final String msg) {
     }
 
     @Override
-    public void warning(String msg) {
+    public void warning(final String msg) {
     }
 
     @Override
-    public void info(String msg) {
+    public void info(final String msg) {
     }
 
     @Override
-    public void config(String msg) {
+    public void config(final String msg) {
     }
 
     @Override
-    public void fine(String msg) {
+    public void fine(final String msg) {
     }
 
     @Override
-    public void finer(String msg) {
+    public void finer(final String msg) {
     }
 
     @Override
-    public void finest(String msg) {
+    public void finest(final String msg) {
     }
 
     @Override
-    public void severe(Supplier<String> msgSupplier) {
+    public void severe(final Supplier<String> msgSupplier) {
     }
 
     @Override
-    public void warning(Supplier<String> msgSupplier) {
+    public void warning(final Supplier<String> msgSupplier) {
     }
 
     @Override
-    public void info(Supplier<String> msgSupplier) {
+    public void info(final Supplier<String> msgSupplier) {
     }
 
     @Override
-    public void config(Supplier<String> msgSupplier) {
+    public void config(final Supplier<String> msgSupplier) {
     }
 
     @Override
-    public void fine(Supplier<String> msgSupplier) {
+    public void fine(final Supplier<String> msgSupplier) {
     }
 
     @Override
-    public void finer(Supplier<String> msgSupplier) {
+    public void finer(final Supplier<String> msgSupplier) {
     }
 
     @Override
-    public void finest(Supplier<String> msgSupplier) {
+    public void finest(final Supplier<String> msgSupplier) {
     }
 
     @Override
-    public void setLevel(Level newLevel) throws SecurityException {
+    public void setLevel(final Level newLevel) throws SecurityException {
     }
 
     @Override
@@ -203,7 +203,7 @@ public class NoOpLogger extends Logger {
     }
 
     @Override
-    public boolean isLoggable(Level level) {
+    public boolean isLoggable(final Level level) {
         return false;
     }
 }

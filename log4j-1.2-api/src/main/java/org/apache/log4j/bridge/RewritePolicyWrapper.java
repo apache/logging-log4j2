@@ -27,14 +27,14 @@ public class RewritePolicyWrapper implements RewritePolicy {
 
     private final org.apache.logging.log4j.core.appender.rewrite.RewritePolicy policy;
 
-    public RewritePolicyWrapper(org.apache.logging.log4j.core.appender.rewrite.RewritePolicy policy) {
+    public RewritePolicyWrapper(final org.apache.logging.log4j.core.appender.rewrite.RewritePolicy policy) {
         this.policy = policy;
     }
 
     @Override
-    public LoggingEvent rewrite(LoggingEvent source) {
-        LogEvent event = source instanceof LogEventAdapter ? ((LogEventAdapter) source).getEvent() :
-                new LogEventWrapper(source);
+    public LoggingEvent rewrite(final LoggingEvent source) {
+        final LogEvent event = source instanceof LogEventAdapter ? ((LogEventAdapter) source).getEvent() :
+        new LogEventWrapper(source);
         return new LogEventAdapter(policy.rewrite(event));
     }
 

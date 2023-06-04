@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 /**
  * Class Description goes here.
  */
-public class LayoutAdapter implements org.apache.logging.log4j.core.Layout<String> {
+public final class LayoutAdapter implements org.apache.logging.log4j.core.Layout<String> {
     private final Layout layout;
 
     /**
@@ -38,7 +38,7 @@ public class LayoutAdapter implements org.apache.logging.log4j.core.Layout<Strin
      * @param layout a Log4j 1.x layout
      * @return a Log4j 2.x layout or {@code null} if the parameter is {@code null}
      */
-    public static org.apache.logging.log4j.core.Layout<?> adapt(Layout layout) {
+    public static org.apache.logging.log4j.core.Layout<?> adapt(final Layout layout) {
         if (layout instanceof LayoutWrapper) {
             return ((LayoutWrapper) layout).getLayout();
         }
@@ -48,7 +48,7 @@ public class LayoutAdapter implements org.apache.logging.log4j.core.Layout<Strin
         return null;
     }
 
-    private LayoutAdapter(Layout layout) {
+    private LayoutAdapter(final Layout layout) {
         this.layout = layout;
     }
 
@@ -67,13 +67,13 @@ public class LayoutAdapter implements org.apache.logging.log4j.core.Layout<Strin
     }
 
     @Override
-    public byte[] toByteArray(LogEvent event) {
-        String result = layout.format(new LogEventAdapter(event));
+    public byte[] toByteArray(final LogEvent event) {
+        final String result = layout.format(new LogEventAdapter(event));
         return result == null ? null : result.getBytes();
     }
 
     @Override
-    public String toSerializable(LogEvent event) {
+    public String toSerializable(final LogEvent event) {
         return layout.format(new LogEventAdapter(event));
     }
 
@@ -88,7 +88,7 @@ public class LayoutAdapter implements org.apache.logging.log4j.core.Layout<Strin
     }
 
     @Override
-    public void encode(LogEvent event, ByteBufferDestination destination) {
+    public void encode(final LogEvent event, final ByteBufferDestination destination) {
         final byte[] data = toByteArray(event);
         destination.writeBytes(data, 0, data.length);
     }

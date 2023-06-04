@@ -72,14 +72,14 @@ public abstract class AbstractLog4j1ConfigurationConverterTest {
         }
     }
 
-    private void checkUnnecessaryEscaping(Path tempFile) throws IOException {
+    private void checkUnnecessaryEscaping(final Path tempFile) throws IOException {
         for (String line : Files.readAllLines(tempFile)) {
             assertFalse(line.endsWith("&#xd;"));
         }
 
     }
 
-    private void checkWellFormedXml(Path xmlFilePath) throws SAXException, IOException, ParserConfigurationException {
+    private void checkWellFormedXml(final Path xmlFilePath) throws SAXException, IOException, ParserConfigurationException {
         DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlFilePath.toUri().toString());
     }
 }

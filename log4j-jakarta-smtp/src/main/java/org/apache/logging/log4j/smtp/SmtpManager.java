@@ -82,7 +82,7 @@ public class SmtpManager extends MailManager {
     }
 
     @Override
-    public void add(LogEvent event) {
+    public void add(final LogEvent event) {
         buffer.add(event.toImmutable());
     }
 

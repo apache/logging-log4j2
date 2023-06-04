@@ -26,7 +26,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * {@link org.apache.logging.log4j.simple.SimpleLogger} factory to be used by {@link StatusLogger} and {@link StatusConsoleListener}.
  */
-class SimpleLoggerFactory {
+final class SimpleLoggerFactory {
 
     private static final SimpleLoggerFactory INSTANCE = new SimpleLoggerFactory();
 

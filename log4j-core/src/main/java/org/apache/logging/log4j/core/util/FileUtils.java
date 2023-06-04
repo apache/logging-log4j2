@@ -78,7 +78,7 @@ public final class FileUtils {
                 LOGGER.warn("Invalid URI {}", uri);
             }
         } else {
-            File file = new File(uri.toString());
+            final File file = new File(uri.toString());
             try {
                 if (file.exists()) {
                     return file;

@@ -170,7 +170,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
 
     private final Object queueFullEnqueueLock = new Object();
 
-    public AsyncLoggerConfigDisruptor(AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
+    public AsyncLoggerConfigDisruptor(final AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
         this.asyncWaitStrategyFactory = asyncWaitStrategyFactory; // may be null
     }
 

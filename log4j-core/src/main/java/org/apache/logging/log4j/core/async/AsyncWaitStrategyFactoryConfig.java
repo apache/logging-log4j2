@@ -67,7 +67,7 @@ public class AsyncWaitStrategyFactoryConfig {
             return factoryClassName;
         }
 
-        public B withFactoryClassName(String className) {
+        public B withFactoryClassName(final String className) {
             this.factoryClassName = className;
             return asBuilder();
         }

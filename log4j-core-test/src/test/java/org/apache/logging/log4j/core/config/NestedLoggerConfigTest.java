@@ -68,7 +68,7 @@ public class NestedLoggerConfigTest {
     }
 
     private Configuration loadConfiguration(final String resourcePath) throws IOException {
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
+        try (final InputStream in = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
             final Configuration configuration = new XmlConfiguration(new LoggerContext("test"), new ConfigurationSource(in));
             configuration.initialize();
             configuration.start();

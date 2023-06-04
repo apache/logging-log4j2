@@ -158,7 +158,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             try {
                 if (factories == null) {
                     final List<ConfigurationFactory> list = new ArrayList<>();
-                    PropertiesUtil props = PropertiesUtil.getProperties();
+                    final PropertiesUtil props = PropertiesUtil.getProperties();
                     final String factoryClass = props.getStringProperty(CONFIGURATION_FACTORY_PROPERTY);
                     if (factoryClass != null) {
                         addFactory(list, factoryClass);
@@ -192,12 +192,12 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         return configFactory;
     }
 
-    public static AuthorizationProvider authorizationProvider(PropertiesUtil props) {
+    public static AuthorizationProvider authorizationProvider(final PropertiesUtil props) {
         final String authClass = props.getStringProperty(PREFIXES, AUTHORIZATION_PROVIDER, null);
         AuthorizationProvider provider = null;
         if (authClass != null) {
             try {
-                Object obj = LoaderUtil.newInstanceOf(authClass);
+                final Object obj = LoaderUtil.newInstanceOf(authClass);
                 if (obj instanceof AuthorizationProvider) {
                     provider = (AuthorizationProvider) obj;
                 } else {
@@ -373,7 +373,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                 final String configLocationStr = this.substitutor.replace(PropertiesUtil.getProperties()
                         .getStringProperty(CONFIGURATION_FILE_PROPERTY));
                 if (configLocationStr != null) {
-                    String[] sources = parseConfigLocations(configLocationStr);
+                    final String[] sources = parseConfigLocations(configLocationStr);
                     if (sources.length > 1) {
                         final List<AbstractConfiguration> configs = new ArrayList<>();
                         for (final String sourceLocation : sources) {
@@ -417,7 +417,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
                     }
                 }
             } else {
-                String[] sources = parseConfigLocations(configLocation);
+                final String[] sources = parseConfigLocations(configLocation);
                 if (sources.length > 1) {
                     final List<AbstractConfiguration> configs = new ArrayList<>();
                     for (final String sourceLocation : sources) {
@@ -474,7 +474,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             return getConfiguration(null, loggerContext, configLocationStr);
         }
 
-        private Configuration getConfiguration(String requiredVersion, final LoggerContext loggerContext,
+        private Configuration getConfiguration(final String requiredVersion, final LoggerContext loggerContext,
                 final String configLocationStr) {
             ConfigurationSource source = null;
             try {
@@ -567,7 +567,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             return null;
         }
 
-        private String[] parseConfigLocations(URI configLocations) {
+        private String[] parseConfigLocations(final URI configLocations) {
             final String[] uris = configLocations.toString().split("\\?");
             final List<String> locations = new ArrayList<>();
             if (uris.length > 1) {
@@ -589,7 +589,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
             return new String[] {uris[0]};
         }
 
-        private String[] parseConfigLocations(String configLocations) {
+        private String[] parseConfigLocations(final String configLocations) {
             final String[] uris = configLocations.split(",");
             if (uris.length > 1) {
                 return uris;

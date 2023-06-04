@@ -138,7 +138,7 @@ public class DailyRollingFileAppenderBuilder extends AbstractBuilder implements 
             final String level, final boolean bufferedIo, final int bufferSize, final String datePattern,
             final T configuration) {
 
-        org.apache.logging.log4j.core.Layout<?> fileLayout = LayoutAdapter.adapt(layout);
+        final org.apache.logging.log4j.core.Layout<?> fileLayout = LayoutAdapter.adapt(layout);
         if (bufferedIo) {
             immediateFlush = false;
         }

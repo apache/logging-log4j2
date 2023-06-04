@@ -77,7 +77,7 @@ public class NamePatternConverterBenchmark {
         }
 
         StringBuilder destination() {
-            StringBuilder result = destination.get();
+            final StringBuilder result = destination.get();
             result.setLength(0);
             return result;
         }
@@ -86,14 +86,14 @@ public class NamePatternConverterBenchmark {
     @Benchmark
     @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public void benchNamePatternConverter(ExecutionPlan plan) {
+    public void benchNamePatternConverter(final ExecutionPlan plan) {
         plan.converter.format(plan.event, plan.destination());
     }
 
     private static class BenchmarkLogEvent extends AbstractLogEvent {
         private final String loggerName;
 
-        BenchmarkLogEvent(String loggerName) {
+        BenchmarkLogEvent(final String loggerName) {
             this.loggerName = loggerName;
         }
 

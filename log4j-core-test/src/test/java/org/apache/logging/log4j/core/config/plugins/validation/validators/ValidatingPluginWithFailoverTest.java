@@ -53,10 +53,10 @@ public class ValidatingPluginWithFailoverTest {
         plugin = (PluginType<FailoverAppender>) manager.getPluginType("failover");
         assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
 
-        AppenderRef appenderRef = AppenderRef.createAppenderRef("List", Level.ALL, null);
+        final AppenderRef appenderRef = AppenderRef.createAppenderRef("List", Level.ALL, null);
         node = new Node(null, "failover", plugin);
-        Node failoversNode = new Node(node, "Failovers", manager.getPluginType("Failovers"));
-        Node appenderRefNode  = new Node(failoversNode, "appenderRef", manager.getPluginType("appenderRef"));
+        final Node failoversNode = new Node(node, "Failovers", manager.getPluginType("Failovers"));
+        final Node appenderRefNode = new Node(failoversNode, "appenderRef", manager.getPluginType("appenderRef"));
         appenderRefNode.getAttributes().put("ref", "file");
         appenderRefNode.setObject(appenderRef);
         failoversNode.getChildren().add(appenderRefNode);
@@ -86,7 +86,7 @@ public class ValidatingPluginWithFailoverTest {
     private static class StoringStatusListener implements StatusListener {
         private final List<StatusData> logs = new ArrayList<>();
         @Override
-        public void log(StatusData data) {
+        public void log(final StatusData data) {
             logs.add(data);
         }
 

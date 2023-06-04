@@ -32,7 +32,7 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
 public class Log4jSystemLoggerAdapter extends AbstractLoggerAdapter<Logger> {
 
     @Override
-    protected Logger newLogger(String name, LoggerContext context) {
+    protected Logger newLogger(final String name, final LoggerContext context) {
         return new Log4jSystemLogger(context.getLogger(name));
     }
 

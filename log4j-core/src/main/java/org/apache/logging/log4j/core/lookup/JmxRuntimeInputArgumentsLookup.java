@@ -59,7 +59,7 @@ public class JmxRuntimeInputArgumentsLookup extends MapLookup {
         if (key == null) {
             return null;
         }
-        Map<String, String> map = getMap();
+        final Map<String, String> map = getMap();
         return map == null ? null : map.get(key);
     }
 }

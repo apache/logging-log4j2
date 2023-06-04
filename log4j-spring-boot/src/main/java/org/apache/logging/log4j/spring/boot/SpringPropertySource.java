@@ -28,7 +28,7 @@ public class SpringPropertySource implements PropertySource {
 
     private final Environment environment;
 
-    public SpringPropertySource(Environment environment) {
+    public SpringPropertySource(final Environment environment) {
         this.environment = environment;
     }
 
@@ -43,7 +43,7 @@ public class SpringPropertySource implements PropertySource {
     }
 
     @Override
-    public String getProperty(String key) {
+    public String getProperty(final String key) {
         if (environment != null) {
             return environment.getProperty(key);
         }
@@ -51,7 +51,7 @@ public class SpringPropertySource implements PropertySource {
     }
 
     @Override
-    public boolean containsProperty(String key) {
+    public boolean containsProperty(final String key) {
         if (environment != null) {
             return environment.containsProperty(key);
         }

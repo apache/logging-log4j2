@@ -91,14 +91,14 @@ public class LoggerConfigTest {
 
     @Test
     public void testLevel() {
-        Configuration configuration = new DefaultConfiguration();
-        LoggerConfig config1 = LoggerConfig.newBuilder()
+        final Configuration configuration = new DefaultConfiguration();
+        final LoggerConfig config1 = LoggerConfig.newBuilder()
                 .withLoggerName("org.apache.logging.log4j.test")
                 .withLevel(Level.ERROR)
                 .withAdditivity(false)
                 .withConfig(configuration)
                 .build();
-        LoggerConfig config2 = LoggerConfig.newBuilder()
+        final LoggerConfig config2 = LoggerConfig.newBuilder()
                 .withLoggerName("org.apache.logging.log4j")
                 .withAdditivity(false)
                 .withConfig(configuration)

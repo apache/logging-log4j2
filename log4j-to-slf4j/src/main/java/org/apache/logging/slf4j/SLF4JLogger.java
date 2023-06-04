@@ -236,8 +236,8 @@ public class SLF4JLogger extends AbstractLogger {
 
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
-        org.slf4j.Marker slf4jMarker = getMarker(marker);
-        String formattedMessage = message.getFormattedMessage();
+        final org.slf4j.Marker slf4jMarker = getMarker(marker);
+        final String formattedMessage = message.getFormattedMessage();
         if (locationAwareLogger != null) {
             if (message instanceof LoggerNameAwareMessage) {
                 ((LoggerNameAwareMessage) message).setLoggerName(getName());
@@ -303,14 +303,14 @@ public class SLF4JLogger extends AbstractLogger {
     }
 
     @Override
-    protected LogBuilder getLogBuilder(Level level) {
-        SLF4JLogBuilder builder = logBuilder.get();
+    protected LogBuilder getLogBuilder(final Level level) {
+        final SLF4JLogBuilder builder = logBuilder.get();
         return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder.reset(this, level)
                 : new SLF4JLogBuilder(this, level);
     }
 
     @Override
-    public LogBuilder atLevel(Level level) {
+    public LogBuilder atLevel(final Level level) {
         // TODO: wrap SLF4J 2.x LoggingEventBuilder
         if (LAZY_LEVEL_CHECK) {
             return getLogBuilder(level);

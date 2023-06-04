@@ -154,14 +154,14 @@ public class Source {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
         if (!(obj instanceof Source)) {
             return false;
         }
-        Source other = (Source) obj;
+        final Source other = (Source) obj;
         return Objects.equals(location, other.location);
     }
 

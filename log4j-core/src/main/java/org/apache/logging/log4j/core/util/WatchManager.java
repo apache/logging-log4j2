@@ -120,7 +120,7 @@ public class WatchManager extends AbstractLifeCycle {
             logger.trace("{} run ended.", SIMPLE_NAME);
         }
     }
-    private static Logger logger = StatusLogger.getLogger();
+    private static final Logger logger = StatusLogger.getLogger();
     private final ConcurrentMap<Source, ConfigurationMonitor> watchers = new ConcurrentHashMap<>();
     private int intervalSeconds = 0;
     private ScheduledFuture<?> future;
@@ -228,7 +228,7 @@ public class WatchManager extends AbstractLifeCycle {
         if (file == null) {
             return;
         }
-        Source source = new Source(file);
+        final Source source = new Source(file);
         reset(source);
     }
 
@@ -249,7 +249,7 @@ public class WatchManager extends AbstractLifeCycle {
         }
         final ConfigurationMonitor monitor = watchers.get(source);
         if (monitor != null) {
-            Watcher watcher = monitor.getWatcher();
+            final Watcher watcher = monitor.getWatcher();
             if (watcher.isModified()) {
                 final long lastModifiedMillis = watcher.getLastModified();
                 if (logger.isDebugEnabled()) {
@@ -322,7 +322,7 @@ public class WatchManager extends AbstractLifeCycle {
      * @since 2.11.0
      */
     public void unwatchFile(final File file) {
-        Source source = new Source(file);
+        final Source source = new Source(file);
         unwatch(source);
     }
 
@@ -355,7 +355,7 @@ public class WatchManager extends AbstractLifeCycle {
         } else {
             watcher = new WrappedFileWatcher(fileWatcher);
         }
-        Source source = new Source(file);
+        final Source source = new Source(file);
         watch(source, watcher);
     }
 }

@@ -45,9 +45,9 @@ public class ConfiguratorSetLevelTest {
 
     @Test
     public void testSetLevel() {
-        Logger logger = loggerContext.getLogger(ConfiguratorSetLevelTest.class);
+        final Logger logger = loggerContext.getLogger(ConfiguratorSetLevelTest.class);
         Configurator.setLevel(logger, Level.DEBUG);
-        LoggerConfig loggerConfig = ((AbstractConfiguration)loggerContext.getConfiguration())
+        final LoggerConfig loggerConfig = ((AbstractConfiguration) loggerContext.getConfiguration())
                 .getLogger(ConfiguratorSetLevelTest.class.getName());
         assertNotNull(loggerConfig);
         assertEquals(Level.DEBUG, loggerConfig.getLevel());

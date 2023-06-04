@@ -25,7 +25,7 @@ import org.apache.log4j.spi.LoggingEvent;
 public class NeutralFilterFixture extends Filter {
 
     @Override
-    public int decide(LoggingEvent event) {
+    public int decide(final LoggingEvent event) {
         return NEUTRAL;
     }
 

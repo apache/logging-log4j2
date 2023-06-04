@@ -90,7 +90,7 @@ public class RoutingAppenderWithPurgingTest {
         // '2' is a referenced list appender
         final String[] files = {IDLE_LOG_FILE1, IDLE_LOG_FILE3, MANUAL_LOG_FILE1, MANUAL_LOG_FILE3};
         assertFileExistance(files);
-        Set<String> expectedAppenderKeys = new HashSet<>(2);
+        final Set<String> expectedAppenderKeys = new HashSet<>(2);
         expectedAppenderKeys.add("1");
         expectedAppenderKeys.add("3");
         assertEquals(expectedAppenderKeys, routingAppenderManual.getAppenders().keySet());

@@ -32,7 +32,7 @@ import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 public class TimeBasedRollingPolicyBuilder extends AbstractBuilder<TriggeringPolicy>
         implements TriggeringPolicyBuilder {
 
-    public TimeBasedRollingPolicyBuilder(String prefix, Properties props) {
+    public TimeBasedRollingPolicyBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
@@ -41,12 +41,12 @@ public class TimeBasedRollingPolicyBuilder extends AbstractBuilder<TriggeringPol
     }
 
     @Override
-    public TimeBasedTriggeringPolicy parse(Element element, XmlConfiguration configuration) {
+    public TimeBasedTriggeringPolicy parse(final Element element, final XmlConfiguration configuration) {
         return createTriggeringPolicy();
     }
 
     @Override
-    public TimeBasedTriggeringPolicy parse(PropertiesConfiguration configuration) {
+    public TimeBasedTriggeringPolicy parse(final PropertiesConfiguration configuration) {
         return createTriggeringPolicy();
     }
 

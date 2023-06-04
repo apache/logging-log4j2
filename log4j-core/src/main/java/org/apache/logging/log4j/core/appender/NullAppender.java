@@ -29,7 +29,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginFactory;
  * and handy for composing a {@link ScriptAppenderSelector}.
  */
 @Plugin(name = NullAppender.PLUGIN_NAME, category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
-public class NullAppender extends AbstractAppender {
+public final class NullAppender extends AbstractAppender {
 
     public static final String PLUGIN_NAME = "Null";
 

@@ -60,7 +60,7 @@ public final class PluginUtil {
      * Instantiates the given plugin using its no-arg {@link PluginFactory}-annotated static method.
      * @throws IllegalStateException if instantiation fails
      */
-    public static <V> V instantiatePlugin(Class<V> pluginClass) {
+    public static <V> V instantiatePlugin(final Class<V> pluginClass) {
         Objects.requireNonNull(pluginClass, "pluginClass");
         final Method pluginFactoryMethod = findPluginFactoryMethod(pluginClass);
         try {

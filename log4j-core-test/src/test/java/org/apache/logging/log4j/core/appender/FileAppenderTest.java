@@ -165,7 +165,7 @@ public class FileAppenderTest {
         testMultipleLockingAppenderThreads(false, THREADS, createOnDemand);
     }
 
-    private void testMultipleLockingAppenderThreads(final boolean lock, final int threadCount, boolean createOnDemand)
+    private void testMultipleLockingAppenderThreads(final boolean lock, final int threadCount, final boolean createOnDemand)
             throws InterruptedException, Exception {
         final ExecutorService threadPool = Executors.newFixedThreadPool(threadCount);
         final AtomicReference<Throwable> throwableRef = new AtomicReference<>();
@@ -300,7 +300,7 @@ public class FileAppenderTest {
         private final AtomicReference<Throwable> throwableRef;
 
         public FileWriterRunnable(
-                boolean createOnDemand, final boolean lock, final int logEventCount, final AtomicReference<Throwable> throwableRef) {
+                final boolean createOnDemand, final boolean lock, final int logEventCount, final AtomicReference<Throwable> throwableRef) {
             this.createOnDemand = createOnDemand;
             this.lock = lock;
             this.logEventCount = logEventCount;

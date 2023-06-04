@@ -77,7 +77,7 @@ public class RollingAppenderSizeNoCompressTest {
         assertNotNull(files);
         for (final File file : files) {
           final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try (FileInputStream fis = new FileInputStream(file)) {
+            try (final FileInputStream fis = new FileInputStream(file)) {
               try {
                     IOUtils.copy(fis, baos);
                 } catch (final Exception ex) {

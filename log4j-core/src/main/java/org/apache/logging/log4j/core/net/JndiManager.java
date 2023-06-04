@@ -35,7 +35,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
  *
  * @since 2.1
  */
-public class JndiManager extends AbstractManager {
+public final class JndiManager extends AbstractManager {
 
     private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
     private static final String PREFIX = "log4j2.enableJndi";
@@ -231,7 +231,7 @@ public class JndiManager extends AbstractManager {
             return null;
         }
         try {
-            URI uri = new URI(name);
+            final URI uri = new URI(name);
             if (uri.getScheme() == null || uri.getScheme().equals(JAVA_SCHEME)) {
                 return (T) this.context.lookup(name);
             }

@@ -31,9 +31,9 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * Returns the event's level in a StringBuilder.
  */
 @Plugin(name = "LevelPatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "p", "level" })
+@ConverterKeys({"p", "level"})
 @PerformanceSensitive("allocation")
-public class LevelPatternConverter extends LogEventPatternConverter {
+public final class LevelPatternConverter extends LogEventPatternConverter {
     private static final String OPTION_LENGTH = "length";
     private static final String OPTION_LOWER = "lowerCase";
 

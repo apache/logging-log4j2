@@ -31,7 +31,7 @@ public class LocationInfoTest extends TestCase {
         final String methodName = "testFourParamConstructor";
         final String fileName = "LocationInfoTest.java";
         final String lineNumber = "41";
-        LocationInfo li = new LocationInfo(fileName, className, methodName, lineNumber);
+        final LocationInfo li = new LocationInfo(fileName, className, methodName, lineNumber);
         assertEquals(className, li.getClassName());
         assertEquals(methodName, li.getMethodName());
         assertEquals(fileName, li.getFileName());
@@ -74,7 +74,7 @@ public class LocationInfoTest extends TestCase {
      * trace. See bug 44888.
      */
     public void testLocationInfo() {
-        LocationInfo li = NameSubstringCaller.getInfo();
+        final LocationInfo li = NameSubstringCaller.getInfo();
         assertEquals(NameSubstringCaller.class.getName(), li.getClassName());
         assertEquals("getInfo", li.getMethodName());
     }

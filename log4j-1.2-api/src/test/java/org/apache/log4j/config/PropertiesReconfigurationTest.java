@@ -86,10 +86,10 @@ public class PropertiesReconfigurationTest {
     }
 
     private void checkConfigureCustomAppenders(final String configPath, final boolean expectAppend, final int expectInt, final String expectString,
-        FailableConsumer<String, IOException> configurator) throws IOException {
+        final FailableConsumer<String, IOException> configurator) throws IOException {
         final File file = new File(configPath);
         assertTrue("No Config file", file.exists());
-        try (LoggerContext context = TestConfigurator.configure(file.toString())) {
+        try (final LoggerContext context = TestConfigurator.configure(file.toString())) {
             final Logger logger = LogManager.getLogger("test");
             logger.info("Hello");
             // V1
@@ -101,7 +101,7 @@ public class PropertiesReconfigurationTest {
     private void checkConfigureFileAppender(final String configPath, final boolean expectAppend) throws IOException {
         final File file = new File(configPath);
         assertTrue("No Config file", file.exists());
-        try (LoggerContext context = TestConfigurator.configure(file.toString())) {
+        try (final LoggerContext context = TestConfigurator.configure(file.toString())) {
             final Logger logger = LogManager.getLogger("test");
             logger.info("Hello");
             final Configuration configuration = context.getConfiguration();
@@ -199,7 +199,7 @@ public class PropertiesReconfigurationTest {
         assertTrue("No Config file", file.exists());
         final long configMillis = file.lastModified();
         assertTrue("Unable to modified file time", file.setLastModified(configMillis - FIVE_MINUTES.toMillis()));
-        try (LoggerContext context = TestConfigurator.configure(file.toString())) {
+        try (final LoggerContext context = TestConfigurator.configure(file.toString())) {
             final Logger logger = LogManager.getLogger("test");
             logger.info("Hello");
             final Configuration original = context.getConfiguration();

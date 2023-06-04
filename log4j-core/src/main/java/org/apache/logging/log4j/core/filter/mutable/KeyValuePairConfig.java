@@ -40,7 +40,7 @@ public class KeyValuePairConfig {
         return configs;
     }
 
-    public void setConfig(Map<String, String[]> configs) {
+    public void setConfig(final Map<String, String[]> configs) {
         this.configs = configs;
     }
 }

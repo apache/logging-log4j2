@@ -88,7 +88,7 @@ public class ConcurrentLoggingWithGelfLayoutTest {
 
         // simple test to ensure content is not corrupted
         if (Files.exists(PATH)) {
-            try (Stream<String> lines = Files.lines(PATH, Charset.defaultCharset())) {
+            try (final Stream<String> lines = Files.lines(PATH, Charset.defaultCharset())) {
                 lines.forEach(line -> assertThat(line,
                         both(startsWith("{\"version\":\"1.1\",\"host\":\"myself\",\"timestamp\":")).and(endsWith("\"}"))));
             }

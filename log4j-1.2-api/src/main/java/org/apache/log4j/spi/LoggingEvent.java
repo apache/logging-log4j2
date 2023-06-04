@@ -100,7 +100,7 @@ public class LoggingEvent {
      * @param message The message of this event.
      * @param throwable The throwable of this event.
      */
-    public LoggingEvent(String fqnOfCategoryClass, Category logger, Priority level, Object message, Throwable throwable) {
+    public LoggingEvent(final String fqnOfCategoryClass, final Category logger, final Priority level, final Object message, final Throwable throwable) {
         timeStamp = System.currentTimeMillis();
     }
 
@@ -146,7 +146,7 @@ public class LoggingEvent {
     }
 
     public
-    Object getMDC(String key) {
+    Object getMDC(final String key) {
         return null;
     }
 
@@ -220,7 +220,7 @@ public class LoggingEvent {
         return 0;
     }
 
-    public Object removeProperty(String propName) {
+    public Object removeProperty(final String propName) {
         return null;
     }
 

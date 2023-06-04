@@ -182,7 +182,7 @@ public class Log4j1ConfigurationFactoryTest extends AbstractLog4j1ConfigurationT
             final Configuration config = ctx.getConfiguration();
             final Filter filter = config.getFilter();
             assertTrue(filter instanceof ThresholdFilter);
-            ThresholdFilter thresholdFilter = (ThresholdFilter)filter;
+            final ThresholdFilter thresholdFilter = (ThresholdFilter) filter;
             assertEquals(Level.INFO, thresholdFilter.getLevel());
             assertEquals(Filter.Result.NEUTRAL, thresholdFilter.getOnMatch());
             assertEquals(Filter.Result.DENY, thresholdFilter.getOnMismatch());

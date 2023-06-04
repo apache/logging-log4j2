@@ -47,7 +47,7 @@ public class ReconfigureAppenderTest {
         // let's write something to the logger to ensure the output stream is opened.
         // We expect this call to create a new output stream (which is does).
         // see OutputStreamManager.writeToDestination(...).
-        Logger logger = (Logger)LogManager.getLogger(this.getClass());
+        final Logger logger = (Logger) LogManager.getLogger(this.getClass());
         logger.info("test message 1");
 
         // this will close the rolling file appender and remove it from the logger
@@ -105,12 +105,12 @@ public class ReconfigureAppenderTest {
     {
         try
         {
-            Field field = AbstractManager.class.getDeclaredField("MAP");
+            final Field field = AbstractManager.class.getDeclaredField("MAP");
             field.setAccessible(true);
 
             // Retrieve the map itself.
-            Map<String, AbstractManager> map =
-                (Map<String, AbstractManager>)field.get(null);
+            final Map<String, AbstractManager> map =
+                    (Map<String, AbstractManager>) field.get(null);
 
             // Remove the file manager keyed on file pattern.
             map.remove(appender.getFilePattern());
@@ -123,7 +123,7 @@ public class ReconfigureAppenderTest {
 
     private void removeAppender()
     {
-        Logger logger = (Logger)LogManager.getLogger(this.getClass());
+        final Logger logger = (Logger) LogManager.getLogger(this.getClass());
 
         // This call attempts to remove the file manager, but uses the name of the appender
         // (NULL in this case) instead of PATTERN.
@@ -134,8 +134,8 @@ public class ReconfigureAppenderTest {
 
     private void createAndAddAppender()
     {
-        ConfigurationBuilder<BuiltConfiguration> config_builder =
-            ConfigurationBuilderFactory.newConfigurationBuilder();
+        final ConfigurationBuilder<BuiltConfiguration> config_builder =
+                ConfigurationBuilderFactory.newConfigurationBuilder();
 
         // All loggers must have a root logger. The default root logger logs ERRORs to the console.
         // Override this with a root logger that does not log anywhere as we leave it up the
@@ -143,16 +143,16 @@ public class ReconfigureAppenderTest {
         config_builder.add(config_builder.newRootLogger(Level.INFO));
 
         // Initialise the logger context.
-        LoggerContext logger_context =
-            Configurator.initialize(config_builder.build());
+        final LoggerContext logger_context =
+                Configurator.initialize(config_builder.build());
 
         // Retrieve the logger.
-        Logger logger = (Logger) LogManager.getLogger(this.getClass());
+        final Logger logger = (Logger) LogManager.getLogger(this.getClass());
 
-        Builder pattern_builder = PatternLayout.newBuilder().withPattern(
-            "[%d{dd-MM-yy HH:mm:ss}] %p %m %throwable %n");
+        final Builder pattern_builder = PatternLayout.newBuilder().withPattern(
+                "[%d{dd-MM-yy HH:mm:ss}] %p %m %throwable %n");
 
-        PatternLayout pattern_layout = (PatternLayout) pattern_builder.build();
+        final PatternLayout pattern_layout = (PatternLayout) pattern_builder.build();
 
         appender = RollingFileAppender
             .newBuilder()

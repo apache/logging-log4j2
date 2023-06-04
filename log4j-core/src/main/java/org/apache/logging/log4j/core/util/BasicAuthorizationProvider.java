@@ -36,20 +36,20 @@ public class BasicAuthorizationProvider implements AuthorizationProvider {
     public static final String CONFIG_PASSWORD = "log4j2.configurationPassword";
     public static final String PASSWORD_DECRYPTOR = "log4j2.passwordDecryptor";
 
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private String authString = null;
 
-    public BasicAuthorizationProvider(PropertiesUtil props) {
-        String userName = props.getStringProperty(PREFIXES,AUTH_USER_NAME,
+    public BasicAuthorizationProvider(final PropertiesUtil props) {
+        final String userName = props.getStringProperty(PREFIXES, AUTH_USER_NAME,
                 () -> props.getStringProperty(CONFIG_USER_NAME));
         String password = props.getStringProperty(PREFIXES, AUTH_PASSWORD,
                 () -> props.getStringProperty(CONFIG_PASSWORD));
-        String decryptor = props.getStringProperty(PREFIXES, AUTH_PASSWORD_DECRYPTOR,
+        final String decryptor = props.getStringProperty(PREFIXES, AUTH_PASSWORD_DECRYPTOR,
                 () -> props.getStringProperty(PASSWORD_DECRYPTOR));
         if (decryptor != null) {
             try {
-                Object obj = LoaderUtil.newInstanceOf(decryptor);
+                final Object obj = LoaderUtil.newInstanceOf(decryptor);
                 if (obj instanceof PasswordDecryptor) {
                     password = ((PasswordDecryptor) obj).decryptPassword(password);
                 }
@@ -63,7 +63,7 @@ public class BasicAuthorizationProvider implements AuthorizationProvider {
     }
 
     @Override
-    public void addAuthorization(URLConnection urlConnection) {
+    public void addAuthorization(final URLConnection urlConnection) {
         if (authString != null) {
             urlConnection.setRequestProperty("Authorization", authString);
         }

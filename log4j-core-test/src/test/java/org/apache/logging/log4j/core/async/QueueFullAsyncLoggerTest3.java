@@ -78,8 +78,8 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
 
         blockingAppender.logEvents = null;
         blockingAppender.countDownLatch = new CountDownLatch(1);
-        int count = 200;
-        CountDownLatch garbageCollectionLatch = new CountDownLatch(count);
+        final int count = 200;
+        final CountDownLatch garbageCollectionLatch = new CountDownLatch(count);
         for (int i = 0; i < count; i++) {
             logger.info(new CountdownOnGarbageCollectMessage(garbageCollectionLatch));
         }
@@ -98,7 +98,7 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
 
         private final CountDownLatch latch;
 
-        CountdownOnGarbageCollectMessage(CountDownLatch latch) {
+        CountdownOnGarbageCollectMessage(final CountDownLatch latch) {
             this.latch = latch;
         }
 

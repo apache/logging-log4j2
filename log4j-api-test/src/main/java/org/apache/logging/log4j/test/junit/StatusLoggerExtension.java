@@ -46,20 +46,20 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(final ExtensionContext context) throws Exception {
         final ListStatusListenerHolder holder = new ListStatusListenerHolder(context);
         ExtensionContextAnchor.setAttribute(KEY, holder, context);
     }
 
     @Override
-    public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+    public void handleTestExecutionException(final ExtensionContext context, final Throwable throwable) throws Throwable {
         final ListStatusListener statusListener = resolveParameter(null, context);
         statusListener.getStatusData().forEach(CONSOLE_LISTENER::log);
         throw throwable;
     }
 
     @Override
-    public ListStatusListener resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+    public ListStatusListener resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
         final ListStatusListenerHolder holder = ExtensionContextAnchor.getAttribute(KEY, ListStatusListenerHolder.class,
                 extensionContext);
@@ -70,7 +70,7 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
 
         private final ListStatusListener statusListener;
 
-        public ListStatusListenerHolder(ExtensionContext context) {
+        public ListStatusListenerHolder(final ExtensionContext context) {
             this.statusListener = new JUnitListStatusListener(context);
             LOGGER.registerListener(statusListener);
         }
@@ -91,12 +91,12 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
         private final ExtensionContext context;
         private final List<StatusData> statusData = Collections.synchronizedList(new ArrayList<StatusData>());
 
-        public JUnitListStatusListener(ExtensionContext context) {
+        public JUnitListStatusListener(final ExtensionContext context) {
             this.context = context;
         }
 
         @Override
-        public void log(StatusData data) {
+        public void log(final StatusData data) {
             if (context.equals(ExtensionContextAnchor.getContext())) {
                 statusData.add(data);
             }

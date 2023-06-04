@@ -29,7 +29,7 @@ public class Log4j2EventListener implements ApplicationListener<EnvironmentChang
     private static Logger LOGGER = LogManager.getLogger(Log4j2EventListener.class);
 
     @Override
-    public void onApplicationEvent(EnvironmentChangeEvent environmentChangeEvent) {
+    public void onApplicationEvent(final EnvironmentChangeEvent environmentChangeEvent) {
         LOGGER.debug("Application change event triggered");
         WatchEventManager.publishEvent();
     }

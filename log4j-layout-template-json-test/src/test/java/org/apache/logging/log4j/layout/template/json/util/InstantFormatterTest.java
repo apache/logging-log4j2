@@ -56,7 +56,7 @@ class InstantFormatterTest {
                 .setPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS'Z'")
                 .setTimeZone(TimeZone.getTimeZone("UTC"))
                 .build();
-        MutableInstant instant = new MutableInstant();
+        final MutableInstant instant = new MutableInstant();
         instant.initFromEpochSecond(0, 123_456_789);
         Assertions
                 .assertThat(formatter.format(instant))
@@ -96,7 +96,7 @@ class InstantFormatterTest {
                 .endsWith(".DateTimeFormatter");
 
         // Assert that formatting works.
-        MutableInstant instant = new MutableInstant();
+        final MutableInstant instant = new MutableInstant();
         instant.initFromEpochSecond(0, 123_456_789);
         Assertions
                 .assertThat(formatter.format(instant))

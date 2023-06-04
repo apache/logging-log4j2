@@ -25,7 +25,7 @@ import java.io.Serializable;
 /**
  * Utility class to facilitate serializing and deserializing objects.
  */
-public class SerialUtil {
+public final class SerialUtil {
     private SerialUtil() {
     }
 

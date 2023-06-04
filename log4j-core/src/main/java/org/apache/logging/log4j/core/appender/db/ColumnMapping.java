@@ -41,7 +41,7 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
  * @since 2.8
  */
 @Plugin(name = "ColumnMapping", category = Core.CATEGORY_NAME, printObject = true)
-public class ColumnMapping {
+public final class ColumnMapping {
 
     /**
      * The empty array.

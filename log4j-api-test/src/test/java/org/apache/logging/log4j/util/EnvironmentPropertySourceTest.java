@@ -41,7 +41,7 @@ public class EnvironmentPropertySourceTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testNormalFormFollowsEnvironmentVariableConventions(CharSequence expected, List<? extends CharSequence> tokens) {
+    public void testNormalFormFollowsEnvironmentVariableConventions(final CharSequence expected, final List<? extends CharSequence> tokens) {
         assertEquals(expected, source.getNormalForm(tokens));
     }
 }

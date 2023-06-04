@@ -47,7 +47,7 @@ public class ConfiguratorTest {
         final String path = new File("src/test/resources/log4j-list.xml").getAbsolutePath();
         try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path)) {
             assertNotNull(loggerContext.getConfiguration().getAppender("List"));
-            URI uri = loggerContext.getConfigLocation();
+            final URI uri = loggerContext.getConfigLocation();
             assertNotNull(uri, "No configuration location returned");
             Configurator.reconfigure();
             assertEquals(uri, loggerContext.getConfigLocation(), "Unexpected configuration location returned");
@@ -59,7 +59,7 @@ public class ConfiguratorTest {
         final String path = new File("src/test/resources/log4j-list.xml").getAbsolutePath();
         try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(), null, path)) {
             assertNotNull(loggerContext.getConfiguration().getAppender("List"));
-            URI uri = loggerContext.getConfigLocation();
+            final URI uri = loggerContext.getConfigLocation();
             assertNotNull(uri, "No configuration location returned");
             final URI location = new File("src/test/resources/log4j2-config.xml").toURI();
             Configurator.reconfigure(location);

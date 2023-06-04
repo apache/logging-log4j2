@@ -73,7 +73,7 @@ public class ThreadContextDataInjector {
     public static void initServiceProviders() {}
 
     private static List<ContextDataProvider> getServiceProviders() {
-        List<ContextDataProvider> providers = new ArrayList<>();
+        final List<ContextDataProvider> providers = new ArrayList<>();
         ServiceLoaderUtil.loadServices(ContextDataProvider.class, MethodHandles.lookup(), false)
                 .forEach(providers::add);
         return Collections.unmodifiableList(providers);
@@ -228,7 +228,7 @@ public class ThreadContextDataInjector {
                 return providers.get(0).supplyStringMap();
             }
             int count = props == null ? 0 : props.size();
-            StringMap[] maps = new StringMap[providers.size()];
+            final StringMap[] maps = new StringMap[providers.size()];
             for (int i = 0; i < providers.size(); ++i) {
                 maps[i] = providers.get(i).supplyStringMap();
                 count += maps[i].size();

@@ -54,7 +54,7 @@ public class FileAppenderBuilderTest {
             }
 
             @Override
-            public void log(StatusData data) {
+            public void log(final StatusData data) {
                 counter.incrementAndGet();
             }
 

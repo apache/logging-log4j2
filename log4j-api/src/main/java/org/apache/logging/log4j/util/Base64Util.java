@@ -31,14 +31,14 @@ public final class Base64Util {
 
     static {
         try {
-            Class<?> clazz = LoaderUtil.loadClass("java.util.Base64");
-            Class<?> encoderClazz = LoaderUtil.loadClass("java.util.Base64$Encoder");
-            Method method = clazz.getMethod("getEncoder");
+            final Class<?> clazz = LoaderUtil.loadClass("java.util.Base64");
+            final Class<?> encoderClazz = LoaderUtil.loadClass("java.util.Base64$Encoder");
+            final Method method = clazz.getMethod("getEncoder");
             encoder = method.invoke(null);
             encodeMethod = encoderClazz.getMethod("encodeToString", byte[].class);
         } catch (Exception ex) {
             try {
-                Class<?> clazz = LoaderUtil.loadClass("javax.xml.bind.DataTypeConverter");
+                final Class<?> clazz = LoaderUtil.loadClass("javax.xml.bind.DataTypeConverter");
                 encodeMethod = clazz.getMethod("printBase64Binary");
             } catch (Exception ex2) {
                 LowLevelLogUtil.logException("Unable to create a Base64 Encoder", ex2);
@@ -49,11 +49,11 @@ public final class Base64Util {
     private Base64Util() {
     }
 
-    public static String encode(String str) {
+    public static String encode(final String str) {
         if (str == null) {
             return null;
         }
-        byte [] data = str.getBytes();
+        final byte [] data = str.getBytes();
         if (encodeMethod != null) {
             try {
                 return (String) encodeMethod.invoke(encoder, data);

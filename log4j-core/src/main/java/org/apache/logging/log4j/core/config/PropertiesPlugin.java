@@ -49,7 +49,7 @@ public final class PropertiesPlugin {
                                                  @PluginConfiguration final Configuration config) {
         // For backwards compatibility, we unescape all escaped lookups when properties are parsed.
         // This matches previous behavior for escaped components which were meant to be executed later on.
-        Property[] unescapedProperties = new Property[properties == null ? 0 : properties.length];
+        final Property[] unescapedProperties = new Property[properties == null ? 0 : properties.length];
         for (int i = 0; i < unescapedProperties.length; i++) {
             unescapedProperties[i] = unescape(properties[i]);
         }
@@ -58,7 +58,7 @@ public final class PropertiesPlugin {
                 config.getPluginPackages());
     }
 
-    private static Property unescape(Property input) {
+    private static Property unescape(final Property input) {
         return Property.createProperty(
                 input.getName(),
                 unescape(input.getRawValue()),
@@ -66,7 +66,7 @@ public final class PropertiesPlugin {
     }
 
     // Visible for testing
-    static String unescape(String input) {
+    static String unescape(final String input) {
         return UNESCAPING_SUBSTITUTOR.replace(input);
     }
 
@@ -76,7 +76,7 @@ public final class PropertiesPlugin {
      * or removing replacing {@code ${ctx:foo:-default}} with {@code default}.
      */
     private static StrSubstitutor createUnescapingSubstitutor() {
-        StrSubstitutor substitutor = new StrSubstitutor(NullLookup.INSTANCE);
+        final StrSubstitutor substitutor = new StrSubstitutor(NullLookup.INSTANCE);
         substitutor.setValueDelimiter(null);
         substitutor.setValueDelimiterMatcher(null);
         return substitutor;
@@ -86,22 +86,22 @@ public final class PropertiesPlugin {
         INSTANCE;
 
         @Override
-        public String lookup(String key) {
+        public String lookup(final String key) {
             return null;
         }
 
         @Override
-        public String lookup(LogEvent event, String key) {
+        public String lookup(final LogEvent event, final String key) {
             return null;
         }
 
         @Override
-        public LookupResult evaluate(String key) {
+        public LookupResult evaluate(final String key) {
             return null;
         }
 
         @Override
-        public LookupResult evaluate(LogEvent event, String key) {
+        public LookupResult evaluate(final LogEvent event, final String key) {
             return null;
         }
     }

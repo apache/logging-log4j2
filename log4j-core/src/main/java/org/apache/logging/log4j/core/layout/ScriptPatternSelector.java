@@ -49,7 +49,7 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
     /**
      * Custom ScriptPatternSelector builder. Use the {@link #newBuilder() builder factory method} to create this.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ScriptPatternSelector> {
+    public static final class Builder implements org.apache.logging.log4j.core.util.Builder<ScriptPatternSelector> {
 
         @PluginElement("Script")
         private AbstractScript script;
@@ -167,7 +167,7 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
         for (final PatternMatch property : properties) {
             try {
                 final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
-                PatternFormatter[] formatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
+                final PatternFormatter[] formatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
                 formatterMap.put(property.getKey(), formatters);
                 patternMap.put(property.getKey(), property.getPattern());
                 for (int i = 0; !needsLocation && i < formatters.length; ++i) {
@@ -207,7 +207,7 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
         for (final PatternMatch property : properties) {
             try {
                 final List<PatternFormatter> list = parser.parse(property.getPattern(), alwaysWriteExceptions, disableAnsi, noConsoleNoAnsi);
-                PatternFormatter[] formatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
+                final PatternFormatter[] formatters = list.toArray(PatternFormatter.EMPTY_ARRAY);
                 formatterMap.put(property.getKey(), formatters);
                 patternMap.put(property.getKey(), property.getPattern());
                 for (int i = 0; !needsLocation && i < formatters.length; ++i) {

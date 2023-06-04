@@ -72,21 +72,21 @@ public final class PropertiesLookup implements StrLookup {
      */
     @Override
     public String lookup(final String key) {
-        LookupResult result = evaluate(key);
+        final LookupResult result = evaluate(key);
         return result == null ? null : result.value();
     }
 
     @Override
-    public LookupResult evaluate(String key) {
+    public LookupResult evaluate(final String key) {
         if (key == null) {
             return null;
         }
-        LookupResult configResult = configurationProperties.get(key);
+        final LookupResult configResult = configurationProperties.get(key);
         if (configResult != null) {
             return configResult;
         }
         // Allow the context map to be mutated after this lookup has been initialized.
-        String contextResult = contextProperties.get(key);
+        final String contextResult = contextProperties.get(key);
         return contextResult == null ? null : new ContextPropertyResult(contextResult);
     }
 
@@ -103,11 +103,11 @@ public final class PropertiesLookup implements StrLookup {
                 '}';
     }
 
-    private static Map<String, ConfigurationPropertyResult> createConfigurationPropertyMap(Property[] props) {
+    private static Map<String, ConfigurationPropertyResult> createConfigurationPropertyMap(final Property[] props) {
         // The raw property values must be used without the substitution handled by the plugin framework
         // which calls this method, otherwise we risk re-interpolating through unexpected data.
         // The PropertiesLookup is unique in that results from this lookup support recursive evaluation.
-        Map<String, ConfigurationPropertyResult> result = new HashMap<>(props.length);
+        final Map<String, ConfigurationPropertyResult> result = new HashMap<>(props.length);
         for (Property property : props) {
             result.put(property.getName(), new ConfigurationPropertyResult(property.getRawValue()));
         }
@@ -118,7 +118,7 @@ public final class PropertiesLookup implements StrLookup {
 
         private final String value;
 
-        ConfigurationPropertyResult(String value) {
+        ConfigurationPropertyResult(final String value) {
             this.value = Objects.requireNonNull(value, "value is required");
         }
 
@@ -146,7 +146,7 @@ public final class PropertiesLookup implements StrLookup {
 
         private final String value;
 
-        ContextPropertyResult(String value) {
+        ContextPropertyResult(final String value) {
             this.value = Objects.requireNonNull(value, "value is required");
         }
 

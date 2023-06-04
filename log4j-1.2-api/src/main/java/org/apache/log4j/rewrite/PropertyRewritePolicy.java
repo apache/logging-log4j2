@@ -56,11 +56,11 @@ public class PropertyRewritePolicy implements RewritePolicy {
      *
      * @param properties The properties.
      */
-    public void setProperties(String properties) {
-        Map<String, String> newMap = new HashMap<>();
-        StringTokenizer pairs = new StringTokenizer(properties, ",");
+    public void setProperties(final String properties) {
+        final Map<String, String> newMap = new HashMap<>();
+        final StringTokenizer pairs = new StringTokenizer(properties, ",");
         while (pairs.hasMoreTokens()) {
-            StringTokenizer entry = new StringTokenizer(pairs.nextToken(), "=");
+            final StringTokenizer entry = new StringTokenizer(pairs.nextToken(), "=");
             newMap.put(entry.nextElement().toString().trim(), entry.nextElement().toString().trim());
         }
         synchronized (this) {
@@ -74,8 +74,8 @@ public class PropertyRewritePolicy implements RewritePolicy {
     @Override
     public LoggingEvent rewrite(final LoggingEvent source) {
         if (!properties.isEmpty()) {
-            Map<String, String> rewriteProps = source.getProperties() != null ? new HashMap<>(source.getProperties())
-                    : new HashMap<>();
+            final Map<String, String> rewriteProps = source.getProperties() != null ? new HashMap<>(source.getProperties())
+            : new HashMap<>();
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 if (!rewriteProps.containsKey(entry.getKey())) {
                     rewriteProps.put(entry.getKey(), entry.getValue());
@@ -87,12 +87,12 @@ public class PropertyRewritePolicy implements RewritePolicy {
                         .setContextData(new SortedArrayStringMap(rewriteProps))
                         .build();
             } else {
-                LocationInfo info = source.getLocationInformation();
-                StackTraceElement element = new StackTraceElement(info.getClassName(), info.getMethodName(),
-                        info.getFileName(), Integer.parseInt(info.getLineNumber()));
-                Thread thread = getThread(source.getThreadName());
-                long threadId = thread != null ? thread.getId() : 0;
-                int threadPriority = thread != null ? thread.getPriority() : 0;
+                final LocationInfo info = source.getLocationInformation();
+                final StackTraceElement element = new StackTraceElement(info.getClassName(), info.getMethodName(),
+                info.getFileName(), Integer.parseInt(info.getLineNumber()));
+                final Thread thread = getThread(source.getThreadName());
+                final long threadId = thread != null ? thread.getId() : 0;
+                final int threadPriority = thread != null ? thread.getPriority() : 0;
                 event = Log4jLogEvent.newBuilder()
                         .setContextData(new SortedArrayStringMap(rewriteProps))
                         .setLevel(OptionConverter.convertLevel(source.getLevel()))
@@ -115,7 +115,7 @@ public class PropertyRewritePolicy implements RewritePolicy {
         return source;
     }
 
-    private Thread getThread(String name) {
+    private Thread getThread(final String name) {
         for (Thread thread : Thread.getAllStackTraces().keySet()) {
             if (thread.getName().equals(name)) {
                 return thread;

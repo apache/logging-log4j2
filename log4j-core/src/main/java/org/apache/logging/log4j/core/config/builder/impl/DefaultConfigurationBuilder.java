@@ -226,7 +226,7 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
         return configuration;
     }
 
-    private String formatXml(String xml)
+    private String formatXml(final String xml)
         throws TransformerConfigurationException, TransformerException, TransformerFactoryConfigurationError {
         final StringWriter writer = new StringWriter();
         formatXml(new StreamSource(new StringReader(xml)), new StreamResult(writer));

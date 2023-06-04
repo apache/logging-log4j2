@@ -42,7 +42,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Manager for a Cassandra appender instance.
  */
-public class CassandraManager extends AbstractDatabaseManager {
+public final class CassandraManager extends AbstractDatabaseManager {
 
     private static final int DEFAULT_PORT = 9042;
 
@@ -174,7 +174,7 @@ public class CassandraManager extends AbstractDatabaseManager {
         }
     }
 
-    private static class FactoryData extends AbstractFactoryData {
+    private static final class FactoryData extends AbstractFactoryData {
         private final InetSocketAddress[] contactPoints;
         private final ColumnMapping[] columns;
         private final boolean useTls;

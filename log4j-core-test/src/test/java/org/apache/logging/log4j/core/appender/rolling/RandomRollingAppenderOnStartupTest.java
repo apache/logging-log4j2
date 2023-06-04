@@ -69,7 +69,7 @@ public class RandomRollingAppenderOnStartupTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         if (Files.exists(Paths.get("target/onStartup"))) {
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+            try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
                 for (final Path path : directoryStream) {
                     Files.delete(path);
                 }
@@ -81,7 +81,7 @@ public class RandomRollingAppenderOnStartupTest {
     @AfterClass
     public static void afterClass() throws Exception {
         long size = 0;
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {
                 if (size == 0) {
                     size = Files.size(path);

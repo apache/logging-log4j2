@@ -36,7 +36,7 @@ public class LastModifiedSource extends Source {
         this(uri, 0);
     }
 
-    public LastModifiedSource(final URI uri, long lastModifiedMillis) {
+    public LastModifiedSource(final URI uri, final long lastModifiedMillis) {
         super(uri);
         lastModified = lastModifiedMillis;
     }

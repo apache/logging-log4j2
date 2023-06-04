@@ -100,7 +100,7 @@ public class Log4jSystemLoggerTest {
 
     @Test
     public void testParameterizedLoggingWithThrowable() {
-        Throwable throwable = new RuntimeException();
+        final Throwable throwable = new RuntimeException();
         logger.log(Logger.Level.INFO, "Hello, {0}!", "World", throwable);
         final List<LogEvent> events = eventAppender.getEvents();
         assertThat(events, hasSize(1));

@@ -63,11 +63,11 @@ public class KafkaAppenderTest {
             SERIALIZER) {
 
         @Override
-        public synchronized Future<RecordMetadata> send(ProducerRecord<byte[], byte[]> record) {
+        public synchronized Future<RecordMetadata> send(final ProducerRecord<byte[], byte[]> record) {
 
-            Future<RecordMetadata> retVal = super.send(record);
+            final Future<RecordMetadata> retVal = super.send(record);
 
-            boolean isRetryTest = "true".equals(ThreadContext.get("KafkaAppenderWithRetryCount"));
+            final boolean isRetryTest = "true".equals(ThreadContext.get("KafkaAppenderWithRetryCount"));
             if (isRetryTest) {
                 try {
                     throw new TimeoutException();
@@ -219,7 +219,7 @@ public class KafkaAppenderTest {
         final ProducerRecord<byte[], byte[]> item = history.get(0);
         assertNotNull(item);
         assertEquals(TOPIC_NAME, item.topic());
-        byte[] keyValue = "key".getBytes(StandardCharsets.UTF_8);
+        final byte[] keyValue = "key".getBytes(StandardCharsets.UTF_8);
         assertArrayEquals(item.key(), keyValue);
         assertNotEquals(Long.valueOf(logEvent.getTimeMillis()), item.timestamp());
         assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
@@ -227,7 +227,7 @@ public class KafkaAppenderTest {
 
     private LogEvent deserializeLogEvent(final byte[] data) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream bis = new ByteArrayInputStream(data);
-        try (ObjectInput ois = new FilteredObjectInputStream(bis)) {
+        try (final ObjectInput ois = new FilteredObjectInputStream(bis)) {
             return (LogEvent) ois.readObject();
         }
     }

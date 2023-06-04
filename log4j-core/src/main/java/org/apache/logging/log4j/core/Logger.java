@@ -366,7 +366,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     }
 
     @Override
-    public LogBuilder atLevel(Level level) {
+    public LogBuilder atLevel(final Level level) {
         // A global filter might accept messages less specific than level.
         // Therefore we return always a functional builder.
         if (privateConfig.hasFilter()) {

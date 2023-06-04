@@ -65,26 +65,26 @@ public class RollingAppenderCountTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         if (Files.exists(Paths.get(DIR))) {
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+            try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
                 for (final Path path : directoryStream) {
                     Files.delete(path);
                 }
                 Files.delete(Paths.get(DIR));
             }
         }
-        File dir = new File(DIR);
+        final File dir = new File(DIR);
         if (!dir.exists()) {
             Files.createDirectory(new File(DIR).toPath());
         }
-        Path target = Paths.get(DIR, TARGET + System.currentTimeMillis());
+        final Path target = Paths.get(DIR, TARGET + System.currentTimeMillis());
         Files.copy(Paths.get(SOURCE, FILENAME), target, StandardCopyOption.COPY_ATTRIBUTES);
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-        int count = Objects.requireNonNull(new File(DIR).listFiles()).length;
+        final int count = Objects.requireNonNull(new File(DIR).listFiles()).length;
         assertEquals("Expected 17 files, got " + count, 17, count);
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {
                 Files.delete(path);
             }

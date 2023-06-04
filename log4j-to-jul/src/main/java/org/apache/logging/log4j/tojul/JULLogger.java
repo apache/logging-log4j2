@@ -56,11 +56,11 @@ final class JULLogger extends AbstractLogger {
 
     @Override
     public void logMessage(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable t) {
-        java.util.logging.Level julLevel = convertLevel(level);
+        final java.util.logging.Level julLevel = convertLevel(level);
         if (!logger.isLoggable(julLevel)) {
             return;
         }
-        LazyLog4jLogRecord record = new LazyLog4jLogRecord(fqcn, julLevel, message.getFormattedMessage()); // NOT getFormat()
+        final LazyLog4jLogRecord record = new LazyLog4jLogRecord(fqcn, julLevel, message.getFormattedMessage()); // NOT getFormat()
         // NOT record.setParameters(message.getParameters()); BECAUSE getFormattedMessage() NOT getFormat()
         record.setLoggerName(getName());
         record.setThrown(t == null ? message.getThrowable() : t);
@@ -121,7 +121,7 @@ final class JULLogger extends AbstractLogger {
      */
     @Override
     public Level getLevel() {
-        int julLevel = getEffectiveJULLevel().intValue();
+        final int julLevel = getEffectiveJULLevel().intValue();
         // Test in logical order of likely frequency of use
         // Must be kept in sync with #convertLevel()
         if (julLevel == java.util.logging.Level.ALL.intValue()) {

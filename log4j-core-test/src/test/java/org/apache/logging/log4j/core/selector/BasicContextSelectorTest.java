@@ -42,7 +42,7 @@ public final class BasicContextSelectorTest {
 
     @Test
     public void testLogManagerShutdown() {
-        LoggerContext context = (LoggerContext) LogManager.getContext();
+        final LoggerContext context = (LoggerContext) LogManager.getContext();
         assertEquals(LifeCycle.State.STARTED, context.getState());
         LogManager.shutdown();
         assertEquals(LifeCycle.State.STOPPED, context.getState());

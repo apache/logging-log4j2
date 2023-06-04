@@ -50,8 +50,8 @@ public class ReconfigurationFailureTest {
     @Test
     public void setNonExistant() throws Exception {
 
-       URI original = loggerContext.getConfigLocation();
-       URI nonExistant = new File("target/file.does.not.exist.xml").toURI();
+        final URI original = loggerContext.getConfigLocation();
+        final URI nonExistant = new File("target/file.does.not.exist.xml").toURI();
        loggerContext.setConfigLocation(nonExistant);
        assertEquals(original, loggerContext.getConfigLocation(), "URI after failure is not the original");
     }
@@ -60,8 +60,8 @@ public class ReconfigurationFailureTest {
     @Test
     public void setInvalidXML() throws Exception {
 
-        URI original = loggerContext.getConfigLocation();
-        URI nonExistant = new File("target/InvalidXML.xml").toURI();
+        final URI original = loggerContext.getConfigLocation();
+        final URI nonExistant = new File("target/InvalidXML.xml").toURI();
         loggerContext.setConfigLocation(nonExistant);
         assertEquals(original, loggerContext.getConfigLocation(), "URI after failure is not the original");
     }
@@ -69,8 +69,8 @@ public class ReconfigurationFailureTest {
     @Test
     public void setInvalidConfig() throws Exception {
 
-        URI original = loggerContext.getConfigLocation();
-        URI nonExistant = new File("target/InvalidConfig.xml").toURI();
+        final URI original = loggerContext.getConfigLocation();
+        final URI nonExistant = new File("target/InvalidConfig.xml").toURI();
         loggerContext.setConfigLocation(nonExistant);
         assertEquals(original, loggerContext.getConfigLocation(), "URI after failure is not the original");
     }

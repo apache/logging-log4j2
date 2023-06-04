@@ -50,7 +50,7 @@ public class RollingAppenderDirectWriteStartupSizeTest {
 
   @BeforeClass
   public static void beforeClass() throws Exception {
-    Path log = Paths.get(DIR, FILE);
+      final Path log = Paths.get(DIR, FILE);
     if (Files.exists(log)) {
         Files.delete(log);
     }

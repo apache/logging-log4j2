@@ -54,7 +54,7 @@ public final class AvailablePortFinder {
     /**
      * Incremented to the next lowest available port when getNextAvailable() is called.
      */
-    private static AtomicInteger currentMinPort = new AtomicInteger(MIN_PORT_NUMBER);
+    private static final AtomicInteger currentMinPort = new AtomicInteger(MIN_PORT_NUMBER);
 
     /**
      * Creates a new instance.

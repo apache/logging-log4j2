@@ -24,7 +24,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 class ThreadContextExtension implements BeforeEachCallback, AfterEachCallback {
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(final ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
         final ThreadContextHolder holder;
         if (testClass.isAnnotationPresent(UsingAnyThreadContext.class)) {
@@ -43,14 +43,14 @@ class ThreadContextExtension implements BeforeEachCallback, AfterEachCallback {
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
+    public void afterEach(final ExtensionContext context) throws Exception {
         final ThreadContextHolder holder = getStore(context).get(ThreadContextHolder.class, ThreadContextHolder.class);
         if (holder != null) {
             holder.restore();
         }
     }
 
-    private ExtensionContext.Store getStore(ExtensionContext context) {
+    private ExtensionContext.Store getStore(final ExtensionContext context) {
         return context.getStore(ExtensionContext.Namespace.create(getClass(), context.getRequiredTestInstance()));
     }
 }

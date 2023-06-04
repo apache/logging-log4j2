@@ -46,7 +46,7 @@ import org.apache.logging.log4j.core.net.JndiManager;
 @PluginAliases({ "JMSQueue", "JMSTopic" })
 public class JmsAppender extends AbstractAppender {
 
-    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+    public static final class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<JmsAppender> {
 
         public static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 5000;

@@ -36,7 +36,7 @@ public class AsyncWaitStrategyFactoryConfigTest {
     @Test
     @LoggerContextSource("AsyncWaitStrategyFactoryConfigTest.xml")
     public void testConfigWaitStrategyFactory(final LoggerContext context) throws Exception {
-        AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
+        final AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
         assertEquals(YieldingWaitStrategyFactory.class, asyncWaitStrategyFactory.getClass());
         assertThat("factory is YieldingWaitStrategyFactory", asyncWaitStrategyFactory instanceof YieldingWaitStrategyFactory);
     }
@@ -45,10 +45,10 @@ public class AsyncWaitStrategyFactoryConfigTest {
     @LoggerContextSource("AsyncWaitStrategyFactoryConfigTest.xml")
     public void testWaitStrategy(final LoggerContext context) throws Exception {
 
-        org.apache.logging.log4j.Logger logger = context.getRootLogger();
+        final org.apache.logging.log4j.Logger logger = context.getRootLogger();
 
-        AsyncLoggerConfig loggerConfig = (AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) logger).get();
-        AsyncLoggerConfigDisruptor delegate = (AsyncLoggerConfigDisruptor) loggerConfig.getAsyncLoggerConfigDelegate();
+        final AsyncLoggerConfig loggerConfig = (AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) logger).get();
+        final AsyncLoggerConfigDisruptor delegate = (AsyncLoggerConfigDisruptor) loggerConfig.getAsyncLoggerConfigDelegate();
         assertEquals(YieldingWaitStrategy.class, delegate.getWaitStrategy().getClass());
         assertThat("waitstrategy is YieldingWaitStrategy", delegate.getWaitStrategy() instanceof com.lmax.disruptor.YieldingWaitStrategy);
     }
@@ -56,7 +56,7 @@ public class AsyncWaitStrategyFactoryConfigTest {
     @Test
     @LoggerContextSource("AsyncWaitStrategyIncorrectFactoryConfigTest.xml")
     public void testIncorrectConfigWaitStrategyFactory(final LoggerContext context) throws Exception {
-        AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
+        final AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
         assertNull(asyncWaitStrategyFactory);
     }
 
@@ -65,10 +65,10 @@ public class AsyncWaitStrategyFactoryConfigTest {
     public void testIncorrectWaitStrategyFallsBackToDefault(
             @Named("WaitStrategyAppenderList") final ListAppender list1,
             final LoggerContext context) throws Exception {
-        org.apache.logging.log4j.Logger logger = context.getRootLogger();
+        final org.apache.logging.log4j.Logger logger = context.getRootLogger();
 
-        AsyncLoggerConfig loggerConfig = (AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) logger).get();
-        AsyncLoggerConfigDisruptor delegate = (AsyncLoggerConfigDisruptor) loggerConfig.getAsyncLoggerConfigDelegate();
+        final AsyncLoggerConfig loggerConfig = (AsyncLoggerConfig) ((org.apache.logging.log4j.core.Logger) logger).get();
+        final AsyncLoggerConfigDisruptor delegate = (AsyncLoggerConfigDisruptor) loggerConfig.getAsyncLoggerConfigDelegate();
         assertEquals(TimeoutBlockingWaitStrategy.class, delegate.getWaitStrategy().getClass());
         assertThat("waitstrategy is TimeoutBlockingWaitStrategy", delegate.getWaitStrategy() instanceof TimeoutBlockingWaitStrategy);
     }

@@ -39,7 +39,7 @@ public class PortDefinition {
         return ip;
     }
 
-    public void setIp(String ip) {
+    public void setIp(final String ip) {
         this.ip = ip;
     }
 
@@ -47,7 +47,7 @@ public class PortDefinition {
         return privatePort;
     }
 
-    public void setPrivatePort(Integer privatePort) {
+    public void setPrivatePort(final Integer privatePort) {
         this.privatePort = privatePort;
     }
 
@@ -55,7 +55,7 @@ public class PortDefinition {
         return publicPort;
     }
 
-    public void setPublicPort(Integer publicPort) {
+    public void setPublicPort(final Integer publicPort) {
         this.publicPort = publicPort;
     }
 
@@ -63,7 +63,7 @@ public class PortDefinition {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 }

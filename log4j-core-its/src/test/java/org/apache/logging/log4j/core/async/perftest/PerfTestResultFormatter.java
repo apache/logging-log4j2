@@ -151,9 +151,9 @@ class PerfTestResultFormatter {
 
     private Comparator<String> sort() {
         return new Comparator<String>() {
-            List<String> expected = Arrays.asList("1 thread", "2 threads",
-                    "4 threads", "8 threads", "16 threads", "32 threads",
-                    "64 threads");
+            final List<String> expected = Arrays.asList("1 thread", "2 threads",
+            "4 threads", "8 threads", "16 threads", "32 threads",
+            "64 threads");
 
             @Override
             public int compare(final String o1, final String o2) {

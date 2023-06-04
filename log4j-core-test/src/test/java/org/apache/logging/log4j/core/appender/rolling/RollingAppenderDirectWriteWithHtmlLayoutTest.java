@@ -61,10 +61,10 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
         checkAppenderWithHtmlLayout(false);
     }
 
-    private void checkAppenderWithHtmlLayout(boolean append) throws InterruptedException, IOException {
-        String prefix = "testHtml_" + (append ? "append_" : "noAppend_");
-        Configuration config = loggerContextRule.getConfiguration();
-        RollingFileAppender appender = RollingFileAppender.newBuilder()
+    private void checkAppenderWithHtmlLayout(final boolean append) throws InterruptedException, IOException {
+        final String prefix = "testHtml_" + (append ? "append_" : "noAppend_");
+        final Configuration config = loggerContextRule.getConfiguration();
+        final RollingFileAppender appender = RollingFileAppender.newBuilder()
                 .setName("RollingHtml")
                 .withFilePattern(DIR + "/" + prefix + "_-%d{MM-dd-yy-HH-mm}-%i.html")
                 .withPolicy(new SizeBasedTriggeringPolicy(500))
@@ -74,7 +74,7 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
                 .build();
         boolean stopped = false;
         try {
-            int count = 100;
+            final int count = 100;
             for (int i = 0; i < count; ++i) {
                 appender.append(Log4jLogEvent.newBuilder()
                         .setMessage(new SimpleMessage("This is test message number " + i))
@@ -97,8 +97,8 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
                 if (!file.getName().startsWith(prefix)) {
                     continue;
                 }
-                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                    String data = IOUtils.toString(reader).trim();
+                try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                    final String data = IOUtils.toString(reader).trim();
                     // check that every file starts with the header
                     assertThat("header in file " + file, data, Matchers.startsWith("<!DOCTYPE"));
                     assertThat("footer in file " + file, data, Matchers.endsWith("</html>"));

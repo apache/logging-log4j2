@@ -36,9 +36,9 @@ import org.apache.logging.log4j.util.Strings;
  * Returns the event's rendered message in a StringBuilder.
  */
 @Plugin(name = "MessagePatternConverter", category = PatternConverter.CATEGORY)
-@ConverterKeys({ "m", "msg", "message" })
+@ConverterKeys({"m", "msg", "message"})
 @PerformanceSensitive("allocation")
-public class MessagePatternConverter extends LogEventPatternConverter {
+public final class MessagePatternConverter extends LogEventPatternConverter {
 
     private static final String LOOKUPS = "lookups";
     private static final String NOLOOKUPS = "nolookups";
@@ -76,8 +76,8 @@ public class MessagePatternConverter extends LogEventPatternConverter {
      * @return instance of pattern converter.
      */
     public static MessagePatternConverter newInstance(final Configuration config, final String[] options) {
-        String[] formats = withoutLookupOptions(options);
-        TextRenderer textRenderer = loadMessageRenderer(formats);
+        final String[] formats = withoutLookupOptions(options);
+        final TextRenderer textRenderer = loadMessageRenderer(formats);
         MessagePatternConverter result = formats == null || formats.length == 0
                 ? SimpleMessagePatternConverter.INSTANCE
                 : new FormattedMessagePatternConverter(formats);
@@ -91,7 +91,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
         if (options == null || options.length == 0) {
             return options;
         }
-        List<String> results = new ArrayList<>(options.length);
+        final List<String> results = new ArrayList<>(options.length);
         for (String option : options) {
             if (LOOKUPS.equalsIgnoreCase(option) || NOLOOKUPS.equalsIgnoreCase(option)) {
                 LOGGER.info("The {} option will be ignored. Message Lookups are no longer supported.", option);
@@ -115,7 +115,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
          */
         @Override
         public void format(final LogEvent event, final StringBuilder toAppendTo) {
-            Message msg = event.getMessage();
+            final Message msg = event.getMessage();
             if (msg instanceof StringBuilderFormattable) {
                 ((StringBuilderFormattable) msg).formatTo(toAppendTo);
             } else if (msg != null) {
@@ -137,7 +137,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
          */
         @Override
         public void format(final LogEvent event, final StringBuilder toAppendTo) {
-            Message msg = event.getMessage();
+            final Message msg = event.getMessage();
             if (msg instanceof StringBuilderFormattable) {
                 if (msg instanceof MultiFormatStringBuilderFormattable) {
                     ((MultiFormatStringBuilderFormattable) msg).formatTo(formats, toAppendTo);
@@ -167,7 +167,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
          */
         @Override
         public void format(final LogEvent event, final StringBuilder toAppendTo) {
-            StringBuilder workingBuilder = new StringBuilder(80);
+            final StringBuilder workingBuilder = new StringBuilder(80);
             delegate.format(event, workingBuilder);
             textRenderer.render(workingBuilder, toAppendTo);
         }

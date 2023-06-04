@@ -32,7 +32,7 @@ public class NoMarkerFilterTest {
     @Test
     public void testMarkers() {
         final Marker sampleMarker = MarkerManager.getMarker("SampleMarker");
-        NoMarkerFilter filter = NoMarkerFilter.newBuilder().build();
+        final NoMarkerFilter filter = NoMarkerFilter.newBuilder().build();
         filter.start();
         assertTrue(filter.isStarted());
         assertSame(Filter.Result.DENY, filter.filter(null, null, sampleMarker, (Object) null, (Throwable) null));

@@ -31,7 +31,7 @@ public class KubernetesClientBuilder {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     public KubernetesClient createClient() {
-        Config config = kubernetesClientConfig();
+        final Config config = kubernetesClientConfig();
         return config != null ? new DefaultKubernetesClient(config) : null;
     }
 
@@ -44,8 +44,8 @@ public class KubernetesClientBuilder {
                 return null;
             }
         }
-        KubernetesClientProperties props = new KubernetesClientProperties(base);
-        Config properties = new ConfigBuilder(base)
+        final KubernetesClientProperties props = new KubernetesClientProperties(base);
+        final Config properties = new ConfigBuilder(base)
                 .withApiVersion(props.getApiVersion())
                 .withCaCertData(props.getCaCertData())
                 .withCaCertFile(props.getCaCertFile())

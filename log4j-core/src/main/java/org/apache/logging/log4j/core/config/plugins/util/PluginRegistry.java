@@ -43,7 +43,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Registry singleton for PluginType maps partitioned by source type and then by category names.
  */
-public class PluginRegistry {
+public final class PluginRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -191,7 +191,7 @@ public class PluginRegistry {
         final int numPlugins = pluginCount;
         LOGGER.debug(() -> {
             final long endTime = System.nanoTime();
-            StringBuilder sb = new StringBuilder("Took ");
+            final StringBuilder sb = new StringBuilder("Took ");
             final DecimalFormat numFormat = new DecimalFormat("#0.000000");
             sb.append(numFormat.format((endTime - startTime) * 1e-9));
             sb.append(" seconds to load ").append(numPlugins);
@@ -261,7 +261,7 @@ public class PluginRegistry {
         }
         LOGGER.debug(() -> {
             final long endTime = System.nanoTime();
-            StringBuilder sb = new StringBuilder("Took ");
+            final StringBuilder sb = new StringBuilder("Took ");
             final DecimalFormat numFormat = new DecimalFormat("#0.000000");
             sb.append(numFormat.format((endTime - startTime) * 1e-9));
             sb.append(" seconds to load ").append(resolver.getClasses().size());

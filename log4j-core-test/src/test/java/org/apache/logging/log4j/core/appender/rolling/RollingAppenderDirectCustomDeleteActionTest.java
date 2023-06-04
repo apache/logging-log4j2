@@ -49,7 +49,7 @@ public class RollingAppenderDirectCustomDeleteActionTest implements RolloverList
     @Test
     public void testAppender() throws Exception {
         final Logger logger = loggerContextRule.getLogger();
-        RollingFileAppender app = loggerContextRule.getAppender("RollingFile");
+        final RollingFileAppender app = loggerContextRule.getAppender("RollingFile");
         assertNotNull(app,"No RollingFileAppender");
         app.getManager().addRolloverListener(this);
         // Trigger the rollover
@@ -66,7 +66,7 @@ public class RollingAppenderDirectCustomDeleteActionTest implements RolloverList
         final File[] files = dir.listFiles();
         assertNotNull(files, "No fiels");
         System.out.println(files[0].getName());
-        long count = Arrays.stream(files).filter((f) -> f.getName().endsWith("test-4.log")).count();
+        final long count = Arrays.stream(files).filter((f) -> f.getName().endsWith("test-4.log")).count();
         assertTrue("Deleted file was not created", fileFound);
         assertEquals("File count expected: 0, actual: " + count, 0, count);
     }
@@ -81,14 +81,14 @@ public class RollingAppenderDirectCustomDeleteActionTest implements RolloverList
     }
 
     @Override
-    public void rolloverTriggered(String fileName) {
+    public void rolloverTriggered(final String fileName) {
         if (fileName.endsWith("test-4.log")) {
             fileFound = true;
         }
     }
 
     @Override
-    public void rolloverComplete(String fileName) {
+    public void rolloverComplete(final String fileName) {
 
     }
 }

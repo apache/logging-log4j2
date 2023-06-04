@@ -52,7 +52,7 @@ public class SpringProfileTest {
         env.setActiveProfiles("prod");
         loggerContext.setConfigLocation(new File(CONFIG).toURI());
         assertNotNull(loggerContext);
-        Appender app = loggerContext.getConfiguration().getAppender("Out");
+        final Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertNotNull(app);
         assertTrue(app instanceof ListAppender);
     }
@@ -62,7 +62,7 @@ public class SpringProfileTest {
         env.setActiveProfiles("dev");
         loggerContext.setConfigLocation(new File(CONFIG).toURI());
         assertNotNull(loggerContext);
-        Appender app = loggerContext.getConfiguration().getAppender("Out");
+        final Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertNotNull(app);
         assertTrue(app instanceof ConsoleAppender);
     }

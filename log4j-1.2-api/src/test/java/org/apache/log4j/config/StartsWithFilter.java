@@ -25,8 +25,8 @@ import org.apache.log4j.spi.LoggingEvent;
 public class StartsWithFilter extends Filter {
 
     @Override
-    public int decide(LoggingEvent event) {
-        String message = String.valueOf(event.getMessage());
+    public int decide(final LoggingEvent event) {
+        final String message = String.valueOf(event.getMessage());
         if (message.startsWith("DENY")) {
             return DENY;
         } else if (message.startsWith("ACCEPT")) {

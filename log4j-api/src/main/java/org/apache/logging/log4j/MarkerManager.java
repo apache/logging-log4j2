@@ -231,7 +231,7 @@ public final class MarkerManager {
 
         @Override
         public Marker[] getParents() {
-            Marker[] parentsSnapshot = parents;
+            final Marker[] parentsSnapshot = parents;
             if (parentsSnapshot == null) {
                 return null;
             }

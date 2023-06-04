@@ -97,10 +97,10 @@ public abstract class MailManager extends AbstractManager {
 
 
 
-        public FactoryData(String to, String cc, String bcc, String from, String replyTo, String subject,
-                Serializer subjectSerializer, String smtpProtocol, String smtpHost, int smtpPort, String smtpUsername,
-                String smtpPassword, boolean smtpDebug, int bufferSize, SslConfiguration sslConfiguration,
-                String filterName) {
+        public FactoryData(final String to, final String cc, final String bcc, final String from, final String replyTo, final String subject,
+                final Serializer subjectSerializer, final String smtpProtocol, final String smtpHost, final int smtpPort, final String smtpUsername,
+                final String smtpPassword, final boolean smtpDebug, final int bufferSize, final SslConfiguration sslConfiguration,
+                final String filterName) {
             this.to = to;
             this.cc = cc;
             this.bcc = bcc;
@@ -190,7 +190,7 @@ public abstract class MailManager extends AbstractManager {
         }
     }
 
-    public MailManager(LoggerContext loggerContext, String name) {
+    public MailManager(final LoggerContext loggerContext, final String name) {
         super(loggerContext, name);
     }
 

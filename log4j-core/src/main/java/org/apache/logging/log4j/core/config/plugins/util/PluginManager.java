@@ -176,7 +176,7 @@ public class PluginManager {
         }
     }
 
-    private boolean isNotEmpty(List<String> list) {
+    private boolean isNotEmpty(final List<String> list) {
         return list != null && !list.isEmpty();
     }
 }

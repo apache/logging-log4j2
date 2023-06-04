@@ -146,26 +146,26 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
     private final TranslatorType threadLocalTranslatorType = new TranslatorType() {
         @Override
-        void log(String fqcn, StackTraceElement location, Level level, Marker marker, Message message,
-            Throwable thrown) {
+        void log(final String fqcn, final StackTraceElement location, final Level level, final Marker marker, final Message message,
+            final Throwable thrown) {
             logWithThreadLocalTranslator(fqcn, location, level, marker, message, thrown);
         }
 
         @Override
-        void log(String fqcn, Level level, Marker marker, Message message, Throwable thrown) {
+        void log(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
             logWithThreadLocalTranslator(fqcn, level, marker, message, thrown);
         }
     };
 
     private final TranslatorType varargTranslatorType = new TranslatorType() {
         @Override
-        void log(String fqcn, StackTraceElement location, Level level, Marker marker, Message message,
-            Throwable thrown) {
+        void log(final String fqcn, final StackTraceElement location, final Level level, final Marker marker, final Message message,
+            final Throwable thrown) {
             logWithVarargTranslator(fqcn, location, level, marker, message, thrown);
         }
 
         @Override
-        void log(String fqcn, Level level, Marker marker, Message message, Throwable thrown) {
+        void log(final String fqcn, final Level level, final Marker marker, final Message message, final Throwable thrown) {
             // LOG4J2-1172: avoid storing non-JDK classes in ThreadLocals to avoid memory leaks in web apps
             logWithVarargTranslator(fqcn, level, marker, message, thrown);
         }
@@ -489,7 +489,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
     @SuppressWarnings("ForLoopReplaceableByForEach") // Avoid iterator allocation
     private void onPropertiesPresent(final RingBufferLogEvent event, final List<Property> properties) {
-        StringMap contextData = getContextData(event);
+        final StringMap contextData = getContextData(event);
         for (int i = 0, size = properties.size(); i < size; i++) {
             final Property prop = properties.get(i);
             if (contextData.getValue(prop.getName()) != null) {
@@ -502,7 +502,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     }
 
     private static StringMap getContextData(final RingBufferLogEvent event) {
-        StringMap contextData = (StringMap) event.getContextData();
+        final StringMap contextData = (StringMap) event.getContextData();
         if (contextData.isFrozen()) {
             final StringMap temp = ContextDataFactory.createContextData();
             temp.putAll(contextData);

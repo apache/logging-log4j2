@@ -23,7 +23,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 class ThreadContextMapExtension implements BeforeEachCallback {
-    private static class ThreadContextMapStore implements ExtensionContext.Store.CloseableResource {
+    private static final class ThreadContextMapStore implements ExtensionContext.Store.CloseableResource {
         private final Map<String, String> previousMap = ThreadContext.getImmutableContext();
 
         private ThreadContextMapStore() {

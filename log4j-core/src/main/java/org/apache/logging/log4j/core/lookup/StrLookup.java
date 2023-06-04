@@ -105,7 +105,7 @@ public interface StrLookup {
      * Returns null if the key cannot be evaluated, otherwise a {@link LookupResult} wrapping the non-null string value.
      */
     default LookupResult evaluate(String key) {
-        String value = lookup(key);
+        final String value = lookup(key);
         return value == null
                 ? null
                 : new DefaultLookupResult(value);
@@ -116,7 +116,7 @@ public interface StrLookup {
      * Returns null if the key cannot be evaluated, otherwise a {@link LookupResult} wrapping the non-null string value.
      */
     default LookupResult evaluate(LogEvent event, String key) {
-        String value = lookup(event, key);
+        final String value = lookup(event, key);
         return value == null
                 ? null
                 : new DefaultLookupResult(value);

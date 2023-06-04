@@ -56,11 +56,11 @@ public class RoutingAppender2767Test {
 
     @Test
     public void routingTest() throws Exception {
-        StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
+        final StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
-        File file = new File(ACTIVITY_LOG_FILE);
+        final File file = new File(ACTIVITY_LOG_FILE);
         assertTrue("Activity file was not created", file.exists());
-        List<String> lines = Files.lines(file.toPath()).collect(Collectors.toList());
+        final List<String> lines = Files.lines(file.toPath()).collect(Collectors.toList());
         assertEquals("Incorrect number of lines", 1, lines.size());
         assertTrue("Incorrect content", lines.get(0).contains("This is a test"));
     }

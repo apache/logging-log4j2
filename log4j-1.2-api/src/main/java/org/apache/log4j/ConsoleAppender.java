@@ -112,7 +112,7 @@ public class ConsoleAppender extends WriterAppender {
      *        are appended.
      * @since 1.2.13
      */
-    public void setFollow(boolean follow) {
+    public void setFollow(final boolean follow) {
         this.follow = follow;
     }
 

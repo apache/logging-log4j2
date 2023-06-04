@@ -56,20 +56,20 @@ public class TraceLoggingTest extends AbstractLogger {
 
     private LogEvent currentEvent;
 
-    private static Throwable t = new UnsupportedOperationException("Test");
+    private static final Throwable t = new UnsupportedOperationException("Test");
 
-    private static Class<AbstractLogger> obj = AbstractLogger.class;
-    private static String pattern = "{}, {}";
-    private static String p1 = "Long Beach";
+    private static final Class<AbstractLogger> obj = AbstractLogger.class;
+    private static final String pattern = "{}, {}";
+    private static final String p1 = "Long Beach";
 
-    private static String p2 = "California";
-    private static Message charSeq = new SimpleMessage(CHAR_SEQ);
-    private static Message simple = new SimpleMessage("Hello");
-    private static Message object = new ObjectMessage(obj);
+    private static final String p2 = "California";
+    private static final Message charSeq = new SimpleMessage(CHAR_SEQ);
+    private static final Message simple = new SimpleMessage("Hello");
+    private static final Message object = new ObjectMessage(obj);
 
-    private static Message param = new ParameterizedMessage(pattern, p1, p2);
+    private static final Message param = new ParameterizedMessage(pattern, p1, p2);
 
-    private static String marker = "TEST";
+    private static final String marker = "TEST";
 
     @Override
     public Level getLevel() {

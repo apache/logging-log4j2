@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 /**
  * <em>Consider this class private.</em> Determines the caller's class.
  */
-public class StackLocator {
+public final class StackLocator {
 
     private final static StackWalker WALKER = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 

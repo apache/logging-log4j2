@@ -64,8 +64,8 @@ public class PropertyTest {
 
     @Test
     public void testPropertyValues() {
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        StrSubstitutor sub = ctx.getConfiguration().getStrSubstitutor();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final StrSubstitutor sub = ctx.getConfiguration().getStrSubstitutor();
         //<Property name="emptyElementKey" />
         //<Property name="emptyAttributeKey" value="" />
         //<Property name="emptyAttributeKey2" value=""></Property>
@@ -84,8 +84,8 @@ public class PropertyTest {
 
     @Test
     public void testLoggerPropertyValues() throws Exception {
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        List<Property> rootLoggerProperties = ctx.getConfiguration()
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final List<Property> rootLoggerProperties = ctx.getConfiguration()
                 .getLoggerConfig(LoggerConfig.ROOT)
                 .getPropertyList();
         //<Property name="emptyElementKey" />
@@ -108,7 +108,7 @@ public class PropertyTest {
     }
 
     private static void verifyProperty(
-            Property property, String expectedName, String expectedRawValue, String expectedValue) {
+            final Property property, final String expectedName, final String expectedRawValue, final String expectedValue) {
         assertEquals(expectedName, property.getName());
         assertEquals(expectedRawValue, property.getRawValue());
         assertEquals(expectedValue, property.getValue());

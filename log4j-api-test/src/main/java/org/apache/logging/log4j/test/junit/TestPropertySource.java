@@ -34,7 +34,7 @@ public class TestPropertySource implements PropertySource {
         return Integer.MIN_VALUE;
     }
 
-    public static TestProperties createProperties(ExtensionContext context) {
+    public static TestProperties createProperties(final ExtensionContext context) {
         TestProperties props = getProperties(context);
         // Make sure that the properties do not come from the parent ExtensionContext
         if (props instanceof JUnitTestProperties && context.equals(((JUnitTestProperties) props).getContext())) {
@@ -49,10 +49,10 @@ public class TestPropertySource implements PropertySource {
         return getProperties(null);
     }
 
-    private static TestProperties getProperties(ExtensionContext context) {
+    private static TestProperties getProperties(final ExtensionContext context) {
         final ExtensionContext actualContext = context != null ? context : ExtensionContextAnchor.getContext();
         if (actualContext != null) {
-            TestProperties props = ExtensionContextAnchor.getAttribute(TestProperties.class, TestProperties.class,
+            final TestProperties props = ExtensionContextAnchor.getAttribute(TestProperties.class, TestProperties.class,
                     actualContext);
             if (props != null) {
                 return props;
@@ -62,19 +62,19 @@ public class TestPropertySource implements PropertySource {
     }
 
     @Override
-    public CharSequence getNormalForm(Iterable<? extends CharSequence> tokens) {
+    public CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
         final CharSequence camelCase = Util.joinAsCamelCase(tokens);
         // Do not use Strings to prevent recursive initialization
         return camelCase.length() > 0 ? PREFIX + camelCase.toString() : null;
     }
 
     @Override
-    public String getProperty(String key) {
+    public String getProperty(final String key) {
         return getProperties().getProperty(key);
     }
 
     @Override
-    public boolean containsProperty(String key) {
+    public boolean containsProperty(final String key) {
         return getProperties().containsProperty(key);
     }
 
@@ -83,7 +83,7 @@ public class TestPropertySource implements PropertySource {
         private final ExtensionContext context;
         private final Store store;
 
-        public JUnitTestProperties(ExtensionContext context) {
+        public JUnitTestProperties(final ExtensionContext context) {
             this.context = context;
             this.store = context.getStore(NAMESPACE);
         }
@@ -93,22 +93,22 @@ public class TestPropertySource implements PropertySource {
         }
 
         @Override
-        public String getProperty(String key) {
+        public String getProperty(final String key) {
             return store.get(key, String.class);
         }
 
         @Override
-        public boolean containsProperty(String key) {
+        public boolean containsProperty(final String key) {
             return getProperty(key) != null;
         }
 
         @Override
-        public void setProperty(String key, String value) {
+        public void setProperty(final String key, final String value) {
             store.put(key, value);
         }
 
         @Override
-        public void clearProperty(String key) {
+        public void clearProperty(final String key) {
             store.remove(key, String.class);
         }
 
@@ -117,22 +117,22 @@ public class TestPropertySource implements PropertySource {
     private static class EmptyTestProperties implements TestProperties {
 
         @Override
-        public String getProperty(String key) {
+        public String getProperty(final String key) {
             return null;
         }
 
         @Override
-        public boolean containsProperty(String key) {
+        public boolean containsProperty(final String key) {
             return false;
         }
 
         @Override
-        public void setProperty(String key, String value) {
+        public void setProperty(final String key, final String value) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void clearProperty(String key) {
+        public void clearProperty(final String key) {
             throw new UnsupportedOperationException();
         }
 

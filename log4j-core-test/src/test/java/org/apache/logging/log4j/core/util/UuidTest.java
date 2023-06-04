@@ -69,7 +69,7 @@ public class UuidTest {
         // Test if no ArrayIndexOutOfBoundsException is thrown for different Mac address lengths
         for (int i=0; i < 10; i++) {
             // Create MAC address byte array with i as size
-            byte[] mac = new byte[i];
+            final byte[] mac = new byte[i];
             for(int j=0; j < i; j++) {
                 mac[j] = (byte)j;
             }

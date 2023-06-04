@@ -160,7 +160,7 @@ public class RollingFileManager extends FileManager {
             // LOG4J2-2981 - set the file size before initializing the triggering policy.
             if (directWrite) {
                 // LOG4J2-2485: Initialize size from the most recently written file.
-                File file = new File(getFileName());
+                final File file = new File(getFileName());
                 if (file.exists()) {
                     size = file.length();
                 } else {
@@ -173,7 +173,7 @@ public class RollingFileManager extends FileManager {
             }
             if (directWrite) {
                 // LOG4J2-2485: Initialize size from the most recently written file.
-                File file = new File(getFileName());
+                final File file = new File(getFileName());
                 if (file.exists()) {
                     size = file.length();
                 } else {
@@ -223,7 +223,7 @@ public class RollingFileManager extends FileManager {
      * Add a RolloverListener.
      * @param listener The RolloverListener.
      */
-    public void addRolloverListener(RolloverListener listener) {
+    public void addRolloverListener(final RolloverListener listener) {
         rolloverListeners.add(listener);
     }
 
@@ -231,7 +231,7 @@ public class RollingFileManager extends FileManager {
      * Remove a RolloverListener.
      * @param listener The RolloverListener.
      */
-    public void removeRolloverListener(RolloverListener listener) {
+    public void removeRolloverListener(final RolloverListener listener) {
         rolloverListeners.remove(listener);
     }
 
@@ -361,7 +361,7 @@ public class RollingFileManager extends FileManager {
         return status;
     }
 
-    public synchronized void rollover(Date prevFileTime, Date prevRollTime) {
+    public synchronized void rollover(final Date prevFileTime, final Date prevRollTime) {
         LOGGER.debug("Rollover PrevFileTime: {}, PrevRollTime: {}", prevFileTime.getTime(),
                 prevRollTime.getTime());
         getPatternProcessor().setPrevFileTime(prevFileTime.getTime());
@@ -373,7 +373,7 @@ public class RollingFileManager extends FileManager {
         if (!hasOutputStream() && !isCreateOnDemand() && !isDirectWrite()) {
             return;
         }
-        String currentFileName = fileName;
+        final String currentFileName = fileName;
         if (rolloverListeners.size() > 0) {
             for (RolloverListener listener : rolloverListeners) {
                 try {
@@ -385,7 +385,7 @@ public class RollingFileManager extends FileManager {
             }
         }
 
-        boolean interrupted = Thread.interrupted(); // clear interrupted state
+        final boolean interrupted = Thread.interrupted(); // clear interrupted state
         try {
             if (interrupted) {
                 LOGGER.warn("RollingFileManager cleared thread interrupted state, continue to rollover");

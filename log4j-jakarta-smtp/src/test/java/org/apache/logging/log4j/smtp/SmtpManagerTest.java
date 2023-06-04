@@ -35,7 +35,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SmtpManagerTest {
 
-    private void testAdd(LogEvent event) {
+    private void testAdd(final LogEvent event) {
         final SmtpAppender appender = SmtpAppender.newBuilder()
                 .setName("smtp")
                 .setTo("to")
@@ -59,7 +59,7 @@ public class SmtpManagerTest {
         smtpManager.removeAllBufferedEvents(); // in case this smtpManager is reused
         smtpManager.add(event);
 
-        LogEvent[] bufferedEvents = smtpManager.removeAllBufferedEvents();
+        final LogEvent[] bufferedEvents = smtpManager.removeAllBufferedEvents();
         assertThat("unexpected number of buffered events", bufferedEvents.length, is(1));
         assertThat("expected the immutable version of the event to be buffered", bufferedEvents[0].getMessage(), is(instanceOf(MementoMessage.class)));
     }
@@ -67,27 +67,27 @@ public class SmtpManagerTest {
     // LOG4J2-3172: make sure existing protections are not violated
     @Test
     public void testAdd_WhereLog4jLogEventWithReusableMessage() {
-        LogEvent event = new Log4jLogEvent.Builder().setMessage(getReusableMessage("test message")).build();
+        final LogEvent event = new Log4jLogEvent.Builder().setMessage(getReusableMessage("test message")).build();
         testAdd(event);
     }
 
     // LOG4J2-3172: make sure existing protections are not violated
     @Test
     public void testAdd_WhereMutableLogEvent() {
-        MutableLogEvent event = new MutableLogEvent(new StringBuilder("test message"), null);
+        final MutableLogEvent event = new MutableLogEvent(new StringBuilder("test message"), null);
         testAdd(event);
     }
 
     // LOG4J2-3172
     @Test
     public void testAdd_WhereRingBufferLogEvent() {
-        RingBufferLogEvent event = new RingBufferLogEvent();
+        final RingBufferLogEvent event = new RingBufferLogEvent();
         event.setValues(null, null, null, null, null, getReusableMessage("test message"), null, null, null, 0, null, 0, null, ClockFactory.getClock(), new DummyNanoClock());
         testAdd(event);
     }
 
-    private ReusableMessage getReusableMessage(String text) {
-        ReusableSimpleMessage message = new ReusableSimpleMessage();
+    private ReusableMessage getReusableMessage(final String text) {
+        final ReusableSimpleMessage message = new ReusableSimpleMessage();
         message.set(text);
         return message;
     }

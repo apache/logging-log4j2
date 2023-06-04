@@ -87,7 +87,7 @@ public class BundleContextSelector extends ClassLoaderContextSelector {
         return null;
     }
 
-    private void removeLoggerContext(LoggerContext context) {
+    private void removeLoggerContext(final LoggerContext context) {
         CONTEXT_MAP.remove(context.getName());
     }
 

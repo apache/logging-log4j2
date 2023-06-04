@@ -143,7 +143,7 @@ public class HighlightConverterTest {
 
     @Test
     @UsingStatusListener
-    public void testNoAnsiEmpty(ListStatusListener listener) {
+    public void testNoAnsiEmpty(final ListStatusListener listener) {
         final String[] options = {"", PatternParser.DISABLE_ANSI + "=true"};
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);
@@ -158,7 +158,7 @@ public class HighlightConverterTest {
 
     @Test
     @UsingStatusListener
-    public void testNoAnsiNonEmpty(ListStatusListener listener) {
+    public void testNoAnsiNonEmpty(final ListStatusListener listener) {
         final String[] options = {"%-5level: %msg", PatternParser.DISABLE_ANSI + "=true"};
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);

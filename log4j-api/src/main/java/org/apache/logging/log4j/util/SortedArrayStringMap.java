@@ -538,7 +538,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
             return null;
         }
         final ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(bout)) {
+        try (final ObjectOutputStream oos = new ObjectOutputStream(bout)) {
             oos.writeObject(obj);
             oos.flush();
             return bout.toByteArray();

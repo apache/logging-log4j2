@@ -118,7 +118,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
         }
 
         @Override
-        public void formatTo(StringBuilder buffer) {
+        public void formatTo(final StringBuilder buffer) {
             buffer.append(text);
             if (message != null) {
                 buffer.append(" ");
@@ -191,7 +191,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     }
 
     @Override
-    public EntryMessage newEntryMessage(String format, Object... params) {
+    public EntryMessage newEntryMessage(final String format, final Object... params) {
         final boolean hasFormat = Strings.isNotEmpty(format);
         final Message message;
         if (params == null || params.length == 0) {
@@ -230,7 +230,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
     }
 
     @Override
-    public ExitMessage newExitMessage(String format, Object result) {
+    public ExitMessage newExitMessage(final String format, final Object result) {
         final boolean hasFormat = Strings.isNotEmpty(format);
         final Message message;
         if (result == null) {

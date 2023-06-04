@@ -29,7 +29,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Binds a Log4j 1.x Appender to Log4j 2.
  */
-public class AppenderAdapter {
+public final class AppenderAdapter {
 
     private final Appender appender;
     private final Adapter adapter;
@@ -43,7 +43,7 @@ public class AppenderAdapter {
      * @param appender a Log4j 1.x appender
      * @return a Log4j 2.x appender or {@code null} if the parameter is {@code null}
      */
-    public static org.apache.logging.log4j.core.Appender adapt(Appender appender) {
+    public static org.apache.logging.log4j.core.Appender adapt(final Appender appender) {
         if (appender instanceof org.apache.logging.log4j.core.Appender) {
             return (org.apache.logging.log4j.core.Appender) appender;
         }
@@ -60,7 +60,7 @@ public class AppenderAdapter {
      * Constructor.
      * @param appender The Appender to wrap.
      */
-    private AppenderAdapter(Appender appender) {
+    private AppenderAdapter(final Appender appender) {
         this.appender = appender;
         final org.apache.logging.log4j.core.Filter appenderFilter = FilterAdapter.adapt(appender.getFilter());
         String name = appender.getName();
@@ -82,7 +82,7 @@ public class AppenderAdapter {
         }
 
         @Override
-        public void append(LogEvent event) {
+        public void append(final LogEvent event) {
             appender.doAppend(new LogEventAdapter(event));
         }
 

@@ -28,7 +28,7 @@ public class RenderedMessage implements Message {
     private final Object object;
     private String rendered = null;
 
-    public RenderedMessage(ObjectRenderer renderer, Object object) {
+    public RenderedMessage(final ObjectRenderer renderer, final Object object) {
         this.renderer = renderer;
         this.object = object;
     }

@@ -147,7 +147,7 @@ public class DatePatternConverterTest {
         final String[] pattern = {FixedDateFormat.FixedFormat.ISO8601_PERIOD_MICROS.name(), "Z"};
         final DatePatternConverter converter = DatePatternConverter.newInstance(pattern);
         final StringBuilder sb = new StringBuilder();
-        MutableInstant instant = new MutableInstant();
+        final MutableInstant instant = new MutableInstant();
         instant.initFromEpochMilli(
                 1577225134559L,
                 // One microsecond
@@ -187,7 +187,7 @@ public class DatePatternConverterTest {
 
     @Test
     public void testFormatAmericanPatterns() {
-        Date date = date(2011, 2, 11);
+        final Date date = date(2011, 2, 11);
         assertDatePattern("US_MONTH_DAY_YEAR4_TIME", date, "11/03/2011 14:15:16.123");
         assertDatePattern("US_MONTH_DAY_YEAR2_TIME", date, "11/03/11 14:15:16.123");
         assertDatePattern("dd/MM/yyyy HH:mm:ss.SSS", date, "11/03/2011 14:15:16.123");
@@ -197,8 +197,8 @@ public class DatePatternConverterTest {
     }
 
     private static void assertDatePattern(final String format, final Date date, final String expected) {
-        DatePatternConverter converter = DatePatternConverter.newInstance(new String[] {format});
-        StringBuilder sb = new StringBuilder();
+        final DatePatternConverter converter = DatePatternConverter.newInstance(new String[]{format});
+        final StringBuilder sb = new StringBuilder();
         converter.format(date, sb);
 
         assertEquals(expected, sb.toString());

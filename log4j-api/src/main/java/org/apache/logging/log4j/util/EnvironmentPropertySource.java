@@ -38,7 +38,7 @@ public class EnvironmentPropertySource implements PropertySource {
         return DEFAULT_PRIORITY;
     }
 
-    private void logException(SecurityException e) {
+    private void logException(final SecurityException e) {
         // There is no status logger yet.
         LowLevelLogUtil.logException(
                 "The system environment variables are not available to Log4j due to security restrictions: " + e, e);
@@ -86,7 +86,7 @@ public class EnvironmentPropertySource implements PropertySource {
     }
 
     @Override
-    public String getProperty(String key) {
+    public String getProperty(final String key) {
         try {
             return System.getenv(key);
         } catch (final SecurityException e) {
@@ -96,7 +96,7 @@ public class EnvironmentPropertySource implements PropertySource {
     }
 
     @Override
-    public boolean containsProperty(String key) {
+    public boolean containsProperty(final String key) {
         try {
             return System.getenv().containsKey(key);
         } catch (final SecurityException e) {

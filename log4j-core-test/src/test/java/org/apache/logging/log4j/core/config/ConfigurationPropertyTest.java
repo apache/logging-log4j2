@@ -43,9 +43,9 @@ public class ConfigurationPropertyTest {
     public void testInitializeFromSystemProperty() {
         System.setProperty("log4j2.configurationFile", "src/test/resources/log4j-list.xml");
         loggerContext = (LoggerContext) LogManager.getContext(false);
-        Configuration configuration = loggerContext.getConfiguration();
+        final Configuration configuration = loggerContext.getConfiguration();
         assertNotNull(configuration, "Null configuration");
-        Appender app = configuration.getAppender("List");
+        final Appender app = configuration.getAppender("List");
         assertNotNull(app, " Could not locate List Appender");
     }
 }

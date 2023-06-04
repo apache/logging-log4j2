@@ -46,7 +46,7 @@ import org.apache.log4j.helpers.OptionConverter;
 public class LoggerDynamicMBean extends AbstractDynamicMBean implements NotificationListener {
 
     // This Logger instance is for logging.
-    private static Logger cat = Logger.getLogger(LoggerDynamicMBean.class);
+    private static final Logger cat = Logger.getLogger(LoggerDynamicMBean.class);
     private final MBeanConstructorInfo[] dConstructors = new MBeanConstructorInfo[1];
 
     private final MBeanOperationInfo[] dOperations = new MBeanOperationInfo[1];

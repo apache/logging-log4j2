@@ -52,7 +52,7 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
     private static final String SUFFIX = ".xml";
 
     @Override
-    Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException {
+    Configuration getConfiguration(final String configResourcePrefix) throws URISyntaxException, IOException {
         final String configResource = configResourcePrefix + SUFFIX;
         final InputStream inputStream = getResourceAsStream(configResource);
         final ConfigurationSource source = new ConfigurationSource(inputStream);

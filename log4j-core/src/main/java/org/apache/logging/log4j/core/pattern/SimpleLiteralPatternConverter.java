@@ -34,7 +34,7 @@ abstract class SimpleLiteralPatternConverter extends LogEventPatternConverter im
     }
 
     static LogEventPatternConverter of(final String literal, final boolean convertBackslashes) {
-        String value = convertBackslashes ? OptionConverter.convertSpecialChars(literal) : literal;
+        final String value = convertBackslashes ? OptionConverter.convertSpecialChars(literal) : literal;
         return of(value);
     }
 

@@ -150,7 +150,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         return new Builder();
     }
 
-    public static class Builder {
+    public static final class Builder {
 
         private Configuration configuration;
 
@@ -246,7 +246,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             return this;
         }
 
-        public Builder setEventTemplateRootObjectKey(String eventTemplateRootObjectKey) {
+        public Builder setEventTemplateRootObjectKey(final String eventTemplateRootObjectKey) {
             this.eventTemplateRootObjectKey = eventTemplateRootObjectKey;
             return this;
         }

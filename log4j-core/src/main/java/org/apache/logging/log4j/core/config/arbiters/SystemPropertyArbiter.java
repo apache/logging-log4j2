@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
  */
 @Plugin(name = "SystemPropertyArbiter", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
         deferChildren = true, printObject = true)
-public class SystemPropertyArbiter implements Arbiter {
+public final class SystemPropertyArbiter implements Arbiter {
 
     private final String propertyName;
     private final String propertyValue;
@@ -43,7 +43,7 @@ public class SystemPropertyArbiter implements Arbiter {
      */
     @Override
     public boolean isCondition() {
-        String value = System.getProperty(propertyName);
+        final String value = System.getProperty(propertyName);
         return value != null && (propertyValue == null || value.equals(propertyValue));
     }
 

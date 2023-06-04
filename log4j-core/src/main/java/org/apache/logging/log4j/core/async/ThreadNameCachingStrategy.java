@@ -70,8 +70,8 @@ public enum ThreadNameCachingStrategy { // LOG4J2-467
         // LOG4J2-2052, LOG4J2-2635 JDK 8u102 ("1.8.0_102") removed the String allocation in Thread.getName()
         if (Constants.JAVA_MAJOR_VERSION == 8) {
             try {
-                Pattern javaVersionPattern = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)_(\\d+)");
-                Matcher m = javaVersionPattern.matcher(System.getProperty("java.version"));
+                final Pattern javaVersionPattern = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)_(\\d+)");
+                final Matcher m = javaVersionPattern.matcher(System.getProperty("java.version"));
                 if (m.matches()) {
                     return Integers.parseInt(m.group(3)) == 0 && Integers.parseInt(m.group(4)) < 102;
                 }

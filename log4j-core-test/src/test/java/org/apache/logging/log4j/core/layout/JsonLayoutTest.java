@@ -618,29 +618,29 @@ public class JsonLayoutTest {
     public void jsonLayout_should_substitute_lookups() {
 
         // Create the layout.
-        KeyValuePair[] additionalFields = {
+        final KeyValuePair[] additionalFields = {
                 KeyValuePair
                         .newBuilder()
                         .setKey("who")
                         .setValue("${ctx:WHO}")
                         .build()
         };
-        JsonLayout layout = JsonLayout
+        final JsonLayout layout = JsonLayout
                 .newBuilder()
                 .setConfiguration(new DefaultConfiguration())
                 .setAdditionalFields(additionalFields)
                 .build();
 
         // Create a log event containing `WHO` key in MDC.
-        StringMap contextData = ContextDataFactory.createContextData();
+        final StringMap contextData = ContextDataFactory.createContextData();
         contextData.putValue("WHO", "mduft");
-        LogEvent logEvent = Log4jLogEvent
+        final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
                 .setContextData(contextData)
                 .build();
 
         // Verify the `WHO` key.
-        String serializedLogEvent = layout.toSerializable(logEvent);
+        final String serializedLogEvent = layout.toSerializable(logEvent);
         assertThat(serializedLogEvent, containsString("\"who\" : \"mduft\""));
 
     }

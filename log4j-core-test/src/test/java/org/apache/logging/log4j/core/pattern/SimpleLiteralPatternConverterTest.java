@@ -24,22 +24,22 @@ public class SimpleLiteralPatternConverterTest {
 
     @Test
     public void testConvertBackslashes() {
-        String literal = "ABC\\tDEF\\nGHI\\rJKL\\'MNO\\f \\b \\\\DROPPED:\\x";
-        LogEventPatternConverter converter = SimpleLiteralPatternConverter.of(literal, true);
-        String actual = literal(converter);
+        final String literal = "ABC\\tDEF\\nGHI\\rJKL\\'MNO\\f \\b \\\\DROPPED:\\x";
+        final LogEventPatternConverter converter = SimpleLiteralPatternConverter.of(literal, true);
+        final String actual = literal(converter);
         assertEquals("ABC\tDEF\nGHI\rJKL\'MNO\f \b \\DROPPED:x", actual);
     }
 
     @Test
     public void testDontConvertBackslashes() {
-        String literal = "ABC\\tDEF\\nGHI\\rJKL\\'MNO\\f \\b \\\\DROPPED:\\x";
-        LogEventPatternConverter converter = SimpleLiteralPatternConverter.of(literal, false);
-        String actual = literal(converter);
+        final String literal = "ABC\\tDEF\\nGHI\\rJKL\\'MNO\\f \\b \\\\DROPPED:\\x";
+        final LogEventPatternConverter converter = SimpleLiteralPatternConverter.of(literal, false);
+        final String actual = literal(converter);
         assertEquals(literal, actual);
     }
 
-    private static String literal(LogEventPatternConverter converter) {
-        StringBuilder buffer = new StringBuilder();
+    private static String literal(final LogEventPatternConverter converter) {
+        final StringBuilder buffer = new StringBuilder();
         converter.format(null, buffer);
         return buffer.toString();
     }

@@ -66,7 +66,7 @@ public abstract class AbstractWatcher implements Watcher {
     public abstract boolean isModified();
 
     @Override
-    public void watching(Source source) {
+    public void watching(final Source source) {
         this.source = source;
     }
 

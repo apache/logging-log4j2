@@ -319,7 +319,7 @@ public class Category implements AppenderAttachable {
         }
     }
 
-    private static Message createMessage(Object message) {
+    private static Message createMessage(final Object message) {
         if (message instanceof String) {
             return new SimpleMessage((String) message);
         }

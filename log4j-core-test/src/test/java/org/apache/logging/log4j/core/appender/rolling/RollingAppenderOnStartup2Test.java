@@ -54,7 +54,7 @@ public class RollingAppenderOnStartup2Test {
     @BeforeClass
     public static void beforeClass() throws Exception {
         if (Files.exists(Paths.get("target/rollOnStartup"))) {
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+            try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
                 for (final Path path : directoryStream) {
                     Files.delete(path);
                 }
@@ -86,7 +86,7 @@ public class RollingAppenderOnStartup2Test {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        long size = 0;
+        final long size = 0;
         /* try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {
                 if (size == 0) {
@@ -104,7 +104,7 @@ public class RollingAppenderOnStartup2Test {
 
     @Test
     public void testAppender() throws Exception {
-        Logger logger = LogManager.getLogger(RollingAppenderOnStartup2Test.class);
+        final Logger logger = LogManager.getLogger(RollingAppenderOnStartup2Test.class);
         for (int i = 0; i < 10; ++i) {
             logger.debug("This is test message number " + i);
         }

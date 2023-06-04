@@ -73,7 +73,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     public void purge() {
         final long createTime = System.currentTimeMillis() - timeToLive;
         for (final Entry<String, Long> entry : appendersUsage.entrySet()) {
-            long entryValue = entry.getValue();
+            final long entryValue = entry.getValue();
             if (entryValue < createTime) {
                 if (appendersUsage.remove(entry.getKey(), entryValue)) {
                     LOGGER.debug("Removing appender {}", entry.getKey());

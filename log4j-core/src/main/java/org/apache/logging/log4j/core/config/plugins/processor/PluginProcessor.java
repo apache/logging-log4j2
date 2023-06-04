@@ -70,7 +70,7 @@ public class PluginProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(final Set<? extends TypeElement> annotations, final RoundEnvironment roundEnv) {
-        Messager messager = processingEnv.getMessager();
+        final Messager messager = processingEnv.getMessager();
         messager.printMessage(Kind.NOTE, "Processing Log4j annotations");
         try {
             final Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Plugin.class);
@@ -124,7 +124,7 @@ public class PluginProcessor extends AbstractProcessor {
     /**
      * ElementVisitor to scan the Plugin annotation.
      */
-    private static class PluginElementVisitor extends SimpleElementVisitor7<PluginEntry, Plugin> {
+    private static final class PluginElementVisitor extends SimpleElementVisitor7<PluginEntry, Plugin> {
 
         private final Elements elements;
 
@@ -149,7 +149,7 @@ public class PluginProcessor extends AbstractProcessor {
     /**
      * ElementVisitor to scan the PluginAliases annotation.
      */
-    private static class PluginAliasesElementVisitor extends SimpleElementVisitor7<Collection<PluginEntry>, Plugin> {
+    private static final class PluginAliasesElementVisitor extends SimpleElementVisitor7<Collection<PluginEntry>, Plugin> {
 
         private final Elements elements;
 

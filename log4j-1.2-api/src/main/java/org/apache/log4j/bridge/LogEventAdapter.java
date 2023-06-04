@@ -42,7 +42,7 @@ public class LogEventAdapter extends LoggingEvent {
 
     private final LogEvent event;
 
-    public LogEventAdapter(LogEvent event) {
+    public LogEventAdapter(final LogEvent event) {
         this.event = event;
     }
 
@@ -145,7 +145,7 @@ public class LogEventAdapter extends LoggingEvent {
      Returns the context corresponding to the <code>key</code> parameter.
      */
     @Override
-    public Object getMDC(String key) {
+    public Object getMDC(final String key) {
         if (event.getContextData() != null) {
             return event.getContextData().getValue(key);
         }

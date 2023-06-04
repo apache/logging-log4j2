@@ -54,7 +54,7 @@ public class PropertySourceTokenizerTest {
     @ParameterizedTest
     @MethodSource("data")
     public void testTokenize(final CharSequence value, final List<CharSequence> expectedTokens) {
-        List<CharSequence> tokens = PropertySource.Util.tokenize(value);
+        final List<CharSequence> tokens = PropertySource.Util.tokenize(value);
         assertEquals(expectedTokens, tokens);
     }
 }

@@ -41,8 +41,8 @@ public class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testAcceptOnMatchTrue(TestLevelRangeFilterBuilder builder) throws Exception {
-        LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, Level.ERROR, true);
+    public void testAcceptOnMatchTrue(final TestLevelRangeFilterBuilder builder) throws Exception {
+        final LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, Level.ERROR, true);
 
         assertResult(Result.DENY, levelRangeFilter, Level.ALL);
         assertResult(Result.DENY, levelRangeFilter, Level.DEBUG);
@@ -55,8 +55,8 @@ public class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testAcceptOnMatchFalse(TestLevelRangeFilterBuilder builder) throws Exception {
-        LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, Level.ERROR, false);
+    public void testAcceptOnMatchFalse(final TestLevelRangeFilterBuilder builder) throws Exception {
+        final LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, Level.ERROR, false);
 
         assertResult(Result.DENY, levelRangeFilter, Level.ALL);
         assertResult(Result.DENY, levelRangeFilter, Level.DEBUG);
@@ -69,8 +69,8 @@ public class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testAcceptOnMatchNull(TestLevelRangeFilterBuilder builder) throws Exception {
-        LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, Level.ERROR, null);
+    public void testAcceptOnMatchNull(final TestLevelRangeFilterBuilder builder) throws Exception {
+        final LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, Level.ERROR, null);
 
         assertResult(Result.DENY, levelRangeFilter, Level.ALL);
         assertResult(Result.DENY, levelRangeFilter, Level.DEBUG);
@@ -83,8 +83,8 @@ public class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testMinLevelNull(TestLevelRangeFilterBuilder builder) throws Exception {
-        LevelRangeFilter levelRangeFilter = builder.build(null, Level.ERROR, true);
+    public void testMinLevelNull(final TestLevelRangeFilterBuilder builder) throws Exception {
+        final LevelRangeFilter levelRangeFilter = builder.build(null, Level.ERROR, true);
 
         assertResult(Result.ACCEPT, levelRangeFilter, Level.ALL);
         assertResult(Result.ACCEPT, levelRangeFilter, Level.DEBUG);
@@ -97,8 +97,8 @@ public class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testMaxLevelNull(TestLevelRangeFilterBuilder builder) throws Exception {
-        LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, null, true);
+    public void testMaxLevelNull(final TestLevelRangeFilterBuilder builder) throws Exception {
+        final LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, null, true);
 
         assertResult(Result.DENY, levelRangeFilter, Level.ALL);
         assertResult(Result.DENY, levelRangeFilter, Level.DEBUG);
@@ -111,8 +111,8 @@ public class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testMinMaxLevelSame(TestLevelRangeFilterBuilder builder) throws Exception {
-        LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, Level.INFO, true);
+    public void testMinMaxLevelSame(final TestLevelRangeFilterBuilder builder) throws Exception {
+        final LevelRangeFilter levelRangeFilter = builder.build(Level.INFO, Level.INFO, true);
 
         assertResult(Result.DENY, levelRangeFilter, Level.ALL);
         assertResult(Result.DENY, levelRangeFilter, Level.DEBUG);
@@ -125,8 +125,8 @@ public class LevelRangeFilterBuilderTest {
 
     @ParameterizedTest
     @ArgumentsSource(TestLevelRangeFilterBuilderProvider.class)
-    public void testMinMaxLevelNull(TestLevelRangeFilterBuilder builder) throws Exception {
-        LevelRangeFilter levelRangeFilter = builder.build(null, null, true);
+    public void testMinMaxLevelNull(final TestLevelRangeFilterBuilder builder) throws Exception {
+        final LevelRangeFilter levelRangeFilter = builder.build(null, null, true);
 
         assertResult(Result.ACCEPT, levelRangeFilter, Level.ALL);
         assertResult(Result.ACCEPT, levelRangeFilter, Level.DEBUG);
@@ -137,14 +137,14 @@ public class LevelRangeFilterBuilderTest {
         assertResult(Result.ACCEPT, levelRangeFilter, Level.OFF);
     }
 
-    private static void assertResult(Result expected, LevelRangeFilter filter, Level level) {
+    private static void assertResult(final Result expected, final LevelRangeFilter filter, final Level level) {
         assertSame(expected, filter.filter(null, level, null, (Object) null, null));
     }
 
     private static class TestLevelRangeFilterBuilderProvider implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+        public Stream<? extends Arguments> provideArguments(final ExtensionContext extensionContext) {
             return Stream.of(
                     Arguments.of(new TestLevelRangeFilterFromXmlBuilder()),
                     Arguments.of(new TestLevelRangeFilterFromPropertyBuilder())
@@ -160,16 +160,16 @@ public class LevelRangeFilterBuilderTest {
     private static class TestLevelRangeFilterFromXmlBuilder implements TestLevelRangeFilterBuilder {
 
         @Override
-        public LevelRangeFilter build(Level levelMin, Level levelMax, Boolean acceptOnMatch) throws Exception {
-            LevelRangeFilterBuilder builder = new LevelRangeFilterBuilder();
-            Filter filter = builder.parse(generateTestXml(levelMin, levelMax, acceptOnMatch), null);
-            org.apache.logging.log4j.core.Filter wrappedFilter = ((FilterWrapper) filter).getFilter();
+        public LevelRangeFilter build(final Level levelMin, final Level levelMax, final Boolean acceptOnMatch) throws Exception {
+            final LevelRangeFilterBuilder builder = new LevelRangeFilterBuilder();
+            final Filter filter = builder.parse(generateTestXml(levelMin, levelMax, acceptOnMatch), null);
+            final org.apache.logging.log4j.core.Filter wrappedFilter = ((FilterWrapper) filter).getFilter();
             return (LevelRangeFilter) wrappedFilter;
         }
 
-        private static Element generateTestXml(Level levelMin, Level levelMax, Boolean acceptOnMatch) throws Exception {
+        private static Element generateTestXml(final Level levelMin, final Level levelMax, final Boolean acceptOnMatch) throws Exception {
 
-            StringBuilder sb = new StringBuilder();
+            final StringBuilder sb = new StringBuilder();
             sb.append("<filter class=\"org.apache.log4j.varia.LevelRangeFilter\">\n");
             if (levelMin != null) {
                 sb.append(String.format("<param name=\"LevelMin\" value=\"%s\"/>\n", levelMin));
@@ -191,8 +191,8 @@ public class LevelRangeFilterBuilderTest {
     private static class TestLevelRangeFilterFromPropertyBuilder implements TestLevelRangeFilterBuilder {
 
         @Override
-        public LevelRangeFilter build(Level levelMin, Level levelMax, Boolean acceptOnMatch) {
-            Properties properties = new Properties();
+        public LevelRangeFilter build(final Level levelMin, final Level levelMax, final Boolean acceptOnMatch) {
+            final Properties properties = new Properties();
             if (levelMin != null) {
                 properties.setProperty("foobar.levelMin", levelMin.name());
             }
@@ -202,9 +202,9 @@ public class LevelRangeFilterBuilderTest {
             if (acceptOnMatch != null) {
                 properties.setProperty("foobar.acceptOnMatch", acceptOnMatch.toString());
             }
-            LevelRangeFilterBuilder builder = new LevelRangeFilterBuilder("foobar", properties);
-            Filter filter = builder.parse(null);
-            org.apache.logging.log4j.core.Filter wrappedFilter = ((FilterWrapper) filter).getFilter();
+            final LevelRangeFilterBuilder builder = new LevelRangeFilterBuilder("foobar", properties);
+            final Filter filter = builder.parse(null);
+            final org.apache.logging.log4j.core.Filter wrappedFilter = ((FilterWrapper) filter).getFilter();
             return (LevelRangeFilter) wrappedFilter;
         }
     }

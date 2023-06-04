@@ -58,7 +58,7 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
     @Threads(32)
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public void concurrentLoggingThreads(BenchmarkState state) {
+    public void concurrentLoggingThreads(final BenchmarkState state) {
         state.logger.info(BenchmarkMessageParams.TEST);
     }
 
@@ -66,7 +66,7 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
     @Threads(1)
     @BenchmarkMode(Mode.Throughput)
     @OutputTimeUnit(TimeUnit.SECONDS)
-    public void singleLoggingThread(BenchmarkState state) {
+    public void singleLoggingThread(final BenchmarkState state) {
         state.logger.info(BenchmarkMessageParams.TEST);
     }
 
@@ -111,7 +111,7 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
 
             private final Map<String, String> properties;
 
-            QueueFullPolicy(Map<String, String> properties) {
+            QueueFullPolicy(final Map<String, String> properties) {
                 this.properties = properties;
             }
 

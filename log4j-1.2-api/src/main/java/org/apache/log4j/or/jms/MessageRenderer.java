@@ -35,10 +35,10 @@ public class MessageRenderer implements ObjectRenderer {
      */
     @Override
     public
-    String  doRender(Object obj) {
+    String  doRender(final Object obj) {
         if (obj instanceof Message) {
-            StringBuilder sb = new StringBuilder();
-            Message message = (Message) obj;
+            final StringBuilder sb = new StringBuilder();
+            final Message message = (Message) obj;
             try {
                 sb.append("DeliveryMode=");
                 switch(message.getJMSDeliveryMode()) {

@@ -260,7 +260,7 @@ public final class Configurator {
      */
     public static void reconfigure() {
         try {
-            Log4jContextFactory factory = getFactory();
+            final Log4jContextFactory factory = getFactory();
             if (factory != null) {
                 factory.getSelector().getContext(FQCN, null, false).reconfigure();
             } else {
@@ -278,7 +278,7 @@ public final class Configurator {
      */
     public static void reconfigure(final URI uri) {
         try {
-            Log4jContextFactory factory = getFactory();
+            final Log4jContextFactory factory = getFactory();
             if (factory != null) {
                 factory.getSelector().getContext(FQCN, null, false).setConfigLocation(uri);
             } else {

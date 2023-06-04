@@ -2136,7 +2136,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     private static void decrementRecursionDepth() {
-        int newDepth = --getRecursionDepthHolder()[0];
+        final int newDepth = --getRecursionDepthHolder()[0];
         if (newDepth < 0) {
             throw new IllegalStateException("Recursion depth became negative: " + newDepth);
         }
@@ -2172,7 +2172,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     @PerformanceSensitive
     // NOTE: This is a hot method. Current implementation compiles to 15 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
-    private StackTraceElement getLocation(String fqcn) {
+    private StackTraceElement getLocation(final String fqcn) {
         return requiresLocation() ? StackLocatorUtil.calcLocation(fqcn) : null;
     }
 
@@ -2876,7 +2876,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * @since 2.13.0
      */
     @Override
-    public LogBuilder atLevel(Level level) {
+    public LogBuilder atLevel(final Level level) {
         if (isEnabled(level)) {
             return getLogBuilder(level);
         }
@@ -2888,9 +2888,9 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      *
      * @since 2.20.0
      */
-    protected LogBuilder getLogBuilder(Level level) {
+    protected LogBuilder getLogBuilder(final Level level) {
         if (Constants.ENABLE_THREADLOCALS) {
-            DefaultLogBuilder builder = logBuilder.get();
+            final DefaultLogBuilder builder = logBuilder.get();
             if (!builder.isInUse()) {
                 return builder.reset(this, level);
             }

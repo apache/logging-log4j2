@@ -34,8 +34,8 @@ import org.apache.logging.log4j.core.util.Throwables;
 /**
  * An {@link Appender} that fails on the first use and works for the rest.
  */
-@Plugin(name="FailOnce", category ="Core", elementType=Appender.ELEMENT_TYPE, printObject=true)
-public class FailOnceAppender extends AbstractAppender {
+@Plugin(name = "FailOnce", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
+public final class FailOnceAppender extends AbstractAppender {
 
     private final Supplier<Throwable> throwableSupplier;
 
@@ -52,7 +52,7 @@ public class FailOnceAppender extends AbstractAppender {
     public synchronized void append(final LogEvent event) {
         if (!failed) {
             failed = true;
-            Throwable throwable = throwableSupplier.get();
+            final Throwable throwable = throwableSupplier.get();
             Throwables.rethrow(throwable);
         }
         events.add(event);

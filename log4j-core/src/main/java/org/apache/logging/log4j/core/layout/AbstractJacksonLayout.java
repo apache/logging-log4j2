@@ -395,7 +395,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         @JsonIgnore
         private final LogEvent event;
 
-        public ReadOnlyLogEventWrapper(LogEvent event) {
+        public ReadOnlyLogEventWrapper(final LogEvent event) {
             this.event = event;
         }
 
@@ -495,12 +495,12 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
         }
 
         @Override
-        public void setEndOfBatch(boolean endOfBatch) {
+        public void setEndOfBatch(final boolean endOfBatch) {
 
         }
 
         @Override
-        public void setIncludeLocation(boolean locationRequired) {
+        public void setIncludeLocation(final boolean locationRequired) {
 
         }
 

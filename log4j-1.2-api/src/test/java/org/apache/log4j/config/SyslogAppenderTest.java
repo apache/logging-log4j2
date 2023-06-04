@@ -62,7 +62,7 @@ public class SyslogAppenderTest {
     @Test
     public void sendMessage() throws Exception {
         initTCPTestEnvironment(null);
-        Logger logger = LogManager.getLogger(SyslogAppenderTest.class);
+        final Logger logger = LogManager.getLogger(SyslogAppenderTest.class);
         logger.info("This is a test");
         List<String> messages = null;
         for (int i = 0; i < 5; ++i) {

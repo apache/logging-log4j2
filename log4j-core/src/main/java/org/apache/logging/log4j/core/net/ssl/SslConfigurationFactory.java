@@ -27,7 +27,7 @@ import org.apache.logging.log4j.util.Strings;
 public class SslConfigurationFactory {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private static SslConfiguration sslConfiguration = createSslConfiguration(PropertiesUtil.getProperties());
+    private static final SslConfiguration sslConfiguration = createSslConfiguration(PropertiesUtil.getProperties());
 
     private static final String trustStorelocation = "log4j2.trustStoreLocation";
     private static final String trustStorePassword = "log4j2.trustStorePassword";
@@ -43,14 +43,14 @@ public class SslConfigurationFactory {
     private static final String keyStoreKeyManagerFactoryAlgorithm = "log4j2.keyStoreKeyManagerFactoryAlgorithm";
     private static final String verifyHostName = "log4j2.sslVerifyHostName";
 
-    static SslConfiguration createSslConfiguration(PropertiesUtil props) {
+    static SslConfiguration createSslConfiguration(final PropertiesUtil props) {
         KeyStoreConfiguration keyStoreConfiguration = null;
         TrustStoreConfiguration trustStoreConfiguration = null;
         String location = props.getStringProperty(trustStorelocation);
         String storeType = props.getStringProperty(trustStoreKeyStoreType);
         if (Strings.isNotEmpty(location) || storeType != null) {
-            String password = props.getStringProperty(trustStorePassword);
-            char[] passwordChars = getPassword(password, storeType);
+            final String password = props.getStringProperty(trustStorePassword);
+            final char[] passwordChars = getPassword(password, storeType);
             try {
                 trustStoreConfiguration = TrustStoreConfiguration.createKeyStoreConfiguration(Strings.trimToNull(location), passwordChars,
                     props.getStringProperty(trustStorePasswordEnvVar), props.getStringProperty(trustStorePasswordFile),
@@ -63,8 +63,8 @@ public class SslConfigurationFactory {
         location = props.getStringProperty(keyStoreLocation);
         storeType = props.getStringProperty(keyStoreType);
         if (Strings.isNotEmpty(location) || storeType != null) {
-            String password = props.getStringProperty(keyStorePassword);
-            char[] passwordChars = getPassword(password, storeType);
+            final String password = props.getStringProperty(keyStorePassword);
+            final char[] passwordChars = getPassword(password, storeType);
             try {
                 keyStoreConfiguration = KeyStoreConfiguration.createKeyStoreConfiguration(Strings.trimToNull(location), passwordChars,
                     props.getStringProperty(keyStorePasswordEnvVar), props.getStringProperty(keyStorePasswordFile),
@@ -75,7 +75,7 @@ public class SslConfigurationFactory {
             }
         }
         if (trustStoreConfiguration != null || keyStoreConfiguration != null) {
-            boolean isVerifyHostName = props.getBooleanProperty(verifyHostName, false);
+            final boolean isVerifyHostName = props.getBooleanProperty(verifyHostName, false);
             return SslConfiguration.createSSLConfiguration(null, keyStoreConfiguration,
                 trustStoreConfiguration, isVerifyHostName);
         }

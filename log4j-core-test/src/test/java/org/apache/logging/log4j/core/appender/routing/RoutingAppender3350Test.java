@@ -50,15 +50,15 @@ public class RoutingAppender3350Test {
 
     @Test
     public void routingTest() throws IOException {
-        String expected = "expectedValue";
-        StringMapMessage message = new StringMapMessage().with("data", expected);
-        Logger logger = loggerContextRule.getLoggerContext().getLogger(getClass());
+        final String expected = "expectedValue";
+        final StringMapMessage message = new StringMapMessage().with("data", expected);
+        final Logger logger = loggerContextRule.getLoggerContext().getLogger(getClass());
         logger.error(message);
-        File file = new File(LOG_FILE);
-        try (InputStream inputStream = new FileInputStream(file);
-             InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-             BufferedReader reader = new BufferedReader(streamReader)) {
-            String actual = reader.readLine();
+        final File file = new File(LOG_FILE);
+        try (final InputStream inputStream = new FileInputStream(file);
+             final InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+             final BufferedReader reader = new BufferedReader(streamReader)) {
+            final String actual = reader.readLine();
             assertEquals(expected, actual);
         }
     }

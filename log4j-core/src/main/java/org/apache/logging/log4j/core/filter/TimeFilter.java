@@ -77,7 +77,7 @@ public final class TimeFilter extends AbstractFilter {
      * Expose for unit testing.
      */
     TimeFilter(final LocalTime start, final LocalTime end, final ZoneId timeZone, final Result onMatch,
-            final Result onMismatch, LocalDate now) {
+            final Result onMismatch, final LocalDate now) {
         super(onMatch, onMismatch);
         this.startTime = start;
         this.endTime = end;
@@ -90,7 +90,7 @@ public final class TimeFilter extends AbstractFilter {
         }
         duration = startTime.isBefore(endTime) ? Duration.between(startTime, endTime).toMillis() :
             Duration.between(startTime, endTime).plusHours(24).toMillis();
-        long difference = (endMillis - this.start) - duration;
+        final long difference = (endMillis - this.start) - duration;
         if (difference != 0) {
             // Handle switch from standard time to daylight time and daylight time to standard time.
             endMillis -= difference;
@@ -103,18 +103,18 @@ public final class TimeFilter extends AbstractFilter {
         this(start, end, timeZone, onMatch, onMismatch, LocalDate.now(timeZone));
     }
 
-    private synchronized void adjustTimes(long currentTimeMillis) {
+    private synchronized void adjustTimes(final long currentTimeMillis) {
         if (currentTimeMillis <= end) {
             return;
         }
-        LocalDate date = Instant.ofEpochMilli(currentTimeMillis).atZone(timeZone).toLocalDate();
+        final LocalDate date = Instant.ofEpochMilli(currentTimeMillis).atZone(timeZone).toLocalDate();
         this.start = ZonedDateTime.of(date, startTime, timeZone).withEarlierOffsetAtOverlap().toInstant().toEpochMilli();
         long endMillis = ZonedDateTime.of(date, endTime, timeZone).withEarlierOffsetAtOverlap().toInstant().toEpochMilli();
         if (endTime.isBefore(startTime)) {
             // End time must be tomorrow.
             endMillis += DAY_MS;
         }
-        long difference = (endMillis - this.start) - duration;
+        final long difference = (endMillis - this.start) - duration;
         if (difference != 0) {
             // Handle switch from standard time to daylight time and daylight time to standard time.
             endMillis -= difference;

@@ -33,13 +33,13 @@ public class RepeatPatternConverterTest {
     public void repeat() {
         final String[] args = {"*", "10"};
         final String expected = "**********";
-        PatternConverter converter = RepeatPatternConverter.newInstance(null, args);
+        final PatternConverter converter = RepeatPatternConverter.newInstance(null, args);
         assertNotNull(converter, "No RepeatPatternConverter returned");
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         converter.format(null, sb);
         assertEquals(expected, sb.toString());
         sb.setLength(0);
-        LogEvent event = Log4jLogEvent.newBuilder() //
+        final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("MyLogger") //
                 .setLevel(Level.DEBUG) //
                 .setMessage(new SimpleMessage("Hello")).build();

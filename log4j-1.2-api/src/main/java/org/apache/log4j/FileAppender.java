@@ -74,7 +74,7 @@ public class FileAppender extends WriterAppender {
      * The file will be appended to.
      * </p>
      */
-    public FileAppender(Layout layout, String filename) throws IOException {
+    public FileAppender(final Layout layout, final String filename) throws IOException {
         this(layout, filename, true);
     }
 
@@ -86,7 +86,7 @@ public class FileAppender extends WriterAppender {
      * <code>filename</code> will be truncated before being opened.
      * </p>
      */
-    public FileAppender(Layout layout, String filename, boolean append) throws IOException {
+    public FileAppender(final Layout layout, final String filename, final boolean append) throws IOException {
         this.layout = layout;
         this.setFile(filename, append, false, bufferSize);
     }
@@ -103,7 +103,7 @@ public class FileAppender extends WriterAppender {
      * file.
      * </p>
      */
-    public FileAppender(Layout layout, String filename, boolean append, boolean bufferedIO, int bufferSize) throws IOException {
+    public FileAppender(final Layout layout, final String filename, final boolean append, final boolean bufferedIO, final int bufferSize) throws IOException {
         this.layout = layout;
         this.setFile(filename, append, bufferedIO, bufferSize);
     }
@@ -194,7 +194,7 @@ public class FileAppender extends WriterAppender {
      * Note: Actual opening of the file is made when {@link #activateOptions} is called, not when the options are set.
      * </p>
      */
-    public void setAppend(boolean flag) {
+    public void setAppend(final boolean flag) {
         fileAppend = flag;
     }
 
@@ -205,7 +205,7 @@ public class FileAppender extends WriterAppender {
      * BufferedIO will significatnly increase performance on heavily loaded systems.
      *
      */
-    public void setBufferedIO(boolean bufferedIO) {
+    public void setBufferedIO(final boolean bufferedIO) {
         this.bufferedIO = bufferedIO;
         if (bufferedIO) {
             immediateFlush = false;
@@ -215,7 +215,7 @@ public class FileAppender extends WriterAppender {
     /**
      * Set the size of the IO buffer.
      */
-    public void setBufferSize(int bufferSize) {
+    public void setBufferSize(final int bufferSize) {
         this.bufferSize = bufferSize;
     }
 
@@ -228,10 +228,10 @@ public class FileAppender extends WriterAppender {
      * Note: Actual opening of the file is made when {@link #activateOptions} is called, not when the options are set.
      * </p>
      */
-    public void setFile(String file) {
+    public void setFile(final String file) {
         // Trim spaces from both ends. The users probably does not want
         // trailing spaces in file names.
-        String val = file.trim();
+        final String val = file.trim();
         fileName = val;
     }
 
@@ -269,9 +269,9 @@ public class FileAppender extends WriterAppender {
             // attempt to create it and try to create file
             // see bug 9150
             //
-            String parentName = new File(fileName).getParent();
+            final String parentName = new File(fileName).getParent();
             if (parentName != null) {
-                File parentDir = new File(parentName);
+                final File parentDir = new File(parentName);
                 if (!parentDir.exists() && parentDir.mkdirs()) {
                     ostream = new FileOutputStream(fileName, append);
                 } else {
@@ -299,7 +299,7 @@ public class FileAppender extends WriterAppender {
      *
      * This method is overriden by {@link RollingFileAppender}.
      */
-    protected void setQWForFiles(Writer writer) {
+    protected void setQWForFiles(final Writer writer) {
         this.qw = new QuietWriter(writer, errorHandler);
     }
 }

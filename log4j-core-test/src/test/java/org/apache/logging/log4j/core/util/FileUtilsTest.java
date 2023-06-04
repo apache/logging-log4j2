@@ -109,8 +109,8 @@ public class FileUtilsTest {
 
         @Test
         public void testMkdirConcurrent() throws InterruptedException {
-            List<Thread> threads = new ArrayList<>();
-            AtomicBoolean anyThreadThrows = new AtomicBoolean(false);
+            final List<Thread> threads = new ArrayList<>();
+            final AtomicBoolean anyThreadThrows = new AtomicBoolean(false);
             for (int i = 0; i < 10000; i++) {
                 threads.add(new Thread(() -> {
                     try {

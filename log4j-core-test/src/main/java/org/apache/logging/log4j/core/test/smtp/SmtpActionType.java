@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.test.smtp;
 /**
  * Represents an SMTP action or command.
  */
-public class SmtpActionType {
+public final class SmtpActionType {
     /**
      * Internal value for the action type.
      */

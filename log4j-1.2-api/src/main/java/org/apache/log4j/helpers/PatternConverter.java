@@ -42,7 +42,7 @@ public abstract class PatternConverter {
   PatternConverter() {  }
 
   protected
-  PatternConverter(FormattingInfo fi) {
+  PatternConverter(final FormattingInfo fi) {
     min = fi.min;
     max = fi.max;
     leftAlign = fi.leftAlign;
@@ -60,8 +60,8 @@ public abstract class PatternConverter {
      A template method for formatting in a converter specific way.
    */
   public
-  void format(StringBuffer sbuf, LoggingEvent e) {
-    String s = convert(e);
+  void format(final StringBuffer sbuf, final LoggingEvent e) {
+      final String s = convert(e);
 
     if(s == null) {
       if(0 < min)
@@ -69,7 +69,7 @@ public abstract class PatternConverter {
       return;
     }
 
-    int len = s.length();
+      final int len = s.length();
 
     if(len > max)
       sbuf.append(s.substring(len-max));
@@ -95,7 +95,7 @@ public abstract class PatternConverter {
      Fast space padding method.
   */
   public
-  void spacePad(StringBuffer sbuf, int length) {
+  void spacePad(final StringBuffer sbuf, final int length) {
     while(length >= 32) {
       sbuf.append(SPACES[5]);
       length -= 32;

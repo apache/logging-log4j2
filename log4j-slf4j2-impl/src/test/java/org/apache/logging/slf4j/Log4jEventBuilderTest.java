@@ -37,7 +37,7 @@ public class Log4jEventBuilderTest {
     private final Logger logger;
     private final ListAppender appender;
 
-    public Log4jEventBuilderTest(@Named("List") Appender appender) {
+    public Log4jEventBuilderTest(@Named("List") final Appender appender) {
         logger = LoggerFactory.getLogger("org.apache.test.Log4jEventBuilderTest");
         this.appender = (ListAppender) appender;
     }

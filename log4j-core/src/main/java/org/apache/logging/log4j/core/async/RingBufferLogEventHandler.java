@@ -60,7 +60,7 @@ public class RingBufferLogEventHandler implements
         }
     }
 
-    private void notifyCallback(long sequence) {
+    private void notifyCallback(final long sequence) {
         if (++counter > NOTIFY_PROGRESS_THRESHOLD) {
             sequenceCallback.set(sequence);
             counter = 0;

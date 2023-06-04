@@ -138,7 +138,7 @@ public final class LoaderUtil {
             return Class.forName(className);
         }
         try {
-            ClassLoader tccl = getThreadContextClassLoader();
+            final ClassLoader tccl = getThreadContextClassLoader();
             if (tccl != null) {
                 return tccl.loadClass(className);
             }

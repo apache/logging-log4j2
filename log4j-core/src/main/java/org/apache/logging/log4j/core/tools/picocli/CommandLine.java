@@ -2636,30 +2636,36 @@ public class CommandLine {
             return (result == 0) ? Range.parameterArity(o1).compareTo(Range.parameterArity(o2)) : result;
         }
     }
+
     /**
      * Inner class to group the built-in {@link ITypeConverter} implementations.
      */
-    private static class BuiltIn {
+    private static final class BuiltIn {
         static class PathConverter implements ITypeConverter<Path> {
             @Override public Path convert(final String value) { return Paths.get(value); }
         }
+
         static class StringConverter implements ITypeConverter<String> {
             @Override
             public String convert(final String value) { return value; }
         }
+
         static class StringBuilderConverter implements ITypeConverter<StringBuilder> {
             @Override
             public StringBuilder convert(final String value) { return new StringBuilder(value); }
         }
+
         static class CharSequenceConverter implements ITypeConverter<CharSequence> {
             @Override
             public String convert(final String value) { return value; }
         }
+
         /** Converts text to a {@code Byte} by delegating to {@link Byte#valueOf(String)}.*/
         static class ByteConverter implements ITypeConverter<Byte> {
             @Override
             public Byte convert(final String value) { return Byte.valueOf(value); }
         }
+
         /** Converts {@code "true"} or {@code "false"} to a {@code Boolean}. Other values result in a ParameterException.*/
         static class BooleanConverter implements ITypeConverter<Boolean> {
             @Override
@@ -2671,6 +2677,7 @@ public class CommandLine {
                 }
             }
         }
+
         static class CharacterConverter implements ITypeConverter<Character> {
             @Override
             public Character convert(final String value) {
@@ -2680,41 +2687,50 @@ public class CommandLine {
                 return value.charAt(0);
             }
         }
+
         /** Converts text to a {@code Short} by delegating to {@link Short#valueOf(String)}.*/
         static class ShortConverter implements ITypeConverter<Short> {
             @Override
             public Short convert(final String value) { return Short.valueOf(value); }
         }
+
         /** Converts text to an {@code Integer} by delegating to {@link Integer#valueOf(String)}.*/
         static class IntegerConverter implements ITypeConverter<Integer> {
             @Override
             public Integer convert(final String value) { return Integer.valueOf(value); }
         }
+
         /** Converts text to a {@code Long} by delegating to {@link Long#valueOf(String)}.*/
         static class LongConverter implements ITypeConverter<Long> {
             @Override
             public Long convert(final String value) { return Long.valueOf(value); }
         }
+
         static class FloatConverter implements ITypeConverter<Float> {
             @Override
             public Float convert(final String value) { return Float.valueOf(value); }
         }
+
         static class DoubleConverter implements ITypeConverter<Double> {
             @Override
             public Double convert(final String value) { return Double.valueOf(value); }
         }
+
         static class FileConverter implements ITypeConverter<File> {
             @Override
             public File convert(final String value) { return new File(value); }
         }
+
         static class URLConverter implements ITypeConverter<URL> {
             @Override
             public URL convert(final String value) throws MalformedURLException { return new URL(value); }
         }
+
         static class URIConverter implements ITypeConverter<URI> {
             @Override
             public URI convert(final String value) throws URISyntaxException { return new URI(value); }
         }
+
         /** Converts text in {@code yyyy-mm-dd} format to a {@code java.util.Date}. ParameterException on failure. */
         static class ISO8601DateConverter implements ITypeConverter<Date> {
             @Override
@@ -2726,6 +2742,7 @@ public class CommandLine {
                 }
             }
         }
+
         /** Converts text in any of the following formats to a {@code java.sql.Time}: {@code HH:mm}, {@code HH:mm:ss},
          * {@code HH:mm:ss.SSS}, {@code HH:mm:ss,SSS}. Other formats result in a ParameterException. */
         static class ISO8601TimeConverter implements ITypeConverter<Time> {
@@ -2749,27 +2766,33 @@ public class CommandLine {
                 throw new TypeConversionException("'" + value + "' is not a HH:mm[:ss[.SSS]] time");
             }
         }
+
         static class BigDecimalConverter implements ITypeConverter<BigDecimal> {
             @Override
             public BigDecimal convert(final String value) { return new BigDecimal(value); }
         }
+
         static class BigIntegerConverter implements ITypeConverter<BigInteger> {
             @Override
             public BigInteger convert(final String value) { return new BigInteger(value); }
         }
+
         static class CharsetConverter implements ITypeConverter<Charset> {
             @Override
             public Charset convert(final String s) { return Charset.forName(s); }
         }
+
         /** Converts text to a {@code InetAddress} by delegating to {@link InetAddress#getByName(String)}. */
         static class InetAddressConverter implements ITypeConverter<InetAddress> {
             @Override
             public InetAddress convert(final String s) throws Exception { return InetAddress.getByName(s); }
         }
+
         static class PatternConverter implements ITypeConverter<Pattern> {
             @Override
             public Pattern convert(final String s) { return Pattern.compile(s); }
         }
+
         static class UUIDConverter implements ITypeConverter<UUID> {
             @Override
             public UUID convert(final String s) throws Exception { return UUID.fromString(s); }

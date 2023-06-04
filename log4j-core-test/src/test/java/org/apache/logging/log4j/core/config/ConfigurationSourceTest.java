@@ -37,7 +37,7 @@ public class ConfigurationSourceTest {
 
     @Test
     public void testJira_LOG4J2_2770_byteArray() throws Exception {
-        ConfigurationSource configurationSource = new ConfigurationSource(new ByteArrayInputStream(new byte[] { 'a', 'b' }));
+        final ConfigurationSource configurationSource = new ConfigurationSource(new ByteArrayInputStream(new byte[]{'a', 'b'}));
         assertNotNull(configurationSource.resetInputStream());
     }
 

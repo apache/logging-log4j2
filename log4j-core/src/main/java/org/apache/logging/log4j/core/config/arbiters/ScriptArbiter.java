@@ -36,7 +36,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "ScriptArbiter", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
         deferChildren = true, printObject = true)
-public class ScriptArbiter implements Arbiter {
+public final class ScriptArbiter implements Arbiter {
 
     private final AbstractScript script;
     private final Configuration configuration;
@@ -90,7 +90,7 @@ public class ScriptArbiter implements Arbiter {
         public ScriptArbiter build() {
             AbstractScript script = null;
             for (Node child : node.getChildren()) {
-                PluginType<?> type = child.getType();
+                final PluginType<?> type = child.getType();
                 if (type == null) {
                     LOGGER.error("Node {} is missing a Plugintype", child.getName());
                     continue;

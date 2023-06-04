@@ -33,7 +33,7 @@ import org.jctools.queues.MpscArrayQueue;
  * @since 2.7
  */
 @Plugin(name = "JCToolsBlockingQueue", category = Node.CATEGORY, elementType = BlockingQueueFactory.ELEMENT_TYPE)
-public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
+public final class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
 
     private final WaitStrategy waitStrategy;
 

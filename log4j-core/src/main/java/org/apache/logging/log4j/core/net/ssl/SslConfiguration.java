@@ -41,7 +41,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *  SSL Configuration
  */
 @Plugin(name = "Ssl", category = Core.CATEGORY_NAME, printObject = true)
-public class SslConfiguration {
+public final class SslConfiguration {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private final KeyStoreConfiguration keyStoreConfig;
     private final TrustStoreConfiguration trustStoreConfig;
@@ -50,7 +50,7 @@ public class SslConfiguration {
     private final boolean verifyHostName;
 
     private SslConfiguration(final String protocol, final KeyStoreConfiguration keyStoreConfig,
-            final TrustStoreConfiguration trustStoreConfig, boolean verifyHostName) {
+            final TrustStoreConfiguration trustStoreConfig, final boolean verifyHostName) {
         this.keyStoreConfig = keyStoreConfig;
         this.trustStoreConfig = trustStoreConfig;
         this.protocol = protocol == null ? SslConfigurationDefaults.PROTOCOL : protocol;

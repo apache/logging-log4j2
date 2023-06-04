@@ -34,7 +34,7 @@ public interface LoggerContextFactory {
      */
     default void shutdown(String fqcn, ClassLoader loader, boolean currentContext, boolean allContexts) {
         if (hasContext(fqcn, loader, currentContext)) {
-            LoggerContext ctx = getContext(fqcn, loader, null, currentContext);
+            final LoggerContext ctx = getContext(fqcn, loader, null, currentContext);
             if (ctx instanceof Terminable) {
                 ((Terminable) ctx).terminate();
             }

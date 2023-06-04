@@ -72,10 +72,10 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
         super(prefix, properties);
     }
 
-    private void parseRollingPolicy(Element element, XmlConfiguration configuration,
-            AtomicReference<String> rollingPolicyClassName, AtomicReference<String> activeFileName,
-            AtomicReference<String> fileNamePattern, AtomicInteger minIndex,
-            AtomicInteger maxIndex) {
+    private void parseRollingPolicy(final Element element, final XmlConfiguration configuration,
+            final AtomicReference<String> rollingPolicyClassName, final AtomicReference<String> activeFileName,
+            final AtomicReference<String> fileNamePattern, final AtomicInteger minIndex,
+            final AtomicInteger maxIndex) {
         rollingPolicyClassName.set(configuration.subst(element.getAttribute("class"), getProperties()));
         forEachElement(element.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
@@ -98,7 +98,7 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
     }
 
     @Override
-    public Appender parseAppender(Element element, XmlConfiguration configuration) {
+    public Appender parseAppender(final Element element, final XmlConfiguration configuration) {
         // FileAppender
         final String name = getNameAttribute(element);
         final AtomicReference<Layout> layout = new AtomicReference<>();
@@ -161,8 +161,8 @@ public class EnhancedRollingFileAppenderBuilder extends AbstractBuilder<Appender
     }
 
     @Override
-    public Appender parseAppender(String name, String appenderPrefix, String layoutPrefix, String filterPrefix,
-            Properties props, PropertiesConfiguration configuration) {
+    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix, final String filterPrefix,
+            final Properties props, final PropertiesConfiguration configuration) {
         final Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         final String level = getProperty(THRESHOLD_PARAM);

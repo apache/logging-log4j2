@@ -56,11 +56,11 @@ public class AsyncWaitStrategyFactoryConfigGlobalLoggersTest {
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
         assertThat("context is AsyncLoggerContext", context instanceof AsyncLoggerContext);
 
-        AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
+        final AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
         assertEquals(AsyncWaitStrategyFactoryConfigTest.YieldingWaitStrategyFactory.class, asyncWaitStrategyFactory.getClass());
         assertThat("factory is YieldingWaitStrategyFactory", asyncWaitStrategyFactory instanceof AsyncWaitStrategyFactoryConfigTest.YieldingWaitStrategyFactory);
 
-        AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
+        final AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
 
         assertEquals(YieldingWaitStrategy.class, delegate.getWaitStrategy().getClass());
         assertThat("waitstrategy is YieldingWaitStrategy", delegate.getWaitStrategy() instanceof YieldingWaitStrategy);

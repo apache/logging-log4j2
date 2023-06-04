@@ -50,9 +50,9 @@ public class SystemPropertiesPropertySourceTest {
      */
     @Test
     public void testMultiThreadedAccess() throws InterruptedException, ExecutionException {
-        ExecutorService threadPool = Executors.newSingleThreadExecutor();
+        final ExecutorService threadPool = Executors.newSingleThreadExecutor();
         try {
-            Future<?> future = threadPool.submit(() -> {
+            final Future<?> future = threadPool.submit(() -> {
                 final Properties properties = System.getProperties();
                 for (int i = 0; i < ITERATIONS; i++) {
                     properties.setProperty("FOO_" + i, "BAR");

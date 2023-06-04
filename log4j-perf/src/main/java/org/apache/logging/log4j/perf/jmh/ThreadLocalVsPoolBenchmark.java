@@ -202,7 +202,7 @@ public class ThreadLocalVsPoolBenchmark {
     private void serialize(final StringBuilder stringBuilder) {
         // noinspection ForLoopReplaceableByForEach (avoid iterator instantiation)
         for (int formatterIndex = 0; formatterIndex < FORMATTERS.size(); formatterIndex++) {
-            PatternFormatter formatter = FORMATTERS.get(formatterIndex);
+            final PatternFormatter formatter = FORMATTERS.get(formatterIndex);
             formatter.format(LOG_EVENT, stringBuilder);
         }
     }

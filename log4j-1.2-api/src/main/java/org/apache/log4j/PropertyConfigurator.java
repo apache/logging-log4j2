@@ -357,7 +357,7 @@ public class PropertyConfigurator implements Configurator {
      * @param loggerRepository The hierarchy
      */
     Configuration doConfigure(final String fileName, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
-        try (InputStream inputStream = Files.newInputStream(Paths.get(fileName))) {
+        try (final InputStream inputStream = Files.newInputStream(Paths.get(fileName))) {
             return doConfigure(inputStream, loggerRepository, classLoader);
         } catch (final Exception e) {
             if (e instanceof InterruptedIOException || e instanceof InterruptedException) {
@@ -384,7 +384,7 @@ public class PropertyConfigurator implements Configurator {
         LogLog.debug("Reading configuration from URL " + url);
         try {
             final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
-            try (InputStream inputStream = urlConnection.getInputStream()) {
+            try (final InputStream inputStream = urlConnection.getInputStream()) {
                 return doConfigure(inputStream, loggerRepository, classLoader);
             }
         } catch (final IOException e) {

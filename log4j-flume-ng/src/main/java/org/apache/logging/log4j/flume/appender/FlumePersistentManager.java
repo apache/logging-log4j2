@@ -77,7 +77,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
     private static final long LOCK_TIMEOUT_SLEEP_MILLIS = 500;
 
-    private static BDBManagerFactory factory = new BDBManagerFactory();
+    private static final BDBManagerFactory factory = new BDBManagerFactory();
 
     private final Database database;
 

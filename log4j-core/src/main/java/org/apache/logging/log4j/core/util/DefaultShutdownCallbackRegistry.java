@@ -71,7 +71,7 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
     public void run() {
         if (state.compareAndSet(State.STARTED, State.STOPPING)) {
             for (final Reference<Cancellable> hookRef : hooks) {
-                Cancellable hook = hookRef.get();
+                final Cancellable hook = hookRef.get();
                 if (hook != null) {
                     try {
                         hook.run();
@@ -101,11 +101,11 @@ public class DefaultShutdownCallbackRegistry implements ShutdownCallbackRegistry
         @Override
         public void cancel() {
             callback = null;
-            Collection<Reference<Cancellable>> references = registered;
+            final Collection<Reference<Cancellable>> references = registered;
             if (references != null) {
                 registered = null;
                 references.removeIf(ref -> {
-                    Cancellable value = ref.get();
+                    final Cancellable value = ref.get();
                     return value == null || value == RegisteredCancellable.this;
                 });
             }

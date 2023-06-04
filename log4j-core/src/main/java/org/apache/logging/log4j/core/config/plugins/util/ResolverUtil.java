@@ -344,10 +344,10 @@ public class ResolverUtil {
             if (connection != null) {
                 // A "jar:" URL file remains open after the stream is closed, so do not cache it.
                 connection.setUseCaches(false);
-                try (JarFile jarFile = connection.getJarFile()) {
-                    Enumeration<JarEntry> entries = jarFile.entries();
+                try (final JarFile jarFile = connection.getJarFile()) {
+                    final Enumeration<JarEntry> entries = jarFile.entries();
                     while (entries.hasMoreElements()) {
-                        JarEntry entry = entries.nextElement();
+                        final JarEntry entry = entries.nextElement();
                         final String name = entry.getName();
                         if (!entry.isDirectory() && name.startsWith(parent) && isTestApplicable(test, name)) {
                             addIfMatching(test, name);

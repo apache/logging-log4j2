@@ -168,7 +168,7 @@ public final class CaseConverterResolver implements EventResolver {
 
         private final String name;
 
-        ErrorHandlingStrategy(String name) {
+        ErrorHandlingStrategy(final String name) {
             this.name = name;
         }
 
@@ -186,7 +186,7 @@ public final class CaseConverterResolver implements EventResolver {
     private static TemplateResolver<LogEvent> createDelegate(
             final EventResolverContext context,
             final TemplateResolverConfig config) {
-        Object delegateObject = config.getObject("input");
+        final Object delegateObject = config.getObject("input");
         return TemplateResolvers.ofObject(context, delegateObject);
     }
 
@@ -221,7 +221,7 @@ public final class CaseConverterResolver implements EventResolver {
     private static TemplateResolver<LogEvent> createReplacement(
             final EventResolverContext context,
             final TemplateResolverConfig config) {
-        Object replacementObject = config.getObject("replacement");
+        final Object replacementObject = config.getObject("replacement");
         return TemplateResolvers.ofObject(context, replacementObject);
     }
 

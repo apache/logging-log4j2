@@ -23,7 +23,7 @@ public class LogManagerStatus {
 
     private static boolean initialized = false;
 
-    public static void setInitialized(boolean managerStatus) {
+    public static void setInitialized(final boolean managerStatus) {
         initialized = managerStatus;
     }
 

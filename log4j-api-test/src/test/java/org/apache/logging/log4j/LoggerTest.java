@@ -95,7 +95,7 @@ public class LoggerTest {
 
     @Test
     public void flowTracingMessage() {
-        Properties props = new Properties();
+        final Properties props = new Properties();
         props.setProperty("foo", "bar");
         logger.traceEntry(new JsonMessage(props));
         final Response response = new Response(-1, "Generic error");

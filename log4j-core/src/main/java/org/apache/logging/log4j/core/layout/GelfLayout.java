@@ -179,8 +179,8 @@ public final class GelfLayout extends AbstractStringLayout {
 
         @Override
         public GelfLayout build() {
-            ListChecker mdcChecker = createChecker(threadContextExcludes, threadContextIncludes);
-            ListChecker mapChecker = createChecker(mapMessageExcludes, mapMessageIncludes);
+            final ListChecker mdcChecker = createChecker(threadContextExcludes, threadContextIncludes);
+            final ListChecker mapChecker = createChecker(mapMessageExcludes, mapMessageIncludes);
             PatternLayout patternLayout = null;
             if (messagePattern != null && patternSelector != null) {
                 LOGGER.error("A message pattern and PatternSelector cannot both be specified on GelfLayout, "
@@ -205,12 +205,12 @@ public final class GelfLayout extends AbstractStringLayout {
                     threadContextPrefix, mapPrefix);
         }
 
-        private ListChecker createChecker(String excludes, String includes) {
+        private ListChecker createChecker(final String excludes, final String includes) {
             ListChecker checker = null;
             if (excludes != null) {
                 final String[] array = excludes.split(Patterns.COMMA_SEPARATOR);
                 if (array.length > 0) {
-                    List<String> excludeList = new ArrayList<>(array.length);
+                    final List<String> excludeList = new ArrayList<>(array.length);
                     for (final String str : array) {
                         excludeList.add(str.trim());
                     }
@@ -220,7 +220,7 @@ public final class GelfLayout extends AbstractStringLayout {
             if (includes != null) {
                 final String[] array = includes.split(Patterns.COMMA_SEPARATOR);
                 if (array.length > 0) {
-                    List<String> includeList = new ArrayList<>(array.length);
+                    final List<String> includeList = new ArrayList<>(array.length);
                     for (final String str : array) {
                         includeList.add(str.trim());
                     }
@@ -484,7 +484,7 @@ public final class GelfLayout extends AbstractStringLayout {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append("host=").append(host);
         sb.append(", compressionType=").append(compressionType.toString());
         sb.append(", compressionThreshold=").append(compressionThreshold);
@@ -492,11 +492,11 @@ public final class GelfLayout extends AbstractStringLayout {
         sb.append(", includeThreadContext=").append(includeThreadContext);
         sb.append(", includeNullDelimiter=").append(includeNullDelimiter);
         sb.append(", includeNewLineDelimiter=").append(includeNewLineDelimiter);
-        String threadVars = mdcWriter.getChecker().toString();
+        final String threadVars = mdcWriter.getChecker().toString();
         if (threadVars.length() > 0) {
             sb.append(", ").append(threadVars);
         }
-        String mapVars = mapWriter.getChecker().toString();
+        final String mapVars = mapWriter.getChecker().toString();
         if (mapVars.length() > 0) {
             sb.append(", ").append(mapVars);
         }
@@ -674,14 +674,14 @@ public final class GelfLayout extends AbstractStringLayout {
         private final ListChecker checker;
         private final String prefix;
 
-        FieldWriter(ListChecker checker, String prefix) {
+        FieldWriter(final ListChecker checker, final String prefix) {
             this.checker = checker;
             this.prefix = prefix;
         }
 
         @Override
         public void accept(final String key, final Object value, final StringBuilder stringBuilder) {
-            String stringValue = String.valueOf(value);
+            final String stringValue = String.valueOf(value);
             if (checker.check(key) && (Strings.isNotEmpty(stringValue) || !omitEmptyFields)) {
                 stringBuilder.append(QU);
                 JsonUtils.quoteAsString(Strings.concat(prefix, key), stringBuilder);

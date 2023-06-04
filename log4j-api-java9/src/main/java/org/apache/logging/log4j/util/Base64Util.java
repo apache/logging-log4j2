@@ -30,7 +30,7 @@ public final class Base64Util {
     private Base64Util() {
     }
 
-    public static String encode(String str) {
+    public static String encode(final String str) {
         return str != null ? encoder.encodeToString(str.getBytes()) : null;
     }
 }

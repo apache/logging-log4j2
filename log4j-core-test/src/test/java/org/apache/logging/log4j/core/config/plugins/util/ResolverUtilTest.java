@@ -206,7 +206,7 @@ public class ResolverUtilTest {
         final Map<String, String> env = new HashMap<>();
         env.put("create", "true");
         final URI uri = URI.create("jar:file://" + jarURI.getRawPath());
-        try (FileSystem zipfs = FileSystems.newFileSystem(uri, env)) {
+        try (final FileSystem zipfs = FileSystems.newFileSystem(uri, env)) {
             final Path path = zipfs.getPath(workDir.toPath().relativize(f.toPath()).toString());
             if (path.getParent() != null) {
                 Files.createDirectories(path.getParent());

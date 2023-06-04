@@ -48,7 +48,7 @@ public class AssertTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void isEmpty(Object value, boolean isEmpty) throws Exception {
+    public void isEmpty(final Object value, final boolean isEmpty) throws Exception {
         assertEquals(isEmpty, Assert.isEmpty(value));
     }
 

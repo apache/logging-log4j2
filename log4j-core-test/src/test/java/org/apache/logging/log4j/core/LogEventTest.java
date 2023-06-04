@@ -38,8 +38,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class LogEventTest {
 
-    private static Message MESSAGE = new SimpleMessage("This is a test");
-    private static TestClass TESTER = new TestClass();
+    private static final Message MESSAGE = new SimpleMessage("This is a test");
+    private static final TestClass TESTER = new TestClass();
 
     @Test
     public void testSerialization() throws Exception {

@@ -220,7 +220,7 @@ public class PluginBuilder implements Builder<Object> {
         return reason;
     }
 
-    public static boolean validateFields(final Builder<?> builder, String errorPrefix) {
+    public static boolean validateFields(final Builder<?> builder, final String errorPrefix) {
         final List<Field> fields = TypeUtil.getAllDeclaredFields(builder.getClass());
         AccessibleObject.setAccessible(fields.toArray(EMPTY_FIELD_ARRAY), true);
         try {

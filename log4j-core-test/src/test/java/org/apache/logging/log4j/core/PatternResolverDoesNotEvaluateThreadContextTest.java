@@ -46,70 +46,70 @@ public class PatternResolverDoesNotEvaluateThreadContextTest {
 
     @Test
     public void testNoUserSet() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         logger.info("This is a test");
-        List<String> messages = listAppender.getMessages();
+        final List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
-        String message = messages.get(0);
+        final String message = messages.get(0);
         assertEquals("INFO org.apache.logging.log4j.core." +
                 "PatternResolverDoesNotEvaluateThreadContextTest ${ctx:user} This is a test", message);
     }
 
     @Test
     public void testMessageIsNotLookedUp() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         logger.info("This is a ${upper:test}");
-        List<String> messages = listAppender.getMessages();
+        final List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
-        String message = messages.get(0);
+        final String message = messages.get(0);
         assertEquals("INFO org.apache.logging.log4j.core." +
                 "PatternResolverDoesNotEvaluateThreadContextTest ${ctx:user} This is a ${upper:test}", message);
     }
 
     @Test
     public void testUser() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         ThreadContext.put(PARAMETER, "123");
         try {
             logger.info("This is a test");
         } finally {
             ThreadContext.remove(PARAMETER);
         }
-        List<String> messages = listAppender.getMessages();
+        final List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
-        String message = messages.get(0);
+        final String message = messages.get(0);
         assertEquals("INFO org.apache.logging.log4j.core." +
                 "PatternResolverDoesNotEvaluateThreadContextTest 123 This is a test", message);
     }
 
     @Test
     public void testUserIsLookup() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         ThreadContext.put(PARAMETER, "${java:version}");
         try {
             logger.info("This is a test");
         } finally {
             ThreadContext.remove(PARAMETER);
         }
-        List<String> messages = listAppender.getMessages();
+        final List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
-        String message = messages.get(0);
+        final String message = messages.get(0);
         assertEquals("INFO org.apache.logging.log4j.core." +
                 "PatternResolverDoesNotEvaluateThreadContextTest ${java:version} This is a test", message);
     }
 
     @Test
     public void testUserHasLookup() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         ThreadContext.put(PARAMETER, "user${java:version}name");
         try {
             logger.info("This is a test");
         } finally {
             ThreadContext.remove(PARAMETER);
         }
-        List<String> messages = listAppender.getMessages();
+        final List<String> messages = listAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages returned");
-        String message = messages.get(0);
+        final String message = messages.get(0);
         assertEquals("INFO org.apache.logging.log4j.core." +
                 "PatternResolverDoesNotEvaluateThreadContextTest user${java:version}name This is a test", message);
     }

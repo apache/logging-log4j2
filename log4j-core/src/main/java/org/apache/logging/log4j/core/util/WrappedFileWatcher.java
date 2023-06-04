@@ -41,7 +41,7 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     }
 
 
-    public WrappedFileWatcher(FileWatcher watcher) {
+    public WrappedFileWatcher(final FileWatcher watcher) {
         super(null, null, null);
         this.watcher = watcher;
     }
@@ -52,13 +52,13 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     }
 
     @Override
-    public void fileModified(File file) {
+    public void fileModified(final File file) {
         watcher.fileModified(file);
     }
 
     @Override
     public boolean isModified() {
-        long lastModified = getSource().getFile().lastModified();
+        final long lastModified = getSource().getFile().lastModified();
         if (lastModifiedMillis != lastModified) {
             lastModifiedMillis = lastModified;
             return true;
@@ -85,7 +85,7 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     }
 
     @Override
-    public void watching(Source source) {
+    public void watching(final Source source) {
         lastModifiedMillis = source.getFile().lastModified();
         super.watching(source);
     }
@@ -93,8 +93,8 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     @Override
     public Watcher newWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners,
         long lastModifiedMillis) {
-        WrappedFileWatcher watcher = new WrappedFileWatcher(this.watcher, getConfiguration(), reconfigurable, listeners,
-            lastModifiedMillis);
+        final WrappedFileWatcher watcher = new WrappedFileWatcher(this.watcher, getConfiguration(), reconfigurable, listeners,
+                lastModifiedMillis);
         if (getSource() != null) {
             watcher.watching(getSource());
         }

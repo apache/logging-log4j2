@@ -71,7 +71,7 @@ public class MDCContextMap implements CleanableThreadContextMap {
 
     @Override
     public boolean containsKey(final String key) {
-        Map<String, String> map = MDC.getCopyOfContextMap();
+        final Map<String, String> map = MDC.getCopyOfContextMap();
         return map != null && map.containsKey(key);
     }
 
@@ -89,7 +89,7 @@ public class MDCContextMap implements CleanableThreadContextMap {
 
     @Override
     public boolean isEmpty() {
-        Map<String, String> map = MDC.getCopyOfContextMap();
+        final Map<String, String> map = MDC.getCopyOfContextMap();
         return map == null || map.isEmpty();
     }
 

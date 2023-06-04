@@ -52,8 +52,8 @@ public class PropertiesConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfiguration(LoggerContext loggerContext, ConfigurationSource source) {
-        int interval = PropertiesUtil.getProperties().getIntegerProperty(Log4j1Configuration.MONITOR_INTERVAL, 0);
+    public Configuration getConfiguration(final LoggerContext loggerContext, final ConfigurationSource source) {
+        final int interval = PropertiesUtil.getProperties().getIntegerProperty(Log4j1Configuration.MONITOR_INTERVAL, 0);
         return new PropertiesConfiguration(loggerContext, source, interval);
     }
 

@@ -174,7 +174,7 @@ public final class JsonReader {
                 if (Character.isDigit(readChar) || readChar == '-') {
                     readToken = readNumber();
                 } else {
-                    String message = String.format(
+                    final String message = String.format(
                             "invalid character at index %d: %c",
                             readCharIndex, readChar);
                     throw new IllegalArgumentException(message);
@@ -286,12 +286,12 @@ public final class JsonReader {
         while (readToken != Delimiter.OBJECT_END) {
             expectDelimiter(Delimiter.COLON, readToken());
             if (readToken != Delimiter.OBJECT_END) {
-                Object value = readToken();
+                final Object value = readToken();
                 object.put(key, value);
                 if (readToken() == Delimiter.COMMA) {
                     key = readObjectKey();
                     if (key == null || Delimiter.exists(key)) {
-                        String message = String.format(
+                        final String message = String.format(
                                 "was expecting an object key at index %d: %s",
                                 readTokenStartIndex, readToken);
                         throw new IllegalArgumentException(message);
@@ -348,7 +348,7 @@ public final class JsonReader {
             final Delimiter expectedDelimiter,
             final Object actualToken) {
         if (!expectedDelimiter.equals(actualToken)) {
-            String message = String.format(
+            final String message = String.format(
                     "was expecting %s at index %d: %s",
                     expectedDelimiter, readTokenStartIndex, actualToken);
             throw new IllegalArgumentException(message);
@@ -357,7 +357,7 @@ public final class JsonReader {
 
     private boolean readTrue() {
         if (readChar != 'r' || readChar() != 'u' || readChar() != 'e') {
-            String message = String.format(
+            final String message = String.format(
                     "was expecting keyword 'true' at index %d: %s",
                     readCharIndex, readChar);
             throw new IllegalArgumentException(message);
@@ -368,7 +368,7 @@ public final class JsonReader {
 
     private boolean readFalse() {
         if (readChar != 'a' || readChar() != 'l' || readChar() != 's' || readChar() != 'e') {
-            String message = String.format(
+            final String message = String.format(
                     "was expecting keyword 'false' at index %d: %s",
                     readCharIndex, readChar);
             throw new IllegalArgumentException(message);
@@ -379,7 +379,7 @@ public final class JsonReader {
 
     private Object readNull() {
         if (readChar != 'u' || readChar() != 'l' || readChar() != 'l') {
-            String message = String.format(
+            final String message = String.format(
                     "was expecting keyword 'null' at index %d: %s",
                     readCharIndex, readChar);
             throw new IllegalArgumentException(message);

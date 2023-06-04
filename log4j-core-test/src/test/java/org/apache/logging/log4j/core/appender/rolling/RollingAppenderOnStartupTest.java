@@ -54,7 +54,7 @@ public class RollingAppenderOnStartupTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         if (Files.exists(Paths.get("target/onStartup"))) {
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+            try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
                 for (final Path path : directoryStream) {
                     Files.delete(path);
                 }
@@ -62,9 +62,9 @@ public class RollingAppenderOnStartupTest {
             }
         }
         Files.createDirectory(new File(DIR).toPath());
-        Path target = Paths.get(DIR, FILENAME);
+        final Path target = Paths.get(DIR, FILENAME);
         Files.copy(Paths.get(SOURCE, FILENAME), target, StandardCopyOption.COPY_ATTRIBUTES);
-        FileTime newTime = FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS));
+        final FileTime newTime = FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS));
         Files.getFileAttributeView(target, BasicFileAttributeView.class).setTimes(newTime, newTime, newTime);
     }
 
@@ -76,11 +76,11 @@ public class RollingAppenderOnStartupTest {
         for (int i = 3; i < 10; ++i) {
             logger.debug(PREFIX + i);
         }
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {
                 if (path.toFile().getName().startsWith(ROLLED)) {
                     rolled = true;
-                    List<String> lines = Files.readAllLines(path);
+                    final List<String> lines = Files.readAllLines(path);
                     assertTrue("No messages in " + path.toFile().getName(), lines.size() > 0);
                     assertTrue("Missing message for " + path.toFile().getName(),
                             lines.get(0).startsWith(PREFIX + "1"));
@@ -93,7 +93,7 @@ public class RollingAppenderOnStartupTest {
     @AfterClass
     public static void afterClass() throws Exception {
         Configurator.shutdown(loggerContext);
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {
                 Files.delete(path);
             }

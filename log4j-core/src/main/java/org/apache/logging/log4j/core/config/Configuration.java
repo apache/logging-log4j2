@@ -119,7 +119,7 @@ public interface Configuration extends Filterable {
     StrSubstitutor getStrSubstitutor();
 
     default StrSubstitutor getConfigurationStrSubstitutor() {
-        StrSubstitutor defaultSubstitutor = getStrSubstitutor();
+        final StrSubstitutor defaultSubstitutor = getStrSubstitutor();
         if (defaultSubstitutor == null) {
             return new ConfigurationStrSubstitutor();
         }

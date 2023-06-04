@@ -59,7 +59,7 @@ public class MockTcpSyslogServer extends MockSyslogServer {
         while (!shutdown) {
             try {
                 final byte[] buffer = new byte[4096];
-                try (Socket socket = socketServer.accept()) {
+                try (final Socket socket = socketServer.accept()) {
                     socket.setSoLinger(true, 0);
                     final InputStream in = socket.getInputStream();
                     int i = in.read(buffer, 0, buffer.length);

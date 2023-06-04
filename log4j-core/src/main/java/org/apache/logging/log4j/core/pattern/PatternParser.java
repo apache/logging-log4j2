@@ -595,7 +595,7 @@ public final class PatternParser {
     }
 
     /** LOG4J2-2564: Returns true if all method parameters are valid for injection. */
-    private static boolean areValidNewInstanceParameters(Class<?>[] parameterTypes) {
+    private static boolean areValidNewInstanceParameters(final Class<?>[] parameterTypes) {
         for (Class<?> clazz : parameterTypes) {
             if (!clazz.isAssignableFrom(Configuration.class)
                     && !(clazz.isArray() && "[Ljava.lang.String;".equals(clazz.getName()))) {
@@ -684,7 +684,7 @@ public final class PatternParser {
     }
 
     // Create a literal pattern converter with support for substitutions if necessary
-    private LogEventPatternConverter literalPattern(String literal, boolean convertBackslashes) {
+    private LogEventPatternConverter literalPattern(final String literal, final boolean convertBackslashes) {
         if (config != null && LiteralPatternConverter.containsSubstitutionSequence(literal)) {
             return new LiteralPatternConverter(config, literal, convertBackslashes);
         }

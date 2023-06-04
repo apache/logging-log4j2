@@ -68,7 +68,7 @@ public class Log4j1SyslogLayoutTest {
 
     @ParameterizedTest
     @MethodSource("configurations")
-    public void testSimpleLayout(String expected, Facility facility, boolean header, boolean facilityPrinting) {
+    public void testSimpleLayout(final String expected, final Facility facility, final boolean header, final boolean facilityPrinting) {
         final LogEvent logEvent = createLogEvent();
         StringLayout appenderLayout = Log4j1SyslogLayout.newBuilder()
                 .setFacility(facility)

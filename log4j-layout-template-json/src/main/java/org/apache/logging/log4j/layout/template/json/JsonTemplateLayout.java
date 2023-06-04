@@ -60,7 +60,7 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "JsonTemplateLayout",
         category = Node.CATEGORY,
         elementType = Layout.ELEMENT_TYPE)
-public class JsonTemplateLayout implements StringLayout {
+public final class JsonTemplateLayout implements StringLayout {
 
     private static final Map<String, String> CONTENT_FORMAT =
             Collections.singletonMap("version", "1");
@@ -464,7 +464,7 @@ public class JsonTemplateLayout implements StringLayout {
             return eventTemplateRootObjectKey;
         }
 
-        public Builder setEventTemplateRootObjectKey(String eventTemplateRootObjectKey) {
+        public Builder setEventTemplateRootObjectKey(final String eventTemplateRootObjectKey) {
             this.eventTemplateRootObjectKey = eventTemplateRootObjectKey;
             return this;
         }
@@ -608,14 +608,14 @@ public class JsonTemplateLayout implements StringLayout {
         }
 
         @Override
-        public boolean equals(Object object) {
+        public boolean equals(final Object object) {
             if (this == object) {
                 return true;
             }
             if (object == null || getClass() != object.getClass()) {
                 return false;
             }
-            EventTemplateAdditionalField that = (EventTemplateAdditionalField) object;
+            final EventTemplateAdditionalField that = (EventTemplateAdditionalField) object;
             return key.equals(that.key) &&
                     value.equals(that.value) &&
                     format == that.format;

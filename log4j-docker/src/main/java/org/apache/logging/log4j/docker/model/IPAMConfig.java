@@ -39,7 +39,7 @@ public class IPAMConfig {
         return subnet;
     }
 
-    public void setSubnet(String subnet) {
+    public void setSubnet(final String subnet) {
         this.subnet = subnet;
     }
 
@@ -47,7 +47,7 @@ public class IPAMConfig {
         return ipRange;
     }
 
-    public void setIpRange(String ipRange) {
+    public void setIpRange(final String ipRange) {
         this.ipRange = ipRange;
     }
 
@@ -55,7 +55,7 @@ public class IPAMConfig {
         return gateway;
     }
 
-    public void setGateway(String gateway) {
+    public void setGateway(final String gateway) {
         this.gateway = gateway;
     }
 
@@ -63,7 +63,7 @@ public class IPAMConfig {
         return ipv4Address;
     }
 
-    public void setIpv4Address(String ipv4Address) {
+    public void setIpv4Address(final String ipv4Address) {
         this.ipv4Address = ipv4Address;
     }
 }

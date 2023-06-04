@@ -76,7 +76,7 @@ public class DeletingVisitor extends SimpleFileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult visitFileFailed(Path file, IOException ioException) throws IOException {
+    public FileVisitResult visitFileFailed(final Path file, final IOException ioException) throws IOException {
         // LOG4J2-2677: Appenders may rollover and purge in parallel. SimpleVisitor rethrows exceptions from
         // failed attempts to load file attributes.
         if (ioException instanceof NoSuchFileException) {

@@ -31,13 +31,13 @@ public class Log4jMDCAdapterTest {
     private static final Log4jMDCAdapter MDC_ADAPTER = new Log4jMDCAdapter();
     private static final String KEY = "Log4j2";
 
-    private static Deque<String> createDeque(int size) {
+    private static Deque<String> createDeque(final int size) {
         final Deque<String> result = new ArrayDeque<>(size);
         IntStream.range(0, size).mapToObj(Integer::toString).forEach(result::addLast);
         return result;
     }
 
-    private static Deque<String> popDeque(String key) {
+    private static Deque<String> popDeque(final String key) {
         final Deque<String> result = new ArrayDeque<>();
         String value;
         while ((value = MDC_ADAPTER.popByKey(key)) != null) {

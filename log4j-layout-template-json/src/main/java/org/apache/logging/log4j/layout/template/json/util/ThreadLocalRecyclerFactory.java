@@ -19,7 +19,7 @@ package org.apache.logging.log4j.layout.template.json.util;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class ThreadLocalRecyclerFactory implements RecyclerFactory {
+public final class ThreadLocalRecyclerFactory implements RecyclerFactory {
 
     private static final ThreadLocalRecyclerFactory INSTANCE =
             new ThreadLocalRecyclerFactory();

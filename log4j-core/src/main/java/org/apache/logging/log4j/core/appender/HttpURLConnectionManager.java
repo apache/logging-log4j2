@@ -101,18 +101,18 @@ public class HttpURLConnectionManager extends HttpManager {
         final byte[] msg = layout.toByteArray(event);
         urlConnection.setFixedLengthStreamingMode(msg.length);
         urlConnection.connect();
-        try (OutputStream os = urlConnection.getOutputStream()) {
+        try (final OutputStream os = urlConnection.getOutputStream()) {
             os.write(msg);
         }
 
         final byte[] buffer = new byte[1024];
-        try (InputStream is = urlConnection.getInputStream()) {
+        try (final InputStream is = urlConnection.getInputStream()) {
             while (IOUtils.EOF != is.read(buffer)) {
                 // empty
             }
         } catch (final IOException e) {
             final StringBuilder errorMessage = new StringBuilder();
-            try (InputStream es = urlConnection.getErrorStream()) {
+            try (final InputStream es = urlConnection.getErrorStream()) {
                 errorMessage.append(urlConnection.getResponseCode());
                 if (urlConnection.getResponseMessage() != null) {
                     errorMessage.append(' ').append(urlConnection.getResponseMessage());

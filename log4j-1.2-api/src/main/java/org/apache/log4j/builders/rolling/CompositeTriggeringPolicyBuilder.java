@@ -43,12 +43,12 @@ public class CompositeTriggeringPolicyBuilder extends AbstractBuilder<Triggering
         super();
     }
 
-    public CompositeTriggeringPolicyBuilder(String prefix, Properties props) {
+    public CompositeTriggeringPolicyBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
     @Override
-    public CompositeTriggeringPolicy parse(Element element, XmlConfiguration configuration) {
+    public CompositeTriggeringPolicy parse(final Element element, final XmlConfiguration configuration) {
         final List<TriggeringPolicy> policies = new ArrayList<>();
         forEachElement(element.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
@@ -64,11 +64,11 @@ public class CompositeTriggeringPolicyBuilder extends AbstractBuilder<Triggering
     }
 
     @Override
-    public CompositeTriggeringPolicy parse(PropertiesConfiguration configuration) {
+    public CompositeTriggeringPolicy parse(final PropertiesConfiguration configuration) {
         return createTriggeringPolicy(Collections.emptyList());
     }
 
-    private CompositeTriggeringPolicy createTriggeringPolicy(List<TriggeringPolicy> policies) {
+    private CompositeTriggeringPolicy createTriggeringPolicy(final List<TriggeringPolicy> policies) {
         return CompositeTriggeringPolicy.createPolicy(policies.toArray(EMPTY_TRIGGERING_POLICIES));
     }
 }

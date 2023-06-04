@@ -57,14 +57,14 @@ public class MutableInstant implements Instant, Serializable {
     @Override
     public long getEpochMillisecond() {
         final int millis = nanoOfSecond / NANOS_PER_MILLI;
-        long epochMillisecond = epochSecond * MILLIS_PER_SECOND + millis;
+        final long epochMillisecond = epochSecond * MILLIS_PER_SECOND + millis;
         return epochMillisecond;
     }
 
     @Override
     public int getNanoOfMillisecond() {
         final int millis = nanoOfSecond / NANOS_PER_MILLI;
-        int nanoOfMillisecond = nanoOfSecond - (millis * NANOS_PER_MILLI); // cheaper than nanoOfSecond % NANOS_PER_MILLI
+        final int nanoOfMillisecond = nanoOfSecond - (millis * NANOS_PER_MILLI); // cheaper than nanoOfSecond % NANOS_PER_MILLI
         return nanoOfMillisecond;
     }
 
@@ -124,7 +124,7 @@ public class MutableInstant implements Instant, Serializable {
      *               the second element is the number of nanoseconds, later along the time-line, from the start of the millisecond
      */
     public static void instantToMillisAndNanos(final long epochSecond, final int nano, final long[] result) {
-        int millis = nano / NANOS_PER_MILLI;
+        final int millis = nano / NANOS_PER_MILLI;
         result[0] = epochSecond * MILLIS_PER_SECOND + millis;
         result[1] = nano - (millis * NANOS_PER_MILLI); // cheaper than nanoOfSecond % NANOS_PER_MILLI
     }
@@ -137,7 +137,7 @@ public class MutableInstant implements Instant, Serializable {
         if (!(object instanceof MutableInstant)) {
             return false;
         }
-        MutableInstant other = (MutableInstant) object;
+        final MutableInstant other = (MutableInstant) object;
         return epochSecond == other.epochSecond && nanoOfSecond == other.nanoOfSecond;
     }
 

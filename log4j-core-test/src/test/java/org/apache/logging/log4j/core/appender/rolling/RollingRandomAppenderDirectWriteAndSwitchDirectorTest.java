@@ -33,8 +33,8 @@ public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
     @Test
     @LoggerContextSource(value= "log4j-rolling-random-direct-switch-director.xml", timeout = 10)
     public void testAppender(final LoggerContext context) throws Exception {
-        Logger logger = context.getLogger(RollingRandomAppenderDirectWriteAndSwitchDirectorTest.class.getName());
-        LocalTime start = LocalTime.now();
+        final Logger logger = context.getLogger(RollingRandomAppenderDirectWriteAndSwitchDirectorTest.class.getName());
+        final LocalTime start = LocalTime.now();
         LocalTime end;
         do {
             end = LocalTime.now();
@@ -42,7 +42,7 @@ public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
             Thread.sleep(100);
         } while (start.getSecond() == end.getSecond());
 
-        File nextLogFile = new File(String.format("%s/%d/%d.log", DIR, end.getSecond(), end.getSecond()));
+        final File nextLogFile = new File(String.format("%s/%d/%d.log", DIR, end.getSecond(), end.getSecond()));
         assertTrue(nextLogFile.exists(), "nextLogFile not created");
     }
 }

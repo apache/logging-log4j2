@@ -27,8 +27,8 @@ public class XLevel extends Level {
     public static final int TRACE_INT = Level.DEBUG_INT - 1;
     public static final int LETHAL_INT = Level.FATAL_INT + 1;
 
-    private static String TRACE_STR = "TRACE";
-    private static String LETHAL_STR = "LETHAL";
+    private static final String TRACE_STR = "TRACE";
+    private static final String LETHAL_STR = "LETHAL";
 
     public static final XLevel TRACE = new XLevel(TRACE_INT, TRACE_STR, 7);
     public static final XLevel LETHAL = new XLevel(LETHAL_INT, LETHAL_STR, 0);

@@ -41,8 +41,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class NestedLoggingFromThrowableMessageTest {
 
-    private static File file1 = new File("target/NestedLoggerTest1.log");
-    private static File file2 = new File("target/NestedLoggerTest2.log");
+    private static final File file1 = new File("target/NestedLoggerTest1.log");
+    private static final File file2 = new File("target/NestedLoggerTest2.log");
 
     @BeforeClass
     public static void beforeClass() {
@@ -87,7 +87,7 @@ public class NestedLoggingFromThrowableMessageTest {
 
     private static Set<String> readUniqueLines(final File input) throws IOException {
         final Set<String> lines = new HashSet<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input)))) {
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input)))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 assertTrue("Read duplicate line: " + line, lines.add(line));

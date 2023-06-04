@@ -229,7 +229,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.debug(Version.getProductString() + " initializing configuration {}", this);
         runtimeStrSubstitutor.setConfiguration(this);
         configurationStrSubstitutor.setConfiguration(this);
-        String scriptLanguages = PropertiesUtil.getProperties().getStringProperty(Constants.SCRIPT_LANGUAGES);
+        final String scriptLanguages = PropertiesUtil.getProperties().getStringProperty(Constants.SCRIPT_LANGUAGES);
         if (scriptLanguages != null) {
             try {
                 scriptManager = new ScriptManager(this, watchManager, scriptLanguages);
@@ -260,8 +260,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         LOGGER.debug("Configuration {} initialized", this);
     }
 
-    protected void initializeWatchers(Reconfigurable reconfigurable, ConfigurationSource configSource,
-        int monitorIntervalSeconds) {
+    protected void initializeWatchers(final Reconfigurable reconfigurable, final ConfigurationSource configSource,
+        final int monitorIntervalSeconds) {
         if (configSource != null && (configSource.getFile() != null || configSource.getURL() != null)) {
             if (monitorIntervalSeconds > 0) {
                 watchManager.setIntervalSeconds(monitorIntervalSeconds);
@@ -281,7 +281,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         }
     }
 
-    private void monitorSource(Reconfigurable reconfigurable, ConfigurationSource configSource) {
+    private void monitorSource(final Reconfigurable reconfigurable, final ConfigurationSource configSource) {
         if (configSource.getLastModified() > 0) {
             final Source cfgSource = new Source(configSource);
             final Watcher watcher = WatcherFactory.getInstance(pluginPackages).newWatcher(cfgSource, this, reconfigurable, listeners,
@@ -546,8 +546,8 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     protected void processConditionals(final Node node) {
         try {
-            List<Node> addList = new ArrayList<>();
-            List<Node> removeList = new ArrayList<>();
+            final List<Node> addList = new ArrayList<>();
+            final List<Node> removeList = new ArrayList<>();
             for (final Node child : node.getChildren()) {
                 final PluginType<?> type = child.getType();
                 if (type != null && Arbiter.ELEMENT_TYPE.equals(type.getElementName())) {
@@ -558,7 +558,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                     } else if (Arbiter.class.isAssignableFrom(clazz)) {
                         removeList.add(child);
                         try {
-                            Arbiter condition = (Arbiter) createPluginObject(type, child, null);
+                            final Arbiter condition = (Arbiter) createPluginObject(type, child, null);
                             if (condition.isCondition()) {
                                 addList.addAll(child.getChildren());
                                 processConditionals(child);
@@ -578,7 +578,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 }
             }
             if (!removeList.isEmpty()) {
-                List<Node> children = node.getChildren();
+                final List<Node> children = node.getChildren();
                 children.removeAll(removeList);
                 children.addAll(addList);
                 for (Node grandChild : addList) {
@@ -597,15 +597,15 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param type The PluginType of the Select Node.
      * @return The list of Nodes to be added to the parent.
      */
-    protected List<Node> processSelect(Node selectNode, PluginType<?> type) {
-        List<Node> addList = new ArrayList<>();
-        SelectArbiter select = (SelectArbiter) createPluginObject(type, selectNode, null);
-        List<Arbiter> conditions = new ArrayList<>();
+    protected List<Node> processSelect(final Node selectNode, final PluginType<?> type) {
+        final List<Node> addList = new ArrayList<>();
+        final SelectArbiter select = (SelectArbiter) createPluginObject(type, selectNode, null);
+        final List<Arbiter> conditions = new ArrayList<>();
         for (Node child : selectNode.getChildren()) {
-            PluginType<?> nodeType = child.getType();
+            final PluginType<?> nodeType = child.getType();
             if (nodeType != null) {
                 if (Arbiter.class.isAssignableFrom(nodeType.getPluginClass())) {
-                    Arbiter condition = (Arbiter) createPluginObject(nodeType, child, null);
+                    final Arbiter condition = (Arbiter) createPluginObject(nodeType, child, null);
                     conditions.add(condition);
                     child.setObject(condition);
                 } else {
@@ -616,7 +616,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 LOGGER.error("No PluginType for node {}", child.getName());
             }
         }
-        Arbiter condition = select.evaluateConditions(conditions);
+        final Arbiter condition = select.evaluateConditions(conditions);
         if (condition != null) {
             for (Node child : selectNode.getChildren()) {
                 if (condition == child.getObject()) {
@@ -636,7 +636,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final Node first = rootNode.getChildren().get(0);
             createConfiguration(first, null);
             if (first.getObject() != null) {
-                StrLookup lookup = (StrLookup) first.getObject();
+                final StrLookup lookup = (StrLookup) first.getObject();
                 if (lookup instanceof LoggerContextAware) {
                     ((LoggerContextAware) lookup).setLoggerContext(loggerContext.get());
                 }
@@ -646,7 +646,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         } else {
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
-            Interpolator interpolator = new Interpolator(lookup, pluginPackages);
+            final Interpolator interpolator = new Interpolator(lookup, pluginPackages);
             interpolator.setLoggerContext(loggerContext.get());
             runtimeStrSubstitutor.setVariableResolver(interpolator);
             configurationStrSubstitutor.setVariableResolver(interpolator);
@@ -693,7 +693,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 copy.add(child.getObject(CustomLevelConfig.class));
                 customLevels = copy;
             } else if (child.isInstanceOf(AsyncWaitStrategyFactoryConfig.class)) {
-                AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
+                final AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
                 asyncWaitStrategyFactory = awsfc.createWaitStrategyFactory();
             } else {
                 final List<String> expected = Arrays.asList("\"Appenders\"", "\"Loggers\"", "\"Properties\"",

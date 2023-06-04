@@ -36,7 +36,7 @@ public class PathConditionTest {
         assertSame(PathCondition.EMPTY_ARRAY, PathCondition.copy(NULL_FIXTURE));
         assertSame(PathCondition.EMPTY_ARRAY, PathCondition.copy(EMPTY_FIXTURE));
         //
-        CountingCondition cc = new CountingCondition(true);
+        final CountingCondition cc = new CountingCondition(true);
         assertNotSame(cc, PathCondition.copy(cc));
     }
 

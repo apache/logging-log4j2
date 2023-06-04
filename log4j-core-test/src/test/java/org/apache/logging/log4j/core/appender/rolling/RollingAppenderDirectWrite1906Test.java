@@ -101,7 +101,7 @@ public class RollingAppenderDirectWrite1906Test {
 
     }
 
-    private String logFileNameError(String expected, String actual) {
+    private String logFileNameError(final String expected, final String actual) {
         final List<StatusData> statusData = StatusLogger.getLogger().getStatusData();
         final StringBuilder sb = new StringBuilder();
         for (StatusData statusItem : statusData) {
@@ -114,7 +114,7 @@ public class RollingAppenderDirectWrite1906Test {
 
     private static class NoopStatusListener implements StatusListener {
         @Override
-        public void log(StatusData data) {
+        public void log(final StatusData data) {
 
         }
 

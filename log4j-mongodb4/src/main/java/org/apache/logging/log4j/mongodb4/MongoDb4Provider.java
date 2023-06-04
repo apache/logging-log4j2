@@ -113,7 +113,7 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
         LOGGER.debug("Creating MongoClient {}...", settings);
         this.mongoClient = MongoClients.create(settings);
         LOGGER.debug("Created MongoClient {}", mongoClient);
-        String databaseName = this.connectionString.getDatabase();
+        final String databaseName = this.connectionString.getDatabase();
         LOGGER.debug("Getting MongoDatabase {}...", databaseName);
         this.mongoDatabase = this.mongoClient.getDatabase(databaseName);
         LOGGER.debug("Got MongoDatabase {}", mongoDatabase);

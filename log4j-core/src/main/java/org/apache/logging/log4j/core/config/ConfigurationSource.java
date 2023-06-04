@@ -124,7 +124,7 @@ public class ConfigurationSource {
      * @param url the URL where the input stream originated
      * @param lastModified when the source was last modified.
      */
-    public ConfigurationSource(final InputStream stream, final URL url, long lastModified) {
+    public ConfigurationSource(final InputStream stream, final URL url, final long lastModified) {
         this.stream = Objects.requireNonNull(stream, "stream is null");
         this.data = null;
         this.lastModified = lastModified;
@@ -149,7 +149,7 @@ public class ConfigurationSource {
      * @param data data from the source
      * @param lastModified when the source was last modified.
      */
-    public ConfigurationSource(final Source source, final byte[] data, long lastModified) {
+    public ConfigurationSource(final Source source, final byte[] data, final long lastModified) {
         Objects.requireNonNull(source, "source is null");
         this.data = Objects.requireNonNull(data, "data is null");
         this.stream = new ByteArrayInputStream(data);
@@ -157,7 +157,7 @@ public class ConfigurationSource {
         this.source = source;
     }
 
-    private ConfigurationSource(final byte[] data, final URL url, long lastModified) {
+    private ConfigurationSource(final byte[] data, final URL url, final long lastModified) {
         this.data = Objects.requireNonNull(data, "data is null");
         this.stream = new ByteArrayInputStream(data);
         this.lastModified = lastModified;
@@ -224,15 +224,15 @@ public class ConfigurationSource {
      * @deprecated Not used internally, no replacement. TODO remove and make source final.
      */
     @Deprecated
-    public void setSource(Source source) {
+    public void setSource(final Source source) {
         this.source = source;
     }
 
-    public void setData(byte[] data) {
+    public void setData(final byte[] data) {
         this.data = data;
     }
 
-    public void setModifiedMillis(long modifiedMillis) {
+    public void setModifiedMillis(final long modifiedMillis) {
         this.modifiedMillis = modifiedMillis;
     }
 
@@ -350,16 +350,16 @@ public class ConfigurationSource {
         return getConfigurationSource(url);
     }
 
-    private static ConfigurationSource getConfigurationSource(URL url) {
+    private static ConfigurationSource getConfigurationSource(final URL url) {
         try {
-            File file = FileUtils.fileFromUri(url.toURI());
-            URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
+            final File file = FileUtils.fileFromUri(url.toURI());
+            final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
             try {
                 if (file != null) {
                     return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
                 } else if (urlConnection instanceof JarURLConnection) {
                     // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
-                    long lastModified = new File(((JarURLConnection)urlConnection).getJarFile().getName())
+                    final long lastModified = new File(((JarURLConnection) urlConnection).getJarFile().getName())
                             .lastModified();
                     return new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
                 } else {

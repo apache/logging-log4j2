@@ -134,10 +134,10 @@ public class JeroMqAppenderTest {
         assertEquals(0, appender.getSendRcFalse());
     }
 
-    private void waitForSubscription(JeroMqAppender appender, int timeoutMs) throws Exception {
+    private void waitForSubscription(final JeroMqAppender appender, final int timeoutMs) throws Exception {
         final long start = System.currentTimeMillis();
         while (System.currentTimeMillis() - start < timeoutMs) {
-            byte[] msg = appender.recv(timeoutMs);
+            final byte[] msg = appender.recv(timeoutMs);
             if (msg != null && msg.length > 0 && msg[0] == 1) {
                 return;
             }

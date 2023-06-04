@@ -129,7 +129,7 @@ public final class NetUtils {
     public static String getMacAddressString() {
         final byte[] macAddr = getMacAddress();
         if (!ArrayUtils.isEmpty(macAddr)) {
-            StringBuilder sb = new StringBuilder(String.format("%02x", macAddr[0]));
+            final StringBuilder sb = new StringBuilder(String.format("%02x", macAddr[0]));
             for (int i = 1; i < macAddr.length; ++i) {
                 sb.append(":").append(String.format("%02x", macAddr[i]));
             }

@@ -40,7 +40,7 @@ public class ThrowableProxyHelperTest {
   public void testSuccessfulCacheHit() {
     final Map<String, ThrowableProxyHelper.CacheEntry> map = new HashMap<>();
     final Deque<Class<?>> stack = new ArrayDeque<>(3);
-    StackTraceElement[] stackTraceElements = new StackTraceElement[3];
+      final StackTraceElement[] stackTraceElements = new StackTraceElement[3];
     stackTraceElements[0] = new StackTraceElement(Integer.class.getName(), "toString",
           "Integer.java", 1);
     stack.addLast(Integer.class);
@@ -64,7 +64,7 @@ public class ThrowableProxyHelperTest {
   public void testFailedCacheHit() {
     final Map<String, ThrowableProxyHelper.CacheEntry> map = new HashMap<>();
     final Deque<Class<?>> stack = new ArrayDeque<>(3);
-    StackTraceElement[] stackTraceElements = new StackTraceElement[3];
+      final StackTraceElement[] stackTraceElements = new StackTraceElement[3];
     stackTraceElements[0] = new StackTraceElement(Integer.class.getName(), "toString",
         "Integer.java", 1);
     stack.addFirst(Integer.class);

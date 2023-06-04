@@ -102,7 +102,7 @@ public class RollingAppenderTempCompressedFilePatternTest {
                 InputStream in = null;
                 final FileExtension ext = FileExtension.lookupForFile(file.getName());
                 try {
-                    try (FileInputStream fis = new FileInputStream(file)) {
+                    try (final FileInputStream fis = new FileInputStream(file)) {
                         if (ext != null) {
                             gzippedFiles++;
                             try {

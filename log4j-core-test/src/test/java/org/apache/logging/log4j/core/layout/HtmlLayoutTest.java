@@ -57,7 +57,7 @@ public class HtmlLayoutTest {
 
         @Override
         public Instant getInstant() {
-            MutableInstant result = new MutableInstant();
+            final MutableInstant result = new MutableInstant();
             result.initFromEpochMilli(getTimeMillis(), 456789);
             return result;
         }
@@ -199,10 +199,10 @@ public class HtmlLayoutTest {
     public void testLayoutWithoutDataPattern() {
         final HtmlLayout layout = HtmlLayout.newBuilder().build();
 
-        MyLogEvent event = new MyLogEvent();
-        String actual = getDateLine(layout.toSerializable(event));
+        final MyLogEvent event = new MyLogEvent();
+        final String actual = getDateLine(layout.toSerializable(event));
 
-        long jvmStratTime = ManagementFactory.getRuntimeMXBean().getStartTime();
+        final long jvmStratTime = ManagementFactory.getRuntimeMXBean().getStartTime();
         assertEquals("<td>" + (event.getTimeMillis() - jvmStratTime) + "</td>", actual, "Incorrect date:" + actual);
     }
 
@@ -210,10 +210,10 @@ public class HtmlLayoutTest {
     public void testLayoutWithDatePatternJvmElapseTime() {
         final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern("JVM_ELAPSE_TIME").build();
 
-        MyLogEvent event = new MyLogEvent();
-        String actual = getDateLine(layout.toSerializable(event));
+        final MyLogEvent event = new MyLogEvent();
+        final String actual = getDateLine(layout.toSerializable(event));
 
-        long jvmStratTime = ManagementFactory.getRuntimeMXBean().getStartTime();
+        final long jvmStratTime = ManagementFactory.getRuntimeMXBean().getStartTime();
         assertEquals("<td>" + (event.getTimeMillis() - jvmStratTime) + "</td>", actual, "Incorrect date:" + actual);
     }
 
@@ -221,8 +221,8 @@ public class HtmlLayoutTest {
     public void testLayoutWithDatePatternUnix() {
         final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern("UNIX").build();
 
-        MyLogEvent event = new MyLogEvent();
-        String actual = getDateLine(layout.toSerializable(event));
+        final MyLogEvent event = new MyLogEvent();
+        final String actual = getDateLine(layout.toSerializable(event));
 
         assertEquals("<td>" + event.getInstant().getEpochSecond() + "</td>", actual, "Incorrect date:" + actual);
     }
@@ -231,8 +231,8 @@ public class HtmlLayoutTest {
     public void testLayoutWithDatePatternUnixMillis() {
         final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern("UNIX_MILLIS").build();
 
-        MyLogEvent event = new MyLogEvent();
-        String actual = getDateLine(layout.toSerializable(event));
+        final MyLogEvent event = new MyLogEvent();
+        final String actual = getDateLine(layout.toSerializable(event));
 
         assertEquals("<td>" + event.getTimeMillis() + "</td>", actual, "Incorrect date:" + actual);
     }
@@ -246,19 +246,19 @@ public class HtmlLayoutTest {
         }
     }
 
-    private String getDateLine(String logEventString) {
+    private String getDateLine(final String logEventString) {
         return logEventString.split(System.lineSeparator())[2];
     }
 
-    private void testLayoutWithDatePatternFixedFormat(FixedFormat format, String timezone) {
+    private void testLayoutWithDatePatternFixedFormat(final FixedFormat format, final String timezone) {
         final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern(format.name()).setTimezone(timezone).build();
 
-        LogEvent event = new MyLogEvent();
-        String actual = getDateLine(layout.toSerializable(event));
+        final LogEvent event = new MyLogEvent();
+        final String actual = getDateLine(layout.toSerializable(event));
 
         // build expected date string
-        java.time.Instant instant =
-            java.time.Instant.ofEpochSecond(event.getInstant().getEpochSecond(), event.getInstant().getNanoOfSecond());
+        final java.time.Instant instant =
+                java.time.Instant.ofEpochSecond(event.getInstant().getEpochSecond(), event.getInstant().getNanoOfSecond());
         ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
         if (timezone != null) {
             zonedDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of(timezone));
@@ -275,11 +275,11 @@ public class HtmlLayoutTest {
         // Pattern letter 'S' means fraction-of-second, 'n' means nano-of-second. Log4j2 needs S.
         // Pattern letter 'X' (upper case) will output 'Z' when the offset to be output would be zero,
         // whereas pattern letter 'x' (lower case) will output '+00', '+0000', or '+00:00'. Log4j2 needs x.
-        DateTimeFormatter dateTimeFormatter =
-            DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'), locale);
+        final DateTimeFormatter dateTimeFormatter =
+                DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'), locale);
         String expected = zonedDateTime.format(dateTimeFormatter);
 
-        String offset = zonedDateTime.getOffset().toString();
+        final String offset = zonedDateTime.getOffset().toString();
 
         //Truncate minutes if timeZone format is HH and timeZone has minutes. This is required because according to DateTimeFormatter,
         //One letter outputs just the hour, such as '+01', unless the minute is non-zero in which case the minute is also output, such as '+0130'

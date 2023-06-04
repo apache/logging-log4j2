@@ -44,13 +44,13 @@ public class XmlLayoutBuilder extends AbstractBuilder<Layout> implements LayoutB
     public XmlLayoutBuilder() {
     }
 
-    public XmlLayoutBuilder(String prefix, Properties props) {
+    public XmlLayoutBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
 
     @Override
-    public Layout parse(Element layoutElement, XmlConfiguration config) {
+    public Layout parse(final Element layoutElement, final XmlConfiguration config) {
         final AtomicBoolean properties = new AtomicBoolean();
         final AtomicBoolean locationInfo = new AtomicBoolean();
         forEachElement(layoutElement.getElementsByTagName(PARAM_TAG), currentElement -> {
@@ -64,13 +64,13 @@ public class XmlLayoutBuilder extends AbstractBuilder<Layout> implements LayoutB
     }
 
     @Override
-    public Layout parse(PropertiesConfiguration config) {
-        boolean properties = getBooleanProperty(PROPERTIES);
-        boolean locationInfo = getBooleanProperty(LOCATION_INFO);
+    public Layout parse(final PropertiesConfiguration config) {
+        final boolean properties = getBooleanProperty(PROPERTIES);
+        final boolean locationInfo = getBooleanProperty(LOCATION_INFO);
         return createLayout(properties, locationInfo);
     }
 
-    private Layout createLayout(boolean properties, boolean locationInfo) {
+    private Layout createLayout(final boolean properties, final boolean locationInfo) {
         return LayoutWrapper.adapt(Log4j1XmlLayout.createLayout(locationInfo, properties));
     }
 }

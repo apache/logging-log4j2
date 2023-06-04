@@ -159,7 +159,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
      */
     @Override
     public String lookup(final LogEvent event, String var) {
-        LookupResult result = evaluate(event, var);
+        final LookupResult result = evaluate(event, var);
         return result == null ? null : result.value();
     }
 
@@ -210,7 +210,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
     }
 
     @Override
-    public void setLoggerContext(LoggerContext loggerContext) {
+    public void setLoggerContext(final LoggerContext loggerContext) {
         if (loggerContext == null) {
             return;
         }

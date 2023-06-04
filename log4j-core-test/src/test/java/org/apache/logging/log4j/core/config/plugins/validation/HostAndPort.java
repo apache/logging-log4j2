@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Valid
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.ValidPort;
 
 @Plugin(name = "HostAndPort", category = "Test")
-public class HostAndPort {
+public final class HostAndPort {
 
     private final InetSocketAddress address;
 

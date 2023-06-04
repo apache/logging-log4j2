@@ -101,7 +101,7 @@ public class WebLookupTest {
             }
         }
         final StrSubstitutor substitutor = config.getStrSubstitutor();
-        String value = substitutor.replace("${web:contextPathName:-default}");
+        final String value = substitutor.replace("${web:contextPathName:-default}");
         assertEquals("default", value, "Incorrect value for context name");
         assertNotNull(value, "No value for context name");
         initializer.stop();

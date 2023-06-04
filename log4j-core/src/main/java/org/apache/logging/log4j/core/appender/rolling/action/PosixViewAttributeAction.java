@@ -47,7 +47,7 @@ import org.apache.logging.log4j.util.Strings;
  * Allow to define file permissions, user and group for log files on POSIX supported OS.
  */
 @Plugin(name = "PosixViewAttribute", category = Core.CATEGORY_NAME, printObject = true)
-public class PosixViewAttributeAction extends AbstractPathAction {
+public final class PosixViewAttributeAction extends AbstractPathAction {
 
     /**
      * File permissions.

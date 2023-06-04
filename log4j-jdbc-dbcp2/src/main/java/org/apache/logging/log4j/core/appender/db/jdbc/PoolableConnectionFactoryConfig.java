@@ -36,7 +36,7 @@ import org.apache.logging.log4j.util.Strings;
  * @since 2.11.2
  */
 @Plugin(name = "PoolableConnectionFactory", category = Core.CATEGORY_NAME, printObject = true)
-public class PoolableConnectionFactoryConfig {
+public final class PoolableConnectionFactoryConfig {
 
     public static class Builder implements org.apache.logging.log4j.core.util.Builder<PoolableConnectionFactoryConfig> {
 

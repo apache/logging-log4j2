@@ -73,7 +73,7 @@ public class MongoDb4Test {
             Assert.assertNotNull(second);
             Assert.assertEquals(second.toJson(), "Hello log 2", second.getString("message"));
             Assert.assertEquals(second.toJson(), "INFO", second.getString("level"));
-            Document thrown = second.get("thrown", Document.class);
+            final Document thrown = second.get("thrown", Document.class);
             Assert.assertEquals(thrown.toJson(), "Hello ex 2", thrown.getString("message"));
         }
     }

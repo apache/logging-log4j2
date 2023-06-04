@@ -209,8 +209,8 @@ public class Rfc5424LayoutTest {
 
             root.info(MarkerManager.getMarker("EVENT"), collectionMessage);
 
-            List<String> list = appender.getMessages();
-            String result = list.get(0);
+            final List<String> list = appender.getMessages();
+            final String result = list.get(0);
             assertTrue(
                     result.contains(collectionLine1), "Expected line to contain " + collectionLine1 + ", Actual " + result);
             assertTrue(
@@ -597,7 +597,7 @@ public class Rfc5424LayoutTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "123456789", "0", "2147483647", "123.45.6.78.9", "0.0.0.0.0.0.0.0.0.0.0.0.0.0" })
-    void testLayoutBuilderValidEids(String eid) {
+    void testLayoutBuilderValidEids(final String eid) {
         final AbstractStringLayout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
                 .setEin(eid)
                 .build();
@@ -607,7 +607,7 @@ public class Rfc5424LayoutTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "abc", "someEid", "-1" })
-    void testLayoutBuilderInvalidEids(String eid) {
+    void testLayoutBuilderInvalidEids(final String eid) {
         final AbstractStringLayout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
                 .setEin(eid)
                 .build();

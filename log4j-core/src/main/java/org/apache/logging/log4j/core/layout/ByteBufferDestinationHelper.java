@@ -57,7 +57,7 @@ public final class ByteBufferDestinationHelper {
      * @param length      the number of bytes to write
      * @param destination the {@code ByteBufferDestination} to write to
      */
-    public static void writeToUnsynchronized(final byte[] data, int offset, int length,
+    public static void writeToUnsynchronized(final byte[] data, final int offset, final int length,
             final ByteBufferDestination destination) {
         ByteBuffer buffer = destination.getByteBuffer();
         while (length > buffer.remaining()) {

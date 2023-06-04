@@ -212,9 +212,9 @@ public final class ThreadContext {
         ThreadContextMapFactory.init();
         contextMap = null;
         final PropertiesUtil managerProps = PropertiesUtil.getProperties();
-        boolean disableAll = managerProps.getBooleanProperty(DISABLE_ALL);
+        final boolean disableAll = managerProps.getBooleanProperty(DISABLE_ALL);
         useStack = !(managerProps.getBooleanProperty(DISABLE_STACK) || disableAll);
-        boolean useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || disableAll);
+        final boolean useMap = !(managerProps.getBooleanProperty(DISABLE_MAP) || disableAll);
 
         contextStack = new DefaultThreadContextStack(useStack);
         if (!useMap) {

@@ -124,7 +124,7 @@ public class FileAppenderBuilder extends AbstractBuilder implements AppenderBuil
     private Appender createAppender(final String name, final Log4j1Configuration configuration, final Layout layout,
             final Filter filter, final String fileName, final String level, boolean immediateFlush, final boolean append,
             final boolean bufferedIo, final int bufferSize) {
-        org.apache.logging.log4j.core.Layout<?> fileLayout = LayoutAdapter.adapt(layout);
+        final org.apache.logging.log4j.core.Layout<?> fileLayout = LayoutAdapter.adapt(layout);
         if (bufferedIo) {
             immediateFlush = false;
         }

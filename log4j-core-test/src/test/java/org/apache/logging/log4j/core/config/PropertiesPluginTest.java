@@ -29,7 +29,7 @@ public class PropertiesPluginTest {
 
     @Test
     public void testUnescapeNotEscapedWithDefault() {
-        String value = "${foo:-bar}";
+        final String value = "${foo:-bar}";
         assertEquals(value, PropertiesPlugin.unescape(value));
     }
 }

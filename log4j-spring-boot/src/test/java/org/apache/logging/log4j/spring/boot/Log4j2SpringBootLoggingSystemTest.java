@@ -33,13 +33,13 @@ public class Log4j2SpringBootLoggingSystemTest {
 
     @Test
     public void getStandardConfigLocations() {
-        String customLog4j2Location = "classpath:my_custom_log4j2.properties";
-        LoggerContext lc = LogManager.getContext(); // Initialize LogManager to here to prevent a failure trying to
+        final String customLog4j2Location = "classpath:my_custom_log4j2.properties";
+        final LoggerContext lc = LogManager.getContext(); // Initialize LogManager to here to prevent a failure trying to
                                                     // initialize it from StatusLogger.
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, customLog4j2Location);
-        Log4j2SpringBootLoggingSystem cloudLoggingSystem = new Log4j2SpringBootLoggingSystem(
-                this.getClass().getClassLoader());
-        List<String> standardConfigLocations = Arrays.asList(cloudLoggingSystem.getStandardConfigLocations());
+        final Log4j2SpringBootLoggingSystem cloudLoggingSystem = new Log4j2SpringBootLoggingSystem(
+        this.getClass().getClassLoader());
+        final List<String> standardConfigLocations = Arrays.asList(cloudLoggingSystem.getStandardConfigLocations());
         assertTrue(standardConfigLocations.contains(customLog4j2Location));
 
     }
@@ -47,13 +47,13 @@ public class Log4j2SpringBootLoggingSystemTest {
     @Test
     @SetSystemProperty(key = Log4j2SpringBootLoggingSystem.LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM, value = "true")
     public void testUseLog4j2LoggingSystem() {
-        LoggingSystem loggingSystem = LoggingSystem.get(getClass().getClassLoader());
+        final LoggingSystem loggingSystem = LoggingSystem.get(getClass().getClassLoader());
         assertTrue(loggingSystem.getClass().equals(Log4J2LoggingSystem.class));
     }
 
     @Test
     public void testLoggingSystemEnabled() {
-        LoggingSystem loggingSystem = LoggingSystem.get(getClass().getClassLoader());
+        final LoggingSystem loggingSystem = LoggingSystem.get(getClass().getClassLoader());
         assertTrue(loggingSystem.getClass().equals(Log4j2SpringBootLoggingSystem.class));
     }
 }

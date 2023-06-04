@@ -27,20 +27,20 @@ import org.junit.platform.commons.support.AnnotationSupport;
 class ThreadContextInitializer implements BeforeAllCallback, BeforeEachCallback {
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
+    public void beforeAll(final ExtensionContext context) throws Exception {
         if (AnnotationSupport.isAnnotated(context.getRequiredTestClass(), InitializesThreadContext.class)) {
             resetThreadContext(context);
         }
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(final ExtensionContext context) throws Exception {
         if (AnnotationSupport.isAnnotated(context.getRequiredTestMethod(), InitializesThreadContext.class)) {
             resetThreadContext(context);
         }
     }
 
-    private void resetThreadContext(ExtensionContext context) {
+    private void resetThreadContext(final ExtensionContext context) {
         ThreadContextUtilityClass.reset();
         // We use `CloseableResource` instead of `afterAll` to reset the
         // ThreadContextFactory

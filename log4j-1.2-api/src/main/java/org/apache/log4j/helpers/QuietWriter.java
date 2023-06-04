@@ -31,13 +31,13 @@ public class QuietWriter extends FilterWriter {
 
     protected ErrorHandler errorHandler;
 
-    public QuietWriter(Writer writer, ErrorHandler errorHandler) {
+    public QuietWriter(final Writer writer, final ErrorHandler errorHandler) {
         super(writer);
         setErrorHandler(errorHandler);
     }
 
     @Override
-    public void write(String string) {
+    public void write(final String string) {
         if (string != null) {
             try {
                 out.write(string);
@@ -59,7 +59,7 @@ public class QuietWriter extends FilterWriter {
     }
 
 
-    public void setErrorHandler(ErrorHandler eh) {
+    public void setErrorHandler(final ErrorHandler eh) {
         if (eh == null) {
             // This is a programming error on the part of the enclosing appender.
             throw new IllegalArgumentException("Attempted to set null ErrorHandler.");

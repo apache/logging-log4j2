@@ -49,7 +49,7 @@ public class ConfigurationFileWatcher extends AbstractWatcher implements FileWat
     }
 
     @Override
-    public void watching(Source source) {
+    public void watching(final Source source) {
         file = source.getFile();
         lastModifiedMillis = file.lastModified();
         super.watching(source);
@@ -63,8 +63,8 @@ public class ConfigurationFileWatcher extends AbstractWatcher implements FileWat
     @Override
     public Watcher newWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners,
         long lastModifiedMillis) {
-        ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(getConfiguration(), reconfigurable, listeners,
-            lastModifiedMillis);
+        final ConfigurationFileWatcher watcher = new ConfigurationFileWatcher(getConfiguration(), reconfigurable, listeners,
+                lastModifiedMillis);
         if (getSource() != null) {
             watcher.watching(getSource());
         }

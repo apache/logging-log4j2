@@ -37,8 +37,8 @@ public class NameAbbreviatorTest extends TestCase {
      *
      */
     public void testBlank() {
-        NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("   ");
-        NameAbbreviator defaultAbbrev = NameAbbreviator.getDefaultAbbreviator();
+        final NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("   ");
+        final NameAbbreviator defaultAbbrev = NameAbbreviator.getDefaultAbbreviator();
         assertTrue(abbrev == defaultAbbrev);
     }
 
@@ -46,8 +46,8 @@ public class NameAbbreviatorTest extends TestCase {
      * Check that blanks are trimmed in evaluating abbreviation pattern.
      */
     public void testBlankOne() {
-        NameAbbreviator abbrev = NameAbbreviator.getAbbreviator(" 1 ");
-        StringBuffer buf = new StringBuffer("DEBUG - ");
+        final NameAbbreviator abbrev = NameAbbreviator.getAbbreviator(" 1 ");
+        final StringBuffer buf = new StringBuffer("DEBUG - ");
         int fieldStart = buf.length();
         buf.append("org.example.foo.bar");
         abbrev.abbreviate(fieldStart, buf);
@@ -72,7 +72,7 @@ public class NameAbbreviatorTest extends TestCase {
      *
      */
     public void testGetDefault() {
-        NameAbbreviator abbrev = NameAbbreviator.getDefaultAbbreviator();
+        final NameAbbreviator abbrev = NameAbbreviator.getDefaultAbbreviator();
         assertNotNull(abbrev);
     }
 
@@ -81,8 +81,8 @@ public class NameAbbreviatorTest extends TestCase {
      *
      */
     public void testMinusOne() {
-        NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("-1");
-        StringBuffer buf = new StringBuffer("DEBUG - ");
+        final NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("-1");
+        final StringBuffer buf = new StringBuffer("DEBUG - ");
         int fieldStart = buf.length();
         buf.append("org.example.foo.bar");
         abbrev.abbreviate(fieldStart, buf);
@@ -116,8 +116,8 @@ public class NameAbbreviatorTest extends TestCase {
      *
      */
     public void testMulti() {
-        NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("1.*.2");
-        StringBuffer buf = new StringBuffer("DEBUG - ");
+        final NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("1.*.2");
+        final StringBuffer buf = new StringBuffer("DEBUG - ");
         int fieldStart = buf.length();
         buf.append("org.example.foo.bar");
         abbrev.abbreviate(fieldStart, buf);
@@ -163,8 +163,8 @@ public class NameAbbreviatorTest extends TestCase {
      *
      */
     public void testOne() {
-        NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("1");
-        StringBuffer buf = new StringBuffer("DEBUG - ");
+        final NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("1");
+        final StringBuffer buf = new StringBuffer("DEBUG - ");
         int fieldStart = buf.length();
         buf.append("org.example.foo.bar");
         abbrev.abbreviate(fieldStart, buf);
@@ -189,8 +189,8 @@ public class NameAbbreviatorTest extends TestCase {
      *
      */
     public void testOneDot() {
-        NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("1.");
-        StringBuffer buf = new StringBuffer("DEBUG - ");
+        final NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("1.");
+        final StringBuffer buf = new StringBuffer("DEBUG - ");
         int fieldStart = buf.length();
         buf.append("org.example.foo.bar");
         abbrev.abbreviate(fieldStart, buf);
@@ -236,8 +236,8 @@ public class NameAbbreviatorTest extends TestCase {
      *
      */
     public void testOneTildeDot() {
-        NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("1~.");
-        StringBuffer buf = new StringBuffer("DEBUG - ");
+        final NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("1~.");
+        final StringBuffer buf = new StringBuffer("DEBUG - ");
         int fieldStart = buf.length();
         buf.append("org.example.foo.bar");
         abbrev.abbreviate(fieldStart, buf);
@@ -290,8 +290,8 @@ public class NameAbbreviatorTest extends TestCase {
      *
      */
     public void testTwo() {
-        NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("2");
-        StringBuffer buf = new StringBuffer("DEBUG - ");
+        final NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("2");
+        final StringBuffer buf = new StringBuffer("DEBUG - ");
         int fieldStart = buf.length();
         buf.append("org.example.foo.bar");
         abbrev.abbreviate(fieldStart, buf);
@@ -317,9 +317,9 @@ public class NameAbbreviatorTest extends TestCase {
      *
      */
     public void testZero() {
-        NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("0");
-        StringBuffer buf = new StringBuffer("DEBUG - ");
-        int fieldStart = buf.length();
+        final NameAbbreviator abbrev = NameAbbreviator.getAbbreviator("0");
+        final StringBuffer buf = new StringBuffer("DEBUG - ");
+        final int fieldStart = buf.length();
         buf.append("org.example.foo.bar");
         abbrev.abbreviate(fieldStart, buf);
         assertEquals("DEBUG - ", buf.toString());

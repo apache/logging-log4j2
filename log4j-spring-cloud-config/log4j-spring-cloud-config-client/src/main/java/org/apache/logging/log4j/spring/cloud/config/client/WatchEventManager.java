@@ -36,13 +36,13 @@ public class WatchEventManager implements WatchEventService {
     }
 
     @Override
-    public void subscribe(WatchManager manager) {
+    public void subscribe(final WatchManager manager) {
         watchManagers.put(manager.getId(), manager);
 
     }
 
     @Override
-    public void unsubscribe(WatchManager manager) {
+    public void unsubscribe(final WatchManager manager) {
         watchManagers.remove(manager.getId());
     }
 }

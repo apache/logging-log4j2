@@ -52,7 +52,7 @@ public class EventLookupTest {
 
     @Test
     public void testLookupEventMessage() {
-        String msg = "Hello, world!";
+        final String msg = "Hello, world!";
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
@@ -64,7 +64,7 @@ public class EventLookupTest {
 
     @Test
     public void testLookupEventLevel() {
-        String msg = "Hello, world!";
+        final String msg = "Hello, world!";
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
@@ -76,8 +76,8 @@ public class EventLookupTest {
 
     @Test
     public void testLookupEventTimestamp() {
-        String msg = "Hello, world!";
-        long now = System.currentTimeMillis();
+        final String msg = "Hello, world!";
+        final long now = System.currentTimeMillis();
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setTimeMillis(now)
@@ -90,7 +90,7 @@ public class EventLookupTest {
 
     @Test
     public void testLookupEventLogger() {
-        String msg = "Hello, world!";
+        final String msg = "Hello, world!";
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setLoggerFqcn("org.apache.logging.log4j.core.Logger") //
@@ -102,7 +102,7 @@ public class EventLookupTest {
 
     @Test
     public void testLookupEventThreadName() {
-        String msg = "Hello, world!";
+        final String msg = "Hello, world!";
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName()) //
                 .setThreadName("Main")

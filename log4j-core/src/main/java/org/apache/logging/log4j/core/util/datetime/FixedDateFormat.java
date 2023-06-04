@@ -353,7 +353,7 @@ public class FixedDateFormat {
 
         // Profiling showed this method is important to log4j performance. Modify with care!
         // 262 bytes (will be inlined when hot enough: <= -XX:FreqInlineSize=325 bytes on Linux)
-        private int write(final int offset, final char[] buffer, int pos) {
+        private int write(final int offset, final char[] buffer, final int pos) {
             // This method duplicates part of writeTime()
 
             buffer[pos++] = offset < 0 ? '-' : '+';
@@ -713,7 +713,7 @@ public class FixedDateFormat {
      * Returns {@code true} if the old and new date values will result in the same formatted output, {@code false}
      * if results <i>may</i> differ.
      */
-    public boolean isEquivalent(long oldEpochSecond, int oldNanoOfSecond, long epochSecond, int nanoOfSecond) {
+    public boolean isEquivalent(final long oldEpochSecond, final int oldNanoOfSecond, final long epochSecond, final int nanoOfSecond) {
         if (oldEpochSecond == epochSecond) {
             if (secondFractionDigits <= 3) {
                 // Convert nanos to milliseconds for comparison if the format only requires milliseconds.

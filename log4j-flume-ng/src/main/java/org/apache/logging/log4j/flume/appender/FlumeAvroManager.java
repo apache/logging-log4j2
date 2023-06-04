@@ -33,7 +33,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
     private static final int MAX_RECONNECTS = 3;
     private static final int MINIMUM_TIMEOUT = 1000;
 
-    private static AvroManagerFactory factory = new AvroManagerFactory();
+    private static final AvroManagerFactory factory = new AvroManagerFactory();
 
     private final Agent[] agents;
 
@@ -208,7 +208,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             synchronized(batchEvent) {
                 batchEvent.addEvent(event);
                 eventCount = batchEvent.size();
-                long now = System.nanoTime();
+                final long now = System.nanoTime();
                 if (eventCount == 1) {
                     nextSend = now + delayNanos;
                 }

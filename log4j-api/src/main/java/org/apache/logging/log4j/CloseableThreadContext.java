@@ -34,7 +34,7 @@ import java.util.Map;
  *
  * @since 2.6
  */
-public class CloseableThreadContext {
+public final class CloseableThreadContext {
 
     private CloseableThreadContext() {
     }
@@ -100,7 +100,7 @@ public class CloseableThreadContext {
         return new CloseableThreadContext.Instance().putAll(values);
     }
 
-    public static class Instance implements AutoCloseable {
+    public static final class Instance implements AutoCloseable {
 
         private int pushCount = 0;
         private final Map<String, String> originalValues = new HashMap<>();

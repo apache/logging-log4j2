@@ -55,9 +55,9 @@ public class AsyncLoggerTestArgumentFreedOnError {
     @Test
     public void testMessageIsGarbageCollected() throws Exception {
         final AsyncLogger log = (AsyncLogger) LogManager.getLogger("com.foo.Bar");
-        CountDownLatch garbageCollectionLatch = new CountDownLatch(1);
+        final CountDownLatch garbageCollectionLatch = new CountDownLatch(1);
         log.fatal(new ThrowingMessage(garbageCollectionLatch));
-        GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
+        final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
         gcHelper.run();
         try {
             assertTrue("Parameter should have been garbage collected",
@@ -71,7 +71,7 @@ public class AsyncLoggerTestArgumentFreedOnError {
 
         private final CountDownLatch latch;
 
-        ThrowingMessage(CountDownLatch latch) {
+        ThrowingMessage(final CountDownLatch latch) {
             this.latch = latch;
         }
 
@@ -102,7 +102,7 @@ public class AsyncLoggerTestArgumentFreedOnError {
         }
 
         @Override
-        public void formatTo(StringBuilder buffer) {
+        public void formatTo(final StringBuilder buffer) {
             throw new Error("Expected");
         }
     }

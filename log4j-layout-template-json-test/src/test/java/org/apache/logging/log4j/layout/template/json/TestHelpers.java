@@ -125,7 +125,7 @@ public final class TestHelpers {
         // Create the configuration.
         final String eventTemplateJson = writeJson(eventTemplate);
         final String appenderName = "List";
-        Configuration config = configBuilder
+        final Configuration config = configBuilder
                 .add(configBuilder
                         .newAppender(appenderName, "List")
                         .addAttribute("raw", true)

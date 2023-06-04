@@ -55,7 +55,7 @@ public class HierarchyDynamicMBean extends AbstractDynamicMBean implements Hiera
     static final String ADD_APPENDER = "addAppender.";
     static final String THRESHOLD = "threshold";
 
-    private static Logger log = Logger.getLogger(HierarchyDynamicMBean.class);
+    private static final Logger log = Logger.getLogger(HierarchyDynamicMBean.class);
     private final MBeanConstructorInfo[] dConstructors = new MBeanConstructorInfo[1];
 
     private final MBeanOperationInfo[] dOperations = new MBeanOperationInfo[1];

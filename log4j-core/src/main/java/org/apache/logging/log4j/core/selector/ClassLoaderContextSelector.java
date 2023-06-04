@@ -77,7 +77,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     @Override
-    public void contextShutdown(org.apache.logging.log4j.spi.LoggerContext loggerContext) {
+    public void contextShutdown(final org.apache.logging.log4j.spi.LoggerContext loggerContext) {
         if (loggerContext instanceof LoggerContext) {
             removeContext((LoggerContext) loggerContext);
         }
@@ -101,10 +101,10 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
         return ctx != null && ctx.isStarted();
     }
 
-    private LoggerContext findContext(ClassLoader loaderOrNull) {
+    private LoggerContext findContext(final ClassLoader loaderOrNull) {
         final ClassLoader loader = loaderOrNull != null ? loaderOrNull : ClassLoader.getSystemClassLoader();
         final String name = toContextMapKey(loader);
-        AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
+        final AtomicReference<WeakReference<LoggerContext>> ref = CONTEXT_MAP.get(name);
         if (ref != null) {
             final WeakReference<LoggerContext> weakRef = ref.get();
             return weakRef.get();
@@ -215,11 +215,11 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
                     } */
                 }
             }
-            LoggerContext ctx = createContext(name, configLocation);
+            final LoggerContext ctx = createContext(name, configLocation);
             if (entry != null) {
                 ctx.putObject(entry.getKey(), entry.getValue());
             }
-            LoggerContext newContext = CONTEXT_MAP.computeIfAbsent(name,
+            final LoggerContext newContext = CONTEXT_MAP.computeIfAbsent(name,
                     k -> new AtomicReference<>(new WeakReference<>(ctx))).get().get();
             if (newContext == ctx) {
                 ctx.addShutdownListener(this);

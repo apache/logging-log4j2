@@ -58,8 +58,8 @@ public class Log4j2EventListenerTest {
 
     @Test
     public void test() throws Exception {
-        AtomicInteger count = new AtomicInteger(0);
-       Source source = new Source(new File("test.java"));
+        final AtomicInteger count = new AtomicInteger(0);
+        final Source source = new Source(new File("test.java"));
         loggerContextRule.getLoggerContext().getConfiguration().getWatchManager()
                 .watch(source, new TestWatcher(count));
         publisher.publishEvent(new EnvironmentChangeEvent(new HashSet<>()));
@@ -70,7 +70,7 @@ public class Log4j2EventListenerTest {
 
         private final AtomicInteger count;
 
-        public TestWatcher(AtomicInteger count) {
+        public TestWatcher(final AtomicInteger count) {
             this.count = count;
         }
 
@@ -96,7 +96,7 @@ public class Log4j2EventListenerTest {
         }
 
         @Override
-        public void watching(Source source) {
+        public void watching(final Source source) {
 
         }
 
@@ -106,7 +106,7 @@ public class Log4j2EventListenerTest {
         }
 
         @Override
-        public Watcher newWatcher(Reconfigurable reconfigurable, List<ConfigurationListener> listeners, long lastModifiedMillis) {
+        public Watcher newWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners, final long lastModifiedMillis) {
             return this;
         }
     }

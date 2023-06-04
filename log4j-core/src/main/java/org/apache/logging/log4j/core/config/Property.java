@@ -90,7 +90,7 @@ public final class Property {
      * the {@link #getValue() value} is returned, otherwise the {@link #getRawValue() raw value} is evaluated
      * with the given substitutor.
      */
-    public String evaluate(StrSubstitutor substitutor) {
+    public String evaluate(final StrSubstitutor substitutor) {
         return valueNeedsLookup
                 // Unescape the raw value first, handling '$${ctx:foo}' -> '${ctx:foo}'
                 ? substitutor.replace(PropertiesPlugin.unescape(getRawValue()))

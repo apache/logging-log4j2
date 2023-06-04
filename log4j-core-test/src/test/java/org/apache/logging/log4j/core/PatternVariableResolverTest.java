@@ -45,11 +45,11 @@ public class PatternVariableResolverTest {
 
     @Test
     public void testFileName() {
-        Logger logger = context.getLogger(PatternVariableResolverTest.class);
+        final Logger logger = context.getLogger(PatternVariableResolverTest.class);
         logger.info("This is a test");
-        List<String> messages = listAppender.getMessages();
+        final List<String> messages = listAppender.getMessages();
         assertTrue("No messages returned", messages != null && messages.size() > 0);
-        String message = messages.get(0);
+        final String message = messages.get(0);
         System.out.println(message);
     }
 }

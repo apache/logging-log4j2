@@ -27,12 +27,12 @@ public abstract class TypeBasedParameterResolver<T> implements ParameterResolver
 
     private final Type supportedParameterType;
 
-    public TypeBasedParameterResolver(Type supportedParameterType) {
+    public TypeBasedParameterResolver(final Type supportedParameterType) {
         this.supportedParameterType = supportedParameterType;
     }
 
     @Override
-    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+    public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
         return this.supportedParameterType.equals(parameterContext.getParameter().getParameterizedType());
     }

@@ -62,9 +62,9 @@ public class JsonLayoutMillisTest {
     @Test
     public void testTimestamp() {
         logger.info("This is a test message");
-        List<String> message = app.getMessages();
+        final List<String> message = app.getMessages();
         assertTrue("No messages", message != null && message.size() > 0);
-        String json = message.get(0);
+        final String json = message.get(0);
         System.out.println(json);
         assertNotNull("No JSON message", json);
         assertTrue("No timestamp", json.contains("\"timeMillis\":"));

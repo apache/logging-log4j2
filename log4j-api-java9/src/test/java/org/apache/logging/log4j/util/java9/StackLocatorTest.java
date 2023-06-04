@@ -88,8 +88,8 @@ public class StackLocatorTest {
 
     @Test
     public void testLocateClass() {
-        ClassLocator locator = new ClassLocator();
-        Class<?> clazz = locator.locateClass();
+        final ClassLocator locator = new ClassLocator();
+        final Class<?> clazz = locator.locateClass();
         assertNotNull(clazz, "Could not locate class");
         assertEquals(this.getClass(), clazz, "Incorrect class");
     }

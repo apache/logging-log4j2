@@ -125,7 +125,7 @@ public final class PropertiesUtil {
      * Allows a PropertySource to be added after PropertiesUtil has been created.
      * @param propertySource the PropertySource to add.
      */
-    public void addPropertySource(PropertySource propertySource) {
+    public void addPropertySource(final PropertySource propertySource) {
         if (environment != null) {
             environment.addPropertySource(propertySource);
         }
@@ -189,7 +189,7 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
-    public Boolean getBooleanProperty(final String[] prefixes, String key, Supplier<Boolean> supplier) {
+    public Boolean getBooleanProperty(final String[] prefixes, final String key, final Supplier<Boolean> supplier) {
         for (String prefix : prefixes) {
             if (hasProperty(prefix + key)) {
                 return getBooleanProperty(prefix + key);
@@ -283,7 +283,7 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
-    public Integer getIntegerProperty(final String[] prefixes, String key, Supplier<Integer> supplier) {
+    public Integer getIntegerProperty(final String[] prefixes, final String key, final Supplier<Integer> supplier) {
         for (String prefix : prefixes) {
             if (hasProperty(prefix + key)) {
                 return getIntegerProperty(prefix + key, 0);
@@ -319,7 +319,7 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
-    public Long getLongProperty(final String[] prefixes, String key, Supplier<Long> supplier) {
+    public Long getLongProperty(final String[] prefixes, final String key, final Supplier<Long> supplier) {
         for (String prefix : prefixes) {
             if (hasProperty(prefix + key)) {
                 return getLongProperty(prefix + key, 0);
@@ -336,7 +336,7 @@ public final class PropertiesUtil {
      * @return The value of the String as a Duration or the default value, which may be null.
      * @since 2.13.0
      */
-    public Duration getDurationProperty(final String name, Duration defaultValue) {
+    public Duration getDurationProperty(final String name, final Duration defaultValue) {
         final String prop = getStringProperty(name);
         if (prop != null) {
             return TimeUnit.getDuration(prop);
@@ -353,7 +353,7 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
-    public Duration getDurationProperty(final String[] prefixes, String key, Supplier<Duration> supplier) {
+    public Duration getDurationProperty(final String[] prefixes, final String key, final Supplier<Duration> supplier) {
         for (String prefix : prefixes) {
             if (hasProperty(prefix + key)) {
                 return getDurationProperty(prefix + key, null);
@@ -371,9 +371,9 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
-    public String getStringProperty(final String[] prefixes, String key, Supplier<String> supplier) {
+    public String getStringProperty(final String[] prefixes, final String key, final Supplier<String> supplier) {
         for (String prefix : prefixes) {
-            String result = getStringProperty(prefix + key);
+            final String result = getStringProperty(prefix + key);
             if (result != null) {
                 return result;
             }
@@ -440,7 +440,7 @@ public final class PropertiesUtil {
      *
      * @since 2.10.0
      */
-    private static class Environment {
+    private static final class Environment {
 
         private final Set<PropertySource> sources = new ConcurrentSkipListSet<>(new PropertySource.Comparator());
         /**
@@ -450,7 +450,7 @@ public final class PropertiesUtil {
         private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
 
         private Environment(final PropertySource propertySource) {
-            PropertyFilePropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME, false);
+            final PropertyFilePropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME, false);
             try {
                 sysProps.forEach((key, value) -> {
                     if (System.getProperty(key) == null) {
@@ -472,7 +472,7 @@ public final class PropertiesUtil {
          * Allow a PropertySource to be added.
          * @param propertySource The PropertySource to add.
          */
-        public void addPropertySource(PropertySource propertySource) {
+        public void addPropertySource(final PropertySource propertySource) {
             sources.add(propertySource);
         }
 
@@ -534,7 +534,7 @@ public final class PropertiesUtil {
         }
 
         private boolean containsKey(final String key) {
-            List<CharSequence> tokens = PropertySource.Util.tokenize(key);
+            final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
             return literal.containsKey(key) ||
                    tokenized.containsKey(tokens) ||
                    sources.stream().anyMatch(s -> {
@@ -645,7 +645,7 @@ public final class PropertiesUtil {
         private final String[] descriptions;
         private final ChronoUnit timeUnit;
 
-        TimeUnit(String descriptions, ChronoUnit timeUnit) {
+        TimeUnit(final String descriptions, final ChronoUnit timeUnit) {
             this.descriptions = descriptions.split(",");
             this.timeUnit = timeUnit;
         }
@@ -654,8 +654,8 @@ public final class PropertiesUtil {
             return this.timeUnit;
         }
 
-        static Duration getDuration(String time) {
-            String value = time.trim();
+        static Duration getDuration(final String time) {
+            final String value = time.trim();
             TemporalUnit temporalUnit = ChronoUnit.MILLIS;
             long timeVal = 0;
             for (TimeUnit timeUnit : values()) {

@@ -26,7 +26,7 @@ public class Log4jSystemLoggerFinder extends System.LoggerFinder {
     private final Log4jSystemLoggerAdapter loggerAdapter = new Log4jSystemLoggerAdapter();
 
     @Override
-    public Logger getLogger(String name, Module module) {
+    public Logger getLogger(final String name, final Module module) {
         return loggerAdapter.getLogger(name);
     }
 }

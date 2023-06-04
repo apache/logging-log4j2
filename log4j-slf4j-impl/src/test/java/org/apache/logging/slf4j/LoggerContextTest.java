@@ -32,10 +32,10 @@ public class LoggerContextTest {
 
     @Test
     public void testCleanup() throws Exception {
-        Log4jLoggerFactory factory = (Log4jLoggerFactory) LoggerFactory.getILoggerFactory();
+        final Log4jLoggerFactory factory = (Log4jLoggerFactory) LoggerFactory.getILoggerFactory();
         factory.getLogger("test");
         Set<LoggerContext> set = factory.getLoggerContexts();
-        LoggerContext ctx1 = set.toArray(LoggerContext.EMPTY_ARRAY)[0];
+        final LoggerContext ctx1 = set.toArray(LoggerContext.EMPTY_ARRAY)[0];
         assertTrue("LoggerContext is not enabled for shutdown", ctx1 instanceof LifeCycle);
         ((LifeCycle) ctx1).stop();
         set = factory.getLoggerContexts();

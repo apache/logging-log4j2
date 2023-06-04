@@ -36,28 +36,28 @@ public class LoggerContextAnchorTest {
 
     @Test
     public void testLoggerFactoryLookupClass() {
-        String fqcn = getAnchorFqcn(() -> LoggerFactory.getLogger(LoggerContextAnchorTest.class));
+        final String fqcn = getAnchorFqcn(() -> LoggerFactory.getLogger(LoggerContextAnchorTest.class));
         assertEquals(getClass().getName(), fqcn);
     }
 
     @Test
     public void testLoggerFactoryLookupString() {
-        String fqcn = getAnchorFqcn(() -> LoggerFactory.getLogger("custom.logger"));
+        final String fqcn = getAnchorFqcn(() -> LoggerFactory.getLogger("custom.logger"));
         assertEquals(getClass().getName(), fqcn);
     }
 
     @Test
     public void testLoggerFactoryGetILoggerFactoryLookup() {
-        String fqcn = getAnchorFqcn(() -> LoggerFactory.getILoggerFactory().getLogger("custom.logger"));
+        final String fqcn = getAnchorFqcn(() -> LoggerFactory.getILoggerFactory().getLogger("custom.logger"));
         assertEquals(getClass().getName(), fqcn);
     }
 
-    private static String getAnchorFqcn(Runnable runnable) {
-        List<String> results = new CopyOnWriteArrayList<>();
-        StatusListener listener = new StatusListener() {
+    private static String getAnchorFqcn(final Runnable runnable) {
+        final List<String> results = new CopyOnWriteArrayList<>();
+        final StatusListener listener = new StatusListener() {
             @Override
-            public void log(StatusData data) {
-                String formattedMessage = data.getMessage().getFormattedMessage();
+            public void log(final StatusData data) {
+                final String formattedMessage = data.getMessage().getFormattedMessage();
                 if (formattedMessage.startsWith(PREFIX)) {
                     results.add(formattedMessage.substring(PREFIX.length()));
                 }
@@ -73,7 +73,7 @@ public class LoggerContextAnchorTest {
                 // nop
             }
         };
-        StatusLogger statusLogger = StatusLogger.getLogger();
+        final StatusLogger statusLogger = StatusLogger.getLogger();
         statusLogger.registerListener(listener);
         try {
             runnable.run();

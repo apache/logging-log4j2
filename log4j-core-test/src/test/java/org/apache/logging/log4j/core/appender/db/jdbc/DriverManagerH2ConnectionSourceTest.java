@@ -40,7 +40,7 @@ public class DriverManagerH2ConnectionSourceTest extends AbstractH2Test {
             .setProperties(properties)
             .build();
         // @formatter:on
-        try (Connection conn = source.getConnection()) {
+        try (final Connection conn = source.getConnection()) {
             Assert.assertFalse(conn.isClosed());
         }
     }
@@ -54,7 +54,7 @@ public class DriverManagerH2ConnectionSourceTest extends AbstractH2Test {
             .setPassword(JdbcH2TestHelper.PASSWORD.toCharArray())
             .build();
         // @formatter:on
-        try (Connection conn = source.getConnection()) {
+        try (final Connection conn = source.getConnection()) {
             Assert.assertFalse(conn.isClosed());
         }
     }

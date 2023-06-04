@@ -130,7 +130,7 @@ public final class EncodingPatternConverter extends LogEventPatternConverter {
                 }
             }
 
-            private String escapeChar(char c) {
+            private String escapeChar(final char c) {
                 switch (c) {
                     case CR:
                         return "\\r";

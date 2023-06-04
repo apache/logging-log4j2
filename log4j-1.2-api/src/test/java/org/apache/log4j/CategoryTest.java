@@ -58,8 +58,8 @@ public class CategoryTest {
 
     private static final String VERSION1_APPENDER_NAME = "Version1List";
     private static final String VERSION2_APPENDER_NAME = "List";
-    private static ListAppender appender = new ListAppender(VERSION2_APPENDER_NAME);
-    private static org.apache.log4j.ListAppender version1Appender = new org.apache.log4j.ListAppender();
+    private static final ListAppender appender = new ListAppender(VERSION2_APPENDER_NAME);
+    private static final org.apache.log4j.ListAppender version1Appender = new org.apache.log4j.ListAppender();
 
     @BeforeClass
     public static void setupClass() {
@@ -385,7 +385,7 @@ public class CategoryTest {
             assertTrue("appender is a v1 ListAppender", rootAppenders.get(0) instanceof org.apache.log4j.ListAppender);
             assertEquals("explicitly named appender", VERSION1_APPENDER_NAME,
                     rootLogger.getAppender(VERSION1_APPENDER_NAME).getName());
-            Appender v2ListAppender = rootLogger.getAppender(VERSION2_APPENDER_NAME);
+            final Appender v2ListAppender = rootLogger.getAppender(VERSION2_APPENDER_NAME);
             assertTrue("explicitly named appender", v2ListAppender instanceof AppenderWrapper);
             assertTrue("appender is a v2 ListAppender",
                     ((AppenderWrapper) v2ListAppender).getAppender() instanceof ListAppender);

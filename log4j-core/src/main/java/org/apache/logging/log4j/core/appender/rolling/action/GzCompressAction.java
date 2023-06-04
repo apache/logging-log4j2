@@ -158,7 +158,7 @@ public final class GzCompressAction extends AbstractAction {
 
     private static final class ConfigurableLevelGZIPOutputStream extends GZIPOutputStream {
 
-        ConfigurableLevelGZIPOutputStream(OutputStream out, int bufSize, int level) throws IOException {
+        ConfigurableLevelGZIPOutputStream(final OutputStream out, final int bufSize, final int level) throws IOException {
             super(out, bufSize);
             def.setLevel(level);
         }

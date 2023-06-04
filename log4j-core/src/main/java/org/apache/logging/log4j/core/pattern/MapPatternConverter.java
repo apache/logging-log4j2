@@ -53,7 +53,7 @@ public final class MapPatternConverter extends LogEventPatternConverter {
      *
      * @param options options, may be null.
      */
-    private MapPatternConverter(final String[] options, String... format) {
+    private MapPatternConverter(final String[] options, final String... format) {
         super(options != null && options.length > 0 ? "MAP{" + options[0] + '}' : "MAP", "map");
         key = options != null && options.length > 0 ? options[0] : null;
         this.format = format;

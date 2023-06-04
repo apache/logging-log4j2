@@ -106,7 +106,7 @@ public class CassandraRule extends ExternalResource {
         embeddedCassandra.cancel();
     }
 
-    private static class EmbeddedCassandra implements Cancellable {
+    private static final class EmbeddedCassandra implements Cancellable {
 
         private final CassandraDaemon daemon = CassandraDaemon.getInstanceForTesting();
         private final CountDownLatch latch;

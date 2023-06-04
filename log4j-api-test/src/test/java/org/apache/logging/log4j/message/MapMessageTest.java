@@ -174,17 +174,17 @@ public class MapMessageTest {
 
     @Test
     public void testJsonFormatterMaxDepthConformance() {
-        int depth = MapMessageJsonFormatter.MAX_DEPTH - 2;
-        String expectedJson = String
+        final int depth = MapMessageJsonFormatter.MAX_DEPTH - 2;
+        final String expectedJson = String
                 .format("{'key':%s1%s}",
                         Strings.repeat("[", depth),
                         Strings.repeat("]", depth))
                 .replace('\'', '"');
-        String actualJson = testJsonFormatterMaxDepth(depth);
+        final String actualJson = testJsonFormatterMaxDepth(depth);
         assertEquals(expectedJson, actualJson);
     }
 
-    public static String testJsonFormatterMaxDepth(int depth) {
+    public static String testJsonFormatterMaxDepth(final int depth) {
         List<Object> list = new LinkedList<>();
         list.add(1);
         while (--depth > 0) {

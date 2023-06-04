@@ -63,7 +63,7 @@ public class PropertySetter {
      *
      * @param obj the object for which to set properties
      */
-    public PropertySetter(Object obj) {
+    public PropertySetter(final Object obj) {
         this.obj = obj;
     }
 
@@ -76,7 +76,7 @@ public class PropertySetter {
      * @param properties A java.util.Properties containing keys and values.
      * @param prefix     Only keys having the specified prefix will be set.
      */
-    public static void setProperties(Object obj, Properties properties, String prefix) {
+    public static void setProperties(final Object obj, final Properties properties, final String prefix) {
         new PropertySetter(obj).setProperties(properties, prefix);
     }
 
@@ -86,7 +86,7 @@ public class PropertySetter {
      */
     protected void introspect() {
         try {
-            BeanInfo bi = Introspector.getBeanInfo(obj.getClass());
+            final BeanInfo bi = Introspector.getBeanInfo(obj.getClass());
             props = bi.getPropertyDescriptors();
         } catch (IntrospectionException ex) {
             LOGGER.error("Failed to introspect {}: {}", obj, ex.getMessage());
@@ -100,8 +100,8 @@ public class PropertySetter {
      * @param properties The properties.
      * @param prefix The prefix of the properties to use.
      */
-    public void setProperties(Properties properties, String prefix) {
-        int len = prefix.length();
+    public void setProperties(final Properties properties, final String prefix) {
+        final int len = prefix.length();
 
         for (String key : properties.stringPropertyNames()) {
 
@@ -114,7 +114,7 @@ public class PropertySetter {
                     continue;
                 }
 
-                String value = OptionConverter.findAndSubst(key, properties);
+                final String value = OptionConverter.findAndSubst(key, properties);
                 key = key.substring(len);
                 if (("layout".equals(key) || "errorhandler".equals(key)) && obj instanceof Appender) {
                     continue;
@@ -122,15 +122,15 @@ public class PropertySetter {
                 //
                 //   if the property type is an OptionHandler
                 //     (for example, triggeringPolicy of org.apache.log4j.rolling.RollingFileAppender)
-                PropertyDescriptor prop = getPropertyDescriptor(Introspector.decapitalize(key));
+                final PropertyDescriptor prop = getPropertyDescriptor(Introspector.decapitalize(key));
                 if (prop != null
                         && OptionHandler.class.isAssignableFrom(prop.getPropertyType())
                         && prop.getWriteMethod() != null) {
-                    OptionHandler opt = (OptionHandler)
-                            OptionConverter.instantiateByKey(properties, prefix + key,
-                                    prop.getPropertyType(),
-                                    null);
-                    PropertySetter setter = new PropertySetter(opt);
+                    final OptionHandler opt = (OptionHandler)
+                    OptionConverter.instantiateByKey(properties, prefix + key,
+                    prop.getPropertyType(),
+                    null);
+                    final PropertySetter setter = new PropertySetter(opt);
                     setter.setProperties(properties, prefix + key + ".");
                     try {
                         prop.getWriteMethod().invoke(this.obj, opt);
@@ -173,7 +173,7 @@ public class PropertySetter {
         }
 
         name = Introspector.decapitalize(name);
-        PropertyDescriptor prop = getPropertyDescriptor(name);
+        final PropertyDescriptor prop = getPropertyDescriptor(name);
 
         //LOGGER.debug("---------Key: "+name+", type="+prop.getPropertyType());
 
@@ -200,11 +200,11 @@ public class PropertySetter {
      */
     public void setProperty(PropertyDescriptor prop, String name, String value)
             throws PropertySetterException {
-        Method setter = prop.getWriteMethod();
+        final Method setter = prop.getWriteMethod();
         if (setter == null) {
             throw new PropertySetterException("No setter for property [" + name + "].");
         }
-        Class<?>[] paramTypes = setter.getParameterTypes();
+        final Class<?>[] paramTypes = setter.getParameterTypes();
         if (paramTypes.length != 1) {
             throw new PropertySetterException("#params for setter != 1");
         }
@@ -242,12 +242,12 @@ public class PropertySetter {
      * @param type The type of the value to convert to.
      * @return The result of the conversion.
      */
-    protected Object convertArg(String val, Class<?> type) {
+    protected Object convertArg(final String val, final Class<?> type) {
         if (val == null) {
             return null;
         }
 
-        String v = val.trim();
+        final String v = val.trim();
         if (String.class.isAssignableFrom(type)) {
             return val;
         } else if (Integer.TYPE.isAssignableFrom(type)) {

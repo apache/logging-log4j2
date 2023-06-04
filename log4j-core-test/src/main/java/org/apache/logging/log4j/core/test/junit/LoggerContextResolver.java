@@ -106,7 +106,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
 
     @Override
     public LoggerContext resolveParameter(
-            ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+            final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
         return getParameterLoggerContext(parameterContext, extensionContext);
     }
 
@@ -118,7 +118,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         return context.getStore(ExtensionContext.Namespace.create(LoggerContext.class, context.getRequiredTestInstance()));
     }
 
-    static LoggerContext getParameterLoggerContext(ParameterContext parameterContext, ExtensionContext extensionContext) {
+    static LoggerContext getParameterLoggerContext(final ParameterContext parameterContext, final ExtensionContext extensionContext) {
         if (parameterContext.getDeclaringExecutable() instanceof Method) {
             final LoggerContextAccessor accessor =
                     getTestInstanceStore(extensionContext).get(LoggerContext.class, LoggerContextAccessor.class);
@@ -128,7 +128,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         return getTestClassStore(extensionContext).get(LoggerContext.class, LoggerContextAccessor.class).getLoggerContext();
     }
 
-    private static class LoggerContextConfig implements AutoCloseable, LoggerContextAccessor {
+    private static final class LoggerContextConfig implements AutoCloseable, LoggerContextAccessor {
         private final LoggerContext context;
         private final ReconfigurationPolicy reconfigurationPolicy;
         private final long shutdownTimeout;

@@ -148,7 +148,7 @@ public class DeletingVisitorTest {
     public void testIOException() {
         final DeletingVisitorHelper visitor =
                 new DeletingVisitorHelper(Paths.get("/a/b/c"), Collections.emptyList(), true);
-        IOException exception = new IOException();
+        final IOException exception = new IOException();
         try {
             visitor.visitFileFailed(Paths.get("doesNotExist"), exception);
             fail();

@@ -33,7 +33,7 @@ import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 public class SimpleLayoutBuilder implements LayoutBuilder {
 
     @Override
-    public Layout parse(Element layoutElement, XmlConfiguration config) {
+    public Layout parse(final Element layoutElement, final XmlConfiguration config) {
         return new LayoutWrapper(PatternLayout.newBuilder()
                 .withPattern("%v1Level - %m%n")
                 .withConfiguration(config)
@@ -41,7 +41,7 @@ public class SimpleLayoutBuilder implements LayoutBuilder {
     }
 
     @Override
-    public Layout parse(PropertiesConfiguration config) {
+    public Layout parse(final PropertiesConfiguration config) {
         return new LayoutWrapper(PatternLayout.newBuilder()
                 .withPattern("%v1Level - %m%n")
                 .withConfiguration(config)

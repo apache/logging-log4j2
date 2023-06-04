@@ -51,7 +51,7 @@ public class DockerLookup extends AbstractLookup {
     public DockerLookup() {
         String baseUri = System.getenv(DOCKER_URI);
         if (baseUri == null) {
-            PropertiesUtil props = PropertiesUtil.getProperties();
+            final PropertiesUtil props = PropertiesUtil.getProperties();
             baseUri = props.getStringProperty(DOCKER_URI);
         }
         if (baseUri == null) {
@@ -61,15 +61,16 @@ public class DockerLookup extends AbstractLookup {
         }
         Container current = null;
         try {
-            URL url= new URL(baseUri + "/containers/json");
+            final URL url = new URL(baseUri + "/containers/json");
             if (url.getProtocol().equals(HTTP)) {
-                String macAddr = NetUtils.getMacAddressString();
-                ObjectMapper objectMapper = new ObjectMapper();
-                List<Container> containerList = objectMapper.readValue(url, new TypeReference<List<Container>>(){});
+                final String macAddr = NetUtils.getMacAddressString();
+                final ObjectMapper objectMapper = new ObjectMapper();
+                final List<Container> containerList = objectMapper.readValue(url, new TypeReference<List<Container>>(){
+                });
 
                 for (Container container : containerList) {
                     if (macAddr != null && container.getNetworkSettings() != null) {
-                        Map<String, Network> networks = container.getNetworkSettings().getNetworks();
+                        final Map<String, Network> networks = container.getNetworkSettings().getNetworks();
                         if (networks != null) {
                             for (Network network: networks.values()) {
                                 if (macAddr.equals(network.getMacAddress())) {
@@ -94,7 +95,7 @@ public class DockerLookup extends AbstractLookup {
     }
 
     @Override
-    public String lookup(LogEvent event, String key) {
+    public String lookup(final LogEvent event, final String key) {
         if (container == null) {
             return null;
         }

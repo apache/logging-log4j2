@@ -38,7 +38,7 @@ import org.apache.logging.log4j.core.script.AbstractScript;
 import org.apache.logging.log4j.core.script.ScriptManager;
 
 @Plugin(name = "ScriptAppenderSelector", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
-public class ScriptAppenderSelector extends AbstractAppender {
+public final class ScriptAppenderSelector extends AbstractAppender {
 
     /**
      * Builds an appender.

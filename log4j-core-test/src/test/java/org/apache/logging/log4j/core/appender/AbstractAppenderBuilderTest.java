@@ -26,9 +26,9 @@ public class AbstractAppenderBuilderTest {
 
     @Test
     public void testDefaultLayoutLeak() {
-        int expected = AbstractManager.getManagerCount();
+        final int expected = AbstractManager.getManagerCount();
         final Configuration configuration = new DefaultConfiguration();
-        ConsoleAppender appender = ConsoleAppender.newBuilder().setConfiguration(configuration).setName("test").build();
+        final ConsoleAppender appender = ConsoleAppender.newBuilder().setConfiguration(configuration).setName("test").build();
         configuration.addAppender(appender);
         configuration.start();
         configuration.stop();

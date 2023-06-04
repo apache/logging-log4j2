@@ -273,7 +273,7 @@ public class Timer implements Serializable, StringBuilderFormattable
         int result;
         result = (name != null ? name.hashCode() : 0);
         result = 29 * result + (status != null ? status.hashCode() : 0);
-        long time = startTime.get();
+        final long time = startTime.get();
         result = 29 * result + (int) (time ^ (time >>> 32));
         result = 29 * result + (int) (elapsedTime ^ (elapsedTime >>> 32));
         return result;

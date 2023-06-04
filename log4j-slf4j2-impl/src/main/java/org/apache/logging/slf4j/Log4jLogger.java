@@ -410,13 +410,13 @@ public class Log4jLogger implements LocationAwareLogger, Serializable {
     }
 
     @Override
-    public LoggingEventBuilder makeLoggingEventBuilder(org.slf4j.event.Level level) {
+    public LoggingEventBuilder makeLoggingEventBuilder(final org.slf4j.event.Level level) {
         final Level log4jLevel = getLevel(level.toInt());
         return new Log4jEventBuilder(markerFactory, logger, log4jLevel);
     }
 
     @Override
-    public boolean isEnabledForLevel(org.slf4j.event.Level level) {
+    public boolean isEnabledForLevel(final org.slf4j.event.Level level) {
         return logger.isEnabled(getLevel(level.toInt()));
     }
 }

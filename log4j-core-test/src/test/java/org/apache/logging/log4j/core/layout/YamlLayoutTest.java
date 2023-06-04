@@ -320,13 +320,13 @@ public class YamlLayoutTest {
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        JsonNode node = mapper.readTree(str);
+        final JsonNode node = mapper.readTree(str);
         assertThat(getJSONChildNodeValueAsText(node, "KEY1"), equalTo("VALUE1"));
         assertThat(getJSONChildNodeValueAsText(node, "KEY2"), equalTo(new JavaLookup().getRuntime()));
     }
 
     private String getJSONChildNodeValueAsText(final JsonNode parentNode, final String key) {
-        JsonNode childNode = parentNode.get(key);
+        final JsonNode childNode = parentNode.get(key);
         if (childNode != null) {
             return childNode.asText();
         } else {

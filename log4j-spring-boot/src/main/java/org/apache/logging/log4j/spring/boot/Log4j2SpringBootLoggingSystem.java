@@ -71,10 +71,10 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     public static final String ENVIRONMENT_KEY = "SpringEnvironment";
     private static final String HTTPS = "https";
     private static final String OVERRIDE_PARAM = "override";
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int PRECEDENCE = 0;
 
-    public Log4j2SpringBootLoggingSystem(ClassLoader loader) {
+    public Log4j2SpringBootLoggingSystem(final ClassLoader loader) {
         super(loader);
     }
 
@@ -87,8 +87,8 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
      * @param logFile the log file.
      */
     @Override
-    public void initialize(LoggingInitializationContext initializationContext, String configLocation, LogFile logFile) {
-        Environment environment = initializationContext.getEnvironment();
+    public void initialize(final LoggingInitializationContext initializationContext, final String configLocation, final LogFile logFile) {
+        final Environment environment = initializationContext.getEnvironment();
         PropertiesUtil.getProperties().addPropertySource(new SpringPropertySource(environment));
         getLoggerContext().putObjectIfAbsent(ENVIRONMENT_KEY, environment);
         super.initialize(initializationContext, configLocation, logFile);
@@ -97,10 +97,10 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     @Override
     protected String[] getStandardConfigLocations() {
         String[] locations = super.getStandardConfigLocations();
-        PropertiesUtil props = new PropertiesUtil(new Properties());
-        String location = props.getStringProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        final PropertiesUtil props = new PropertiesUtil(new Properties());
+        final String location = props.getStringProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
         if (location != null) {
-            List<String> list = new ArrayList<>(Arrays.asList(super.getStandardConfigLocations()));
+            final List<String> list = new ArrayList<>(Arrays.asList(super.getStandardConfigLocations()));
             list.add(location);
             locations = list.toArray(Strings.EMPTY_ARRAY);
         }
@@ -108,7 +108,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     }
 
     @Override
-    protected void loadDefaults(LoggingInitializationContext initializationContext, LogFile logFile) {
+    protected void loadDefaults(final LoggingInitializationContext initializationContext, final LogFile logFile) {
         if (logFile != null) {
             this.loadConfiguration(this.getBootPackagedConfigFile("log4j2-file.xml"), logFile);
         } else {
@@ -116,7 +116,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
         }
     }
 
-    private String getBootPackagedConfigFile(String fileName) {
+    private String getBootPackagedConfigFile(final String fileName) {
         String defaultPath = ClassUtils.getPackageName(Log4J2LoggingSystem.class);
         defaultPath = defaultPath.replace('.', '/');
         defaultPath = defaultPath + "/" + fileName;
@@ -131,7 +131,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
      * @param logFile log file configuration
      */
     @Override
-    protected void loadConfiguration(String location, LogFile logFile) {
+    protected void loadConfiguration(final String location, final LogFile logFile) {
         loadConfiguration(location, logFile, Collections.emptyList());
     }
 
@@ -144,11 +144,11 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
      * @param overrides Any override files.
      */
     @Override
-    protected void loadConfiguration(String location, LogFile logFile, List<String> overrides) {
+    protected void loadConfiguration(final String location, final LogFile logFile, final List<String> overrides) {
         Assert.notNull(location, "Location must not be null");
         try {
-            LoggerContext ctx = getLoggerContext();
-            List<String> locations = parseConfigLocations(location);
+            final LoggerContext ctx = getLoggerContext();
+            final List<String> locations = parseConfigLocations(location);
             if (overrides != null) {
                 locations.addAll(overrides);
             }
@@ -201,7 +201,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
         super.cleanUp();
     }
 
-    private List<String> parseConfigLocations(String configLocations) {
+    private List<String> parseConfigLocations(final String configLocations) {
         final String[] uris = configLocations.split("\\?");
         final List<String> locations = new ArrayList<>();
         locations.add(uris[0]);
@@ -228,14 +228,14 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
         return locations;
     }
 
-    private ConfigurationSource getConfigurationSource(URL url) throws IOException, URISyntaxException {
-        AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
-        SslConfiguration sslConfiguration = url.getProtocol().equals(HTTPS)
+    private ConfigurationSource getConfigurationSource(final URL url) throws IOException, URISyntaxException {
+        final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
+        final SslConfiguration sslConfiguration = url.getProtocol().equals(HTTPS)
                 ? SslConfigurationFactory.getSslConfiguration() : null;
-        URLConnection urlConnection = UrlConnectionFactory.createConnection(url, 0, sslConfiguration,
+        final URLConnection urlConnection = UrlConnectionFactory.createConnection(url, 0, sslConfiguration,
                 provider);
 
-        File file = FileUtils.fileFromUri(url.toURI());
+        final File file = FileUtils.fileFromUri(url.toURI());
         try {
             if (file != null) {
                 return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
@@ -255,7 +255,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     public static class Factory implements LoggingSystemFactory {
 
         @Override
-        public LoggingSystem getLoggingSystem(ClassLoader classLoader) {
+        public LoggingSystem getLoggingSystem(final ClassLoader classLoader) {
             if (PropertiesUtil.getProperties().getBooleanProperty(LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM)) {
                 return null;
             }

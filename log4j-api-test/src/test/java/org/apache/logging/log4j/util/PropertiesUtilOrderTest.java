@@ -52,18 +52,18 @@ public class PropertiesUtilOrderTest {
         }
 
         @Override
-        public CharSequence getNormalForm(Iterable<? extends CharSequence> tokens) {
+        public CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
             final CharSequence camelCase = PropertySource.Util.joinAsCamelCase(tokens);
             return camelCase.length() > 0 ? "log4j2." + camelCase : null;
         }
 
         @Override
-        public String getProperty(String key) {
+        public String getProperty(final String key) {
             return props.getProperty(key);
         }
 
         @Override
-        public boolean containsProperty(String key) {
+        public boolean containsProperty(final String key) {
             return getProperty(key) != null;
         }
 
@@ -120,7 +120,7 @@ public class PropertiesUtilOrderTest {
     }
 
     @Test
-    public void testOrderOfNormalizedProperties(EnvironmentVariables env, SystemProperties sysProps) {
+    public void testOrderOfNormalizedProperties(final EnvironmentVariables env, final SystemProperties sysProps) {
         properties.remove("log4j2.normalizedProperty");
         properties.remove("LOG4J_normalized.property");
         final PropertiesUtil util = new PropertiesUtil(properties);
@@ -153,7 +153,7 @@ public class PropertiesUtilOrderTest {
     }
 
     @Test
-    public void testLegacySystemPropertyHasHigherPriorityThanEnv(EnvironmentVariables env, SystemProperties sysProps) {
+    public void testLegacySystemPropertyHasHigherPriorityThanEnv(final EnvironmentVariables env, final SystemProperties sysProps) {
         env.set("LOG4J_CONFIGURATION_FILE", "env");
         final PropertiesUtil util = new PropertiesUtil(properties);
 
@@ -172,7 +172,7 @@ public class PropertiesUtilOrderTest {
     }
 
     @Test
-    public void testHighPriorityNonEnumerableSource(SystemProperties sysProps) {
+    public void testHighPriorityNonEnumerableSource(final SystemProperties sysProps) {
         // In both datasources
         assertNotNull(properties.getProperty("log4j2.normalizedProperty"));
         assertNotNull(properties.getProperty("log4j.onlyLegacy"));
@@ -209,7 +209,7 @@ public class PropertiesUtilOrderTest {
      * @param sysProps
      */
     @Test
-    public void testNullChecks(SystemProperties sysProps) {
+    public void testNullChecks(final SystemProperties sysProps) {
         sysProps.set("log4j2.someProperty", "sysProps");
         sysProps.set("Log4jLegacyProperty", "sysProps");
         final PropertiesUtil util = new PropertiesUtil(new NullPropertySource());

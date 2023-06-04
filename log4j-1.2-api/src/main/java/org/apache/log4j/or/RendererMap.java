@@ -42,15 +42,15 @@ public class RendererMap {
     /**
      * Add a renderer to a hierarchy passed as parameter.
      */
-    static public void addRenderer(RendererSupport repository, String renderedClassName, String renderingClassName) {
+    static public void addRenderer(final RendererSupport repository, final String renderedClassName, final String renderingClassName) {
         StatusLogger.getLogger().debug("Rendering class: [" + renderingClassName + "], Rendered class: [" + renderedClassName + "].");
-        ObjectRenderer renderer = (ObjectRenderer) OptionConverter.instantiateByClassName(renderingClassName, ObjectRenderer.class, null);
+        final ObjectRenderer renderer = (ObjectRenderer) OptionConverter.instantiateByClassName(renderingClassName, ObjectRenderer.class, null);
         if (renderer == null) {
             StatusLogger.getLogger().error("Could not instantiate renderer [" + renderingClassName + "].");
             return;
         }
         try {
-            Class renderedClass = Loader.loadClass(renderedClassName);
+            final Class renderedClass = Loader.loadClass(renderedClassName);
             repository.setRenderer(renderedClass, renderer);
         } catch (ClassNotFoundException e) {
             StatusLogger.getLogger().error("Could not find class [" + renderedClassName + "].", e);
@@ -62,7 +62,7 @@ public class RendererMap {
      * {@link #get(Class)} method. Once a renderer is found, it is applied on the object <code>o</code> and the result is
      * returned as a {@link String}.
      */
-    public String findAndRender(Object o) {
+    public String findAndRender(final Object o) {
         if (o == null)
             return null;
         else
@@ -72,7 +72,7 @@ public class RendererMap {
     /**
      * Syntactic sugar method that calls {@link #get(Class)} with the class of the object parameter.
      */
-    public ObjectRenderer get(Object o) {
+    public ObjectRenderer get(final Object o) {
         if (o == null)
             return null;
         else
@@ -129,7 +129,7 @@ public class RendererMap {
      * vast majority of circumstances.
      *
      */
-    public ObjectRenderer get(Class clazz) {
+    public ObjectRenderer get(final Class clazz) {
         // System.out.println("\nget: "+clazz);
         ObjectRenderer r = null;
         for (Class c = clazz; c != null; c = c.getSuperclass()) {
@@ -152,7 +152,7 @@ public class RendererMap {
         if (r != null) {
             return r;
         }
-        Class[] ia = c.getInterfaces();
+        final Class[] ia = c.getInterfaces();
         for (int i = 0; i < ia.length; i++) {
             r = searchInterfaces(ia[i]);
             if (r != null)
@@ -172,7 +172,7 @@ public class RendererMap {
     /**
      * Register an {@link ObjectRenderer} for <code>clazz</code>.
      */
-    public void put(Class clazz, ObjectRenderer or) {
+    public void put(final Class clazz, final ObjectRenderer or) {
         map.put(clazz, or);
     }
 }

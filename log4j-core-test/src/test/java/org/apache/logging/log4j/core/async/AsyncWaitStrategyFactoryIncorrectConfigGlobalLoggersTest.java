@@ -53,11 +53,11 @@ public class AsyncWaitStrategyFactoryIncorrectConfigGlobalLoggersTest {
         final LoggerContext context = (LoggerContext) LogManager.getContext(false);
         assertThat("context is AsyncLoggerContext", context instanceof AsyncLoggerContext);
 
-        AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
+        final AsyncWaitStrategyFactory asyncWaitStrategyFactory = context.getConfiguration().getAsyncWaitStrategyFactory();
         assertNull(asyncWaitStrategyFactory);
 
-        AsyncLogger logger = (AsyncLogger) context.getRootLogger();
-        AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
+        final AsyncLogger logger = (AsyncLogger) context.getRootLogger();
+        final AsyncLoggerDisruptor delegate = logger.getAsyncLoggerDisruptor();
         assertEquals(TimeoutBlockingWaitStrategy.class, delegate.getWaitStrategy().getClass());
         assertThat("waitstrategy is TimeoutBlockingWaitStrategy", delegate.getWaitStrategy() instanceof TimeoutBlockingWaitStrategy);
     }

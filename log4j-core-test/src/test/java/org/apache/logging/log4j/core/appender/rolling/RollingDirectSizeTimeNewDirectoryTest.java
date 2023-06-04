@@ -50,7 +50,7 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
     @Rule
     public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
 
-    private Map<String, AtomicInteger> rolloverFiles = new HashMap<>();
+    private final Map<String, AtomicInteger> rolloverFiles = new HashMap<>();
 
     @Test
     public void streamClosedError() throws Exception {
@@ -67,20 +67,20 @@ public class RollingDirectSizeTimeNewDirectoryTest implements RolloverListener {
         }
 
         assertTrue("A time based rollover did not occur", rolloverFiles.size() > 1);
-        int maxFiles = Collections.max(rolloverFiles.values(), Comparator.comparing(AtomicInteger::get)).get();
+        final int maxFiles = Collections.max(rolloverFiles.values(), Comparator.comparing(AtomicInteger::get)).get();
         assertTrue("No size based rollovers occurred", maxFiles > 1);
     }
 
     @Override
-    public void rolloverTriggered(String fileName) {
+    public void rolloverTriggered(final String fileName) {
 
     }
 
     @Override
-    public void rolloverComplete(String fileName) {
-        File file = new File(fileName);
-        String logDir = file.getParentFile().getName();
-        AtomicInteger fileCount = rolloverFiles.computeIfAbsent(logDir, k -> new AtomicInteger(0));
+    public void rolloverComplete(final String fileName) {
+        final File file = new File(fileName);
+        final String logDir = file.getParentFile().getName();
+        final AtomicInteger fileCount = rolloverFiles.computeIfAbsent(logDir, k -> new AtomicInteger(0));
         fileCount.incrementAndGet();
     }
 }

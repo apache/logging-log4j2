@@ -57,7 +57,7 @@ public class JdbcAppenderColumnMappingPatternTest extends AbstractH2Test {
 
     @Test
     public void test() throws Exception {
-        try (Connection connection = jdbcRule.getConnection()) {
+        try (final Connection connection = jdbcRule.getConnection()) {
             final Error exception = new Error("This is a test.");
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             try (final PrintWriter writer = new PrintWriter(outputStream)) {

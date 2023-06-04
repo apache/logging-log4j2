@@ -55,7 +55,7 @@ class AsyncAppenderExceptionHandlingTest {
             FailOnceAppender.ThrowableClassName.THROWABLE,
             FailOnceAppender.ThrowableClassName.THREAD_DEATH
     })
-    void AsyncAppender_should_not_stop_on_appender_failures(String throwableClassName) {
+    void AsyncAppender_should_not_stop_on_appender_failures(final String throwableClassName) {
 
         // Create the logger.
         final String throwableClassNamePropertyName = "throwableClassName";
@@ -72,8 +72,8 @@ class AsyncAppenderExceptionHandlingTest {
             logger.info(lastLogMessage);
 
             // Stop the AsyncAppender to drain the queued events.
-            Configuration configuration = loggerContext.getConfiguration();
-            AsyncAppender asyncAppender = configuration.getAppender("Async");
+            final Configuration configuration = loggerContext.getConfiguration();
+            final AsyncAppender asyncAppender = configuration.getAppender("Async");
             Assertions.assertNotNull(asyncAppender, "couldn't obtain the FailOnceAppender");
             asyncAppender.stop();
 

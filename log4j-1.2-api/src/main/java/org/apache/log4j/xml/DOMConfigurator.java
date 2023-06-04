@@ -94,7 +94,7 @@ public class DOMConfigurator {
     }
 
     public static void configureAndWatch(final String fileName, final long delay) {
-        XMLWatchdog xdog = new XMLWatchdog(fileName);
+        final XMLWatchdog xdog = new XMLWatchdog(fileName);
         xdog.setDelay(delay);
         xdog.start();
     }
@@ -146,7 +146,7 @@ public class DOMConfigurator {
     public void doConfigure(final URL url, final LoggerRepository repository) {
         try {
             final URLConnection connection = UrlConnectionFactory.createConnection(url);
-            try (InputStream inputStream = connection.getInputStream()) {
+            try (final InputStream inputStream = connection.getInputStream()) {
                 doConfigure(new ConfigurationSource(inputStream, url));
             }
         } catch (final IOException e) {

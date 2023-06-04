@@ -45,7 +45,7 @@ public class DefaultObjectInputFilter implements ObjectInputFilter {
         delegate = null;
     }
 
-    public DefaultObjectInputFilter(ObjectInputFilter filter) {
+    public DefaultObjectInputFilter(final ObjectInputFilter filter) {
         delegate = filter;
     }
 
@@ -54,13 +54,13 @@ public class DefaultObjectInputFilter implements ObjectInputFilter {
      * @param filter The ObjectInputFilter.
      * @return The DefaultObjectInputFilter.
      */
-    public static DefaultObjectInputFilter newInstance(ObjectInputFilter filter) {
+    public static DefaultObjectInputFilter newInstance(final ObjectInputFilter filter) {
         return new DefaultObjectInputFilter(filter);
     }
 
 
     @Override
-    public Status checkInput(FilterInfo filterInfo) {
+    public Status checkInput(final FilterInfo filterInfo) {
         Status status = null;
         if (delegate != null) {
             status = delegate.checkInput(filterInfo);
@@ -68,7 +68,7 @@ public class DefaultObjectInputFilter implements ObjectInputFilter {
                 return status;
             }
         }
-        ObjectInputFilter serialFilter = ObjectInputFilter.Config.getSerialFilter();
+        final ObjectInputFilter serialFilter = ObjectInputFilter.Config.getSerialFilter();
         if (serialFilter != null) {
             status = serialFilter.checkInput(filterInfo);
             if (status != Status.UNDECIDED) {
@@ -77,7 +77,7 @@ public class DefaultObjectInputFilter implements ObjectInputFilter {
             }
         }
         if (filterInfo.serialClass() != null) {
-            String name = filterInfo.serialClass().getName();
+            final String name = filterInfo.serialClass().getName();
             if (isAllowedByDefault(name) || isRequiredPackage(name)) {
                 return Status.ALLOWED;
             }

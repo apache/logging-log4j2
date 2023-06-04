@@ -59,7 +59,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 @Plugin(name = "MutableThreadContextMapFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 @PluginAliases("MutableContextMapFilter")
 @PerformanceSensitive("allocation")
-public class MutableThreadContextMapFilter extends AbstractFilter {
+public final class MutableThreadContextMapFilter extends AbstractFilter {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -94,12 +94,12 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
     }
 
     @Override
-    public boolean stop(long timeout, TimeUnit timeUnit) {
+    public boolean stop(final long timeout, final TimeUnit timeUnit) {
         future.cancel(true);
         return super.stop(timeout, timeUnit);
     }
 
-    public void registerListener(FilterConfigUpdateListener listener) {
+    public void registerListener(final FilterConfigUpdateListener listener) {
         listeners.add(listener);
     }
 
@@ -109,89 +109,89 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
     }
 
     @Override
-    public Result filter(LogEvent event) {
+    public Result filter(final LogEvent event) {
         return filter.filter(event);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Message msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Message msg, final Throwable t) {
         return filter.filter(logger, level, marker, msg, t);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Object msg, Throwable t) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final Object msg, final Throwable t) {
         return filter.filter(logger, level, marker, msg, t);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object... params) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object... params) {
         return filter.filter(logger, level, marker, msg, params);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object p0) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object p0) {
         return filter.filter(logger, level, marker, msg, p0);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object p0,
-        Object p1) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object p0,
+        final Object p1) {
         return filter.filter(logger, level, marker, msg, p0, p1);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object p0,
-        Object p1,
-        Object p2) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object p0,
+        final Object p1,
+        final Object p2) {
         return filter.filter(logger, level, marker, msg, p0, p1, p2);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object p0,
-        Object p1,
-        Object p2, Object p3) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object p0,
+        final Object p1,
+        final Object p2, final Object p3) {
         return filter.filter(logger, level, marker, msg, p0, p1, p2, p3);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object p0,
-        Object p1,
-        Object p2, Object p3, Object p4) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object p0,
+        final Object p1,
+        final Object p2, final Object p3, final Object p4) {
         return filter.filter(logger, level, marker, msg, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object p0,
-        Object p1,
-        Object p2, Object p3, Object p4, Object p5) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object p0,
+        final Object p1,
+        final Object p2, final Object p3, final Object p4, final Object p5) {
         return filter.filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object p0,
-        Object p1,
-        Object p2, Object p3, Object p4, Object p5, Object p6) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object p0,
+        final Object p1,
+        final Object p2, final Object p3, final Object p4, final Object p5, final Object p6) {
         return filter.filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object p0,
-        Object p1,
-        Object p2, Object p3, Object p4, Object p5, Object p6, Object p7) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object p0,
+        final Object p1,
+        final Object p2, final Object p3, final Object p4, final Object p5, final Object p6, final Object p7) {
         return filter.filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object p0,
-        Object p1,
-        Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object p0,
+        final Object p1,
+        final Object p2, final Object p3, final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
         return filter.filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String msg, Object p0,
-        Object p1,
-        Object p2, Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9) {
+    public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object p0,
+        final Object p1,
+        final Object p2, final Object p3, final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
         return filter.filter(logger, level, marker, msg, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -248,7 +248,7 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
                     ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
             Filter filter;
             if (pollInterval <= 0) {
-                ConfigResult result = getConfig(source, authorizationProvider);
+                final ConfigResult result = getConfig(source, authorizationProvider);
                 if (result.status == Status.SUCCESS) {
                     if (result.pairs.length > 0) {
                         filter = ThreadContextMapFilter.createFilter(result.pairs, "or",

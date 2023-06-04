@@ -246,7 +246,7 @@ public class PropertyConfiguratorTest {
     @Test
     public void testBadUnicodeEscape() throws IOException {
         final String fileName = "target/badescape.properties";
-        try (FileWriter writer = new FileWriter(fileName)) {
+        try (final FileWriter writer = new FileWriter(fileName)) {
             writer.write("log4j.rootLogger=\\uXX41");
         }
         PropertyConfigurator.configure(fileName);
@@ -264,7 +264,7 @@ public class PropertyConfiguratorTest {
     public void testInputStream() throws IOException {
         final Path file = Paths.get(FILTER1_PROPERTIES);
         assertTrue(Files.exists(file));
-        try (InputStream inputStream = Files.newInputStream(file)) {
+        try (final InputStream inputStream = Files.newInputStream(file)) {
             PropertyConfigurator.configure(inputStream);
         }
         this.validateNested();
@@ -281,7 +281,7 @@ public class PropertyConfiguratorTest {
         final File dir = new File("output");
         dir.mkdirs();
         final File file = new File("output/properties.jar");
-        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(file))) {
+        try (final ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(file))) {
             zos.putNextEntry(new ZipEntry(LogManager.DEFAULT_CONFIGURATION_FILE));
             zos.write("log4j.rootLogger=debug".getBytes());
             zos.closeEntry();
@@ -380,7 +380,7 @@ public class PropertyConfiguratorTest {
     @Test
     public void testURL() throws IOException {
         final File file = new File("target/unclosed.properties");
-        try (FileWriter writer = new FileWriter(file)) {
+        try (final FileWriter writer = new FileWriter(file)) {
             writer.write("log4j.rootLogger=debug");
         }
         final URL url = file.toURI().toURL();
@@ -397,7 +397,7 @@ public class PropertyConfiguratorTest {
     @Test
     public void testURLBadEscape() throws IOException {
         final File file = new File("target/urlbadescape.properties");
-        try (FileWriter writer = new FileWriter(file)) {
+        try (final FileWriter writer = new FileWriter(file)) {
             writer.write("log4j.rootLogger=\\uXX41");
         }
         final URL url = file.toURI().toURL();

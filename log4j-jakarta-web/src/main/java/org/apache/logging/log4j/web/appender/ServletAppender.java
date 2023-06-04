@@ -36,7 +36,7 @@ import org.apache.logging.log4j.web.WebLoggerContextUtils;
  * Logs using the ServletContext's log method
  */
 @Plugin(name = "Servlet", category = "Core", elementType = "appender", printObject = true)
-public class ServletAppender extends AbstractAppender {
+public final class ServletAppender extends AbstractAppender {
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<ServletAppender> {
@@ -55,7 +55,7 @@ public class ServletAppender extends AbstractAppender {
                 LOGGER.error("No servlet context is available");
                 return null;
             }
-            Layout<? extends Serializable> layout = getOrCreateLayout();
+            final Layout<? extends Serializable> layout = getOrCreateLayout();
             if (!(layout instanceof StringLayout)) {
                 LOGGER.error("Layout must be a StringLayout to log to ServletContext");
                 return null;

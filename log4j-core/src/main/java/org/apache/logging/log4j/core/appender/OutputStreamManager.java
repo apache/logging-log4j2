@@ -122,7 +122,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         return closeOutputStream();
     }
 
-    protected void writeHeader(OutputStream os) {
+    protected void writeHeader(final OutputStream os) {
         if (layout != null && os != null) {
             final byte[] header = layout.getHeader();
             if (header != null) {

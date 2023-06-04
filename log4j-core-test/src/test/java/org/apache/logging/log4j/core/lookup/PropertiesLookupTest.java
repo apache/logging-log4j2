@@ -67,29 +67,29 @@ public class PropertiesLookupTest {
 
     @Test
     public void testEvaluateResultsSupportRecursiveEvaluation() {
-        PropertiesLookup lookup = new PropertiesLookup(Collections.singletonMap("key", "value"));
+        final PropertiesLookup lookup = new PropertiesLookup(Collections.singletonMap("key", "value"));
         assertFalse(lookup.evaluate("key").isLookupEvaluationAllowedInValue());
     }
 
     @Test
     public void testEvaluateReturnsNullWhenKeyIsNotFound() {
-        PropertiesLookup lookup = new PropertiesLookup(Collections.emptyMap());
+        final PropertiesLookup lookup = new PropertiesLookup(Collections.emptyMap());
         assertNull(lookup.evaluate("key"));
     }
 
     @Test
     public void testEvaluateReturnsNullWhenKeyIsNull() {
-        PropertiesLookup lookup = new PropertiesLookup(Collections.emptyMap());
+        final PropertiesLookup lookup = new PropertiesLookup(Collections.emptyMap());
         assertNull(lookup.evaluate(null));
     }
 
     @Test
     public void testContextPropertiesAreMutable() {
-        Map<String, String> contextProperties = new HashMap<>();
-        PropertiesLookup lookup = new PropertiesLookup(Property.EMPTY_ARRAY, contextProperties);
+        final Map<String, String> contextProperties = new HashMap<>();
+        final PropertiesLookup lookup = new PropertiesLookup(Property.EMPTY_ARRAY, contextProperties);
         assertNull(lookup.evaluate("key"));
         contextProperties.put("key", "value");
-        LookupResult result = lookup.evaluate("key");
+        final LookupResult result = lookup.evaluate("key");
         assertEquals("value", result.value());
         assertFalse(result.isLookupEvaluationAllowedInValue());
     }

@@ -166,7 +166,7 @@ public class StrSubstitutorTest {
     public void testInfiniteSubstitutionOnString() {
         final StrLookup lookup = new Interpolator(new NonRecursiveLookup(new HashMap<>()));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
-        String infiniteSubstitution = "${${::-${::-$${::-j}}}}";
+        final String infiniteSubstitution = "${${::-${::-$${::-j}}}}";
         assertEquals("j}", subst.replace(infiniteSubstitution));
     }
 
@@ -174,7 +174,7 @@ public class StrSubstitutorTest {
     public void testInfiniteSubstitutionOnStringBuilder() {
         final StrLookup lookup = new Interpolator(new NonRecursiveLookup(new HashMap<>()));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
-        String infiniteSubstitution = "${${::-${::-$${::-j}}}}";
+        final String infiniteSubstitution = "${${::-${::-$${::-j}}}}";
         assertEquals("j}", subst.replace(null, new StringBuilder(infiniteSubstitution)));
     }
 
@@ -212,12 +212,12 @@ public class StrSubstitutorTest {
         final StrSubstitutor subst = new StrSubstitutor(new Interpolator(new StrLookup() {
 
             @Override
-            public String lookup(LogEvent event, String key) {
+            public String lookup(final LogEvent event, final String key) {
                 return lookup(key);
             }
 
             @Override
-            public String lookup(String key) {
+            public String lookup(final String key) {
                 if ("throw".equals(key)) {
                     throw new RuntimeException();
                 }
@@ -294,7 +294,7 @@ public class StrSubstitutorTest {
 
     @Test
     public void testReplaceProperties() {
-        Properties properties = new Properties();
+        final Properties properties = new Properties();
         properties.put("a", "A");
         assertNull(StrSubstitutor.replace((String) null, properties));
         assertNull(StrSubstitutor.replace((String) null, (Properties) null));
@@ -368,19 +368,19 @@ public class StrSubstitutorTest {
 
         private final Map<String, String> properties;
 
-        RecursiveLookup(Map<String, String> properties) {
+        RecursiveLookup(final Map<String, String> properties) {
             this.properties = properties;
         }
 
         @Override
-        public String lookup(LogEvent event, String key) {
-            LookupResult result = evaluate(event, key);
+        public String lookup(final LogEvent event, final String key) {
+            final LookupResult result = evaluate(event, key);
             return result == null ? null : result.value();
         }
 
         @Override
-        public LookupResult evaluate(LogEvent event, String key) {
-            String result = key == null ? null : properties.get(key);
+        public LookupResult evaluate(final LogEvent event, final String key) {
+            final String result = key == null ? null : properties.get(key);
             return result == null ? null : new RecursiveLookupResult(result);
         }
     }
@@ -389,7 +389,7 @@ public class StrSubstitutorTest {
 
         private final String value;
 
-        RecursiveLookupResult(String value) {
+        RecursiveLookupResult(final String value) {
             this.value = value;
         }
         @Override
@@ -407,19 +407,19 @@ public class StrSubstitutorTest {
 
         private final Map<String, String> properties;
 
-        NonRecursiveLookup(Map<String, String> properties) {
+        NonRecursiveLookup(final Map<String, String> properties) {
             this.properties = properties;
         }
 
         @Override
-        public String lookup(LogEvent event, String key) {
-            LookupResult result = evaluate(event, key);
+        public String lookup(final LogEvent event, final String key) {
+            final LookupResult result = evaluate(event, key);
             return result == null ? null : result.value();
         }
 
         @Override
-        public LookupResult evaluate(LogEvent event, String key) {
-            String result = key == null ? null : properties.get(key);
+        public LookupResult evaluate(final LogEvent event, final String key) {
+            final String result = key == null ? null : properties.get(key);
             return result == null ? null : new NonRecursiveLookupResult(result);
         }
     }
@@ -428,7 +428,7 @@ public class StrSubstitutorTest {
 
         private final String value;
 
-        NonRecursiveLookupResult(String value) {
+        NonRecursiveLookupResult(final String value) {
             this.value = value;
         }
         @Override

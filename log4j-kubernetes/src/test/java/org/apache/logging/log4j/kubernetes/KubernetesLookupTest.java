@@ -48,9 +48,9 @@ public class KubernetesLookupTest {
 
     @Test
     public void testLocal() throws Exception {
-        Pod pod = objectMapper.readValue(new File(localJson), Pod.class);
-        Namespace namespace = createNamespace();
-        KubernetesLookup lookup = new KubernetesLookup(pod, namespace, masterUrl);
+        final Pod pod = objectMapper.readValue(new File(localJson), Pod.class);
+        final Namespace namespace = createNamespace();
+        final KubernetesLookup lookup = new KubernetesLookup(pod, namespace, masterUrl);
         try {
             assertEquals("Incorrect container name", "sampleapp", lookup.lookup("containerName"));
             assertEquals("Incorrect container id",
@@ -65,9 +65,9 @@ public class KubernetesLookupTest {
 
     @Test
     public void testCluster() throws Exception {
-        Pod pod = objectMapper.readValue(new File(clusterJson), Pod.class);
-        Namespace namespace = createNamespace();
-        KubernetesLookup lookup = new KubernetesLookup(pod, namespace, masterUrl);
+        final Pod pod = objectMapper.readValue(new File(clusterJson), Pod.class);
+        final Namespace namespace = createNamespace();
+        final KubernetesLookup lookup = new KubernetesLookup(pod, namespace, masterUrl);
         try {
             assertEquals("Incorrect container name", "platform-forms-service", lookup.lookup("containerName"));
             assertEquals("Incorrect container id",
@@ -81,12 +81,12 @@ public class KubernetesLookupTest {
     }
 
     private Namespace createNamespace() {
-        Namespace namespace = new Namespace();
-        ObjectMeta meta = new ObjectMeta();
-        Map<String, String> annotations = new HashMap<>();
+        final Namespace namespace = new Namespace();
+        final ObjectMeta meta = new ObjectMeta();
+        final Map<String, String> annotations = new HashMap<>();
         annotations.put("test", "name");
         meta.setAnnotations(annotations);
-        Map<String, String> labels = new HashMap<>();
+        final Map<String, String> labels = new HashMap<>();
         labels.put("ns", "my-namespace");
         meta.setLabels(labels);
         meta.setUid(UUID.randomUUID().toString());

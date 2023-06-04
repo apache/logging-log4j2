@@ -138,7 +138,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return additivity == null || additivity;
         }
 
-        public B withAdditivity(boolean additivity) {
+        public B withAdditivity(final boolean additivity) {
             this.additivity = additivity;
             return asBuilder();
         }
@@ -147,7 +147,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return level;
         }
 
-        public B withLevel(Level level) {
+        public B withLevel(final Level level) {
             this.level = level;
             return asBuilder();
         }
@@ -156,7 +156,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return levelAndRefs;
         }
 
-        public B withLevelAndRefs(String levelAndRefs) {
+        public B withLevelAndRefs(final String levelAndRefs) {
             this.levelAndRefs = levelAndRefs;
             return asBuilder();
         }
@@ -165,7 +165,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return loggerName;
         }
 
-        public B withLoggerName(String loggerName) {
+        public B withLoggerName(final String loggerName) {
             this.loggerName = loggerName;
             return asBuilder();
         }
@@ -174,7 +174,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return includeLocation;
         }
 
-        public B withIncludeLocation(String includeLocation) {
+        public B withIncludeLocation(final String includeLocation) {
             this.includeLocation = includeLocation;
             return asBuilder();
         }
@@ -183,7 +183,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return refs;
         }
 
-        public B withRefs(AppenderRef[] refs) {
+        public B withRefs(final AppenderRef[] refs) {
             this.refs = refs;
             return asBuilder();
         }
@@ -192,7 +192,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return properties;
         }
 
-        public B withProperties(Property[] properties) {
+        public B withProperties(final Property[] properties) {
             this.properties = properties;
             return asBuilder();
         }
@@ -201,7 +201,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return config;
         }
 
-        public B withConfig(Configuration config) {
+        public B withConfig(final Configuration config) {
             this.config = config;
             return asBuilder();
         }
@@ -210,7 +210,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             return filter;
         }
 
-        public B withtFilter(Filter filter) {
+        public B withtFilter(final Filter filter) {
             this.filter = filter;
             return asBuilder();
         }
@@ -218,8 +218,8 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         @Override
         public LoggerConfig build() {
             final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
-            LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
-            boolean useLocation = includeLocation(includeLocation, config);
+            final LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
+            final boolean useLocation = includeLocation(includeLocation, config);
             return new LoggerConfig(name, container.refs, filter, container.level, isAdditivity(), properties, config,
                     useLocation);
         }
@@ -531,7 +531,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         }
     }
 
-    private StackTraceElement location(String fqcn) {
+    private StackTraceElement location(final String fqcn) {
         return requiresLocation() ?
                 StackLocatorUtil.calcLocation(fqcn) : null;
     }
@@ -567,7 +567,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             final Level level,
             final Message data,
             final Throwable t) {
-        List<Property> snapshot = properties;
+        final List<Property> snapshot = properties;
         if (snapshot == null || !propertiesRequireLookup) {
             return snapshot;
         }
@@ -582,7 +582,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             final Message data,
             final Throwable t,
             final List<Property> props) {
-        List<Property> results = new ArrayList<>(props.size());
+        final List<Property> results = new ArrayList<>(props.size());
         final LogEvent event = Log4jLogEvent.newBuilder()
                 .setMessage(data)
                 .setMarker(marker)
@@ -648,7 +648,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         LoggerConfig loggerConfig = this;
         while (loggerConfig != null) {
             for (AppenderControl control : controls) {
-                Appender appender = control.getAppender();
+                final Appender appender = control.getAppender();
                 if (appender instanceof LocationAware && ((LocationAware) appender).requiresLocation()) {
                     return true;
                 }
@@ -823,7 +823,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return additivity;
             }
 
-            public B withAdditivity(boolean additivity) {
+            public B withAdditivity(final boolean additivity) {
                 this.additivity = additivity;
                 return asBuilder();
             }
@@ -832,7 +832,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return level;
             }
 
-            public B withLevel(Level level) {
+            public B withLevel(final Level level) {
                 this.level = level;
                 return asBuilder();
             }
@@ -841,7 +841,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return levelAndRefs;
             }
 
-            public B withLevelAndRefs(String levelAndRefs) {
+            public B withLevelAndRefs(final String levelAndRefs) {
                 this.levelAndRefs = levelAndRefs;
                 return asBuilder();
             }
@@ -850,7 +850,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return includeLocation;
             }
 
-            public B withIncludeLocation(String includeLocation) {
+            public B withIncludeLocation(final String includeLocation) {
                 this.includeLocation = includeLocation;
                 return asBuilder();
             }
@@ -859,7 +859,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return refs;
             }
 
-            public B withRefs(AppenderRef[] refs) {
+            public B withRefs(final AppenderRef[] refs) {
                 this.refs = refs;
                 return asBuilder();
             }
@@ -868,7 +868,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return properties;
             }
 
-            public B withProperties(Property[] properties) {
+            public B withProperties(final Property[] properties) {
                 this.properties = properties;
                 return asBuilder();
             }
@@ -877,7 +877,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return config;
             }
 
-            public B withConfig(Configuration config) {
+            public B withConfig(final Configuration config) {
                 this.config = config;
                 return asBuilder();
             }
@@ -886,14 +886,14 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 return filter;
             }
 
-            public B withtFilter(Filter filter) {
+            public B withtFilter(final Filter filter) {
                 this.filter = filter;
                 return asBuilder();
             }
 
             @Override
             public LoggerConfig build() {
-                LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
+                final LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
                 return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, container.refs, filter, container.level,
                         additivity, properties, config, includeLocation(includeLocation, config));
             }
@@ -924,9 +924,9 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
         }
     }
 
-    protected static LevelAndRefs getLevelAndRefs(Level level, AppenderRef[] refs, String levelAndRefs,
-            Configuration config) {
-        LevelAndRefs result = new LevelAndRefs();
+    protected static LevelAndRefs getLevelAndRefs(final Level level, final AppenderRef[] refs, final String levelAndRefs,
+            final Configuration config) {
+        final LevelAndRefs result = new LevelAndRefs();
         if (levelAndRefs != null) {
             if (config instanceof PropertiesConfiguration) {
                 if (level != null) {
@@ -938,7 +938,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
                 final String[] parts = Strings.splitList(levelAndRefs);
                 result.level = Level.getLevel(parts[0]);
                 if (parts.length > 1) {
-                    List<AppenderRef> refList = new ArrayList<>();
+                    final List<AppenderRef> refList = new ArrayList<>();
                     Arrays.stream(parts).skip(1).forEach((ref) ->
                             refList.add(AppenderRef.createAppenderRef(ref, null, null)));
                     result.refs = refList;

@@ -48,7 +48,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * involving a configured ConnectionFactory and Destination.
  * </p>
  */
-public class JmsManager extends AbstractManager {
+public final class JmsManager extends AbstractManager {
 
     public static class JmsManagerConfiguration {
         private final Properties jndiProperties;
@@ -139,7 +139,7 @@ public class JmsManager extends AbstractManager {
     /**
      * Handles reconnecting to JMS on a Thread.
      */
-    private class Reconnector extends Log4jThread {
+    private final class Reconnector extends Log4jThread {
 
         private final CountDownLatch latch = new CountDownLatch(1);
 

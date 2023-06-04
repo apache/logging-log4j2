@@ -40,20 +40,20 @@ public class XmlReconfigurationTest {
     private static final String CONFIG = "target/test-classes/log4j1-file.xml";
     private static final long FIVE_MINUTES = 5 * 60 * 1000;
 
-    private CountDownLatch toggle = new CountDownLatch(1);
+    private final CountDownLatch toggle = new CountDownLatch(1);
 
     @Test
     public void testReconfiguration() throws Exception {
         System.setProperty(Log4j1Configuration.MONITOR_INTERVAL, "1");
-        File file = new File(CONFIG);
+        final File file = new File(CONFIG);
         assertNotNull("No Config file", file);
-        long configMillis = file.lastModified();
+        final long configMillis = file.lastModified();
         assertTrue("Unable to modified file time", file.setLastModified(configMillis - FIVE_MINUTES));
-        LoggerContext context = TestConfigurator.configure(file.toString());
-        Logger logger = LogManager.getLogger("test");
+        final LoggerContext context = TestConfigurator.configure(file.toString());
+        final Logger logger = LogManager.getLogger("test");
         logger.info("Hello");
-        Configuration original = context.getConfiguration();
-        TestListener listener = new TestListener();
+        final Configuration original = context.getConfiguration();
+        final TestListener listener = new TestListener();
         original.addListener(listener);
         file.setLastModified(System.currentTimeMillis());
         try {
@@ -65,7 +65,7 @@ public class XmlReconfigurationTest {
         } catch (InterruptedException ie) {
             fail("Reconfiguration interupted");
         }
-        Configuration updated = context.getConfiguration();
+        final Configuration updated = context.getConfiguration();
         assertTrue("Configurations are the same", original != updated);
     }
 

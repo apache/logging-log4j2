@@ -45,7 +45,7 @@ public abstract class ProviderActivator implements BundleActivator {
     }
 
     @Override
-    public void stop(BundleContext context) throws Exception {
+    public void stop(final BundleContext context) throws Exception {
         if (providerRegistration != null) {
             providerRegistration.unregister();
         }

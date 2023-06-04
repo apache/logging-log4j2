@@ -799,7 +799,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         return sb.toString();
     }
 
-    private static class HashCommon {
+    private static final class HashCommon {
         private HashCommon() {}
 
         /** 2<sup>32</sup> &middot; &phi;, &phi; = (&#x221A;5 &minus; 1)/2. */
@@ -817,7 +817,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
          * @param x an integer.
          * @return a hash value with good avalanching properties.
          */
-        public static int murmurHash3(int x) {
+        public static int murmurHash3(final int x) {
             x ^= x >>> 16;
             x *= 0x85ebca6b;
             x ^= x >>> 13;
@@ -859,7 +859,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
          * @param x an integer smaller than or equal to 2<sup>30</sup>.
          * @return the least power of two greater than or equal to the specified value.
          */
-        public static int nextPowerOfTwo(int x) {
+        public static int nextPowerOfTwo(final int x) {
             if (x == 0) {
                 return 1;
             }
@@ -878,7 +878,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
          * @param x a long integer smaller than or equal to 2<sup>62</sup>.
          * @return the least power of two greater than or equal to the specified value.
          */
-        public static long nextPowerOfTwo(long x) {
+        public static long nextPowerOfTwo(final long x) {
             if (x == 0) {
                 return 1;
             }

@@ -31,7 +31,7 @@ public class FileRenameActionTest {
 
     @AfterEach
     public void cleanup() {
-        File file = new File(tempDir, "newFile.log");
+        final File file = new File(tempDir, "newFile.log");
         file.delete();
     }
 

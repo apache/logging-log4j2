@@ -73,9 +73,9 @@ public class LoggerTest {
         julLogger.setLevel(Level.INFO);
         log4jLogger.info("hello, world");
 
-        List<LogRecord> logs = handler.getStoredLogRecords();
+        final List<LogRecord> logs = handler.getStoredLogRecords();
         assertThat(logs).hasSize(1);
-        LogRecord log1 = logs.get(0);
+        final LogRecord log1 = logs.get(0);
         assertThat(log1.getLoggerName()).isEqualTo(getClass().getName());
         assertThat(log1.getLevel()).isEqualTo(java.util.logging.Level.INFO);
         assertThat(log1.getMessage()).isEqualTo("hello, world");
@@ -89,9 +89,9 @@ public class LoggerTest {
         julLogger.setLevel(Level.INFO);
         log4jLogger.info("hello, {}", "world");
 
-        List<LogRecord> logs = handler.getStoredLogRecords();
+        final List<LogRecord> logs = handler.getStoredLogRecords();
         assertThat(logs).hasSize(1);
-        LogRecord log1 = logs.get(0);
+        final LogRecord log1 = logs.get(0);
         assertThat(log1.getMessage()).isEqualTo("hello, world");
         assertThat(log1.getParameters()).isNull();
         assertThat(log1.getThrown()).isNull();
@@ -101,9 +101,9 @@ public class LoggerTest {
         julLogger.setLevel(Level.SEVERE);
         log4jLogger.error("hello, {}", "world", new IOException("Testing, testing"));
 
-        List<LogRecord> logs = handler.getStoredLogRecords();
+        final List<LogRecord> logs = handler.getStoredLogRecords();
         assertThat(logs).hasSize(1);
-        LogRecord log1 = logs.get(0);
+        final LogRecord log1 = logs.get(0);
         assertThat(log1.getMessage()).isEqualTo("hello, world");
         assertThat(log1.getParameters()).isNull();
         assertThat(log1.getThrown()).isInstanceOf(IOException.class);
@@ -197,7 +197,7 @@ public class LoggerTest {
 
     @SuppressWarnings("serial")
     private static class CustomLevel extends Level {
-        CustomLevel(String name, int value) {
+        CustomLevel(final String name, final int value) {
             super(name, value);
         }
     }
@@ -209,9 +209,9 @@ public class LoggerTest {
     @Test public void indirectSource() {
         java.util.logging.Logger.getLogger(Another.class.getName()).setLevel(Level.INFO);
         new Another(handler);
-        List<LogRecord> logs = handler.getStoredLogRecords();
+        final List<LogRecord> logs = handler.getStoredLogRecords();
         assertThat(logs).hasSize(1);
-        LogRecord log1 = logs.get(0);
+        final LogRecord log1 = logs.get(0);
         assertThat(log1.getSourceClassName()).isEqualTo(Another.class.getName());
         assertThat(log1.getSourceMethodName()).isEqualTo("<init>");
     }
@@ -219,7 +219,7 @@ public class LoggerTest {
     static class Another {
         org.apache.logging.log4j.Logger anotherLog4jLogger = LogManager.getLogger(getClass());
         java.util.logging.Logger anotherJULLogger = java.util.logging.Logger.getLogger(getClass().getName());
-        Another(TestLogHandler handler) {
+        Another(final TestLogHandler handler) {
             anotherJULLogger.addHandler(handler);
             anotherLog4jLogger.info("hello, another world");
         }
@@ -229,10 +229,10 @@ public class LoggerTest {
         julLogger.setLevel(Level.INFO);
         log4jLogger.info("hello, {0} {}", "world");
 
-        List<LogRecord> logs = handler.getStoredLogRecords();
+        final List<LogRecord> logs = handler.getStoredLogRecords();
         assertThat(logs).hasSize(1);
-        LogRecord log1 = logs.get(0);
-        String formattedMessage = new java.util.logging.SimpleFormatter().formatMessage(log1);
+        final LogRecord log1 = logs.get(0);
+        final String formattedMessage = new java.util.logging.SimpleFormatter().formatMessage(log1);
         assertThat(formattedMessage).isEqualTo("hello, {0} world");
     }
 
@@ -240,10 +240,10 @@ public class LoggerTest {
         julLogger.setLevel(Level.INFO);
         log4jLogger.info("hello, {}", "{0} world");
 
-        List<LogRecord> logs = handler.getStoredLogRecords();
+        final List<LogRecord> logs = handler.getStoredLogRecords();
         assertThat(logs).hasSize(1);
-        LogRecord log1 = logs.get(0);
-        String formattedMessage = new java.util.logging.SimpleFormatter().formatMessage(log1);
+        final LogRecord log1 = logs.get(0);
+        final String formattedMessage = new java.util.logging.SimpleFormatter().formatMessage(log1);
         assertThat(formattedMessage).isEqualTo("hello, {0} world");
     }
 }

@@ -134,10 +134,10 @@ public class InterpolatorTest {
     public void testInterpolatorMapMessageWithNoPrefix() {
         final HashMap<String, String> configProperties = new HashMap<>();
         configProperties.put("key", "configProperties");
-        Interpolator interpolator = new Interpolator(configProperties);
+        final Interpolator interpolator = new Interpolator(configProperties);
         final HashMap<String, String> map = new HashMap<>();
         map.put("key", "mapMessage");
-        LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = Log4jLogEvent.newBuilder()
                 .setLoggerName(getClass().getName())
                 .setLoggerFqcn(Logger.class.getName())
                 .setLevel(Level.INFO)
@@ -148,10 +148,10 @@ public class InterpolatorTest {
 
     @Test
     public void testInterpolatorMapMessageWithNoPrefixConfigDoesntMatch() {
-        Interpolator interpolator = new Interpolator(Collections.emptyMap());
+        final Interpolator interpolator = new Interpolator(Collections.emptyMap());
         final HashMap<String, String> map = new HashMap<>();
         map.put("key", "mapMessage");
-        LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = Log4jLogEvent.newBuilder()
                 .setLoggerName(getClass().getName())
                 .setLoggerFqcn(Logger.class.getName())
                 .setLevel(Level.INFO)
@@ -166,10 +166,10 @@ public class InterpolatorTest {
     public void testInterpolatorMapMessageWithMapPrefix() {
         final HashMap<String, String> configProperties = new HashMap<>();
         configProperties.put("key", "configProperties");
-        Interpolator interpolator = new Interpolator(configProperties);
+        final Interpolator interpolator = new Interpolator(configProperties);
         final HashMap<String, String> map = new HashMap<>();
         map.put("key", "mapMessage");
-        LogEvent event = Log4jLogEvent.newBuilder()
+        final LogEvent event = Log4jLogEvent.newBuilder()
                 .setLoggerName(getClass().getName())
                 .setLoggerFqcn(Logger.class.getName())
                 .setLevel(Level.INFO)

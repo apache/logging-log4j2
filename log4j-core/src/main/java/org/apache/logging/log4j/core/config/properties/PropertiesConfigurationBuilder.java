@@ -181,7 +181,7 @@ public class PropertiesConfigurationBuilder extends ConfigurationBuilderFactory
             }
         }
 
-        String rootProp = rootProperties.getProperty("rootLogger");
+        final String rootProp = rootProperties.getProperty("rootLogger");
         final Properties props = PropertiesUtil.extractSubset(rootProperties, "rootLogger");
         if (rootProp != null) {
             props.setProperty("", rootProp);

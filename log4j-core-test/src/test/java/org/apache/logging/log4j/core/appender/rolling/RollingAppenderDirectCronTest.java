@@ -53,13 +53,13 @@ public class RollingAppenderDirectCronTest {
     @Test
     public void testAppender() throws Exception {
         // TODO Is there a better way to test than putting the thread to sleep all over the place?
-        RollingFileAppender app = loggerContextRule.getAppender("RollingFile");
+        final RollingFileAppender app = loggerContextRule.getAppender("RollingFile");
         final Logger logger = loggerContextRule.getLogger();
         logger.debug("This is test message number 1");
-        RolloverDelay delay = new RolloverDelay(app.getManager());
+        final RolloverDelay delay = new RolloverDelay(app.getManager());
         delay.waitForRollover();
         final File dir = new File(DIR);
-        File[] files = dir.listFiles();
+        final File[] files = dir.listFiles();
         assertTrue("Directory not created", dir.exists() && files != null && files.length > 0);
         delay.reset(3);
 
@@ -76,7 +76,7 @@ public class RollingAppenderDirectCronTest {
     private class RolloverDelay implements RolloverListener {
         private volatile CountDownLatch latch;
 
-        public RolloverDelay(RollingFileManager manager) {
+        public RolloverDelay(final RollingFileManager manager) {
             latch = new CountDownLatch(1);
             manager.addRolloverListener(this);
         }
@@ -91,22 +91,22 @@ public class RollingAppenderDirectCronTest {
             }
         }
 
-        public void reset(int count) {
+        public void reset(final int count) {
             latch = new CountDownLatch(count);
         }
 
         @Override
-        public void rolloverTriggered(String fileName) {
+        public void rolloverTriggered(final String fileName) {
 
         }
 
         @Override
-        public void rolloverComplete(String fileName) {
-            java.util.regex.Matcher matcher = filePattern.matcher(fileName);
+        public void rolloverComplete(final String fileName) {
+            final java.util.regex.Matcher matcher = filePattern.matcher(fileName);
             assertTrue("Invalid file name: " + fileName, matcher.matches());
-            Path path = new File(fileName).toPath();
+            final Path path = new File(fileName).toPath();
             try {
-                List<String> lines = Files.readAllLines(path);
+                final List<String> lines = Files.readAllLines(path);
                 assertTrue("Not enough lines in " + fileName + ":" + lines.size(), lines.size() > 0);
                 assertTrue("log and file times don't match. file: " + matcher.group(1) + ", log: "
                         + lines.get(0), lines.get(0).startsWith(matcher.group(1)));

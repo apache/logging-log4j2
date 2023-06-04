@@ -88,7 +88,7 @@ public final class StringEncoder {
      * @deprecated No longer necessary given better performance in Java 8
      */
     @Deprecated
-    public static int encodeString(final CharSequence charArray, int charOffset, int charLength, final byte[] byteArray) {
+    public static int encodeString(final CharSequence charArray, final int charOffset, final int charLength, final byte[] byteArray) {
         int byteOffset = 0;
         int length = Math.min(charLength, byteArray.length);
         int charDoneIndex = charOffset + length;

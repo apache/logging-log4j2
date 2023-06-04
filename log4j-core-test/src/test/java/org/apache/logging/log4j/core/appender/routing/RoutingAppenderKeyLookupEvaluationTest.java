@@ -52,15 +52,15 @@ public class RoutingAppenderKeyLookupEvaluationTest {
 
     @Test
     public void testRoutingNoUser() {
-        Logger logger = loggerContextRule.getLogger(getClass());
+        final Logger logger = loggerContextRule.getLogger(getClass());
         logger.warn("no user");
-        String message = app.getMessages().get(0);
+        final String message = app.getMessages().get(0);
         assertEquals("WARN ${ctx:user} no user", message);
     }
 
     @Test
     public void testRoutingDoesNotMatchRoute() {
-        Logger logger = loggerContextRule.getLogger(getClass());
+        final Logger logger = loggerContextRule.getLogger(getClass());
         ThreadContext.put(KEY, "noRouteExists");
         logger.warn("unmatched user");
         assertTrue(app.getMessages().isEmpty());
@@ -68,25 +68,25 @@ public class RoutingAppenderKeyLookupEvaluationTest {
 
     @Test
     public void testRoutingContainsLookup() {
-        Logger logger = loggerContextRule.getLogger(getClass());
+        final Logger logger = loggerContextRule.getLogger(getClass());
         ThreadContext.put(KEY, "${java:version}");
         logger.warn("naughty user");
-        String message = app.getMessages().get(0);
+        final String message = app.getMessages().get(0);
         assertEquals("WARN ${java:version} naughty user", message);
     }
 
     @Test
     public void testRoutingMatchesEscapedLookup() {
-        Logger logger = loggerContextRule.getLogger(getClass());
+        final Logger logger = loggerContextRule.getLogger(getClass());
         ThreadContext.put(KEY, "${upper:name}");
         logger.warn("naughty user");
-        String message = app.getMessages().get(0);
+        final String message = app.getMessages().get(0);
         assertEquals("WARN ${upper:name} naughty user", message);
     }
 
     @Test
     public void testRoutesThemselvesNotEvaluated() {
-        Logger logger = loggerContextRule.getLogger(getClass());
+        final Logger logger = loggerContextRule.getLogger(getClass());
         ThreadContext.put(KEY, "NAME");
         logger.warn("unmatched user");
         assertTrue(app.getMessages().isEmpty());

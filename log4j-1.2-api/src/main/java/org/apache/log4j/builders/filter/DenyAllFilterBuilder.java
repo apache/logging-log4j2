@@ -33,12 +33,12 @@ import static org.apache.log4j.builders.BuilderManager.CATEGORY;
 public class DenyAllFilterBuilder implements FilterBuilder {
 
     @Override
-    public Filter parse(Element filterElement, XmlConfiguration config) {
+    public Filter parse(final Element filterElement, final XmlConfiguration config) {
         return new FilterWrapper(DenyAllFilter.newBuilder().build());
     }
 
     @Override
-    public Filter parse(PropertiesConfiguration config) {
+    public Filter parse(final PropertiesConfiguration config) {
         return new FilterWrapper(DenyAllFilter.newBuilder().build());
     }
 }

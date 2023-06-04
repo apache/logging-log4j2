@@ -31,11 +31,11 @@ public class Holder<V> {
     public Holder() {
     }
 
-    public Holder(V defaultValue) {
+    public Holder(final V defaultValue) {
         this.value = defaultValue;
     }
 
-    public void set(V value) {
+    public void set(final V value) {
         this.value = value;
     }
 

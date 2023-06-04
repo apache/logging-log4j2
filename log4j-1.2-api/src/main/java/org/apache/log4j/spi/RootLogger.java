@@ -32,7 +32,7 @@ public final class RootLogger extends Logger {
     /**
      * The root logger names itself as "root". However, the root logger cannot be retrieved by name.
      */
-    public RootLogger(Level level) {
+    public RootLogger(final Level level) {
         // The Log4j 1 root logger name is "root".
         // The Log4j 2 root logger name is "".
         super("root");
@@ -53,7 +53,7 @@ public final class RootLogger extends Logger {
      *
      * @since 0.8.3
      */
-    public final void setLevel(Level level) {
+    public final void setLevel(final Level level) {
         if (level == null) {
             LogLog.error("You have tried to set a null level to root.", new Throwable());
         } else {

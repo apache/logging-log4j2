@@ -46,11 +46,11 @@ public class AutoConfigTest {
 
     @Test
     public void testListAppender() {
-        Logger logger = LogManager.getLogger("test");
+        final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
-        LoggerContext loggerContext = org.apache.logging.log4j.LogManager.getContext(false);
-        Configuration configuration = ((org.apache.logging.log4j.core.LoggerContext) loggerContext).getConfiguration();
-        Map<String, Appender> appenders = configuration.getAppenders();
+        final LoggerContext loggerContext = org.apache.logging.log4j.LogManager.getContext(false);
+        final Configuration configuration = ((org.apache.logging.log4j.core.LoggerContext) loggerContext).getConfiguration();
+        final Map<String, Appender> appenders = configuration.getAppenders();
         ListAppender eventAppender = null;
         ListAppender messageAppender = null;
         for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
@@ -62,9 +62,9 @@ public class AutoConfigTest {
         }
         assertNotNull("No Event Appender", eventAppender);
         assertNotNull("No Message Appender", messageAppender);
-        List<LoggingEvent> events = eventAppender.getEvents();
+        final List<LoggingEvent> events = eventAppender.getEvents();
         assertTrue("No events", events != null && events.size() > 0);
-        List<String> messages = messageAppender.getMessages();
+        final List<String> messages = messageAppender.getMessages();
         assertTrue("No messages", messages != null && messages.size() > 0);
     }
 

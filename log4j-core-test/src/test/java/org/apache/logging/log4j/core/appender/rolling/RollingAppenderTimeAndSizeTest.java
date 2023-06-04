@@ -62,12 +62,12 @@ public class RollingAppenderTimeAndSizeTest {
 
     @Test
     public void testAppender() throws Exception {
-        Random rand = new Random();
+        final Random rand = new Random();
         final File logFile = new File("target/rolling3/rollingtest.log");
         assertTrue("target/rolling3/rollingtest.log does not exist", logFile.exists());
-        FileTime time = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
+        final FileTime time = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
         for (int j=0; j < 100; ++j) {
-            int count = rand.nextInt(50);
+            final int count = rand.nextInt(50);
             for (int i = 0; i < count; ++i) {
                 logger.debug("This is test message number " + i);
             }
@@ -80,13 +80,13 @@ public class RollingAppenderTimeAndSizeTest {
         Arrays.sort(files);
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(".log"))))));
-        int found = 0;
+        final int found = 0;
         int fileCounter = 0;
         String previous = "";
         for (final File file: files) {
             final String actual = file.getName();
-            StringBuilder padding = new StringBuilder();
-            String length = Long.toString(file.length());
+            final StringBuilder padding = new StringBuilder();
+            final String length = Long.toString(file.length());
             for (int i = length.length(); i < 10; ++i) {
                 padding.append(" ");
             }
@@ -96,7 +96,7 @@ public class RollingAppenderTimeAndSizeTest {
             assertEquals("Incorrect file name. Expected counter value of " + fileCounter + " in " + actual,
                 Integer.toString(fileCounter), fileParts[2]);
         }
-        FileTime endTime = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
+        final FileTime endTime = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
         assertNotEquals("Creation times are equal", time, endTime);
     }
 }
