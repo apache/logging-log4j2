@@ -60,11 +60,11 @@ public class RollingFileManager extends FileManager {
 
     protected long size;
     private long initialTime;
-    private final PatternProcessor patternProcessor;
+    private volatile PatternProcessor patternProcessor;
     private final Semaphore semaphore = new Semaphore(1);
     private final Log4jThreadFactory threadFactory = Log4jThreadFactory.createThreadFactory("RollingFileManager");
-    private final TriggeringPolicy triggeringPolicy;
-    private final RolloverStrategy rolloverStrategy;
+    private volatile TriggeringPolicy triggeringPolicy;
+    private volatile RolloverStrategy rolloverStrategy;
     private volatile boolean renameEmptyFiles;
     private volatile boolean initialized;
     private volatile String fileName;
