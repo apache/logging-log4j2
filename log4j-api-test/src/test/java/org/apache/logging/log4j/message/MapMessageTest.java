@@ -187,7 +187,8 @@ public class MapMessageTest {
     public static String testJsonFormatterMaxDepth(final int depth) {
         List<Object> list = new LinkedList<>();
         list.add(1);
-        while (--depth > 0) {
+        int currentDepth = depth;
+        while (--currentDepth > 0) {
             list = new LinkedList<>(Collections.singletonList(list));
         }
         return new ObjectMapMessage()

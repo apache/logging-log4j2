@@ -60,14 +60,16 @@ public final class ByteBufferDestinationHelper {
     public static void writeToUnsynchronized(final byte[] data, final int offset, final int length,
             final ByteBufferDestination destination) {
         ByteBuffer buffer = destination.getByteBuffer();
-        while (length > buffer.remaining()) {
+        int currentOffset = offset;
+        int currentLength = length;
+        while (currentLength > buffer.remaining()) {
             final int chunk = buffer.remaining();
-            buffer.put(data, offset, chunk);
-            offset += chunk;
-            length -= chunk;
+            buffer.put(data, currentOffset, chunk);
+            currentOffset += chunk;
+            currentLength -= chunk;
             buffer = destination.drain(buffer);
         }
-        buffer.put(data, offset, length);
+        buffer.put(data, currentOffset, currentLength);
         // No drain in the end.
     }
 }

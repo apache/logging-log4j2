@@ -816,12 +816,13 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
          * @return a hash value with good avalanching properties.
          */
         public static int murmurHash3(final int x) {
-            x ^= x >>> 16;
-            x *= 0x85ebca6b;
-            x ^= x >>> 13;
-            x *= 0xc2b2ae35;
-            x ^= x >>> 16;
-            return x;
+            int h = x;
+            h ^= h >>> 16;
+            h *= 0x85ebca6b;
+            h ^= h >>> 13;
+            h *= 0xc2b2ae35;
+            h ^= h >>> 16;
+            return h;
         }
 
         /**
@@ -861,12 +862,13 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
             if (x == 0) {
                 return 1;
             }
-            x--;
-            x |= x >> 1;
-            x |= x >> 2;
-            x |= x >> 4;
-            x |= x >> 8;
-            return (x | x >> 16) + 1;
+            int r = x;
+            r--;
+            r |= r >> 1;
+            r |= r >> 2;
+            r |= r >> 4;
+            r |= r >> 8;
+            return (r | r >> 16) + 1;
         }
 
         /** Return the least power of two greater than or equal to the specified value.
@@ -880,13 +882,14 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
             if (x == 0) {
                 return 1;
             }
-            x--;
-            x |= x >> 1;
-            x |= x >> 2;
-            x |= x >> 4;
-            x |= x >> 8;
-            x |= x >> 16;
-            return (x | x >> 32) + 1;
+            long r = x;
+            r--;
+            r |= r >> 1;
+            r |= r >> 2;
+            r |= r >> 4;
+            r |= r >> 8;
+            r |= r >> 16;
+            return (r | r >> 32) + 1;
         }
 
 

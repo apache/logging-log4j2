@@ -96,14 +96,15 @@ public abstract class PatternConverter {
   */
   public
   void spacePad(final StringBuffer sbuf, final int length) {
-    while(length >= 32) {
+    int l = length;
+    while(l >= 32) {
       sbuf.append(SPACES[5]);
-      length -= 32;
+      l -= 32;
     }
 
     for(int i = 4; i >= 0; i--) {
-      if((length & (1<<i)) != 0) {
-    sbuf.append(SPACES[i]);
+      if((l & (1<<i)) != 0) {
+        sbuf.append(SPACES[i]);
       }
     }
   }

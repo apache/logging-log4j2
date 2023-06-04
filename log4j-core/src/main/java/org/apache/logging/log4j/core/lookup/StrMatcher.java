@@ -362,8 +362,9 @@ public abstract class StrMatcher {
             if (pos + len > bufferEnd) {
                 return 0;
             }
-            for (int i = 0; i < chars.length; i++, pos++) {
-                if (chars[i] != buffer[pos]) {
+            int p = pos;
+            for (int i = 0; i < chars.length; i++, p++) {
+                if (chars[i] != buffer[p]) {
                     return 0;
                 }
             }
