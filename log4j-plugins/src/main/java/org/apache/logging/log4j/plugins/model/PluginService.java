@@ -31,8 +31,8 @@ public abstract class PluginService {
     private final Map<String, PluginNamespace> namespaces = new LinkedHashMap<>();
 
     public PluginService() {
-        PluginEntry[] entries = getEntries();
-        ClassLoader classLoader = getClass().getClassLoader();
+        final PluginEntry[] entries = getEntries();
+        final ClassLoader classLoader = getClass().getClassLoader();
         for (PluginEntry entry : entries) {
             final String namespace = entry.getNamespace();
             namespaces.computeIfAbsent(namespace.toLowerCase(Locale.ROOT), key -> new PluginNamespace(key, namespace))
@@ -46,7 +46,7 @@ public abstract class PluginService {
         return namespaces;
     }
 
-    public PluginNamespace getNamespace(String category) {
+    public PluginNamespace getNamespace(final String category) {
         return namespaces.get(category.toLowerCase(Locale.ROOT));
     }
 

@@ -60,7 +60,7 @@ public class RollingAppenderDirectWrite1906Test implements RolloverListener {
     public void testAppender(final LoggerContext context, @Named("RollingFile") final RollingFileManager manager) throws Exception {
         manager.addRolloverListener(this);
         final var logger = context.getLogger(getClass());
-        int count = 100;
+        final int count = 100;
         for (int i = 0; i < count; ++i) {
             logger.debug("This is test message number " + i);
             Thread.sleep(50);
@@ -87,7 +87,7 @@ public class RollingAppenderDirectWrite1906Test implements RolloverListener {
     }
 
     @Override
-    public void rolloverTriggered(String fileName) {
+    public void rolloverTriggered(final String fileName) {
 
     }
 
@@ -98,7 +98,7 @@ public class RollingAppenderDirectWrite1906Test implements RolloverListener {
 
     private static class NoopStatusListener implements StatusListener {
         @Override
-        public void log(StatusData data) {
+        public void log(final StatusData data) {
 
         }
 

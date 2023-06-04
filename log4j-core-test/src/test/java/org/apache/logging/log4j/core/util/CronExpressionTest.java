@@ -165,7 +165,7 @@ public class CronExpressionTest {
         final GregorianCalendar cal = new GregorianCalendar(2015, Calendar.NOVEMBER, 2, 0, 0, 0);
         cal.set(Calendar.MILLISECOND, 100);
         final Date date = cal.getTime();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         System.err.println(sdf.format(date));
         final Date fireDate = parser.getTimeBefore(date);
         System.err.println(sdf.format(fireDate));

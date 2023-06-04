@@ -43,7 +43,7 @@ public class ContextDataProviderTest {
     public static void beforeClass() {
         ThreadContextDataInjector.contextDataProviders.add(new TestContextDataProvider());
         System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "log4j-contextData.xml");
-        LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
         logger = loggerContext.getLogger(ContextDataProviderTest.class.getName());
         appender = loggerContext.getConfiguration().getAppender("List");
         assertNotNull(appender, "No List appender");
@@ -53,7 +53,7 @@ public class ContextDataProviderTest {
     public void testContextProvider() {
         ThreadContext.put("loginId", "jdoe");
         logger.debug("This is a test");
-        List<String> messages = appender.getMessages();
+        final List<String> messages = appender.getMessages();
         assertEquals(1, messages.size(), "Incorrect number of messages");
         assertTrue(messages.get(0).contains("testKey=testValue"), "Context data missing");
     }
@@ -62,7 +62,7 @@ public class ContextDataProviderTest {
 
         @Override
         public Map<String, String> supplyContextData() {
-            Map<String, String> contextData = new HashMap<>();
+            final Map<String, String> contextData = new HashMap<>();
             contextData.put("testKey", "testValue");
             return contextData;
         }

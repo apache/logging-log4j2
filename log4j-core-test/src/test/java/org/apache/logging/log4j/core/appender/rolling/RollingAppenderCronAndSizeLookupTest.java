@@ -59,7 +59,7 @@ public class RollingAppenderCronAndSizeLookupTest {
 
     @Test
     public void testAppender() throws Exception {
-        Random rand = new Random();
+        final Random rand = new Random();
         // Loop for 500 times with a 5ms wait guarantees at least 2 time based rollovers.
         for (int j=0; j < 500; ++j) {
             for (int i = 0; i < 10; ++i) {
@@ -74,8 +74,8 @@ public class RollingAppenderCronAndSizeLookupTest {
         Arrays.sort(files);
         assertNotNull(files);
         assertThat(files, hasItemInArray(that(hasName(that(endsWith(".log"))))));
-        int found = 0;
-        int fileCounter = 0;
+        final int found = 0;
+        final int fileCounter = 0;
         String previous = "";
         for (final File file: files) {
             final String actual = file.getName();

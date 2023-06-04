@@ -54,7 +54,7 @@ public class GelfLayout3Test {
         assertEquals("rgoers", json.get("_mdc.loginId").asText());
         assertNull(json.get("_mdc.internalId"));
         assertNull(json.get("_mdc.requestId"));
-        String message = json.get("full_message").asText();
+        final String message = json.get("full_message").asText();
         assertTrue(message.contains("loginId=rgoers"));
         assertTrue(message.contains("GelfLayout3Test"));
         assertNull(json.get("_map.arg1"));
@@ -69,7 +69,7 @@ public class GelfLayout3Test {
         final Logger logger = context.getLogger(getClass());
         ThreadContext.put("loginId", "rgoers");
         ThreadContext.put("internalId", "12345");
-        StringMapMessage message = new StringMapMessage();
+        final StringMapMessage message = new StringMapMessage();
         message.put("arg1", "test1");
         message.put("arg2", "");
         message.put("arg3", "test3");
@@ -85,7 +85,7 @@ public class GelfLayout3Test {
         assertEquals("rgoers", json.get("_mdc.loginId").asText());
         assertNull(json.get("_mdc.internalId"));
         assertNull(json.get("_mdc.requestId"));
-        String msg = json.get("full_message").asText();
+        final String msg = json.get("full_message").asText();
         assertTrue(msg.contains("loginId=rgoers"));
         assertTrue(msg.contains("GelfLayout3Test"));
         assertTrue(msg.contains("arg1=\"test1\""));

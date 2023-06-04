@@ -113,7 +113,7 @@ public final class WebLoggerContextUtils {
         };
     }
 
-    public static Map.Entry<String, Object> createExternalEntry(ServletContext servletContext) {
+    public static Map.Entry<String, Object> createExternalEntry(final ServletContext servletContext) {
         return new AbstractMap.SimpleEntry<>(SERVLET_CONTEXT, servletContext);
     }
 
@@ -134,7 +134,7 @@ public final class WebLoggerContextUtils {
         if (lc == null) {
             lc = LogManager.getContext(false);
         }
-        Object obj = lc != null ? lc.getObject(SERVLET_CONTEXT) : null;
+        final Object obj = lc != null ? lc.getObject(SERVLET_CONTEXT) : null;
         if (obj instanceof ServletContext) {
             return (ServletContext) obj;
         }

@@ -737,7 +737,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
             }
             // Clear in case there are leftovers.
             statement.clearParameters();
-            Message message = event.getMessage();
+            final Message message = event.getMessage();
             if (message instanceof MapMessage<?, ?>) {
                 setFields((MapMessage<?, ?>) message);
             }

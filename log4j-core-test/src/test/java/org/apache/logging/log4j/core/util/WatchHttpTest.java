@@ -92,22 +92,22 @@ public class WatchHttpTest {
 
     @Test
     public void testWatchManager() throws Exception {
-        BlockingQueue<String> queue = new LinkedBlockingQueue<>();
-        List<ConfigurationListener> listeners = new ArrayList<>();
+        final BlockingQueue<String> queue = new LinkedBlockingQueue<>();
+        final List<ConfigurationListener> listeners = new ArrayList<>();
         listeners.add(new TestConfigurationListener(queue, "log4j-test1.xml"));
-        TimeZone timeZone = TimeZone.getTimeZone("UTC");
-        Calendar now = Calendar.getInstance(timeZone);
-        Calendar previous = now;
+        final TimeZone timeZone = TimeZone.getTimeZone("UTC");
+        final Calendar now = Calendar.getInstance(timeZone);
+        final Calendar previous = now;
         previous.add(Calendar.MINUTE, -5);
-        Configuration configuration = new DefaultConfiguration();
+        final Configuration configuration = new DefaultConfiguration();
         Assume.assumeTrue(!IS_WINDOWS || Boolean.getBoolean(FORCE_RUN_KEY));
-        URL url = new URL("http://localhost:" + wireMockRule.port() + "/log4j-test1.xml");
-        StubMapping stubMapping = stubFor(get(urlPathEqualTo("/log4j-test1.xml"))
-            .willReturn(aResponse()
-            .withBodyFile(file)
-            .withStatus(200)
-            .withHeader("Last-Modified", formatter.format(previous) + " GMT")
-            .withHeader("Content-Type", XML)));
+        final URL url = new URL("http://localhost:" + wireMockRule.port() + "/log4j-test1.xml");
+        final StubMapping stubMapping = stubFor(get(urlPathEqualTo("/log4j-test1.xml"))
+        .willReturn(aResponse()
+        .withBodyFile(file)
+        .withStatus(200)
+        .withHeader("Last-Modified", formatter.format(previous) + " GMT")
+        .withHeader("Content-Type", XML)));
         final ConfigurationScheduler scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
         final WatchManager watchManager = new WatchManager(scheduler);
@@ -128,22 +128,22 @@ public class WatchHttpTest {
 
     @Test
     public void testNotModified() throws Exception {
-        BlockingQueue<String> queue = new LinkedBlockingQueue<>();
-        List<ConfigurationListener> listeners = new ArrayList<>();
+        final BlockingQueue<String> queue = new LinkedBlockingQueue<>();
+        final List<ConfigurationListener> listeners = new ArrayList<>();
         listeners.add(new TestConfigurationListener(queue, "log4j-test2.xml"));
-        TimeZone timeZone = TimeZone.getTimeZone("UTC");
-        Calendar now = Calendar.getInstance(timeZone);
-        Calendar previous = now;
+        final TimeZone timeZone = TimeZone.getTimeZone("UTC");
+        final Calendar now = Calendar.getInstance(timeZone);
+        final Calendar previous = now;
         previous.add(Calendar.MINUTE, -5);
-        Configuration configuration = new DefaultConfiguration();
+        final Configuration configuration = new DefaultConfiguration();
         Assume.assumeTrue(!IS_WINDOWS || Boolean.getBoolean(FORCE_RUN_KEY));
-        URL url = new URL("http://localhost:" + wireMockRule.port() + "/log4j-test2.xml");
-        StubMapping stubMapping = stubFor(get(urlPathEqualTo("/log4j-test2.xml"))
-            .willReturn(aResponse()
-                .withBodyFile(file)
-                .withStatus(304)
-                .withHeader("Last-Modified", formatter.format(now) + " GMT")
-                .withHeader("Content-Type", XML)));
+        final URL url = new URL("http://localhost:" + wireMockRule.port() + "/log4j-test2.xml");
+        final StubMapping stubMapping = stubFor(get(urlPathEqualTo("/log4j-test2.xml"))
+        .willReturn(aResponse()
+        .withBodyFile(file)
+        .withStatus(304)
+        .withHeader("Last-Modified", formatter.format(now) + " GMT")
+        .withHeader("Content-Type", XML)));
         final ConfigurationScheduler scheduler = new ConfigurationScheduler();
         scheduler.incrementScheduledItems();
         final WatchManager watchManager = new WatchManager(scheduler);
@@ -166,13 +166,13 @@ public class WatchHttpTest {
         private final Queue<String> queue;
         private final String name;
 
-        public TestConfigurationListener(final Queue<String> queue, String name) {
+        public TestConfigurationListener(final Queue<String> queue, final String name) {
             this.queue = queue;
             this.name = name;
         }
 
         @Override
-        public void onChange(Reconfigurable reconfigurable) {
+        public void onChange(final Reconfigurable reconfigurable) {
             //System.out.println("Reconfiguration detected for " + name);
             queue.add(name);
         }

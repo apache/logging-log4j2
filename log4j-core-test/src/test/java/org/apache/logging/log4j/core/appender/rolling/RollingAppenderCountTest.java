@@ -47,9 +47,9 @@ public class RollingAppenderCountTest extends AbstractRollingListenerTest {
 
     @BeforeAll
     public static void beforeClass() throws Exception {
-        Path dir = Path.of(DIR);
+        final Path dir = Path.of(DIR);
         if (Files.exists(dir)) {
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
+            try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(dir)) {
                 for (final Path path : directoryStream) {
                     Files.delete(path);
                 }
@@ -59,7 +59,7 @@ public class RollingAppenderCountTest extends AbstractRollingListenerTest {
         if (Files.notExists(dir)) {
             Files.createDirectory(dir);
         }
-        Path target = dir.resolve(TARGET + System.currentTimeMillis());
+        final Path target = dir.resolve(TARGET + System.currentTimeMillis());
         Files.copy(Paths.get(SOURCE, FILENAME), target, StandardCopyOption.COPY_ATTRIBUTES);
     }
 

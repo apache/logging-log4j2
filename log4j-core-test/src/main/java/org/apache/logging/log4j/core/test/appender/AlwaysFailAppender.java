@@ -28,7 +28,7 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
 @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
 @Plugin("AlwaysFail")
-public class AlwaysFailAppender extends AbstractAppender {
+public final class AlwaysFailAppender extends AbstractAppender {
 
     private AlwaysFailAppender(final String name) {
         super(name, null, null, false, null);

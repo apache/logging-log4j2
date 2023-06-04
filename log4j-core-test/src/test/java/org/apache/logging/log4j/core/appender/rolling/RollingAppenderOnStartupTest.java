@@ -72,11 +72,11 @@ public class RollingAppenderOnStartupTest {
         for (int i = 3; i < 10; ++i) {
             logger.debug(PREFIX + i);
         }
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(DIR)) {
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(DIR)) {
             for (final Path path : directoryStream) {
                 if (path.toFile().getName().startsWith(ROLLED)) {
                     rolled = true;
-                    List<String> lines = Files.readAllLines(path);
+                    final List<String> lines = Files.readAllLines(path);
                     assertTrue(lines.size() > 0, "No messages in " + path.toFile().getName());
                     assertTrue(lines.get(0).startsWith(PREFIX + "1"), "Missing message for " + path.toFile().getName());
                 }

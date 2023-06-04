@@ -31,7 +31,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 public class FactoryMethodConnectionSourceTest {
-    private static ThreadLocal<Object> holder = new ThreadLocal<>();
+    private static final ThreadLocal<Object> holder = new ThreadLocal<>();
     private static final String CONFIG = "log4j-fatalOnly.xml";
 
     @ClassRule

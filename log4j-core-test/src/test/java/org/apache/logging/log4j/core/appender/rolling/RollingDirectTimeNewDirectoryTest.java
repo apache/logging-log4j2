@@ -53,11 +53,11 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
         final Logger logger = context.getLogger(RollingDirectTimeNewDirectoryTest.class.getName());
 
         for (int count = 0; count < 2; ++count) {
-            long start = System.currentTimeMillis();
+            final long start = System.currentTimeMillis();
             for (int i = 0; i < 50; i++) {
                 logger.info("nHq6p9kgfvWfjzDRYbZp");
             }
-            long end = System.currentTimeMillis();
+            final long end = System.currentTimeMillis();
             if (end < start + 1000) {
                 Thread.sleep(start + 1000 - end);
             }
@@ -68,9 +68,9 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
 
         rollover.await();
 
-        File logDir = new File(DIR);
+        final File logDir = new File(DIR);
         assertThat(logDir).isNotEmptyDirectory();
-        File[] logFolders = logDir.listFiles();
+        final File[] logFolders = logDir.listFiles();
         assertNotNull(logFolders);
         Arrays.sort(logFolders);
 
@@ -85,7 +85,7 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
                 if (ignored != null && logFolder.getAbsolutePath().equals(ignored)) {
                     continue;
                 }
-                File[] logFiles = logFolder.listFiles();
+                final File[] logFiles = logFolder.listFiles();
                 if (logFiles != null) {
                     Arrays.sort(logFiles);
                 }
@@ -93,7 +93,7 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
             }
 
         } catch (AssertionError error) {
-            StringBuilder sb = new StringBuilder(error.getMessage()).append(" log directory (").append(DIR).append(") contents: [");
+            final StringBuilder sb = new StringBuilder(error.getMessage()).append(" log directory (").append(DIR).append(") contents: [");
             final Iterator<File> fileIterator =
                     FileUtils.iterateFilesAndDirs(
                             logDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
@@ -113,12 +113,12 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
     }
 
     @Override
-    public void rolloverTriggered(String fileName) {
+    public void rolloverTriggered(final String fileName) {
     }
 
     @Override
     public void rolloverComplete(final String fileName) {
-        File file = new File(fileName);
+        final File file = new File(fileName);
         if (isFirst && file.length() == 0) {
             isFirst = false;
             ignored = file.getParentFile().getAbsolutePath();

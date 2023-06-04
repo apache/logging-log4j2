@@ -26,7 +26,7 @@ import org.apache.logging.log4j.spi.LoggerContextFactory;
  */
 public class TestLoggerContextFactory implements LoggerContextFactory {
 
-    private static LoggerContext context = new TestLoggerContext();
+    private static final LoggerContext context = new TestLoggerContext();
 
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,

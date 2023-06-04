@@ -145,7 +145,7 @@ public class TimeFormatBenchmark {
         return new String(state.stringBuilder);
     }
 
-    int formatCharArrayBitFiddling(final long time, final char[] buffer, int pos) {
+    int formatCharArrayBitFiddling(final long time, final char[] buffer, final int pos) {
         // Calculate values by getting the ms values first and do then
         // shave off the hour minute and second values with multiplications
         // and bit shifts instead of simple but expensive divisions.
@@ -255,7 +255,7 @@ public class TimeFormatBenchmark {
         return buffer;
     }
 
-    int formatCharArray(final long time, final char[] buffer, int pos) {
+    int formatCharArray(final long time, final char[] buffer, final int pos) {
         // Calculate values by getting the ms values first and do then
         // calculate the hour minute and second values divisions.
 

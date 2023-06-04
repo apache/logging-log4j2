@@ -142,30 +142,30 @@ public class XmlCompleteFileAppenderTest {
         logger.info(secondLogMsg);
         CoreLoggerContexts.stopLoggerContext(false, logFile); // stop async thread
 
-        int[] indentations = {
-                0, //"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                0, //"<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">\n"
-                -1, // empty
-                2, //"  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\" loggerName=\"com.foo.Bar\" endOfBatch=\"true\" loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n"
-                4, //"    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\" nanoOfMillisecond=\"0\"/>\n"
-                4, //"    <Message>First Msg tag must be in level 2 after correct indentation</Message>\n" +
-                2, //"  </Event>\n"
-                -1, // empty
-                2, //"  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\" loggerName=\"com.foo.Bar\" endOfBatch=\"true\" loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n" +
-                4, //"    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\" nanoOfMillisecond=\"0\"/>\n" +
-                4, //"    <Message>Second Msg tag must also be in level 2 after correct indentation</Message>\n" +
-                2, //"  </Event>\n" +
-                0, //"</Events>\n";
+        final int[] indentations = {
+            0, //"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            0, //"<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">\n"
+            -1, // empty
+            2, //"  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\" loggerName=\"com.foo.Bar\" endOfBatch=\"true\" loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n"
+            4, //"    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\" nanoOfMillisecond=\"0\"/>\n"
+            4, //"    <Message>First Msg tag must be in level 2 after correct indentation</Message>\n" +
+            2, //"  </Event>\n"
+            -1, // empty
+            2, //"  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\" loggerName=\"com.foo.Bar\" endOfBatch=\"true\" loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n" +
+            4, //"    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\" nanoOfMillisecond=\"0\"/>\n" +
+            4, //"    <Message>Second Msg tag must also be in level 2 after correct indentation</Message>\n" +
+            2, //"  </Event>\n" +
+            0, //"</Events>\n";
         };
-        List<String> lines1 = Files.readAllLines(logFile.toPath(), Charset.forName("UTF-8"));
+        final List<String> lines1 = Files.readAllLines(logFile.toPath(), Charset.forName("UTF-8"));
 
         assertEquals("number of lines", indentations.length, lines1.size());
         for (int i = 0; i < indentations.length; i++) {
-            String line = lines1.get(i);
+            final String line = lines1.get(i);
             if (line.trim().isEmpty()) {
                 assertEquals(-1, indentations[i]);
             } else {
-                String padding = "        ".substring(0, indentations[i]);
+                final String padding = "        ".substring(0, indentations[i]);
                 assertTrue("Expected " + indentations[i] + " leading spaces but got: " + line, line.startsWith(padding));
             }
         }

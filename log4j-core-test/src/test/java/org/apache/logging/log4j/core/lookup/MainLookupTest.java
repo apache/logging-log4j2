@@ -31,14 +31,14 @@ public class MainLookupTest {
     @Test
     public void testMainArgs(){
         MainMapLookup.setMainArguments("--file", "foo.txt", "--verbose", "-x", "bar");
-        String str ="${key} ${main:-1} ${main:0} ${main:1} ${main:2} ${main:3} ${main:4} ${main:\\--file} ${main:foo.txt} ${main:\\--verbose} ${main:\\-x} ${main:bar} ${main:\\--quiet:-true}";
-        Map<String, String> properties =  new HashMap<String, String>();
+        final String str = "${key} ${main:-1} ${main:0} ${main:1} ${main:2} ${main:3} ${main:4} ${main:\\--file} ${main:foo.txt} ${main:\\--verbose} ${main:\\-x} ${main:bar} ${main:\\--quiet:-true}";
+        final Map<String, String> properties = new HashMap<String, String>();
         properties.put("key", "value");
         properties.put("bar", "default_bar_value");
-        Interpolator lookup = new Interpolator(properties);
-        StrSubstitutor substitutor = new StrSubstitutor(lookup);
-        String replacedValue = substitutor.replace(null, str);
-        String[] values = replacedValue.split(" ");
+        final Interpolator lookup = new Interpolator(properties);
+        final StrSubstitutor substitutor = new StrSubstitutor(lookup);
+        final String replacedValue = substitutor.replace(null, str);
+        final String[] values = replacedValue.split(" ");
         assertEquals("value", values[0], "Item 0 is incorrect ");
         assertEquals("1", values[1], "Item 1 is incorrect ");
         assertEquals("--file", values[2], "Item 2 is incorrect");

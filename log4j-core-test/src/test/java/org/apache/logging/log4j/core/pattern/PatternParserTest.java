@@ -46,7 +46,7 @@ public class PatternParserTest {
     LoggerContext ctx = LoggerContext.getContext();
     Logger root = ctx.getRootLogger();
 
-    private static String msgPattern = "%m%n";
+    private static final String msgPattern = "%m%n";
     private final String mdcMsgPattern1 = "%m : %X%n";
     private final String mdcMsgPattern2 = "%m : %X{key1}%n";
     private final String mdcMsgPattern3 = "%m : %X{key2}%n";
@@ -54,12 +54,12 @@ public class PatternParserTest {
     private final String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
     private final String deeplyNestedPattern = "%notEmpty{ %maxLen{%X{var}}{3} }";
 
-    private static String badPattern = "[%d{yyyyMMdd HH:mm:ss,SSS] %-5p [%c{10}] - %m%n";
-    private static String customPattern = "[%d{yyyyMMdd HH:mm:ss,SSS}] %-5p [%-25.25c{1}:%-4L] - %m%n";
-    private static String patternTruncateFromEnd = "%d; %-5p %5.-5c %m%n";
-    private static String patternTruncateFromBeginning = "%d; %-5p %5.5c %m%n";
-    private static String nestedPatternHighlight =
-            "%highlight{%d{dd MMM yyyy HH:mm:ss,SSS}{GMT+0} [%t] %-5level: %msg%n%throwable}";
+    private static final String badPattern = "[%d{yyyyMMdd HH:mm:ss,SSS] %-5p [%c{10}] - %m%n";
+    private static final String customPattern = "[%d{yyyyMMdd HH:mm:ss,SSS}] %-5p [%-25.25c{1}:%-4L] - %m%n";
+    private static final String patternTruncateFromEnd = "%d; %-5p %5.-5c %m%n";
+    private static final String patternTruncateFromBeginning = "%d; %-5p %5.5c %m%n";
+    private static final String nestedPatternHighlight =
+    "%highlight{%d{dd MMM yyyy HH:mm:ss,SSS}{GMT+0} [%t] %-5level: %msg%n%throwable}";
 
     private static final String KEY = "Converter";
     private PatternParser parser;
@@ -407,7 +407,7 @@ public class PatternParserTest {
         final List<PatternFormatter> formatters = parser.parse("%K");
         assertNotNull(formatters);
         assertEquals(formatters.size(), 1);
-        PatternFormatter formatter = formatters.get(0);
+        final PatternFormatter formatter = formatters.get(0);
         assertTrue(formatter.getConverter() instanceof MapPatternConverter, "Expected a MapPatternConverter");
     }
 }

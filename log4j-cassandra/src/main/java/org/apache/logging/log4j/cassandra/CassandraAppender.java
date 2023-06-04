@@ -39,10 +39,10 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
  */
 @Configurable(elementType = CassandraAppender.ELEMENT_TYPE, printObject = true)
 @Plugin("Cassandra")
-public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager> {
+public final class CassandraAppender extends AbstractDatabaseAppender<CassandraManager> {
 
     private CassandraAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-            Property[] properties, final CassandraManager manager) {
+            final Property[] properties, final CassandraManager manager) {
         super(name, filter, null, ignoreExceptions, properties, manager);
     }
 

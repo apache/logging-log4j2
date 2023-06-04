@@ -31,7 +31,7 @@ public class StackLocatorUtilTest {
 
     @Test
     public void testStackTraceEquivalence() throws Throwable {
-        StackTraceElement[] stackTraceElements = expectedStack(new Throwable().getStackTrace());
+        final StackTraceElement[] stackTraceElements = expectedStack(new Throwable().getStackTrace());
         for (int i = 1; i < 10; i++) {
             final String expected = stackTraceElements[i-1].getClassName();
             final String actual = StackLocatorUtil.getCallerClass(i).getName();
@@ -42,8 +42,8 @@ public class StackLocatorUtilTest {
         }
     }
 
-    private StackTraceElement[] expectedStack(StackTraceElement[] elements) {
-        StackTraceElement[] elementArray = new StackTraceElement[10];
+    private StackTraceElement[] expectedStack(final StackTraceElement[] elements) {
+        final StackTraceElement[] elementArray = new StackTraceElement[10];
         int i = 0;
         for (int index = 0; index < 10;) {
             if (elements[i].getClassName().startsWith("org.")) {

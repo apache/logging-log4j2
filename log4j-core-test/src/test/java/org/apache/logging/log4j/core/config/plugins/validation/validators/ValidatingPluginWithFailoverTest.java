@@ -52,13 +52,13 @@ public class ValidatingPluginWithFailoverTest {
     @BeforeEach
     public void setUp() throws Exception {
         final PluginNamespace category = injector.getInstance(Core.PLUGIN_NAMESPACE_KEY);
-        PluginType<?> plugin = category.get("Failover");
+        final PluginType<?> plugin = category.get("Failover");
         assertNotNull(plugin, "Rebuild this module to make sure annotation processing kicks in.");
 
-        AppenderRef appenderRef = AppenderRef.createAppenderRef("List", Level.ALL, null);
+        final AppenderRef appenderRef = AppenderRef.createAppenderRef("List", Level.ALL, null);
         node = new Node(null, "failover", plugin);
-        Node failoversNode = new Node(node, "Failovers", category.get("Failovers"));
-        Node appenderRefNode  = new Node(failoversNode, "appenderRef", category.get("appenderRef"));
+        final Node failoversNode = new Node(node, "Failovers", category.get("Failovers"));
+        final Node appenderRefNode = new Node(failoversNode, "appenderRef", category.get("appenderRef"));
         appenderRefNode.getAttributes().put("ref", "file");
         appenderRefNode.setObject(appenderRef);
         failoversNode.getChildren().add(appenderRefNode);

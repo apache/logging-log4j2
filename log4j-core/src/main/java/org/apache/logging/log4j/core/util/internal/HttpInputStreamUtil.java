@@ -45,12 +45,12 @@ public final class HttpInputStreamUtil {
             final AuthorizationProvider authorizationProvider) {
         final Result result = new Result();
         try {
-            long lastModified = source.getLastModified();
-            HttpURLConnection connection = UrlConnectionFactory.createConnection(source.getURI().toURL(),
+            final long lastModified = source.getLastModified();
+            final HttpURLConnection connection = UrlConnectionFactory.createConnection(source.getURI().toURL(),
                     lastModified, SslConfigurationFactory.getSslConfiguration(), authorizationProvider);
             connection.connect();
             try {
-                int code = connection.getResponseCode();
+                final int code = connection.getResponseCode();
                 switch (code) {
                     case NOT_MODIFIED: {
                         LOGGER.debug("Configuration not modified");
@@ -63,7 +63,7 @@ public final class HttpInputStreamUtil {
                         return result;
                     }
                     case OK: {
-                        try (InputStream is = connection.getInputStream()) {
+                        try (final InputStream is = connection.getInputStream()) {
                             source.setLastModified(connection.getLastModified());
                             LOGGER.debug("Content was modified for {}. previous lastModified: {}, new lastModified: {}",
                                     source.toString(), lastModified, connection.getLastModified());
@@ -71,7 +71,7 @@ public final class HttpInputStreamUtil {
                             result.inputStream = new ByteArrayInputStream(readStream(is));
                             return result;
                         } catch (final IOException e) {
-                            try (InputStream es = connection.getErrorStream()) {
+                            try (final InputStream es = connection.getErrorStream()) {
                                 LOGGER.info("Error accessing configuration at {}: {}", source.toString(),
                                         readStream(es));
                             } catch (final IOException ioe) {
@@ -120,7 +120,7 @@ public final class HttpInputStreamUtil {
         public Result() {
         }
 
-        public Result(Status status) {
+        public Result(final Status status) {
             this.status = status;
         }
 

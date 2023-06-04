@@ -51,14 +51,14 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     }
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
+    public void beforeAll(final ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
         AnnotationSupport.findAnnotation(testClass, LoggerContextSource.class)
                 .ifPresent(testSource -> setUpLoggerContext(testSource, context));
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(final ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
         if (AnnotationSupport.isAnnotated(testClass, LoggerContextSource.class)) {
             final Store testClassStore = context.getStore(BASE_NAMESPACE.append(testClass));
@@ -82,7 +82,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
+    public void afterEach(final ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
         if (AnnotationSupport.isAnnotated(testClass, LoggerContextSource.class)) {
             final Store testClassStore = getTestStore(context);
@@ -94,11 +94,11 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
 
     @Override
     public LoggerContext resolveParameter(
-            ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+            final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
         return getLoggerContext(extensionContext);
     }
 
-    static LoggerContext getLoggerContext(ExtensionContext context) {
+    static LoggerContext getLoggerContext(final ExtensionContext context) {
         final Store store = getTestStore(context);
         final LoggerContextAccessor accessor = store.get(LoggerContextAccessor.class, LoggerContextAccessor.class);
         assertNotNull(accessor);
@@ -139,7 +139,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         return context;
     }
 
-    private static class ContextHolder implements Store.CloseableResource, LoggerContextAccessor {
+    private static final class ContextHolder implements Store.CloseableResource, LoggerContextAccessor {
         private final LoggerContext context;
         private final long shutdownTimeout;
         private final TimeUnit unit;

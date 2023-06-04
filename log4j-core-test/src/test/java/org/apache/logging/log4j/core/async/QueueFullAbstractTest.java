@@ -39,7 +39,7 @@ public abstract class QueueFullAbstractTest {
     protected BlockingAppender blockingAppender;
     protected Unlocker unlocker;
 
-    protected static void TRACE(Object msg) {
+    protected static void TRACE(final Object msg) {
         if (TRACE) {
             System.out.println(msg);
         }
@@ -47,7 +47,7 @@ public abstract class QueueFullAbstractTest {
 
     class Unlocker extends Thread {
         final CountDownLatch countDownLatch;
-        Unlocker(CountDownLatch countDownLatch) {
+        Unlocker(final CountDownLatch countDownLatch) {
             this.countDownLatch = countDownLatch;
         }
         @Override
@@ -68,7 +68,7 @@ public abstract class QueueFullAbstractTest {
     class DomainObject {
         private Logger innerLogger = LogManager.getLogger(DomainObject.class);
         final int count;
-        DomainObject(int loggingCount) {
+        DomainObject(final int loggingCount) {
             this.count = loggingCount;
         }
 
@@ -87,7 +87,7 @@ public abstract class QueueFullAbstractTest {
     static Stack transform(final List<LogEvent> logEvents) {
         final List<String> filtered = getMessages(logEvents);
         Collections.reverse(filtered);
-        Stack<String> result = new Stack<>();
+        final Stack<String> result = new Stack<>();
         result.addAll(filtered);
         return result;
     }
@@ -100,25 +100,25 @@ public abstract class QueueFullAbstractTest {
         return filtered;
     }
 
-    static long asyncRemainingCapacity(Logger logger) {
+    static long asyncRemainingCapacity(final Logger logger) {
         if (logger instanceof AsyncLogger) {
             try {
-                Field f = field(AsyncLogger.class, "loggerDisruptor");
+                final Field f = field(AsyncLogger.class, "loggerDisruptor");
                 return ((AsyncLoggerDisruptor) f.get(logger)).getDisruptor().getRingBuffer().remainingCapacity();
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         } else {
-            LoggerConfig loggerConfig = ((org.apache.logging.log4j.core.Logger) logger).get();
+            final LoggerConfig loggerConfig = ((org.apache.logging.log4j.core.Logger) logger).get();
             if (loggerConfig instanceof AsyncLoggerConfig) {
                 try {
-                    Object delegate = field(AsyncLoggerConfig.class, "delegate").get(loggerConfig);
+                    final Object delegate = field(AsyncLoggerConfig.class, "delegate").get(loggerConfig);
                     return ((Disruptor) field(AsyncLoggerConfigDisruptor.class, "disruptor").get(delegate)).getRingBuffer().remainingCapacity();
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
             } else {
-                Appender async = loggerConfig.getAppenders().get("async");
+                final Appender async = loggerConfig.getAppenders().get("async");
                 if (async instanceof AsyncAppender) {
                     return ((AsyncAppender) async).getQueueCapacity();
                 }
@@ -126,8 +126,8 @@ public abstract class QueueFullAbstractTest {
         }
         throw new IllegalStateException("Neither Async Loggers nor AsyncAppender are configured");
     }
-    private static Field field(Class<?> c, String name) throws NoSuchFieldException {
-        Field f = c.getDeclaredField(name);
+    private static Field field(final Class<?> c, final String name) throws NoSuchFieldException {
+        final Field f = c.getDeclaredField(name);
         f.setAccessible(true);
         return f;
     }

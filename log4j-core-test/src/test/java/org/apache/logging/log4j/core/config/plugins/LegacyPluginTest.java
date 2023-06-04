@@ -37,14 +37,14 @@ public class LegacyPluginTest {
         assertThat(configuration, instanceOf(XmlConfiguration.class));
         for (Map.Entry<String, Appender> entry : configuration.getAppenders().entrySet()) {
             if (entry.getKey().equalsIgnoreCase("console")) {
-                Layout layout = entry.getValue().getLayout();
+                final Layout layout = entry.getValue().getLayout();
                 assertNotNull("No layout for Console Appender");
-                String name = layout.getClass().getSimpleName();
+                final String name = layout.getClass().getSimpleName();
                 assertEquals("LogstashLayout", name, "Incorrect Layout class. Expected LogstashLayout, Actual " + name);
             } else if (entry.getKey().equalsIgnoreCase("customConsole")) {
-                Layout layout = entry.getValue().getLayout();
+                final Layout layout = entry.getValue().getLayout();
                 assertNotNull("No layout for CustomConsole Appender");
-                String name = layout.getClass().getSimpleName();
+                final String name = layout.getClass().getSimpleName();
                 assertEquals("CustomConsoleLayout",
                         name, "Incorrect Layout class. Expected CustomConsoleLayout, Actual " + name);
             }

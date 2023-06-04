@@ -50,7 +50,7 @@ public class RegexReplacementTest {
     @Test
     public void testReplacement() {
         logger.error(this.getClass().getName());
-        List<String> msgs = app.getMessages();
+        final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
         assertTrue(
@@ -61,7 +61,7 @@ public class RegexReplacementTest {
     public void testMessageReplacement() {
         ThreadContext.put("MyKey", "Apache");
         logger.error("This is a test for ${ctx:MyKey}");
-        List<String> msgs = app.getMessages();
+        final List<String> msgs = app.getMessages();
         assertNotNull(msgs);
         assertEquals(1, msgs.size(), "Incorrect number of messages. Should be 1 is " + msgs.size());
         assertEquals("LoggerTest This is a test for ${ctx:MyKey}" + Strings.LINE_SEPARATOR, msgs.get(0));

@@ -42,7 +42,7 @@ public class Log4jShutdownOnContextDestroyedListenerTest {
 
     private Log4jShutdownOnContextDestroyedListener listener;
 
-    public void setUp(boolean mockInitializer) {
+    public void setUp(final boolean mockInitializer) {
         this.listener = new Log4jShutdownOnContextDestroyedListener();
         given(event.getServletContext()).willReturn(servletContext);
         if (mockInitializer) {

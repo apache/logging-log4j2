@@ -72,7 +72,7 @@ public class RollingAppenderRestartTest implements RolloverListener {
         tearDown();
         Files.createDirectories(DIR);
         Files.write(FILE, "Hello, world".getBytes(), StandardOpenOption.CREATE);
-        FileTime newTime = FileTime.from(Instant.now().minus(2, ChronoUnit.DAYS));
+        final FileTime newTime = FileTime.from(Instant.now().minus(2, ChronoUnit.DAYS));
         Files
                 .getFileAttributeView(FILE, BasicFileAttributeView.class)
                 .setTimes(newTime, newTime, newTime);
@@ -103,12 +103,12 @@ public class RollingAppenderRestartTest implements RolloverListener {
     }
 
     @Override
-    public void rolloverTriggered(String fileName) {
+    public void rolloverTriggered(final String fileName) {
 
     }
 
     @Override
-    public void rolloverComplete(String fileName) {
+    public void rolloverComplete(final String fileName) {
         latch.countDown();
     }
 }

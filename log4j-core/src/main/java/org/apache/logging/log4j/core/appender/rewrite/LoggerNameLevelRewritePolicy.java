@@ -37,7 +37,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  */
 @Configurable(elementType = "rewritePolicy", printObject = true)
 @Plugin("LoggerNameLevelRewritePolicy")
-public class LoggerNameLevelRewritePolicy implements RewritePolicy {
+public final class LoggerNameLevelRewritePolicy implements RewritePolicy {
 
     /**
      * Creates a policy to rewrite levels for a given logger name.

@@ -44,11 +44,11 @@ public class InstantAttributeConverter implements AttributeConverter<Instant, St
             return null;
         }
 
-        int pos = s.indexOf(",");
-        long epochSecond = Long.parseLong(s.substring(0, pos));
-        int nanos = Integer.parseInt(s.substring(pos + 1, s.length()));
+        final int pos = s.indexOf(",");
+        final long epochSecond = Long.parseLong(s.substring(0, pos));
+        final int nanos = Integer.parseInt(s.substring(pos + 1, s.length()));
 
-        MutableInstant result = new MutableInstant();
+        final MutableInstant result = new MutableInstant();
         result.initFromEpochSecond(epochSecond, nanos);
         return result;
     }

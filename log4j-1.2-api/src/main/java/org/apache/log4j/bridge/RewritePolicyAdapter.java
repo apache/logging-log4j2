@@ -32,13 +32,13 @@ public class RewritePolicyAdapter implements org.apache.logging.log4j.core.appen
      * Constructor.
      * @param policy The Rewrite policy.
      */
-    public RewritePolicyAdapter(RewritePolicy policy) {
+    public RewritePolicyAdapter(final RewritePolicy policy) {
         this.policy = policy;
     }
 
     @Override
-    public LogEvent rewrite(LogEvent source) {
-        LoggingEvent event = policy.rewrite(new LogEventAdapter(source));
+    public LogEvent rewrite(final LogEvent source) {
+        final LoggingEvent event = policy.rewrite(new LogEventAdapter(source));
         return event instanceof LogEventAdapter ? ((LogEventAdapter) event).getEvent() : new LogEventWrapper(event);
     }
 

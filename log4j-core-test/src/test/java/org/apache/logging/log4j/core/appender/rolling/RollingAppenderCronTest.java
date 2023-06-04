@@ -65,7 +65,7 @@ public class RollingAppenderCronTest extends AbstractRollingListenerTest impleme
 
         final Path src = Path.of("target", "test-classes", "log4j-rolling-cron2.xml");
         context.addPropertyChangeListener(this);
-        try (OutputStream os = Files.newOutputStream(Path.of("target", "test-classes", "log4j-rolling-cron.xml"))) {
+        try (final OutputStream os = Files.newOutputStream(Path.of("target", "test-classes", "log4j-rolling-cron.xml"))) {
             Files.copy(src, os);
         }
         currentTimeMillis.addAndGet(5000);

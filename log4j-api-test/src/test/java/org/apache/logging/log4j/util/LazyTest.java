@@ -48,60 +48,60 @@ class LazyTest {
 
     @Test
     void strictLazy() {
-        AtomicInteger counter = new AtomicInteger();
-        Lazy<Integer> lazy = Lazy.lazy(() -> {
-            int value = counter.incrementAndGet();
+        final AtomicInteger counter = new AtomicInteger();
+        final Lazy<Integer> lazy = Lazy.lazy(() -> {
+            final int value = counter.incrementAndGet();
             // simulate some computation
             runCatching(() -> Thread.sleep(16));
             return value;
         });
-        int threads = 3;
-        CyclicBarrier barrier = new CyclicBarrier(threads);
-        List<Thread> runners = IntStream.range(0, threads)
-                .mapToObj(i -> {
-                    Thread thread = new Thread(threadGroup, () -> runCatching(() -> {
-                        barrier.await();
-                        lazy.get();
-                    }));
-                    thread.start();
-                    return thread;
-                })
-                .collect(Collectors.toList());
+        final int threads = 3;
+        final CyclicBarrier barrier = new CyclicBarrier(threads);
+        final List<Thread> runners = IntStream.range(0, threads)
+        .mapToObj(i -> {
+            final Thread thread = new Thread(threadGroup, () -> runCatching(() -> {
+                barrier.await();
+                lazy.get();
+            }));
+            thread.start();
+            return thread;
+        })
+        .collect(Collectors.toList());
         runners.forEach(thread -> runCatching(thread::join));
         assertThat(counter.get()).isEqualTo(1);
     }
 
     @Test
     void relaxedLazy() {
-        AtomicInteger counter = new AtomicInteger();
-        int nrThreads = 3;
-        int[] values = ThreadLocalRandom.current()
-                .ints(nrThreads)
-                .map(i -> 100 + i % 50)
-                .toArray();
-        int[] runs = new int[nrThreads];
-        Lazy<Integer> lazy = Lazy.relaxed(() -> {
-            int id = counter.getAndIncrement();
-            int value = values[id];
+        final AtomicInteger counter = new AtomicInteger();
+        final int nrThreads = 3;
+        final int[] values = ThreadLocalRandom.current()
+        .ints(nrThreads)
+        .map(i -> 100 + i % 50)
+        .toArray();
+        final int[] runs = new int[nrThreads];
+        final Lazy<Integer> lazy = Lazy.relaxed(() -> {
+            final int id = counter.getAndIncrement();
+            final int value = values[id];
             runs[id] = value;
             runCatching(() -> Thread.sleep(value));
             return value;
         });
-        CyclicBarrier barrier = new CyclicBarrier(nrThreads);
-        List<Thread> threads = IntStream.range(0, nrThreads)
-                .mapToObj(i -> {
-                    Thread thread = new Thread(threadGroup, () -> runCatching(() -> {
-                        barrier.await();
-                        lazy.get();
-                    }));
-                    thread.start();
-                    return thread;
-                })
-                .collect(Collectors.toList());
+        final CyclicBarrier barrier = new CyclicBarrier(nrThreads);
+        final List<Thread> threads = IntStream.range(0, nrThreads)
+        .mapToObj(i -> {
+            final Thread thread = new Thread(threadGroup, () -> runCatching(() -> {
+                barrier.await();
+                lazy.get();
+            }));
+            thread.start();
+            return thread;
+        })
+        .collect(Collectors.toList());
         while (!lazy.isInitialized()) {
             runCatching(() -> Thread.sleep(1));
         }
-        int result = lazy.get();
+        final int result = lazy.get();
         threads.forEach(thread -> runCatching(thread::join));
         assertThat(counter.get()).isEqualTo(nrThreads);
         assertThat(lazy.get()).isEqualTo(result);
@@ -112,7 +112,7 @@ class LazyTest {
     void strictLazyRace() {
         racyTest(3, 5000,
                 () -> {
-                    AtomicInteger counter = new AtomicInteger();
+                    final AtomicInteger counter = new AtomicInteger();
                     return Lazy.lazy(counter::incrementAndGet);
                 },
                 (lazy, ignored) -> lazy.value(),
@@ -127,7 +127,7 @@ class LazyTest {
                 result -> result.stream().allMatch(v -> Objects.equals(v, result.get(0))));
     }
 
-    void runCatching(ThrowingRunnable runnable) {
+    void runCatching(final ThrowingRunnable runnable) {
         try {
             runnable.run();
         } catch (Throwable e) {
@@ -135,14 +135,14 @@ class LazyTest {
         }
     }
 
-    <S, T> void racyTest(int nrThreads, int runs, Supplier<S> stateInitializer,
-                         BiFunction<S, Integer, T> run, Predicate<List<T>> resultsValidator) {
-        List<T> runResult = Collections.synchronizedList(new ArrayList<>());
-        List<Map.Entry<Integer, List<T>>> invalidResults = Collections.synchronizedList(new ArrayList<>());
-        AtomicInteger currentRunId = new AtomicInteger(0);
-        AtomicReference<S> state = new AtomicReference<>();
-        CyclicBarrier barrier = new CyclicBarrier(nrThreads, () -> {
-            int runId = currentRunId.getAndIncrement();
+    <S, T> void racyTest(final int nrThreads, final int runs, final Supplier<S> stateInitializer,
+                         final BiFunction<S, Integer, T> run, final Predicate<List<T>> resultsValidator) {
+        final List<T> runResult = Collections.synchronizedList(new ArrayList<>());
+        final List<Map.Entry<Integer, List<T>>> invalidResults = Collections.synchronizedList(new ArrayList<>());
+        final AtomicInteger currentRunId = new AtomicInteger(0);
+        final AtomicReference<S> state = new AtomicReference<>();
+        final CyclicBarrier barrier = new CyclicBarrier(nrThreads, () -> {
+            final int runId = currentRunId.getAndIncrement();
             if (runId > 0) {
                 if (!resultsValidator.test(runResult)) {
                     invalidResults.add(Map.entry(runId, List.copyOf(runResult)));
@@ -151,19 +151,19 @@ class LazyTest {
             }
             state.set(stateInitializer.get());
         });
-        List<Thread> runners = IntStream.range(0, nrThreads)
-                .mapToObj(i -> {
-                    Thread thread = new Thread(threadGroup, () -> runCatching(() -> {
-                        barrier.await();
-                        for (int j = 0; j < runs; j++) {
-                            runResult.add(run.apply(state.get(), j));
-                            barrier.await();
-                        }
-                    }));
-                    thread.start();
-                    return thread;
-                })
-                .collect(Collectors.toList());
+        final List<Thread> runners = IntStream.range(0, nrThreads)
+        .mapToObj(i -> {
+            final Thread thread = new Thread(threadGroup, () -> runCatching(() -> {
+                barrier.await();
+                for (int j = 0; j < runs; j++) {
+                    runResult.add(run.apply(state.get(), j));
+                    barrier.await();
+                }
+            }));
+            thread.start();
+            return thread;
+        })
+        .collect(Collectors.toList());
         runners.forEach(thread -> runCatching(thread::join));
         assertThat(invalidResults).isEmpty();
     }

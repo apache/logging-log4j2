@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class InjectionPoint<T> {
+public final class InjectionPoint<T> {
     private final Key<T> key;
     private final Collection<String> aliases;
     private final Member member;

@@ -93,7 +93,7 @@ public class LogManager extends java.util.logging.LogManager {
     @Override
     public Logger getLogger(final String name) {
         LOGGER.trace("Call to LogManager.getLogger({})", name);
-        Set<String> activeRequests = recursive.get();
+        final Set<String> activeRequests = recursive.get();
         if (activeRequests.add(name)) {
             try {
                 return loggerAdapter.getLogger(name);

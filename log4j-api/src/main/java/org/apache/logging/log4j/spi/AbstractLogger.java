@@ -2009,7 +2009,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
     }
 
     private static void decrementRecursionDepth() {
-        int newDepth = --getRecursionDepthHolder()[0];
+        final int newDepth = --getRecursionDepthHolder()[0];
         if (newDepth < 0) {
             throw new IllegalStateException("Recursion depth became negative: " + newDepth);
         }
@@ -2761,9 +2761,9 @@ public abstract class AbstractLogger implements ExtendedLogger {
      *
      * @since 2.20.0
      */
-    protected LogBuilder getLogBuilder(Level level) {
+    protected LogBuilder getLogBuilder(final Level level) {
         if (Constants.ENABLE_THREADLOCALS) {
-            DefaultLogBuilder builder = logBuilder.get();
+            final DefaultLogBuilder builder = logBuilder.get();
             if (!builder.isInUse()) {
                 return builder.reset(this, level);
             }

@@ -38,7 +38,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Configurable(elementType = Arbiter.ELEMENT_TYPE, deferChildren = true, printObject = true)
 @Plugin
-public class ScriptArbiter implements Arbiter {
+public final class ScriptArbiter implements Arbiter {
 
     private final Script script;
     private final Configuration configuration;

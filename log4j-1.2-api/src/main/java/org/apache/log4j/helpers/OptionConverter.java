@@ -40,7 +40,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * A convenience class to convert property values to specific types.
  */
-public class OptionConverter {
+public final class OptionConverter {
 
     private static class CharMap {
         final char key;
@@ -121,7 +121,7 @@ public class OptionConverter {
         return StandardLevel.ALL.intLevel();
     }
 
-    static int toLog4j1Level(int v2Level) {
+    static int toLog4j1Level(final int v2Level) {
         if (v2Level == StandardLevel.ALL.intLevel()) {
             return Priority.ALL_INT;
         }
@@ -139,7 +139,7 @@ public class OptionConverter {
         return Priority.OFF_INT;
     }
 
-    static int toSyslogLevel(int v2Level) {
+    static int toSyslogLevel(final int v2Level) {
         if (v2Level <= StandardLevel.FATAL.intLevel()) {
             return 0;
         }
@@ -682,7 +682,7 @@ public class OptionConverter {
 
         private static final long serialVersionUID = -7693936267612508528L;
 
-        protected LevelWrapper(org.apache.logging.log4j.Level v2Level) {
+        protected LevelWrapper(final org.apache.logging.log4j.Level v2Level) {
             super(toLog4j1Level(v2Level.intLevel()), v2Level.name(), toSyslogLevel(v2Level.intLevel()), v2Level);
         }
 

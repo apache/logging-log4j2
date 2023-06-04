@@ -173,7 +173,7 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
         return new String(chars);
     }
 
-    protected void set(final String name, final Element element, AtomicBoolean ref) {
+    protected void set(final String name, final Element element, final AtomicBoolean ref) {
         final String value = getValueAttribute(element);
         if (value == null) {
             LOGGER.warn("No value for {} parameter, using default {}", name, ref);
@@ -182,7 +182,7 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
         }
     }
 
-    protected void set(final String name, final Element element, AtomicInteger ref) {
+    protected void set(final String name, final Element element, final AtomicInteger ref) {
         final String value = getValueAttribute(element);
         if (value == null) {
             LOGGER.warn("No value for {} parameter, using default {}", name, ref);
@@ -195,7 +195,7 @@ public abstract class AbstractBuilder<T> implements Builder<T> {
         }
     }
 
-    protected void set(final String name, final Element element, AtomicReference<String> ref) {
+    protected void set(final String name, final Element element, final AtomicReference<String> ref) {
         final String value = getValueAttribute(element);
         if (value == null) {
             LOGGER.warn("No value for {} parameter, using default {}", name, ref);

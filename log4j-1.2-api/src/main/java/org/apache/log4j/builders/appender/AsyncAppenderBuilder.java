@@ -145,7 +145,7 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
         for (final String appenderRef : appenderRefs) {
             refs[index++] = AppenderRef.createAppenderRef(appenderRef, logLevel, null);
         }
-        Builder builder = AsyncAppender.newBuilder();
+        final Builder builder = AsyncAppender.newBuilder();
         builder.setFilter(FilterAdapter.adapt(filter));
         return AppenderWrapper.adapt(builder.setName(name)
                 .setAppenderRefs(refs)

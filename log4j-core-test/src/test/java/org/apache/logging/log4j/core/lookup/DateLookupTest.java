@@ -64,7 +64,7 @@ public class DateLookupTest {
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = { "bananas" })
-    public void testInvalidKey(String key) {
+    public void testInvalidKey(final String key) {
         // For invalid keys without event, the current time in default format should be returned.
         // Checking this may depend on locale and exact time, and could become flaky.
         // Therefore we just check that the result isn't null and that (formatting) exceptions are caught.

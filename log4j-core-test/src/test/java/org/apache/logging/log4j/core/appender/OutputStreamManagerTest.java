@@ -53,16 +53,16 @@ public class OutputStreamManagerTest {
 
     @Test
     public void testOutputStreamAppenderFlushClearsBufferOnException() {
-        IOException exception = new IOException();
+        final IOException exception = new IOException();
         final OutputStream throwingOutputStream = new OutputStream() {
             @Override
-            public void write(int b) throws IOException {
+            public void write(final int b) throws IOException {
                 throw exception;
             }
         };
 
         final int bufferSize = 3;
-        OutputStreamManager outputStreamManager = new OutputStreamManager(throwingOutputStream, "test", null, false, bufferSize);
+        final OutputStreamManager outputStreamManager = new OutputStreamManager(throwingOutputStream, "test", null, false, bufferSize);
 
         for (int i = 0; i < bufferSize - 1; i++) {
             outputStreamManager.getByteBuffer().put((byte) 0);
@@ -70,7 +70,7 @@ public class OutputStreamManagerTest {
 
         assertEquals(outputStreamManager.getByteBuffer().remaining(), 1);
 
-        AppenderLoggingException appenderLoggingException = assertThrows(AppenderLoggingException.class, () -> outputStreamManager.flushBuffer(outputStreamManager.getByteBuffer()));
+        final AppenderLoggingException appenderLoggingException = assertThrows(AppenderLoggingException.class, () -> outputStreamManager.flushBuffer(outputStreamManager.getByteBuffer()));
         assertEquals(appenderLoggingException.getCause(), exception);
 
         assertEquals(outputStreamManager.getByteBuffer().limit(), outputStreamManager.getByteBuffer().capacity());

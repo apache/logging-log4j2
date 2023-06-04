@@ -97,7 +97,7 @@ public class LogBuilderMarkerFilterBenchmark {
     public void tearDown() throws IOException {
         System.clearProperty("log4j2.configurationFile");
         LogManager.shutdown();
-        Path filePath = Paths.get(fileName);
+        final Path filePath = Paths.get(fileName);
         if (Files.isRegularFile(filePath)) {
             Files.deleteIfExists(filePath);
         }

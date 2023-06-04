@@ -24,16 +24,16 @@ public class ThreadGroupRenderer implements ObjectRenderer {
 
     @Override
     public
-    String  doRender(Object obj) {
+    String  doRender(final Object obj) {
         if(obj instanceof ThreadGroup) {
-            StringBuilder sb = new StringBuilder();
-            ThreadGroup threadGroup = (ThreadGroup) obj;
+            final StringBuilder sb = new StringBuilder();
+            final ThreadGroup threadGroup = (ThreadGroup) obj;
             sb.append("java.lang.ThreadGroup[name=");
             sb.append(threadGroup.getName());
             sb.append(", maxpri=");
             sb.append(threadGroup.getMaxPriority());
             sb.append("]");
-            Thread[] threads = new Thread[threadGroup.activeCount()];
+            final Thread[] threads = new Thread[threadGroup.activeCount()];
             threadGroup.enumerate(threads);
             for (Thread thread : threads) {
                 sb.append(Layout.LINE_SEP);

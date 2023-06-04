@@ -57,7 +57,7 @@ public class KubernetesClientProperties {
     private final PropertyEnvironment props = PropertiesUtil.getProperties();
     private final Config base;
 
-    public KubernetesClientProperties(Config base) {
+    public KubernetesClientProperties(final Config base) {
         this.base = base;
     }
 
@@ -98,7 +98,7 @@ public class KubernetesClientProperties {
     }
 
     public int getConnectionTimeout() {
-        Duration timeout = props.getDurationProperty(PREFIXES, CONNECTION_TIMEOUT, null);
+        final Duration timeout = props.getDurationProperty(PREFIXES, CONNECTION_TIMEOUT, null);
         if (timeout != null) {
             return (int) timeout.toMillis();
         }
@@ -114,7 +114,7 @@ public class KubernetesClientProperties {
     }
 
     public int getLoggingInterval() {
-        Duration interval = props.getDurationProperty(PREFIXES, LOGGING_INTERVAL, null);
+        final Duration interval = props.getDurationProperty(PREFIXES, LOGGING_INTERVAL, null);
         if (interval != null) {
             return (int) interval.toMillis();
         }
@@ -130,7 +130,7 @@ public class KubernetesClientProperties {
     }
 
     public String[] getNoProxy() {
-        String result = props.getStringProperty(PREFIXES, NO_PROXY, null);
+        final String result = props.getStringProperty(PREFIXES, NO_PROXY, null);
         if (result != null) {
             return result.replace("\\s", "").split(",");
         }
@@ -150,7 +150,7 @@ public class KubernetesClientProperties {
     }
 
     public int getRequestTimeout() {
-        Duration interval = props.getDurationProperty(PREFIXES, REQUEST_TIMEOUT, null);
+        final Duration interval = props.getDurationProperty(PREFIXES, REQUEST_TIMEOUT, null);
         if (interval != null) {
             return (int) interval.toMillis();
         }
@@ -158,7 +158,7 @@ public class KubernetesClientProperties {
     }
 
     public long getRollingTimeout() {
-        Duration interval = props.getDurationProperty(PREFIXES, ROLLING_TIMEOUT, null);
+        final Duration interval = props.getDurationProperty(PREFIXES, ROLLING_TIMEOUT, null);
         if (interval != null) {
             return interval.toMillis();
         }
@@ -174,7 +174,7 @@ public class KubernetesClientProperties {
     }
 
     public int getWatchReconnectInterval() {
-        Duration interval = props.getDurationProperty(PREFIXES, WATCH_RECONNECT_INTERVAL, null);
+        final Duration interval = props.getDurationProperty(PREFIXES, WATCH_RECONNECT_INTERVAL, null);
         if (interval != null) {
             return (int) interval.toMillis();
         }
@@ -182,7 +182,7 @@ public class KubernetesClientProperties {
     }
 
     public int getWatchReconnectLimit() {
-        Duration interval = props.getDurationProperty(PREFIXES, WATCH_RECONNECT_LIMIT, null);
+        final Duration interval = props.getDurationProperty(PREFIXES, WATCH_RECONNECT_LIMIT, null);
         if (interval != null) {
             return (int) interval.toMillis();
         }

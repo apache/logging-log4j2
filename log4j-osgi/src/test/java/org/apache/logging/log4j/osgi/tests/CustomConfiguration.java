@@ -78,7 +78,7 @@ public class CustomConfiguration extends AbstractConfiguration {
         private final List<LogEvent> events = Collections.<LogEvent>synchronizedList(new ArrayList<>());
 
         @Override
-        public void append(LogEvent event) {
+        public void append(final LogEvent event) {
             events.add(event.toImmutable());
         }
 
@@ -103,7 +103,7 @@ public class CustomConfiguration extends AbstractConfiguration {
         }
 
         @Override
-        public void setHandler(ErrorHandler handler) {
+        public void setHandler(final ErrorHandler handler) {
         }
 
         public List<LogEvent> getEvents() {

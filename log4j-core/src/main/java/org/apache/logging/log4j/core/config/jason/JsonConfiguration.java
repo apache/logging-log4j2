@@ -221,7 +221,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
     /**
      * Status for recording errors.
      */
-    private static class Status {
+    private static final class Status {
         private final Object node;
         private final String name;
         private final ErrorType errorType;

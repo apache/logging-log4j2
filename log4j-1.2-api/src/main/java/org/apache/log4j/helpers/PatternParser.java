@@ -74,7 +74,7 @@ public class PatternParser {
     protected FormattingInfo formattingInfo = new FormattingInfo();
     protected String pattern;
 
-    public PatternParser(String pattern) {
+    public PatternParser(final String pattern) {
         this.pattern = pattern;
         patternLength = pattern.length();
         state = LITERAL_STATE;
@@ -91,9 +91,9 @@ public class PatternParser {
 
     protected String extractOption() {
         if ((i < patternLength) && (pattern.charAt(i) == '{')) {
-            int end = pattern.indexOf('}', i);
+            final int end = pattern.indexOf('}', i);
             if (end > i) {
-                String r = pattern.substring(i + 1, end);
+                final String r = pattern.substring(i + 1, end);
                 i = end + 1;
                 return r;
             }
@@ -105,7 +105,7 @@ public class PatternParser {
      * The option is expected to be in decimal and positive. In case of error, zero is returned.
      */
     protected int extractPrecisionOption() {
-        String opt = extractOption();
+        final String opt = extractOption();
         int r = 0;
         if (opt != null) {
             try {
@@ -232,7 +232,7 @@ public class PatternParser {
         case 'd':
             String dateFormatStr = AbsoluteTimeDateFormat.ISO8601_DATE_FORMAT;
             DateFormat df;
-            String dOpt = extractOption();
+            final String dOpt = extractOption();
             if (dOpt != null)
                 dateFormatStr = dOpt;
 
@@ -315,7 +315,7 @@ public class PatternParser {
             currentLiteral.setLength(0);
             break;
         case 'X':
-            String xOpt = extractOption();
+            final String xOpt = extractOption();
             pc = new MDCPatternConverter(formattingInfo, xOpt);
             currentLiteral.setLength(0);
             break;
@@ -345,12 +345,12 @@ public class PatternParser {
     private static class BasicPatternConverter extends PatternConverter {
         int type;
 
-        BasicPatternConverter(FormattingInfo formattingInfo, int type) {
+        BasicPatternConverter(final FormattingInfo formattingInfo, final int type) {
             super(formattingInfo);
             this.type = type;
         }
 
-        public String convert(LoggingEvent event) {
+        public String convert(final LoggingEvent event) {
             switch (type) {
             case RELATIVE_TIME_CONVERTER:
                 return (Long.toString(event.timeStamp - LoggingEvent.getStartTime()));
@@ -372,15 +372,15 @@ public class PatternParser {
     private static class LiteralPatternConverter extends PatternConverter {
         private String literal;
 
-        LiteralPatternConverter(String value) {
+        LiteralPatternConverter(final String value) {
             literal = value;
         }
 
-        public final void format(StringBuffer sbuf, LoggingEvent event) {
+        public final void format(final StringBuffer sbuf, final LoggingEvent event) {
             sbuf.append(literal);
         }
 
-        public String convert(LoggingEvent event) {
+        public String convert(final LoggingEvent event) {
             return literal;
         }
     }
@@ -389,13 +389,13 @@ public class PatternParser {
         private DateFormat df;
         private Date date;
 
-        DatePatternConverter(FormattingInfo formattingInfo, DateFormat df) {
+        DatePatternConverter(final FormattingInfo formattingInfo, final DateFormat df) {
             super(formattingInfo);
             date = new Date();
             this.df = df;
         }
 
-        public String convert(LoggingEvent event) {
+        public String convert(final LoggingEvent event) {
             date.setTime(event.timeStamp);
             String converted = null;
             try {
@@ -410,17 +410,17 @@ public class PatternParser {
     private static class MDCPatternConverter extends PatternConverter {
         private String key;
 
-        MDCPatternConverter(FormattingInfo formattingInfo, String key) {
+        MDCPatternConverter(final FormattingInfo formattingInfo, final String key) {
             super(formattingInfo);
             this.key = key;
         }
 
-        public String convert(LoggingEvent event) {
+        public String convert(final LoggingEvent event) {
             if (key == null) {
-                StringBuffer buf = new StringBuffer("{");
-                Map properties = event.getProperties();
+                final StringBuffer buf = new StringBuffer("{");
+                final Map properties = event.getProperties();
                 if (properties.size() > 0) {
-                    Object[] keys = properties.keySet().toArray();
+                    final Object[] keys = properties.keySet().toArray();
                     Arrays.sort(keys);
                     for (int i = 0; i < keys.length; i++) {
                         buf.append('{');
@@ -433,7 +433,7 @@ public class PatternParser {
                 buf.append('}');
                 return buf.toString();
             } else {
-                Object val = event.getMDC(key);
+                final Object val = event.getMDC(key);
                 if (val == null) {
                     return null;
                 } else {
@@ -446,13 +446,13 @@ public class PatternParser {
     private class LocationPatternConverter extends PatternConverter {
         int type;
 
-        LocationPatternConverter(FormattingInfo formattingInfo, int type) {
+        LocationPatternConverter(final FormattingInfo formattingInfo, final int type) {
             super(formattingInfo);
             this.type = type;
         }
 
-        public String convert(LoggingEvent event) {
-            LocationInfo locationInfo = event.getLocationInformation();
+        public String convert(final LoggingEvent event) {
+            final LocationInfo locationInfo = event.getLocationInformation();
             switch (type) {
             case FULL_LOCATION_CONVERTER:
                 return locationInfo.fullInfo;
@@ -471,19 +471,19 @@ public class PatternParser {
     private static abstract class NamedPatternConverter extends PatternConverter {
         int precision;
 
-        NamedPatternConverter(FormattingInfo formattingInfo, int precision) {
+        NamedPatternConverter(final FormattingInfo formattingInfo, final int precision) {
             super(formattingInfo);
             this.precision = precision;
         }
 
         abstract String getFullyQualifiedName(LoggingEvent event);
 
-        public String convert(LoggingEvent event) {
-            String n = getFullyQualifiedName(event);
+        public String convert(final LoggingEvent event) {
+            final String n = getFullyQualifiedName(event);
             if (precision <= 0)
                 return n;
             else {
-                int len = n.length();
+                final int len = n.length();
 
                 // We substract 1 from 'len' when assigning to 'end' to avoid out of
                 // bounds exception in return r.substring(end+1, len). This can happen if
@@ -501,22 +501,22 @@ public class PatternParser {
 
     private class ClassNamePatternConverter extends NamedPatternConverter {
 
-        ClassNamePatternConverter(FormattingInfo formattingInfo, int precision) {
+        ClassNamePatternConverter(final FormattingInfo formattingInfo, final int precision) {
             super(formattingInfo, precision);
         }
 
-        String getFullyQualifiedName(LoggingEvent event) {
+        String getFullyQualifiedName(final LoggingEvent event) {
             return event.getLocationInformation().getClassName();
         }
     }
 
     private class CategoryPatternConverter extends NamedPatternConverter {
 
-        CategoryPatternConverter(FormattingInfo formattingInfo, int precision) {
+        CategoryPatternConverter(final FormattingInfo formattingInfo, final int precision) {
             super(formattingInfo, precision);
         }
 
-        String getFullyQualifiedName(LoggingEvent event) {
+        String getFullyQualifiedName(final LoggingEvent event) {
             return event.getLoggerName();
         }
     }

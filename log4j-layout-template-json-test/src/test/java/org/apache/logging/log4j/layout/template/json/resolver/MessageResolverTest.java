@@ -183,7 +183,7 @@ class MessageResolverTest {
                 "message", asMap("$resolver", "message")));
 
         // Create the layout.
-        JsonTemplateLayout layout = JsonTemplateLayout
+        final JsonTemplateLayout layout = JsonTemplateLayout
                 .newBuilder()
                 .setConfiguration(CONFIGURATION)
                 .setStackTraceEnabled(true)

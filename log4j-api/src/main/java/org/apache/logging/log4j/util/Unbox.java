@@ -47,7 +47,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class Unbox {
+public final class Unbox {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int BITS_PER_INT = 32;
     private static final int RINGBUFFER_MIN_SIZE = 32;

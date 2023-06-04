@@ -32,13 +32,13 @@ public class PluginCacheTest {
 
     @Test
     public void testOutputIsReproducibleWhenInputOrderingChanges() throws IOException {
-        PluginCache cacheA = new PluginCache();
+        final PluginCache cacheA = new PluginCache();
         createCategory(cacheA, "one", Arrays.asList("bravo", "alpha", "charlie"));
         createCategory(cacheA, "two", Arrays.asList("alpha", "charlie", "bravo"));
         assertEquals(cacheA.getAllNamespaces().size(), 2);
         assertEquals(cacheA.getAllNamespaces().get("one").size(), 3);
         assertEquals(cacheA.getAllNamespaces().get("two").size(), 3);
-        PluginCache cacheB = new PluginCache();
+        final PluginCache cacheB = new PluginCache();
         createCategory(cacheB, "two", Arrays.asList("bravo", "alpha", "charlie"));
         createCategory(cacheB, "one", Arrays.asList("alpha", "charlie", "bravo"));
         assertEquals(cacheB.getAllNamespaces().size(), 2);
@@ -47,8 +47,8 @@ public class PluginCacheTest {
         assertEquals(Objects.toString(cacheA.getAllNamespaces()), Objects.toString(cacheB.getAllNamespaces()));
     }
 
-    private void createCategory(PluginCache cache, String categoryName, List<String> entryNames) {
-        Map<String, PluginEntry> category = cache.getNamespace(categoryName);
+    private void createCategory(final PluginCache cache, final String categoryName, final List<String> entryNames) {
+        final Map<String, PluginEntry> category = cache.getNamespace(categoryName);
         for (String entryName: entryNames) {
             final PluginEntry entry = PluginEntry.builder()
                     .setKey(entryName)

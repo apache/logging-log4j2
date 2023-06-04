@@ -59,7 +59,7 @@ public class PropertiesPropertySource extends ContextAwarePropertySource
 
     @Override
     public void forEach(final BiConsumer<String, String> action) {
-        Properties properties = propertiesMap.get(SYSTEM_CONTEXT);
+        final Properties properties = propertiesMap.get(SYSTEM_CONTEXT);
         if (properties != null) {
             for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
                 action.accept(((String) entry.getKey()), ((String) entry.getValue()));
@@ -75,15 +75,15 @@ public class PropertiesPropertySource extends ContextAwarePropertySource
 
     @Override
     public void reload() {
-        Map<String, Properties> map = parseProperties(properties);
+        final Map<String, Properties> map = parseProperties(properties);
         propertiesMap.putAll(map);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PropertiesPropertySource that = (PropertiesPropertySource) o;
+        final PropertiesPropertySource that = (PropertiesPropertySource) o;
         return priority == that.priority && propertiesMap.equals(that.propertiesMap);
     }
 

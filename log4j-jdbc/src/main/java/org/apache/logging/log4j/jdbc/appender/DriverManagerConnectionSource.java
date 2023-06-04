@@ -58,7 +58,7 @@ public class DriverManagerConnectionSource extends AbstractDriverManagerConnecti
     }
 
     public DriverManagerConnectionSource(final String driverClassName, final String connectionString,
-            String actualConnectionString, final char[] userName, final char[] password, final Property[] properties) {
+            final String actualConnectionString, final char[] userName, final char[] password, final Property[] properties) {
         super(driverClassName, connectionString, actualConnectionString, userName, password, properties);
     }
 

@@ -65,7 +65,7 @@ public class HighlightConverterTest {
 
     @Test
     public void testLevelNamesBad() {
-        String colorName = "red";
+        final String colorName = "red";
         final String[] options = { "%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "
                 + PatternParser.DISABLE_ANSI + "=false, " + "BAD_LEVEL_A=" + colorName + ", BAD_LEVEL_B=" + colorName };
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
@@ -76,7 +76,7 @@ public class HighlightConverterTest {
 
     @Test
     public void testLevelNamesGood() {
-        String colorName = "red";
+        final String colorName = "red";
         final String[] options = { "%-5level: %msg", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "
                 + PatternParser.DISABLE_ANSI + "=false, " + "DEBUG=" + colorName + ", TRACE=" + colorName };
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
@@ -111,7 +111,7 @@ public class HighlightConverterTest {
 
     @Test
     public void testLevelNamesUnknown() {
-        String colorName = "blue";
+        final String colorName = "blue";
         final String[] options = { "%level", PatternParser.NO_CONSOLE_NO_ANSI + "=false, "
                 + PatternParser.DISABLE_ANSI + "=false, " + "DEBUG=" + colorName + ", CUSTOM1=" + colorName };
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
@@ -143,7 +143,7 @@ public class HighlightConverterTest {
 
     @Test
     @UsingStatusListener
-    public void testNoAnsiEmpty(ListStatusListener listener) {
+    public void testNoAnsiEmpty(final ListStatusListener listener) {
         final String[] options = {"", PatternParser.DISABLE_ANSI + "=true"};
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);
@@ -158,7 +158,7 @@ public class HighlightConverterTest {
 
     @Test
     @UsingStatusListener
-    public void testNoAnsiNonEmpty(ListStatusListener listener) {
+    public void testNoAnsiNonEmpty(final ListStatusListener listener) {
         final String[] options = {"%-5level: %msg", PatternParser.DISABLE_ANSI + "=true"};
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);

@@ -94,7 +94,7 @@ public class LoggerTest {
 
     @Test
     public void flowTracingMessage() {
-        Properties props = new Properties();
+        final Properties props = new Properties();
         props.setProperty("foo", "bar");
         logger.traceEntry(new JsonMessage(props));
         final Response response = new Response(-1, "Generic error");
@@ -279,7 +279,7 @@ public class LoggerTest {
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
     }
 
-    private static void assertMessageFactoryInstanceOf(MessageFactory factory, final Class<?> cls) {
+    private static void assertMessageFactoryInstanceOf(final MessageFactory factory, final Class<?> cls) {
         assertTrue(factory.getClass().isAssignableFrom(cls));
     }
 
@@ -357,7 +357,7 @@ public class LoggerTest {
     }
 
     private void assertEqualMessageFactory(final MessageFactory messageFactory, final TestLogger testLogger) {
-        MessageFactory actual = testLogger.getMessageFactory();
+        final MessageFactory actual = testLogger.getMessageFactory();
         assertEquals(messageFactory, actual);
     }
 
@@ -571,7 +571,7 @@ public class LoggerTest {
     public void mdc() {
         ThreadContext.put("TestYear", Integer.valueOf(2010).toString());
         logger.debug("Debug message");
-        String testYear = ThreadContext.get("TestYear");
+        final String testYear = ThreadContext.get("TestYear");
         assertNotNull(testYear, "Test Year is null");
         assertEquals("2010", testYear, "Incorrect test year: " + testYear);
         ThreadContext.clearMap();

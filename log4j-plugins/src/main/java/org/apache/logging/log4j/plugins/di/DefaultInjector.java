@@ -597,7 +597,7 @@ class DefaultInjector implements Injector {
             final Constraint constraint, final Class<? extends Annotation> annotationType) {
         for (final Type type : constraint.value().getGenericInterfaces()) {
             if (type instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) type;
+                final ParameterizedType parameterizedType = (ParameterizedType) type;
                 if (parameterizedType.getRawType() == ConstraintValidator.class &&
                         parameterizedType.getActualTypeArguments()[0] == annotationType) {
                     return true;

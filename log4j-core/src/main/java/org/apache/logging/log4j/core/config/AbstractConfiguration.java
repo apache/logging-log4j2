@@ -653,7 +653,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             final Node first = rootNode.getChildren().get(0);
             createConfiguration(first, null);
             if (first.getObject() != null) {
-                StrLookup lookup = first.getObject();
+                final StrLookup lookup = first.getObject();
                 if (lookup instanceof LoggerContextAware) {
                     ((LoggerContextAware) lookup).setLoggerContext(loggerContext.get());
                 }
@@ -663,7 +663,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         } else {
             final Map<String, String> map = this.getComponent(CONTEXT_PROPERTIES);
             final StrLookup lookup = map == null ? null : new PropertiesLookup(map);
-            Interpolator interpolator = interpolatorFactory.newInterpolator(lookup);
+            final Interpolator interpolator = interpolatorFactory.newInterpolator(lookup);
             interpolator.setLoggerContext(loggerContext.get());
             runtimeStrSubstitutor.setVariableResolver(interpolator);
             configurationStrSubstitutor.setVariableResolver(interpolator);
@@ -705,7 +705,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 copy.add(child.getObject(CustomLevelConfig.class));
                 customLevels = copy;
             } else if (child.isInstanceOf(AsyncWaitStrategyFactoryConfig.class)) {
-                AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
+                final AsyncWaitStrategyFactoryConfig awsfc = child.getObject(AsyncWaitStrategyFactoryConfig.class);
                 asyncWaitStrategyFactory = awsfc.createWaitStrategyFactory();
             } else {
                 final List<String> expected = Arrays.asList("\"Appenders\"", "\"Loggers\"", "\"Properties\"",

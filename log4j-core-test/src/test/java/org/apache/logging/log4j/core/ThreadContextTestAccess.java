@@ -36,8 +36,8 @@ public final class ThreadContextTestAccess {
 
     public static void init() {
         try {
-            Class<ThreadContext> clazz = ThreadContext.class;
-            Method method = clazz.getDeclaredMethod("init");
+            final Class<ThreadContext> clazz = ThreadContext.class;
+            final Method method = clazz.getDeclaredMethod("init");
             method.setAccessible(true);
             method.invoke(null);
         } catch (Exception ex) {

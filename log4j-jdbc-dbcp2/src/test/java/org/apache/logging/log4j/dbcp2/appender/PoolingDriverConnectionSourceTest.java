@@ -27,7 +27,7 @@ import org.junit.Test;
 public class PoolingDriverConnectionSourceTest {
 
     private void openAndClose(final PoolingDriverConnectionSource source) throws SQLException {
-        try (Connection conn = source.getConnection()) {
+        try (final Connection conn = source.getConnection()) {
             Assert.assertFalse(conn.isClosed());
         } finally {
             source.stop();
@@ -93,7 +93,7 @@ public class PoolingDriverConnectionSourceTest {
 
     @Test
     public void testPoolableConnectionFactoryConfig() throws SQLException {
-        PoolableConnectionFactoryConfig poolableConnectionFactoryConfig = PoolableConnectionFactoryConfig.newBuilder().setMaxConnLifetimeMillis(30000).build();
+        final PoolableConnectionFactoryConfig poolableConnectionFactoryConfig = PoolableConnectionFactoryConfig.newBuilder().setMaxConnLifetimeMillis(30000).build();
         // @formatter:off
         final PoolingDriverConnectionSource source = PoolingDriverConnectionSource.newPoolingDriverConnectionSourceBuilder()
             .setConnectionString(JdbcH2TestHelper.CONNECTION_STRING_IN_MEMORY)

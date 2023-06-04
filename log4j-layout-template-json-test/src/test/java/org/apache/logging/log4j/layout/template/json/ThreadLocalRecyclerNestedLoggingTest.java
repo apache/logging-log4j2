@@ -41,7 +41,7 @@ public class ThreadLocalRecyclerNestedLoggingTest {
 
         private final Logger logger;
 
-        private ThrowableLoggingInGetMessage(Logger logger) {
+        private ThrowableLoggingInGetMessage(final Logger logger) {
             this.logger = logger;
         }
 

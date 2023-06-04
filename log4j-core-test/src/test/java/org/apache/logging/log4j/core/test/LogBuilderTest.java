@@ -52,7 +52,7 @@ public class LogBuilderTest {
     private ListAppender appender;
 
     @BeforeEach
-    public void setupAppender(LoggerContext context, @Named("LIST") ListAppender appender) {
+    public void setupAppender(final LoggerContext context, @Named("LIST") final ListAppender appender) {
         this.logger = context.getLogger(getClass());
         this.appender = appender;
     }
@@ -79,7 +79,7 @@ public class LogBuilderTest {
 
     @ParameterizedTest
     @MethodSource
-    void testMarkerFilter(Consumer<LogBuilder> consumer) {
+    void testMarkerFilter(final Consumer<LogBuilder> consumer) {
         appender.clear();
         consumer.accept(logger.atTrace().withMarker(MARKER));
         consumer.accept(logger.atTrace().withThrowable(THROWABLE).withMarker(MARKER));

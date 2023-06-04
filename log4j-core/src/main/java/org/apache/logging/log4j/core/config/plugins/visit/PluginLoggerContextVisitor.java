@@ -36,7 +36,7 @@ import org.apache.logging.log4j.util.StringBuilders;
  */
 public class PluginLoggerContextVisitor implements NodeVisitor {
     private static final Logger LOGGER = StatusLogger.getLogger();
-    private LoggerContext loggerContext;
+    private final LoggerContext loggerContext;
 
     @Inject
     public PluginLoggerContextVisitor(final WeakReference<LoggerContext> loggerContext) {

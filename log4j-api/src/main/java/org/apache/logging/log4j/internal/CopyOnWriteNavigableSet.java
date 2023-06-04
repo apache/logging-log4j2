@@ -33,12 +33,12 @@ public class CopyOnWriteNavigableSet<E> extends TreeSet<E> {
     private volatile NavigableSet<E> set;
     private final Comparator<? super E> comparator;
 
-    public CopyOnWriteNavigableSet(Comparator<? super E> comparator) {
+    public CopyOnWriteNavigableSet(final Comparator<? super E> comparator) {
         set = new TreeSet<>(comparator);
         this.comparator = comparator;
     }
 
-    private CopyOnWriteNavigableSet(CopyOnWriteNavigableSet<E> copyOnWriteSet) {
+    private CopyOnWriteNavigableSet(final CopyOnWriteNavigableSet<E> copyOnWriteSet) {
         this.set = new TreeSet<>(copyOnWriteSet.set);
         this.comparator = copyOnWriteSet.comparator;
     }
@@ -69,14 +69,14 @@ public class CopyOnWriteNavigableSet<E> extends TreeSet<E> {
     }
 
     @Override
-    public boolean contains(Object o) {
+    public boolean contains(final Object o) {
         return set.contains(o);
     }
 
     @Override
-    public boolean add(E e) {
-        NavigableSet<E> newSet = new TreeSet<E>(set);
-        boolean result = newSet.add(e);
+    public boolean add(final E e) {
+        final NavigableSet<E> newSet = new TreeSet<E>(set);
+        final boolean result = newSet.add(e);
         if (result) {
             set = newSet;
         }
@@ -84,9 +84,9 @@ public class CopyOnWriteNavigableSet<E> extends TreeSet<E> {
     }
 
     @Override
-    public boolean remove(Object o) {
-        NavigableSet<E> newSet = new TreeSet<E>(set);
-        boolean result = newSet.remove(o);
+    public boolean remove(final Object o) {
+        final NavigableSet<E> newSet = new TreeSet<E>(set);
+        final boolean result = newSet.remove(o);
         if (result) {
             set = newSet;
         }
@@ -95,15 +95,15 @@ public class CopyOnWriteNavigableSet<E> extends TreeSet<E> {
 
     @Override
     public void clear() {
-        NavigableSet<E> newSet = new TreeSet<E>(set);
+        final NavigableSet<E> newSet = new TreeSet<E>(set);
         newSet.clear();
         set = newSet;
     }
 
     @Override
-    public boolean addAll(Collection<? extends E> c) {
-        NavigableSet<E> newSet = new TreeSet<E>(set);
-        boolean result = newSet.addAll(c);
+    public boolean addAll(final Collection<? extends E> c) {
+        final NavigableSet<E> newSet = new TreeSet<E>(set);
+        final boolean result = newSet.addAll(c);
         if (result) {
             set = newSet;
         }
@@ -111,32 +111,32 @@ public class CopyOnWriteNavigableSet<E> extends TreeSet<E> {
     }
 
     @Override
-    public NavigableSet<E> subSet(E fromElement, boolean fromInclusive, E toElement, boolean toInclusive) {
+    public NavigableSet<E> subSet(final E fromElement, final boolean fromInclusive, final E toElement, final boolean toInclusive) {
         return set.subSet(fromElement, fromInclusive, toElement, toInclusive);
     }
 
     @Override
-    public NavigableSet<E> headSet(E toElement, boolean inclusive) {
+    public NavigableSet<E> headSet(final E toElement, final boolean inclusive) {
         return set.headSet(toElement, inclusive);
     }
 
     @Override
-    public NavigableSet<E> tailSet(E fromElement, boolean inclusive) {
+    public NavigableSet<E> tailSet(final E fromElement, final boolean inclusive) {
         return set.tailSet(fromElement, inclusive);
     }
 
     @Override
-    public SortedSet<E> subSet(E fromElement, E toElement) {
+    public SortedSet<E> subSet(final E fromElement, final E toElement) {
         return set.subSet(fromElement, toElement);
     }
 
     @Override
-    public SortedSet<E> headSet(E toElement) {
+    public SortedSet<E> headSet(final E toElement) {
         return set.headSet(toElement);
     }
 
     @Override
-    public SortedSet<E> tailSet(E fromElement) {
+    public SortedSet<E> tailSet(final E fromElement) {
         return set.tailSet(fromElement);
     }
 
@@ -156,22 +156,22 @@ public class CopyOnWriteNavigableSet<E> extends TreeSet<E> {
     }
 
     @Override
-    public E lower(E e) {
+    public E lower(final E e) {
         return set.lower(e);
     }
 
     @Override
-    public E floor(E e) {
+    public E floor(final E e) {
         return set.floor(e);
     }
 
     @Override
-    public E ceiling(E e) {
+    public E ceiling(final E e) {
         return set.ceiling(e);
     }
 
     @Override
-    public E higher(E e) {
+    public E higher(final E e) {
         return set.higher(e);
     }
 
@@ -196,7 +196,7 @@ public class CopyOnWriteNavigableSet<E> extends TreeSet<E> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         return set.equals(o);
     }
 
@@ -206,7 +206,7 @@ public class CopyOnWriteNavigableSet<E> extends TreeSet<E> {
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(final Collection<?> c) {
         return set.removeAll(c);
     }
 
@@ -216,17 +216,17 @@ public class CopyOnWriteNavigableSet<E> extends TreeSet<E> {
     }
 
     @Override
-    public <T> T[] toArray(T[] a) {
+    public <T> T[] toArray(final T[] a) {
         return set.toArray(a);
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(final Collection<?> c) {
         return set.containsAll(c);
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(final Collection<?> c) {
         return set.retainAll(c);
     }
 
@@ -236,14 +236,14 @@ public class CopyOnWriteNavigableSet<E> extends TreeSet<E> {
     }
 
     @Override
-    public <T> T[] toArray(IntFunction<T[]> generator) {
+    public <T> T[] toArray(final IntFunction<T[]> generator) {
         return set.toArray(generator);
     }
 
     @Override
-    public boolean removeIf(Predicate<? super E> filter) {
-        NavigableSet<E> newSet = new TreeSet<E>(set);
-        boolean result = newSet.removeIf(filter);
+    public boolean removeIf(final Predicate<? super E> filter) {
+        final NavigableSet<E> newSet = new TreeSet<E>(set);
+        final boolean result = newSet.removeIf(filter);
         if (result) {
             this.set = newSet;
         }
@@ -261,7 +261,7 @@ public class CopyOnWriteNavigableSet<E> extends TreeSet<E> {
     }
 
     @Override
-    public void forEach(Consumer<? super E> action) {
+    public void forEach(final Consumer<? super E> action) {
         set.forEach(action);
     }
 }

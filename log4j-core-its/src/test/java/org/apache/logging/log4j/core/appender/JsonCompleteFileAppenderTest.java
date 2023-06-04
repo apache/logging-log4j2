@@ -84,24 +84,24 @@ public class JsonCompleteFileAppenderTest {
         logger.error(logMsg, new IllegalArgumentException("badarg"));
         this.loggerContextRule.getLoggerContext().stop(); // stops async thread
 
-        List<String> lines = Files.readAllLines(logFile.toPath(), Charset.forName("UTF8"));
+        final List<String> lines = Files.readAllLines(logFile.toPath(), Charset.forName("UTF8"));
 
-        String[] expected = {
-                "[", // equals
-                "{", // equals
-                "  \"thread\" : \"main\",", //
-                "  \"level\" : \"INFO\",", //
-                "  \"loggerName\" : \"com.foo.Bar\",", //
-                "  \"message\" : \"Message flushed with immediate flush=true\",", //
-                "  \"endOfBatch\" : false,", //
-                "  \"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLogger\",", //
-                "  \"instant\" : {", //
-                "    \"epochSecond\" : 1234567,", //
-                "    \"nanoOfSecond\" : 890000000", //
-                "  },", //
+        final String[] expected = {
+            "[", // equals
+            "{", // equals
+            "  \"thread\" : \"main\",", //
+            "  \"level\" : \"INFO\",", //
+            "  \"loggerName\" : \"com.foo.Bar\",", //
+            "  \"message\" : \"Message flushed with immediate flush=true\",", //
+            "  \"endOfBatch\" : false,", //
+            "  \"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLogger\",", //
+            "  \"instant\" : {", //
+            "    \"epochSecond\" : 1234567,", //
+            "    \"nanoOfSecond\" : 890000000", //
+            "  },", //
         };
         for (int i = 0; i < expected.length; i++) {
-            String line = lines.get(i);
+            final String line = lines.get(i);
             assertTrue("line " + i + " incorrect: [" + line + "], does not contain: [" + expected[i] + ']', line.contains(expected[i]));
         }
         final String location = "testFlushAtEndOfBatch";

@@ -29,7 +29,7 @@ public class OptionConverterTest {
 
     @Test
     public void testSubstVars() {
-        Properties props = new Properties();
+        final Properties props = new Properties();
         props.setProperty("key", "${key}");
         props.setProperty("testKey", "Log4j");
         assertEquals("Value of key is ${key}.", OptionConverter.substVars("Value of key is ${key}.", props));
@@ -44,7 +44,7 @@ public class OptionConverterTest {
      */
     @Test
     public void testAppend() {
-        Properties props = new Properties();
+        final Properties props = new Properties();
         props.setProperty("key", "Key");
         props.setProperty("testKey", "Hello");
         assertEquals("Value of testKey is }",
@@ -57,7 +57,7 @@ public class OptionConverterTest {
      */
     @Test
     public void testAppend2() {
-        Properties props = new Properties();
+        final Properties props = new Properties();
         props.setProperty("test${key", "Hello");
         assertEquals("Value of testKey is Hello}",
                 OptionConverter.substVars("Value of testKey is ${test${key}}", props));
@@ -65,22 +65,22 @@ public class OptionConverterTest {
 
     @Test
     public void testRecursion() {
-        Properties props = new RecursiveProperties();
+        final Properties props = new RecursiveProperties();
         props.setProperty("name", "Neo");
         props.setProperty("greeting", "Hello ${name}");
 
-        String s = props.getProperty("greeting");
+        final String s = props.getProperty("greeting");
         System.out.println("greeting = '"+s+"'");
     }
 
     private static class RecursiveProperties extends Properties {
         @Override
-        public String getProperty(String key)
+        public String getProperty(final String key)
         {
             System.out.println("getProperty for "+key);
             try
             {
-                String val = super.getProperty(key);
+                final String val = super.getProperty(key);
                 // The following call works for log4j 2.17.0 and causes StackOverflowError for 2.17.1
                 // This is because substVars change implementation in 2.17.1 to call StrSubstitutor.replace(val, props)
                 // which calls props.getProperty() for EVERY property making it recursive

@@ -26,7 +26,7 @@ import org.junit.platform.launcher.LauncherSessionListener;
 public class Log4j2LauncherSessionListener implements LauncherSessionListener {
 
     @Override
-    public void launcherSessionOpened(LauncherSession session) {
+    public void launcherSessionOpened(final LauncherSession session) {
         // Prevents `PropertiesUtil` from initializing (and caching the results)
         // in the middle of a test.
         PropertiesUtil.getProperties();

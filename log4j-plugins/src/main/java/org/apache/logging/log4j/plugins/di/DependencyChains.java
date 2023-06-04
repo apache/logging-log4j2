@@ -124,7 +124,7 @@ class DependencyChains {
             return joiner.toString();
         }
 
-        private static class Iter implements Iterator<Key<?>> {
+        private static final class Iter implements Iterator<Key<?>> {
             private LinkedChain current;
 
             private Iter(final LinkedChain current) {

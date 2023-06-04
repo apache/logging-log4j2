@@ -80,7 +80,7 @@ public class ReconfigurationDeadlockTest {
 
         // Start the workers.
         final CountDownLatch workerStartLatch = new CountDownLatch(WORKER_COUNT);
-        List<Future<?>> workerFutures = initiateWorkers(workerStartLatch, executor);
+        final List<Future<?>> workerFutures = initiateWorkers(workerStartLatch, executor);
 
         // Await workers to start and update the config file.
         workerStartLatch.await(10, TimeUnit.SECONDS);
@@ -90,7 +90,7 @@ public class ReconfigurationDeadlockTest {
         for (int workerIndex = 0; workerIndex < WORKER_COUNT; workerIndex++) {
             final Future<?> workerFuture = workerFutures.get(workerIndex);
             try {
-                Object workerResult = workerFuture.get(30, TimeUnit.SECONDS);
+                final Object workerResult = workerFuture.get(30, TimeUnit.SECONDS);
                 Assertions.assertNull(workerResult);
             } catch (final Throwable failure) {
                 final String message = String.format(

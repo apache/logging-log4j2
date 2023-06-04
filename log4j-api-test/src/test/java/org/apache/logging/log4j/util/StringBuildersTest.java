@@ -50,8 +50,8 @@ public class StringBuildersTest {
 
     @Test
     public void escapeJsonCharactersCorrectly() {
-        String jsonValueNotEscaped = "{\"field\n1\":\"value_1\"}";
-        String jsonValueEscaped = "{\\\"field\\n1\\\":\\\"value_1\\\"}";
+        final String jsonValueNotEscaped = "{\"field\n1\":\"value_1\"}";
+        final String jsonValueEscaped = "{\\\"field\\n1\\\":\\\"value_1\\\"}";
 
         StringBuilder sb = new StringBuilder();
         sb.append(jsonValueNotEscaped);
@@ -60,7 +60,7 @@ public class StringBuildersTest {
         assertEquals(jsonValueEscaped, sb.toString());
 
         sb = new StringBuilder();
-        String jsonValuePartiallyEscaped = "{\"field\n1\":\\\"value_1\\\"}";
+        final String jsonValuePartiallyEscaped = "{\"field\n1\":\\\"value_1\\\"}";
         sb.append(jsonValueNotEscaped);
         assertEquals(jsonValueNotEscaped, sb.toString());
         StringBuilders.escapeJson(sb, 10);
@@ -69,10 +69,10 @@ public class StringBuildersTest {
 
     @Test
     public void escapeJsonCharactersISOControl() {
-        String jsonValueNotEscaped = "{\"field\n1\":\"value" + (char) 0x8F + "_1\"}";
-        String jsonValueEscaped = "{\\\"field\\n1\\\":\\\"value\\u008F_1\\\"}";
+        final String jsonValueNotEscaped = "{\"field\n1\":\"value" + (char) 0x8F + "_1\"}";
+        final String jsonValueEscaped = "{\\\"field\\n1\\\":\\\"value\\u008F_1\\\"}";
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(jsonValueNotEscaped);
         assertEquals(jsonValueNotEscaped, sb.toString());
         StringBuilders.escapeJson(sb, 0);
@@ -81,10 +81,10 @@ public class StringBuildersTest {
 
     @Test
     public void escapeXMLCharactersCorrectly() {
-        String xmlValueNotEscaped = "<\"Salt&Peppa'\">";
-        String xmlValueEscaped = "&lt;&quot;Salt&amp;Peppa&apos;&quot;&gt;";
+        final String xmlValueNotEscaped = "<\"Salt&Peppa'\">";
+        final String xmlValueEscaped = "&lt;&quot;Salt&amp;Peppa&apos;&quot;&gt;";
 
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(xmlValueNotEscaped);
         assertEquals(xmlValueNotEscaped, sb.toString());
         StringBuilders.escapeXml(sb, 0);

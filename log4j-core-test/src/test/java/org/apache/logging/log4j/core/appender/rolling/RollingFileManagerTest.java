@@ -39,13 +39,13 @@ public class RollingFileManagerTest {
         class CustomDirectFileRolloverStrategy extends AbstractRolloverStrategy implements DirectFileRolloverStrategy {
             final File file;
 
-            CustomDirectFileRolloverStrategy(File file, StrSubstitutor strSubstitutor) {
+            CustomDirectFileRolloverStrategy(final File file, final StrSubstitutor strSubstitutor) {
                 super(strSubstitutor);
                 this.file = file;
             }
 
             @Override
-            public String getCurrentFileName(RollingFileManager manager) {
+            public String getCurrentFileName(final RollingFileManager manager) {
                 return file.getAbsolutePath();
             }
 
@@ -55,7 +55,7 @@ public class RollingFileManagerTest {
             }
 
             @Override
-            public RolloverDescription rollover(RollingFileManager manager) throws SecurityException {
+            public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
                 return null; // do nothing
             }
         }

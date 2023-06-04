@@ -82,7 +82,7 @@ public class CronTriggeringPolicyTest {
     public void testLoggerContextAndBuilder() {
         assertDoesNotThrow(() ->
         {
-            try (LoggerContext ignored = Configurator.initialize(configuration)) {
+            try (final LoggerContext ignored = Configurator.initialize(configuration)) {
                 testBuilder();
             }
         });
@@ -121,9 +121,9 @@ public class CronTriggeringPolicyTest {
         final CronTriggeringPolicy triggerPolicy = createPolicy();
         final DefaultRolloverStrategy rolloverStrategy = createStrategy();
 
-        try (RollingFileManager fileManager = RollingFileManager.getFileManager("target/testcmd3.log",
-                "target/testcmd3.log.%d{yyyy-MM-dd}", true, true, triggerPolicy, rolloverStrategy, null,
-                PatternLayout.createDefaultLayout(), 0, true, false, null, null, null, configuration)) {
+        try (final RollingFileManager fileManager = RollingFileManager.getFileManager("target/testcmd3.log",
+        "target/testcmd3.log.%d{yyyy-MM-dd}", true, true, triggerPolicy, rolloverStrategy, null,
+        PatternLayout.createDefaultLayout(), 0, true, false, null, null, null, configuration)) {
             assertNotNull(fileManager);
             // trigger rollover
             fileManager.initialize();

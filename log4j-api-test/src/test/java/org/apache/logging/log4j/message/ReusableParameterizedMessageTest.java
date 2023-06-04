@@ -154,13 +154,13 @@ public class ReusableParameterizedMessageTest {
         final ReusableParameterizedMessage msg = new ReusableParameterizedMessage();
         final Throwable EXCEPTION1 = new IllegalAccessError("#1");
         msg.set(testMsg, "msg", EXCEPTION1);
-        List<Object> expected = new LinkedList<>();
+        final List<Object> expected = new LinkedList<>();
         expected.add("msg");
         expected.add(EXCEPTION1);
         final List<Object> actual = new LinkedList<>();
         msg.forEachParameter(new ParameterConsumer<Void>() {
             @Override
-            public void accept(Object parameter, int parameterIndex, Void state) {
+            public void accept(final Object parameter, final int parameterIndex, final Void state) {
                 actual.add(parameter);
             }
         }, null);

@@ -167,9 +167,9 @@ public class WebLookup extends AbstractLookup {
         }
 
         if ("contextPathName".equals(key)) {
-            String path = ctx.getContextPath();
+            final String path = ctx.getContextPath();
             if (path.trim().contains("/")) {
-                String[] fields = path.split("/");
+                final String[] fields = path.split("/");
                 for (String field : fields) {
                     if (field.length() > 0) {
                         return field;

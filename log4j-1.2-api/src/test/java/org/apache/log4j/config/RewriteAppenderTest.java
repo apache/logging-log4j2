@@ -43,13 +43,13 @@ public class RewriteAppenderTest {
     @Test
     @LoggerContextSource(value = "log4j1-rewrite.xml", v1config = true)
     public void testRewrite(final LoggerContext context) {
-        Logger logger = LogManager.getLogger("test");
+        final Logger logger = LogManager.getLogger("test");
         ThreadContext.put("key1", "This is a test");
         ThreadContext.put("hello", "world");
-        long logTime = System.currentTimeMillis();
+        final long logTime = System.currentTimeMillis();
         logger.debug("Say hello");
-        Configuration configuration = context.getConfiguration();
-        Map<String, Appender> appenders = configuration.getAppenders();
+        final Configuration configuration = context.getConfiguration();
+        final Map<String, Appender> appenders = configuration.getAppenders();
         ListAppender eventAppender = null;
         for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
             if (entry.getKey().equals("events")) {
@@ -57,7 +57,7 @@ public class RewriteAppenderTest {
             }
         }
         assertNotNull(eventAppender, "No Event Appender");
-        List<LoggingEvent> events = eventAppender.getEvents();
+        final List<LoggingEvent> events = eventAppender.getEvents();
         assertTrue(events != null && events.size() > 0, "No events");
         assertNotNull(events.get(0).getProperties(), "No properties in the event");
         assertTrue(events.get(0).getProperties().containsKey("key2"), "Key was not inserted");

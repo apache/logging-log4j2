@@ -40,7 +40,7 @@ class JeroMqTestClient implements Callable<List<String>> {
 
     @Override
     public List<String> call() throws Exception {
-        try (ZMQ.Socket subscriber = context.socket(ZMQ.SUB)) {
+        try (final ZMQ.Socket subscriber = context.socket(ZMQ.SUB)) {
             subscriber.connect(endpoint);
             subscriber.subscribe(new byte[0]);
             for (int messageNum = 0; messageNum < receiveCount

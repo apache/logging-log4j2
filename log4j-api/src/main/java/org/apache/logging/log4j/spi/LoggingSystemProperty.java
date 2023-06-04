@@ -201,15 +201,15 @@ public enum LoggingSystemProperty implements PropertyKey {
     private final String key;
     private final String systemKey;
 
-    LoggingSystemProperty(final PropertyComponent component, String name) {
+    LoggingSystemProperty(final PropertyComponent component, final String name) {
         this.component = component;
         this.name = name;
         this.key = component.getName() + Constant.DELIM + name;
         this.systemKey = SYSTEM_PROPERTY_PREFIX + this.key;
     }
 
-    public static LoggingSystemProperty findKey(String component, String name) {
-        String toFind = component + Constant.DELIM + name;
+    public static LoggingSystemProperty findKey(final String component, final String name) {
+        final String toFind = component + Constant.DELIM + name;
         for (LoggingSystemProperty property : values()) {
             if (property.key.equals(toFind)) {
                 return property;

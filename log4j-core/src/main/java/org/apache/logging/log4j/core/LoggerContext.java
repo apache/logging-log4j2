@@ -189,7 +189,7 @@ public class LoggerContext extends AbstractLifeCycle
         this.injector.registerBindingIfAbsent(KEY, () -> new WeakReference<>(this));
     }
 
-    public void setProperties(PropertiesUtil properties) {
+    public void setProperties(final PropertiesUtil properties) {
         this.properties = properties;
     }
 
@@ -733,7 +733,7 @@ public class LoggerContext extends AbstractLifeCycle
         final ClassLoader cl = externalContext instanceof ClassLoader ? (ClassLoader) externalContext : null;
         LOGGER.debug("Reconfiguration started for {} at URI {} with optional ClassLoader: {}",
                 this, configURI, cl);
-        boolean setProperties = false;
+        final boolean setProperties = false;
         if (properties != null && !PropertiesUtil.hasThreadProperties()) {
             PropertiesUtil.setThreadProperties(properties);
         }

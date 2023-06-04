@@ -173,7 +173,7 @@ public final class JeroMqAppender extends AbstractAppender {
     }
 
     // not public, handy for testing
-    byte[] recv(int timeoutMs) {
+    byte[] recv(final int timeoutMs) {
         return manager.recv(timeoutMs);
     }
 

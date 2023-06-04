@@ -33,7 +33,7 @@ import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
  */
 @Configurable(printObject = true)
 @Plugin
-public class SocketAddress {
+public final class SocketAddress {
 
     /**
      * Creates a SocketAddress corresponding to {@code localhost:0}.

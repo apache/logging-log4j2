@@ -70,7 +70,7 @@ public abstract class Log4j2_1482_Test {
 
     private void loopingRun(final int loopCount) throws IOException {
         for (int i = 1; i <= loopCount; i++) {
-            try (LoggerContext loggerContext = Configurator.initialize(getClass().getName(),
+            try (final LoggerContext loggerContext = Configurator.initialize(getClass().getName(),
                     CONFIG_LOCATION)) {
                 log(i);
             }

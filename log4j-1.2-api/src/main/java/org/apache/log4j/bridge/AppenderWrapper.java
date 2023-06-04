@@ -43,12 +43,12 @@ public class AppenderWrapper implements Appender {
      * @param appender a Log4j 2.x appender
      * @return a Log4j 1.x appender or {@code null} if the parameter is {@code null}
      */
-    public static Appender adapt(org.apache.logging.log4j.core.Appender appender) {
+    public static Appender adapt(final org.apache.logging.log4j.core.Appender appender) {
         if (appender instanceof Appender) {
             return (Appender) appender;
         }
         if (appender instanceof Adapter) {
-            Adapter adapter = (Adapter) appender;
+            final Adapter adapter = (Adapter) appender;
             // Don't unwrap an appender with filters
             if (!adapter.hasFilter()) {
                 return adapter.getAppender();
@@ -65,7 +65,7 @@ public class AppenderWrapper implements Appender {
      *
      * @param appender a Core Appender.
      */
-    public AppenderWrapper(org.apache.logging.log4j.core.Appender appender) {
+    public AppenderWrapper(final org.apache.logging.log4j.core.Appender appender) {
         this.appender = appender;
     }
 
@@ -79,7 +79,7 @@ public class AppenderWrapper implements Appender {
     }
 
     @Override
-    public void addFilter(Filter newFilter) {
+    public void addFilter(final Filter newFilter) {
         if (appender instanceof AbstractFilterable) {
             ((AbstractFilterable) appender).addFilter(FilterAdapter.adapt(newFilter));
         } else {
@@ -103,7 +103,7 @@ public class AppenderWrapper implements Appender {
     }
 
     @Override
-    public void doAppend(LoggingEvent event) {
+    public void doAppend(final LoggingEvent event) {
         if (event instanceof LogEventAdapter) {
             appender.append(((LogEventAdapter) event).getEvent());
         }
@@ -115,7 +115,7 @@ public class AppenderWrapper implements Appender {
     }
 
     @Override
-    public void setErrorHandler(ErrorHandler errorHandler) {
+    public void setErrorHandler(final ErrorHandler errorHandler) {
         appender.setHandler(new ErrorHandlerAdapter(errorHandler));
     }
 
@@ -125,7 +125,7 @@ public class AppenderWrapper implements Appender {
     }
 
     @Override
-    public void setLayout(Layout layout) {
+    public void setLayout(final Layout layout) {
         // Log4j 2 doesn't support this.
     }
 
@@ -135,7 +135,7 @@ public class AppenderWrapper implements Appender {
     }
 
     @Override
-    public void setName(String name) {
+    public void setName(final String name) {
         // Log4j 2 doesn't support this.
     }
 

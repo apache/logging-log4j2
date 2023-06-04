@@ -151,7 +151,7 @@ public class YamlLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setConfiguration(ctx.getConfiguration())
                 .build();
-        Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
+        final Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
         final MutableLogEvent mutableEvent = new MutableLogEvent();
         mutableEvent.initFrom(logEvent);
         final String strLogEvent = layout.toSerializable(logEvent);

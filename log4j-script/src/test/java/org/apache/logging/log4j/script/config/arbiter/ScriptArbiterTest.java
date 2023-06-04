@@ -49,7 +49,7 @@ public class ScriptArbiterTest {
         System.setProperty("env", "prod");
         loggerContext = Configurator.initialize(null, CONFIG);
         assertNotNull(loggerContext);
-        Appender app = loggerContext.getConfiguration().getAppender("Out");
+        final Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertNotNull(app);
         assertTrue(app instanceof ListAppender);
     }
@@ -59,7 +59,7 @@ public class ScriptArbiterTest {
         System.setProperty("env", "dev");
         loggerContext = Configurator.initialize(null, CONFIG);
         assertNotNull(loggerContext);
-        Appender app = loggerContext.getConfiguration().getAppender("Out");
+        final Appender app = loggerContext.getConfiguration().getAppender("Out");
         assertNotNull(app);
         assertTrue(app instanceof ConsoleAppender);
     }

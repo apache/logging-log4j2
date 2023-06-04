@@ -39,7 +39,7 @@ public class PropertiesConfigurationFactoryTest {
 
     @Test
     public void testProperties() {
-        Logger logger = LogManager.getLogger("test");
+        final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");
         assertTrue("File A1 was not created", file.exists());

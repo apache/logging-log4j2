@@ -107,10 +107,10 @@ public class MessageFormatMessage implements Message {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MessageFormatMessage that = (MessageFormatMessage) o;
+        final MessageFormatMessage that = (MessageFormatMessage) o;
         return Objects.equals(messagePattern, that.messagePattern) && Arrays.equals(parameters, that.parameters);
     }
 

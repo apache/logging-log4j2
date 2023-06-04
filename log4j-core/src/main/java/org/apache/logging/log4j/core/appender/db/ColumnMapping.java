@@ -46,7 +46,7 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
  */
 @Configurable(printObject = true)
 @Plugin
-public class ColumnMapping {
+public final class ColumnMapping {
 
     /**
      * Builder for {@link ColumnMapping}.

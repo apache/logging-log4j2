@@ -74,13 +74,13 @@ public class ThreadContextDataInjectorTest {
     }
 
     private void testContextDataInjector() {
-        ReadOnlyThreadContextMap readOnlythreadContextMap = getThreadContextMap();
+        final ReadOnlyThreadContextMap readOnlythreadContextMap = getThreadContextMap();
         assertThat("thread context map class name",
                    (readOnlythreadContextMap == null) ? null : readOnlythreadContextMap.getClass().getName(),
                    is(equalTo(readOnlythreadContextMapClassName)));
 
-        ContextDataInjector contextDataInjector = createInjector();
-        StringMap stringMap = contextDataInjector.injectContextData(null, new SortedArrayStringMap());
+        final ContextDataInjector contextDataInjector = createInjector();
+        final StringMap stringMap = contextDataInjector.injectContextData(null, new SortedArrayStringMap());
 
         assertThat("thread context map", ThreadContext.getContext(), allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));
         assertThat("context map", stringMap.toMap(), allOf(hasEntry("foo", "bar"), not(hasKey("baz"))));
@@ -102,7 +102,7 @@ public class ThreadContextDataInjectorTest {
         }
     }
 
-    private void prepareThreadContext(boolean isThreadContextMapInheritable) {
+    private void prepareThreadContext(final boolean isThreadContextMapInheritable) {
         System.setProperty(LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_INHERITABLE, Boolean.toString(isThreadContextMapInheritable));
         ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
         ThreadContextUtilityClass.reset();

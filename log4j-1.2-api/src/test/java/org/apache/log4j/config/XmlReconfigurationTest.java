@@ -51,15 +51,15 @@ public class XmlReconfigurationTest {
     @Test
     public void testReconfiguration() throws Exception {
         System.setProperty(Log4j1Configuration.MONITOR_INTERVAL, "1");
-        File file = new File(CONFIG);
+        final File file = new File(CONFIG);
         assertNotNull(file, "No Config file");
-        long configMillis = file.lastModified();
+        final long configMillis = file.lastModified();
         Assertions.assertTrue(file.setLastModified(configMillis - FIVE_MINUTES), "Unable to modified file time");
-        LoggerContext context = configure(file);
-        Logger logger = LogManager.getLogger("test");
+        final LoggerContext context = configure(file);
+        final Logger logger = LogManager.getLogger("test");
         logger.info("Hello");
-        Configuration original = context.getConfiguration();
-        TestListener listener = new TestListener();
+        final Configuration original = context.getConfiguration();
+        final TestListener listener = new TestListener();
         original.addListener(listener);
         file.setLastModified(System.currentTimeMillis());
         try {
@@ -71,7 +71,7 @@ public class XmlReconfigurationTest {
         } catch (InterruptedException ie) {
             fail("Reconfiguration interupted");
         }
-        Configuration updated = context.getConfiguration();
+        final Configuration updated = context.getConfiguration();
         assertNotSame(original, updated, "Configurations are the same");
     }
 
@@ -83,11 +83,11 @@ public class XmlReconfigurationTest {
 
     }
 
-    private LoggerContext configure(File configFile) throws Exception {
-        InputStream is = new FileInputStream(configFile);
-        ConfigurationSource source = new ConfigurationSource(is, configFile);
-        LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
-        Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
+    private LoggerContext configure(final File configFile) throws Exception {
+        final InputStream is = new FileInputStream(configFile);
+        final ConfigurationSource source = new ConfigurationSource(is, configFile);
+        final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
+        final Configuration configuration = new XmlConfigurationFactory().getConfiguration(context, source);
         assertNotNull(configuration, "No configuration created");
         Configurator.reconfigure(configuration);
         return context;

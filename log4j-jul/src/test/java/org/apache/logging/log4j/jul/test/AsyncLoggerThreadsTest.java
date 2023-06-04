@@ -49,7 +49,7 @@ public class AsyncLoggerThreadsTest {
     @Test
     public void testAsyncLoggerThreads() {
         LogManager.getLogger("com.foo.Bar").info("log");
-        List<Thread> asyncLoggerThreads = Thread.getAllStackTraces().keySet().stream()
+        final List<Thread> asyncLoggerThreads = Thread.getAllStackTraces().keySet().stream()
                 .filter(thread -> thread.getName().matches("Log4j2-TF.*AsyncLogger.*"))
                 .collect(Collectors.toList());
         assertEquals(asyncLoggerThreads.toString(), 1, asyncLoggerThreads.size());

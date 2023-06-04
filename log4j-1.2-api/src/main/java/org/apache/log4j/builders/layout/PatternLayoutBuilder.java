@@ -51,19 +51,19 @@ public class PatternLayoutBuilder extends AbstractBuilder<Layout> implements Lay
     public PatternLayoutBuilder() {
     }
 
-    public PatternLayoutBuilder(String prefix, Properties props) {
+    public PatternLayoutBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
     @Override
     public Layout parse(final Element layoutElement, final XmlConfiguration config) {
-        NodeList params = layoutElement.getElementsByTagName("param");
+        final NodeList params = layoutElement.getElementsByTagName("param");
         final int length = params.getLength();
         String pattern = null;
         for (int index = 0; index < length; ++ index) {
-            Node currentNode = params.item(index);
+            final Node currentNode = params.item(index);
             if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-                Element currentElement = (Element) currentNode;
+                final Element currentElement = (Element) currentNode;
                 if (currentElement.getTagName().equals(PARAM_TAG)) {
                     if (PATTERN.equalsIgnoreCase(currentElement.getAttribute("name"))) {
                         pattern = currentElement.getAttribute("value");
@@ -77,7 +77,7 @@ public class PatternLayoutBuilder extends AbstractBuilder<Layout> implements Lay
 
     @Override
     public Layout parse(final PropertiesConfiguration config) {
-        String pattern = getProperty(PATTERN);
+        final String pattern = getProperty(PATTERN);
         return createLayout(pattern, config);
     }
 

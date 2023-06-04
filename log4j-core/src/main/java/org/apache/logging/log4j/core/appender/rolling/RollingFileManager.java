@@ -60,11 +60,11 @@ public class RollingFileManager extends FileManager {
 
     protected long size;
     private long initialTime;
-    private volatile PatternProcessor patternProcessor;
+    private volatile final PatternProcessor patternProcessor;
     private final Semaphore semaphore = new Semaphore(1);
     private final Log4jThreadFactory threadFactory = Log4jThreadFactory.createThreadFactory("RollingFileManager");
-    private volatile TriggeringPolicy triggeringPolicy;
-    private volatile RolloverStrategy rolloverStrategy;
+    private volatile final TriggeringPolicy triggeringPolicy;
+    private volatile final RolloverStrategy rolloverStrategy;
     private volatile boolean renameEmptyFiles;
     private volatile boolean initialized;
     private volatile String fileName;
@@ -324,7 +324,7 @@ public class RollingFileManager extends FileManager {
             }
         }
 
-        boolean interrupted = Thread.interrupted(); // clear interrupted state
+        final boolean interrupted = Thread.interrupted(); // clear interrupted state
         try {
             if (interrupted) {
                 LOGGER.warn("RollingFileManager cleared thread interrupted state, continue to rollover");

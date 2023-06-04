@@ -111,7 +111,7 @@ public final class KafkaAppender extends AbstractAppender {
             return asBuilder();
         }
 
-        public B setSendEventTimestamp(boolean sendEventTimestamp) {
+        public B setSendEventTimestamp(final boolean sendEventTimestamp) {
             this.sendEventTimestamp = sendEventTimestamp;
             return asBuilder();
         }

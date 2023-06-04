@@ -59,12 +59,12 @@ public class JndiRestrictedLookupTest {
 
     @Test
     public void testBadUriLookup() throws Exception {
-        int port = embeddedLdapRule.embeddedServerPort();
-        Context context = embeddedLdapRule.context();
+        final int port = embeddedLdapRule.embeddedServerPort();
+        final Context context = embeddedLdapRule.context();
         context.bind(   "cn=" + RESOURCE +"," + DOMAIN_DSN, new Fruit("Test Message"));
         final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN
-                + "?Type=A Type&Name=1100110&Char=!");
+        final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN
+            + "?Type=A Type&Name=1100110&Char=!");
         if (result != null) {
             fail("Lookup returned an object");
         }
@@ -72,11 +72,11 @@ public class JndiRestrictedLookupTest {
 
     @Test
     public void testReferenceLookup() throws Exception {
-        int port = embeddedLdapRule.embeddedServerPort();
-        Context context = embeddedLdapRule.context();
+        final int port = embeddedLdapRule.embeddedServerPort();
+        final Context context = embeddedLdapRule.context();
         context.bind(   "cn=" + RESOURCE +"," + DOMAIN_DSN, new Fruit("Test Message"));
         final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN);
+        final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN);
         if (result != null) {
             fail("Lookup returned an object");
         }
@@ -84,11 +84,11 @@ public class JndiRestrictedLookupTest {
 
     @Test
     public void testSerializableLookup() throws Exception {
-        int port = embeddedLdapRule.embeddedServerPort();
-        Context context = embeddedLdapRule.context();
+        final int port = embeddedLdapRule.embeddedServerPort();
+        final Context context = embeddedLdapRule.context();
         context.bind(   "cn=" + TEST_STRING +"," + DOMAIN_DSN, "Test Message");
         final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_STRING + "," + DOMAIN_DSN);
+        final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_STRING + "," + DOMAIN_DSN);
         if (result != null) {
             fail("LDAP is enabled");
         }
@@ -96,11 +96,11 @@ public class JndiRestrictedLookupTest {
 
     @Test
     public void testBadSerializableLookup() throws Exception {
-        int port = embeddedLdapRule.embeddedServerPort();
-        Context context = embeddedLdapRule.context();
+        final int port = embeddedLdapRule.embeddedServerPort();
+        final Context context = embeddedLdapRule.context();
         context.bind(   "cn=" + TEST_MESSAGE +"," + DOMAIN_DSN, new SerializableMessage("Test Message"));
         final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_MESSAGE + "," + DOMAIN_DSN);
+        final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_MESSAGE + "," + DOMAIN_DSN);
         if (result != null) {
             fail("Lookup returned an object");
         }
@@ -109,7 +109,7 @@ public class JndiRestrictedLookupTest {
     @Test
     public void testDnsLookup() throws Exception {
         final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup("dns:/" + DOMAIN);
+        final String result = lookup.lookup("dns:/" + DOMAIN);
         if (result != null) {
             fail("No DNS data returned");
         }
@@ -117,7 +117,7 @@ public class JndiRestrictedLookupTest {
 
     static class Fruit implements Referenceable {
         String fruit;
-        public Fruit(String f) {
+        public Fruit(final String f) {
             fruit = f;
         }
 
@@ -135,7 +135,7 @@ public class JndiRestrictedLookupTest {
     static class SerializableMessage implements Serializable, Message {
         private final String message;
 
-        SerializableMessage(String message) {
+        SerializableMessage(final String message) {
             this.message = message;
         }
 

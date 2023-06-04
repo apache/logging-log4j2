@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CharsTest {
     @ParameterizedTest
     @ValueSource(ints = {-1, 16, 400, -1, 16, 400})
-    public void invalidDigitReturnsNullCharacter(int invalidDigit) {
+    public void invalidDigitReturnsNullCharacter(final int invalidDigit) {
         assertAll(
                 () -> assertEquals('\0', Chars.getUpperCaseHex(invalidDigit)),
                 () -> assertEquals('\0', Chars.getLowerCaseHex(invalidDigit))

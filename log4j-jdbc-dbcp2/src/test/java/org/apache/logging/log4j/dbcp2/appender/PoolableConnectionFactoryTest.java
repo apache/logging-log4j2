@@ -31,7 +31,7 @@ public class PoolableConnectionFactoryTest {
 
     @Test
     public void test() {
-        Appender appender = LCR.getAppender("databaseAppender");
+        final Appender appender = LCR.getAppender("databaseAppender");
         Assert.assertNotNull("Problem loading configuration from " + REL_PATH, appender);
     }
 }

@@ -357,7 +357,7 @@ public abstract class StrMatcher {
          * @return the number of matching characters, zero for no match
          */
         @Override
-        public int isMatch(final char[] buffer, int pos, final int bufferStart, final int bufferEnd) {
+        public int isMatch(final char[] buffer, final int pos, final int bufferStart, final int bufferEnd) {
             final int len = chars.length;
             if (pos + len > bufferEnd) {
                 return 0;

@@ -51,7 +51,7 @@ public class CallerInformationTest {
 
     @Before
     public void beforeEach() throws Exception {
-        URI uri = this.getClass().getClassLoader().getResource(CONFIG).toURI();
+        final URI uri = this.getClass().getClassLoader().getResource(CONFIG).toURI();
         ctx = (LoggerContext)org.apache.logging.log4j.LogManager.getContext(null, false, uri);
         assertNotNull("No LoggerContext", ctx);
     }

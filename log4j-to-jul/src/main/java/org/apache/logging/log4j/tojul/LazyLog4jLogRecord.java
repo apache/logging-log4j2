@@ -33,7 +33,7 @@ final class LazyLog4jLogRecord extends LogRecord {
 
     private final String fqcn;
 
-    LazyLog4jLogRecord(String fqcn, Level level, String msg) {
+    LazyLog4jLogRecord(final String fqcn, final Level level, final String msg) {
         super(level, msg);
         this.fqcn = fqcn;
     }

@@ -56,7 +56,7 @@ public class BlockingAppender extends AbstractAppender {
         event.getMessage().getFormattedMessage();
 
         // may be a reusable event, make a copy, don't keep a reference to the original event
-        List<LogEvent> events = logEvents;
+        final List<LogEvent> events = logEvents;
         if (events != null) {
             events.add(event.toImmutable());
         }

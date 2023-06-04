@@ -51,7 +51,7 @@ public final class Binding<T> implements Supplier<T> {
         return new DSL<>(Key.forClass(type));
     }
 
-    public static class DSL<T> {
+    public static final class DSL<T> {
         private final Key<T> key;
 
         private DSL(final Key<T> key) {

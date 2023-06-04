@@ -118,17 +118,17 @@ public class ConfigurationBuilderTest {
         addTestFixtures("config name", builder);
         final String xmlConfiguration = builder.toXmlConfiguration();
 
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         dbf.setCoalescing(true);
         dbf.setIgnoringElementContentWhitespace(true);
         dbf.setIgnoringComments(true);
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        final DocumentBuilder db = dbf.newDocumentBuilder();
 
-        Document expected = db.parse(new ByteArrayInputStream(expectedXml.getBytes(StandardCharsets.UTF_8)));
+        final Document expected = db.parse(new ByteArrayInputStream(expectedXml.getBytes(StandardCharsets.UTF_8)));
         expected.normalizeDocument();
 
-        Document actual = db.parse(new ByteArrayInputStream(xmlConfiguration.getBytes(StandardCharsets.UTF_8)));
+        final Document actual = db.parse(new ByteArrayInputStream(xmlConfiguration.getBytes(StandardCharsets.UTF_8)));
         actual.normalizeDocument();
 
         assertTrue(actual.isEqualNode(expected), "Generated XML did not match expected XML.");

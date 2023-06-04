@@ -40,7 +40,7 @@ public class RequiredClassValidator implements ConstraintValidator<RequiredClass
 
     @Override
     public boolean isValid(final String name, final Object value) {
-        boolean isValid = LoaderUtil.isClassAvailable(annotation.value());
+        final boolean isValid = LoaderUtil.isClassAvailable(annotation.value());
         if (!isValid) {
             LOGGER.error("{} cannot be used. {} is unavailable.", name, annotation.value());
         }

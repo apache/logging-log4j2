@@ -54,7 +54,7 @@ public class ConsoleAppenderBuilderTest {
     @Test
     public void testSetNullErrorHandlerIsNotAllowed() {
         final ConsoleAppender appender = ConsoleAppender.newBuilder().setName("test").build();
-        ErrorHandler handler = appender.getHandler();
+        final ErrorHandler handler = appender.getHandler();
         assertNotNull(handler);
         // This could likely be allowed to throw, but we're just testing that
         // setting null does not actually set a null handler.

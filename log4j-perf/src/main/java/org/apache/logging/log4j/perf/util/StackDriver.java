@@ -23,9 +23,9 @@ import java.util.function.Function;
  * Facilitates creating a Call Stack for testing the performance of walking it.
  */
 public class StackDriver {
-    public StackTraceElement deepCall(int initialDepth, Integer targetDepth, Function<String, StackTraceElement> supplier) {
+    public StackTraceElement deepCall(final int initialDepth, final Integer targetDepth, final Function<String, StackTraceElement> supplier) {
         if (--initialDepth == 0) {
-            Processor processor = new Processor();
+            final Processor processor = new Processor();
             return processor.apply(targetDepth, supplier);
         } else {
             return deepCall(initialDepth, targetDepth, supplier);
@@ -36,7 +36,7 @@ public class StackDriver {
         private static final String FQCN = Processor.class.getName();
 
         @Override
-        public StackTraceElement apply(Integer depth, Function<String, StackTraceElement> function) {
+        public StackTraceElement apply(final Integer depth, final Function<String, StackTraceElement> function) {
             if (--depth == 0) {
                 return function.apply(FQCN);
             } else {

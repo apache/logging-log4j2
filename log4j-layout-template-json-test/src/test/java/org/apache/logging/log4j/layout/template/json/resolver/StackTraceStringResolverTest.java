@@ -91,7 +91,7 @@ class StackTraceStringResolverTest {
                 : fallback;
     }
 
-    private static Throwable catchException(ThrowingRunnable runnable) {
+    private static Throwable catchException(final ThrowingRunnable runnable) {
         try {
             runnable.run();
             throw new AssertionError("should not have reached here");
@@ -133,8 +133,8 @@ class StackTraceStringResolverTest {
 
     private static String stackTrace(final Throwable throwable) {
         final String encoding = "UTF-8";
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-             PrintStream printStream = new PrintStream(outputStream, false, encoding)) {
+        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+             final PrintStream printStream = new PrintStream(outputStream, false, encoding)) {
             throwable.printStackTrace(printStream);
             printStream.flush();
             return outputStream.toString(encoding);
@@ -151,7 +151,7 @@ class StackTraceStringResolverTest {
 
         private final boolean truncated;
 
-        AbstractTestCases(boolean truncated) {
+        AbstractTestCases(final boolean truncated) {
             this.truncated = truncated;
         }
 
@@ -328,7 +328,7 @@ class StackTraceStringResolverTest {
 
             // Check the serialized event.
             usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-                AbstractStringAssert<?> serializedExceptionAssert = assertThat(accessor.getString("output"));
+                final AbstractStringAssert<?> serializedExceptionAssert = assertThat(accessor.getString("output"));
                 serializedExceptionAsserter.accept(serializedExceptionAssert);
             });
 
@@ -391,7 +391,7 @@ class StackTraceStringResolverTest {
                     .build();
 
             // Create the log event.
-            Throwable exception = exception1();
+            final Throwable exception = exception1();
             final LogEvent logEvent = Log4jLogEvent
                     .newBuilder()
                     .setThrown(exception)
@@ -573,22 +573,22 @@ class StackTraceStringResolverTest {
 
         }
 
-        private String pointMatcherString(Throwable exception) {
+        private String pointMatcherString(final Throwable exception) {
             final StackTraceElement stackTraceElement = exception.getStackTrace()[0];
             final String moduleName = stackTraceElement.getModuleName();
             final String className = stackTraceElement.getClassName();
             return "at " + moduleName + "/" + className;
         }
 
-        private String pointMatcherRegex(Throwable exception) {
-            String string = pointMatcherString(exception);
+        private String pointMatcherRegex(final Throwable exception) {
+            final String string = pointMatcherString(exception);
             return matchingRegex(string);
         }
 
         /**
          * @return a regex matching the given input
          */
-        private String matchingRegex(String string) {
+        private String matchingRegex(final String string) {
             return "[" + string.charAt(0) + "]" + Pattern.quote(string.substring(1));
         }
 

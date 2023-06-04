@@ -67,7 +67,7 @@ public class SystemPropertiesPropertySource extends ContextAwarePropertySource i
         if (!refreshProperties()) {
             return;
         }
-        Properties properties = systemPropertiesMap.get(SYSTEM_CONTEXT);
+        final Properties properties = systemPropertiesMap.get(SYSTEM_CONTEXT);
         // Then traverse for an unknown amount of time.
         // Some keys may now be absent, in which case, the value is null.
         for (final Object key : properties.stringPropertyNames()) {
@@ -89,7 +89,7 @@ public class SystemPropertiesPropertySource extends ContextAwarePropertySource i
     @Override
     public Collection<String> getPropertyNames(final String contextName) {
         refreshProperties();
-        Properties properties = propertiesMap.get(contextName);
+        final Properties properties = propertiesMap.get(contextName);
         return properties != null ? properties.stringPropertyNames() : Collections.emptyList();
     }
 
@@ -128,7 +128,7 @@ public class SystemPropertiesPropertySource extends ContextAwarePropertySource i
          * Copy the properties while locked.
          */
         synchronized (PREFIX) {
-            Properties props = getProperties();
+            final Properties props = getProperties();
             if (props == null) {
                 return false;
             }
@@ -142,14 +142,14 @@ public class SystemPropertiesPropertySource extends ContextAwarePropertySource i
             refresh = true;
             hashcode = sysProps.hashCode();
         } else {
-            int hash = sysProps.hashCode();
+            final int hash = sysProps.hashCode();
             if (hash != hashcode) {
                 refresh = true;
                 hashcode = hash;
             }
         }
         if (refresh) {
-            Map<String, Properties> map = parseProperties(sysProps, SYSTEM_CONTEXT, true);
+            final Map<String, Properties> map = parseProperties(sysProps, SYSTEM_CONTEXT, true);
             systemPropertiesMap.putAll(map);
         }
         if (refresh) {

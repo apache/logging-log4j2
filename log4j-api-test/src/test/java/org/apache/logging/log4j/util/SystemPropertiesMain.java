@@ -32,10 +32,11 @@ public class SystemPropertiesMain {
      * @param args
      *            unused
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         @SuppressWarnings("unchecked")
+        final
         Enumeration<String> keyEnum = (Enumeration<String>) System.getProperties().propertyNames();
-        List<String> list = new ArrayList<>();
+        final List<String> list = new ArrayList<>();
         while (keyEnum.hasMoreElements()) {
             list.add(keyEnum.nextElement());
         }

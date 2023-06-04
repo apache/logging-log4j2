@@ -41,11 +41,11 @@ public class TestCase3  {
     @Test
     public void propertiesTest() throws IOException {
         TestConfigurator.configure("src/test/resources/log4j1-1.2.17/input/defaultInit3.properties");
-        Logger root = Logger.getRootLogger();
-        boolean rootIsConfigured = root.getAllAppenders().hasMoreElements();
+        final Logger root = Logger.getRootLogger();
+        final boolean rootIsConfigured = root.getAllAppenders().hasMoreElements();
         assertTrue(rootIsConfigured);
-        Enumeration e = root.getAllAppenders();
-        Appender appender = (Appender) e.nextElement();
+        final Enumeration e = root.getAllAppenders();
+        final Appender appender = (Appender) e.nextElement();
         assertEquals(appender.getName(), "D3");
     }
 

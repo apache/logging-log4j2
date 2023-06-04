@@ -65,7 +65,7 @@ public class BuilderManager {
      * Constructs a new instance.
      */
     @Inject
-    public BuilderManager(final Injector injector, @Namespace(NAMESPACE) PluginNamespace plugins) {
+    public BuilderManager(final Injector injector, @Namespace(NAMESPACE) final PluginNamespace plugins) {
         this.injector = injector;
         this.plugins = plugins;
     }
@@ -117,7 +117,7 @@ public class BuilderManager {
     }
 
     public <P extends Parser<T>, T> T parse(final String className, final String prefix, final Properties props,
-            final PropertiesConfiguration config, T invalidValue) {
+            final PropertiesConfiguration config, final T invalidValue) {
         final P parser = createBuilder(getPlugin(className), prefix, props);
         if (parser != null) {
             final T value = parser.parse(config);

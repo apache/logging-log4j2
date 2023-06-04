@@ -19,7 +19,7 @@ package org.apache.logging.dumbster.smtp;
 /**
  * SMTP server state.
  */
-public class SmtpState {
+public final class SmtpState {
     /**
      * Internal representation of the state.
      */

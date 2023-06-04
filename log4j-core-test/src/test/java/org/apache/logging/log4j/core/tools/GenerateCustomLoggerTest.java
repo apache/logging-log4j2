@@ -59,7 +59,7 @@ public class GenerateCustomLoggerTest {
     @AfterAll
     public static void afterClass() {
         File file = new File(TEST_SOURCE);
-        File parent = file.getParentFile();
+        final File parent = file.getParentFile();
         if (file.exists()) {
             file.delete();
         }
@@ -90,8 +90,8 @@ public class GenerateCustomLoggerTest {
         try (final StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
             final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(
                     Collections.singletonList(f));
-            String classPath = System.getProperty("jdk.module.path");
-            List<String> optionList = new ArrayList<>();
+            final String classPath = System.getProperty("jdk.module.path");
+            final List<String> optionList = new ArrayList<>();
             if (Strings.isNotBlank(classPath)) {
                 optionList.add("-classpath");
                 optionList.add(classPath);

@@ -58,7 +58,7 @@ public final class ServiceLoaderUtil {
      * @param lookup      The calling class data.
      * @return A stream of service instances.
      */
-    public static <T> Stream<T> loadServices(final Class<T> serviceType, Lookup lookup) {
+    public static <T> Stream<T> loadServices(final Class<T> serviceType, final Lookup lookup) {
         return loadServices(serviceType, lookup, false);
     }
 
@@ -74,7 +74,7 @@ public final class ServiceLoaderUtil {
      * @param useTccl     If true the thread context classloader will also be used.
      * @return A stream of service instances.
      */
-    public static <T> Stream<T> loadServices(final Class<T> serviceType, Lookup lookup, boolean useTccl) {
+    public static <T> Stream<T> loadServices(final Class<T> serviceType, final Lookup lookup, final boolean useTccl) {
         return loadServices(serviceType, lookup, useTccl, true);
     }
 
@@ -99,8 +99,8 @@ public final class ServiceLoaderUtil {
         return StreamSupport.stream(new ServiceLoaderSpliterator<T>(serviceType, lookup, classLoader, verbose), false);
     }
 
-    static <T> Iterable<T> callServiceLoader(Lookup lookup, Class<T> serviceType, ClassLoader classLoader,
-            boolean verbose) {
+    static <T> Iterable<T> callServiceLoader(final Lookup lookup, final Class<T> serviceType, final ClassLoader classLoader,
+            final boolean verbose) {
         try {
             // Creates a lambda in the caller's domain that calls `ServiceLoader`
             final MethodHandle loadHandle = lookup.findStatic(ServiceLoader.class, "load",
@@ -147,7 +147,7 @@ public final class ServiceLoaderUtil {
         }
 
         @Override
-        public boolean tryAdvance(Consumer<? super S> action) {
+        public boolean tryAdvance(final Consumer<? super S> action) {
             int i = MAX_BROKEN_SERVICES;
             while (i-- > 0) {
                 try {

@@ -128,7 +128,7 @@ public class ConfigurationSource {
      * @param url the URL where the input stream originated
      * @param lastModified when the source was last modified.
      */
-    public ConfigurationSource(final InputStream stream, final URL url, long lastModified) {
+    public ConfigurationSource(final InputStream stream, final URL url, final long lastModified) {
         this.stream = Objects.requireNonNull(stream, "stream is null");
         this.data = null;
         this.lastModified = lastModified;
@@ -201,7 +201,7 @@ public class ConfigurationSource {
      * @deprecated Not used internally, no replacement. TODO remove and make source final.
      */
     @Deprecated
-    public void setSource(Source source) {
+    public void setSource(final Source source) {
         this.source = source;
     }
 

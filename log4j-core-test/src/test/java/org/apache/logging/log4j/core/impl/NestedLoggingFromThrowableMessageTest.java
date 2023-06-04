@@ -40,8 +40,8 @@ import static org.junit.Assert.assertTrue;
  */
 public class NestedLoggingFromThrowableMessageTest {
 
-    private static File file1 = new File("target/NestedLoggerTest1.log");
-    private static File file2 = new File("target/NestedLoggerTest2.log");
+    private static final File file1 = new File("target/NestedLoggerTest1.log");
+    private static final File file2 = new File("target/NestedLoggerTest2.log");
 
     @BeforeClass
     public static void beforeClass() {
@@ -74,8 +74,8 @@ public class NestedLoggingFromThrowableMessageTest {
         CoreLoggerContexts.stopLoggerContext(false, file1);
         CoreLoggerContexts.stopLoggerContext(false, file2);
 
-        Set<String> lines1 = readUniqueLines(file1);
-        Set<String> lines2 = readUniqueLines(file2);
+        final Set<String> lines1 = readUniqueLines(file1);
+        final Set<String> lines2 = readUniqueLines(file2);
 
         assertEquals("Expected the same data from both appenders", lines1, lines2);
         assertEquals(2, lines1.size());
@@ -83,9 +83,9 @@ public class NestedLoggingFromThrowableMessageTest {
         assertTrue(lines1.contains("ERROR NestedLoggingFromThrowableMessageTest Test message"));
     }
 
-    private static Set<String> readUniqueLines(File input) throws IOException {
-        Set<String> lines = new HashSet<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input)))) {
+    private static Set<String> readUniqueLines(final File input) throws IOException {
+        final Set<String> lines = new HashSet<>();
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(input)))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 assertTrue("Read duplicate line: " + line, lines.add(line));

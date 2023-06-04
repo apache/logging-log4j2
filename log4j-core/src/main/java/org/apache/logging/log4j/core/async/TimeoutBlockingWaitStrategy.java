@@ -105,12 +105,12 @@ class TimeoutBlockingWaitStrategy implements WaitStrategy {
      * @throws InterruptedException if the underlying call to wait is interrupted
      */
     private static long awaitNanos(final Object mutex, final long timeoutNanos) throws InterruptedException {
-        long millis = timeoutNanos / ONE_MILLISECOND_IN_NANOSECONDS;
-        long nanos = timeoutNanos % ONE_MILLISECOND_IN_NANOSECONDS;
+        final long millis = timeoutNanos / ONE_MILLISECOND_IN_NANOSECONDS;
+        final long nanos = timeoutNanos % ONE_MILLISECOND_IN_NANOSECONDS;
 
-        long t0 = System.nanoTime();
+        final long t0 = System.nanoTime();
         mutex.wait(millis, (int) nanos);
-        long t1 = System.nanoTime();
+        final long t1 = System.nanoTime();
 
         return timeoutNanos - (t1 - t0);
     }

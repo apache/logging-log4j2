@@ -26,7 +26,7 @@ public class ErrorHandlerAdapter implements org.apache.logging.log4j.core.ErrorH
 
     private final ErrorHandler errorHandler;
 
-    public ErrorHandlerAdapter(ErrorHandler errorHandler) {
+    public ErrorHandlerAdapter(final ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
     }
 
@@ -35,12 +35,12 @@ public class ErrorHandlerAdapter implements org.apache.logging.log4j.core.ErrorH
     }
 
     @Override
-    public void error(String msg) {
+    public void error(final String msg) {
         errorHandler.error(msg);
     }
 
     @Override
-    public void error(String msg, Throwable t) {
+    public void error(final String msg, final Throwable t) {
         if (t instanceof Exception) {
             errorHandler.error(msg, (Exception) t, 0);
         } else {
@@ -49,7 +49,7 @@ public class ErrorHandlerAdapter implements org.apache.logging.log4j.core.ErrorH
     }
 
     @Override
-    public void error(String msg, LogEvent event, Throwable t) {
+    public void error(final String msg, final LogEvent event, final Throwable t) {
         if (t == null || t instanceof Exception) {
             errorHandler.error(msg, (Exception) t, 0, new LogEventAdapter(event));
         } else {

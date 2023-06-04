@@ -290,7 +290,7 @@ public class LoggingSystem {
         }
     }
 
-    private static class SystemProvider {
+    private static final class SystemProvider {
         private final Provider provider;
 
         private SystemProvider() {

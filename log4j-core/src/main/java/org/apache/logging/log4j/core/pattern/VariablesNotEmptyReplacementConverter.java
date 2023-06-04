@@ -83,7 +83,7 @@ public final class VariablesNotEmptyReplacementConverter extends LogEventPattern
             final PatternFormatter formatter = formatters.get(i);
             final int formatterStart = toAppendTo.length();
             formatter.format(event, toAppendTo);
-            LogEventPatternConverter converter = formatter.getConverter();
+            final LogEventPatternConverter converter = formatter.getConverter();
             if (converter.isVariable()) {
                 hasVars = true;
                 allVarsEmpty = allVarsEmpty && sequenceRegionMatches(toAppendTo, formatterStart, converter.emptyVariableOutput());

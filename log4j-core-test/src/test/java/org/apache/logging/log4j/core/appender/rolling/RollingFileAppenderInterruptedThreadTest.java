@@ -52,7 +52,7 @@ public class RollingFileAppenderInterruptedThreadTest {
 
     @Before
     public void setUp() {
-        ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
+        final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory.newConfigurationBuilder();
         builder.setConfigurationName("LOG4J2-1798 test");
 
         builder.add(builder.newAppender("consoleLog", "Console")
@@ -79,7 +79,7 @@ public class RollingFileAppenderInterruptedThreadTest {
 
     @Test
     public void testRolloverInInterruptedThread() {
-        Logger logger = loggerContext.getLogger(getClass().getName());
+        final Logger logger = loggerContext.getLogger(getClass().getName());
 
         Assert.assertThat(logger.getAppenders().values(), hasItem(instanceOf(RollingFileAppender.class)));
 

@@ -36,7 +36,7 @@ public class TypeConverterFactory {
     private final Map<Type, TypeConverter<?>> typeConverters = new ConcurrentHashMap<>();
 
     @Inject
-    public TypeConverterFactory(@TypeConverters List<TypeConverter<?>> typeConverters) {
+    public TypeConverterFactory(@TypeConverters final List<TypeConverter<?>> typeConverters) {
         typeConverters.forEach(converter -> registerTypeConverter(getTypeConverterSupportedType(converter.getClass()), converter));
         registerTypeConverter(Boolean.class, Boolean::valueOf);
         registerTypeAlias(Boolean.class, Boolean.TYPE);

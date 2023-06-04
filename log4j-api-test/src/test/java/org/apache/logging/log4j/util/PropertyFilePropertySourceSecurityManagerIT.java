@@ -77,7 +77,7 @@ public class PropertyFilePropertySourceSecurityManagerIT {
      */
     @Test
     public void test() {
-        var existing = System.getSecurityManager();
+        final var existing = System.getSecurityManager();
         try {
             System.setSecurityManager(new TestSecurityManager());
             final PropertiesUtil propertiesUtil = new PropertiesUtil(TEST_FIXTURE_PATH);

@@ -32,7 +32,7 @@ public final class CoarseCachedClock implements Clock {
     private volatile long millis = System.currentTimeMillis();
 
     private CoarseCachedClock() {
-        Thread updater = new Log4jThread("CoarseCachedClock Updater Thread") {
+        final Thread updater = new Log4jThread("CoarseCachedClock Updater Thread") {
             @Override
             public void run() {
                 while (true) {

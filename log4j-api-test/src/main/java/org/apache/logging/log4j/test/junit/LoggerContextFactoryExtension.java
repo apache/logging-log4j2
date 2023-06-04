@@ -32,22 +32,22 @@ public class LoggerContextFactoryExtension implements BeforeAllCallback, AfterAl
     private static final String KEY = "previousFactory";
     private final LoggerContextFactory loggerContextFactory;
 
-    public LoggerContextFactoryExtension(LoggerContextFactory loggerContextFactory) {
+    public LoggerContextFactoryExtension(final LoggerContextFactory loggerContextFactory) {
         this.loggerContextFactory = loggerContextFactory;
     }
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
+    public void beforeAll(final ExtensionContext context) throws Exception {
         getStore(context).put(KEY, LogManager.getFactory());
         LogManager.setFactory(loggerContextFactory);
     }
 
     @Override
-    public void afterAll(ExtensionContext context) throws Exception {
+    public void afterAll(final ExtensionContext context) throws Exception {
         LogManager.setFactory(getStore(context).get(KEY, LoggerContextFactory.class));
     }
 
-    private ExtensionContext.Store getStore(ExtensionContext context) {
+    private ExtensionContext.Store getStore(final ExtensionContext context) {
         return context.getStore(ExtensionContext.Namespace.create(getClass(), context.getRequiredTestClass()));
     }
 }

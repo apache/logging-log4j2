@@ -79,9 +79,9 @@ public class KubernetesLookup extends AbstractLookup {
         if (kubernetesInfo == null || (isSpringIncluded && !kubernetesInfo.isSpringActive)) {
             initLock.lock();
             try {
-                boolean isSpringActive = isSpringActive();
+                final boolean isSpringActive = isSpringActive();
                 if (kubernetesInfo == null || (!kubernetesInfo.isSpringActive && isSpringActive)) {
-                    KubernetesInfo info = new KubernetesInfo();
+                    final KubernetesInfo info = new KubernetesInfo();
                     KubernetesClient client = null;
                     info.isSpringActive = isSpringActive;
                     if (pod == null) {
@@ -118,11 +118,11 @@ public class KubernetesLookup extends AbstractLookup {
                         info.podIp = pod.getStatus().getPodIP();
                         info.podName = pod.getMetadata().getName();
                         ContainerStatus containerStatus = null;
-                        List<ContainerStatus> statuses = pod.getStatus().getContainerStatuses();
+                        final List<ContainerStatus> statuses = pod.getStatus().getContainerStatuses();
                         if (statuses.size() == 1) {
                             containerStatus = statuses.get(0);
                         } else if (statuses.size() > 1) {
-                            String containerId = ContainerUtil.getContainerId();
+                            final String containerId = ContainerUtil.getContainerId();
                             if (containerId != null) {
                                 containerStatus = statuses.stream()
                                         .filter(cs -> cs.getContainerID().contains(containerId))
@@ -138,7 +138,7 @@ public class KubernetesLookup extends AbstractLookup {
                             containerName = null;
                         }
                         Container container = null;
-                        List<Container> containers = pod.getSpec().getContainers();
+                        final List<Container> containers = pod.getSpec().getContainers();
                         if (containers.size() == 1) {
                             container = containers.get(0);
                         } else if (containers.size() > 1 && containerName != null) {
@@ -161,7 +161,7 @@ public class KubernetesLookup extends AbstractLookup {
     }
 
     @Override
-    public String lookup(LogEvent event, String key) {
+    public String lookup(final LogEvent event, final String key) {
         if (kubernetesInfo == null) {
             return null;
         }
@@ -242,7 +242,7 @@ public class KubernetesLookup extends AbstractLookup {
         return System.getenv(HOSTNAME);
     }
 
-    private Pod getCurrentPod(String hostName, KubernetesClient kubernetesClient) {
+    private Pod getCurrentPod(final String hostName, final KubernetesClient kubernetesClient) {
         try {
             if (isServiceAccount() && Strings.isNotBlank(hostName)) {
                 return kubernetesClient.pods().withName(hostName).get();

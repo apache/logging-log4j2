@@ -27,23 +27,23 @@ public class LogEventWrapperTest {
 
     @Test
     public void testThread() {
-        Thread currentThread = Thread.currentThread();
-        String threadName = currentThread.getName();
-        LoggingEvent log4j1Event = new LoggingEvent() {
+        final Thread currentThread = Thread.currentThread();
+        final String threadName = currentThread.getName();
+        final LoggingEvent log4j1Event = new LoggingEvent() {
 
             @Override
             public String getThreadName() {
                 return threadName;
             }
         };
-        LogEvent log4j2Event = new LogEventWrapper(log4j1Event);
+        final LogEvent log4j2Event = new LogEventWrapper(log4j1Event);
         assertEquals(currentThread.getId(), log4j2Event.getThreadId());
         assertEquals(currentThread.getPriority(), log4j2Event.getThreadPriority());
     }
 
     @Test
     public void testToImmutable() {
-        LogEventWrapper wrapper = new LogEventWrapper(new LoggingEvent());
+        final LogEventWrapper wrapper = new LogEventWrapper(new LoggingEvent());
         assertSame(wrapper, wrapper.toImmutable());
     }
 }

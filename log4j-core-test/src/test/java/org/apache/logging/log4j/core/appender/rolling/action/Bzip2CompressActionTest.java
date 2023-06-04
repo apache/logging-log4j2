@@ -61,7 +61,7 @@ public class Bzip2CompressActionTest {
         final String LINE2 = "Here is line 2. Random text: ABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n";
         final String LINE3 = "Here is line 3. Random text: ABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n";
         final File source = new File(tempDir, "compressme");
-        try (FileWriter fw = new FileWriter(source, false)) {
+        try (final FileWriter fw = new FileWriter(source, false)) {
             fw.write(LINE1);
             fw.write(LINE2);
             fw.write(LINE3);
@@ -95,7 +95,7 @@ public class Bzip2CompressActionTest {
         assertEquals(bz2.length, destination.length());
 
         // check the compressed contents
-        try (FileInputStream fis = new FileInputStream(destination)) {
+        try (final FileInputStream fis = new FileInputStream(destination)) {
             final byte[] actualBz2 = new byte[bz2.length];
             int n = 0;
             int offset = 0;
@@ -107,7 +107,7 @@ public class Bzip2CompressActionTest {
         }
 
         // uncompress
-        try (BZip2CompressorInputStream bzin = new BZip2CompressorInputStream(new ByteArrayInputStream(bz2))) {
+        try (final BZip2CompressorInputStream bzin = new BZip2CompressorInputStream(new ByteArrayInputStream(bz2))) {
             final StringBuilder sb = new StringBuilder();
             final byte[] buf = new byte[1024];
             int n = 0;

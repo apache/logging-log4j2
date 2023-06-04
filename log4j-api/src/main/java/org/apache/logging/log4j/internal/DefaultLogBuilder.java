@@ -50,7 +50,7 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
     private final long threadId;
     private String fqcn = FQCN;
 
-    public DefaultLogBuilder(ExtendedLogger logger, Level level) {
+    public DefaultLogBuilder(final ExtendedLogger logger, final Level level) {
         this.logger = logger;
         this.level = level;
         this.threadId = Thread.currentThread().getId();
@@ -62,7 +62,7 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
     }
 
     @Override
-    public void setEntryPoint(String fqcn) {
+    public void setEntryPoint(final String fqcn) {
         this.fqcn = fqcn;
     }
 
@@ -71,7 +71,7 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
      * @param level The logging level for this event.
      * @return This LogBuilder instance.
      */
-    public LogBuilder reset(ExtendedLogger logger, Level level) {
+    public LogBuilder reset(final ExtendedLogger logger, final Level level) {
         this.logger = logger;
         this.level = level;
         this.marker = null;
@@ -113,7 +113,7 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder {
     }
 
     @Override
-    public Message logAndGet(Supplier<Message> messageSupplier) {
+    public Message logAndGet(final Supplier<Message> messageSupplier) {
         Message message = null;
         if (isValid() && isEnabled(message = messageSupplier.get())) {
             logMessage(message);

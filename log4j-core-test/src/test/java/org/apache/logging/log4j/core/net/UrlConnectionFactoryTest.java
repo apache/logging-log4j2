@@ -115,7 +115,7 @@ public class UrlConnectionFactoryTest {
         final URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
         final ConfigurationSource source = ConfigurationSource.fromUri(uri);
         assertNotNull(source, "No ConfigurationSource returned");
-        InputStream is = source.getInputStream();
+        final InputStream is = source.getInputStream();
         assertNotNull(is, "No data returned");
         is.close();
         final long lastModified = source.getLastModified();
@@ -171,17 +171,17 @@ public class UrlConnectionFactoryTest {
         private static final long serialVersionUID = -2885158530511450659L;
 
         @Override
-        protected void doGet(HttpServletRequest request,
-                HttpServletResponse response) throws ServletException, IOException {
-            Enumeration<String> headers = request.getHeaders(HttpHeader.AUTHORIZATION.toString());
+        protected void doGet(final HttpServletRequest request,
+                final HttpServletResponse response) throws ServletException, IOException {
+            final Enumeration<String> headers = request.getHeaders(HttpHeader.AUTHORIZATION.toString());
             if (headers == null) {
                 response.sendError(SC_UNAUTHORIZED, "No Auth header");
                 return;
             }
             while (headers.hasMoreElements()) {
-                String authData = headers.nextElement();
+                final String authData = headers.nextElement();
                 assertTrue(authData.startsWith(BASIC), "Not a Basic auth header");
-                String credentials = new String(decoder.decode(authData.substring(BASIC.length())));
+                final String credentials = new String(decoder.decode(authData.substring(BASIC.length())));
                 if (!expectedCreds.equals(credentials)) {
                     response.sendError(SC_UNAUTHORIZED, "Invalid credentials");
                     return;
@@ -194,8 +194,8 @@ public class UrlConnectionFactoryTest {
                     response.sendError(SC_NOT_FOUND);
                     return;
                 }
-                long modifiedSince = request.getDateHeader(HttpHeader.IF_MODIFIED_SINCE.toString());
-                long lastModified = (file.lastModified() / 1000) * 1000;
+                final long modifiedSince = request.getDateHeader(HttpHeader.IF_MODIFIED_SINCE.toString());
+                final long lastModified = (file.lastModified() / 1000) * 1000;
                 LOGGER.debug("LastModified: {}, modifiedSince: {}", lastModified, modifiedSince);
                 if (modifiedSince > 0 && lastModified <= modifiedSince) {
                     response.setStatus(SC_NOT_MODIFIED);

@@ -49,12 +49,12 @@ public class RollingAppenderTimeAndSizeTest {
     @CleanUpDirectories(DIR)
     @LoggerContextSource(value = CONFIG, timeout = 10)
     public void testAppender(final Logger logger) throws Exception {
-        Random rand = new Random();
+        final Random rand = new Random();
         final File logFile = new File("target/rolling3/rollingtest.log");
         assertTrue(logFile.exists(), "target/rolling3/rollingtest.log does not exist");
-        FileTime time = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
+        final FileTime time = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
         for (int j = 0; j < 100; ++j) {
-            int count = rand.nextInt(50);
+            final int count = rand.nextInt(50);
             for (int i = 0; i < count; ++i) {
                 logger.debug("This is test message number " + i);
             }
@@ -78,7 +78,7 @@ public class RollingAppenderTimeAndSizeTest {
             assertEquals(Integer.toString(fileCounter), fileParts[2],
                     "Incorrect file name. Expected counter value of " + fileCounter + " in " + actual);
         }
-        FileTime endTime = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
+        final FileTime endTime = (FileTime) Files.getAttribute(logFile.toPath(), "creationTime");
         assertNotEquals(time, endTime, "Creation times are equal");
     }
 }

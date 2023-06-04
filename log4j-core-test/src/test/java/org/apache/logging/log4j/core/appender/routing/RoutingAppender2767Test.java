@@ -41,11 +41,11 @@ public class RoutingAppender2767Test {
     @CleanUpFiles(ACTIVITY_LOG_FILE)
     @LoggerContextSource(CONFIG)
     public void routingTest() throws Exception {
-        StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
+        final StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a test", "Service");
         EventLogger.logEvent(msg);
-        File file = new File(ACTIVITY_LOG_FILE);
+        final File file = new File(ACTIVITY_LOG_FILE);
         assertTrue(file.exists(), "Activity file was not created");
-        List<String> lines = Files.lines(file.toPath()).collect(Collectors.toList());
+        final List<String> lines = Files.lines(file.toPath()).collect(Collectors.toList());
         assertEquals(1, lines.size(), "Incorrect number of lines");
         assertTrue(lines.get(0).contains("This is a test"), "Incorrect content");
     }

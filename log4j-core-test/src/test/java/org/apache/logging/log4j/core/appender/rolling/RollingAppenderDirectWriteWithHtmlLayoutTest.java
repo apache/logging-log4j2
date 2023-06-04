@@ -62,21 +62,21 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
         checkAppenderWithHtmlLayout(false, config);
     }
 
-    private void checkAppenderWithHtmlLayout(boolean append, final Configuration config) throws InterruptedException, IOException {
-        String prefix = "testHtml_" + (append ? "append_" : "noAppend_");
-        RollingFileAppender appender = RollingFileAppender.newBuilder()
-                .setName("RollingHtml")
-                .setFilePattern(DIR + "/" + prefix + "_-%d{MM-dd-yy-HH-mm}-%i.html")
-                .setPolicy(new SizeBasedTriggeringPolicy(500))
-                .setStrategy(DirectWriteRolloverStrategy.newBuilder()
-                        .setConfig(config)
-                        .build())
-                .setLayout(HtmlLayout.createDefaultLayout())
-                .setAppend(append)
-                .build();
+    private void checkAppenderWithHtmlLayout(final boolean append, final Configuration config) throws InterruptedException, IOException {
+        final String prefix = "testHtml_" + (append ? "append_" : "noAppend_");
+        final RollingFileAppender appender = RollingFileAppender.newBuilder()
+        .setName("RollingHtml")
+        .setFilePattern(DIR + "/" + prefix + "_-%d{MM-dd-yy-HH-mm}-%i.html")
+        .setPolicy(new SizeBasedTriggeringPolicy(500))
+        .setStrategy(DirectWriteRolloverStrategy.newBuilder()
+        .setConfig(config)
+        .build())
+        .setLayout(HtmlLayout.createDefaultLayout())
+        .setAppend(append)
+        .build();
         boolean stopped = false;
         try {
-            int count = 100;
+            final int count = 100;
             for (int i = 0; i < count; ++i) {
                 appender.append(Log4jLogEvent.newBuilder()
                         .setMessage(new SimpleMessage("This is test message number " + i))
@@ -98,8 +98,8 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
             for (File file : files) {
                 if (!file.getName().startsWith(prefix))
                     continue;
-                try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                    String data = IOUtils.toString(reader).trim();
+                try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                    final String data = IOUtils.toString(reader).trim();
                     // check that every file starts with the header
                     assertThat("header in file " + file, data, Matchers.startsWith("<!DOCTYPE"));
                     assertThat("footer in file " + file, data, endsWith("</html>"));

@@ -48,7 +48,7 @@ class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory {
         // incorrect property value, default WaitStrategy is created.
         switch (strategyUp) {
             case "SLEEP":
-                String component = propertyKey.getComponent();
+                final String component = propertyKey.getComponent();
                 PropertyKey key = Log4jPropertyKey.findKey(component, "sleepTimeNs");
                 final long sleepTimeNs = PropertiesUtil.getProperties().getLongProperty(key, 100L);
                 key = Log4jPropertyKey.findKey(component, "retries");
@@ -72,8 +72,8 @@ class DefaultAsyncWaitStrategyFactory implements AsyncWaitStrategyFactory {
     }
 
     static WaitStrategy createDefaultWaitStrategy(final PropertyKey propertyKey) {
-        String component = propertyKey.getComponent();
-        PropertyKey key = Log4jPropertyKey.findKey(component, "timeout");
+        final String component = propertyKey.getComponent();
+        final PropertyKey key = Log4jPropertyKey.findKey(component, "timeout");
         final long timeoutMillis = PropertiesUtil.getProperties().getLongProperty(key, 10L);
         LOGGER.trace("DefaultAsyncWaitStrategyFactory creating TimeoutBlockingWaitStrategy(timeout={}, unit=MILLIS)", timeoutMillis);
         return new TimeoutBlockingWaitStrategy(timeoutMillis, TimeUnit.MILLISECONDS);

@@ -86,7 +86,7 @@ public final class RoutingAppender extends AbstractAppender {
                 return null;
             }
             if (defaultRouteScript != null) {
-                ScriptManager scriptManager = getConfiguration().getScriptManager();
+                final ScriptManager scriptManager = getConfiguration().getScriptManager();
                 if (scriptManager == null) {
                     LOGGER.error("Script support is not enabled");
                     return null;

@@ -93,7 +93,7 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
         try {
             final Document unwrapped = object.unwrap();
             LOGGER.debug("Inserting BSON Document {}", unwrapped);
-            InsertOneResult insertOneResult = this.collection.insertOne(unwrapped);
+            final InsertOneResult insertOneResult = this.collection.insertOne(unwrapped);
             LOGGER.debug("Insert MongoDb result {}", insertOneResult);
         } catch (final MongoException e) {
             throw new AppenderLoggingException("Failed to write log event to MongoDB due to error: " + e.getMessage(),

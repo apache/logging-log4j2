@@ -286,7 +286,7 @@ abstract class AbstractJacksonLayout extends AbstractStringLayout {
 
 
     protected AbstractJacksonLayout(final Configuration config, final ObjectWriter objectWriter, final Charset charset,
-            final boolean compact, final boolean complete, final boolean eventEol, String endOfLine,
+            final boolean compact, final boolean complete, final boolean eventEol, final String endOfLine,
             final Serializer headerSerializer, final Serializer footerSerializer, final boolean includeNullDelimiter,
             final KeyValuePair[] additionalFields) {
         super(config, charset, headerSerializer, footerSerializer);

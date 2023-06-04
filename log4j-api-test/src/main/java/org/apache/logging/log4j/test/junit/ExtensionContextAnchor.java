@@ -31,11 +31,11 @@ public class ExtensionContextAnchor
     public static Namespace LOG4J2_NAMESPACE = Namespace.create("org.apache.logging.log4j.junit");
     private static final ThreadLocal<ExtensionContext> EXTENSION_CONTEXT = new InheritableThreadLocal<>();
 
-    private static void bind(ExtensionContext context) {
+    private static void bind(final ExtensionContext context) {
         EXTENSION_CONTEXT.set(context);
     }
 
-    private static void unbind(ExtensionContext context) {
+    private static void unbind(final ExtensionContext context) {
         EXTENSION_CONTEXT.set(context.getParent().orElse(null));
     }
 
@@ -43,23 +43,23 @@ public class ExtensionContextAnchor
         return EXTENSION_CONTEXT.get();
     }
 
-    public static ExtensionContext getContext(ExtensionContext context) {
+    public static ExtensionContext getContext(final ExtensionContext context) {
         return context != null ? context : EXTENSION_CONTEXT.get();
     }
 
-    static <T> T getAttribute(Object key, Class<T> clazz, ExtensionContext context) {
+    static <T> T getAttribute(final Object key, final Class<T> clazz, final ExtensionContext context) {
         final ExtensionContext actualContext = getContext(context);
         assertNotNull(actualContext, "missing ExtensionContext");
         return actualContext.getStore(LOG4J2_NAMESPACE).get(key, clazz);
     }
 
-    static void setAttribute(Object key, Object value, ExtensionContext context) {
+    static void setAttribute(final Object key, final Object value, final ExtensionContext context) {
         final ExtensionContext actualContext = getContext(context);
         assertNotNull(actualContext, "missing ExtensionContext");
         actualContext.getStore(LOG4J2_NAMESPACE).put(key, value);
     }
 
-    static void removeAttribute(Object key, ExtensionContext context) {
+    static void removeAttribute(final Object key, final ExtensionContext context) {
         final ExtensionContext actualContext = getContext(context);
         if (actualContext != null) {
             actualContext.getStore(LOG4J2_NAMESPACE).remove(key);
@@ -67,22 +67,22 @@ public class ExtensionContextAnchor
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
+    public void afterEach(final ExtensionContext context) throws Exception {
         unbind(context);
     }
 
     @Override
-    public void afterAll(ExtensionContext context) throws Exception {
+    public void afterAll(final ExtensionContext context) throws Exception {
         unbind(context);
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(final ExtensionContext context) throws Exception {
         bind(context);
     }
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
+    public void beforeAll(final ExtensionContext context) throws Exception {
         bind(context);
     }
 

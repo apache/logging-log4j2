@@ -34,7 +34,7 @@ public class LayoutWrapper extends Layout {
      * @param layout a Log4j 2.x layout
      * @return a Log4j 1.x layout or {@code null} if the parameter is {@code null}
      */
-    public static Layout adapt(org.apache.logging.log4j.core.Layout layout) {
+    public static Layout adapt(final org.apache.logging.log4j.core.Layout layout) {
         if (layout instanceof LayoutAdapter) {
             return ((LayoutAdapter) layout).getLayout();
         }
@@ -49,12 +49,12 @@ public class LayoutWrapper extends Layout {
      *
      * @param layout The layout to wrap.
      */
-    public LayoutWrapper(org.apache.logging.log4j.core.Layout layout) {
+    public LayoutWrapper(final org.apache.logging.log4j.core.Layout layout) {
         this.layout = layout;
     }
 
     @Override
-    public String format(LoggingEvent event) {
+    public String format(final LoggingEvent event) {
         return layout.toSerializable(((LogEventAdapter)event).getEvent()).toString();
     }
 

@@ -33,15 +33,15 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AsyncLoggerDefaultLocationTest {
     @Test
     public void testAsyncLogWritesToLog() throws Exception {
-        LoggerContext context = (LoggerContext) LogManager.getContext(false);
-        ListAppender app = context.getConfiguration().getAppender("List");
+        final LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        final ListAppender app = context.getConfiguration().getAppender("List");
         assertNotNull(app);
         final Logger log = context.getLogger("com.foo.Bar");
         final String msg = "Async logger msg with no location by default";
         log.info(msg);
         context.stop();
         assertEquals(1, app.getEvents().size());
-        LogEvent event = app.getEvents().get(0);
+        final LogEvent event = app.getEvents().get(0);
         assertFalse(event.isIncludeLocation(), "includeLocation should be false");
         assertNull(event.getSource(), "Location data should not be present");
     }

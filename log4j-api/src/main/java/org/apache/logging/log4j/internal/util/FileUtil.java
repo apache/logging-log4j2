@@ -29,10 +29,10 @@ public class FileUtil {
         MODULE, CLASSLOADER, URL, FILE;
     }
 
-    public FileLocation findLocation(Module module, ClassLoader classLoader, String fileName) {
+    public FileLocation findLocation(final Module module, final ClassLoader classLoader, final String fileName) {
         if (module != null) {
             try {
-                URL url = module.getClassLoader().getResource(META_INF + fileName);
+                final URL url = module.getClassLoader().getResource(META_INF + fileName);
                 if (url != null) {
                     return FileLocation.MODULE;
                 }
@@ -42,7 +42,7 @@ public class FileUtil {
         }
         if (classLoader != null) {
             try {
-                URL url = classLoader.getResource(META_INF + fileName);
+                final URL url = classLoader.getResource(META_INF + fileName);
                 if (url != null) {
                     return FileLocation.CLASSLOADER;
                 }
@@ -51,7 +51,7 @@ public class FileUtil {
             }
         }
         try {
-            File file = new File(fileName);
+            final File file = new File(fileName);
             if (file.exists()) {
                 return FileLocation.FILE;
             }

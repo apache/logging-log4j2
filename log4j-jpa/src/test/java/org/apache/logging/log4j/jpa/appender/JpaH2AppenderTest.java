@@ -38,13 +38,13 @@ public class JpaH2AppenderTest extends AbstractJpaAppenderTest {
     protected Connection setUpConnection() throws SQLException {
         final Connection connection = DriverManager.getConnection("jdbc:h2:mem:Log4j", USER_ID, PASSWORD);
 
-        try (Statement statement = connection.createStatement()) {
+        try (final Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE jpaBaseLogEntry ( "
                     + "id INTEGER GENERATED ALWAYS AS IDENTITY, eventDate DATETIME, instant NVARCHAR(64), level NVARCHAR(10), "
                     + "logger NVARCHAR(255), message NVARCHAR(1024), exception NVARCHAR(1048576)" + " )");
         }
 
-        try (Statement statement = connection.createStatement()) {
+        try (final Statement statement = connection.createStatement()) {
             statement.executeUpdate("CREATE TABLE jpaBasicLogEntry ( "
                     + "id INTEGER GENERATED ALWAYS AS IDENTITY, timemillis BIGINT, instant NVARCHAR(64), nanoTime BIGINT, "
                     + "level NVARCHAR(10), loggerName NVARCHAR(255), message NVARCHAR(1024), "

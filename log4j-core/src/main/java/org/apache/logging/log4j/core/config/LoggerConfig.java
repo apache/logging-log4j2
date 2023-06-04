@@ -106,7 +106,7 @@ public class LoggerConfig extends AbstractFilterable {
             return additivity == null || additivity;
         }
 
-        public B withAdditivity(boolean additivity) {
+        public B withAdditivity(final boolean additivity) {
             this.additivity = additivity;
             return asBuilder();
         }
@@ -115,7 +115,7 @@ public class LoggerConfig extends AbstractFilterable {
             return level;
         }
 
-        public B withLevel(@PluginAttribute Level level) {
+        public B withLevel(@PluginAttribute final Level level) {
             this.level = level;
             return asBuilder();
         }
@@ -124,7 +124,7 @@ public class LoggerConfig extends AbstractFilterable {
             return levelAndRefs;
         }
 
-        public B withLevelAndRefs(@PluginAttribute String levelAndRefs) {
+        public B withLevelAndRefs(@PluginAttribute final String levelAndRefs) {
             this.levelAndRefs = levelAndRefs;
             return asBuilder();
         }
@@ -134,7 +134,7 @@ public class LoggerConfig extends AbstractFilterable {
         }
 
         public B withLoggerName(
-                @Required(message = "Loggers cannot be configured without a name") @PluginAttribute String name) {
+                @Required(message = "Loggers cannot be configured without a name") @PluginAttribute final String name) {
             this.loggerName = name;
             return asBuilder();
         }
@@ -143,7 +143,7 @@ public class LoggerConfig extends AbstractFilterable {
             return includeLocation;
         }
 
-        public B withIncludeLocation(@PluginAttribute String includeLocation) {
+        public B withIncludeLocation(@PluginAttribute final String includeLocation) {
             this.includeLocation = includeLocation;
             return asBuilder();
         }
@@ -152,7 +152,7 @@ public class LoggerConfig extends AbstractFilterable {
             return refs;
         }
 
-        public B withRefs(@PluginElement AppenderRef[] refs) {
+        public B withRefs(@PluginElement final AppenderRef[] refs) {
             this.refs = refs;
             return asBuilder();
         }
@@ -161,7 +161,7 @@ public class LoggerConfig extends AbstractFilterable {
             return properties;
         }
 
-        public B withProperties(@PluginElement Property[] properties) {
+        public B withProperties(@PluginElement final Property[] properties) {
             this.properties = properties;
             return asBuilder();
         }
@@ -170,7 +170,7 @@ public class LoggerConfig extends AbstractFilterable {
             return config;
         }
 
-        public B withConfig(@PluginConfiguration Configuration config) {
+        public B withConfig(@PluginConfiguration final Configuration config) {
             this.config = config;
             return asBuilder();
         }
@@ -179,7 +179,7 @@ public class LoggerConfig extends AbstractFilterable {
             return filter;
         }
 
-        public B withFilter(@PluginElement Filter filter) {
+        public B withFilter(@PluginElement final Filter filter) {
             this.filter = filter;
             return asBuilder();
         }
@@ -189,7 +189,7 @@ public class LoggerConfig extends AbstractFilterable {
         }
 
         @Inject
-        public B setLogEventFactory(LogEventFactory logEventFactory) {
+        public B setLogEventFactory(final LogEventFactory logEventFactory) {
             this.logEventFactory = logEventFactory;
             return asBuilder();
         }
@@ -197,8 +197,8 @@ public class LoggerConfig extends AbstractFilterable {
         @Override
         public LoggerConfig build() {
             final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
-            LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
-            boolean useLocation = includeLocation(includeLocation, config);
+            final LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
+            final boolean useLocation = includeLocation(includeLocation, config);
             return new LoggerConfig(name, container.refs, filter, container.level, isAdditivity(), properties, config,
                     useLocation, logEventFactory);
         }
@@ -482,7 +482,7 @@ public class LoggerConfig extends AbstractFilterable {
         }
     }
 
-    private StackTraceElement location(String fqcn) {
+    private StackTraceElement location(final String fqcn) {
         return requiresLocation() ?
                 StackLocatorUtil.calcLocation(fqcn) : null;
     }
@@ -518,7 +518,7 @@ public class LoggerConfig extends AbstractFilterable {
             final Level level,
             final Message data,
             final Throwable t) {
-        List<Property> snapshot = properties;
+        final List<Property> snapshot = properties;
         if (snapshot == null || !propertiesRequireLookup) {
             return snapshot;
         }
@@ -533,7 +533,7 @@ public class LoggerConfig extends AbstractFilterable {
             final Message data,
             final Throwable t,
             final List<Property> props) {
-        List<Property> results = new ArrayList<>(props.size());
+        final List<Property> results = new ArrayList<>(props.size());
         final LogEvent event = Log4jLogEvent.newBuilder()
                 .setMessage(data)
                 .setMarker(marker)
@@ -715,7 +715,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return additivity;
             }
 
-            public B withAdditivity(@PluginAttribute boolean additivity) {
+            public B withAdditivity(@PluginAttribute final boolean additivity) {
                 this.additivity = additivity;
                 return asBuilder();
             }
@@ -724,7 +724,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return level;
             }
 
-            public B withLevel(@PluginAttribute Level level) {
+            public B withLevel(@PluginAttribute final Level level) {
                 this.level = level;
                 return asBuilder();
             }
@@ -733,7 +733,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return levelAndRefs;
             }
 
-            public B withLevelAndRefs(@PluginAttribute String levelAndRefs) {
+            public B withLevelAndRefs(@PluginAttribute final String levelAndRefs) {
                 this.levelAndRefs = levelAndRefs;
                 return asBuilder();
             }
@@ -742,7 +742,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return includeLocation;
             }
 
-            public B withIncludeLocation(@PluginAttribute String includeLocation) {
+            public B withIncludeLocation(@PluginAttribute final String includeLocation) {
                 this.includeLocation = includeLocation;
                 return asBuilder();
             }
@@ -751,7 +751,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return refs;
             }
 
-            public B withRefs(@PluginElement AppenderRef[] refs) {
+            public B withRefs(@PluginElement final AppenderRef[] refs) {
                 this.refs = refs;
                 return asBuilder();
             }
@@ -760,7 +760,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return properties;
             }
 
-            public B withProperties(@PluginElement Property[] properties) {
+            public B withProperties(@PluginElement final Property[] properties) {
                 this.properties = properties;
                 return asBuilder();
             }
@@ -769,7 +769,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return config;
             }
 
-            public B withConfig(@PluginConfiguration Configuration config) {
+            public B withConfig(@PluginConfiguration final Configuration config) {
                 this.config = config;
                 return asBuilder();
             }
@@ -778,7 +778,7 @@ public class LoggerConfig extends AbstractFilterable {
                 return filter;
             }
 
-            public B withFilter(@PluginElement Filter filter) {
+            public B withFilter(@PluginElement final Filter filter) {
                 this.filter = filter;
                 return asBuilder();
             }
@@ -795,7 +795,7 @@ public class LoggerConfig extends AbstractFilterable {
 
             @Override
             public LoggerConfig build() {
-                LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
+                final LevelAndRefs container = LoggerConfig.getLevelAndRefs(level, refs, levelAndRefs, config);
                 return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, container.refs, filter, container.level,
                         additivity, properties, config, includeLocation(includeLocation, config), logEventFactory);
             }
@@ -821,9 +821,9 @@ public class LoggerConfig extends AbstractFilterable {
         }
     }
 
-    protected static LevelAndRefs getLevelAndRefs(Level level, AppenderRef[] refs, String levelAndRefs,
-            Configuration config) {
-        LevelAndRefs result = new LevelAndRefs();
+    protected static LevelAndRefs getLevelAndRefs(final Level level, final AppenderRef[] refs, final String levelAndRefs,
+            final Configuration config) {
+        final LevelAndRefs result = new LevelAndRefs();
         if (levelAndRefs != null) {
             if (config instanceof PropertiesConfiguration) {
                 if (level != null) {
@@ -835,7 +835,7 @@ public class LoggerConfig extends AbstractFilterable {
                 final String[] parts = Strings.splitList(levelAndRefs);
                 result.level = Level.getLevel(parts[0]);
                 if (parts.length > 1) {
-                    List<AppenderRef> refList = new ArrayList<>();
+                    final List<AppenderRef> refList = new ArrayList<>();
                     Arrays.stream(parts).skip(1).forEach((ref) ->
                             refList.add(AppenderRef.createAppenderRef(ref, null, null)));
                     result.refs = refList;

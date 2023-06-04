@@ -38,10 +38,10 @@ public class LoggerJira3410Test {
 
     @Test
     public void test() throws Exception {
-        try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-list.properties")) {
+        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-list.properties")) {
             final Logger logger = LogManager.getLogger("test");
             //
-            Map<Object, Integer> map = new HashMap<>(1);
+            final Map<Object, Integer> map = new HashMap<>(1);
             map.put(Long.MAX_VALUE, 1);
             logger.debug(map);
             //

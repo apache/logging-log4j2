@@ -178,7 +178,7 @@ public class ResponseTimeTest {
 
     private static void writeToFile(final String suffix, final Histogram hist, final int thousandMsgPerSec,
             final double scale) throws IOException {
-        try (PrintStream pout = new PrintStream(new FileOutputStream(thousandMsgPerSec + "k" + suffix))) {
+        try (final PrintStream pout = new PrintStream(new FileOutputStream(thousandMsgPerSec + "k" + suffix))) {
             hist.outputPercentileDistribution(pout, scale);
         }
     }

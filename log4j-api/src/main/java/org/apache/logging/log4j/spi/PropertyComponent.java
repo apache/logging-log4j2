@@ -48,7 +48,7 @@ public enum PropertyComponent {
 
     private final String name;
 
-    PropertyComponent(String name) {
+    PropertyComponent(final String name) {
         this.name = name;
     }
 

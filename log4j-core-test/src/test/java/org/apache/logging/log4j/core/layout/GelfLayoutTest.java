@@ -295,11 +295,11 @@ public class GelfLayoutTest {
         assertEquals("9223372036854775.807", GelfLayout.formatTimestamp(Long.MAX_VALUE).toString());
     }
 
-    private void testRequiresLocation(String messagePattern, Boolean requiresLocation) {
+    private void testRequiresLocation(final String messagePattern, final Boolean requiresLocation) {
 
-        GelfLayout layout = GelfLayout.newBuilder()
-                .setMessagePattern(messagePattern)
-                .build();
+        final GelfLayout layout = GelfLayout.newBuilder()
+        .setMessagePattern(messagePattern)
+        .build();
 
         assertEquals(layout.requiresLocation(), requiresLocation);
     }

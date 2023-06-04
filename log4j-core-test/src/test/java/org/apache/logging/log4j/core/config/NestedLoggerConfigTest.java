@@ -43,13 +43,13 @@ public class NestedLoggerConfigTest {
 
     private final String prefix;
 
-    public NestedLoggerConfigTest(String prefix) {
+    public NestedLoggerConfigTest(final String prefix) {
         this.prefix = prefix;
     }
 
     @Test
     public void testInheritParentDefaultLevel() throws IOException {
-        Configuration configuration = loadConfiguration(prefix + "default-level.xml");
+        final Configuration configuration = loadConfiguration(prefix + "default-level.xml");
         try {
             assertEquals(Level.ERROR, configuration.getLoggerConfig("com.foo").getLevel());
         } finally {
@@ -59,7 +59,7 @@ public class NestedLoggerConfigTest {
 
     @Test
     public void testInheritParentLevel() throws IOException {
-        Configuration configuration = loadConfiguration(prefix + "inherit-level.xml");
+        final Configuration configuration = loadConfiguration(prefix + "inherit-level.xml");
         try {
             assertEquals(Level.TRACE, configuration.getLoggerConfig("com.foo").getLevel());
         } finally {
@@ -67,9 +67,9 @@ public class NestedLoggerConfigTest {
         }
     }
 
-    private Configuration loadConfiguration(String resourcePath) throws IOException {
-        try (InputStream in = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
-            Configuration configuration = new XmlConfiguration(new LoggerContext("test"), new ConfigurationSource(in));
+    private Configuration loadConfiguration(final String resourcePath) throws IOException {
+        try (final InputStream in = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
+            final Configuration configuration = new XmlConfiguration(new LoggerContext("test"), new ConfigurationSource(in));
             configuration.initialize();
             configuration.start();
             return configuration;

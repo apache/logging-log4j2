@@ -160,7 +160,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
                                     final boolean currentContext) {
-        ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
+        final ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
         final LoggerContext ctx = selector.getContext(fqcn, classLoader, currentContext);
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
@@ -183,7 +183,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      */
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
                                     final boolean currentContext, final ConfigurationSource source) {
-        ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
+        final ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
         final LoggerContext ctx = selector.getContext(fqcn, classLoader, currentContext, null);
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
@@ -194,7 +194,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 boolean setProperties = false;
                 try {
                     if (ctx.getProperties() == null) {
-                        PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                        final PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
                         ctx.setProperties(props);
                         PropertiesUtil.setThreadProperties(props);
                         setProperties = true;
@@ -227,7 +227,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
      */
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
             final boolean currentContext, final Configuration configuration) {
-        ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
+        final ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
         final LoggerContext ctx = selector.getContext(fqcn, classLoader, currentContext, null);
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
@@ -237,7 +237,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
             boolean setProperties = false;
             try {
                 if (ctx.getProperties() == null) {
-                    PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                    final PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
                     ctx.setProperties(props);
                     PropertiesUtil.setThreadProperties(props);
                     setProperties = true;
@@ -266,7 +266,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
                                     final boolean currentContext, final URI configLocation, final String name) {
-        ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
+        final ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
         final LoggerContext ctx = selector.getContext(fqcn, classLoader, currentContext, configLocation);
         if (externalContext != null && ctx.getExternalContext() == null) {
             ctx.setExternalContext(externalContext);
@@ -280,7 +280,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 boolean setProperties = false;
                 try {
                     if (ctx.getProperties() == null) {
-                        PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                        final PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
                         ctx.setProperties(props);
                         PropertiesUtil.setThreadProperties(props);
                         setProperties = true;
@@ -304,7 +304,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
 
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
             final boolean currentContext, final URI configLocation, final String name) {
-        ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
+        final ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
         final LoggerContext ctx = selector.getContext(fqcn, classLoader, entry, currentContext, configLocation);
         if (name != null) {
             ctx.setName(name);
@@ -314,7 +314,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 boolean setProperties = false;
                 try {
                     if (ctx.getProperties() == null) {
-                        PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                        final PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
                         ctx.setProperties(props);
                         PropertiesUtil.setThreadProperties(props);
                         setProperties = true;
@@ -339,7 +339,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
 
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final Object externalContext,
             final boolean currentContext, final List<URI> configLocations, final String name) {
-        ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
+        final ClassLoader classLoader = loader != null ? loader : StackLocatorUtil.getCallerClass(fqcn).getClassLoader();
         final LoggerContext ctx = selector
                 .getContext(fqcn, classLoader, currentContext, null/*this probably needs to change*/);
         if (externalContext != null && ctx.getExternalContext() == null) {
@@ -355,7 +355,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                 try {
                     final List<AbstractConfiguration> configurations = new ArrayList<>(configLocations.size());
                     if (ctx.getProperties() == null) {
-                        PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                        final PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
                         ctx.setProperties(props);
                         PropertiesUtil.setThreadProperties(props);
                         setProperties = true;
@@ -398,11 +398,11 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
         return ctx;
     }
 
-    private void startContext(LoggerContext ctx, ClassLoader classLoader) {
+    private void startContext(final LoggerContext ctx, final ClassLoader classLoader) {
         boolean setProperties = false;
         try {
             if (ctx.getProperties() == null) {
-                PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
+                final PropertiesUtil props = PropertiesUtil.getContextProperties(classLoader, ctx.getName());
                 ctx.setProperties(props);
                 PropertiesUtil.setThreadProperties(props);
                 setProperties = true;

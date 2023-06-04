@@ -39,8 +39,8 @@ public class RoutingAppenderKeyLookupEvaluationTest {
     private final ListAppender app;
 
     public RoutingAppenderKeyLookupEvaluationTest(
-            LoggerContext context,
-            @Named("List") ListAppender app) {
+            final LoggerContext context,
+            @Named("List") final ListAppender app) {
         this.context = context;
         this.app = app.clear();
     }
@@ -58,14 +58,14 @@ public class RoutingAppenderKeyLookupEvaluationTest {
 
     @Test
     public void testRoutingNoUser() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         logger.warn("no user");
         assertThat(app.getMessages()).contains("WARN ${ctx:user} no user");
     }
 
     @Test
     public void testRoutingDoesNotMatchRoute() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         ThreadContext.put(KEY, "noRouteExists");
         logger.warn("unmatched user");
         assertThat(app.getMessages()).isEmpty();
@@ -73,7 +73,7 @@ public class RoutingAppenderKeyLookupEvaluationTest {
 
     @Test
     public void testRoutingContainsLookup() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         ThreadContext.put(KEY, "${java:version}");
         logger.warn("naughty user");
         assertThat(app.getMessages()).contains("WARN ${java:version} naughty user");
@@ -81,7 +81,7 @@ public class RoutingAppenderKeyLookupEvaluationTest {
 
     @Test
     public void testRoutingMatchesEscapedLookup() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         ThreadContext.put(KEY, "${upper:name}");
         logger.warn("naughty user");
         assertThat(app.getMessages()).contains("WARN ${upper:name} naughty user");
@@ -89,7 +89,7 @@ public class RoutingAppenderKeyLookupEvaluationTest {
 
     @Test
     public void testRoutesThemselvesNotEvaluated() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         ThreadContext.put(KEY, "NAME");
         logger.warn("unmatched user");
         assertThat(app.getMessages()).isEmpty();

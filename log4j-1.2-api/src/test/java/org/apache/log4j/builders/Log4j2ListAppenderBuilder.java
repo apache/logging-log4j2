@@ -50,7 +50,7 @@ public class Log4j2ListAppenderBuilder extends AbstractBuilder implements Append
     }
 
     @Override
-    public Appender parseAppender(Element element, XmlConfiguration configuration) {
+    public Appender parseAppender(final Element element, final XmlConfiguration configuration) {
         final String name = getNameAttribute(element);
         final AtomicReference<Layout> layout = new AtomicReference<>();
         final AtomicReference<Filter> filter = new AtomicReference<>();
@@ -69,14 +69,14 @@ public class Log4j2ListAppenderBuilder extends AbstractBuilder implements Append
     }
 
     @Override
-    public Appender parseAppender(String name, String appenderPrefix, String layoutPrefix, String filterPrefix,
-            Properties props, PropertiesConfiguration configuration) {
+    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix, final String filterPrefix,
+            final Properties props, final PropertiesConfiguration configuration) {
         final Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         return createAppender(name, layout, filter);
     }
 
-    private Appender createAppender(String name, Layout layout, Filter filter) {
+    private Appender createAppender(final String name, final Layout layout, final Filter filter) {
         final org.apache.logging.log4j.core.Layout log4j2Layout = LayoutAdapter.adapt(layout);
         return AppenderWrapper.adapt(
                 ListAppender.newBuilder()

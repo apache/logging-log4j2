@@ -51,12 +51,12 @@ public class TTCCLayoutBuilder extends AbstractBuilder<Layout> implements Layout
     public TTCCLayoutBuilder() {
     }
 
-    public TTCCLayoutBuilder(String prefix, Properties props) {
+    public TTCCLayoutBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
     @Override
-    public Layout parse(Element layoutElement, XmlConfiguration config) {
+    public Layout parse(final Element layoutElement, final XmlConfiguration config) {
         final AtomicBoolean threadPrinting = new AtomicBoolean(Boolean.TRUE);
         final AtomicBoolean categoryPrefixing = new AtomicBoolean(Boolean.TRUE);
         final AtomicBoolean contextPrinting = new AtomicBoolean(Boolean.TRUE);
@@ -88,20 +88,20 @@ public class TTCCLayoutBuilder extends AbstractBuilder<Layout> implements Layout
     }
 
     @Override
-    public Layout parse(PropertiesConfiguration config) {
-        boolean threadPrinting = getBooleanProperty(THREAD_PRINTING_PARAM, true);
-        boolean categoryPrefixing = getBooleanProperty(CATEGORY_PREFIXING_PARAM, true);
-        boolean contextPrinting = getBooleanProperty(CONTEXT_PRINTING_PARAM, true);
-        String dateFormat = getProperty(DATE_FORMAT_PARAM, RELATIVE);
-        String timezone = getProperty(TIMEZONE_FORMAT);
+    public Layout parse(final PropertiesConfiguration config) {
+        final boolean threadPrinting = getBooleanProperty(THREAD_PRINTING_PARAM, true);
+        final boolean categoryPrefixing = getBooleanProperty(CATEGORY_PREFIXING_PARAM, true);
+        final boolean contextPrinting = getBooleanProperty(CONTEXT_PRINTING_PARAM, true);
+        final String dateFormat = getProperty(DATE_FORMAT_PARAM, RELATIVE);
+        final String timezone = getProperty(TIMEZONE_FORMAT);
 
         return createLayout(threadPrinting, categoryPrefixing, contextPrinting,
                 dateFormat, timezone, config);
     }
 
-    private Layout createLayout(boolean threadPrinting, boolean categoryPrefixing, boolean contextPrinting,
-            String dateFormat, String timezone, Log4j1Configuration config) {
-        StringBuilder sb = new StringBuilder();
+    private Layout createLayout(final boolean threadPrinting, final boolean categoryPrefixing, final boolean contextPrinting,
+            final String dateFormat, final String timezone, final Log4j1Configuration config) {
+        final StringBuilder sb = new StringBuilder();
         if (dateFormat != null) {
             if (RELATIVE.equalsIgnoreCase(dateFormat)) {
                 sb.append("%r ");

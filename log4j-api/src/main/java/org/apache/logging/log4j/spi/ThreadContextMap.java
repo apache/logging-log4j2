@@ -119,7 +119,7 @@ public interface ThreadContextMap {
             return ((ReadOnlyThreadContextMap) this).getReadOnlyContextData();
         }
         final Map<String, String> copy = getCopy();
-        StringMap map = new SortedArrayStringMap(copy.size());
+        final StringMap map = new SortedArrayStringMap(copy.size());
         copy.forEach(map::putValue);
         map.freeze();
         return map;

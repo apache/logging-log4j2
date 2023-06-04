@@ -62,7 +62,7 @@ public class RollingFileAppender extends FileAppender {
      * <code>filename</code> will be truncated before being opened.
      * </p>
      */
-    public RollingFileAppender(Layout layout, String filename, boolean append) throws IOException {
+    public RollingFileAppender(final Layout layout, final String filename, final boolean append) throws IOException {
         super(layout, filename, append);
     }
 
@@ -74,7 +74,7 @@ public class RollingFileAppender extends FileAppender {
      * The file will be appended to.
      * </p>
      */
-    public RollingFileAppender(Layout layout, String filename) throws IOException {
+    public RollingFileAppender(final Layout layout, final String filename) throws IOException {
         super(layout, filename);
     }
 
@@ -113,7 +113,7 @@ public class RollingFileAppender extends FileAppender {
         File file;
 
         if (qw != null) {
-            long size = ((CountingQuietWriter) qw).getCount();
+            final long size = ((CountingQuietWriter) qw).getCount();
             LogLog.debug("rolling over count=" + size);
             // if operation fails, do not roll again until
             // maxFileSize more bytes are written
@@ -182,10 +182,10 @@ public class RollingFileAppender extends FileAppender {
         }
     }
 
-    public synchronized void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize) throws IOException {
+    public synchronized void setFile(final String fileName, final boolean append, final boolean bufferedIO, final int bufferSize) throws IOException {
         super.setFile(fileName, append, this.bufferedIO, this.bufferSize);
         if (append) {
-            File f = new File(fileName);
+            final File f = new File(fileName);
             ((CountingQuietWriter) qw).setCount(f.length());
         }
     }
@@ -199,7 +199,7 @@ public class RollingFileAppender extends FileAppender {
      * when it reaches <code>MaxFileSize</code>.
      * </p>
      */
-    public void setMaxBackupIndex(int maxBackups) {
+    public void setMaxBackupIndex(final int maxBackups) {
         this.maxBackupIndex = maxBackups;
     }
 
@@ -227,11 +227,11 @@ public class RollingFileAppender extends FileAppender {
      * kilobytes, megabytes or gigabytes. For example, the value "10KB" will be interpreted as 10240.
      * </p>
      */
-    public void setMaxFileSize(String value) {
+    public void setMaxFileSize(final String value) {
         maxFileSize = OptionConverter.toFileSize(value, maxFileSize + 1);
     }
 
-    protected void setQWForFiles(Writer writer) {
+    protected void setQWForFiles(final Writer writer) {
         this.qw = new CountingQuietWriter(writer, errorHandler);
     }
 
@@ -240,10 +240,10 @@ public class RollingFileAppender extends FileAppender {
      *
      * @since 0.9.0
      */
-    protected void subAppend(LoggingEvent event) {
+    protected void subAppend(final LoggingEvent event) {
         super.subAppend(event);
         if (fileName != null && qw != null) {
-            long size = ((CountingQuietWriter) qw).getCount();
+            final long size = ((CountingQuietWriter) qw).getCount();
             if (size >= maxFileSize && size >= nextRollover) {
                 rollOver();
             }

@@ -72,7 +72,7 @@ public class EnvironmentPropertySourceSecurityManagerIT {
      */
     @Test
     public void test() {
-        var existing = System.getSecurityManager();
+        final var existing = System.getSecurityManager();
         try {
             System.setSecurityManager(new TestSecurityManager());
             PropertiesUtil.getProperties();

@@ -35,7 +35,7 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(final ExtensionContext context) throws Exception {
         final TestProperties props = TestPropertySource.createProperties(context);
         final SetTestProperty[] setProperties = context.getRequiredTestMethod()
                 .getAnnotationsByType(SetTestProperty.class);
@@ -45,7 +45,7 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
             }
         }
         final Class<?> testClass = context.getRequiredTestClass();
-        Object testInstance = context.getRequiredTestInstance();
+        final Object testInstance = context.getRequiredTestInstance();
         ReflectionSupport
                 .findFields(testClass,
                         field -> ModifierSupport.isNotStatic(field)
@@ -55,7 +55,7 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
     }
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
+    public void beforeAll(final ExtensionContext context) throws Exception {
         final TestProperties props = TestPropertySource.createProperties(context);
         final SetTestProperty[] setProperties = context.getRequiredTestClass()
                 .getAnnotationsByType(SetTestProperty.class);
@@ -74,7 +74,7 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
     }
 
     @Override
-    public TestProperties resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+    public TestProperties resolveParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext)
             throws ParameterResolutionException {
         return TestPropertySource.createProperties(extensionContext);
     }

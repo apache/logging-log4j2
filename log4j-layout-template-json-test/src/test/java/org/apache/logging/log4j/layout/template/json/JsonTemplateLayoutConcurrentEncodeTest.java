@@ -169,7 +169,7 @@ class JsonTemplateLayoutConcurrentEncodeTest {
         // Check thread index.
         final int maxThreadIndex = 'Z' - 'A';
         if (threadIndex > maxThreadIndex) {
-            String message = String.format(
+            final String message = String.format(
                     "was expecting `threadIndex <= %d`, found: %d",
                     maxThreadIndex, threadIndex);
             throw new IndexOutOfBoundsException(message);

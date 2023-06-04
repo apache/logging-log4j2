@@ -32,14 +32,14 @@ public enum ScriptPropertyKey implements PropertyKey {
     private final String key;
     private final String systemKey;
 
-    ScriptPropertyKey(final PropertyComponent component, String name) {
+    ScriptPropertyKey(final PropertyComponent component, final String name) {
         this.component = component;
         this.name = name;
         this.key = component.getName() + "." + name;
         this.systemKey = LoggingSystemProperty.SYSTEM_PROPERTY_PREFIX + key;
     }
 
-    public static PropertyKey findKey(String component, String name) {
+    public static PropertyKey findKey(final String component, final String name) {
         for (PropertyKey key : values()) {
             if (key.getComponent().equals(component) && key.getName().equals(name)) {
                 return key;

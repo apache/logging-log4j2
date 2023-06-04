@@ -40,7 +40,7 @@ import org.apache.logging.log4j.script.AbstractScript;
 
 @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
 @Plugin
-public class ScriptAppenderSelector extends AbstractAppender {
+public final class ScriptAppenderSelector extends AbstractAppender {
 
     /**
      * Builds an appender.

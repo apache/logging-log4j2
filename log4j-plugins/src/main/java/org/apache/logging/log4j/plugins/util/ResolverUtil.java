@@ -371,10 +371,10 @@ public class ResolverUtil {
         try {
             connection = (JarURLConnection) url.openConnection();
             if (connection != null) {
-                try (JarFile jarFile = connection.getJarFile()) {
-                    Enumeration<JarEntry> entries = jarFile.entries();
+                try (final JarFile jarFile = connection.getJarFile()) {
+                    final Enumeration<JarEntry> entries = jarFile.entries();
                     while (entries.hasMoreElements()) {
-                        JarEntry entry = entries.nextElement();
+                        final JarEntry entry = entries.nextElement();
                         final String name = entry.getName();
                         if (!entry.isDirectory() && name.startsWith(parent) && isTestApplicable(test, name)) {
                             addIfMatching(test, name);

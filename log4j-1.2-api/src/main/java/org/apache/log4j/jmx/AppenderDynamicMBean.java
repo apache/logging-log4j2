@@ -55,7 +55,7 @@ import org.apache.log4j.spi.OptionHandler;
 public class AppenderDynamicMBean extends AbstractDynamicMBean {
 
     // This category instance is for logging.
-    private static Logger cat = Logger.getLogger(AppenderDynamicMBean.class);
+    private static final Logger cat = Logger.getLogger(AppenderDynamicMBean.class);
     private final MBeanConstructorInfo[] dConstructors = new MBeanConstructorInfo[1];
     private final Vector dAttributes = new Vector();
 

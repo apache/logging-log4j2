@@ -165,7 +165,7 @@ public final class OptionConverter {
 
         value = value.trim();
 
-        int hashIndex = value.indexOf('#');
+        final int hashIndex = value.indexOf('#');
         if (hashIndex == -1) {
             if("NULL".equalsIgnoreCase(value)) {
                 return null;
@@ -177,8 +177,8 @@ public final class OptionConverter {
 
         Level result = defaultValue;
 
-        String clazz = value.substring(hashIndex+1);
-        String levelName = value.substring(0, hashIndex);
+        final String clazz = value.substring(hashIndex + 1);
+        final String levelName = value.substring(0, hashIndex);
 
         // This is degenerate case but you never know.
         if("NULL".equalsIgnoreCase(levelName)) {
@@ -189,17 +189,17 @@ public final class OptionConverter {
                 + ":pri=[" + levelName + "]");
 
         try {
-            Class<?> customLevel = Loader.loadClass(clazz);
+            final Class<?> customLevel = Loader.loadClass(clazz);
 
             // get a ref to the specified class' static method
             // toLevel(String, org.apache.log4j.Level)
-            Class<?>[] paramTypes = new Class[] { String.class, Level.class };
-            java.lang.reflect.Method toLevelMethod =
+            final Class<?>[] paramTypes = new Class[]{String.class, Level.class};
+            final java.lang.reflect.Method toLevelMethod =
                     customLevel.getMethod("toLevel", paramTypes);
 
             // now call the toLevel method, passing level string + default
-            Object[] params = new Object[] {levelName, defaultValue};
-            Object o = toLevelMethod.invoke(null, params);
+            final Object[] params = new Object[]{levelName, defaultValue};
+            final Object o = toLevelMethod.invoke(null, params);
 
             result = (Level) o;
         } catch(ClassNotFoundException e) {
@@ -352,7 +352,7 @@ public final class OptionConverter {
         return substVars(val, props, new ArrayList<>());
     }
 
-    private static String substVars(final String val, final Properties props, List<String> keys)
+    private static String substVars(final String val, final Properties props, final List<String> keys)
             throws IllegalArgumentException {
 
         final StringBuilder sbuf = new StringBuilder();
@@ -396,7 +396,7 @@ public final class OptionConverter {
                 // x1=p1
                 // x2=${x1}
                 if (!keys.contains(key)) {
-                    List<String> usedKeys = new ArrayList<>(keys);
+                    final List<String> usedKeys = new ArrayList<>(keys);
                     usedKeys.add(key);
                     final String recursiveReplacement = substVars(replacement, props, usedKeys);
                     sbuf.append(recursiveReplacement);

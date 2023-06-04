@@ -110,7 +110,7 @@ public class MemoryMappedFileAppenderTest {
         } finally {
             context.stop();
         }
-        int expectedLength = Strings.isEmpty(System.getProperty("jdk.module.path")) ? 272 : 332;
+        final int expectedLength = Strings.isEmpty(System.getProperty("jdk.module.path")) ? 272 : 332;
         assertEquals(expectedLength + 2 * System.lineSeparator().length(), Files.size(logFile),
                 "Expected file size to shrink");
 

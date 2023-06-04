@@ -294,7 +294,7 @@ public class PluginRegistry {
     /**
      * Bundles plugins by namespace from a plugin source.
      */
-    private static class Namespaces implements Iterable<PluginNamespace> {
+    private static final class Namespaces implements Iterable<PluginNamespace> {
         private final Map<String, PluginNamespace> namespaces;
 
         private Namespaces() {

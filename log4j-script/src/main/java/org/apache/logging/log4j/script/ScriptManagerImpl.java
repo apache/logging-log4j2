@@ -84,7 +84,7 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
     private final WatchManager watchManager;
 
     public ScriptManagerImpl(final Configuration configuration, final WatchManager watchManager) {
-        String scriptLanguages =
+        final String scriptLanguages =
                 PropertiesUtil.getProperties().getStringProperty(ScriptPropertyKey.SCRIPT_ENABLE_LANGUAGES);
         this.configuration = configuration;
         this.watchManager = watchManager;
@@ -150,7 +150,7 @@ public class ScriptManagerImpl implements ScriptManager, FileWatcher {
         return allowedLanguages;
     }
 
-    public void addScripts(Node child) {
+    public void addScripts(final Node child) {
         for (final AbstractScript script : child.getObject(AbstractScript[].class)) {
             if (script instanceof ScriptRef) {
                 logger.error("Script reference to {} not added. Scripts definition cannot contain script references",

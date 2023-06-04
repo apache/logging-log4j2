@@ -25,11 +25,11 @@ import org.apache.logging.log4j.core.LoggerContext;
  */
 public class GetLogger {
 
-    public static void main(String[] args) {
-        int count = Integer.parseInt(args[0]);
-        LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
+    public static void main(final String[] args) {
+        final int count = Integer.parseInt(args[0]);
+        final LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
         for (int i = 0; i < count; ++i) {
-            Logger logger = LogManager.getLogger("Logger" + i);
+            final Logger logger = LogManager.getLogger("Logger" + i);
             logger.debug("This is a test");
         }
         System.out.println("Number of Loggers: " + loggerContext.getLoggers().size());

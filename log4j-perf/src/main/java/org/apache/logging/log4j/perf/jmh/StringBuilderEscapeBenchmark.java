@@ -67,8 +67,8 @@ public class StringBuilderEscapeBenchmark {
         return state.buffer.length();
     }
 
-    private static String repeat(String str, int times) {
-        StringBuilder sb = new StringBuilder(str.length() * times);
+    private static String repeat(final String str, final int times) {
+        final StringBuilder sb = new StringBuilder(str.length() * times);
         for (int i = 0; i < times; i++) {
             sb.append(str);
         }

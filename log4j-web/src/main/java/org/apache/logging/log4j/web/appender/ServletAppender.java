@@ -37,7 +37,7 @@ import org.apache.logging.log4j.web.WebLoggerContextUtils;
  */
 @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
 @Plugin("Servlet")
-public class ServletAppender extends AbstractAppender {
+public final class ServletAppender extends AbstractAppender {
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.plugins.util.Builder<ServletAppender> {

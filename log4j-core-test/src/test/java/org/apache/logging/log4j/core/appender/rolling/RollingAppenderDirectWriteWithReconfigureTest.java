@@ -49,7 +49,7 @@ public class RollingAppenderDirectWriteWithReconfigureTest extends AbstractRolli
 
         context.setConfigLocation(new URI(CONFIG));
         context.reconfigure();
-        Configuration config = context.getConfiguration();
+        final Configuration config = context.getConfiguration();
         final RollingFileAppender appender = config.getAppender("RollingFile");
         appender.getManager().addRolloverListener(this);
         logger.debug("Force a rollover");

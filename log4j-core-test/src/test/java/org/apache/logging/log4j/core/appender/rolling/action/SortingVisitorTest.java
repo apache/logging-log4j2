@@ -88,7 +88,7 @@ public class SortingVisitorTest {
 
     @Test
     public void testNoSuchFileFailure() throws IOException {
-        SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
+        final SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
         assertSame(
                 FileVisitResult.CONTINUE,
                 visitor.visitFileFailed(Paths.get("doesNotExist"), new NoSuchFileException("doesNotExist")));
@@ -96,8 +96,8 @@ public class SortingVisitorTest {
 
     @Test
     public void testIOException() {
-        SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
-        IOException exception = new IOException();
+        final SortingVisitor visitor = new SortingVisitor(new PathSortByModificationTime(false));
+        final IOException exception = new IOException();
         assertSame(exception,
                 assertThrows(IOException.class, () -> visitor.visitFileFailed(Paths.get("doesNotExist"), exception)));
     }

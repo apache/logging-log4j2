@@ -47,10 +47,10 @@ public class ContainerUtil {
  */
     public static String getContainerId() {
         try {
-            File file = new File("/proc/self/cgroup");
+            final File file = new File("/proc/self/cgroup");
             if (file.exists()) {
-                Path path = file.toPath();
-                String id = Files.lines(path).map(ContainerUtil::getContainerId).filter(Objects::nonNull)
+                final Path path = file.toPath();
+                final String id = Files.lines(path).map(ContainerUtil::getContainerId).filter(Objects::nonNull)
                         .findFirst().orElse(null);
                 LOGGER.debug("Found container id {}", id);
                 return id;

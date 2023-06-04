@@ -32,7 +32,7 @@ public class CompositeConfigurationMissingTest {
 
     @Test
     public void testMissingConfig() {
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 
         final AbstractConfiguration config = (AbstractConfiguration) ctx.getConfiguration();
         assertNotNull(config, "No configuration returned");

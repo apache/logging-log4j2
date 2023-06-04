@@ -81,7 +81,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
         @Override
         public LoggerConfig build() {
             final String name = getLoggerName().equals(ROOT) ? Strings.EMPTY : getLoggerName();
-            LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
+            final LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
                     getConfig());
             return new AsyncLoggerConfig(name, container.refs,getFilter(), container.level, isAdditivity(),
                     getProperties(), getConfig(), includeLocation(getIncludeLocation()), getLogEventFactory());
@@ -302,7 +302,7 @@ public class AsyncLoggerConfig extends LoggerConfig {
 
             @Override
             public LoggerConfig build() {
-                LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
+                final LevelAndRefs container = LoggerConfig.getLevelAndRefs(getLevel(), getRefs(), getLevelAndRefs(),
                         getConfig());
                 return new AsyncLoggerConfig(LogManager.ROOT_LOGGER_NAME, container.refs, getFilter(), container.level,
                         isAdditivity(), getProperties(), getConfig(),

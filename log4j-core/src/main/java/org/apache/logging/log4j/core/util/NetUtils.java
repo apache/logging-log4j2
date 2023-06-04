@@ -89,7 +89,7 @@ public final class NetUtils {
      * @return The local host names and ip addresses.
      */
     public static List<String> getLocalIps() {
-        List<String> localIps = new ArrayList<>();
+        final List<String> localIps = new ArrayList<>();
         localIps.add("localhost");
         localIps.add("127.0.0.1");
         try {
@@ -116,8 +116,8 @@ public final class NetUtils {
         return localIps;
     }
 
-    private static void setHostName(InetAddress address, List<String> localIps) {
-        String[] parts = address.toString().split("\\s*/\\s*");
+    private static void setHostName(final InetAddress address, final List<String> localIps) {
+        final String[] parts = address.toString().split("\\s*/\\s*");
         if (parts.length > 0) {
             for (String part : parts) {
                 if (Strings.isNotBlank(part) && !localIps.contains(part)) {

@@ -48,7 +48,7 @@ import org.apache.logging.log4j.util.Strings;
 
 @Configurable(elementType = Layout.ELEMENT_TYPE)
 @Plugin
-public class JsonTemplateLayout implements StringLayout {
+public final class JsonTemplateLayout implements StringLayout {
 
     private static final Map<String, String> CONTENT_FORMAT =
             Collections.singletonMap("version", "1");

@@ -32,9 +32,9 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("LevelPatternConverter")
-@ConverterKeys({ "p", "level" })
+@ConverterKeys({"p", "level"})
 @PerformanceSensitive("allocation")
-public class LevelPatternConverter extends LogEventPatternConverter {
+public final class LevelPatternConverter extends LogEventPatternConverter {
     private static final String OPTION_LENGTH = "length";
     private static final String OPTION_LOWER = "lowerCase";
 

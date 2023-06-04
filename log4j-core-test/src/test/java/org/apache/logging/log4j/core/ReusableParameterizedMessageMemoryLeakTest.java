@@ -29,12 +29,12 @@ public class ReusableParameterizedMessageMemoryLeakTest {
 
     @Test
     public void testParametersAreNotLeaked() throws Exception {
-        CountDownLatch latch = new CountDownLatch(1);
-        ReusableMessage message = (ReusableMessage) ReusableMessageFactory.INSTANCE.newMessage(
-                "foo {}", new ParameterObject("paramValue", latch));
+        final CountDownLatch latch = new CountDownLatch(1);
+        final ReusableMessage message = (ReusableMessage) ReusableMessageFactory.INSTANCE.newMessage(
+        "foo {}", new ParameterObject("paramValue", latch));
         // Large enough for the parameters, but smaller than the default reusable array size.
         message.swapParameters(new Object[5]);
-        try (GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
+        try (final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
             gcHelper.run();
             assertTrue(latch.await(30, TimeUnit.SECONDS), "Parameter should have been garbage collected");
         }
@@ -43,7 +43,7 @@ public class ReusableParameterizedMessageMemoryLeakTest {
     private static final class ParameterObject {
         private final String value;
         private final CountDownLatch latch;
-        ParameterObject(String value, CountDownLatch latch) {
+        ParameterObject(final String value, final CountDownLatch latch) {
             this.value = value;
             this.latch = latch;
         }

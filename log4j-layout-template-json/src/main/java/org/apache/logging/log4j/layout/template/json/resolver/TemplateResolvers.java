@@ -222,7 +222,7 @@ public final class TemplateResolvers {
         }
 
         // Collect field resolver contexts.
-        List<FieldResolverContext<V>> fieldResolverContexts =
+        final List<FieldResolverContext<V>> fieldResolverContexts =
                 populateFieldResolverMethods(context, map);
 
         // Short-circuit if the object is empty.
@@ -380,7 +380,7 @@ public final class TemplateResolvers {
          */
         @Override
         public boolean isResolvable(final V value) {
-            int fieldCount = fieldResolverContexts.size();
+            final int fieldCount = fieldResolverContexts.size();
             // noinspection ForLoopReplaceableByForEach (avoid iterator instantiation)
             for (int fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
                 final TemplateResolver<V> fieldResolver = fieldResolverContexts.get(fieldIndex).resolver;
@@ -398,9 +398,9 @@ public final class TemplateResolvers {
         @Override
         public void resolve(final V value, final JsonWriter jsonWriter) {
             jsonWriter.writeObjectStart();
-            int fieldCount = fieldResolverContexts.size();
+            final int fieldCount = fieldResolverContexts.size();
             for (int resolvedFieldCount = 0, fieldIndex = 0; fieldIndex < fieldCount; fieldIndex++) {
-                FieldResolverContext<V> fieldResolverContext = fieldResolverContexts.get(fieldIndex);
+                final FieldResolverContext<V> fieldResolverContext = fieldResolverContexts.get(fieldIndex);
                 final boolean resolvable = fieldResolverContext.resolver.isResolvable(value);
                 if (!resolvable) {
                     continue;

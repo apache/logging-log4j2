@@ -73,7 +73,7 @@ public final class Routes {
                 if (configuration == null) {
                     LOGGER.error("No Configuration defined for Routes; required for Script");
                 } else {
-                    ScriptManager scriptManager = configuration.getScriptManager();
+                    final ScriptManager scriptManager = configuration.getScriptManager();
                     if (scriptManager == null) {
                         LOGGER.error("Script support is not enabled");
                         return null;

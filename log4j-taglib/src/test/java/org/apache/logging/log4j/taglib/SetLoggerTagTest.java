@@ -169,7 +169,7 @@ public class SetLoggerTagTest {
         if (messageFactory == null) {
             assertSame(LoggingSystem.getMessageFactory(), testLogger.getMessageFactory());
         } else {
-            MessageFactory actual = testLogger.getMessageFactory();
+            final MessageFactory actual = testLogger.getMessageFactory();
             assertEquals(msg, messageFactory, actual);
         }
     }

@@ -185,8 +185,8 @@ class GcpLayoutTest {
     }
 
     private static String formatLogEventInstant(final LogEvent logEvent) {
-        org.apache.logging.log4j.core.time.Instant instant = logEvent.getInstant();
-        ZonedDateTime dateTime = Instant.ofEpochSecond(
+        final org.apache.logging.log4j.core.time.Instant instant = logEvent.getInstant();
+        final ZonedDateTime dateTime = Instant.ofEpochSecond(
                 instant.getEpochSecond(),
                 instant.getNanoOfSecond()).atZone(ZoneId.of("UTC"));
         return DATE_TIME_FORMATTER.format(dateTime);

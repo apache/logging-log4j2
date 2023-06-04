@@ -339,7 +339,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public StringBuilder toSerializable(final LogEvent event, final StringBuilder buf) {
-            StringBuilder buffer = delegate.toSerializable(event, buf);
+            final StringBuilder buffer = delegate.toSerializable(event, buf);
             String str = buffer.toString();
             str = replace.format(str);
             buffer.setLength(0);
@@ -389,13 +389,13 @@ public final class PatternLayout extends AbstractStringLayout {
                     final PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
                     boolean hasFormattingInfo = false;
                     for (PatternFormatter formatter : formatters) {
-                        FormattingInfo info = formatter.getFormattingInfo();
+                        final FormattingInfo info = formatter.getFormattingInfo();
                         if (info != null && info != FormattingInfo.getDefault()) {
                             hasFormattingInfo = true;
                             break;
                         }
                     }
-                    PatternSerializer serializer = hasFormattingInfo
+                    final PatternSerializer serializer = hasFormattingInfo
                             ? new PatternFormatterPatternSerializer(formatters)
                             : new NoFormatPatternSerializer(formatters);
                     return replace == null ? serializer : new PatternSerializerWithReplacement(serializer, replace);
@@ -538,7 +538,7 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Custom PatternLayout builder. Use the {@link PatternLayout#newBuilder() builder factory method} to create this.
      */
-    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<PatternLayout> {
+    public static final class Builder implements org.apache.logging.log4j.plugins.util.Builder<PatternLayout> {
 
         @PluginBuilderAttribute
         private String pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;

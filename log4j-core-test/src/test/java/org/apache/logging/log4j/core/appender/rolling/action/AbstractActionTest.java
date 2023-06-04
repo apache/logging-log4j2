@@ -36,14 +36,14 @@ public class AbstractActionTest {
     // Test for LOG4J2-2658
     @Test
     public void testExceptionsAreLoggedToStatusLogger() {
-        StatusLogger statusLogger = StatusLogger.getLogger();
+        final StatusLogger statusLogger = StatusLogger.getLogger();
         statusLogger.clear();
         new TestAction().run();
-        List<StatusData> statusDataList = statusLogger.getStatusData();
+        final List<StatusData> statusDataList = statusLogger.getStatusData();
         assertThat(statusDataList, hasSize(1));
-        StatusData statusData = statusDataList.get(0);
+        final StatusData statusData = statusDataList.get(0);
         assertEquals(Level.WARN, statusData.getLevel());
-        String formattedMessage = statusData.getFormattedStatus();
+        final String formattedMessage = statusData.getFormattedStatus();
         assertThat(formattedMessage, containsString("Exception reported by action 'class org.apache."
                 + "logging.log4j.core.appender.rolling.action.AbstractActionTest$TestAction' java.io.IOException: "
                 + "failed" + System.lineSeparator()
@@ -53,7 +53,7 @@ public class AbstractActionTest {
 
     @Test
     public void testRuntimeExceptionsAreLoggedToStatusLogger() {
-        StatusLogger statusLogger = StatusLogger.getLogger();
+        final StatusLogger statusLogger = StatusLogger.getLogger();
         statusLogger.clear();
         new AbstractAction() {
             @Override
@@ -61,17 +61,17 @@ public class AbstractActionTest {
                 throw new IllegalStateException();
             }
         }.run();
-        List<StatusData> statusDataList = statusLogger.getStatusData();
+        final List<StatusData> statusDataList = statusLogger.getStatusData();
         assertThat(statusDataList, hasSize(1));
-        StatusData statusData = statusDataList.get(0);
+        final StatusData statusData = statusDataList.get(0);
         assertEquals(Level.WARN, statusData.getLevel());
-        String formattedMessage = statusData.getFormattedStatus();
+        final String formattedMessage = statusData.getFormattedStatus();
         assertThat(formattedMessage, containsString("Exception reported by action"));
     }
 
     @Test
     public void testErrorsAreLoggedToStatusLogger() {
-        StatusLogger statusLogger = StatusLogger.getLogger();
+        final StatusLogger statusLogger = StatusLogger.getLogger();
         statusLogger.clear();
         new AbstractAction() {
             @Override
@@ -79,11 +79,11 @@ public class AbstractActionTest {
                 throw new AssertionError();
             }
         }.run();
-        List<StatusData> statusDataList = statusLogger.getStatusData();
+        final List<StatusData> statusDataList = statusLogger.getStatusData();
         assertThat(statusDataList, hasSize(1));
-        StatusData statusData = statusDataList.get(0);
+        final StatusData statusData = statusDataList.get(0);
         assertEquals(Level.WARN, statusData.getLevel());
-        String formattedMessage = statusData.getFormattedStatus();
+        final String formattedMessage = statusData.getFormattedStatus();
         assertThat(formattedMessage, containsString("Exception reported by action"));
     }
 

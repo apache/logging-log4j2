@@ -47,11 +47,11 @@ public final class BeanUtils {
     private BeanUtils() {
     }
 
-    public static String decapitalize(String string) {
+    public static String decapitalize(final String string) {
         if (string.isEmpty()) {
             return string;
         }
-        char[] chars = string.toCharArray();
+        final char[] chars = string.toCharArray();
         if (chars.length >= 2 && Character.isUpperCase(chars[0]) && Character.isUpperCase(chars[1])) {
             return string;
         }

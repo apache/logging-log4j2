@@ -134,7 +134,7 @@ public final class DynamicThresholdFilter extends AbstractFilter {
         super(onMatch, onMismatch);
         // ContextDataFactory looks up a property. The Spring PropertySource may log which will cause recursion.
         // By initializing the ContextDataFactory here recursion will be prevented.
-        StringMap map = ContextDataFactory.createContextData();
+        final StringMap map = ContextDataFactory.createContextData();
         LOGGER.debug("Successfully initialized ContextDataFactory by retrieving the context data with {} entries",
                 map.size());
         Objects.requireNonNull(key, "key cannot be null");

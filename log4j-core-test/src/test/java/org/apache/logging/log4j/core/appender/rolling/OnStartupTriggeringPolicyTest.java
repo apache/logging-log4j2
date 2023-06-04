@@ -79,7 +79,7 @@ public class OnStartupTriggeringPolicyTest {
                 false, policy, strategy, null, layout, 8192, true, false, null, null, null, configuration)) {
             manager.initialize();
             final String files;
-            try (Stream<Path> contents = Files.list(tempDir)) {
+            try (final Stream<Path> contents = Files.list(tempDir)) {
                 files = contents.map(Path::toString).collect(Collectors.joining(", ", "[", "]"));
             }
             assertTrue(Files.exists(target), target.toString() + ", files = " + files);

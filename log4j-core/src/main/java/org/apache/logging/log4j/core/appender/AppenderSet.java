@@ -36,7 +36,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Configurable(printObject = true, deferChildren = true)
 @Plugin
-public class AppenderSet {
+public final class AppenderSet {
 
     public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<AppenderSet> {
 

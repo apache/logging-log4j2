@@ -74,7 +74,7 @@ public class RollingAppenderDeleteAccumulatedCount2Test {
         assertNotNull(files);
         assertTrue(files.length > 0, "Dir " + DIR + " should contain files");
         for (final File file : files) {
-            BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+            final BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
             System.out.println(file + " (" + fileAttributes.size() + "B) "
                     + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(fileAttributes.lastModifiedTime().toMillis()));
         }
@@ -97,7 +97,7 @@ public class RollingAppenderDeleteAccumulatedCount2Test {
     private Path writeTextTo(final String location) throws IOException {
         final Path path = Paths.get(location);
         Files.createDirectories(path.getParent());
-        try (BufferedWriter buffy = Files.newBufferedWriter(path, Charset.defaultCharset())) {
+        try (final BufferedWriter buffy = Files.newBufferedWriter(path, Charset.defaultCharset())) {
             buffy.write("some text");
             buffy.newLine();
             buffy.flush();

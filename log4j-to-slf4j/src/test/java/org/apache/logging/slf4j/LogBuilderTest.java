@@ -86,9 +86,9 @@ public class LogBuilderTest {
 
     @ParameterizedTest
     @MethodSource("logBuilderMethods")
-    void testTurboFilter(Consumer<LogBuilder> consumer) {
+    void testTurboFilter(final Consumer<LogBuilder> consumer) {
         consumer.accept(logger.atTrace());
-        try (Instance c = CloseableThreadContext.put("callerId", "Log4j2")) {
+        try (final Instance c = CloseableThreadContext.put("callerId", "Log4j2")) {
             consumer.accept(logger.atTrace());
             assertThat(list.strList).hasSize(1);
         }
@@ -97,7 +97,7 @@ public class LogBuilderTest {
 
     @ParameterizedTest
     @MethodSource("logBuilderMethods")
-    void testLevelThreshold(Consumer<LogBuilder> consumer) {
+    void testLevelThreshold(final Consumer<LogBuilder> consumer) {
         consumer.accept(logger.atInfo());
         assertThat(list.strList).hasSize(1);
         list.strList.clear();

@@ -27,7 +27,7 @@ import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 
 @Namespace("Test")
 @Plugin("HostAndPort")
-public class HostAndPort {
+public final class HostAndPort {
 
     private final InetSocketAddress address;
 

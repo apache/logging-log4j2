@@ -34,7 +34,7 @@ import org.zeromq.ZMQ;
  *
  * @since 2.6
  */
-public class JeroMqManager extends AbstractManager {
+public final class JeroMqManager extends AbstractManager {
 
     /**
      * System property to enable shutdown hook.
@@ -106,8 +106,8 @@ public class JeroMqManager extends AbstractManager {
     }
 
     // not public, handy for testing
-    byte[] recv(int timeoutMs) {
-        int oldTimeoutMs = publisher.getReceiveTimeOut();
+    byte[] recv(final int timeoutMs) {
+        final int oldTimeoutMs = publisher.getReceiveTimeOut();
         try {
             publisher.setReceiveTimeOut(timeoutMs);
             return publisher.recv();
@@ -143,7 +143,7 @@ public class JeroMqManager extends AbstractManager {
         return CONTEXT;
     }
 
-    private static class JeroMqConfiguration {
+    private static final class JeroMqConfiguration {
         private final long affinity;
         private final long backlog;
         private final boolean delayAttachOnConnect;

@@ -36,7 +36,7 @@ public class FileSizeTest {
     @ResourceLock(Resources.LOCALE)
     public void testParseInEurope() {
         // Caveat: Breaks the ability for this test to run in parallel with other tests :(
-        Locale previousDefault = Locale.getDefault();
+        final Locale previousDefault = Locale.getDefault();
         try {
             Locale.setDefault(new Locale("de", "DE"));
             assertEquals(1000, FileSize.parse("1,000", 0));

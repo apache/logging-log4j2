@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.filter.CompositeFilter;
 /**
  * Binds a Log4j 1.x Filter with Log4j 2.
  */
-public class FilterAdapter extends AbstractFilter {
+public final class FilterAdapter extends AbstractFilter {
 
     private final Filter filter;
 
@@ -38,7 +38,7 @@ public class FilterAdapter extends AbstractFilter {
      * @param filter a Log4j 1.x filter
      * @return a Log4j 2.x filter or {@code null} if the parameter is {@code null}
      */
-    public static org.apache.logging.log4j.core.Filter adapt(Filter filter) {
+    public static org.apache.logging.log4j.core.Filter adapt(final Filter filter) {
         if (filter instanceof org.apache.logging.log4j.core.Filter) {
             return (org.apache.logging.log4j.core.Filter) filter;
         }
@@ -58,7 +58,7 @@ public class FilterAdapter extends AbstractFilter {
      * @param second
      * @return
      */
-    public static Filter addFilter(Filter first, Filter second) {
+    public static Filter addFilter(final Filter first, final Filter second) {
         if (first == null) {
             return second;
         }
@@ -74,13 +74,13 @@ public class FilterAdapter extends AbstractFilter {
         return FilterWrapper.adapt(composite.addFilter(adapt(second)));
     }
 
-    private FilterAdapter(Filter filter) {
+    private FilterAdapter(final Filter filter) {
         this.filter = filter;
     }
 
     @Override
-    public Result filter(LogEvent event) {
-        LoggingEvent loggingEvent = new LogEventAdapter(event);
+    public Result filter(final LogEvent event) {
+        final LoggingEvent loggingEvent = new LogEventAdapter(event);
         Filter next = filter;
         while (next != null) {
             switch (next.decide(loggingEvent)) {

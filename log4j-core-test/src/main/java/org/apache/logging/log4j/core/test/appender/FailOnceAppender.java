@@ -37,7 +37,7 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
  */
 @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
 @Plugin("FailOnce")
-public class FailOnceAppender extends AbstractAppender {
+public final class FailOnceAppender extends AbstractAppender {
 
     private final Supplier<Throwable> throwableSupplier;
 
@@ -54,7 +54,7 @@ public class FailOnceAppender extends AbstractAppender {
     public synchronized void append(final LogEvent event) {
         if (!failed) {
             failed = true;
-            Throwable throwable = throwableSupplier.get();
+            final Throwable throwable = throwableSupplier.get();
             Throwables.rethrow(throwable);
         }
         events.add(event);

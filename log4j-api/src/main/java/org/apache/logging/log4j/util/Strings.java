@@ -309,7 +309,7 @@ public final class Strings {
      * @param string The string to split.
      * @return An array of strings.
      */
-    public static String[] splitList(String string) {
+    public static String[] splitList(final String string) {
         return string != null ? string.split(COMMA_DELIMITED_RE) : new String[0];
     }
 

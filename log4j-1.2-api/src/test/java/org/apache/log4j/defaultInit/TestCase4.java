@@ -29,7 +29,7 @@ import org.junit.Ignore;
 @Ignore
 public class TestCase4 extends TestCase {
 
-  public TestCase4(String name) {
+  public TestCase4(final String name) {
     super(name);
   }
 
@@ -41,17 +41,17 @@ public class TestCase4 extends TestCase {
   }
 
   public void combinedTest() {
-    Logger root = Logger.getRootLogger();
-    boolean rootIsConfigured = root.getAllAppenders().hasMoreElements();
+      final Logger root = Logger.getRootLogger();
+      final boolean rootIsConfigured = root.getAllAppenders().hasMoreElements();
     assertTrue(rootIsConfigured);
-    Enumeration e = root.getAllAppenders();
-    Appender appender = (Appender) e.nextElement();
+      final Enumeration e = root.getAllAppenders();
+      final Appender appender = (Appender) e.nextElement();
     assertEquals(appender.getName(), "D1");
     assertEquals(e.hasMoreElements(), false);
   }
 
   public static Test suite() {
-    TestSuite suite = new TestSuite();
+      final TestSuite suite = new TestSuite();
     suite.addTest(new TestCase4("combinedTest"));
     return suite;
   }

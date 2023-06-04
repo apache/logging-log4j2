@@ -29,7 +29,7 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
 
 @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
 @Plugin("Block")
-public class BlockingAppender extends AbstractAppender {
+public final class BlockingAppender extends AbstractAppender {
     public volatile boolean running = true;
 
     private BlockingAppender(final String name) {

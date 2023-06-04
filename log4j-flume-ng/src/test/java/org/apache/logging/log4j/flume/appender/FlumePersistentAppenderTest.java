@@ -313,7 +313,7 @@ public class FlumePersistentAppenderTest {
         }
     }
 
-    private class ReaderThread extends Thread {
+    private final class ReaderThread extends Thread {
         private final int start;
         private final int stop;
         private final boolean[] fields;
@@ -417,7 +417,7 @@ public class FlumePersistentAppenderTest {
             server.start();
         }
 
-        private Server createServer(AvroSourceProtocol protocol, final int port) throws InterruptedException {
+        private Server createServer(final AvroSourceProtocol protocol, final int port) throws InterruptedException {
 
             server = new NettyServer(new SpecificResponder(AvroSourceProtocol.class, protocol),
                     new InetSocketAddress(HOSTNAME, port));

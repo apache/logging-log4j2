@@ -40,7 +40,7 @@ public class RequiredPropertyValidator implements ConstraintValidator<RequiredPr
 
     @Override
     public boolean isValid(final String name, final Object value) {
-        String property = PropertiesUtil.getProperties().getStringProperty(annotation.name());
+        final String property = PropertiesUtil.getProperties().getStringProperty(annotation.name());
         if (property == null) {
             LOGGER.error("{} cannot be used. Required property {} is not defined", name, annotation.name());
             return false;

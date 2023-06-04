@@ -74,7 +74,7 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
         }
 
         final NoSqlObject<W> entity = this.connection.createObject();
-        Message eventMessage = event.getMessage();
+        final Message eventMessage = event.getMessage();
         if (eventMessage instanceof MapMessage<?, ?>) {
             setFields((MapMessage<?, ?>) eventMessage, entity);
         } else {

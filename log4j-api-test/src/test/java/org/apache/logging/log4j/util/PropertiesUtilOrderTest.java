@@ -47,18 +47,18 @@ public class PropertiesUtilOrderTest {
         }
 
         @Override
-        public CharSequence getNormalForm(Iterable<? extends CharSequence> tokens) {
+        public CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
             final CharSequence camelCase = PropertySource.Util.joinAsCamelCase(tokens);
             return camelCase.length() > 0 ? "log4j2." + camelCase : null;
         }
 
         @Override
-        public String getProperty(String key) {
+        public String getProperty(final String key) {
             return props.getProperty(key);
         }
 
         @Override
-        public boolean containsProperty(String key) {
+        public boolean containsProperty(final String key) {
             return getProperty(key) != null;
         }
 
@@ -86,7 +86,7 @@ public class PropertiesUtilOrderTest {
         Verify that system properties and environment variables override properties provided in files.
      */
     @Test
-    public void testOrderOfProperties(EnvironmentVariables env, SystemProperties sysProps) {
+    public void testOrderOfProperties(final EnvironmentVariables env, final SystemProperties sysProps) {
         env.set("log4j2.*.Configuration.statusLoggerLevel", "ERROR");
         env.set("log4j2.*.StatusLogger.entries", "200");
         env.set("log4j2.my-app.StatusLogger.entries", "500");

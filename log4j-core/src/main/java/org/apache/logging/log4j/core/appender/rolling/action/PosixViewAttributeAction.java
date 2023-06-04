@@ -48,7 +48,7 @@ import org.apache.logging.log4j.util.Strings;
  */
 @Configurable(printObject = true)
 @Plugin("PosixViewAttribute")
-public class PosixViewAttributeAction extends AbstractPathAction {
+public final class PosixViewAttributeAction extends AbstractPathAction {
 
     /**
      * File permissions.

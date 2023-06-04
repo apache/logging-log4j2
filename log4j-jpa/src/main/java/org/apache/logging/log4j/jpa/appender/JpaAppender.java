@@ -47,7 +47,7 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
     private final String description;
 
     private JpaAppender(final String name, final Filter filter, final boolean ignoreExceptions,
-            Property[] properties, final JpaDatabaseManager manager) {
+            final Property[] properties, final JpaDatabaseManager manager) {
         super(name, filter, null, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }

@@ -225,7 +225,7 @@ public enum GcFreeLoggingTestUtil {;
 
         final File tempFile = File.createTempFile("allocations", ".txt");
         //tempFile.deleteOnExit();
-        List<String> command = new ArrayList<>();
+        final List<String> command = new ArrayList<>();
         command.add(javaBin);
         command.add(javaagent);
         if (usePreciseClock != null) {

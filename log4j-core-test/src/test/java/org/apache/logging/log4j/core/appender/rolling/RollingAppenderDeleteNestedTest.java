@@ -73,7 +73,7 @@ public class RollingAppenderDeleteNestedTest {
         assertNotNull(files);
         assertTrue(files.length > 0, "Dir " + DIR + " should contain files");
         for (final File file : files) {
-            BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+            final BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
             System.out.println(file + " (" + fileAttributes.size() + "B) "
                     + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(fileAttributes.lastModifiedTime().toMillis()));
         }
@@ -96,7 +96,7 @@ public class RollingAppenderDeleteNestedTest {
     private Path writeTextTo(final String location) throws IOException {
         final Path path = Paths.get(location);
         Files.createDirectories(path.getParent());
-        try (BufferedWriter buffy = Files.newBufferedWriter(path, Charset.defaultCharset())) {
+        try (final BufferedWriter buffy = Files.newBufferedWriter(path, Charset.defaultCharset())) {
             buffy.write("some text");
             buffy.newLine();
             buffy.flush();

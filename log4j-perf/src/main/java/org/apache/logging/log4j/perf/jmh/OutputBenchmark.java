@@ -55,13 +55,13 @@ public class OutputBenchmark {
 
         @Setup
         public void setUp() throws Exception {
-            PrintStream ps = new PrintStream(new FileOutputStream("target/stdout.log"));
+            final PrintStream ps = new PrintStream(new FileOutputStream("target/stdout.log"));
             System.setOut(ps);
         }
 
         @TearDown
         public void tearDown() {
-            PrintStream ps = System.out;
+            final PrintStream ps = System.out;
             System.setOut(defaultStream);
             ps.close();
         }
@@ -110,7 +110,7 @@ public class OutputBenchmark {
     @OutputTimeUnit(TimeUnit.SECONDS)
     @Group("redirect")
     @Benchmark
-    public void redirect(Redirect redirect) {
+    public void redirect(final Redirect redirect) {
         System.out.println(MESSAGE);
     }
 }

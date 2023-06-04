@@ -28,7 +28,7 @@ public final class ContextUtil {
      *
      * @param loggerContext The target logger context.
      */
-    public static void reconfigure(LoggerContext loggerContext) {
+    public static void reconfigure(final LoggerContext loggerContext) {
         if (loggerContext instanceof org.apache.logging.log4j.core.LoggerContext) {
             ((org.apache.logging.log4j.core.LoggerContext) loggerContext).reconfigure();
         }
@@ -39,7 +39,7 @@ public final class ContextUtil {
      *
      * @param loggerContext The target logger context.
      */
-    public static void shutdown(LoggerContext loggerContext) {
+    public static void shutdown(final LoggerContext loggerContext) {
         if (loggerContext instanceof org.apache.logging.log4j.core.LoggerContext) {
             ((org.apache.logging.log4j.core.LoggerContext) loggerContext).close();
         }

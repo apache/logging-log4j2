@@ -50,12 +50,12 @@ public class StringMatchFilterBuilder extends AbstractBuilder<Filter> implements
         super();
     }
 
-    public StringMatchFilterBuilder(String prefix, Properties props) {
+    public StringMatchFilterBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
     @Override
-    public Filter parse(Element filterElement, XmlConfiguration config) {
+    public Filter parse(final Element filterElement, final XmlConfiguration config) {
         final AtomicBoolean acceptOnMatch = new AtomicBoolean();
         final AtomicReference<String> text = new AtomicReference<>();
         forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
@@ -75,20 +75,20 @@ public class StringMatchFilterBuilder extends AbstractBuilder<Filter> implements
     }
 
     @Override
-    public Filter parse(PropertiesConfiguration config) {
-        String text = getProperty(STRING_TO_MATCH);
-        boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);
+    public Filter parse(final PropertiesConfiguration config) {
+        final String text = getProperty(STRING_TO_MATCH);
+        final boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);
         return createFilter(text, acceptOnMatch);
     }
 
-    private Filter createFilter(String text, boolean acceptOnMatch) {
+    private Filter createFilter(final String text, final boolean acceptOnMatch) {
         if (text == null) {
             LOGGER.error("No text provided for StringMatchFilter");
             return null;
         }
-        org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
-                ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
-                : org.apache.logging.log4j.core.Filter.Result.DENY;
+        final org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
+        ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
+        : org.apache.logging.log4j.core.Filter.Result.DENY;
         return FilterWrapper.adapt(StringMatchFilter.newBuilder()
                 .setMatchString(text)
                 .setOnMatch(onMatch)

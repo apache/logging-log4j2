@@ -703,7 +703,7 @@ class JsonTemplateLayoutTest {
 
         };
         layout.encode(logEvent, byteBufferDestination);
-        String encodeOutput = new String(
+        final String encodeOutput = new String(
                 byteBuffer.array(),
                 0,
                 byteBuffer.position(),
@@ -1298,7 +1298,7 @@ class JsonTemplateLayoutTest {
         final int charOffset = totalCharCount / messageCount;
 
         // Populate messages.
-        List<SimpleMessage> messages = new ArrayList<>(messageCount);
+        final List<SimpleMessage> messages = new ArrayList<>(messageCount);
         for (int messageIndex = 0; messageIndex < messageCount; messageIndex++) {
             final StringBuilder stringBuilder = new StringBuilder(messageIndex + "@");
             for (int charIndex = 0; charIndex < charOffset; charIndex++) {
@@ -1490,7 +1490,7 @@ class JsonTemplateLayoutTest {
         // Check the serialized event.
         usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
             assertThat(accessor.getObject("po*")).isEqualTo(Arrays.asList(parameters));
-            List<String> stringifiedParameters = Arrays
+            final List<String> stringifiedParameters = Arrays
                     .stream(parameters)
                     .map(String::valueOf)
                     .collect(Collectors.toList());

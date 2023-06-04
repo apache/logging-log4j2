@@ -36,7 +36,7 @@ import org.springframework.util.StringUtils;
  */
 @Configurable(elementType = Arbiter.ELEMENT_TYPE, deferChildren = true, printObject = true)
 @Plugin("SpringProfile")
-public class SpringProfileArbiter implements Arbiter {
+public final class SpringProfileArbiter implements Arbiter {
 
     private final String[] profileNames;
     private Environment environment;
@@ -103,7 +103,7 @@ public class SpringProfileArbiter implements Arbiter {
         }
 
         public SpringProfileArbiter build() {
-            String[] profileNames = StringUtils.trimArrayElements(
+            final String[] profileNames = StringUtils.trimArrayElements(
                     StringUtils.commaDelimitedListToStringArray(configuration.getStrSubstitutor().replace(name)));
             Environment environment = null;
             if (loggerContext != null) {

@@ -72,7 +72,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
 
     abstract Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException;
 
-    protected LoggerContext configure(String configResourcePrefix) throws URISyntaxException, IOException {
+    protected LoggerContext configure(final String configResourcePrefix) throws URISyntaxException, IOException {
         Configurator.reconfigure(getConfiguration(configResourcePrefix));
         return (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
     }
@@ -88,7 +88,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
         testConsoleAppender((ConsoleAppender) capitalized, (ConsoleAppender) javaStyle);
     }
 
-    private void testConsoleAppender(ConsoleAppender expected, ConsoleAppender actual) {
+    private void testConsoleAppender(final ConsoleAppender expected, final ConsoleAppender actual) {
         assertEquals("immediateFlush", expected.getImmediateFlush(), actual.getImmediateFlush());
         assertEquals("target", expected.getTarget(), actual.getTarget());
         assertEquals("layoutClass", expected.getLayout().getClass(), actual.getLayout().getClass());
@@ -97,7 +97,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
         }
     }
 
-    private void patternLayoutEquals(PatternLayout expected, PatternLayout actual) {
+    private void patternLayoutEquals(final PatternLayout expected, final PatternLayout actual) {
         assertEquals(expected.getCharset(), actual.getCharset());
         assertEquals(expected.getConversionPattern(), actual.getConversionPattern());
     }
@@ -307,10 +307,10 @@ public abstract class AbstractLog4j1ConfigurationTest {
 
     private boolean getFollowProperty(final ConsoleAppender consoleAppender)
             throws Exception, NoSuchFieldException, IllegalAccessException {
-        CloseShieldOutputStream wrapperStream = (CloseShieldOutputStream) getOutputStream(consoleAppender.getManager());
-        Field delegateField = CloseShieldOutputStream.class.getDeclaredField("delegate");
+        final CloseShieldOutputStream wrapperStream = (CloseShieldOutputStream) getOutputStream(consoleAppender.getManager());
+        final Field delegateField = CloseShieldOutputStream.class.getDeclaredField("delegate");
         delegateField.setAccessible(true);
-        boolean follow = !System.out.equals(delegateField.get(wrapperStream));
+        final boolean follow = !System.out.equals(delegateField.get(wrapperStream));
         return follow;
     }
 
@@ -366,7 +366,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
         final ConsoleAppender consoleAppender = config.getAppender("ConsoleAppender");
         assertNotNull(consoleAppender);
         assertEquals("target", Target.SYSTEM_OUT, consoleAppender.getTarget());
-        boolean follow = getFollowProperty(consoleAppender);
+        final boolean follow = getFollowProperty(consoleAppender);
         assertEquals("follow", false, follow);
         // DailyRollingFileAppender
         final RollingFileAppender dailyRollingFileAppender = config.getAppender("DailyRollingFileAppender");
@@ -447,7 +447,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
 
     public void testMultipleFilters(final Path folder) throws Exception {
         System.setProperty("test.tmpDir", folder.toString());
-        try (LoggerContext loggerContext = configure("log4j-multipleFilters")) {
+        try (final LoggerContext loggerContext = configure("log4j-multipleFilters")) {
             final Configuration configuration = loggerContext.getConfiguration();
             assertNotNull(configuration);
             // Check only number of filters.
@@ -504,7 +504,7 @@ public abstract class AbstractLog4j1ConfigurationTest {
             final Configuration config = ctx.getConfiguration();
             final Filter filter = config.getFilter();
             assertTrue(filter instanceof ThresholdFilter);
-            ThresholdFilter thresholdFilter = (ThresholdFilter)filter;
+            final ThresholdFilter thresholdFilter = (ThresholdFilter) filter;
             assertEquals(Level.INFO, thresholdFilter.getLevel());
             assertEquals(Filter.Result.NEUTRAL, thresholdFilter.getOnMatch());
             assertEquals(Filter.Result.DENY, thresholdFilter.getOnMismatch());

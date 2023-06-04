@@ -63,7 +63,7 @@ public abstract class ContextAwarePropertySource implements PropertySource {
     }
 
     public Collection<String> getPropertyNames(final String contextName) {
-        Properties properties = getPropertiesMap().get(contextName);
+        final Properties properties = getPropertiesMap().get(contextName);
         return properties != null ? properties.stringPropertyNames() : Collections.emptyList();
     }
 
@@ -73,8 +73,8 @@ public abstract class ContextAwarePropertySource implements PropertySource {
     }
 
     public String getProperty(final String contextName, final String key) {
-        Properties properties = getPropertiesMap().get(contextName);
-        String value = properties != null ? properties.getProperty(key) : null;
+        final Properties properties = getPropertiesMap().get(contextName);
+        final String value = properties != null ? properties.getProperty(key) : null;
         if (Strings.isEmpty(value)) {
             return null;
         }
@@ -87,10 +87,10 @@ public abstract class ContextAwarePropertySource implements PropertySource {
     }
 
     public boolean containsProperty(final String contextName, final String key) {
-        Map<String, Properties> propertiesMap = getPropertiesMap();
-        Properties properties = propertiesMap.get(contextName);
+        final Map<String, Properties> propertiesMap = getPropertiesMap();
+        final Properties properties = propertiesMap.get(contextName);
         if (properties != null) {
-            String value = properties.getProperty(key);
+            final String value = properties.getProperty(key);
             return Strings.isNotEmpty(value);
         }
         return false;
@@ -106,7 +106,7 @@ public abstract class ContextAwarePropertySource implements PropertySource {
      * @return The Properties Map.
      */
     protected Map<String, Properties> parseProperties(final Map<String, String> properties) {
-        Map<String, Properties> propertiesMap = new ConcurrentHashMap<>();
+        final Map<String, Properties> propertiesMap = new ConcurrentHashMap<>();
         for (String propName : properties.keySet()) {
             if (propName.startsWith(PREFIX)) {
                 storeProperty(propertiesMap, propName, properties.get(propName));
@@ -115,7 +115,7 @@ public abstract class ContextAwarePropertySource implements PropertySource {
         return propertiesMap;
     }
 
-    protected Map<String, Properties> parseProperties(Properties properties) {
+    protected Map<String, Properties> parseProperties(final Properties properties) {
         return parseProperties(properties, contextName, includeInvalid);
     }
 
@@ -128,10 +128,10 @@ public abstract class ContextAwarePropertySource implements PropertySource {
      */
     protected Map<String, Properties> parseProperties(final Properties properties, final String contextName,
                                                     final boolean includeInvalid) {
-        Map<String, Properties> propertiesMap = new ConcurrentHashMap<>();
+        final Map<String, Properties> propertiesMap = new ConcurrentHashMap<>();
         if (contextName == null || contextName.equals(SYSTEM_CONTEXT)) {
             for (String propertyName : properties.stringPropertyNames()) {
-                String propName = Util.resolveKey(propertyName);
+                final String propName = Util.resolveKey(propertyName);
                 if (propName.startsWith(PREFIX)) {
                     storeProperty(propertiesMap, propName, properties.getProperty(propertyName));
                 } else if (propName.startsWith(PropertyComponent.Constant.LOG4J)
@@ -177,19 +177,19 @@ public abstract class ContextAwarePropertySource implements PropertySource {
         if (propName == null || value == null) {
             return;
         }
-        List<CharSequence> tokens = Util.getTokens(propName);
+        final List<CharSequence> tokens = Util.getTokens(propName);
         if (tokens.size() < 4) {
             LowLevelLogUtil.log("Key " + propName + " is invalid. Log4j properties must be "
                     + "in the form \"log4j2.{contextName}.{componentName}.{key}\"");
             return;
         }
-        String name = tokens.get(1).toString();
+        final String name = tokens.get(1).toString();
         Properties props = propertiesMap.get(name);
         if (props == null) {
             props = new Properties();
             propertiesMap.put(name, props);
         }
-        String key = Util.join(tokens.subList(2, tokens.size())).toString();
+        final String key = Util.join(tokens.subList(2, tokens.size())).toString();
         props.setProperty(key, value);
     }
 }

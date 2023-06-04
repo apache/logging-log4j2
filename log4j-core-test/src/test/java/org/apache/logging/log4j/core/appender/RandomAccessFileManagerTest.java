@@ -122,7 +122,7 @@ public class RandomAccessFileManagerTest {
         final byte[] bytes = new byte[4 * 1024];
 
         // create existing file
-        try (FileOutputStream fos = new FileOutputStream(file)) {
+        try (final FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(bytes, 0, bytes.length);
             fos.flush();
         }

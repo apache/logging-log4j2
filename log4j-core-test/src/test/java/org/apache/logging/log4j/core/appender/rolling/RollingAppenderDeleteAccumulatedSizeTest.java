@@ -59,7 +59,7 @@ public class RollingAppenderDeleteAccumulatedSizeTest {
         assertNotNull(files);
         assertTrue(files.length > 0, "Dir " + DIR + " should contain files");
         for (final File file : files) {
-            BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+            final BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
             System.out.println(file + " (" + fileAttributes.size() + "B) "
                     + FixedDateFormat.create(FixedFormat.ABSOLUTE).format(fileAttributes.lastModifiedTime().toMillis()));
         }

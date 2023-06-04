@@ -32,7 +32,7 @@ import static org.junit.Assert.fail;
 /**
  * Utiities for serialization tests.
  */
-public class SerializationTestHelper {
+public final class SerializationTestHelper {
     /**
      * Checks the serialization of an object against an file containing the expected serialization.
      *

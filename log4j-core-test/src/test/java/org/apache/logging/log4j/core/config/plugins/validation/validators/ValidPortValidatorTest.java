@@ -41,7 +41,7 @@ public class ValidPortValidatorTest {
     @BeforeEach
     public void setUp() throws Exception {
         final PluginNamespace category = injector.getInstance(new @Namespace("Test") Key<>() {});
-        PluginType<?> plugin = category.get("HostAndPort");
+        final PluginType<?> plugin = category.get("HostAndPort");
         assertNotNull(plugin, "Rebuild this module to ensure annotation processing has been done.");
         node = new Node(null, "HostAndPort", plugin);
         node.getAttributes().put("host", "localhost");

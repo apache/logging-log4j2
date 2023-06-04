@@ -25,7 +25,7 @@ import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
 
 class ThreadContextStackExtension implements BeforeEachCallback {
-    private static class ThreadContextStackStore implements Store.CloseableResource {
+    private static final class ThreadContextStackStore implements Store.CloseableResource {
         private final Collection<String> previousStack = ThreadContext.getImmutableStack();
 
         private ThreadContextStackStore() {
@@ -39,7 +39,7 @@ class ThreadContextStackExtension implements BeforeEachCallback {
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(final ExtensionContext context) throws Exception {
         context.getStore(Namespace.create(ThreadContext.class, context.getRequiredTestClass(), context.getRequiredTestInstance()))
                 .getOrComputeIfAbsent(ThreadContextStackStore.class);
     }

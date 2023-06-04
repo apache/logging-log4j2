@@ -28,7 +28,7 @@ import java.io.OutputStream;
  *
  * @since 2.3
  */
-public class NullOutputStream extends OutputStream {
+public final class NullOutputStream extends OutputStream {
 
     private static final NullOutputStream INSTANCE = new NullOutputStream();
 

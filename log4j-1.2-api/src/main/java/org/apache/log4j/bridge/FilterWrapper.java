@@ -35,7 +35,7 @@ public class FilterWrapper extends Filter {
      * @param filter a Log4j 2.x filter
      * @return a Log4j 1.x filter or {@code null} if the parameter is {@code null}
      */
-    public static Filter adapt(org.apache.logging.log4j.core.Filter filter) {
+    public static Filter adapt(final org.apache.logging.log4j.core.Filter filter) {
         if (filter instanceof Filter) {
             return (Filter) filter;
         }
@@ -48,7 +48,7 @@ public class FilterWrapper extends Filter {
         return null;
     }
 
-    public FilterWrapper(org.apache.logging.log4j.core.Filter filter) {
+    public FilterWrapper(final org.apache.logging.log4j.core.Filter filter) {
         this.filter = filter;
     }
 
@@ -62,7 +62,7 @@ public class FilterWrapper extends Filter {
      * @return 0
      */
     @Override
-    public int decide(LoggingEvent event) {
+    public int decide(final LoggingEvent event) {
         return 0;
     }
 }

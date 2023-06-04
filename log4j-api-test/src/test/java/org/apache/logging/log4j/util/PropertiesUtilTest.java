@@ -83,7 +83,7 @@ public class PropertiesUtilTest {
     @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     public void testGetMappedProperty_sun_stdout_encoding() {
         final PropertiesUtil pu = new PropertiesUtil(System.getProperties());
-        Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
+        final Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
         assertEquals(expected, pu.getCharsetProperty("sun.stdout.encoding"));
     }
 
@@ -91,15 +91,15 @@ public class PropertiesUtilTest {
     @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     public void testGetMappedProperty_sun_stderr_encoding() {
         final PropertiesUtil pu = new PropertiesUtil(System.getProperties());
-        Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
+        final Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
         assertEquals(expected, pu.getCharsetProperty("sun.err.encoding"));
     }
 
     @Test
     @ResourceLock(Resources.SYSTEM_PROPERTIES)
     public void testNonStringSystemProperties() {
-        Object key1 = "1";
-        Object key2 = new Object();
+        final Object key1 = "1";
+        final Object key2 = new Object();
         System.getProperties().put(key1, new Object());
         System.getProperties().put(key2, "value-2");
         try {
@@ -137,7 +137,7 @@ public class PropertiesUtilTest {
     public void testPublish() {
         final Properties props = new Properties();
         final PropertiesUtil util = new PropertiesUtil(props);
-        String value = System.getProperty("Application");
+        final String value = System.getProperty("Application");
         assertNotNull(value, "System property was not published");
         assertEquals("Log4j", value);
     }
@@ -166,7 +166,7 @@ public class PropertiesUtilTest {
     public void testResolvesOnlyLog4jProperties() {
         final PropertiesUtil util = new PropertiesUtil("Jira3413Test.properties");
         for (final String[] pair : data) {
-            String value = util.getStringProperty(pair[1]);
+            final String value = util.getStringProperty(pair[1]);
             assertEquals(pair[0], value, "Unexpected value for " + pair[1]);
         }
     }

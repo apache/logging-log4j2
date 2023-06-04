@@ -890,7 +890,7 @@ class JsonWriterTest {
         expectNull(JsonWriter::writeNull);
     }
 
-    private void expectNull(Consumer<JsonWriter> body) {
+    private void expectNull(final Consumer<JsonWriter> body) {
         final String expectedJson = "null";
         final String actualJson = withLockedWriterReturning(writer ->
                 writer.use(() -> body.accept(writer)));

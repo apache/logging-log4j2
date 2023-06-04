@@ -31,9 +31,9 @@ public class ProviderUtilTest {
 
     @Test
     public void complexTest() throws Exception {
-        File file = new File("target/classes");
-        ClassLoader classLoader = new URLClassLoader(new URL[] {file.toURI().toURL()});
-        Worker worker = new Worker();
+        final File file = new File("target/classes");
+        final ClassLoader classLoader = new URLClassLoader(new URL[]{file.toURI().toURL()});
+        final Worker worker = new Worker();
         worker.setContextClassLoader(classLoader);
         worker.start();
         worker.join();

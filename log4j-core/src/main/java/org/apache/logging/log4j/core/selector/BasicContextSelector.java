@@ -55,7 +55,7 @@ public class BasicContextSelector implements ContextSelector, LoggerContextShutd
     }
 
     @Override
-    public void contextShutdown(org.apache.logging.log4j.spi.LoggerContext loggerContext) {
+    public void contextShutdown(final org.apache.logging.log4j.spi.LoggerContext loggerContext) {
         if (loggerContext instanceof LoggerContext) {
             removeContext((LoggerContext) loggerContext);
         }

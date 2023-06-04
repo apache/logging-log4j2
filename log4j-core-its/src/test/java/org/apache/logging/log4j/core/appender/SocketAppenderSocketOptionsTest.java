@@ -42,7 +42,7 @@ public class SocketAppenderSocketOptionsTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        int port = Integer.getInteger("SocketAppenderSocketOptionsTest.port");
+        final int port = Integer.getInteger("SocketAppenderSocketOptionsTest.port");
         server = new TcpSocketTestServer(port);
         server.start();
     }

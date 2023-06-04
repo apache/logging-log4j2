@@ -33,7 +33,7 @@ import org.apache.logging.log4j.plugins.di.Injector;
 public class BasicAsyncLoggerContextSelector extends BasicContextSelector {
 
     @Inject
-    public BasicAsyncLoggerContextSelector(Injector injector) {
+    public BasicAsyncLoggerContextSelector(final Injector injector) {
         super(injector);
     }
 

@@ -43,14 +43,14 @@ public class MapRewriteAppenderTest {
     @Test
     @LoggerContextSource(value = "log4j1-mapRewrite.xml", v1config = true)
     public void testRewrite() {
-        Logger logger = LogManager.getLogger("test");
-        Map<String, String> map = new HashMap<>();
+        final Logger logger = LogManager.getLogger("test");
+        final Map<String, String> map = new HashMap<>();
         map.put("message", "This is a test");
         map.put("hello", "world");
         logger.debug(map);
-        LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
-        Configuration configuration = context.getConfiguration();
-        Map<String, Appender> appenders = configuration.getAppenders();
+        final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
+        final Configuration configuration = context.getConfiguration();
+        final Map<String, Appender> appenders = configuration.getAppenders();
         ListAppender eventAppender = null;
         for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
             if (entry.getKey().equals("events")) {
@@ -58,7 +58,7 @@ public class MapRewriteAppenderTest {
             }
         }
         assertNotNull(eventAppender, "No Event Appender");
-        List<LoggingEvent> events = eventAppender.getEvents();
+        final List<LoggingEvent> events = eventAppender.getEvents();
         assertTrue(events != null && events.size() > 0, "No events");
         assertNotNull(events.get(0).getProperties(), "No properties in the event");
         assertTrue(events.get(0).getProperties().containsKey("hello"), "Key was not inserted");

@@ -35,14 +35,14 @@ import static org.apache.logging.log4j.core.test.junit.LoggerContextResolver.get
 class AppenderResolver implements ParameterResolver {
     @Override
     public boolean supportsParameter(
-            ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+            final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
         final Parameter parameter = parameterContext.getParameter();
         return Appender.class.isAssignableFrom(parameter.getType()) && Keys.hasName(parameter);
     }
 
     @Override
     public Object resolveParameter(
-            ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+            final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
         final LoggerContext loggerContext = getLoggerContext(extensionContext);
         if (loggerContext == null) {
             throw new ParameterResolutionException("No LoggerContext defined");

@@ -100,11 +100,11 @@ public class Log4jServletContextListenerTest {
             this.listener.contextInitialized(this.event);
             fail("Expected a RuntimeException.");
         } catch (final RuntimeException e) {
-            String expectedMessage =
+            final String expectedMessage =
                     "Do not use " + Log4jServletContextListener.class.getSimpleName() + " when "
-                    + Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED + " is true. Please use "
-                    + Log4jShutdownOnContextDestroyedListener.class.getSimpleName() + " instead of "
-                    + Log4jServletContextListener.class.getSimpleName() + ".";
+                            + Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED + " is true. Please use "
+                            + Log4jShutdownOnContextDestroyedListener.class.getSimpleName() + " instead of "
+                            + Log4jServletContextListener.class.getSimpleName() + ".";
 
             assertEquals(expectedMessage, e.getMessage(), "The message is not correct");
         }

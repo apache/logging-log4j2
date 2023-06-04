@@ -534,7 +534,7 @@ public class FastDateParserTest {
 
     @Test
     public void testLang303() throws ParseException {
-        DateParser parser = getInstance(YMD_SLASH);
+        final DateParser parser = getInstance(YMD_SLASH);
         final Calendar cal = Calendar.getInstance();
         cal.set(2004, Calendar.DECEMBER, 31);
 

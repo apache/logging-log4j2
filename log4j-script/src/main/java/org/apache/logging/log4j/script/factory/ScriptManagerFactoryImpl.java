@@ -33,8 +33,8 @@ public class ScriptManagerFactoryImpl implements ScriptManagerFactory {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     @Override
-    public ScriptManager createScriptManager(Configuration configuration, WatchManager watchManager) {
-        String scriptLanguages =
+    public ScriptManager createScriptManager(final Configuration configuration, final WatchManager watchManager) {
+        final String scriptLanguages =
                 PropertiesUtil.getProperties().getStringProperty(ScriptPropertyKey.SCRIPT_ENABLE_LANGUAGES);
         if (scriptLanguages != null) {
             try {

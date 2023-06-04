@@ -48,12 +48,12 @@ public class LevelMatchFilterBuilder extends AbstractBuilder<Filter> implements 
     public LevelMatchFilterBuilder() {
     }
 
-    public LevelMatchFilterBuilder(String prefix, Properties props) {
+    public LevelMatchFilterBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
     @Override
-    public Filter parse(Element filterElement, XmlConfiguration config) {
+    public Filter parse(final Element filterElement, final XmlConfiguration config) {
         final AtomicReference<String> level = new AtomicReference<>();
         final AtomicBoolean acceptOnMatch = new AtomicBoolean();
         forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
@@ -72,20 +72,20 @@ public class LevelMatchFilterBuilder extends AbstractBuilder<Filter> implements 
     }
 
     @Override
-    public Filter parse(PropertiesConfiguration config) {
-        String level = getProperty(LEVEL);
-        boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);
+    public Filter parse(final PropertiesConfiguration config) {
+        final String level = getProperty(LEVEL);
+        final boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);
         return createFilter(level, acceptOnMatch);
     }
 
-    private Filter createFilter(String level, boolean acceptOnMatch) {
+    private Filter createFilter(final String level, final boolean acceptOnMatch) {
         Level lvl = Level.ERROR;
         if (level != null) {
             lvl = OptionConverter.toLevel(level, org.apache.log4j.Level.ERROR).getVersion2Level();
         }
-        org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
-                ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
-                : org.apache.logging.log4j.core.Filter.Result.DENY;
+        final org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
+        ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
+        : org.apache.logging.log4j.core.Filter.Result.DENY;
         return FilterWrapper.adapt(LevelMatchFilter.newBuilder()
                 .setLevel(lvl)
                 .setOnMatch(onMatch)

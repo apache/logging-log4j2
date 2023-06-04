@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  * @since 3.0.0
  */
 @InternalApi
-public class ServiceRegistry {
+public final class ServiceRegistry {
     private static final Lazy<ServiceRegistry> INSTANCE = Lazy.relaxed(ServiceRegistry::new);
 
 
@@ -72,7 +72,7 @@ public class ServiceRegistry {
     /**
      * Set 'verbose' to false if the `StatusLogger` is not available yet.
      */
-    <S> List<S> getServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator, boolean verbose) {
+    <S> List<S> getServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator, final boolean verbose) {
         final List<S> services = getMainServices(serviceType, lookup, validator, verbose);
         return Stream.concat(services.stream(), bundleServices.values().stream().flatMap(map -> {
             final Stream<S> stream = map.getOrDefault(serviceType, List.of()).stream().map(serviceType::cast);
@@ -80,7 +80,7 @@ public class ServiceRegistry {
         })).distinct().collect(Collectors.toCollection(ArrayList::new));
     }
 
-    <S> List<S> getMainServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator, boolean verbose) {
+    <S> List<S> getMainServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator, final boolean verbose) {
         final List<?> existing = mainServices.get(serviceType);
         if (existing != null) {
             return Cast.cast(existing);

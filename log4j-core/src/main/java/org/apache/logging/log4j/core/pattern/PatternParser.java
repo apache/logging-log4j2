@@ -692,7 +692,7 @@ public final class PatternParser {
     }
 
     // Create a literal pattern converter with support for substitutions if necessary
-    private LogEventPatternConverter literalPattern(String literal, boolean convertBackslashes) {
+    private LogEventPatternConverter literalPattern(final String literal, final boolean convertBackslashes) {
         if (config != null && LiteralPatternConverter.containsSubstitutionSequence(literal)) {
             return new LiteralPatternConverter(config, literal, convertBackslashes);
         }

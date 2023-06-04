@@ -37,13 +37,13 @@ public class NamedLoggerContextPropertiesTest {
 
     @Test
     public void testProperties() {
-        LoggerContext context = (LoggerContext) LogManager.getContext();
+        final LoggerContext context = (LoggerContext) LogManager.getContext();
         assertEquals(LifeCycle.State.STARTED, context.getState());
-        PropertiesUtil props = context.getProperties();
+        final PropertiesUtil props = context.getProperties();
         assertNotNull(props, "Logger Context Properties were not loaded");
-        String scriptLanguages = props.getStringProperty("Script.enableLanguages");
+        final String scriptLanguages = props.getStringProperty("Script.enableLanguages");
         assertEquals("Groovy,JavaScript", scriptLanguages);
-        Configuration config = context.getConfiguration();
+        final Configuration config = context.getConfiguration();
         assertNotNull(config, "Configuration was not created");
         assertEquals("DSI", config.getName(), "Incorrect configuration name");
         LogManager.shutdown();

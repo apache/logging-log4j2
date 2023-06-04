@@ -50,7 +50,7 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
     private static final String SUFFIX = ".xml";
 
     @Override
-    Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException {
+    Configuration getConfiguration(final String configResourcePrefix) throws URISyntaxException, IOException {
         final String configResource = configResourcePrefix + SUFFIX;
         final InputStream inputStream = ClassLoader.getSystemResourceAsStream(configResource);
         final ConfigurationSource source = new ConfigurationSource(inputStream);
@@ -67,7 +67,7 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
     @Test
     public void testXML() throws Exception {
         configure("log4j1-file");
-        Logger logger = LogManager.getLogger("test");
+        final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");
         assertTrue(file.exists(), "File A1 was not created");
@@ -79,11 +79,11 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
 
     @Test
     public void testListAppender() throws Exception {
-        LoggerContext loggerContext = configure("log4j1-list");
-        Logger logger = LogManager.getLogger("test");
+        final LoggerContext loggerContext = configure("log4j1-list");
+        final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
-        Configuration configuration = loggerContext.getConfiguration();
-        Map<String, Appender> appenders = configuration.getAppenders();
+        final Configuration configuration = loggerContext.getConfiguration();
+        final Map<String, Appender> appenders = configuration.getAppenders();
         ListAppender eventAppender = null;
         ListAppender messageAppender = null;
         for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
@@ -95,9 +95,9 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         }
         assertNotNull(eventAppender, "No Event Appender");
         assertNotNull(messageAppender, "No Message Appender");
-        List<LoggingEvent> events = eventAppender.getEvents();
+        final List<LoggingEvent> events = eventAppender.getEvents();
         assertTrue(events != null && events.size() > 0, "No events");
-        List<String> messages = messageAppender.getMessages();
+        final List<String> messages = messageAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages");
     }
 

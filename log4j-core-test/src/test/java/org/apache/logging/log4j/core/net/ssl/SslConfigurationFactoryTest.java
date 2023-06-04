@@ -28,12 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SslConfigurationFactoryTest {
 
-    private static void addKeystoreConfiguration(Properties props) {
+    private static void addKeystoreConfiguration(final Properties props) {
         props.setProperty(Log4jPropertyKey.Constant.TRANSPORT_SECURITY_KEY_STORE_LOCATION, TestConstants.KEYSTORE_FILE_RESOURCE);
         props.setProperty(Log4jPropertyKey.Constant.TRANSPORT_SECURITY_KEY_STORE_TYPE, TestConstants.KEYSTORE_TYPE);
     }
 
-    private static void addTruststoreConfiguration(Properties props) {
+    private static void addTruststoreConfiguration(final Properties props) {
         props.setProperty(Log4jPropertyKey.Constant.TRANSPORT_SECURITY_TRUST_STORE_LOCATION, TestConstants.TRUSTSTORE_FILE_RESOURCE);
         props.setProperty(Log4jPropertyKey.Constant.TRANSPORT_SECURITY_TRUST_STORE_TYPE, TestConstants.TRUSTSTORE_TYPE);
     }

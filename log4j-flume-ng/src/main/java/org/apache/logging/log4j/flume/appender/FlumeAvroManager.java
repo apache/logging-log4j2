@@ -208,7 +208,7 @@ public class FlumeAvroManager extends AbstractFlumeManager {
             synchronized(batchEvent) {
                 batchEvent.addEvent(event);
                 eventCount = batchEvent.size();
-                long now = System.nanoTime();
+                final long now = System.nanoTime();
                 if (eventCount == 1) {
                     nextSend = now + delayNanos;
                 }

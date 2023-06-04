@@ -46,7 +46,7 @@ public final class TestPatternConverters {
         @Override
         public void format(final LogEvent event, final StringBuilder toAppendTo) {
             toAppendTo.append('[');
-            Object[] parameters = event.getMessage().getParameters();
+            final Object[] parameters = event.getMessage().getParameters();
             if (parameters != null) {
                 for (int i = 0; i < parameters.length; i++) {
                     StringBuilders.appendValue(toAppendTo, parameters[i]);

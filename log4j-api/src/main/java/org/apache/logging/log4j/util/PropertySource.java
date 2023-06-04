@@ -145,7 +145,7 @@ public interface PropertySource {
             if (CACHE.containsKey(value)) {
                 return CACHE.get(value);
             }
-            List<CharSequence> tokens = Arrays.asList(value.toString().split("[._/]+"));
+            final List<CharSequence> tokens = Arrays.asList(value.toString().split("[._/]+"));
             CACHE.put(value, tokens);
             return tokens;
         }
@@ -161,8 +161,8 @@ public interface PropertySource {
         public static CharSequence join(final Iterable<? extends CharSequence> tokens) {
             final StringBuilder sb = new StringBuilder();
             int tokenCount = 0;
-            Collection<CharSequence> tokenCollection = Cast.cast(tokens);
-            int lowerIndex = tokenCollection.size() > 3 ? 3 : 1;
+            final Collection<CharSequence> tokenCollection = Cast.cast(tokens);
+            final int lowerIndex = tokenCollection.size() > 3 ? 3 : 1;
             for (final CharSequence token : tokens) {
                 if (sb.length() > 0) {
                     sb.append(".");
@@ -203,12 +203,12 @@ public interface PropertySource {
             return sb.toString();
         }
 
-        static String resolveKey(String key) {
-            List<CharSequence> tokens = getTokens(key);
+        static String resolveKey(final String key) {
+            final List<CharSequence> tokens = getTokens(key);
             return tokens != null ? join(tokens).toString() : key;
         }
 
-        static List<CharSequence> getTokens(String key) {
+        static List<CharSequence> getTokens(final String key) {
             List<CharSequence> tokens = CACHE.get(key);
             if (tokens == null) {
                 tokens = tokenize(key);
@@ -218,11 +218,11 @@ public interface PropertySource {
 
         static void populateCache() {
             try {
-                Enumeration<URL> urls = PropertySource.class.getClassLoader().getResources(MAPPING_FILE);
+                final Enumeration<URL> urls = PropertySource.class.getClassLoader().getResources(MAPPING_FILE);
                 while (urls.hasMoreElements()) {
-                    URL url = urls.nextElement();
-                    try (InputStream is = url.openStream()) {
-                        String json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+                    final URL url = urls.nextElement();
+                    try (final InputStream is = url.openStream()) {
+                        final String json = new String(is.readAllBytes(), StandardCharsets.UTF_8);
                         final Map<String, Object> root = Cast.cast(JsonReader.read(json));
                         populateCache("", root);
                     } catch (Exception ex) {
@@ -237,14 +237,14 @@ public interface PropertySource {
         static void populateCache(final String prefix, final Map<String, Object> root) {
             if (!root.isEmpty()) {
                 for (Map.Entry<String, Object> entry : root.entrySet()) {
-                    String delim = entry.getKey().equals(entry.getKey().toUpperCase(Locale.ROOT)) ? "_" : ".";
+                    final String delim = entry.getKey().equals(entry.getKey().toUpperCase(Locale.ROOT)) ? "_" : ".";
                     if (entry.getValue() instanceof String) {
-                        String value = Cast.cast(entry.getValue());
+                        final String value = Cast.cast(entry.getValue());
                         CACHE.put(prefix + delim + entry.getKey(), Collections.singletonList(value));
                     } else if (entry.getValue() instanceof List) {
                         CACHE.put(prefix + delim + entry.getKey(), Cast.cast(entry.getValue()));
                     } else {
-                        String key = Strings.isEmpty(prefix) ? entry.getKey() : prefix + delim + entry.getKey();
+                        final String key = Strings.isEmpty(prefix) ? entry.getKey() : prefix + delim + entry.getKey();
                         populateCache(key, Cast.cast(entry.getValue()));
                     }
                 }

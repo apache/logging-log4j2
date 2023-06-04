@@ -31,7 +31,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Configurable(printObject = true)
 @Plugin
-public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
+public final class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
 
     private static final long JVM_START_TIME = initStartTime();
 

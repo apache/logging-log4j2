@@ -203,7 +203,7 @@ public class Key<T> implements StringBuilderFormattable {
     public final String toString() {
         String string = toString;
         if (string == null) {
-            StringBuilder sb = new StringBuilder(32);
+            final StringBuilder sb = new StringBuilder(32);
             formatTo(sb);
             toString = string = sb.toString();
         }
@@ -312,7 +312,7 @@ public class Key<T> implements StringBuilderFormattable {
      *
      * @param <T> type of key
      */
-    public static class Builder<T> implements Supplier<Key<T>> {
+    public static final class Builder<T> implements Supplier<Key<T>> {
         private final Type type;
         private final Class<T> rawType;
         private Class<? extends Annotation> qualifierType;
@@ -384,7 +384,7 @@ public class Key<T> implements StringBuilderFormattable {
             if (namespace == null) {
                 namespace = Strings.EMPTY;
             }
-            int order = this.order != null ? this.order : getOrder(rawType);
+            final int order = this.order != null ? this.order : getOrder(rawType);
             return new Key<>(type, rawType, qualifierType, name, namespace, order);
         }
     }

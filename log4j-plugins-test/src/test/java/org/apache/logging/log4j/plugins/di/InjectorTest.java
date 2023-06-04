@@ -181,7 +181,7 @@ class InjectorTest {
         boolean initCalled;
 
         @Inject
-        void setA(BeanA a) {
+        void setA(final BeanA a) {
             this.a = a;
         }
 
@@ -281,7 +281,7 @@ class InjectorTest {
     }
 
     static class UnknownInstance {
-        UnknownInstance(@Named String ignored) {
+        UnknownInstance(@Named final String ignored) {
         }
     }
 
@@ -514,7 +514,7 @@ class InjectorTest {
         final ConfigurableObject inner;
 
         ConfigurableFactoryObject(
-                final int id, final String name, ConfigurableObject inner) {
+                final int id, final String name, final ConfigurableObject inner) {
             this.id = id;
             this.name = name;
             this.inner = inner;

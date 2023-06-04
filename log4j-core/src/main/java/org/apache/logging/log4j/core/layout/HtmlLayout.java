@@ -353,7 +353,7 @@ public final class HtmlLayout extends AbstractStringLayout {
         return new Builder();
     }
 
-    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<HtmlLayout> {
+    public static final class Builder implements org.apache.logging.log4j.plugins.util.Builder<HtmlLayout> {
 
         @PluginBuilderAttribute
         private boolean locationInfo = false;

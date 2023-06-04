@@ -39,7 +39,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Configurable(elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
 @Plugin
-public class MarkerPatternSelector implements PatternSelector {
+public final class MarkerPatternSelector implements PatternSelector {
 
     /**
      * Custom MarkerPatternSelector builder. Use the {@link MarkerPatternSelector#newBuilder() builder factory method} to create this.

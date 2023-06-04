@@ -47,7 +47,7 @@ public class LateConfigTest {
     private static final String FQCN = Log4jContextFactory.class.getName();
 
     static Stream<Log4jContextFactory> selectors() {
-        Injector injector = DI.createInjector();
+        final Injector injector = DI.createInjector();
         injector.init();
         return Stream
                 .<ContextSelector>of(new ClassLoaderContextSelector(injector.copy()), new BasicContextSelector(injector.copy()),

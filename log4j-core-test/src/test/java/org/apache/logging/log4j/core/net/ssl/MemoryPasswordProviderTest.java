@@ -30,16 +30,16 @@ public class MemoryPasswordProviderTest {
 
     @Test
     public void testConstructorDoesNotModifyOriginalParameterArray() {
-        char[] initial = "123".toCharArray();
+        final char[] initial = "123".toCharArray();
         new MemoryPasswordProvider(initial);
         assertArrayEquals("123".toCharArray(), initial);
     }
 
     @Test
     public void testGetPasswordReturnsCopyOfConstructorArray() {
-        char[] initial = "123".toCharArray();
-        MemoryPasswordProvider provider = new MemoryPasswordProvider(initial);
-        char[] actual = provider.getPassword();
+        final char[] initial = "123".toCharArray();
+        final MemoryPasswordProvider provider = new MemoryPasswordProvider(initial);
+        final char[] actual = provider.getPassword();
         assertArrayEquals("123".toCharArray(), actual);
         assertNotSame(initial, actual);
 

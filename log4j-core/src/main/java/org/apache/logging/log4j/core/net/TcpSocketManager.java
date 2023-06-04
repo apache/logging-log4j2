@@ -474,7 +474,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      * This method is only for unit testing. It is not Thread-safe.
      * @param resolver the HostResolver.
      */
-    public static void setHostResolver(HostResolver resolver) {
+    public static void setHostResolver(final HostResolver resolver) {
         TcpSocketManagerFactory.RESOLVER = resolver;
     }
 

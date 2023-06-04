@@ -46,7 +46,7 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
 @PluginAliases({ "JMSQueue", "JMSTopic" })
 public class JmsAppender extends AbstractAppender {
 
-    public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
+    public static final class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.plugins.util.Builder<JmsAppender> {
 
         public static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 5000;
@@ -103,7 +103,7 @@ public class JmsAppender extends AbstractAppender {
             JmsManager actualJmsManager = jmsManager;
             JmsManagerConfiguration configuration = null;
             if (actualJmsManager == null) {
-                Properties additionalProperties = null;
+                final Properties additionalProperties = null;
                 final Properties jndiProperties = JmsManager.createJndiProperties(factoryName, providerUrl,
                         urlPkgPrefixes, securityPrincipalName, securityCredentials, additionalProperties);
                 configuration = new JmsManagerConfiguration(jndiProperties, factoryBindingName, destinationBindingName,
@@ -215,7 +215,7 @@ public class JmsAppender extends AbstractAppender {
      *             not thrown as of 2.9 but retained in the signature for compatibility, will be removed in 3.0.
      */
     protected JmsAppender(final String name, final Filter filter, final Layout layout,
-            final boolean ignoreExceptions, Property[] properties, final JmsManager manager) throws JMSException {
+            final boolean ignoreExceptions, final Property[] properties, final JmsManager manager) throws JMSException {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }

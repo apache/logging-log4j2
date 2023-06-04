@@ -62,7 +62,7 @@ public class FactoryTestStringMap implements IndexedStringMap {
     }
 
     @Override
-    public String getKeyAt(int index) {
+    public String getKeyAt(final int index) {
         return null;
     }
 
@@ -72,12 +72,12 @@ public class FactoryTestStringMap implements IndexedStringMap {
     }
 
     @Override
-    public <V> V getValueAt(int index) {
+    public <V> V getValueAt(final int index) {
         return null;
     }
 
     @Override
-    public int indexOfKey(String key) {
+    public int indexOfKey(final String key) {
         return 0;
     }
 

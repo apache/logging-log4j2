@@ -73,7 +73,7 @@ final class StackTraceElementResolverContext
         return new Builder();
     }
 
-    static class Builder {
+    static final class Builder {
 
         private Map<String, StackTraceElementResolverFactory> resolverFactoryByName;
 

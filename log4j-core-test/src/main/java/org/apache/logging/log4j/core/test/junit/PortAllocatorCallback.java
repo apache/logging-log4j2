@@ -64,7 +64,7 @@ class PortAllocatorCallback implements BeforeEachCallback, AfterEachCallback, Be
     }
 
     private static void setSystemPropertyToAllocatedPort(final String key) {
-        int port = AvailablePortFinder.getNextAvailable();
+        final int port = AvailablePortFinder.getNextAvailable();
         System.setProperty(key, Integer.toString(port));
     }
 }

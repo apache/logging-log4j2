@@ -33,7 +33,7 @@ import org.slf4j.spi.MDCAdapter;
  */
 public class Log4jMDCAdapter implements MDCAdapter {
 
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final ThreadLocalMapOfStacks mapOfStacks = new ThreadLocalMapOfStacks();
 
@@ -69,7 +69,7 @@ public class Log4jMDCAdapter implements MDCAdapter {
     }
 
     @Override
-    public void pushByKey(String key, String value) {
+    public void pushByKey(final String key, final String value) {
         if (key == null) {
             ThreadContext.push(value);
         } else {
@@ -83,7 +83,7 @@ public class Log4jMDCAdapter implements MDCAdapter {
     }
 
     @Override
-    public String popByKey(String key) {
+    public String popByKey(final String key) {
         if (key == null) {
             return ThreadContext.getDepth() > 0 ? ThreadContext.pop() : null;
         }
@@ -96,7 +96,7 @@ public class Log4jMDCAdapter implements MDCAdapter {
     }
 
     @Override
-    public Deque<String> getCopyOfDequeByKey(String key) {
+    public Deque<String> getCopyOfDequeByKey(final String key) {
         if (key == null) {
             final ContextStack stack = ThreadContext.getImmutableStack();
             final Deque<String> copy = new ArrayDeque<>(stack.size());
@@ -107,7 +107,7 @@ public class Log4jMDCAdapter implements MDCAdapter {
     }
 
     @Override
-    public void clearDequeByKey(String key) {
+    public void clearDequeByKey(final String key) {
         if (key == null) {
             ThreadContext.clearStack();
         } else {
@@ -120,30 +120,30 @@ public class Log4jMDCAdapter implements MDCAdapter {
 
         private final ThreadLocal<Map<String, Deque<String>>> tlMapOfStacks = ThreadLocal.withInitial(HashMap::new);
 
-        public void pushByKey(String key, String value) {
+        public void pushByKey(final String key, final String value) {
             tlMapOfStacks.get()
                     .computeIfAbsent(key, ignored -> new ArrayDeque<>())
                     .push(value);
         }
 
-        public String popByKey(String key) {
+        public String popByKey(final String key) {
             final Deque<String> deque = tlMapOfStacks.get().get(key);
             return deque != null ? deque.poll() : null;
         }
 
-        public Deque<String> getCopyOfDequeByKey(String key) {
+        public Deque<String> getCopyOfDequeByKey(final String key) {
             final Deque<String> deque = tlMapOfStacks.get().get(key);
             return deque != null ? new ArrayDeque<>(deque) : null;
         }
 
-        public void clearByKey(String key) {
+        public void clearByKey(final String key) {
             final Deque<String> deque = tlMapOfStacks.get().get(key);
             if (deque != null) {
                 deque.clear();
             }
         }
 
-        public String peekByKey(String key) {
+        public String peekByKey(final String key) {
             final Deque<String> deque = tlMapOfStacks.get().get(key);
             return deque != null ? deque.peek() : null;
         }

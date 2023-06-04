@@ -87,9 +87,9 @@ public class AsyncAppenderTest {
         rewriteTest(context);
         exceptionTest(context);
 
-        List<Thread> backgroundThreads = Thread.getAllStackTraces().keySet().stream()
-                .filter(AsyncAppenderEventDispatcher.class::isInstance)
-                .collect(Collectors.toList());
+        final List<Thread> backgroundThreads = Thread.getAllStackTraces().keySet().stream()
+        .filter(AsyncAppenderEventDispatcher.class::isInstance)
+        .collect(Collectors.toList());
         assertFalse(backgroundThreads.isEmpty(), "Failed to locate background thread");
         for (Thread thread : backgroundThreads) {
             assertTrue(thread.isDaemon(), "AsyncAppender should use daemon threads");

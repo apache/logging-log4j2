@@ -84,10 +84,10 @@ public class PropertiesReconfigurationTest {
     }
 
     private void checkConfigureCustomAppenders(final String configPath, final boolean expectAppend, final int expectInt, final String expectString,
-        FailableConsumer<String, IOException> configurator) throws IOException {
+        final FailableConsumer<String, IOException> configurator) throws IOException {
         final File file = new File(configPath);
         assertTrue(file.exists(), "No Config file");
-        try (LoggerContext context = TestConfigurator.configure(file.toString())) {
+        try (final LoggerContext context = TestConfigurator.configure(file.toString())) {
             final Logger logger = LogManager.getLogger("test");
             logger.info("Hello");
             // V1
@@ -99,7 +99,7 @@ public class PropertiesReconfigurationTest {
     private void checkConfigureFileAppender(final String configPath, final boolean expectAppend) throws IOException {
         final File file = new File(configPath);
         assertTrue(file.exists(), "No Config file");
-        try (LoggerContext context = TestConfigurator.configure(file.toString())) {
+        try (final LoggerContext context = TestConfigurator.configure(file.toString())) {
             final Logger logger = LogManager.getLogger("test");
             logger.info("Hello");
             final Configuration configuration = context.getConfiguration();
@@ -198,7 +198,7 @@ public class PropertiesReconfigurationTest {
         assertTrue(file.exists(), "No Config file");
         final long configMillis = file.lastModified();
         assertTrue(file.setLastModified(configMillis - FIVE_MINUTES.toMillis()), "Unable to modified file time");
-        try (LoggerContext context = TestConfigurator.configure(file.toString())) {
+        try (final LoggerContext context = TestConfigurator.configure(file.toString())) {
             final Logger logger = LogManager.getLogger("test");
             logger.info("Hello");
             final Configuration original = context.getConfiguration();

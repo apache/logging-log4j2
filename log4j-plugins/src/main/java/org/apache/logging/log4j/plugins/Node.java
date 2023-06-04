@@ -94,7 +94,7 @@ public class Node {
         this.object = node.object;
     }
 
-    public void setParent(Node parent) {
+    public void setParent(final Node parent) {
         this.parent = parent;
     }
 

@@ -47,9 +47,9 @@ public class RollingAppenderCronAndSizeTest extends AbstractRollingListenerTest 
     @LoggerContextSource(value = CONFIG, timeout = 10)
     public void testAppender(final Logger logger, @Named("RollingFile") final RollingFileManager manager) throws Exception {
         manager.addRolloverListener(this);
-        Random rand = new Random(currentTimeMillis.get());
+        final Random rand = new Random(currentTimeMillis.get());
         for (int j=0; j < 100; ++j) {
-            int count = rand.nextInt(100);
+            final int count = rand.nextInt(100);
             for (int i = 0; i < count; ++i) {
                 logger.debug("This is test message number {}", i);
             }

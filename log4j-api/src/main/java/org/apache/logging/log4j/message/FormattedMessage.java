@@ -131,10 +131,10 @@ public class FormattedMessage implements Message {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FormattedMessage that = (FormattedMessage) o;
+        final FormattedMessage that = (FormattedMessage) o;
         return Objects.equals(messagePattern, that.messagePattern) && Arrays.equals(argArray, that.argArray);
     }
 

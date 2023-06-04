@@ -112,7 +112,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
             eventPrefix, compressBody);
         flumeEvent.setBody(getLayout().toByteArray(flumeEvent));
         if (update()) {
-            String msg = timer.stop();
+            final String msg = timer.stop();
             LOGGER.debug(msg);
         } else {
             timer.pause();

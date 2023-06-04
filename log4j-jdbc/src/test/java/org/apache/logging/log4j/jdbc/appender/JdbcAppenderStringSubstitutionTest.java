@@ -42,12 +42,13 @@ public class JdbcAppenderStringSubstitutionTest {
 
     @Test
     public void test() throws Exception {
-        JdbcAppender appender = rule.getAppender("databaseAppender", JdbcAppender.class);
+        final JdbcAppender appender = rule.getAppender("databaseAppender", JdbcAppender.class);
         Assert.assertNotNull(appender);
         @SuppressWarnings("resource")
-        JdbcDatabaseManager manager = appender.getManager();
+        final
+            JdbcDatabaseManager manager = appender.getManager();
         Assert.assertNotNull(manager);
-        String sqlStatement = manager.getSqlStatement();
+        final String sqlStatement = manager.getSqlStatement();
         Assert.assertFalse(sqlStatement, sqlStatement.contains(KEY));
         Assert.assertTrue(sqlStatement, sqlStatement.contains(VALUE));
     }

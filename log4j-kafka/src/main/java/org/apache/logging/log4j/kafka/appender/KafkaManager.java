@@ -36,7 +36,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Log4jThread;
 
-public class KafkaManager extends AbstractManager {
+public final class KafkaManager extends AbstractManager {
 
     public static final String DEFAULT_TIMEOUT_MILLIS = "30000";
 
@@ -152,7 +152,7 @@ public class KafkaManager extends AbstractManager {
 
     static KafkaManager getManager(final LoggerContext loggerContext, final String name, final String topic,
             final boolean syncSend, final boolean sendTimestamp, final Property[] properties, final String key) {
-        StringBuilder sb = new StringBuilder(name);
+        final StringBuilder sb = new StringBuilder(name);
         sb.append(" ")
             .append(topic)
             .append(" ")
@@ -188,7 +188,7 @@ public class KafkaManager extends AbstractManager {
 
     private static class KafkaManagerFactory implements ManagerFactory<KafkaManager, FactoryData> {
         @Override
-        public KafkaManager createManager(String name, FactoryData data) {
+        public KafkaManager createManager(final String name, final FactoryData data) {
             return new KafkaManager(data.loggerContext, name, data.topic, data.syncSend, data.sendTimestamp,
                     data.properties, data.key);
         }

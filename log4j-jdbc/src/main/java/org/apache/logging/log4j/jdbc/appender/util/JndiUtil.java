@@ -28,12 +28,12 @@ import org.apache.logging.log4j.status.StatusLogger;
  * This class is solely for the purpose of keeping DataSourceConnectionSource from getting a NoClassDefFoundError.
  */
 public final class JndiUtil {
-    private static Logger LOGGER = StatusLogger.getLogger();
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private JndiUtil() {
     }
 
-    public static DataSource getDataSource(String jndiName) {
+    public static DataSource getDataSource(final String jndiName) {
         try {
             final DataSource dataSource =
                     JndiManager.getDefaultManager(DataSourceConnectionSource.class.getCanonicalName()).lookup(jndiName);

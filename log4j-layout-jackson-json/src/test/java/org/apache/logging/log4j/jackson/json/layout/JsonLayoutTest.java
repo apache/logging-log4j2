@@ -210,7 +210,7 @@ public class JsonLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setConfiguration(ctx.getConfiguration())
                 .build();
-        Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
+        final Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
         final MutableLogEvent mutableEvent = new MutableLogEvent();
         mutableEvent.initFrom(logEvent);
         final String strLogEvent = layout.toSerializable(logEvent);
@@ -521,7 +521,7 @@ public class JsonLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setIncludeStacktrace(true)
                 .build();
-        Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
+        final Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
         try {
             final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
                     .setLoggerName("a.B")
@@ -530,7 +530,7 @@ public class JsonLayoutTest {
                     .setMessage(message)
                     .setThreadName("threadName")
                     .setTimeMillis(1).build();
-            MutableLogEvent mutableLogEvent = new MutableLogEvent();
+            final MutableLogEvent mutableLogEvent = new MutableLogEvent();
             mutableLogEvent.initFrom(expected);
             final String str = layout.toSerializable(mutableLogEvent);
             final String expectedMessage = "Testing " + TestObj.TO_STRING_VALUE;
@@ -556,9 +556,9 @@ public class JsonLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setIncludeStacktrace(true)
                 .build();
-        Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
+        final Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
         try {
-            RingBufferLogEvent ringBufferEvent = new RingBufferLogEvent();
+            final RingBufferLogEvent ringBufferEvent = new RingBufferLogEvent();
             ringBufferEvent.setValues(
                     null, "a.B", null, "f.q.c.n", Level.DEBUG, message,
                     null, new SortedArrayStringMap(), ThreadContext.EMPTY_STACK, 1L,
@@ -652,29 +652,29 @@ public class JsonLayoutTest {
     public void jsonLayout_should_substitute_lookups() {
 
         // Create the layout.
-        KeyValuePair[] additionalFields = {
+        final KeyValuePair[] additionalFields = {
                 KeyValuePair
                         .newBuilder()
                         .setKey("who")
                         .setValue("${ctx:WHO}")
                         .build()
         };
-        JsonLayout layout = JsonLayout
+        final JsonLayout layout = JsonLayout
                 .newBuilder()
                 .setConfiguration(new DefaultConfiguration())
                 .setAdditionalFields(additionalFields)
                 .build();
 
         // Create a log event containing `WHO` key in MDC.
-        StringMap contextData = ContextDataFactory.createContextData();
+        final StringMap contextData = ContextDataFactory.createContextData();
         contextData.putValue("WHO", "mduft");
-        LogEvent logEvent = Log4jLogEvent
+        final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
                 .setContextData(contextData)
                 .build();
 
         // Verify the `WHO` key.
-        String serializedLogEvent = layout.toSerializable(logEvent);
+        final String serializedLogEvent = layout.toSerializable(logEvent);
         assertThat(serializedLogEvent, containsString("\"who\" : \"mduft\""));
 
     }

@@ -47,12 +47,12 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Configurable(elementType = PatternSelector.ELEMENT_TYPE, printObject = true)
 @Plugin
-public class ScriptPatternSelector implements PatternSelector {
+public final class ScriptPatternSelector implements PatternSelector {
 
     /**
      * Custom ScriptPatternSelector builder. Use the {@link #newBuilder() builder factory method} to create this.
      */
-    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<ScriptPatternSelector> {
+    public static final class Builder implements org.apache.logging.log4j.plugins.util.Builder<ScriptPatternSelector> {
 
         @PluginElement("Script")
         private AbstractScript script;

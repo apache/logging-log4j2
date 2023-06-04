@@ -200,7 +200,7 @@ public class StringEncodingBenchmark {
         return i;
     }
 
-    private int encode(final String charArray, int charOffset, int charLength, final byte[] byteArray) {
+    private int encode(final String charArray, final int charOffset, final int charLength, final byte[] byteArray) {
         int offset = 0;
         int length = Math.min(charLength, byteArray.length);
         int charDoneIndex = charOffset + length;
@@ -248,7 +248,7 @@ public class StringEncodingBenchmark {
         return i;
     }
 
-    private int encode0(final char[] charArray, int charOffset, int charLength, final byte[] byteArray) {
+    private int encode0(final char[] charArray, final int charOffset, final int charLength, final byte[] byteArray) {
         int offset = 0;
         int length = Math.min(charLength, byteArray.length);
         int charDoneIndex = charOffset + length;

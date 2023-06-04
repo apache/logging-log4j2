@@ -46,11 +46,11 @@ public class AsyncLoggerConfigTest3 {
         }
 
         final Message msg = new ParameterizedMessage("{}", map);
-        Log4jLogEvent event = Log4jLogEvent.newBuilder()
-                .setLevel(Level.WARN)
-                .setLoggerName(getClass().getName())
-                .setMessage(msg)
-                .setTimeMillis(0).build();
+        final Log4jLogEvent event = Log4jLogEvent.newBuilder()
+        .setLevel(Level.WARN)
+        .setLoggerName(getClass().getName())
+        .setMessage(msg)
+        .setTimeMillis(0).build();
 
         for (int i = 0; i < 100; i++) {
             ((AsyncLoggerConfig)((org.apache.logging.log4j.core.Logger) log).get()).callAppenders(event);

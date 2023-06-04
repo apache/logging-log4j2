@@ -184,13 +184,13 @@ class ReadOnlyStringMapResolverTest {
             final String resolverName) {
 
         // Create the event template.
-        String eventTemplate = writeJson(asMap(
+        final String eventTemplate = writeJson(asMap(
                 directlyAccessedKey, asMap(
-                        "$resolver", resolverName,
-                        "key", directlyAccessedKey),
+                "$resolver", resolverName,
+                "key", directlyAccessedKey),
                 directlyAccessedNullPropertyKey, asMap(
-                        "$resolver", resolverName,
-                        "key", directlyAccessedNullPropertyKey)));
+                "$resolver", resolverName,
+                "key", directlyAccessedNullPropertyKey)));
 
         // Create the layout.
         final JsonTemplateLayout layout = JsonTemplateLayout

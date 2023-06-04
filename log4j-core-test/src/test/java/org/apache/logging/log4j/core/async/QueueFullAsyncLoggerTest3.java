@@ -73,14 +73,14 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
 
         blockingAppender.logEvents = null;
         blockingAppender.countDownLatch = new CountDownLatch(1);
-        int count = 200;
-        CountDownLatch garbageCollectionLatch = new CountDownLatch(count);
+        final int count = 200;
+        final CountDownLatch garbageCollectionLatch = new CountDownLatch(count);
         for (int i = 0; i < count; i++) {
             logger.info(new CountdownOnGarbageCollectMessage(garbageCollectionLatch));
         }
         blockingAppender.countDownLatch.countDown();
 
-        try (GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
+        try (final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
             gcHelper.run();
             assertTrue("Parameter should have been garbage collected", garbageCollectionLatch.await(30, TimeUnit.SECONDS));
         }
@@ -90,7 +90,7 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
 
         private final CountDownLatch latch;
 
-        CountdownOnGarbageCollectMessage(CountDownLatch latch) {
+        CountdownOnGarbageCollectMessage(final CountDownLatch latch) {
             this.latch = latch;
         }
 

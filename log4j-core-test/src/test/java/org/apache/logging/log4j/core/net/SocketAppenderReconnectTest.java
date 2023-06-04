@@ -220,7 +220,7 @@ class SocketAppenderReconnectTest {
 
     private static void verifyLoggingFailure() {
         final Logger logger = LogManager.getLogger();
-        int retryCount = 3;
+        final int retryCount = 3;
         // noinspection ConstantConditions
         assertTrue(retryCount > 1, "was expecting retryCount to be bigger than 1 due to LOG4J2-2829, found: " + retryCount);
         for (int i = 0; i < retryCount; i++) {
@@ -404,20 +404,20 @@ class SocketAppenderReconnectTest {
 
         private final List<InetSocketAddress> addresses;
 
-        private FixedHostResolver(List<InetSocketAddress> addresses) {
+        private FixedHostResolver(final List<InetSocketAddress> addresses) {
             this.addresses = addresses;
         }
 
-        private static FixedHostResolver ofServers(LineReadingTcpServer... servers) {
-            List<InetSocketAddress> addresses = Arrays
-                    .stream(servers)
-                    .map(server -> (InetSocketAddress) server.serverSocket.getLocalSocketAddress())
-                    .collect(Collectors.toList());
+        private static FixedHostResolver ofServers(final LineReadingTcpServer... servers) {
+            final List<InetSocketAddress> addresses = Arrays
+            .stream(servers)
+            .map(server -> (InetSocketAddress) server.serverSocket.getLocalSocketAddress())
+            .collect(Collectors.toList());
             return new FixedHostResolver(addresses);
         }
 
         @Override
-        public List<InetSocketAddress> resolveHost(String ignoredHost, int ignoredPort) {
+        public List<InetSocketAddress> resolveHost(final String ignoredHost, final int ignoredPort) {
             return addresses;
         }
 

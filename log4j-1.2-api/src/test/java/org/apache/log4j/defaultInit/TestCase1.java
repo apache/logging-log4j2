@@ -26,7 +26,7 @@ import org.junit.Ignore;
 @Ignore
 public class TestCase1 extends TestCase {
 
-  public TestCase1(String name) {
+  public TestCase1(final String name) {
     super(name);
   }
 
@@ -38,13 +38,13 @@ public class TestCase1 extends TestCase {
   }
 
   public void noneTest() {
-    Logger root = Logger.getRootLogger();
-    boolean rootIsConfigured = root.getAllAppenders().hasMoreElements();
+      final Logger root = Logger.getRootLogger();
+      final boolean rootIsConfigured = root.getAllAppenders().hasMoreElements();
     assertTrue(!rootIsConfigured);
   }
 
   public static Test suite() {
-    TestSuite suite = new TestSuite();
+      final TestSuite suite = new TestSuite();
     suite.addTest(new TestCase1("noneTest"));
     return suite;
   }

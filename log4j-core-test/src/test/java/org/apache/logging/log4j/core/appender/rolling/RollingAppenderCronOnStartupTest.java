@@ -50,7 +50,7 @@ public class RollingAppenderCronOnStartupTest {
 
     @AfterAll
     public static void after() {
-        File dir = new File(DIR);
+        final File dir = new File(DIR);
         if (dir.exists()) {
             cleanDir(dir);
             dir.delete();
@@ -74,7 +74,7 @@ public class RollingAppenderCronOnStartupTest {
             dir.mkdirs();
         }
         final File file = new File(FILE);
-        String today = formatter.format(LocalDate.now());
+        final String today = formatter.format(LocalDate.now());
         final File rolled = new File(DIR + "/test1-" + today + ".log");
         PrintStream ps = new PrintStream(new FileOutputStream(file));
         ps.println("This is a line2");
@@ -84,10 +84,10 @@ public class RollingAppenderCronOnStartupTest {
         ps.close();
         assertTrue("Log file does not exist", file.exists());
         assertTrue("Log file does not exist", rolled.exists());
-        LoggerContext lc = Configurator.initialize("Test", CONFIG);
+        final LoggerContext lc = Configurator.initialize("Test", CONFIG);
         final Logger logger = lc.getLogger(RollingAppenderCronOnStartupTest.class);
         logger.info("This is line 3");
-        File[] files = dir.listFiles();
+        final File[] files = dir.listFiles();
         assertNotNull("No files", files);
         assertEquals("Unexpected number of files. Expected 2 but found " + files.length, 2,
                 files.length);
@@ -97,8 +97,8 @@ public class RollingAppenderCronOnStartupTest {
         assertEquals("Unexpected number of lines. Expected 1: Actual: " + lines.size(), 1, lines.size());
     }
 
-    private static void cleanDir(File dir) {
-        File[] files = dir.listFiles();
+    private static void cleanDir(final File dir) {
+        final File[] files = dir.listFiles();
         if (files != null) {
             Arrays.stream(files).forEach(File::delete);
         }

@@ -60,7 +60,7 @@ public class LoggerTest {
         if (messageFactory == null) {
             assertSame(LoggingSystem.getMessageFactory(), testLogger.getMessageFactory());
         } else {
-            MessageFactory actual = testLogger.getMessageFactory();
+            final MessageFactory actual = testLogger.getMessageFactory();
             assertEquals(messageFactory, actual);
         }
     }
@@ -108,7 +108,7 @@ public class LoggerTest {
     @Test
     public void builder() {
         logger.atDebug().withLocation().log("Hello");
-        Marker marker = MarkerManager.getMarker("test");
+        final Marker marker = MarkerManager.getMarker("test");
         logger.atError().withMarker(marker).log("Hello {}", "John");
         logger.atWarn().withThrowable(new Throwable("This is a test")).log((Message) new SimpleMessage("Log4j rocks!"));
         final List<LogEvent> events = app.getEvents();

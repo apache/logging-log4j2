@@ -45,7 +45,7 @@ public class DatePatternConverterTest {
 
         @Override
         public Instant getInstant() {
-            MutableInstant result = new MutableInstant();
+            final MutableInstant result = new MutableInstant();
             result.initFromEpochMilli(getTimeMillis(), 123456);
             return result;
         }
@@ -99,9 +99,9 @@ public class DatePatternConverterTest {
         return cal.getTime();
     }
 
-    private String precisePattern(final String pattern, int precision) {
-        String search = "SSS";
-        int foundIndex = pattern.indexOf(search);
+    private String precisePattern(final String pattern, final int precision) {
+        final String search = "SSS";
+        final int foundIndex = pattern.indexOf(search);
         final String seconds = pattern.substring(0, foundIndex);
         final String remainder = pattern.substring(foundIndex + search.length());
         return seconds + "nnnnnnnnn".substring(0, precision) + remainder;
@@ -137,7 +137,7 @@ public class DatePatternConverterTest {
         final String[] pattern = {FixedDateFormat.FixedFormat.ISO8601_PERIOD_MICROS.name(), "Z"};
         final DatePatternConverter converter = DatePatternConverter.newInstance(pattern);
         final StringBuilder sb = new StringBuilder();
-        MutableInstant instant = new MutableInstant();
+        final MutableInstant instant = new MutableInstant();
         instant.initFromEpochMilli(
                 1577225134559L,
                 // One microsecond
@@ -177,7 +177,7 @@ public class DatePatternConverterTest {
 
     @Test
     public void testFormatAmericanPatterns() {
-        Date date = date(2011, 2, 11);
+        final Date date = date(2011, 2, 11);
         assertDatePattern("US_MONTH_DAY_YEAR4_TIME", date, "11/03/2011 14:15:16.123");
         assertDatePattern("US_MONTH_DAY_YEAR2_TIME", date, "11/03/11 14:15:16.123");
         assertDatePattern("dd/MM/yyyy HH:mm:ss.SSS", date, "11/03/2011 14:15:16.123");
@@ -187,8 +187,8 @@ public class DatePatternConverterTest {
     }
 
     private static void assertDatePattern(final String format, final Date date, final String expected) {
-        DatePatternConverter converter = DatePatternConverter.newInstance(new String[] {format});
-        StringBuilder sb = new StringBuilder();
+        final DatePatternConverter converter = DatePatternConverter.newInstance(new String[]{format});
+        final StringBuilder sb = new StringBuilder();
         converter.format(date, sb);
 
         assertEquals(expected, sb.toString());
@@ -348,7 +348,7 @@ public class DatePatternConverterTest {
         final LogEvent event = new MyLogEvent();
 
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
-            String pattern = format.getPattern();
+            final String pattern = format.getPattern();
             final String search = "SSS";
             final int foundIndex = pattern.indexOf(search);
             if (pattern.endsWith("n") || pattern.matches(".+n+X*") || pattern.matches(".+n+Z*")) {
@@ -374,7 +374,7 @@ public class DatePatternConverterTest {
 
             final String[] milliOptions = { pattern };
             DatePatternConverter.newInstance(milliOptions).format(event, milliBuilder);
-            FixedTimeZoneFormat timeZoneFormat = format.getTimeZoneFormat();
+            final FixedTimeZoneFormat timeZoneFormat = format.getTimeZoneFormat();
             final int truncateLen = 3 + (timeZoneFormat != null ? timeZoneFormat.getLength() : 0);
             final String tz = timeZoneFormat != null
                     ? milliBuilder.substring(milliBuilder.length() - timeZoneFormat.getLength(), milliBuilder.length())
@@ -423,7 +423,7 @@ public class DatePatternConverterTest {
 
                     final String[] milliOptions = { pattern, timeZone };
                     DatePatternConverter.newInstance(milliOptions).format(event, milliBuilder);
-                    FixedTimeZoneFormat timeZoneFormat = format.getTimeZoneFormat();
+                    final FixedTimeZoneFormat timeZoneFormat = format.getTimeZoneFormat();
                     final int truncateLen = 3 + (timeZoneFormat != null ? timeZoneFormat.getLength() : 0);
                     final String tz = timeZoneFormat != null
                             ? milliBuilder.substring(milliBuilder.length() - timeZoneFormat.getLength(),

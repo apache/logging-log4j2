@@ -58,7 +58,7 @@ class HierarchicalCollections {
         }
     }
 
-    private static class ChildMap<K, V> extends RootMap<K, V> {
+    private static final class ChildMap<K, V> extends RootMap<K, V> {
         private final Map<K, V> parent;
 
         private ChildMap(final Map<K, V> parent) {
@@ -86,7 +86,7 @@ class HierarchicalCollections {
         }
     }
 
-    private static class HierarchicalSet<E> extends AbstractSet<E> {
+    private static final class HierarchicalSet<E> extends AbstractSet<E> {
         private final Set<E> delegate;
         private final Set<E> parent;
 
@@ -111,7 +111,7 @@ class HierarchicalCollections {
         }
     }
 
-    private static class HierarchicalIterator<E> implements Iterator<E> {
+    private static final class HierarchicalIterator<E> implements Iterator<E> {
         private final Iterator<E> delegate;
         private final Iterator<E> parent;
         private State state;

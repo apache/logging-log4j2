@@ -57,7 +57,7 @@ public class JndiDisabledLookupTest {
     public void testLookup() {
         final StrLookup lookup = new JndiLookup();
 
-        String contextName = lookup.lookup(TEST_CONTEXT_RESOURCE_NAME);
+        final String contextName = lookup.lookup(TEST_CONTEXT_RESOURCE_NAME);
         assertNull(contextName);
     }
 }

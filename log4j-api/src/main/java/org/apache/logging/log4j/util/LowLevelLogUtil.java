@@ -58,7 +58,7 @@ public final class LowLevelLogUtil {
         }
     }
 
-    private static class DelegateErrorLogger implements ErrorLogger {
+    private static final class DelegateErrorLogger implements ErrorLogger {
         private final Logger logger;
 
         private DelegateErrorLogger(final Logger logger) {

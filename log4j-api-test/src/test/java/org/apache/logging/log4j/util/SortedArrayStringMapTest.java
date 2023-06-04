@@ -45,7 +45,7 @@ public class SortedArrayStringMapTest {
 
     @Test
     public void testConstructorAllowsZeroCapacity() {
-        SortedArrayStringMap sortedArrayStringMap = new SortedArrayStringMap(0);
+        final SortedArrayStringMap sortedArrayStringMap = new SortedArrayStringMap(0);
         assertEquals(0, sortedArrayStringMap.size());
     }
 
@@ -56,10 +56,10 @@ public class SortedArrayStringMapTest {
 
     @Test
     public void testConstructorNonStringKeys() {
-        Map<Object, Integer> map = new HashMap<>(1);
+        final Map<Object, Integer> map = new HashMap<>(1);
         map.put(Long.MAX_VALUE, 1);
         map.put(null, null);
-        SortedArrayStringMap sMap = new SortedArrayStringMap((Map) map);
+        final SortedArrayStringMap sMap = new SortedArrayStringMap((Map) map);
         assertEquals(1, (int) sMap.getValue(Long.toString(Long.MAX_VALUE)));
         assertEquals((Integer) null, sMap.getValue(null));
     }

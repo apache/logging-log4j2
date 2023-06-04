@@ -37,10 +37,10 @@ public class ListAppender extends AppenderSkeleton {
     private static final String WINDOWS_LINE_SEP = "\r\n";
 
     @Override
-    protected void append(LoggingEvent event) {
-        Layout layout = getLayout();
+    protected void append(final LoggingEvent event) {
+        final Layout layout = getLayout();
         if (layout != null) {
-            String result = layout.format(event);
+            final String result = layout.format(event);
             if (result != null) {
                 messages.add(result);
             }

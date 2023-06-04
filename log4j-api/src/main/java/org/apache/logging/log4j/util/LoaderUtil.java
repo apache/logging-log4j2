@@ -369,7 +369,7 @@ public final class LoaderUtil {
      * @param resource The resource to locate.
      * @return The located resources.
      */
-    public static Collection<UrlResource> findUrlResources(final String resource, boolean useTccl) {
+    public static Collection<UrlResource> findUrlResources(final String resource, final boolean useTccl) {
         // @formatter:off
         final ClassLoader[] candidates = {
                 getThreadContextClassLoader(),

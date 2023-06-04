@@ -235,11 +235,12 @@ public enum JsonTemplateLayoutBenchmarkReport {;
         return object;
     }
 
-    private static <V> V readObjectAtPath(final Object object, String... path) {
+    private static <V> V readObjectAtPath(final Object object, final String... path) {
         Object lastObject = object;
         for (final String key : path) {
             @SuppressWarnings("unchecked")
-            Map<String, Object> lastMap = (Map<String, Object>) lastObject;
+            final
+            Map<String, Object> lastMap = (Map<String, Object>)lastObject;
             lastObject = lastMap.get(key);
         }
         @SuppressWarnings("unchecked")
@@ -247,7 +248,7 @@ public enum JsonTemplateLayoutBenchmarkReport {;
         return typedLastObject;
     }
 
-    private static BigDecimal readBigDecimalAtPath(final Object object, String... path) {
+    private static BigDecimal readBigDecimalAtPath(final Object object, final String... path) {
         final Number number = readObjectAtPath(object, path);
         if (number instanceof BigDecimal) {
             return (BigDecimal) number;

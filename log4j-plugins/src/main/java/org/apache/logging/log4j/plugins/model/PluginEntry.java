@@ -23,7 +23,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Descriptor for {@link org.apache.logging.log4j.plugins.Plugin} metadata.
  */
-public class PluginEntry {
+public final class PluginEntry {
     private final String key;
     private final String className;
     private final String name;

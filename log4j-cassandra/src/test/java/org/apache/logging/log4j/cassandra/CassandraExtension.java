@@ -106,7 +106,7 @@ public class CassandraExtension extends TypeBasedParameterResolver<Cluster> impl
         return store.get(Cluster.class, Cluster.class);
     }
 
-    private static class EmbeddedCassandra implements Cancellable {
+    private static final class EmbeddedCassandra implements Cancellable {
 
         private final CassandraDaemon daemon = new CassandraDaemon();
         private final CountDownLatch latch;

@@ -132,7 +132,7 @@ public class LoggerTest {
         if (messageFactory == null) {
             assertSame(LoggingSystem.getMessageFactory(), testLogger.getMessageFactory());
         } else {
-            MessageFactory actual = testLogger.getMessageFactory();
+            final MessageFactory actual = testLogger.getMessageFactory();
             assertEquals(messageFactory, actual);
         }
     }
@@ -147,7 +147,7 @@ public class LoggerTest {
     public void debugWithParms() {
         logger.debug("Hello, {}", "World");
         assertThat(list.strList, hasSize(1));
-        String message = list.strList.get(0);
+        final String message = list.strList.get(0);
         assertEquals("Hello, World", message);
     }
 
@@ -155,28 +155,28 @@ public class LoggerTest {
     public void paramIncludesSubstitutionMarker_locationAware() {
         logger.info("Hello, {}", "foo {} bar");
         assertThat(list.strList, hasSize(1));
-        String message = list.strList.get(0);
+        final String message = list.strList.get(0);
         assertEquals("Hello, foo {} bar", message);
     }
 
     @Test
     public void paramIncludesSubstitutionMarker_nonLocationAware() {
         final org.slf4j.Logger slf4jLogger = CTX.getLogger();
-        Logger nonLocationAwareLogger = new SLF4JLogger(
-                slf4jLogger.getName(),
-                (org.slf4j.Logger) Proxy.newProxyInstance(
-                        getClass().getClassLoader(),
-                        new Class<?>[]{org.slf4j.Logger.class},
-                        (proxy, method, args) -> {
-                            try {
-                                return method.invoke(slf4jLogger, args);
-                            } catch (InvocationTargetException e) {
-                                throw e.getCause();
-                            }
-                        }));
+        final Logger nonLocationAwareLogger = new SLF4JLogger(
+        slf4jLogger.getName(),
+        (org.slf4j.Logger) Proxy.newProxyInstance(
+        getClass().getClassLoader(),
+        new Class<?>[]{org.slf4j.Logger.class},
+        (proxy, method, args) -> {
+            try {
+                return method.invoke(slf4jLogger, args);
+            } catch (InvocationTargetException e) {
+                throw e.getCause();
+            }
+        }));
         nonLocationAwareLogger.info("Hello, {}", "foo {} bar");
         assertThat(list.strList, hasSize(1));
-        String message = list.strList.get(0);
+        final String message = list.strList.get(0);
         assertEquals("Hello, foo {} bar", message);
     }
 

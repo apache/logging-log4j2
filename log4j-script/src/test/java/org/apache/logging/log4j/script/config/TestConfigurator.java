@@ -71,7 +71,7 @@ public class TestConfigurator {
                 add(builder.newAppenderRef("Stdout")).
                 addAttribute("additivity", false));
         builder.add(builder.newRootLogger(Level.ERROR).add(builder.newAppenderRef("Stdout")));
-        LoggerContext ctx = Configurator.initialize(builder.build());
+        final LoggerContext ctx = Configurator.initialize(builder.build());
         final Configuration config = ctx.getConfiguration();
         assertNotNull(config, "No configuration");
         assertEquals("BuilderTest", config.getName(), "Unexpected Configuration");

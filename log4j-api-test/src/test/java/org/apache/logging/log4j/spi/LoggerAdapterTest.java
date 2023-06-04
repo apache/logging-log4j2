@@ -89,7 +89,7 @@ public class LoggerAdapterTest {
     private static class TestLoggerAdapter2 extends AbstractLoggerAdapter<Logger> {
 
         @Override
-        protected Logger newLogger(String name, LoggerContext context) {
+        protected Logger newLogger(final String name, final LoggerContext context) {
             return context.getLogger(name);
         }
 
@@ -98,14 +98,14 @@ public class LoggerAdapterTest {
             return null;
         }
 
-        public LoggerContext getContext(String fqcn) {
+        public LoggerContext getContext(final String fqcn) {
             for (LoggerContext lc : registry.keySet()) {
-                TestLoggerContext2 context = (TestLoggerContext2) lc;
+                final TestLoggerContext2 context = (TestLoggerContext2) lc;
                 if (fqcn.equals(context.getName())) {
                     return context;
                 }
             }
-            LoggerContext lc = new TestLoggerContext2(fqcn, this);
+            final LoggerContext lc = new TestLoggerContext2(fqcn, this);
             registry.put(lc, new ConcurrentHashMap<>());
             return lc;
         }
@@ -115,7 +115,7 @@ public class LoggerAdapterTest {
         private final String name;
         private final LoggerContextShutdownAware listener;
 
-        public TestLoggerContext2(String name, LoggerContextShutdownAware listener) {
+        public TestLoggerContext2(final String name, final LoggerContextShutdownAware listener) {
             this.name = name;
             this.listener = listener;
         }
@@ -134,11 +134,11 @@ public class LoggerAdapterTest {
         final LoggerContextFactory factory = new TestLoggerContextFactory();
         final TestLoggerAdapter2 adapter = new TestLoggerAdapter2();
         for (int i = 0; i < 5; ++i) {
-            LoggerContext lc = adapter.getContext(Integer.toString(i));
+            final LoggerContext lc = adapter.getContext(Integer.toString(i));
             lc.getLogger(Integer.toString(i));
         }
         assertEquals(5, adapter.registry.size(), "Expected 5 LoggerContexts");
-        Set<LoggerContext> contexts = new HashSet<>(adapter.registry.keySet());
+        final Set<LoggerContext> contexts = new HashSet<>(adapter.registry.keySet());
         for (LoggerContext context : contexts) {
             ((TestLoggerContext2) context).shutdown();
         }

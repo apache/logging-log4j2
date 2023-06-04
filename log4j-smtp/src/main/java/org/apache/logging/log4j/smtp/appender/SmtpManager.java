@@ -83,7 +83,7 @@ public class SmtpManager extends AbstractManager {
         this.buffer = new CyclicBuffer<>(LogEvent.class, data.numElements);
     }
 
-    public void add(LogEvent event) {
+    public void add(final LogEvent event) {
         buffer.add(event.toImmutable());
     }
 

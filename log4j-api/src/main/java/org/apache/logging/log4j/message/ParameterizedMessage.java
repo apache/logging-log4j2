@@ -226,10 +226,10 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ParameterizedMessage that = (ParameterizedMessage) o;
+        final ParameterizedMessage that = (ParameterizedMessage) o;
         return Objects.equals(messagePattern, that.messagePattern) && Arrays.equals(argArray, that.argArray);
     }
 

@@ -667,67 +667,67 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         private boolean useTLSMessageFormat;
         private LoggerFields[] loggerFields;
 
-        public Rfc5424LayoutBuilder setConfig(Configuration config) {
+        public Rfc5424LayoutBuilder setConfig(final Configuration config) {
             this.config = config;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setFacility(Facility facility) {
+        public Rfc5424LayoutBuilder setFacility(final Facility facility) {
             this.facility = facility;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setId(String id) {
+        public Rfc5424LayoutBuilder setId(final String id) {
             this.id = id;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setEin(String ein) {
+        public Rfc5424LayoutBuilder setEin(final String ein) {
             this.ein = ein;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setIncludeMDC(boolean includeMDC) {
+        public Rfc5424LayoutBuilder setIncludeMDC(final boolean includeMDC) {
             this.includeMDC = includeMDC;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setIncludeNL(boolean includeNL) {
+        public Rfc5424LayoutBuilder setIncludeNL(final boolean includeNL) {
             this.includeNL = includeNL;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setEscapeNL(String escapeNL) {
+        public Rfc5424LayoutBuilder setEscapeNL(final String escapeNL) {
             this.escapeNL = escapeNL;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setMdcId(String mdcId) {
+        public Rfc5424LayoutBuilder setMdcId(final String mdcId) {
             this.mdcId = mdcId;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setMdcPrefix(String mdcPrefix) {
+        public Rfc5424LayoutBuilder setMdcPrefix(final String mdcPrefix) {
             this.mdcPrefix = mdcPrefix;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setEventPrefix(String eventPrefix) {
+        public Rfc5424LayoutBuilder setEventPrefix(final String eventPrefix) {
             this.eventPrefix = eventPrefix;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setAppName(String appName) {
+        public Rfc5424LayoutBuilder setAppName(final String appName) {
             this.appName = appName;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setMessageId(String messageId) {
+        public Rfc5424LayoutBuilder setMessageId(final String messageId) {
             this.messageId = messageId;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setExcludes(String excludes) {
+        public Rfc5424LayoutBuilder setExcludes(final String excludes) {
             this.excludes = excludes;
             return this;
         }
@@ -737,27 +737,27 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return this;
         }
 
-        public Rfc5424LayoutBuilder setRequired(String required) {
+        public Rfc5424LayoutBuilder setRequired(final String required) {
             this.required = required;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setCharset(Charset charset) {
+        public Rfc5424LayoutBuilder setCharset(final Charset charset) {
             this.charset = charset;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setExceptionPattern(String exceptionPattern) {
+        public Rfc5424LayoutBuilder setExceptionPattern(final String exceptionPattern) {
             this.exceptionPattern = exceptionPattern;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setUseTLSMessageFormat(boolean useTLSMessageFormat) {
+        public Rfc5424LayoutBuilder setUseTLSMessageFormat(final boolean useTLSMessageFormat) {
             this.useTLSMessageFormat = useTLSMessageFormat;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setLoggerFields(LoggerFields[] loggerFields) {
+        public Rfc5424LayoutBuilder setLoggerFields(final LoggerFields[] loggerFields) {
             this.loggerFields = loggerFields;
             return this;
         }

@@ -54,7 +54,7 @@ public class MemoryMappedFileManagerTest {
 
         }
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine();
             for (int i = 0; i < 1000; i++) {
                 assertNotNull(line, "line");
@@ -71,7 +71,7 @@ public class MemoryMappedFileManagerTest {
         final int initialLength = 4 * 1024;
 
         // create existing file
-        try (FileOutputStream fos = new FileOutputStream(file)) {
+        try (final FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(new byte[initialLength], 0, initialLength);
             fos.flush();
         }

@@ -123,7 +123,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     @Override
-    protected synchronized void write(final byte[] bytes, int offset, int length, final boolean immediateFlush) {
+    protected synchronized void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
         while (length > mappedBuffer.remaining()) {
             final int chunk = mappedBuffer.remaining();
             mappedBuffer.put(bytes, offset, chunk);

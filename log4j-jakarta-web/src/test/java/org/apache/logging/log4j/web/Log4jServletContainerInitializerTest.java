@@ -188,7 +188,7 @@ public class Log4jServletContainerInitializerTest {
 
     @Test
     public void testServiceIsDetected() {
-        ServiceLoader<ServletContainerInitializer> loader = ServiceLoader.load(ServletContainerInitializer.class);
+        final ServiceLoader<ServletContainerInitializer> loader = ServiceLoader.load(ServletContainerInitializer.class);
         final boolean found = StreamSupport.stream(loader.spliterator(), false)
                                            .anyMatch(s -> s instanceof Log4jServletContainerInitializer);
         assertTrue(found, "ServletContainerInitializer not found.");

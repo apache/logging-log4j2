@@ -188,7 +188,7 @@ public class StrSubstitutorTest {
         final StrLookup lookup = new Interpolator(new MapLookup(new HashMap<>()));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(true);
-        String infiniteSubstitution = "${${::-${::-$${::-j}}}}";
+        final String infiniteSubstitution = "${${::-${::-$${::-j}}}}";
         assertEquals(infiniteSubstitution, subst.replace(infiniteSubstitution));
     }
 
@@ -197,7 +197,7 @@ public class StrSubstitutorTest {
         final StrLookup lookup = new Interpolator(new MapLookup(new HashMap<>()));
         final StrSubstitutor subst = new StrSubstitutor(lookup);
         subst.setRecursiveEvaluationAllowed(true);
-        String infiniteSubstitution = "${${::-${::-$${::-j}}}}";
+        final String infiniteSubstitution = "${${::-${::-$${::-j}}}}";
         assertEquals(infiniteSubstitution, subst.replace(null, new StringBuilder(infiniteSubstitution)));
     }
 
@@ -288,7 +288,7 @@ public class StrSubstitutorTest {
         final StrSubstitutor subst = new StrSubstitutor(new Interpolator(new StrLookup() {
 
             @Override
-            public String lookup(String key) {
+            public String lookup(final String key) {
                 if ("throw".equals(key)) {
                     throw new RuntimeException();
                 }
@@ -296,7 +296,7 @@ public class StrSubstitutorTest {
             }
 
             @Override
-            public String lookup(LogEvent event, String key) {
+            public String lookup(final LogEvent event, final String key) {
                 return lookup(key);
             }
         }));

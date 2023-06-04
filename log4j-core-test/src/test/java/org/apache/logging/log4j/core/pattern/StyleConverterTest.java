@@ -89,7 +89,7 @@ public class StyleConverterTest {
 
     @Test
     @UsingStatusListener
-    public void testNoAnsiNoWarnings(ListStatusListener listener) {
+    public void testNoAnsiNoWarnings(final ListStatusListener listener) {
         StyleConverter converter = StyleConverter.newInstance(null, new String[] { "", "disableAnsi=true" });
         assertThat(converter).isNotNull();
         converter = StyleConverter.newInstance(null, new String[] { "", "noConsoleNoAnsi=true" });

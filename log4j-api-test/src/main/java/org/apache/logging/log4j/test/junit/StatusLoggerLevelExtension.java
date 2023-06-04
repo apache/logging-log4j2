@@ -27,7 +27,7 @@ class StatusLoggerLevelExtension implements BeforeEachCallback, AfterEachCallbac
     private static final String KEY = "previousLevel";
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(final ExtensionContext context) throws Exception {
         final StatusLoggerLevel annotation = context.getRequiredTestClass().getAnnotation(StatusLoggerLevel.class);
         if (annotation == null) {
             return;
@@ -38,11 +38,11 @@ class StatusLoggerLevelExtension implements BeforeEachCallback, AfterEachCallbac
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
+    public void afterEach(final ExtensionContext context) throws Exception {
         StatusLogger.getLogger().setLevel(getStore(context).get(KEY, Level.class));
     }
 
-    private ExtensionContext.Store getStore(ExtensionContext context) {
+    private ExtensionContext.Store getStore(final ExtensionContext context) {
         return context.getStore(ExtensionContext.Namespace
                 .create(getClass(), context.getRequiredTestInstance()));
     }

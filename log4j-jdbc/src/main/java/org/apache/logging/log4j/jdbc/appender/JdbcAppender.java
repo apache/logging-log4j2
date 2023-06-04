@@ -185,7 +185,7 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
     private final String description;
 
     private JdbcAppender(final String name, final Filter filter, final Layout layout,
-            final boolean ignoreExceptions, Property[] properties, final JdbcDatabaseManager manager) {
+            final boolean ignoreExceptions, final Property[] properties, final JdbcDatabaseManager manager) {
         super(name, filter, layout, ignoreExceptions, properties, manager);
         this.description = this.getName() + "{ manager=" + this.getManager() + " }";
     }
