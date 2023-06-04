@@ -92,22 +92,24 @@ public final class StringEncoder {
         int byteOffset = 0;
         int length = Math.min(charLength, byteArray.length);
         int charDoneIndex = charOffset + length;
-        while (charOffset < charDoneIndex) {
-            final int done = encodeIsoChars(charArray, charOffset, byteArray, byteOffset, length);
-            charOffset += done;
+        int currentCharOffset = charOffset;
+        int currentCharLength = charLength;
+        while (currentCharOffset < charDoneIndex) {
+            final int done = encodeIsoChars(charArray, currentCharOffset, byteArray, byteOffset, length);
+            currentCharOffset += done;
             byteOffset += done;
             if (done != length) {
-                final char c = charArray.charAt(charOffset++);
-                if ((Character.isHighSurrogate(c)) && (charOffset < charDoneIndex)
-                        && (Character.isLowSurrogate(charArray.charAt(charOffset)))) {
-                    if (charLength > byteArray.length) {
+                final char c = charArray.charAt(currentCharOffset++);
+                if ((Character.isHighSurrogate(c)) && (currentCharOffset < charDoneIndex)
+                        && (Character.isLowSurrogate(charArray.charAt(currentCharOffset)))) {
+                    if (currentCharLength > byteArray.length) {
                         charDoneIndex++;
-                        charLength--;
+                        currentCharLength--;
                     }
-                    charOffset++;
+                    currentCharOffset++;
                 }
                 byteArray[(byteOffset++)] = '?';
-                length = Math.min(charDoneIndex - charOffset, byteArray.length - byteOffset);
+                length = Math.min(charDoneIndex - currentCharOffset, byteArray.length - byteOffset);
             }
         }
         return byteOffset;

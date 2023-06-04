@@ -167,40 +167,41 @@ public class TimeFormatBenchmark {
         // Hour
         // 13/128 is nearly the same as /10 for values up to 65
         int temp = (hour * 13) >> 7;
-        buffer[pos++] = ((char) (temp + '0'));
+        int p = pos;
+        buffer[p++] = ((char) (temp + '0'));
 
         // Do subtract to get remainder instead of doing % 10
-        buffer[pos++] = ((char) (hour - 10 * temp + '0'));
-        buffer[pos++] = ((char) ':');
+        buffer[p++] = ((char) (hour - 10 * temp + '0'));
+        buffer[p++] = ((char) ':');
 
         // Minute
         // 13/128 is nearly the same as /10 for values up to 65
         temp = (minute * 13) >> 7;
-        buffer[pos++] = ((char) (temp + '0'));
+        buffer[p++] = ((char) (temp + '0'));
 
         // Do subtract to get remainder instead of doing % 10
-        buffer[pos++] = ((char) (minute - 10 * temp + '0'));
-        buffer[pos++] = ((char) ':');
+        buffer[p++] = ((char) (minute - 10 * temp + '0'));
+        buffer[p++] = ((char) ':');
 
         // Second
         // 13/128 is nearly the same as /10 for values up to 65
         temp = (second * 13) >> 7;
-        buffer[pos++] = ((char) (temp + '0'));
-        buffer[pos++] = ((char) (second - 10 * temp + '0'));
-        buffer[pos++] = ((char) '.');
+        buffer[p++] = ((char) (temp + '0'));
+        buffer[p++] = ((char) (second - 10 * temp + '0'));
+        buffer[p++] = ((char) '.');
 
         // Millisecond
         // 41/4096 is nearly the same as /100
         temp = (ms * 41) >> 12;
-        buffer[pos++] = ((char) (temp + '0'));
+        buffer[p++] = ((char) (temp + '0'));
 
         ms -= 100 * temp;
         temp = (ms * 205) >> 11; // 205/2048 is nearly the same as /10
-        buffer[pos++] = ((char) (temp + '0'));
+        buffer[p++] = ((char) (temp + '0'));
 
         ms -= 10 * temp;
-        buffer[pos++] = ((char) (ms + '0'));
-        return pos;
+        buffer[p++] = ((char) (ms + '0'));
+        return p;
     }
 
     StringBuilder formatStringBuilder(final long time, final StringBuilder buffer) {
@@ -274,36 +275,37 @@ public class TimeFormatBenchmark {
 
         // Hour
         int temp = hours / 10;
-        buffer[pos++] = ((char) (temp + '0'));
+        int p = pos;
+        buffer[p++] = ((char) (temp + '0'));
 
         // Do subtract to get remainder instead of doing % 10
-        buffer[pos++] = ((char) (hours - 10 * temp + '0'));
-        buffer[pos++] = ((char) ':');
+        buffer[p++] = ((char) (hours - 10 * temp + '0'));
+        buffer[p++] = ((char) ':');
 
         // Minute
         temp = minutes / 10;
-        buffer[pos++] = ((char) (temp + '0'));
+        buffer[p++] = ((char) (temp + '0'));
 
         // Do subtract to get remainder instead of doing % 10
-        buffer[pos++] = ((char) (minutes - 10 * temp + '0'));
-        buffer[pos++] = ((char) ':');
+        buffer[p++] = ((char) (minutes - 10 * temp + '0'));
+        buffer[p++] = ((char) ':');
 
         // Second
         temp = seconds / 10;
-        buffer[pos++] = ((char) (temp + '0'));
-        buffer[pos++] = ((char) (seconds - 10 * temp + '0'));
-        buffer[pos++] = ((char) '.');
+        buffer[p++] = ((char) (temp + '0'));
+        buffer[p++] = ((char) (seconds - 10 * temp + '0'));
+        buffer[p++] = ((char) '.');
 
         // Millisecond
         temp = ms / 100;
-        buffer[pos++] = ((char) (temp + '0'));
+        buffer[p++] = ((char) (temp + '0'));
 
         ms -= 100 * temp;
         temp = ms / 10;
-        buffer[pos++] = ((char) (temp + '0'));
+        buffer[p++] = ((char) (temp + '0'));
 
         ms -= 10 * temp;
-        buffer[pos++] = ((char) (ms + '0'));
-        return pos;
+        buffer[p++] = ((char) (ms + '0'));
+        return p;
     }
 }

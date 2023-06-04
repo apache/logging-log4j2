@@ -38,7 +38,7 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "MessagePatternConverter", category = PatternConverter.CATEGORY)
 @ConverterKeys({"m", "msg", "message"})
 @PerformanceSensitive("allocation")
-public final class MessagePatternConverter extends LogEventPatternConverter {
+public abstract class MessagePatternConverter extends LogEventPatternConverter {
 
     private static final String LOOKUPS = "lookups";
     private static final String NOLOOKUPS = "nolookups";

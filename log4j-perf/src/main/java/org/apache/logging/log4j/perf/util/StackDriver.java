@@ -24,18 +24,20 @@ import java.util.function.Function;
  */
 public class StackDriver {
     public StackTraceElement deepCall(final int initialDepth, final Integer targetDepth, final Function<String, StackTraceElement> supplier) {
-        if (--initialDepth == 0) {
+        int depth = initialDepth;
+        if (--depth == 0) {
             final Processor processor = new Processor();
             return processor.apply(targetDepth, supplier);
         }
-        return deepCall(initialDepth, targetDepth, supplier);
+        return deepCall(depth, targetDepth, supplier);
     }
 
     public static class Processor implements BiFunction<Integer, Function<String, StackTraceElement>, StackTraceElement> {
         private static final String FQCN = Processor.class.getName();
 
         @Override
-        public StackTraceElement apply(final Integer depth, final Function<String, StackTraceElement> function) {
+        public StackTraceElement apply(final Integer initialDepth, final Function<String, StackTraceElement> function) {
+            int depth = initialDepth;
             if (--depth == 0) {
                 return function.apply(FQCN);
             }

@@ -125,14 +125,16 @@ public class MemoryMappedFileManager extends OutputStreamManager {
 
     @Override
     protected synchronized void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
-        while (length > mappedBuffer.remaining()) {
+        int currentOffset = offset;
+        int currentLength = length;
+        while (currentLength > mappedBuffer.remaining()) {
             final int chunk = mappedBuffer.remaining();
-            mappedBuffer.put(bytes, offset, chunk);
-            offset += chunk;
-            length -= chunk;
+            mappedBuffer.put(bytes, currentOffset, chunk);
+            currentOffset += chunk;
+            currentLength -= chunk;
             remap();
         }
-        mappedBuffer.put(bytes, offset, length);
+        mappedBuffer.put(bytes, currentOffset, currentLength);
 
         // no need to call flush() if force is true,
         // already done in AbstractOutputStreamAppender.append

@@ -355,33 +355,33 @@ public class FixedDateFormat {
         // 262 bytes (will be inlined when hot enough: <= -XX:FreqInlineSize=325 bytes on Linux)
         private int write(final int offset, final char[] buffer, final int pos) {
             // This method duplicates part of writeTime()
-
-            buffer[pos++] = offset < 0 ? '-' : '+';
+            int p = pos;
+            buffer[p++] = offset < 0 ? '-' : '+';
             final int absOffset = Math.abs(offset);
             final int hours = absOffset / 3600000;
             int ms = absOffset - (3600000 * hours);
 
             // Hour
             int temp = hours / 10;
-            buffer[pos++] = ((char) (temp + '0'));
+            buffer[p++] = ((char) (temp + '0'));
 
             // Do subtract to get remainder instead of doing % 10
-            buffer[pos++] = ((char) (hours - 10 * temp + '0'));
+            buffer[p++] = ((char) (hours - 10 * temp + '0'));
 
             // Minute
             if (useMinutes) {
-                buffer[pos] = timeSeparatorChar;
-                pos += timeSeparatorCharLen;
+                buffer[p] = timeSeparatorChar;
+                p += timeSeparatorCharLen;
                 final int minutes = ms / 60000;
                 ms -= 60000 * minutes;
 
                 temp = minutes / 10;
-                buffer[pos++] = ((char) (temp + '0'));
+                buffer[p++] = ((char) (temp + '0'));
 
                 // Do subtract to get remainder instead of doing % 10
-                buffer[pos++] = ((char) (minutes - 10 * temp + '0'));
+                buffer[p++] = ((char) (minutes - 10 * temp + '0'));
             }
-            return pos;
+            return p;
         }
 
     }
