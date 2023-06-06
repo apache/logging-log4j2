@@ -235,6 +235,60 @@
   </Loggers>
 </Configuration>]]></pre>
         </subsection>
+
+        <a name="LevelRangeFilter"/>
+        <subsection name="LevelRangeFilter">
+          <p>
+            <code>LevelRangeFilter</code> allows filtering against a level range, where levels get compared by their associated integral values; <code>OFF</code> has an integral value of 0, <code>FATAL</code> 100, <code>ERROR</code> 200, and so on.
+          </p>
+          <table>
+            <caption align="top">Map Filter Parameters</caption>
+            <tr>
+              <th>Parameter Name</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td><code>minLevel</code></td>
+              <td><code>Level</code></td>
+              <td>the minimum level threshold (defaults to <code>OFF</code>, which has an integral value of 0)</td>
+            </tr>
+            <tr>
+              <td><code>maxLevel</code></td>
+              <td><code>Level</code></td>
+              <td>the maximum level threshold (defaults to <code>ALL</code>, which has an integral value of <code>Integer.MAX_VALUE</code>)</td>
+            </tr>
+            <tr>
+              <td><code>onMatch</code></td>
+              <td><code>Filter.Result</code></td>
+              <td>the result to return on a match, where allowed values are <code>ACCEPT</code>, <code>DENY</code> or <code>NEUTRAL</code> (default)</td>
+            </tr>
+            <tr>
+              <td><code>onMismatch</code></td>
+              <td><code>Filter.Result</code></td>
+              <td>the result to return on a mismatch, where allowed values are <code>ACCEPT</code>, <code>DENY</code> (default) or <code>NEUTRAL</code></td>
+            </tr>
+          </table>
+          <p>
+            In the following example configuration, a <code>LevelRangeFilter</code> is configured with <code>maxLevel</code> set to <code>INFO</code>.
+            The filter will return <code>onMismatch</code> result (i.e., <code>DENY</code>, the default) for log events of level with higher integral values than <code>INFO</code>; i.e., <code>DEBUG</code>, <code>TRACE</code>, etc.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" name="MyApp">
+  <Appenders>
+    <Console name="STDOUT">
+      <LevelRangeFilter maxLevel="INFO"/>
+      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="ERROR">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+</Configuration>]]></pre>
+        </subsection>
+
         <a name="MapFilter"/>
         <subsection name="MapFilter">
           <p>
