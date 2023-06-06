@@ -16,6 +16,7 @@
 ////
 = Filters
 Ralph Goers <rgoers@apache.org>
+Volkan Yazıcı <vy@apache.org>
 
 ++++
 <link rel="stylesheet" type="text/css" href="../css/tables.css">
@@ -219,6 +220,55 @@ Here is a sample configuration containing the DynamicThresholdFilter:
   <Loggers>
     <Root level="error">
       <AppenderRef ref="RollingFile"/>
+    </Root>
+  </Loggers>
+</Configuration>
+----
+
+[#LevelRangeFilter]
+== LevelRangeFilter
+
+`LevelRangeFilter` allows filtering against a level range, where levels get compared by their associated integral values; `OFF` has an integral value of 0, `FATAL` 100, `ERROR` 200, and so on.
+
+.`LevelRangeFilter` parameters
+[cols="1m,1m,4"]
+|===
+|Parameter Name |Type |Description
+
+|minLevel
+|Level
+|the minimum level threshold (defaults to `OFF`, which has an integral value of 0)
+
+|maxLevel
+|Level
+|the maximum level threshold (defaults to `ALL`, which has an integral value of `Integer.MAX_VALUE`)
+
+|onMatch
+|Filter.Result
+|the result to return on a match, where allowed values are `ACCEPT`, `DENY`, or `NEUTRAL` (default)
+
+|onMismatch
+|Filter.Result
+|the result to return on a mismatch, where allowed values are `ACCEPT`, `DENY` (default), or `NEUTRAL`
+|===
+
+In the following example configuration, a `LevelRangeFilter` is configured with `maxLevel` set to `INFO`.
+The filter will return `onMismatch` result (i.e., `DENY`, the default) for log events of level with higher integral values than `INFO`; i.e., `DEBUG`, `TRACE`, etc.
+
+.Example configuration using `LevelRangeFilter`
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" name="MyApp">
+  <Appenders>
+    <Console name="STDOUT">
+      <LevelRangeFilter maxLevel="INFO"/>
+      <PatternLayout pattern="%d %p %c{1.} [%t] %m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="ERROR">
+      <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>
 </Configuration>

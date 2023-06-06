@@ -29,13 +29,12 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
- * This filter returns the {@code onMatch} result if the level in the {@code LogEvent} is in the range of the configured
- * min and max levels, otherwise it returns {@code onMismatch} value . For example, if the filter is configured with
- * {@link Level#ERROR} and {@link Level#INFO} and the LogEvent contains {@link Level#WARN} then the onMatch value will
- * be returned since {@link Level#WARN WARN} events are in between {@link Level#ERROR ERROR} and {@link Level#INFO
- * INFO}.
+ * This filter returns the {@link #onMatch} result if the level of the {@link LogEvent} is in the range of the configured {@link #minLevel} and {@link #maxLevel} values, otherwise it returns the {@link #onMismatch} result.
+ * The default values for {@link #minLevel} and {@link #maxLevel} are set to {@link Level#OFF} and {@link Level#ALL}, respectively.
+ * The default values for {@link #onMatch} and {@link #onMismatch} are set to {@link Result#NEUTRAL} and {@link Result#DENY}, respectively.
  * <p>
- * The default Levels are both {@link Level#ERROR ERROR}.
+ * The levels get compared by their associated integral values; {@link Level#OFF} has an integral value of 0, {@link Level#FATAL} 100, {@link Level#ERROR} 200, and so on.
+ * For example, if the filter is configured with {@link #maxLevel} set to {@link Level#INFO}, the filter will return {@link #onMismatch} result for {@link LogEvent}s of level with higher integral values; {@link Level#DEBUG}, {@link Level#TRACE}, etc.
  * </p>
  */
 @Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
@@ -44,33 +43,49 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 public final class LevelRangeFilter extends AbstractFilter {
 
     /**
-     * Creates a ThresholdFilter.
-     *
-     * @param minLevel
-     *            The minimum log Level.
-     * @param maxLevel
-     *            The maximum log Level.
-     * @param match
-     *            The action to take on a match.
-     * @param mismatch
-     *            The action to take on a mismatch.
-     * @return The created ThresholdFilter.
+     * The default minimum level threshold.
      */
-    // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
+    public static final Level DEFAULT_MIN_LEVEL = Level.OFF;
+
+    /**
+     * THe default maximum level threshold.
+     */
+    public static final Level DEFAULT_MAX_LEVEL = Level.ALL;
+
+    /**
+     * The default result on a match.
+     */
+    public static final Result DEFAULT_ON_MATCH = Result.NEUTRAL;
+
+    /**
+     * The default result on a mismatch.
+     */
+    public static final Result DEFAULT_ON_MISMATCH = Result.DENY;
+
+    /**
+     * Creates an instance with the provided properties.
+     *
+     * @param minLevel the minimum level threshold
+     * @param maxLevel the maximum level threshold
+     * @param onMatch the result to return on a match
+     * @param onMismatch the result to return on a mismatch
+     * @return a new instance
+     */
     @PluginFactory
     public static LevelRangeFilter createFilter(
             // @formatter:off
             @PluginAttribute final Level minLevel,
             @PluginAttribute final Level maxLevel,
-            @PluginAttribute final Result match,
-            @PluginAttribute final Result mismatch) {
+            @PluginAttribute final Result onMatch,
+            @PluginAttribute final Result onMismatch) {
             // @formatter:on
-        final Level actualMinLevel = minLevel == null ? Level.ERROR : minLevel;
-        final Level actualMaxLevel = maxLevel == null ? Level.ERROR : maxLevel;
-        final Result onMatch = match == null ? Result.NEUTRAL : match;
-        final Result onMismatch = mismatch == null ? Result.DENY : mismatch;
-        return new LevelRangeFilter(actualMinLevel, actualMaxLevel, onMatch, onMismatch);
+        final Level effectiveMinLevel = minLevel == null ? DEFAULT_MIN_LEVEL : minLevel;
+        final Level effectiveMaxLevel = maxLevel == null ? DEFAULT_MAX_LEVEL : maxLevel;
+        final Result effectiveOnMatch = onMatch == null ? DEFAULT_ON_MATCH : onMatch;
+        final Result effectiveOnMismatch = onMismatch == null ? DEFAULT_ON_MISMATCH : onMismatch;
+        return new LevelRangeFilter(effectiveMinLevel, effectiveMaxLevel, effectiveOnMatch, effectiveOnMismatch);
     }
+
     private final Level maxLevel;
 
     private final Level minLevel;
@@ -82,7 +97,7 @@ public final class LevelRangeFilter extends AbstractFilter {
     }
 
     private Result filter(final Level level) {
-        return level.isInRange(this.minLevel, this.maxLevel) ? onMatch : onMismatch;
+        return level.isInRange(minLevel, maxLevel) ? onMatch : onMismatch;
     }
 
     @Override
@@ -177,13 +192,23 @@ public final class LevelRangeFilter extends AbstractFilter {
         return filter(level);
     }
 
+    /**
+     * @return the minimum level threshold
+     */
     public Level getMinLevel() {
         return minLevel;
     }
 
+    /**
+     * @return the maximum level threshold
+     */
+    public Level getMaxLevel() {
+        return maxLevel;
+    }
+
     @Override
     public String toString() {
-        return minLevel.toString();
+        return String.format("[%s,%s]", minLevel, maxLevel);
     }
 
 }
