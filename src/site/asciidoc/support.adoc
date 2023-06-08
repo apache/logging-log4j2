@@ -21,7 +21,31 @@
 ++++
 
 The Apache Software Foundation does not employ individuals to develop and support any of its projects.
-The individuals who contribute to Apache projects do it either as part of specific tasks assigned to them by their employer, on their own initiative to benefit their employer, or on their own free time.
+The individuals who contribute to Apache projects do it either as part of specific tasks assigned to them by their
+employer, on their own initiative to benefit their employer, or on their own free time.
+
+[#]
+== Statement of Support for Older Releases
+
+Log4j 1.x reached end-of-life in 2015. The Logging Services Project no longer provides ANY direct support for these
+versions. Occasionally we do get security reports against Log4j 1.x and while we have created CVEs for these in
+the past we do not guarantee we will always do so. The Logging Services team is aware that there are others who
+are providing releases against forks of Log4j 1.x so any security issues found when using them should be reported to
+the maintainers of those libraries.
+
+Log4j 2.3.4 is the latest release that supports Java 6. No future releases are planned. A new release will ONLY be
+provided should a very serious security issue be reported.
+
+Log4j 2.12.4 is the latest release that supports Java 7. No future releases are planned. A new release will ONLY be
+provided should a very serious security issue be reported.
+
+Later releases of the Log4j 2.x series all require a minimum of Java 8. This branch is still in active development.
+
+For future planning know that the Log4j team will generally provide support for a specific JDK version until its
+usage drops below 10% as listed in the publicly available annual Java Version statistics provided by various vendors.
+While Log4j officially only supports LTS versions of Java we will accept bug reports for versions newer than the
+latest LTS version.
+
 
 [#discussions]
 == Discussions
@@ -41,7 +65,8 @@ For reporting unlisted security vulnerabilities or other unexpected behaviour th
 `private@logging.apache.org` (private | mailto:private@logging.apache.org[post])::
 For the discussion of confidential topics within the Apache Logging Services project management committee
 
-You can alternatively post questions on Stack Overflow tagged with either http://stackoverflow.com/questions/tagged/log4j[log4j] or http://stackoverflow.com/questions/tagged/log4j2[log4j2].
+You can alternatively post questions on Stack Overflow tagged with either http://stackoverflow.com/questions/tagged/log4j[log4j]
+or http://stackoverflow.com/questions/tagged/log4j2[log4j2].
 Note that *Stack Overflow is more casually monitored due to time constraints*.
 It is fine if you want to post first to Stack Overflow and then if you don't get an answer to post to the mailing lists.
 
@@ -49,13 +74,16 @@ It is fine if you want to post first to Stack Overflow and then if you don't get
 == Issues
 
 The Log4j project uses https://github.com/apache/logging-log4j2/issues[GitHub Issues] as its issue tracking system.
-The old issue tracking system, https://issues.apache.org/jira/projects/LOG4J2[JIRA], is still accessible, though only recommended for issues that were already created there.
+The old issue tracking system, https://issues.apache.org/jira/projects/LOG4J2[JIRA], is still accessible, though only
+recommended for issues that were already created there.
 
 Issues get resolved in one of the following ways:
 
-. The reporter or another interested party provides https://github.com/apache/logging-log4j2/pulls[a pull request] tagging the issue in its title
+. The reporter or another interested party provides https://github.com/apache/logging-log4j2/pulls[a pull request]
+tagging the issue in its title
 . A committer is interested in the issue and decides to work on it
-. The reporter or another interested party sponsors one or more of xref:#sponsorship[the committers listed below] to encourage them to work on the issue
+. The reporter or another interested party sponsors one or more of xref:#sponsorship[the committers listed below]
+to encourage them to work on the issue
 
 Created issues are subject to the following policy:
 

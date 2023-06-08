@@ -294,10 +294,11 @@
       <item name="Log4j-Scala" href="http://logging.apache.org/log4j/scala/index.html"/>
     </menu>
 
-    <menu name="Legacy" inherit="top" img="img/glyphicons/link.png">
+    <menu name="Older Releases" inherit="top" img="img/glyphicons/link.png">
       <item name="Log4j 1.2 - End of Life" href="http://logging.apache.org/log4j/1.2/"/>
       <item name="Log4j 2.3 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3/"/>
       <item name="Log4j 2.12.1 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.1/"/>
+      <item name="Log4j 2.x - Latest release for Java 8" href="http://logging.apache.org/log4j/2.x/"/>
     </menu>
 
     <menu name="Components" inherit="top" img="img/glyphicons/cog.png">
