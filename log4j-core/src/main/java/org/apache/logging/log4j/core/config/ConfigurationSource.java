@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -350,6 +351,12 @@ public class ConfigurationSource {
             try {
                 if (file != null) {
                     return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
+                } else if (urlConnection instanceof JarURLConnection) {
+                    // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
+                    URL jarFileUrl = ((JarURLConnection)urlConnection).getJarFileURL();
+                    File jarFile = new File(jarFileUrl.getFile());
+                    long lastModified = jarFile.lastModified();
+                    return new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
                 } else {
                     return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
                 }

@@ -31,9 +31,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class ConfigurationSourceTest {
+    private static final Path JAR_FILE = Paths.get("target", "classes", "jarfile.jar");
+    private static final Path TEST_JARFILE = Paths.get("target", "classes", "jarfile-copy.jar");
 
     @Test
     public void testJira_LOG4J2_2770_byteArray() throws Exception {
@@ -49,17 +53,36 @@ public class ConfigurationSourceTest {
      */
     @Test
     public void testNoJarFileLeak() throws Exception {
-        final Path original = Paths.get("target", "test-classes", "jarfile.jar");
-        final Path copy = Paths.get("target", "test-classes", "jarfile-copy.jar");
-        Files.copy(original, copy);
-        final URL jarUrl = new URL("jar:" + copy.toUri().toURL() + "!/config/console.xml");
+        final URL jarConfigURL = prepareJarConfigURL();
         final long expected = getOpenFileDescriptorCount();
-        UrlConnectionFactory.createConnection(jarUrl).getInputStream().close();
+        UrlConnectionFactory.createConnection(jarConfigURL).getInputStream().close();
         // This can only fail on UNIX
         assertEquals(expected, getOpenFileDescriptorCount());
         // This can only fail on Windows
         try {
-            Files.delete(copy);
+            Files.delete(TEST_JARFILE);
+        } catch (IOException e) {
+            fail(e);
+        }
+    }
+
+    @Test
+    public void testLoadConfigurationSourceFromJarFile() throws Exception {
+        final URL jarConfigURL = prepareJarConfigURL();
+        final long expectedFdCount = getOpenFileDescriptorCount();
+        ConfigurationSource configSource = ConfigurationSource.fromUri(jarConfigURL.toURI());
+        assertEquals(jarConfigURL.toString(), configSource.getLocation());
+        assertNull(configSource.getFile());
+        assertTrue(configSource.getLastModified() > 0);
+        assertEquals(jarConfigURL, configSource.getURL());
+        assertNotNull(configSource.getInputStream());
+        configSource.getInputStream().close();
+
+        // This can only fail on UNIX
+        assertEquals(expectedFdCount, getOpenFileDescriptorCount());
+        // This can only fail on Windows
+        try {
+            Files.delete(TEST_JARFILE);
         } catch (IOException e) {
             fail(e);
         }
@@ -72,4 +95,11 @@ public class ConfigurationSourceTest {
         }
         return 0L;
     }
+
+    private static URL prepareJarConfigURL() throws IOException {
+      if(!Files.exists(TEST_JARFILE))
+        Files.copy(JAR_FILE, TEST_JARFILE);
+      return new URL("jar:" + TEST_JARFILE.toUri().toURL() + "!/config/console.xml");
+    }
+
 }
