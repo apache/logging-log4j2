@@ -359,8 +359,9 @@ public class ConfigurationSource {
                     return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
                 } else if (urlConnection instanceof JarURLConnection) {
                     // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
-                    final long lastModified = new File(((JarURLConnection) urlConnection).getJarFile().getName())
-                            .lastModified();
+                    URL jarFileUrl = ((JarURLConnection)urlConnection).getJarFileURL();
+                    File jarFile = new File(jarFileUrl.getFile());
+                    long lastModified = jarFile.lastModified();
                     return new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
                 } else {
                     return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
