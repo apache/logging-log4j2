@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.io.File;
 import java.util.Objects;
 
-import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
