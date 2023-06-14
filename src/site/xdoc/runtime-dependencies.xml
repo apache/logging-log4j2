@@ -280,9 +280,11 @@
         <tr>
           <td>Bzip2, Deflate, Pack200, and XZ compression on rollover</td>
           <td><a href="https://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>.
-            In addition,
-            XZ requires <a href="https://tukaani.org/xz/java.html">XZ for Java</a>.
-            ZSTD requires <a href="https://github.com/luben/zstd-jni">JNI binding for Zstd</a>.
+            In addition:
+            <ul>
+              <li>XZ requires <a href="https://tukaani.org/xz/java.html">XZ for Java</a>.</li>
+              <li>ZSTD requires <a href="https://github.com/luben/zstd-jni">JNI binding for Zstd</a>.</li>
+            </ul>
           </td>
         </tr>
         <tr>

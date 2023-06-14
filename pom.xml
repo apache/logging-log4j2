@@ -470,6 +470,7 @@
     <woodstox.version>6.5.0</woodstox.version>
     <xmlunit.version>2.9.1</xmlunit.version>
     <xz.version>1.9</xz.version>
+    <zstd.version>1.5.5-4</zstd.version>
 
   </properties>
 
@@ -1299,6 +1300,12 @@
         <groupId>org.tukaani</groupId>
         <artifactId>xz</artifactId>
         <version>${xz.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.luben</groupId>
+        <artifactId>zstd-jni</artifactId>
+        <version>${zstd.version}</version>
       </dependency>
 
     </dependencies>

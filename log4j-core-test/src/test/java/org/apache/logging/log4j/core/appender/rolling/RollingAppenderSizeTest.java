@@ -83,6 +83,8 @@ public class RollingAppenderSizeTest {
                {"log4j-rolling-bzip2.xml", ".bz2", false},
                {"log4j-rolling-deflate-lazy.xml", ".deflate", true},
                {"log4j-rolling-deflate.xml", ".deflate", false},
+               {"log4j-rolling-zstd-lazy.xml", ".zst", true},
+               {"log4j-rolling-zstd.xml", ".zst", false},
                {"log4j-rolling-pack200-lazy.xml", ".pack200", true},
                {"log4j-rolling-pack200.xml", ".pack200", false},
                {"log4j-rolling-xz-lazy.xml", ".xz", true},
