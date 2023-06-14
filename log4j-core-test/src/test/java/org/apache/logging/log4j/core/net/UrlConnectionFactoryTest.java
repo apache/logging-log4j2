@@ -36,6 +36,7 @@ import com.sun.management.UnixOperatingSystemMXBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.ConfigurationSourceTest;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -144,7 +145,8 @@ public class UrlConnectionFactoryTest {
 
     @Test
     public void testNoJarFileLeak() throws Exception {
-        final URL url = new File("target/classes/jarfile.jar").toURI().toURL();
+        ConfigurationSourceTest.prepareJarConfigURL();
+        final URL url = new File("target/test-classes/jarfile.jar").toURI().toURL();
         // Retrieve using 'file:'
         URL jarUrl = new URL("jar:" + url.toString() + "!/config/console.xml");
         long expected = getOpenFileDescriptorCount();
@@ -189,7 +191,10 @@ public class UrlConnectionFactoryTest {
             }
             final String servletPath = request.getServletPath();
             if (servletPath != null) {
-                final File file = new File("target/classes" + servletPath);
+                File file = new File("target/classes" + servletPath);
+                if (!file.exists()) {
+                    file = new File("target/test-classes" + servletPath);
+                }
                 if (!file.exists()) {
                     response.sendError(SC_NOT_FOUND);
                     return;

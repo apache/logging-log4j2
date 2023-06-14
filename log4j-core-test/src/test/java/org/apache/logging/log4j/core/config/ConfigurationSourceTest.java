@@ -104,7 +104,7 @@ public class ConfigurationSourceTest {
         return 0L;
     }
 
-    private static URL prepareJarConfigURL() throws IOException {
+    public static URL prepareJarConfigURL() throws IOException {
         if (!Files.exists(JAR_FILE)) {
             final Manifest manifest = new Manifest();
             manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
