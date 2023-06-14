@@ -36,7 +36,7 @@ public final class CommonsCompressAction extends AbstractAction {
     private static final int BUF_SIZE = 8192;
 
     /**
-     * Compressor name. One of "gz", "bzip2", "xz", "pack200" or "deflate".
+     * Compressor name. One of "gz", "bzip2", "xz", "zstd", "pack200" or "deflate".
      */
     private final String name;
 
@@ -58,7 +58,7 @@ public final class CommonsCompressAction extends AbstractAction {
     /**
      * Creates new instance of Bzip2CompressAction.
      *
-     * @param name the compressor name. One of "gz", "bzip2", "xz", "pack200", or "deflate".
+     * @param name the compressor name. One of "gz", "bzip2", "xz", "zstd", "pack200", or "deflate".
      * @param source file to compress, may not be null.
      * @param destination compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
@@ -88,7 +88,7 @@ public final class CommonsCompressAction extends AbstractAction {
     /**
      * Compresses a file.
      *
-     * @param name the compressor name, i.e. "gz", "bzip2", "xz", "pack200", or "deflate".
+     * @param name the compressor name, i.e. "gz", "bzip2", "xz", "zstd", "pack200", or "deflate".
      * @param source file to compress, may not be null.
      * @param destination compressed file, may not be null.
      * @param deleteSource if true, attempt to delete file on completion. Failure to delete does not cause an exception
