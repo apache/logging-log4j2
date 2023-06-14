@@ -18,12 +18,18 @@ package org.apache.logging.log4j.core.config;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 
 import com.sun.management.UnixOperatingSystemMXBean;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
@@ -36,8 +42,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class ConfigurationSourceTest {
-    private static final Path JAR_FILE = Paths.get("target", "classes", "jarfile.jar");
-    private static final Path TEST_JARFILE = Paths.get("target", "classes", "jarfile-copy.jar");
+    private static final Path JAR_FILE = Paths.get("target", "test-classes", "jarfile.jar");
+    private static final Path CONFIG_FILE = Paths.get("target","test-classes", "log4j2-console.xml");
+    private static final byte[] buffer = new byte[1024];
 
     @Test
     public void testJira_LOG4J2_2770_byteArray() throws Exception {
@@ -60,7 +67,7 @@ public class ConfigurationSourceTest {
         assertEquals(expected, getOpenFileDescriptorCount());
         // This can only fail on Windows
         try {
-            Files.delete(TEST_JARFILE);
+            Files.delete(JAR_FILE);
         } catch (IOException e) {
             fail(e);
         }
@@ -71,6 +78,7 @@ public class ConfigurationSourceTest {
         final URL jarConfigURL = prepareJarConfigURL();
         final long expectedFdCount = getOpenFileDescriptorCount();
         ConfigurationSource configSource = ConfigurationSource.fromUri(jarConfigURL.toURI());
+        assertNotNull(configSource);
         assertEquals(jarConfigURL.toString(), configSource.getLocation());
         assertNull(configSource.getFile());
         assertTrue(configSource.getLastModified() > 0);
@@ -82,7 +90,7 @@ public class ConfigurationSourceTest {
         assertEquals(expectedFdCount, getOpenFileDescriptorCount());
         // This can only fail on Windows
         try {
-            Files.delete(TEST_JARFILE);
+            Files.delete(JAR_FILE);
         } catch (IOException e) {
             fail(e);
         }
@@ -97,9 +105,22 @@ public class ConfigurationSourceTest {
     }
 
     private static URL prepareJarConfigURL() throws IOException {
-      if(!Files.exists(TEST_JARFILE))
-        Files.copy(JAR_FILE, TEST_JARFILE);
-      return new URL("jar:" + TEST_JARFILE.toUri().toURL() + "!/config/console.xml");
+        if (!Files.exists(JAR_FILE)) {
+            final Manifest manifest = new Manifest();
+            manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
+            try (final OutputStream os = Files.newOutputStream(JAR_FILE);
+            final JarOutputStream jar = new JarOutputStream(os, manifest);
+            final InputStream config = Files.newInputStream(CONFIG_FILE)) {
+                final JarEntry jarEntry = new JarEntry("config/console.xml");
+                jar.putNextEntry(jarEntry);
+                int len;
+                while ((len = config.read(buffer)) != -1) {
+                    jar.write(buffer, 0, len);
+                }
+                jar.closeEntry();
+            }
+        }
+        return new URL("jar:" + JAR_FILE.toUri().toURL() + "!/config/console.xml");
     }
 
 }
