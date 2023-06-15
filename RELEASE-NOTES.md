@@ -36,14 +36,6 @@ The major changes in Log4j 3.x include:
 
 ## Changes
 
-3.x.x
-=====
-
-Changes staged for the next 3.x.x version that is yet to be released.
-
-Changes
--------
-
 ### Added
 
 *   Allow plugins to be created through more flexible dependency injection patterns. (for [LOG4J2-1188](https://issues.apache.org/jira/browse/LOG4J2-1188) by Matt Sicker)
@@ -168,13 +160,10 @@ Changes
 
 *   Move JNDI to its own module. (for [LOG4J2-3242](https://issues.apache.org/jira/browse/LOG4J2-3242) by Ralph Goers)
 
+*   Fix file descriptor leak on Tomcat. (for [LOG4J2-3663](https://issues.apache.org/jira/browse/LOG4J2-3663) by `lenoch7`, Piotr P. Karwasz)
+
 
 * * *
 
 Copyright © 1999-2023 [The Apache Software Foundation](http://www.apache.org). All Rights Reserved.  
-Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, and the Apache Logging project logo are trademarks of The Apache Software Foundation.
-
-* * *
-
-Copyright © 1999-2023 [The Apache Software Foundation](https://www.apache.org). All Rights Reserved.  
 Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, and the Apache Logging project logo are trademarks of The Apache Software Foundation.
