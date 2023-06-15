@@ -303,7 +303,7 @@
          Release-specific properties
          =========================== -->
     <log4jParentDir>${basedir}</log4jParentDir>
-    <log4jReleaseVersion>3.0.0-SNAPSHOT</log4jReleaseVersion>
+    <log4jReleaseVersion>3.0.0-alpha1</log4jReleaseVersion>
     <log4jReleaseManager>Ralph Goers</log4jReleaseManager>
     <log4jReleaseKey>B3D8E1BA</log4jReleaseKey>
     <log4jSigningUserName>rgoers@apache.org</log4jSigningUserName>
