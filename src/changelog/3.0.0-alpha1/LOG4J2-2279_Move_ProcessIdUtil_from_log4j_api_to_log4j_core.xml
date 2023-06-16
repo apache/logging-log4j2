@@ -22,5 +22,5 @@
   <issue id="LOG4J2-2279" link="https://issues.apache.org/jira/browse/LOG4J2-2279"/>
   <author id="ggregory"/>
   <author name="Remko Popma"/>
-  <description format="asciidoc">Move ProcessIdUtil from log4j-api to log4j-core.</description>
+  <description format="asciidoc">Move `ProcessIdUtil` from `log4j-api` to `log4j-core`.</description>
 </entry>

@@ -18,9 +18,10 @@
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
-       type="changed">
+       type="added">
   <issue id="LOG4J2-2523" link="https://issues.apache.org/jira/browse/LOG4J2-2523"/>
-  <author id="rgoers"/>
   <author name="Romain Manni-Bucau"/>
+  <!-- Committer -->
+  <author id="rgoers"/>
   <description format="asciidoc">Allow web lookup to access more information.</description>
 </entry>

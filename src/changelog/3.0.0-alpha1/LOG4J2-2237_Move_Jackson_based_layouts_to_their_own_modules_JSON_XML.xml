@@ -21,5 +21,5 @@
        type="changed">
   <issue id="LOG4J2-2237" link="https://issues.apache.org/jira/browse/LOG4J2-2237"/>
   <author id="ggregory"/>
-  <description format="asciidoc">Move Jackson-based layouts to their own modules: JSON, XML, and YAML.</description>
+  <description format="asciidoc">Split off Jackson-based layouts into their own modules: `log4j-layout-jackson-json`, `log4j-layout-jackson-xml` and `log4j-layout-jackson-yaml`.</description>
 </entry>

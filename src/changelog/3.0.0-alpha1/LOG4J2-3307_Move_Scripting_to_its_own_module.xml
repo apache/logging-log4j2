@@ -21,5 +21,5 @@
        type="changed">
   <issue id="LOG4J2-3307" link="https://issues.apache.org/jira/browse/LOG4J2-3307"/>
   <author id="rgoers"/>
-  <description format="asciidoc">Move Scripting to its own module.</description>
+  <description format="asciidoc">Split off scripting support into a new module `log4j-script`.</description>
 </entry>

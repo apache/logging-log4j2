@@ -21,5 +21,5 @@
        type="changed">
   <issue id="LOG4J2-2225" link="https://issues.apache.org/jira/browse/LOG4J2-2225"/>
   <author id="rpopma"/>
-  <description format="asciidoc">Moved time-related classes from core.util to core.time. Classes considered private moved to core.time.internal.</description>
+  <description format="asciidoc">Move time-related classes from `core.util` to `core.time`. Classes considered private moved to `core.time.internal`.</description>
 </entry>

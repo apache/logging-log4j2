@@ -21,5 +21,5 @@
        type="changed">
   <issue id="LOG4J2-2233" link="https://issues.apache.org/jira/browse/LOG4J2-2233"/>
   <author id="ggregory"/>
-  <description format="asciidoc">Move JDBC code to a new module log4j-jdbc.</description>
+  <description format="asciidoc">Split off JDBC support into a new module `log4j-jdbc`.</description>
 </entry>
