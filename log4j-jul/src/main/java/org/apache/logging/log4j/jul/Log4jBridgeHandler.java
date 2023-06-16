@@ -81,6 +81,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * (Credits: idea and concept originate from org.slf4j.bridge.SLF4JBridgeHandler;
  *   level propagation idea originates from logback/LevelChangePropagator;
  *   but no source code has been copied)
+ *
+ * @since 2.15.0
  */
 public class Log4jBridgeHandler extends java.util.logging.Handler implements PropertyChangeListener {
     private static final org.apache.logging.log4j.Logger SLOGGER = StatusLogger.getLogger();

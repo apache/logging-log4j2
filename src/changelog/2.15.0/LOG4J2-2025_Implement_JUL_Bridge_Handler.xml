@@ -18,8 +18,13 @@
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
-       type="changed">
-  <issue id="LOG4J2-2383" link="https://issues.apache.org/jira/browse/LOG4J2-2383"/>
-  <author id="ggregory"/>
-  <description format="asciidoc">Update org.eclipse.persistence.jpa from 2.7.1 to 2.7.2</description>
+       type="added">
+  <issue id="LOG4J2-2025" link="https://issues.apache.org/jira/browse/LOG4J2-2025"/>
+  <!-- Author -->
+  <author id="thiesw" name="Thies Wellpott"/>
+  <!-- Backport to 2.x -->
+  <author id="ilam-natarajan" name="Ilamparithi Natarajan"/>
+  <!-- Committer -->
+  <author id="rgoers"/>
+  <description format="asciidoc">Add JUL Bridge Handler.</description>
 </entry>
