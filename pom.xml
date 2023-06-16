@@ -230,6 +230,7 @@
     <module>log4j-flume-ng</module>
     <module>log4j-gctests</module>
     <module>log4j-iostreams</module>
+    <module>log4j-jakarta-smtp</module>
     <module>log4j-jakarta-web</module>
     <module>log4j-jcl</module>
     <module>log4j-jdbc</module>
@@ -382,6 +383,8 @@
          Dependency version properties (in alphabetical order)
          ===================================================== -->
     <activemq.version>5.17.3</activemq.version>
+    <angus-activation.version>2.0.0</angus-activation.version>
+    <angus-mail.version>2.0.1</angus-mail.version>
     <assertj.version>3.23.1</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
@@ -412,9 +415,9 @@
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
     <hsqldb.version>2.5.2</hsqldb.version>
     <jackson-bom.version>2.14.1</jackson-bom.version>
-    <!-- Implementation of `jakarta.activation-api`: -->
-    <jakarta-activation.version>2.0.1</jakarta-activation.version>
-    <jakarta-mail.version>2.0.1</jakarta-mail.version>
+    <!-- Override the version in Jakarta EE 9 BOM -->
+    <jakarta-activation.version>2.1.1</jakarta-activation.version>
+    <jakarta-mail.version>2.1.1</jakarta-mail.version>
     <!-- BOM with Jakarta EE 9 APIs: -->
     <jakartaee-bom.version>9.0.0</jakartaee-bom.version>
     <!-- No BOM for Java EE 8 APIs, so we list them separately: -->
@@ -571,6 +574,12 @@
         <groupId>org.apache.activemq</groupId>
         <artifactId>activemq-broker</artifactId>
         <version>${activemq.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.angus</groupId>
+        <artifactId>angus-activation</artifactId>
+        <version>${angus-activation.version}</version>
       </dependency>
 
       <dependency>
@@ -870,9 +879,21 @@
       </dependency>
 
       <dependency>
-        <groupId>com.sun.activation</groupId>
-        <artifactId>jakarta.activation</artifactId>
+        <groupId>jakarta.activation</groupId>
+        <artifactId>jakarta.activation-api</artifactId>
         <version>${jakarta-activation.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.angus</groupId>
+        <artifactId>jakarta.mail</artifactId>
+        <version>${angus-mail.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>jakarta.mail</groupId>
+        <artifactId>jakarta.mail-api</artifactId>
+        <version>${jakarta-mail.version}</version>
       </dependency>
 
       <dependency>
@@ -1223,12 +1244,6 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-ext</artifactId>
         <version>${slf4j.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.sun.mail</groupId>
-        <artifactId>smtp</artifactId>
-        <version>${jakarta-mail.version}</version>
       </dependency>
 
       <dependency>
