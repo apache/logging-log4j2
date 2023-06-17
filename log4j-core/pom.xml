@@ -54,9 +54,12 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-plugins</artifactId>
     </dependency>
+    <!-- The dependency on the plugin processor is only required to ensure the processor is built before core. We
+       don't want the dependency to be included by consumers -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-plugin-processor</artifactId>
+      <scope>test</scope>
     </dependency>
     <!-- Used for compressing to formats other than zip and gz -->
     <dependency>
