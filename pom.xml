@@ -382,7 +382,7 @@
     <!-- =====================================================
          Dependency version properties (in alphabetical order)
          ===================================================== -->
-    <activemq.version>5.17.3</activemq.version>
+    <activemq.version>5.18.1</activemq.version>
     <angus-activation.version>2.0.0</angus-activation.version>
     <angus-mail.version>2.0.1</angus-mail.version>
     <assertj.version>3.23.1</assertj.version>
@@ -408,12 +408,12 @@
     <flume.version>1.11.0</flume.version>
     <graalvm.version>21.3.0</graalvm.version>
     <groovy.version>4.0.6</groovy.version>
-    <guava.version>31.1-jre</guava.version>
+    <guava.version>32.0.0-jre</guava.version>
     <h2.version>2.1.214</h2.version>
     <hadoop.version>1.2.1</hadoop.version>
     <hamcrest.version>2.2</hamcrest.version>
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
-    <hsqldb.version>2.5.2</hsqldb.version>
+    <hsqldb.version>2.7.2</hsqldb.version>
     <jackson-bom.version>2.14.1</jackson-bom.version>
     <!-- Override the version in Jakarta EE 9 BOM -->
     <jakarta-activation.version>2.1.1</jakarta-activation.version>
@@ -454,7 +454,7 @@
     <logback.version>1.2.11</logback.version>
     <maven.version>3.8.6</maven.version>
     <mockito.version>4.11.0</mockito.version>
-    <mongodb.version>4.5.0</mongodb.version>
+    <mongodb.version>4.9.0</mongodb.version>
     <nashorn.version>15.3</nashorn.version>
     <netty.version>4.1.86.Final</netty.version>
     <opentest4j.version>1.2.0</opentest4j.version>
@@ -469,8 +469,8 @@
     <rewrite-java.version>8.0.0</rewrite-java.version>
     <rewrite-static-analysis.version>1.0.0</rewrite-static-analysis.version>
     <slf4j.version>1.7.36</slf4j.version>
-    <spring-boot.version>2.7.9</spring-boot.version>
-    <spring-framework.version>5.3.25</spring-framework.version>
+    <spring-boot.version>2.7.10</spring-boot.version>
+    <spring-framework.version>5.3.26</spring-framework.version>
     <system-stubs.version>2.0.2</system-stubs.version>
     <tomcat-juli.version>10.0.23</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
