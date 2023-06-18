@@ -18,4 +18,4 @@
 <release xmlns="http://logging.apache.org/log4j/changelog"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.0.xsd"
-         date="2023-06-15" version="3.0.0-alpha1"/>
+         date="2023-06-17" version="3.0.0"/>
