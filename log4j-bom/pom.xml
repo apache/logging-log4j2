@@ -114,6 +114,18 @@
         <artifactId>log4j-iostreams</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- Jakarta SMTP Appender plugin -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jakarta-smtp</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- Jakarta Web Application Support -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jakarta-web</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Commons Logging Compatibility API -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -242,6 +254,12 @@
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
         <artifactId>log4j-mongodb4</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- OSGI tests -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-osgi</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
