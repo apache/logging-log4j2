@@ -230,6 +230,7 @@
     <module>log4j-flume-ng</module>
     <module>log4j-gctests</module>
     <module>log4j-iostreams</module>
+    <module>log4j-jakarta-jms</module>
     <module>log4j-jakarta-smtp</module>
     <module>log4j-jakarta-web</module>
     <module>log4j-jcl</module>

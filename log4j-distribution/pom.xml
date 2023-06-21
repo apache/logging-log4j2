@@ -223,6 +223,18 @@
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
+    <!-- log4j-jakarta-jms -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-jakarta-jms</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-jakarta-jms</artifactId>
+      <version>${project.version}</version>
+      <classifier>sources</classifier>
+    </dependency>
     <!-- log4j-jakarta-web -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
