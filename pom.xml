@@ -230,6 +230,7 @@
     <module>log4j-flume-ng</module>
     <module>log4j-gctests</module>
     <module>log4j-iostreams</module>
+    <module>log4j-jakarta-jpa</module>
     <module>log4j-jakarta-smtp</module>
     <module>log4j-jakarta-web</module>
     <module>log4j-jcl</module>
@@ -459,7 +460,7 @@
     <netty.version>4.1.86.Final</netty.version>
     <opentest4j.version>1.2.0</opentest4j.version>
     <org.eclipse.osgi.version>3.16.200</org.eclipse.osgi.version>
-    <org.eclipse.persistence.version>2.7.11</org.eclipse.persistence.version>
+    <org.eclipse.persistence.version>3.0.3</org.eclipse.persistence.version>
     <oro.version>2.0.8</oro.version>
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
     <osgi.framework.version>1.10.0</osgi.framework.version>

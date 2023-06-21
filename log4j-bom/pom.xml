@@ -114,6 +114,12 @@
         <artifactId>log4j-iostreams</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- Jakarta JPA Appender Plugin -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jakarta-jpa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- Jakarta SMTP Appender plugin -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>

@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
@@ -23,22 +23,21 @@
     <version>3.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>log4j-jpa</artifactId>
-  <name>Apache Log4j JPA</name>
-  <description>Apache Log4j Java Persistence API Appender.</description>
+  <artifactId>log4j-jakarta-jpa</artifactId>
+  <name>Apache Log4j Jakarta JPA</name>
+  <description>Apache Log4j Java Persistence API Appender, version for Jakarta EE 9.</description>
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j JPA Documentation</docLabel>
-    <projectDir>/log4j-jpa</projectDir>
+    <projectDir>/log4j-jakarta-jpa</projectDir>
     <module.name>org.apache.logging.log4j.jpa</module.name>
-    <org.eclipse.persistence.version>2.7.12</org.eclipse.persistence.version>
   </properties>
 
   <dependencies>
     <!-- Used for JPA appenders (needs an implementation of course) -->
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>javax.persistence-api</artifactId>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
