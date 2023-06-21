@@ -175,6 +175,12 @@
         <artifactId>log4j-mongodb4</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <!-- OSGI tests -->
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-osgi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- SLF4J 2.0 Compatibility API -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
