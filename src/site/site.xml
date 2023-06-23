@@ -44,6 +44,8 @@
     <menu name="Apache Log4j™ 2" inherit="top" img="img/glyphicons/home.png">
       <item name="About" href="/index.html"/>
       <item name="Download" href="/download.html"/>
+      <item name="Issues" href="https://github.com/apache/logging-log4j2/issues"/>
+      <item name="Issues (Read-Only)" href="https://issues.apache.org/jira/projects/LOG4J2/issues/" />
       <item name="Javadoc" href="/javadoc.html"/>
       <item name="Maven, Ivy, Gradle Artifacts" href="/maven-artifacts.html" collapse="true">
         <item name="Maven" href="/maven-artifacts.html#Using_Log4j_in_your_Apache_Maven_build" />
