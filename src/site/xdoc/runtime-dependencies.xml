@@ -122,6 +122,16 @@
             <td>Automatic Module</td>
           </tr>
           <tr>
+            <td>log4j-jakarta-smtp</td>
+            <td>org.apache.logging.log4j.smtp</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
+            <td>log4j-jakarta-web</td>
+            <td>org.apache.logging.log4j.web</td>
+            <td>Automatic Module</td>
+          </tr>
+          <tr>
             <td>log4j-jcl</td>
             <td>org.apache.logging.log4j.jcl</td>
             <td>Automatic Module</td>
