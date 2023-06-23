@@ -250,6 +250,14 @@ The module info definition may be modified in the future to export these only to
 |org.apache.logging.log4j.iostreams
 |Automatic Module
 
+|log4j-jakarta-smtp
+|org.apache.logging.log4j.smtp
+|Automatic Module
+
+|log4j-jakarta-web
+|org.apache.logging.log4j.web
+|Automatic Module
+
 |log4j-jcl
 |org.apache.logging.log4j.jcl
 |Automatic Module
