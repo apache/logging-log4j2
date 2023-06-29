@@ -442,6 +442,21 @@
         addition to the Log4j API.
       </p>
 
+      <a name="log4j-jakarta-smtp" />
+      <h4>log4j-jakarta-smtp</h4>
+      <p>
+        The Log4j Simple Mail Transfer Protocol (SMTP) Appender, version for Jakarta EE 9 module has 2 external runtime dependencies for the jakarta.activation-api and jakarta.mail-api.
+		    1. org.eclipse.angus:angus-activation
+		    2. org.eclipse.angus:jakarta.mail
+      </p>
+	  
+	  <a name="log4j-jakarta-web" />
+      <h4>log4j-jakarta-web</h4>
+      <p>
+        The Log4j <a href="log4j-jakarta-web.html">Jakarta-Web</a> module for Jakarta EE 9+ web servlet containers has no external dependencies.
+        This only requires the Log4j API.
+      </p>
+
     </section>
   </body>
 </document>
