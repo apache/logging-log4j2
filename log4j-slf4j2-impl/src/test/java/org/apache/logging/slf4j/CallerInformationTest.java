@@ -24,6 +24,8 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.spi.CallerBoundaryAware;
+import org.slf4j.spi.LoggingEventBuilder;
 
 import static org.junit.Assert.assertEquals;
 
@@ -70,6 +72,20 @@ public class CallerInformationTest {
         assertEquals("Incorrect number of messages.", 10, messages.size());
         for (final String message : messages) {
             assertEquals("Incorrect caller method name.", "testMethodLogger", message);
+        }
+    }
+
+    @Test
+    public void testFqcnLogger() throws Exception {
+        final ListAppender app = ctx.getListAppender("Fqcn").clear();
+        final Logger logger = LoggerFactory.getLogger("FqcnLogger");
+        LoggingEventBuilder loggingEventBuilder = logger.atInfo();
+        ((CallerBoundaryAware)loggingEventBuilder).setCallerBoundary("MyFqcn");
+        loggingEventBuilder.log("A message");
+        final List<String> messages = app.getMessages();
+        assertEquals("Incorrect number of messages.", 1, messages.size());
+        for (final String message : messages) {
+            assertEquals("Incorrect fqcn.", "MyFqcn", message);
         }
     }
 }
