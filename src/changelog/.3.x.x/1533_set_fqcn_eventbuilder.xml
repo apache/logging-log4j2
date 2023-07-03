@@ -15,28 +15,15 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration name="CallerInformationTest" status="ERROR">
-  <Appenders>
-    <List name="Class">
-      <PatternLayout pattern="%class"/>
-    </List>
-    <List name="Method">
-      <PatternLayout pattern="%method"/>
-    </List>
-    <List name="Fqcn">
-      <PatternLayout pattern="%fqcn"/>
-    </List>
-  </Appenders>
-  <Loggers>
-    <Logger name="ClassLogger" level="info">
-      <AppenderRef ref="Class"/>
-    </Logger>
-    <Logger name="MethodLogger" level="info">
-      <AppenderRef ref="Method"/>
-    </Logger>
-    <Logger name="FqcnLogger" level="info">
-      <AppenderRef ref="Fqcn"/>
-    </Logger>
-    <Root level="off"/>
-  </Loggers>
-</Configuration>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
+       type="fixed">
+  <issue id="1533" link="https://github.com/apache/logging-log4j2/pull/1533"/>
+  <author id="github:oshai" name="Ohad Shai"/>
+  <!-- Committer -->
+  <author name="github:pkarwasz"/>
+  <description format="asciidoc">
+    Allow to override fqcn in `Log4jEventBuilder` by implementing `CallerBoundaryAware`.
+  </description>
+</entry>
