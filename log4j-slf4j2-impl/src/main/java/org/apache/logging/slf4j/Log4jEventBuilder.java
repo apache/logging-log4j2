@@ -29,9 +29,10 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.Logger;
 import org.slf4j.Marker;
+import org.slf4j.spi.CallerBoundaryAware;
 import org.slf4j.spi.LoggingEventBuilder;
 
-public class Log4jEventBuilder implements LoggingEventBuilder {
+public class Log4jEventBuilder implements LoggingEventBuilder, CallerBoundaryAware {
 
     private static final String FQCN = Log4jEventBuilder.class.getName();
 
@@ -43,6 +44,7 @@ public class Log4jEventBuilder implements LoggingEventBuilder {
     private Throwable throwable = null;
     private Map<String, String> keyValuePairs = null;
     private final Level level;
+    private String fqcn = FQCN;
 
     public Log4jEventBuilder(final Log4jMarkerFactory markerFactory, final Logger logger, final Level level) {
         this.markerFactory = markerFactory;
@@ -110,7 +112,7 @@ public class Log4jEventBuilder implements LoggingEventBuilder {
                 .withMarker(marker)
                 .withThrowable(throwable);
         if (logBuilder instanceof BridgeAware) {
-            ((BridgeAware) logBuilder).setEntryPoint(FQCN);
+            ((BridgeAware) logBuilder).setEntryPoint(fqcn);
         }
         if (keyValuePairs == null || keyValuePairs.isEmpty()) {
             logBuilder.log(message, arguments.toArray());
@@ -157,4 +159,8 @@ public class Log4jEventBuilder implements LoggingEventBuilder {
         log();
     }
 
+    @Override
+    public void setCallerBoundary(String fqcn) {
+        this.fqcn = fqcn;
+    }
 }
