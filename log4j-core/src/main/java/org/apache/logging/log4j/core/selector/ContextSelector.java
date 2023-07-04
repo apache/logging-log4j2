@@ -108,7 +108,7 @@ public interface ContextSelector {
     default LoggerContext getContext(String fqcn, ClassLoader loader, Map.Entry<String, Object> entry,
             boolean currentContext, URI configLocation) {
         final LoggerContext lc = getContext(fqcn, loader, currentContext, configLocation);
-        if (lc != null) {
+        if (lc != null && entry != null) {
             lc.putObject(entry.getKey(), entry.getValue());
         }
         return lc;
