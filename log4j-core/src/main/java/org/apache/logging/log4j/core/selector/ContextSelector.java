@@ -82,7 +82,7 @@ public interface ContextSelector {
      */
     default LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry, final boolean currentContext) {
         final LoggerContext lc = getContext(fqcn, loader, currentContext);
-        if (entry != null) {
+        if (lc != null && entry != null) {
             lc.putObject(entry.getKey(), entry.getValue());
         }
         return lc;
@@ -112,7 +112,7 @@ public interface ContextSelector {
     default LoggerContext getContext(final String fqcn, final ClassLoader loader, final Map.Entry<String, Object> entry,
             final boolean currentContext, final URI configLocation) {
         final LoggerContext lc = getContext(fqcn, loader, currentContext, configLocation);
-        if (entry != null) {
+        if (lc != null && entry != null) {
             lc.putObject(entry.getKey(), entry.getValue());
         }
         return lc;
