@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 
 /**
  * Wrapper {@code PathCondition} that accepts objects that are rejected by the wrapped component filter.
@@ -67,7 +68,7 @@ public final class IfNot implements PathCondition {
      */
     @PluginFactory
     public static IfNot createNotCondition(
-            @PluginElement("PathConditions") final PathCondition condition) {
+            @PluginElement("PathConditions") @Required(message = "No condition provided for IfNot") final PathCondition condition) {
         return new IfNot(condition);
     }
 

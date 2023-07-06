@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 
 /**
  * Composite {@code PathCondition} that accepts objects that are accepted by <em>any</em> component conditions.
@@ -76,7 +77,7 @@ public final class IfAny implements PathCondition {
      */
     @PluginFactory
     public static IfAny createOrCondition(
-            @PluginElement("PathConditions") final PathCondition... components) {
+            @PluginElement("PathConditions") @Required(message = "No components provided for IfAny")final PathCondition... components) {
         return new IfAny(components);
     }
 

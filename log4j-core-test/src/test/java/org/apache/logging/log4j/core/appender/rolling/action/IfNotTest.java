@@ -16,7 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import java.util.List;
+
+import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.NullConfiguration;
+import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
+import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
+import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,6 +57,27 @@ public class IfNotTest {
         final IfNot not = IfNot.createNotCondition(counter);
         not.beforeFileTreeWalk();
         assertEquals(1, counter.getBeforeFileTreeWalkCount());
+    }
+
+    @Test
+    public void testCreateNotConditionCalledProgrammaticallyThrowsNPEWhenToNegateIsNotSpecified() {
+        PathCondition toNegate = null;
+        assertThrows(NullPointerException.class, () -> IfNot.createNotCondition(toNegate));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = "No condition provided for IfNot")
+    public void testCreateNotConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenToNegateIsNotSpecified(final String expectedMessage) {
+        final PluginEntry nullEntry = null;
+        final PluginType<IfNot> type = new PluginType<>(nullEntry, IfNot.class, "Dummy");
+        final PluginBuilder builder = new PluginBuilder(type)
+                .withConfiguration(new NullConfiguration())
+                .withConfigurationNode(new Node());
+        final Object asBuilt = builder.build();
+        final List<StatusData> loggerStatusData = StatusLogger.getLogger().getStatusData();
+
+        assertNull(asBuilt);
+        assertTrue(loggerStatusData.stream().anyMatch(e -> e.getFormattedStatus().contains(expectedMessage)));
     }
 
 }

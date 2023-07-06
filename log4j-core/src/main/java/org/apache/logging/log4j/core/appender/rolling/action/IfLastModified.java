@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -99,7 +100,7 @@ public final class IfLastModified implements PathCondition {
     @PluginFactory
     public static IfLastModified createAgeCondition(
             // @formatter:off
-            @PluginAttribute("age") final Duration age,
+            @PluginAttribute("age") @Required(message="No age provided for IfLastModified") final Duration age,
             @PluginElement("PathConditions") final PathCondition... nestedConditions) {
             // @formatter:on
         return new IfLastModified(age, nestedConditions);

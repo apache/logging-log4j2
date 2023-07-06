@@ -91,7 +91,7 @@ public final class IfAccumulatedFileSize implements PathCondition {
     /**
      * Create an IfAccumulatedFileSize condition.
      *
-     * @param threshold The threshold accumulated file size from which files will be deleted.
+     * @param size The threshold accumulated file size from which files will be deleted.
      * @return An IfAccumulatedFileSize condition.
      */
     @PluginFactory

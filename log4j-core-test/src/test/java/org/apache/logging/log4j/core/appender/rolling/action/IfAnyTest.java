@@ -16,7 +16,18 @@
  */
 package org.apache.logging.log4j.core.appender.rolling.action;
 
+import java.util.List;
+
+import org.apache.logging.log4j.core.config.Node;
+import org.apache.logging.log4j.core.config.NullConfiguration;
+import org.apache.logging.log4j.core.config.plugins.processor.PluginEntry;
+import org.apache.logging.log4j.core.config.plugins.util.PluginBuilder;
+import org.apache.logging.log4j.core.config.plugins.util.PluginType;
+import org.apache.logging.log4j.status.StatusData;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,6 +57,27 @@ public class IfAnyTest {
         final IfAny or = IfAny.createOrCondition(counter, counter, counter);
         or.beforeFileTreeWalk();
         assertEquals(3, counter.getBeforeFileTreeWalkCount());
+    }
+
+    @Test
+    public void testCreateOrConditionCalledProgrammaticallyThrowsNPEWhenComponentsNotSpecified() {
+        PathCondition[] components = null;
+        assertThrows(NullPointerException.class, () -> IfAny.createOrCondition(components));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = "No components provided for IfAny")
+    public void testCreateOrConditionCalledByPluginBuilderReturnsNullAndLogsMessageWhenComponentsNotSpecified(final String expectedMessage) {
+        final PluginEntry nullEntry = null;
+        final PluginType<IfAny> type = new PluginType<>(nullEntry, IfAny.class, "Dummy");
+        final PluginBuilder builder = new PluginBuilder(type)
+                .withConfiguration(new NullConfiguration())
+                .withConfigurationNode(new Node());
+        final Object asBuilt = builder.build();
+        final List<StatusData> loggerStatusData = StatusLogger.getLogger().getStatusData();
+
+        assertNull(asBuilt);
+        assertTrue(loggerStatusData.stream().anyMatch(e -> e.getFormattedStatus().contains(expectedMessage)));
     }
 
 }
