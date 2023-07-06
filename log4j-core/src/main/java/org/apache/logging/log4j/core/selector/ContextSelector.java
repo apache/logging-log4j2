@@ -79,7 +79,7 @@ public interface ContextSelector {
      */
     default LoggerContext getContext(String fqcn, ClassLoader loader, Map.Entry<String, Object> entry, boolean currentContext) {
         final LoggerContext lc = getContext(fqcn, loader, currentContext);
-        if (lc != null) {
+        if (lc != null && entry != null) {
             lc.putObject(entry.getKey(), entry.getValue());
         }
         return lc;
