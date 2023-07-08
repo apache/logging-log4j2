@@ -17,13 +17,14 @@
 package org.apache.logging.log4j;
 
 import java.io.Serializable;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.util.Strings;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
@@ -138,7 +139,7 @@ public final class Level implements Comparable<Level>, Serializable {
         this.name = name;
         this.intLevel = intLevel;
         this.standardLevel = StandardLevel.getStandardLevel(intLevel);
-        if (LEVELS.putIfAbsent(toUpperCase(name.trim()), this) != null) {
+        if (LEVELS.putIfAbsent(toRootUpperCase(name.trim()), this) != null) {
             throw new IllegalStateException("Level " + name + " has already been defined.");
         }
     }
@@ -261,7 +262,7 @@ public final class Level implements Comparable<Level>, Serializable {
         if (Strings.isEmpty(name)) {
             throw new IllegalArgumentException("Illegal null or empty Level name.");
         }
-        final String normalizedName = toUpperCase(name.trim());
+        final String normalizedName = toRootUpperCase(name.trim());
         final Level level = LEVELS.get(normalizedName);
         if (level != null) {
             return level;
@@ -286,7 +287,7 @@ public final class Level implements Comparable<Level>, Serializable {
         if (Strings.isEmpty(name)) {
             throw new IllegalArgumentException("Illegal null or empty Level name.");
         }
-        return LEVELS.get(toUpperCase(name.trim()));
+        return LEVELS.get(toRootUpperCase(name.trim()));
     }
 
     /**
@@ -312,12 +313,8 @@ public final class Level implements Comparable<Level>, Serializable {
         if (name == null) {
             return defaultLevel;
         }
-        final Level level = LEVELS.get(toUpperCase(name.trim()));
+        final Level level = LEVELS.get(toRootUpperCase(name.trim()));
         return level == null ? defaultLevel : level;
-    }
-
-    private static String toUpperCase(final String name) {
-        return name.toUpperCase(Locale.ENGLISH);
     }
 
     /**
@@ -339,7 +336,7 @@ public final class Level implements Comparable<Level>, Serializable {
      */
     public static Level valueOf(final String name) {
         Objects.requireNonNull(name, "No level name given.");
-        final String levelName = toUpperCase(name.trim());
+        final String levelName = toRootUpperCase(name.trim());
         final Level level = LEVELS.get(levelName);
         if (level != null) {
             return level;

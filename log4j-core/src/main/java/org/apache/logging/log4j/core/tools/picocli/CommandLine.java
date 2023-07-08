@@ -70,11 +70,10 @@ import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Style;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;
 import org.apache.logging.log4j.core.util.Integers;
 
-import static java.util.Locale.ENGLISH;
-
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.SPAN;
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.TRUNCATE;
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.WRAP;
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
@@ -4363,8 +4362,8 @@ public class CommandLine {
                  * @return the IStyle for the specified converter
                  */
                 public static IStyle fg(final String str) {
-                    try { return Style.valueOf(str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
-                    try { return Style.valueOf("fg_" + str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
+                    try { return Style.valueOf(toRootLowerCase(str)); } catch (final Exception ignored) {}
+                    try { return Style.valueOf("fg_" + toRootLowerCase(str)); } catch (final Exception ignored) {}
                     return new Palette256Color(true, str);
                 }
                 /** Parses the specified style markup and returns the associated style.
@@ -4375,8 +4374,8 @@ public class CommandLine {
                  * @return the IStyle for the specified converter
                  */
                 public static IStyle bg(final String str) {
-                    try { return Style.valueOf(str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
-                    try { return Style.valueOf("bg_" + str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
+                    try { return Style.valueOf(toRootLowerCase(str)); } catch (final Exception ignored) {}
+                    try { return Style.valueOf("bg_" + toRootLowerCase(str)); } catch (final Exception ignored) {}
                     return new Palette256Color(false, str);
                 }
                 /** Parses the specified comma-separated sequence of style descriptors and returns the associated
@@ -4389,10 +4388,10 @@ public class CommandLine {
                     final String[] codes = commaSeparatedCodes.split(",");
                     final IStyle[] styles = new IStyle[codes.length];
                     for(int i = 0; i < codes.length; ++i) {
-                        if (codes[i].toLowerCase(ENGLISH).startsWith("fg(")) {
+                        if (toRootLowerCase(codes[i]).startsWith("fg(")) {
                             final int end = codes[i].indexOf(')');
                             styles[i] = Style.fg(codes[i].substring(3, end < 0 ? codes[i].length() : end));
-                        } else if (codes[i].toLowerCase(ENGLISH).startsWith("bg(")) {
+                        } else if (toRootLowerCase(codes[i]).startsWith("bg(")) {
                             final int end = codes[i].indexOf(')');
                             styles[i] = Style.bg(codes[i].substring(3, end < 0 ? codes[i].length() : end));
                         } else {

@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -26,6 +25,8 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.util.PerformanceSensitive;
+
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * Returns the event's level in a StringBuilder.
@@ -92,7 +93,7 @@ public abstract class LevelPatternConverter extends LogEventPatternConverter {
         for (final Level level : Level.values()) {
             if (!levelMap.containsKey(level)) {
                 final String left = left(level, length);
-                levelMap.put(level, lowerCase ? left.toLowerCase(Locale.US) : left);
+                levelMap.put(level, lowerCase ? toRootLowerCase(left) : left);
             }
         }
         return new LevelMapLevelPatternConverter(levelMap);
@@ -130,7 +131,7 @@ public abstract class LevelPatternConverter extends LogEventPatternConverter {
     @Override
     public String getStyleClass(final Object e) {
         if (e instanceof LogEvent) {
-            return "level " + ((LogEvent) e).getLevel().name().toLowerCase(Locale.ENGLISH);
+            return "level " + toRootLowerCase(((LogEvent) e).getLevel().name());
         }
 
         return "level";

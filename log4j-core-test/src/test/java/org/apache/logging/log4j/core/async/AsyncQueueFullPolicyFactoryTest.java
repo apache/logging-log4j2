@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.Locale;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -26,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 import static org.junit.Assert.*;
 
 /**
@@ -74,7 +73,7 @@ public class AsyncQueueFullPolicyFactoryTest {
     @Test
     public void testCreateDiscardingRouterCaseInsensitive() {
         System.setProperty(AsyncQueueFullPolicyFactory.PROPERTY_NAME_ASYNC_EVENT_ROUTER,
-                AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER.toLowerCase(Locale.ENGLISH));
+                toRootLowerCase(AsyncQueueFullPolicyFactory.PROPERTY_VALUE_DISCARDING_ASYNC_EVENT_ROUTER));
         assertEquals(Level.INFO, ((DiscardingAsyncQueueFullPolicy) AsyncQueueFullPolicyFactory.create()).
                 getThresholdLevel());
     }

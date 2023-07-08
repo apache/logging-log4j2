@@ -26,12 +26,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.TreeSet;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Provides a parser and evaluator for unix-like cron expressions. Cron
@@ -272,7 +273,7 @@ public final class CronExpression {
             throw new IllegalArgumentException("cronExpression cannot be null");
         }
 
-        this.cronExpression = cronExpression.toUpperCase(Locale.US);
+        this.cronExpression = toRootUpperCase(cronExpression);
 
         buildExpression(this.cronExpression);
     }

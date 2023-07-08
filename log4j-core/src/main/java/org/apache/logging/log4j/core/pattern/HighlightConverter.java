@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.pattern;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -29,6 +28,8 @@ import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.Strings;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Highlight pattern converter. Formats the result of a pattern using a color appropriate for the Level in the LogEvent.
@@ -152,10 +153,10 @@ public final class HighlightConverter extends LogEventPatternConverter implement
         final Map<String, String> styles = AnsiEscape.createMap(string, new String[] {STYLE_KEY});
         final Map<String, String> levelStyles = new HashMap<>(DEFAULT_STYLES);
         for (final Map.Entry<String, String> entry : styles.entrySet()) {
-            final String key = entry.getKey().toUpperCase(Locale.ENGLISH);
+            final String key = toRootUpperCase(entry.getKey());
             final String value = entry.getValue();
             if (STYLE_KEY.equalsIgnoreCase(key)) {
-                final Map<String, String> enumMap = STYLES.get(value.toUpperCase(Locale.ENGLISH));
+                final Map<String, String> enumMap = STYLES.get(toRootUpperCase(value));
                 if (enumMap == null) {
                     LOGGER.error("Unknown level style: " + value + ". Use one of " +
                         Arrays.toString(STYLES.keySet().toArray()));

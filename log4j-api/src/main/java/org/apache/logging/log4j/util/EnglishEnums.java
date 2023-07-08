@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.util.Locale;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * <em>Consider this class private.</em>
@@ -64,7 +65,7 @@ public final class EnglishEnums {
      * @return an enum value or {@code defaultValue} if {@code name} is null.
      */
     public static <T extends Enum<T>> T valueOf(final Class<T> enumType, final String name, final T defaultValue) {
-        return name == null ? defaultValue : Enum.valueOf(enumType, name.toUpperCase(Locale.ENGLISH));
+        return name == null ? defaultValue : Enum.valueOf(enumType, toRootUpperCase(name));
     }
 
 }
