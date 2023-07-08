@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.flume.appender;
 
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.Appender;
@@ -37,6 +36,8 @@ import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.util.Timer;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * An Appender that uses the Avro protocol to route events to Flume.
@@ -74,7 +75,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         AVRO, EMBEDDED, PERSISTENT;
 
         public static ManagerType getType(final String type) {
-            return valueOf(type.toUpperCase(Locale.US));
+            return valueOf(toRootUpperCase(type));
         }
     }
 

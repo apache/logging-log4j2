@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.flume.appender;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -32,9 +31,8 @@ import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
-/**
- *
- */
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 public class FlumeEmbeddedManager extends AbstractFlumeManager {
 
     private static final String FILE_SEP = PropertiesUtil.getProperties().getStringProperty("file.separator");
@@ -253,9 +251,9 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                         throw new ConfigurationException(msg);
                     }
 
-                    final String upperKey = key.toUpperCase(Locale.ENGLISH);
+                    final String upperKey = toRootUpperCase(key);
 
-                    if (upperKey.startsWith(name.toUpperCase(Locale.ENGLISH))) {
+                    if (upperKey.startsWith(toRootUpperCase(name))) {
                         final String msg =
                             "Specification of the agent name is not allowed in Flume Appender configuration: " + key;
                         LOGGER.error(msg);

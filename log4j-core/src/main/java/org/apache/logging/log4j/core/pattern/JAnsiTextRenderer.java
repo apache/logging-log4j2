@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.status.StatusLogger;
@@ -26,6 +25,7 @@ import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiRenderer;
 import org.fusesource.jansi.AnsiRenderer.Code;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 import static org.fusesource.jansi.AnsiRenderer.Code.BG_RED;
 import static org.fusesource.jansi.AnsiRenderer.Code.BOLD;
 import static org.fusesource.jansi.AnsiRenderer.Code.RED;
@@ -320,7 +320,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
     }
 
     private Code toCode(final String name) {
-        return Code.valueOf(name.toUpperCase(Locale.ENGLISH));
+        return Code.valueOf(toRootUpperCase(name));
     }
 
     @Override

@@ -18,13 +18,14 @@ package org.apache.logging.log4j.core.pattern;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.Strings;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Converts text into ANSI escape sequences.
@@ -426,7 +427,7 @@ public enum AnsiEscape {
         for (final String string : values) {
             final String[] keyValue = string.split(Patterns.toWhitespaceSeparator("="));
             if (keyValue.length > 1) {
-                final String key = keyValue[0].toUpperCase(Locale.ENGLISH);
+                final String key = toRootUpperCase(keyValue[0]);
                 final String value = keyValue[1];
                 final boolean escape = Arrays.binarySearch(sortedIgnoreKeys, key) < 0;
                 map.put(key, escape ? createSequence(value.split("\\s")) : value);
@@ -459,7 +460,7 @@ public enum AnsiEscape {
                 }
                 first = false;
                 String hexColor = null;
-                final String trimmedName = name.trim().toUpperCase(Locale.ENGLISH);
+                final String trimmedName = toRootUpperCase(name.trim());
                 if (trimmedName.startsWith("#")) {
                     sb.append("38");
                     sb.append(SEPARATOR.getCode());
