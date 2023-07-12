@@ -673,6 +673,6 @@ a|The Log4j Simple Mail Transfer Protocol (SMTP) Appender, version for Jakarta E
 . `org.eclipse.angus:jakarta.mail`
 
 |log4j-jakarta-web[[log4j-jakarta-web]]
-|The Log4j Jakarta-Web[[log4j-jakarta-web]] module for Jakarta EE 9+ web servlet containers has no external dependencies. This only requires the Log4j API.
+|The Log4j Jakarta-Web[[log4j-jakarta-web]] module for Jakarta EE 9+ web servlet containers requires the Servlet API and `log4j-core`.
 
 |===
