@@ -20,22 +20,35 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.config.AppenderRef;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @Category(AsyncLoggers.class)
 public class AsyncLoggerConfigTest {
+
+    private static final String FQCN = AsyncLoggerConfigTest.class.getName();
 
     @BeforeClass
     public static void beforeClass() {
@@ -80,5 +93,30 @@ public class AsyncLoggerConfigTest {
                         null);
         assertFalse("Include location should default to false for async loggers",
                     loggerConfig.isIncludeLocation());
+    }
+
+    @Test
+    public void testSingleFilterInvocation() {
+        final Configuration configuration = new NullConfiguration();
+        final Filter filter = mock(Filter.class);
+        final LoggerConfig config = AsyncLoggerConfig.newAsyncBuilder()
+                .withLoggerName(FQCN)
+                .withConfig(configuration)
+                .withLevel(Level.INFO)
+                .withtFilter(filter)
+                .build();
+        final Appender appender = mock(Appender.class);
+        when(appender.isStarted()).thenReturn(true);
+        when(appender.getName()).thenReturn("test");
+        config.addAppender(appender, null, null);
+        final AsyncLoggerConfigDisruptor disruptor = (AsyncLoggerConfigDisruptor) configuration.getAsyncLoggerConfigDelegate();
+        disruptor.start();
+        try {
+            config.log(FQCN, FQCN, null, Level.INFO, new SimpleMessage(), null);
+            verify(appender, times(1)).append(any());
+            verify(filter, times(1)).filter(any());
+        } finally {
+            disruptor.stop();
+        }
     }
 }
