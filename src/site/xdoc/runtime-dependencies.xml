@@ -449,12 +449,12 @@
 		    1. org.eclipse.angus:angus-activation
 		    2. org.eclipse.angus:jakarta.mail
       </p>
-	  
+
 	  <a name="log4j-jakarta-web" />
       <h4>log4j-jakarta-web</h4>
       <p>
-        The Log4j <a href="log4j-jakarta-web.html">Jakarta-Web</a> module for Jakarta EE 9+ web servlet containers has no external dependencies.
-        This only requires the Log4j API.
+        The Log4j <a href="log4j-jakarta-web.html">Jakarta-Web</a> module for Jakarta EE 9+ web servlet containers
+        requires the Servlet API and <code>log4j-core</code>.
       </p>
 
     </section>
