@@ -65,12 +65,13 @@ public class OsgiServiceLocator {
                             "Unable to load OSGI services: The bundle has no valid BundleContext for serviceType = {}, lookup = {}, lookupClass = {}, bundle = {}",
                             serviceType, lookup, lookupClass, bundle);
                 }
-            }
-            try {
-                return ctx.getServiceReferences(serviceType, null).stream().map(ctx::getService);
-            } catch (Throwable e) {
-                if (verbose) {
-                    StatusLogger.getLogger().error("Unable to load OSGI services for service {}", serviceType, e);
+            } else {
+                try {
+                    return ctx.getServiceReferences(serviceType, null).stream().map(ctx::getService);
+                } catch (Throwable e) {
+                    if (verbose) {
+                        StatusLogger.getLogger().error("Unable to load OSGI services for service {}", serviceType, e);
+                    }
                 }
             }
         }
