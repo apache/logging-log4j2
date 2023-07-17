@@ -403,7 +403,7 @@
     <felix.version>7.0.5</felix.version>
     <flume.version>1.11.0</flume.version>
     <groovy.version>3.0.15</groovy.version>
-    <guava.version>31.1-jre</guava.version>
+    <guava.version>32.0.0-jre</guava.version>
     <h2.version>2.2.220</h2.version>
     <hadoop.version>1.2.1</hadoop.version>
     <hamcrest.version>2.2</hamcrest.version>
