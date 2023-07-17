@@ -454,7 +454,7 @@
     <logback.version>1.2.11</logback.version>
     <maven.version>3.8.6</maven.version>
     <mockito.version>4.11.0</mockito.version>
-    <mongodb.version>4.9.0</mongodb.version>
+    <mongodb.version>4.10.2</mongodb.version>
     <nashorn.version>15.3</nashorn.version>
     <netty.version>4.1.86.Final</netty.version>
     <opentest4j.version>1.2.0</opentest4j.version>
