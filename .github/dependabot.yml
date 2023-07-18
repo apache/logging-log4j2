@@ -39,12 +39,18 @@ updates:
       update-types: ["version-update:semver-major"]
     # Tomcat Juli 10.1.x requires Java 11
     - dependency-name: "org.apache.tomcat:*"
-      update-types: ["version-update:semver-major"]
+      update-types: ["version-update:semver-major", "version-update:semver-minor"]
     # Always update SLF4J manually
     - dependency-name: "org.slf4j:*"
     # Keep Logback version 1.2.x
     - dependency-name: "ch.qos.logback:*"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]
+    # Mockito 5.x requires Java 11
+    - dependency-name: "org.mockito:*"
+      update-types: ["version-update:semver-major"]
+    # JUnit Pioneer 2.x requires Java 11
+    - dependency-name: "org.junit-pioneer:*"
+      update-types: ["version-update:semver-major"]
     # Apache Cassandra: keep version 3.x
     - dependency-name: "org.apache.cassandra:*"
       versions: ["[4.0.0,)"]
@@ -81,6 +87,9 @@ updates:
     # Keep Logback version 1.2.x
     - dependency-name: "ch.qos.logback:*"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]
+    # Apache Cassandra: keep version 3.x
+    - dependency-name: "org.apache.cassandra:*"
+      versions: ["[4.0.0,)"]
 
 - package-ecosystem: github-actions
   directory: "/"
