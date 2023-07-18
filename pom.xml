@@ -435,7 +435,7 @@
     <jetty.version>9.4.51.v20230217</jetty.version>
     <jmdns.version>3.5.8</jmdns.version>
     <jmh.version>1.36</jmh.version>
-    <jna.version>5.12.1</jna.version>
+    <jna.version>5.13.0</jna.version>
     <json-unit.version>2.36.1</json-unit.version>
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.9.2</junit-jupiter.version>
