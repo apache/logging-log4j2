@@ -54,6 +54,9 @@ updates:
     # Apache Cassandra: keep version 3.x
     - dependency-name: "org.apache.cassandra:*"
       versions: ["[4.0.0,)"]
+    # Kubernetes: keep version 5.x
+    - dependency-name: "io.fabric8:*"
+      versions: ["[6.0.0,)"]
 
 - package-ecosystem: github-actions
   directory: "/"
@@ -90,6 +93,9 @@ updates:
     # Apache Cassandra: keep version 3.x
     - dependency-name: "org.apache.cassandra:*"
       versions: ["[4.0.0,)"]
+    # Kubernetes: keep version 5.x
+    - dependency-name: "io.fabric8:*"
+      versions: ["[6.0.0,)"]
 
 - package-ecosystem: github-actions
   directory: "/"
