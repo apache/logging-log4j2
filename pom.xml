@@ -364,7 +364,6 @@
     <log4j-tools.version>0.3.0</log4j-tools.version>
     <maven-artifact-plugin.version>3.4.0</maven-artifact-plugin.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
-    <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
     <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
     <maven-pmd-plugin.version>3.19.0</maven-pmd-plugin.version>
     <maven-scm-plugin.version>1.12.2</maven-scm-plugin.version>
@@ -1400,12 +1399,6 @@
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${maven-checkstyle-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <configuration>
             <showDeprecation>true</showDeprecation>
@@ -1626,11 +1619,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
       </plugin>
 
       <plugin>
