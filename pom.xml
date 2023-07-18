@@ -346,8 +346,6 @@
          ================================================= -->
     <asciidoctor-maven-plugin.version>2.2.2</asciidoctor-maven-plugin.version>
     <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
-    <!-- checkstyle 10.0 requires Java 11 -->
-    <checkstyle.version>9.3</checkstyle.version>
     <checksum-maven-plugin.version>1.11</checksum-maven-plugin.version>
     <docker-maven-plugin.version>0.42.0</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
@@ -355,7 +353,6 @@
     <log4j-tools.version>0.3.0</log4j-tools.version>
     <maven-artifact-plugin.version>3.4.0</maven-artifact-plugin.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
-    <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
     <maven-enforcer-plugin.version>3.2.1</maven-enforcer-plugin.version>
     <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
     <maven-pmd-plugin.version>3.19.0</maven-pmd-plugin.version>
@@ -1367,12 +1364,6 @@
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${maven-checkstyle-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <configuration>
             <source>${maven.compiler.source}</source>
@@ -1586,18 +1577,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>com.puppycrawl.tools</groupId>
-            <artifactId>checkstyle</artifactId>
-            <version>${checkstyle.version}</version>
-          </dependency>
-        </dependencies>
       </plugin>
 
       <plugin>
