@@ -19,7 +19,7 @@
   <Appenders>
     <NoSql name="MongoDbAppender">
       <MongoDb3 databaseName="testDb" collectionName="testCollection" server="localhost"
-        port="${sys:MongoDBTestPort:-27017}" />
+        port="${test:MongoDBTestPort:-27017}" />
       <KeyValuePair key="A" value="1" />
       <KeyValuePair key="B" value="2" />
       <KeyValuePair key="env1" value="${env:PATH}" />

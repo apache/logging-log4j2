@@ -19,7 +19,7 @@
   <Appenders>
     <NoSql name="MongoDbAppender">
       <MongoDb4
-        connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection"
+        connection="mongodb://localhost:${test:MongoDBTestPort:-27017}/testDb.testCollection"
         capped="true"
         collectionSize="1073741824"/>
     </NoSql>

@@ -17,30 +17,25 @@
 package org.apache.logging.log4j.mongodb4;
 
 import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.bson.Document;
+import com.mongodb.client.MongoIterable;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
+/**
+ * Tests MongoDbRule.
+ * <p>
+ * The test framework {@code de.flapdoodle.embed.mongo} requires Java 8.
+ * </p>
+ */
 @UsingMongoDb4
-@LoggerContextSource("log4j2-mongodb-auth-failure.xml")
-public class MongoDb4AuthFailureTest {
+public class MongoDb4ResolverTest {
 
     @Test
-    public void test(final LoggerContext ctx, final MongoClient mongoClient) {
-        final Logger logger = ctx.getLogger(MongoDb4AuthFailureTest.class);
-        logger.info("Hello log");
-        final MongoDatabase database = mongoClient.getDatabase(MongoDb4TestConstants.DATABASE_NAME);
-        assertNotNull(database);
-        final MongoCollection<Document> collection = database.getCollection(MongoDb4TestConstants.DATABASE_NAME);
-        assertNotNull(collection);
-        final Document first = collection.find().first();
-        assertNull(first);
+    public void testAccess(final MongoClient mongoClient) {
+        final MongoIterable<String> databaseNames = mongoClient.listDatabaseNames();
+        assertNotNull(databaseNames);
+        assertNotNull(databaseNames.first());
     }
+
 }

@@ -18,7 +18,7 @@
 <Configuration status="WARN">
   <Appenders>
     <NoSql name="MongoDbAppender">
-      <MongoDb4 connection="mongodb://localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
+      <MongoDb4 connection="mongodb://localhost:${test:MongoDBTestPort:-27017}/testDb.testCollection" />
     </NoSql>
   </Appenders>
   <Loggers>
