@@ -400,9 +400,10 @@
     <disruptor.version>3.4.4</disruptor.version>
     <elasticsearch.version>7.17.8</elasticsearch.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
-    <embedded-mongo.version>3.5.1</embedded-mongo.version>
     <errorprone.version>2.7.1</errorprone.version>
     <felix.version>7.0.5</felix.version>
+    <flapdoodle-embed.version>4.7.1</flapdoodle-embed.version>
+    <flapdoodle-reverse.version>1.5.3</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
     <graalvm.version>21.3.0</graalvm.version>
     <groovy.version>4.0.6</groovy.version>
@@ -674,7 +675,19 @@
       <dependency>
         <groupId>de.flapdoodle.embed</groupId>
         <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <version>${embedded-mongo.version}</version>
+        <version>${flapdoodle-embed.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>de.flapdoodle.embed</groupId>
+        <artifactId>de.flapdoodle.embed.process</artifactId>
+        <version>${flapdoodle-embed.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>de.flapdoodle.reverse</groupId>
+        <artifactId>de.flapdoodle.reverse</artifactId>
+        <version>${flapdoodle-reverse.version}</version>
       </dependency>
 
       <dependency>
@@ -1131,6 +1144,12 @@
 
       <dependency>
         <groupId>org.mongodb</groupId>
+        <artifactId>mongodb-driver-core</artifactId>
+        <version>${mongodb.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mongodb</groupId>
         <artifactId>mongodb-driver-legacy</artifactId>
         <version>${mongodb.version}</version>
       </dependency>
@@ -1505,6 +1524,11 @@
               <groupId>org.openrewrite.recipe</groupId>
               <artifactId>rewrite-static-analysis</artifactId>
               <version>${rewrite-static-analysis.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.openrewrite.recipe</groupId>
+              <artifactId>rewrite-testing-frameworks</artifactId>
+              <version>2.0.7</version>
             </dependency>
           </dependencies>
         </plugin>

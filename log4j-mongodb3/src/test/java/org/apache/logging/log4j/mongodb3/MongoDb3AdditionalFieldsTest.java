@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.mongodb4;
+package org.apache.logging.log4j.mongodb3;
 
+import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
@@ -29,25 +29,33 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-
-@UsingMongoDb4
-@LoggerContextSource("log4j2-mongodb.xml")
-public class MongoDb4Test {
+@UsingMongoDb3
+@LoggerContextSource("log4j2-mongodb-additional-fields.xml")
+public class MongoDb3AdditionalFieldsTest {
 
     @Test
     public void test(final LoggerContext ctx, final MongoClient mongoClient) {
-        final Logger logger = ctx.getLogger(MongoDb4Test.class);
+        final Logger logger = ctx.getLogger(MongoDb3AdditionalFieldsTest.class);
         logger.info("Hello log 1");
         logger.info("Hello log 2", new RuntimeException("Hello ex 2"));
-        final MongoDatabase database = mongoClient.getDatabase(MongoDb4TestConstants.DATABASE_NAME);
+        final MongoDatabase database = mongoClient.getDatabase(MongoDb3TestConstants.DATABASE_NAME);
         assertNotNull(database);
-        final MongoCollection<Document> collection = database.getCollection(MongoDb4TestConstants.COLLECTION_NAME);
+        final MongoCollection<Document> collection = database.getCollection(MongoDb3TestConstants.COLLECTION_NAME);
         assertNotNull(collection);
         final FindIterable<Document> found = collection.find();
         final Document first = found.first();
         assertNotNull(first, "first");
         assertEquals("Hello log 1", first.getString("message"), first.toJson());
         assertEquals("INFO", first.getString("level"), first.toJson());
+        //
+        Document list;
+        final String envPath = System.getenv("PATH");
+        //
+        list = first.get("additionalFields", Document.class);
+        assertEquals("1", list.getString("A"), first.toJson());
+        assertEquals("2", list.getString("B"), first.toJson());
+        assertEquals(envPath, list.getString("env1"), first.toJson());
+        assertEquals(envPath, list.getString("env2"), first.toJson());
         //
         found.skip(1);
         final Document second = found.first();
@@ -56,6 +64,11 @@ public class MongoDb4Test {
         assertEquals("INFO", second.getString("level"), second.toJson());
         final Document thrown = second.get("thrown", Document.class);
         assertEquals("Hello ex 2", thrown.getString("message"), thrown.toJson());
+        //
+        list = second.get("additionalFields", Document.class);
+        assertEquals("1", list.getString("A"), first.toJson());
+        assertEquals("2", list.getString("B"), first.toJson());
+        assertEquals(envPath, list.getString("env1"), first.toJson());
+        assertEquals(envPath, list.getString("env2"), first.toJson());
     }
-
 }

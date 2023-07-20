@@ -18,10 +18,11 @@
 <Configuration status="WARN">
   <Appenders>
     <NoSql name="MongoDbAppender">
-      <MongoDb4
-        connection="mongodb://localhost:${test:MongoDBTestPort:-27017}/testDb.testCollection"
-        capped="true"
-        collectionSize="1073741824"/>
+      <MongoDb4 connection="mongodb://localhost:${test:MongoDBTestPort:-27017}/testDb.testCollection" />
+      <KeyValuePair key="A" value="1" />
+      <KeyValuePair key="B" value="2" />
+      <KeyValuePair key="env1" value="${env:PATH}" />
+      <KeyValuePair key="env2" value="$${env:PATH}" />
     </NoSql>
   </Appenders>
   <Loggers>

@@ -14,12 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.mongodb3;
+package org.apache.logging.log4j.mongodb4;
 
-public class MongoDb3TestConstants {
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-    public static final String PROP_NAME_PORT = "MongoDBTestPort";
-    static final String COLLECTION_NAME = "testCollection";
-    static final String DATABASE_NAME = "testDb";
+import org.apache.logging.log4j.test.junit.ExtensionContextAnchor;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+@Retention(RUNTIME)
+@Target({ TYPE, METHOD })
+@Inherited
+@Documented
+@ExtendWith(ExtensionContextAnchor.class)
+@ExtendWith(MongoDb4Resolver.class)
+public @interface UsingMongoDb4 {
 
 }

@@ -16,10 +16,26 @@
  */
 package org.apache.logging.log4j.mongodb3;
 
-public class MongoDb3TestConstants {
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoIterable;
+import org.junit.jupiter.api.Test;
 
-    public static final String PROP_NAME_PORT = "MongoDBTestPort";
-    static final String COLLECTION_NAME = "testCollection";
-    static final String DATABASE_NAME = "testDb";
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+/**
+ * Tests MongoDbRule.
+ * <p>
+ * The test framework {@code de.flapdoodle.embed.mongo} requires Java 8.
+ * </p>
+ */
+@UsingMongoDb3
+public class MongoDb3ResolverTest {
+
+    @Test
+    public void testAccess(final MongoClient mongoClient) {
+        final MongoIterable<String> databaseNames = mongoClient.listDatabaseNames();
+        assertNotNull(databaseNames);
+        assertNotNull(databaseNames.first());
+    }
 
 }
