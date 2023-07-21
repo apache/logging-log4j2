@@ -456,7 +456,7 @@
     <nashorn.version>15.3</nashorn.version>
     <netty.version>4.1.86.Final</netty.version>
     <opentest4j.version>1.2.0</opentest4j.version>
-    <org.eclipse.osgi.version>3.16.200</org.eclipse.osgi.version>
+    <org.eclipse.osgi.version>3.18.400</org.eclipse.osgi.version>
     <org.eclipse.persistence.version>2.7.11</org.eclipse.persistence.version>
     <oro.version>2.0.8</oro.version>
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports -->
