@@ -17,10 +17,11 @@
   -->
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://logging.apache.org/log4j/changelog"
-       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
-       type="fixed">
-  <author id="rgoers"/>
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.0.xsd"
+       type="changed">
+  <issue id="1591" link="https://github.com/apache/logging-log4j2/issues/1591"/>
+  <author id="github:dependabot"/>
   <description format="asciidoc">
-    Update maven-surefire-plugin to 3.1.2.
+    Test dependencies: update H2 from version 2.1.214 to version link:http://www.h2database.com/html/changelog.html[2.2.222].
   </description>
 </entry>
