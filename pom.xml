@@ -408,7 +408,7 @@
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
     <icu4j.version>72.1</icu4j.version>
-    <jackson-bom.version>2.14.2</jackson-bom.version>
+    <jackson-bom.version>2.15.2</jackson-bom.version>
     <!-- Override the version in Jakarta EE 9 BOM: -->
     <jakarta-activation.version>2.1.1</jakarta-activation.version>
     <jakarta-mail.version>2.1.1</jakarta-mail.version>
