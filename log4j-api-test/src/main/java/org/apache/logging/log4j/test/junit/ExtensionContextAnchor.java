@@ -47,19 +47,19 @@ public class ExtensionContextAnchor
         return context != null ? context : EXTENSION_CONTEXT.get();
     }
 
-    static <T> T getAttribute(final Object key, final Class<T> clazz, final ExtensionContext context) {
+    public static <T> T getAttribute(final Object key, final Class<T> clazz, final ExtensionContext context) {
         final ExtensionContext actualContext = getContext(context);
         assertNotNull(actualContext, "missing ExtensionContext");
         return actualContext.getStore(LOG4J2_NAMESPACE).get(key, clazz);
     }
 
-    static void setAttribute(final Object key, final Object value, final ExtensionContext context) {
+    public static void setAttribute(final Object key, final Object value, final ExtensionContext context) {
         final ExtensionContext actualContext = getContext(context);
         assertNotNull(actualContext, "missing ExtensionContext");
         actualContext.getStore(LOG4J2_NAMESPACE).put(key, value);
     }
 
-    static void removeAttribute(final Object key, final ExtensionContext context) {
+    public static void removeAttribute(final Object key, final ExtensionContext context) {
         final ExtensionContext actualContext = getContext(context);
         if (actualContext != null) {
             actualContext.getStore(LOG4J2_NAMESPACE).remove(key);
