@@ -17,15 +17,16 @@
 package org.apache.logging.log4j.core.test.junit;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.lookup.AbstractLookup;
-import org.apache.logging.log4j.core.lookup.StrLookup;
+import org.apache.logging.log4j.core.lookup.Lookup;
+import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.test.junit.TestPropertySource;
 
 /**
  * Resolves properties using {@link TestPropertySource}.
  */
-@Plugin(name = "test", category = StrLookup.CATEGORY)
+@Lookup
+@Plugin("test")
 public class TestPropertyLookup extends AbstractLookup {
 
     @Override
