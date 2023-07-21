@@ -463,7 +463,7 @@
     <tomcat-juli.version>10.0.27</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.0</wiremock.version>
-    <woodstox.version>6.5.0</woodstox.version>
+    <woodstox.version>6.5.1</woodstox.version>
     <xmlunit.version>2.9.1</xmlunit.version>
     <xz.version>1.9</xz.version>
 
