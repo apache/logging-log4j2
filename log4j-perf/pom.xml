@@ -82,6 +82,7 @@
     <dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
+      <classifier>jdk8</classifier>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
