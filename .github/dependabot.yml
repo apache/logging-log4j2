@@ -21,6 +21,8 @@ updates:
   schedule:
     interval: "daily"
   target-branch: "2.x"
+  # Pre-release setting to force all updates at once
+  open-pull-requests-limit: 50
   ignore:
     # Jetty 10.x does not have an internal logging API
     - dependency-name: "org.eclipse.jetty:*"
