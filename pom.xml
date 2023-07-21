@@ -373,7 +373,7 @@
          ===================================================== -->
     <activemq.version>5.17.4</activemq.version>
     <angus-activation.version>2.0.0</angus-activation.version>
-    <angus-mail.version>2.0.1</angus-mail.version>
+    <angus-mail.version>2.0.2</angus-mail.version>
     <asm.version>9.4</asm.version>
     <assertj.version>3.24.2</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
