@@ -469,7 +469,7 @@
     <rewrite-static-analysis.version>1.0.0</rewrite-static-analysis.version>
     <slf4j.version>1.7.36</slf4j.version>
     <spring-boot.version>2.7.10</spring-boot.version>
-    <spring-framework.version>5.3.26</spring-framework.version>
+    <spring-framework.version>5.3.29</spring-framework.version>
     <system-stubs.version>2.0.2</system-stubs.version>
     <tomcat-juli.version>10.0.23</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
