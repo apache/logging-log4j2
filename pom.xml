@@ -366,7 +366,7 @@
     <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
     <!-- See https://maven.apache.org/plugins/maven-site-plugin/migrate.html -->
     <velocity.plugin.version>1.5</velocity.plugin.version>
-    <xml-maven-plugin.version>1.0.2</xml-maven-plugin.version>
+    <xml-maven-plugin.version>1.1.0</xml-maven-plugin.version>
 
     <!-- =====================================================
          Dependency version properties (in alphabetical order)
