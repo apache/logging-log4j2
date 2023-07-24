@@ -39,7 +39,7 @@ public class StatusConfiguration {
 
     @SuppressWarnings("UseOfSystemOutOrSystemErr")
     private static final PrintStream DEFAULT_STREAM = System.out;
-    private static final Level DEFAULT_STATUS = Level.ERROR;
+    private static final Level DEFAULT_STATUS = Level.WARN;
     private static final Verbosity DEFAULT_VERBOSITY = Verbosity.QUIET;
 
     private final Collection<String> errorMessages = new LinkedBlockingQueue<>();
@@ -124,6 +124,7 @@ public class StatusConfiguration {
 
     /**
      * Specifies the logging level by name to use for filtering StatusLogger messages.
+     * Defaults to {@link Level#WARN} for invalid level name.
      *
      * @param status name of logger level to filter below.
      * @return {@code this}
@@ -132,8 +133,8 @@ public class StatusConfiguration {
     public StatusConfiguration withStatus(final String status) {
         this.status = Level.toLevel(status, null);
         if (this.status == null) {
-            this.error("Invalid status level specified: " + status + ". Defaulting to ERROR.");
-            this.status = Level.ERROR;
+            this.error("Invalid status level specified: " + status + ". Defaulting to WARN.");
+            this.status = Level.WARN;
         }
         return this;
     }
