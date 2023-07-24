@@ -21,13 +21,21 @@ import java.util.function.Supplier;
 import com.mongodb.MongoClient;
 import de.flapdoodle.embed.mongo.commands.ServerAddress;
 import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.mongo.packageresolver.Command;
 import de.flapdoodle.embed.mongo.transitions.Mongod;
+import de.flapdoodle.embed.mongo.transitions.PackageOfCommandDistribution;
 import de.flapdoodle.embed.mongo.transitions.RunningMongodProcess;
+import de.flapdoodle.embed.mongo.types.DistributionBaseUrl;
+import de.flapdoodle.embed.process.config.store.FileSet;
+import de.flapdoodle.embed.process.config.store.FileType;
+import de.flapdoodle.embed.process.config.store.Package;
+import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.io.ProcessOutput;
 import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamProcessor;
 import de.flapdoodle.embed.process.types.Name;
 import de.flapdoodle.embed.process.types.ProcessConfig;
+import de.flapdoodle.os.OSType;
 import de.flapdoodle.reverse.TransitionWalker.ReachedState;
 import de.flapdoodle.reverse.transitions.Derive;
 import de.flapdoodle.reverse.transitions.Start;
@@ -79,7 +87,7 @@ public class MongoDb3Resolver extends TypeBasedParameterResolver<MongoClient>
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         final TestProperties props = TestPropertySource.createProperties(context);
-        Mongod mongod = Mongod.builder()
+        final Mongod mongod = Mongod.builder()
                 .processOutput(Derive.given(Name.class)
                         .state(ProcessOutput.class)
                         .deriveBy(name -> getProcessOutput(LoggingTarget.getLoggingTarget(LoggingTarget.STATUS_LOGGER),
@@ -87,6 +95,29 @@ public class MongoDb3Resolver extends TypeBasedParameterResolver<MongoClient>
                 .processConfig(Start.to(ProcessConfig.class)
                         .initializedWith(ProcessConfig.defaults().withStopTimeoutInMillis(BUILDER_TIMEOUT_MILLIS))
                         .withTransitionLabel("create default"))
+                // workaround for https://github.com/flapdoodle-oss/de.flapdoodle.embed.mongo/issues/309
+                .packageOfDistribution(new PackageOfCommandDistribution() {
+
+                    @Override
+                    protected Package packageOf(Command command, Distribution distribution,
+                            DistributionBaseUrl baseUrl) {
+                        if (distribution.platform().operatingSystem().type() == OSType.Windows) {
+                            final Package relativePackage = legacyPackageResolverFactory().apply(command)
+                                    .packageFor(distribution);
+                            final FileSet.Builder fileSetBuilder = FileSet.builder()
+                                    .addEntry(FileType.Library, "ssleay32.dll")
+                                    .addEntry(FileType.Library, "libeay32.dll");
+                            relativePackage.fileSet().entries().forEach(fileSetBuilder::addEntries);
+                            return Package.builder()
+                                    .archiveType(relativePackage.archiveType())
+                                    .fileSet(fileSetBuilder.build())
+                                    .url(baseUrl.value() + relativePackage.url())
+                                    .hint(relativePackage.hint())
+                                    .build();
+                        }
+                        return super.packageOf(command, distribution, baseUrl);
+                    }
+                })
                 .build();
         ExtensionContextAnchor.setAttribute(MongoClientHolder.class, new MongoClientHolder(mongod, props), context);
     }
