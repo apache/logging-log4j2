@@ -62,6 +62,9 @@ updates:
     # Spotless 2.32.0 requires Java 11
     - dependency-name: "com.diffplug.spotless:*"
       versions: ["[2.32.0,)"]
+    # `com.conversantmedia:disruptor` 1.2.16 requires Java 9
+    - dependency-name: "com.conversantmedia:disruptor"
+      versions: ["1.2.16,)"]
 
 - package-ecosystem: github-actions
   directory: "/"
