@@ -442,7 +442,7 @@
     <junit-jupiter.version>5.9.1</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
     <kafka.version>1.1.1</kafka.version>
-    <kubernetes-client.version>5.12.2</kubernetes-client.version>
+    <kubernetes-client.version>5.12.4</kubernetes-client.version>
     <lightcouch.version>0.2.0</lightcouch.version>
     <!-- Liquibase 3.6.0 to 4.3.2 breaks binary compatibility: -->
     <liquibase.version>3.5.5</liquibase.version>
