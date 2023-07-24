@@ -344,7 +344,7 @@
     <!-- =================================================
          Plugin version properties (in alphabetical order)
          ================================================= -->
-    <asciidoctor-maven-plugin.version>2.2.2</asciidoctor-maven-plugin.version>
+    <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
     <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
     <checksum-maven-plugin.version>1.11</checksum-maven-plugin.version>
     <docker-maven-plugin.version>0.43.0</docker-maven-plugin.version>
