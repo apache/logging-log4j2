@@ -65,6 +65,9 @@ updates:
     # `com.conversantmedia:disruptor` 1.2.16 requires Java 9
     - dependency-name: "com.conversantmedia:disruptor"
       versions: ["1.2.16,)"]
+    # Keep Jakarta EE at version 9.0
+    - dependency-name: "jakarta.platform:*"
+      versions: ["10.0.0,)"]
 
 - package-ecosystem: github-actions
   directory: "/"
@@ -104,6 +107,9 @@ updates:
     # Kubernetes: keep version 5.x
     - dependency-name: "io.fabric8:*"
       versions: ["[6.0.0,)"]
+    # Keep Jakarta EE at version 9.0
+    - dependency-name: "jakarta.platform:*"
+      versions: ["10.0.0,)"]
 
 - package-ecosystem: github-actions
   directory: "/"
