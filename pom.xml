@@ -455,7 +455,7 @@
     <osgi.api.version>6.0.0</osgi.api.version>
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.0</plexus-utils.version>
-    <rewrite-java.version>8.0.0</rewrite-java.version>
+    <rewrite-java.version>8.1.12</rewrite-java.version>
     <rewrite-static-analysis.version>1.0.3</rewrite-static-analysis.version>
     <slf4j.version>1.7.36</slf4j.version>
     <spring-boot.version>2.7.13</spring-boot.version>
