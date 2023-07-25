@@ -540,6 +540,14 @@
       </dependency>
 
       <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-bom</artifactId>
+        <version>${mockito.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-bom</artifactId>
         <version>${netty.version}</version>
@@ -1122,24 +1130,6 @@
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-core</artifactId>
         <version>${maven.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${mockito.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-inline</artifactId>
-        <version>${mockito.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-junit-jupiter</artifactId>
-        <version>${mockito.version}</version>
       </dependency>
 
       <dependency>
