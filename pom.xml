@@ -484,7 +484,7 @@
          of dependencies (requireUpperBoundDeps rule).
          ===================================================== -->
     <commons-pool2.version>2.11.1</commons-pool2.version>
-    <jna.version>5.12.1</jna.version>
+    <jna.version>5.13.0</jna.version>
   </properties>
 
   <dependencyManagement>
