@@ -359,7 +359,9 @@
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
+    <rewrite-java.version>8.1.12</rewrite-java.version>
     <rewrite-maven-plugin.version>5.3.2</rewrite-maven-plugin.version>
+    <rewrite-static-analysis.version>1.0.3</rewrite-static-analysis.version>
     <spotbugs-maven-plugin.version>4.7.3.5</spotbugs-maven-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.0.0-M9</surefire.version>
@@ -369,27 +371,23 @@
     <xml-maven-plugin.version>1.1.0</xml-maven-plugin.version>
 
     <!-- =====================================================
-         Dependency version properties (in alphabetical order)
+         Direct dependency version properties (in alphabetical order)
          ===================================================== -->
     <activemq.version>5.17.4</activemq.version>
     <angus-activation.version>2.0.1</angus-activation.version>
     <angus-mail.version>2.0.2</angus-mail.version>
-    <asm.version>9.5</asm.version>
     <assertj.version>3.24.2</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
-    <byte-buddy.version>1.14.5</byte-buddy.version>
     <cassandra.version>3.11.15</cassandra.version>
     <cassandra-driver.version>3.11.3</cassandra-driver.version>
     <commons-codec.version>1.15</commons-codec.version>
     <commons-compress.version>1.23.0</commons-compress.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
-    <commons-httpclient.version>3.1</commons-httpclient.version>
     <commons-io.version>2.11.0</commons-io.version>
     <commons-lang3.version>3.12.0</commons-lang3.version>
     <commons-logging.version>1.2</commons-logging.version>
-    <commons-pool2.version>2.11.1</commons-pool2.version>
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
@@ -406,9 +404,6 @@
     <hamcrest.version>2.2</hamcrest.version>
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
     <hsqldb.version>2.7.2</hsqldb.version>
-    <httpclient.version>4.5.14</httpclient.version>
-    <httpcore.version>4.4.16</httpcore.version>
-    <icu4j.version>72.1</icu4j.version>
     <jackson-bom.version>2.15.2</jackson-bom.version>
     <!-- Override the version in Jakarta EE 9 BOM: -->
     <jakarta-activation.version>2.1.2</jakarta-activation.version>
@@ -432,7 +427,6 @@
     <jetty.version>9.4.51.v20230217</jetty.version>
     <jmdns.version>3.5.8</jmdns.version>
     <jmh.version>1.36</jmh.version>
-    <jna.version>5.13.0</jna.version>
     <json-unit.version>2.36.1</json-unit.version>
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.10.0</junit-jupiter.version>
@@ -455,8 +449,6 @@
     <osgi.api.version>6.0.0</osgi.api.version>
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.0</plexus-utils.version>
-    <rewrite-java.version>8.1.12</rewrite-java.version>
-    <rewrite-static-analysis.version>1.0.3</rewrite-static-analysis.version>
     <slf4j.version>1.7.36</slf4j.version>
     <spring-boot.version>2.7.14</spring-boot.version>
     <spring-framework.version>5.3.29</spring-framework.version>
@@ -468,6 +460,20 @@
     <xmlunit.version>2.9.1</xmlunit.version>
     <xz.version>1.9</xz.version>
 
+    <!-- =====================================================
+         Pinned transitive dependency version properties (in alphabetical order)
+
+         These are not directly used in the code, but ensure
+         the independence of transitive dependencies from the order
+         of dependencies (requireUpperBoundDeps rule).
+         ===================================================== -->
+    <asm.version>9.5</asm.version>
+    <byte-buddy.version>1.14.5</byte-buddy.version>
+    <commons-httpclient.version>3.1</commons-httpclient.version>
+    <commons-pool2.version>2.11.1</commons-pool2.version>
+    <httpclient.version>4.5.14</httpclient.version>
+    <httpcore.version>4.4.16</httpcore.version>
+    <jna.version>5.13.0</jna.version>
   </properties>
 
   <dependencyManagement>
