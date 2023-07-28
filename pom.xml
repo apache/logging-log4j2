@@ -383,7 +383,7 @@
          Direct dependency version properties (in alphabetical order)
          ===================================================== -->
     <activemq.version>5.18.1</activemq.version>
-    <angus-activation.version>2.0.0</angus-activation.version>
+    <angus-activation.version>2.0.1</angus-activation.version>
     <angus-mail.version>2.0.1</angus-mail.version>
     <assertj.version>3.23.1</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
