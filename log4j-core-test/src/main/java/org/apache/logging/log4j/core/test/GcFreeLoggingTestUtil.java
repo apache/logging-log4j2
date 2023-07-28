@@ -49,6 +49,7 @@ public enum GcFreeLoggingTestUtil {;
         System.setProperty("log4j2.enable.direct.encoders", "true");
         System.setProperty("log4j2.is.webapp", "false");
         System.setProperty("log4j.configurationFile", configurationFile);
+        System.setProperty("log4j2.clock", "SystemMillisClock");
 
         assertTrue(Constants.ENABLE_THREADLOCALS, "Constants.ENABLE_THREADLOCALS");
         assertTrue(Constants.ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
