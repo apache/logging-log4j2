@@ -26,8 +26,12 @@
       <directory>${project.build.outputDirectory}</directory>
       <outputDirectory>/classes/META-INF/versions/9</outputDirectory>
       <includes>
+        <include>org/apache/logging/log4j/core/impl/ExtendedStackTraceElement.class</include>
+        <include>org/apache/logging/log4j/core/jackson/ExtendedStackTraceElementMixIn.class</include>
+        <include>org/apache/logging/log4j/core/jackson/Log4jStackTraceElementDeserializer.class</include>
+        <include>org/apache/logging/log4j/core/jackson/StackTraceElementMixIn.class</include>
         <include>org/apache/logging/log4j/core/util/internal/UnsafeUtil*.class</include>
-        <include>org/apache/logging/log4j/core/util/SystemClock*.class</include>
+        <include>org/apache/logging/log4j/core/util/SystemClock.class</include>
       </includes>
     </fileSet>
   </fileSets>

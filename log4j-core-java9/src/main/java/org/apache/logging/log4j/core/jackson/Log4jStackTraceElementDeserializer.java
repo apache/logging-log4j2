@@ -49,7 +49,8 @@ public final class Log4jStackTraceElementDeserializer extends StdScalarDeseriali
         JsonToken t = jp.getCurrentToken();
         // Must get an Object
         if (t == JsonToken.START_OBJECT) {
-            String className = null, methodName = null, fileName = null;
+            String classLoaderName = null, moduleName = null, moduleVersion = null, className = null, methodName = null,
+                    fileName = null;
             int lineNumber = -1;
 
             while ((t = jp.nextValue()) != JsonToken.END_OBJECT) {
@@ -82,13 +83,27 @@ public final class Log4jStackTraceElementDeserializer extends StdScalarDeseriali
                     }
                     case "nativeMethod": {
                         // no setter, not passed via constructor: ignore
+                        break;
+                    }
+                    case StackTraceElementConstants.ATTR_CLASS_LOADER_NAME: {
+                        classLoaderName = jp.getText();
+                        break;
+                    }
+                    case StackTraceElementConstants.ATTR_MODULE: {
+                        moduleName = jp.getText();
+                        break;
+                    }
+                    case StackTraceElementConstants.ATTR_MODULE_VERSION: {
+                        moduleVersion = jp.getText();
+                        break;
                     }
                     default: {
                         this.handleUnknownProperty(jp, ctxt, this._valueClass, propName);
                     }
                 }
             }
-            return new StackTraceElement(className, methodName, fileName, lineNumber);
+            return new StackTraceElement(classLoaderName, moduleName, moduleVersion, className, methodName, fileName,
+                    lineNumber);
         }
         throw ctxt.mappingException(this._valueClass, t);
     }

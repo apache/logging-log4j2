@@ -104,6 +104,12 @@ public final class JAnsiTextRenderer implements TextRenderer {
             put(map, "More", WHITE);
             put(map, "Suppressed", WHITE);
             // StackTraceElement
+            put(map, "StackTraceElement.ClassLoaderName", WHITE);
+            put(map, "StackTraceElement.ClassLoaderSeparator", WHITE);
+            put(map, "StackTraceElement.ModuleName", WHITE);
+            put(map, "StackTraceElement.ModuleVersionSeparator", WHITE);
+            put(map, "StackTraceElement.ModuleVersion", WHITE);
+            put(map, "StackTraceElement.ModuleNameSeparator", WHITE);
             put(map, "StackTraceElement.ClassName", YELLOW);
             put(map, "StackTraceElement.ClassMethodSeparator", YELLOW);
             put(map, "StackTraceElement.MethodName", YELLOW);
@@ -137,6 +143,12 @@ public final class JAnsiTextRenderer implements TextRenderer {
             put(map, "More", WHITE);
             put(map, "Suppressed", WHITE);
             // StackTraceElement
+            put(map, "StackTraceElement.ClassLoaderName", WHITE);
+            put(map, "StackTraceElement.ClassLoaderSeparator", WHITE);
+            put(map, "StackTraceElement.ModuleName", WHITE);
+            put(map, "StackTraceElement.ModuleVersionSeparator", WHITE);
+            put(map, "StackTraceElement.ModuleVersion", WHITE);
+            put(map, "StackTraceElement.ModuleNameSeparator", WHITE);
             put(map, "StackTraceElement.ClassName", BG_RED, WHITE);
             put(map, "StackTraceElement.ClassMethodSeparator", BG_RED, YELLOW);
             put(map, "StackTraceElement.MethodName", BG_RED, YELLOW);
@@ -172,7 +184,7 @@ public final class JAnsiTextRenderer implements TextRenderer {
     public JAnsiTextRenderer(final String[] formats, final Map<String, Code[]> defaultStyleMap) {
         String tempBeginToken = AnsiRenderer.BEGIN_TOKEN;
         String tempEndToken = AnsiRenderer.END_TOKEN;
-        Map<String, Code[]> map;
+        final Map<String, Code[]> map;
         if (formats.length > 1) {
             final String allStylesStr = formats[1];
             // Style def split

@@ -35,6 +35,9 @@ abstract class StackTraceElementMixIn {
     @JsonCreator
     StackTraceElementMixIn(
     // @formatter:off
+            @JsonProperty(StackTraceElementConstants.ATTR_CLASS_LOADER_NAME) final String classLoaderName,
+            @JsonProperty(StackTraceElementConstants.ATTR_MODULE) final String moduleName,
+            @JsonProperty(StackTraceElementConstants.ATTR_MODULE_VERSION) final String moduleVersion,
             @JsonProperty(StackTraceElementConstants.ATTR_CLASS) final String declaringClass,
             @JsonProperty(StackTraceElementConstants.ATTR_METHOD) final String methodName,
             @JsonProperty(StackTraceElementConstants.ATTR_FILE) final String fileName,
@@ -43,6 +46,18 @@ abstract class StackTraceElementMixIn {
     {
         // empty
     }
+
+    @JsonProperty(StackTraceElementConstants.ATTR_CLASS_LOADER_NAME)
+    @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_CLASS_LOADER_NAME, isAttribute = true)
+    abstract String getClassLoaderName();
+
+    @JsonProperty(StackTraceElementConstants.ATTR_MODULE)
+    @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_MODULE, isAttribute = true)
+    abstract String getModuleName();
+
+    @JsonProperty(StackTraceElementConstants.ATTR_MODULE_VERSION)
+    @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_MODULE_VERSION, isAttribute = true)
+    abstract String getModuleVersion();
 
     @JsonProperty(StackTraceElementConstants.ATTR_CLASS)
     @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_CLASS, isAttribute = true)
