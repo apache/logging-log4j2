@@ -76,8 +76,8 @@ public class HelloWorld {
               only occur when debug logging is enabled.
             </p>
             <p>
-			  Additionally, you can pass a Throwable as the very last parameter. There's no need to add an extra substituting parameter in this case as it will be handled by the logging API automatically. For example:
-			</p>
+              Additionally, you can pass a Throwable as the very last parameter. There's no need to add an extra substituting parameter in this case as it will be handled by the logging API automatically. For example:
+            </p>
             <pre class="prettyprint">logger.debug("Logging in user {} with birthday {}", user.getName(), user.getBirthdayCalendar(), exception);</pre>
             <h4>Formatting Parameters</h4>
             <p>
