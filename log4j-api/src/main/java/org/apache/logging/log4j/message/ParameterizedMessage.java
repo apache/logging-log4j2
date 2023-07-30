@@ -17,28 +17,40 @@
 package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
+import java.util.Objects;
 
+import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 
+import static org.apache.logging.log4j.message.ParameterFormatter.analyzePattern;
+
 /**
- * Handles messages that consist of a format string containing '{}' to represent each replaceable token, and
- * the parameters.
+ * A {@link Message} accepting argument placeholders in the formatting pattern.
  * <p>
- * This class was originally written for <a href="http://lilithapp.com/">Lilith</a> by Joern Huxhorn where it is
- * licensed under the LGPL. It has been relicensed here with his permission providing that this attribution remain.
+ * Only {@literal "{}"} strings are treated as argument placeholders.
+ * Escaped (i.e., {@code "\"}-prefixed) or incomplete argument placeholders will be ignored.
+ * Examples of argument placeholders that will be discarded and rendered intact:
+ * </p>
+ * <pre>
+ * { }
+ * foo\{}
+ * {bar
+ * {buzz}
+ * </pre>
+ * <p>
+ * This class was originally written for <a href="http://lilithapp.com/">Lilith</a> by Jörn Huxhorn and licensed under the LGPL.
+ * It has been relicensed here with his permission providing that this attribution remain.
  * </p>
  */
 public class ParameterizedMessage implements Message, StringBuilderFormattable {
-
-    // Should this be configurable?
-    private static final int DEFAULT_STRING_BUILDER_SIZE = 255;
 
     /**
      * Prefix for recursion.
      */
     public static final String RECURSION_PREFIX = ParameterFormatter.RECURSION_PREFIX;
+
     /**
      * Suffix for recursion.
      */
@@ -66,126 +78,148 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     private static final long serialVersionUID = -665975803997290697L;
 
-    private static final int HASHVAL = 31;
+    private static final ThreadLocal<StringBuilder> STRING_BUILDER_HOLDER = Constants.ENABLE_THREADLOCALS
+            ? ThreadLocal.withInitial(() -> new StringBuilder(Constants.MAX_REUSABLE_MESSAGE_SIZE))
+            : null;
 
-    // storing JDK classes in ThreadLocals does not cause memory leaks in web apps, so this is okay
-    private static ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
+    private final String pattern;
 
-    private String messagePattern;
-    private transient Object[] argArray;
+    private final transient Object[] args;
+
+    private final transient Throwable throwable;
+
+    private final MessagePatternAnalysis patternAnalysis;
 
     private String formattedMessage;
-    private transient Throwable throwable;
-    private int[] indices;
-    private int usedCount;
 
     /**
-     * Creates a parameterized message.
-     * @param messagePattern The message "format" string. This will be a String containing "{}" placeholders
-     * where parameters should be substituted.
-     * @param arguments The arguments for substitution.
-     * @param throwable A Throwable.
-     * @deprecated Use constructor ParameterizedMessage(String, Object[], Throwable) instead
+     * Constructs an instance.
+     * <p>
+     * The {@link Throwable} associated with the message (and returned in {@link #getThrowable()}) will be determined as follows:
+     * </p>
+     * <ol>
+     * <li>If a {@code throwable} argument is provided</li>
+     * <li>If the last argument is a {@link Throwable} and is <b>not</b> referred to by any placeholder in the pattern</li>
+     * </ol>
+     *
+     * @param pattern a formatting pattern
+     * @param args arguments to be formatted
+     * @param throwable a {@link Throwable}
+     * @deprecated Use {@link #ParameterizedMessage(String, Object[], Throwable)} instead
      */
     @Deprecated
-    public ParameterizedMessage(final String messagePattern, final String[] arguments, final Throwable throwable) {
-        this.argArray = arguments;
-        this.throwable = throwable;
-        init(messagePattern);
+    public ParameterizedMessage(final String pattern, final String[] args, final Throwable throwable) {
+        this(pattern, Arrays.stream(args).toArray(Object[]::new), throwable);
     }
 
     /**
-     * Creates a parameterized message.
-     * @param messagePattern The message "format" string. This will be a String containing "{}" placeholders
-     * where parameters should be substituted.
-     * @param arguments The arguments for substitution.
-     * @param throwable A Throwable.
-     */
-    public ParameterizedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
-        this.argArray = arguments;
-        this.throwable = throwable;
-        init(messagePattern);
-    }
-
-    /**
-     * Constructs a ParameterizedMessage which contains the arguments converted to String as well as an optional
-     * Throwable.
+     * Constructs an instance.
+     * <p>
+     * The {@link Throwable} associated with the message (and returned in {@link #getThrowable()}) will be determined as follows:
+     * </p>
+     * <ol>
+     * <li>If a {@code throwable} argument is provided</li>
+     * <li>If the last argument is a {@link Throwable} and is <b>not</b> referred to by any placeholder in the pattern</li>
+     * </ol>
      *
-     * <p>If the last argument is a Throwable and is NOT used up by a placeholder in the message pattern it is returned
-     * in {@link #getThrowable()} and won't be contained in the created String[].
-     * If it is used up {@link #getThrowable()} will return null even if the last argument was a Throwable!</p>
-     *
-     * @param messagePattern the message pattern that to be checked for placeholders.
-     * @param arguments      the argument array to be converted.
+     * @param pattern a formatting pattern
+     * @param args arguments to be formatted
+     * @param throwable a {@link Throwable}
      */
-    public ParameterizedMessage(final String messagePattern, final Object... arguments) {
-        this.argArray = arguments;
-        init(messagePattern);
+    public ParameterizedMessage(final String pattern, final Object[] args, final Throwable throwable) {
+        this.args = args;
+        this.pattern = pattern;
+        this.patternAnalysis = analyzePattern(pattern);
+        this.throwable = determineThrowable(throwable, this.args, patternAnalysis);
     }
 
-    /**
-     * Constructor with a pattern and a single parameter.
-     * @param messagePattern The message pattern.
-     * @param arg The parameter.
-     */
-    public ParameterizedMessage(final String messagePattern, final Object arg) {
-        this(messagePattern, new Object[]{arg});
-    }
+    private static Throwable determineThrowable(
+            final Throwable throwable,
+            final Object[] args,
+            final MessagePatternAnalysis analysis) {
 
-    /**
-     * Constructor with a pattern and two parameters.
-     * @param messagePattern The message pattern.
-     * @param arg0 The first parameter.
-     * @param arg1 The second parameter.
-     */
-    public ParameterizedMessage(final String messagePattern, final Object arg0, final Object arg1) {
-        this(messagePattern, new Object[]{arg0, arg1});
-    }
+        // Short-circuit if an explicit `Throwable` is provided
+        if (throwable != null) {
+            return throwable;
+        }
 
-    private void init(final String messagePattern) {
-        this.messagePattern = messagePattern;
-        final int len = Math.max(1, messagePattern == null ? 0 : messagePattern.length() >> 1); // divide by 2
-        this.indices = new int[len]; // LOG4J2-1542 ensure non-zero array length
-        final int placeholders = ParameterFormatter.countArgumentPlaceholders2(messagePattern, indices);
-        initThrowable(argArray, placeholders);
-        this.usedCount = Math.min(placeholders, argArray == null ? 0 : argArray.length);
-    }
-
-    private void initThrowable(final Object[] params, final int usedParams) {
-        if (params != null) {
-            final int argCount = params.length;
-            if (usedParams < argCount && this.throwable == null && params[argCount - 1] instanceof Throwable) {
-                this.throwable = (Throwable) params[argCount - 1];
+        // If the last `Throwable` argument is not consumed in the pattern, use that
+        if (args != null && args.length > analysis.placeholderCount) {
+            Object lastArg = args[args.length - 1];
+            if (lastArg instanceof Throwable) {
+                return (Throwable) lastArg;
             }
         }
+
+        // No `Throwable`s available
+        return null;
+
     }
 
     /**
-     * Returns the message pattern.
-     * @return the message pattern.
+     * Constructor with a pattern and multiple arguments.
+     * <p>
+     * If the last argument is a {@link Throwable} and is <b>not</b> referred to by any placeholder in the pattern, it is returned in {@link #getThrowable()}.
+     * </p>
+     *
+     * @param pattern a formatting pattern
+     * @param args arguments to be formatted
+     */
+    public ParameterizedMessage(final String pattern, final Object... args) {
+        this(pattern, args, null);
+    }
+
+    /**
+     * Constructor with a pattern and a single argument.
+     * <p>
+     * If the argument is a {@link Throwable} and is <b>not</b> referred to by any placeholder in the pattern, it is returned in {@link #getThrowable()}.
+     * </p>
+     *
+     * @param pattern a formatting pattern
+     * @param arg an argument
+     */
+    public ParameterizedMessage(final String pattern, final Object arg) {
+        this(pattern, new Object[]{arg});
+    }
+
+    /**
+     * Constructor with a pattern and two arguments.
+     * <p>
+     * If the last argument is a {@link Throwable} and is <b>not</b> referred to by any placeholder in the pattern, it is returned in {@link #getThrowable()} and won't be contained in the formatted message.
+     * </p>
+     *
+     * @param pattern a formatting pattern
+     * @param arg0 the first argument
+     * @param arg1 the second argument
+     */
+    public ParameterizedMessage(final String pattern, final Object arg0, final Object arg1) {
+        this(pattern, new Object[]{arg0, arg1});
+    }
+
+    /**
+     * @return the message formatting pattern
      */
     @Override
     public String getFormat() {
-        return messagePattern;
+        return pattern;
     }
 
     /**
-     * Returns the message parameters.
-     * @return the message parameters.
+     * @return the message arguments
      */
     @Override
     public Object[] getParameters() {
-        return argArray;
+        return args;
     }
 
     /**
-     * Returns the Throwable that was given as the last argument, if any.
-     * It will not survive serialization. The Throwable exists as part of the message
-     * primarily so that it can be extracted from the end of the list of parameters
-     * and then be added to the LogEvent. As such, the Throwable in the event should
-     * not be used once the LogEvent has been constructed.
+     * The {@link Throwable} provided along with the message by one of the following means:
+     * <ol>
+     * <li>explicitly in the constructor</li>
+     * <li>as the last message argument that is <b>not</b> referred to by any placeholder in the formatting pattern</li>
+     * </ol>
      *
-     * @return the Throwable, if any.
+     * @return the {@link Throwable} provided along with the message
      */
     @Override
     public Throwable getThrowable() {
@@ -194,88 +228,75 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     /**
      * Returns the formatted message.
-     * @return the formatted message.
+     * <p>
+     * If possible, the result will be cached for subsequent invocations.
+     * </p>
+     *
+     * @return the formatted message
      */
     @Override
     public String getFormattedMessage() {
         if (formattedMessage == null) {
-            final StringBuilder buffer = getThreadLocalStringBuilder();
-            formatTo(buffer);
-            formattedMessage = buffer.toString();
-            StringBuilders.trimToMaxSize(buffer, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+            if (STRING_BUILDER_HOLDER != null) {
+                final StringBuilder buffer = STRING_BUILDER_HOLDER.get();
+                buffer.setLength(0);
+                formatTo(buffer);
+                formattedMessage = buffer.toString();
+                StringBuilders.trimToMaxSize(buffer, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+            } else {
+                final StringBuilder buffer = new StringBuilder();
+                formatTo(buffer);
+                formattedMessage = buffer.toString();
+            }
         }
         return formattedMessage;
-    }
-
-    private static StringBuilder getThreadLocalStringBuilder() {
-        StringBuilder buffer = threadLocalStringBuilder.get();
-        if (buffer == null) {
-            buffer = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-            threadLocalStringBuilder.set(buffer);
-        }
-        buffer.setLength(0);
-        return buffer;
     }
 
     @Override
     public void formatTo(final StringBuilder buffer) {
         if (formattedMessage != null) {
             buffer.append(formattedMessage);
-        } else if (indices[0] < 0) {
-            ParameterFormatter.formatMessage(buffer, messagePattern, argArray, usedCount);
         } else {
-            ParameterFormatter.formatMessage2(buffer, messagePattern, argArray, usedCount, indices);
+            final int argCount = args != null ? args.length : 0;
+            ParameterFormatter.formatMessage(buffer, pattern, args, argCount, patternAnalysis);
         }
     }
 
     /**
-     * Replace placeholders in the given messagePattern with arguments.
-     *
-     * @param messagePattern the message pattern containing placeholders.
-     * @param arguments      the arguments to be used to replace placeholders.
-     * @return the formatted message.
+     * @param pattern a message pattern containing argument placeholders
+     * @param args arguments to be used to replace placeholders
+     * @return the formatted message
      */
-    public static String format(final String messagePattern, final Object[] arguments) {
-        return ParameterFormatter.format(messagePattern, arguments);
+    public static String format(final String pattern, final Object[] args) {
+        final int argCount = args != null ? args.length : 0;
+        return ParameterFormatter.format(pattern, args, argCount);
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
+    public boolean equals(final Object object) {
+        if (this == object) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-
-        final ParameterizedMessage that = (ParameterizedMessage) o;
-
-        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
-            return false;
-        }
-        if (!Arrays.equals(this.argArray, that.argArray)) {
-            return false;
-        }
-        //if (throwable != null ? !throwable.equals(that.throwable) : that.throwable != null) return false;
-
-        return true;
+        final ParameterizedMessage that = (ParameterizedMessage) object;
+        return Objects.equals(pattern, that.pattern) && Arrays.equals(args, that.args);
     }
 
     @Override
     public int hashCode() {
-        int result = messagePattern != null ? messagePattern.hashCode() : 0;
-        result = HASHVAL * result + (argArray != null ? Arrays.hashCode(argArray) : 0);
+        int result = pattern != null ? pattern.hashCode() : 0;
+        result = 31 * result + (args != null ? Arrays.hashCode(args) : 0);
         return result;
     }
 
     /**
-     * Counts the number of unescaped placeholders in the given messagePattern.
-     *
-     * @param messagePattern the message pattern to be analyzed.
-     * @return the number of unescaped placeholders.
+     * @param pattern the message pattern to be analyzed
+     * @return the number of argument placeholders
      */
-    public static int countArgumentPlaceholders(final String messagePattern) {
-        return ParameterFormatter.countArgumentPlaceholders(messagePattern);
+    public static int countArgumentPlaceholders(final String pattern) {
+        return analyzePattern(pattern).placeholderCount;
     }
 
     /**
@@ -326,7 +347,8 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     @Override
     public String toString() {
-        return "ParameterizedMessage[messagePattern=" + messagePattern + ", stringArgs=" +
-                Arrays.toString(argArray) + ", throwable=" + throwable + ']';
+        return "ParameterizedMessage[messagePattern=" + pattern + ", stringArgs=" +
+                Arrays.toString(args) + ", throwable=" + throwable + ']';
     }
+
 }

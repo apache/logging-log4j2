@@ -65,310 +65,235 @@ final class ParameterFormatter {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
             .withZone(ZoneId.systemDefault());
 
-    private ParameterFormatter() {
+    private ParameterFormatter() {}
+
+    /**
+     * Analyzes – finds argument placeholder (i.e., {@literal "{}"}) occurrences, etc. – the given message pattern.
+     * <p>
+     * Only {@literal "{}"} strings are treated as argument placeholders.
+     * Escaped or incomplete argument placeholders will be ignored.
+     * Some invalid argument placeholder examples:
+     * </p>
+     * <pre>
+     * { }
+     * foo\{}
+     * {bar
+     * {buzz}
+     * </pre>
+     *
+     * @param pattern a message pattern to be analyzed
+     * @return the analysis result
+     */
+    static MessagePatternAnalysis analyzePattern(final String pattern) {
+        final int maxPlaceholderCount = pattern == null ? 0 : pattern.length() >> 1;
+        MessagePatternAnalysis analysis = new MessagePatternAnalysis();
+        analysis.placeholderCharIndices = new int[maxPlaceholderCount];
+        analyzePattern(pattern, analysis);
+        return analysis;
     }
 
     /**
-     * Counts the number of unescaped placeholders in the given messagePattern.
+     * Analyzes – finds argument placeholder (i.e., {@literal "{}"}) occurrences, etc. – the given message pattern.
+     * <p>
+     * Only {@literal "{}"} strings are treated as argument placeholders.
+     * Escaped or incomplete argument placeholders will be ignored.
+     * Some invalid argument placeholder examples:
+     * </p>
+     * <pre>
+     * { }
+     * foo\{}
+     * {bar
+     * {buzz}
+     * </pre>
      *
-     * @param messagePattern the message pattern to be analyzed.
-     * @return the number of unescaped placeholders.
+     * @param pattern a message pattern to be analyzed
+     * @param analysis an object to store the results
+     * @return {@code true}, if analysis is successful; {@code false} on insufficient {@link MessagePatternAnalysis#placeholderCharIndices index array} capacity
      */
-    static int countArgumentPlaceholders(final String messagePattern) {
-        if (messagePattern == null) {
-            return 0;
+    static boolean analyzePattern(final String pattern, final MessagePatternAnalysis analysis) {
+
+        // Short-circuit if there is nothing interesting
+        final int l;
+        if (pattern == null || (l = pattern.length()) < 2) {
+            analysis.placeholderCount = 0;
+            return true;
         }
-        final int length = messagePattern.length();
-        int result = 0;
-        boolean isEscaped = false;
-        for (int i = 0; i < length - 1; i++) {
-            final char curChar = messagePattern.charAt(i);
-            if (curChar == ESCAPE_CHAR) {
-                isEscaped = !isEscaped;
-            } else if (curChar == DELIM_START) {
-                if (!isEscaped && messagePattern.charAt(i + 1) == DELIM_STOP) {
-                    result++;
-                    i++;
-                }
-                isEscaped = false;
+
+        // Count `{}` occurrences that is not escaped, i.e., not `\`-prefixed
+        boolean escaped = false;
+        analysis.placeholderCount = 0;
+        analysis.escapedCharFound = false;
+        for (int i = 0; i < (l - 1); i++) {
+            final char c = pattern.charAt(i);
+            if (c == ESCAPE_CHAR) {
+                analysis.escapedCharFound = true;
+                escaped = !escaped;
             } else {
-                isEscaped = false;
+                if (escaped) {
+                    escaped = false;
+                    if (c == DELIM_START) {
+                        analysis.escapedCharFound = true;
+                    }
+                } else if (c == DELIM_START && pattern.charAt(i + 1) == DELIM_STOP) {
+                    if (analysis.placeholderCount < analysis.placeholderCharIndices.length) {
+                        analysis.placeholderCharIndices[analysis.placeholderCount++] = i++;
+                    } else {
+                        return false;
+                    }
+                }
             }
         }
-        return result;
+        return true;
+
     }
 
     /**
-     * Counts the number of unescaped placeholders in the given messagePattern.
-     *
-     * @param messagePattern the message pattern to be analyzed.
-     * @return the number of unescaped placeholders.
+     * @see #analyzePattern(String, MessagePatternAnalysis)
      */
-    static int countArgumentPlaceholders2(final String messagePattern, final int[] indices) {
-        if (messagePattern == null) {
-            return 0;
-        }
-        final int length = messagePattern.length();
-        int result = 0;
-        boolean isEscaped = false;
-        for (int i = 0; i < length - 1; i++) {
-            final char curChar = messagePattern.charAt(i);
-            if (curChar == ESCAPE_CHAR) {
-                isEscaped = !isEscaped;
-                indices[0] = -1; // escaping means fast path is not available...
-                result++;
-            } else if (curChar == DELIM_START) {
-                if (!isEscaped && messagePattern.charAt(i + 1) == DELIM_STOP) {
-                    indices[result] = i;
-                    result++;
-                    i++;
-                }
-                isEscaped = false;
-            } else {
-                isEscaped = false;
-            }
-        }
-        return result;
+    static final class MessagePatternAnalysis {
+
+        /**
+         * The total number of argument placeholder occurrences.
+         */
+        int placeholderCount;
+
+        /**
+         * The array of indices pointing to the first character of the found argument placeholder occurrences.
+         */
+        int[] placeholderCharIndices;
+
+        /**
+         * Flag indicating if an escaped (i.e., `\`-prefixed) character is found.
+         */
+        boolean escapedCharFound;
+
     }
 
     /**
-     * Counts the number of unescaped placeholders in the given messagePattern.
+     * Format the following pattern using provided arguments.
      *
-     * @param messagePattern the message pattern to be analyzed.
-     * @return the number of unescaped placeholders.
+     * @param pattern a formatting pattern
+     * @param args arguments to be formatted
+     * @return the formatted message
      */
-    static int countArgumentPlaceholders3(final char[] messagePattern, final int length, final int[] indices) {
-        int result = 0;
-        boolean isEscaped = false;
-        for (int i = 0; i < length - 1; i++) {
-            final char curChar = messagePattern[i];
-            if (curChar == ESCAPE_CHAR) {
-                isEscaped = !isEscaped;
-            } else if (curChar == DELIM_START) {
-                if (!isEscaped && messagePattern[i + 1] == DELIM_STOP) {
-                    indices[result] = i;
-                    result++;
-                    i++;
-                }
-                isEscaped = false;
-            } else {
-                isEscaped = false;
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Replace placeholders in the given messagePattern with arguments.
-     *
-     * @param messagePattern the message pattern containing placeholders.
-     * @param arguments      the arguments to be used to replace placeholders.
-     * @return the formatted message.
-     */
-    static String format(final String messagePattern, final Object[] arguments) {
+    static String format(final String pattern, final Object[] args, int argCount) {
         final StringBuilder result = new StringBuilder();
-        final int argCount = arguments == null ? 0 : arguments.length;
-        formatMessage(result, messagePattern, arguments, argCount);
+        final MessagePatternAnalysis analysis = analyzePattern(pattern);
+        formatMessage(result, pattern, args, argCount, analysis);
         return result.toString();
     }
 
-    /**
-     * Replace placeholders in the given messagePattern with arguments.
-     *
-     * @param buffer the buffer to write the formatted message into
-     * @param messagePattern the message pattern containing placeholders.
-     * @param arguments      the arguments to be used to replace placeholders.
-     */
-    static void formatMessage2(final StringBuilder buffer, final String messagePattern,
-            final Object[] arguments, final int argCount, final int[] indices) {
-        if (messagePattern == null || arguments == null || argCount == 0) {
-            buffer.append(messagePattern);
+    static void formatMessage(
+            final StringBuilder buffer,
+            final String pattern,
+            final Object[] args,
+            final int argCount,
+            final MessagePatternAnalysis analysis) {
+
+        // Short-circuit if there is nothing interesting
+        if (pattern == null || args == null || analysis.placeholderCount == 0) {
+            buffer.append(pattern);
             return;
         }
-        int previous = 0;
-        for (int i = 0; i < argCount; i++) {
-            buffer.append(messagePattern, previous, indices[i]);
-            previous = indices[i] + 2;
-            recursiveDeepToString(arguments[i], buffer);
+
+        // Fail if there are insufficient arguments
+        if (analysis.placeholderCount > args.length) {
+            final String message = String.format(
+                    "found %d argument placeholders, but provided %d for pattern `%s`",
+                    analysis.placeholderCount,
+                    args.length,
+                    pattern);
+            throw new IllegalArgumentException(message);
         }
-        buffer.append(messagePattern, previous, messagePattern.length());
+
+        // Fast-path for patterns containing no escapes
+        if (analysis.escapedCharFound) {
+            formatMessageContainingEscapes(buffer, pattern, args, argCount, analysis);
+        }
+
+        // Slow-path for patterns containing escapes
+        else {
+            formatMessageContainingNoEscapes(buffer, pattern, args, argCount, analysis);
+        }
+
     }
 
-    /**
-     * Replace placeholders in the given messagePattern with arguments.
-     *
-     * @param buffer the buffer to write the formatted message into
-     * @param messagePattern the message pattern containing placeholders.
-     * @param arguments      the arguments to be used to replace placeholders.
-     */
-    static void formatMessage3(final StringBuilder buffer, final char[] messagePattern, final int patternLength,
-            final Object[] arguments, final int argCount, final int[] indices) {
-        if (messagePattern == null) {
-            return;
+    static void formatMessageContainingNoEscapes(
+            final StringBuilder buffer,
+            final String pattern,
+            final Object[] args,
+            final int argCount,
+            final MessagePatternAnalysis analysis) {
+
+        // Format each argument and the text preceding it
+        int precedingTextStartIndex = 0;
+        final int argLimit = Math.min(analysis.placeholderCount, argCount);
+        for (int argIndex = 0; argIndex < argLimit; argIndex++) {
+            final int placeholderCharIndex = analysis.placeholderCharIndices[argIndex];
+            buffer.append(pattern, precedingTextStartIndex, placeholderCharIndex);
+            recursiveDeepToString(args[argIndex], buffer);
+            precedingTextStartIndex = placeholderCharIndex + 2;
         }
-        if (arguments == null || argCount == 0) {
-            buffer.append(messagePattern);
-            return;
-        }
-        int previous = 0;
-        for (int i = 0; i < argCount; i++) {
-            buffer.append(messagePattern, previous, indices[i]);
-            previous = indices[i] + 2;
-            recursiveDeepToString(arguments[i], buffer);
-        }
-        buffer.append(messagePattern, previous, patternLength);
+
+        // Format the last trailing text
+        buffer.append(pattern, precedingTextStartIndex, pattern.length());
+
     }
 
-    /**
-     * Replace placeholders in the given messagePattern with arguments.
-     *
-     * @param buffer the buffer to write the formatted message into
-     * @param messagePattern the message pattern containing placeholders.
-     * @param arguments      the arguments to be used to replace placeholders.
-     */
-    static void formatMessage(final StringBuilder buffer, final String messagePattern,
-            final Object[] arguments, final int argCount) {
-        if (messagePattern == null || arguments == null || argCount == 0) {
-            buffer.append(messagePattern);
-            return;
+    static void formatMessageContainingEscapes(
+            final StringBuilder buffer,
+            final String pattern,
+            final Object[] args,
+            final int argCount,
+            final MessagePatternAnalysis analysis) {
+
+        // Format each argument and the text preceding it
+        int precedingTextStartIndex = 0;
+        final int argLimit = Math.min(analysis.placeholderCount, argCount);
+        for (int argIndex = 0; argIndex < argLimit; argIndex++) {
+            final int placeholderCharIndex = analysis.placeholderCharIndices[argIndex];
+            copyMessagePatternContainingEscapes(buffer, pattern, precedingTextStartIndex, placeholderCharIndex);
+            recursiveDeepToString(args[argIndex], buffer);
+            precedingTextStartIndex = placeholderCharIndex + 2;
         }
-        int escapeCounter = 0;
-        int currentArgument = 0;
-        int i = 0;
-        final int len = messagePattern.length();
-        for (; i < len - 1; i++) { // last char is excluded from the loop
-            final char curChar = messagePattern.charAt(i);
-            if (curChar == ESCAPE_CHAR) {
-                escapeCounter++;
-            } else {
-                if (isDelimPair(curChar, messagePattern, i)) { // looks ahead one char
-                    i++;
 
-                    // write escaped escape chars
-                    writeEscapedEscapeChars(escapeCounter, buffer);
+        // Format the last trailing text
+        copyMessagePatternContainingEscapes(buffer, pattern, precedingTextStartIndex, pattern.length());
 
-                    if (isOdd(escapeCounter)) {
-                        // i.e. escaped: write escaped escape chars
-                        writeDelimPair(buffer);
-                    } else {
-                        // unescaped
-                        writeArgOrDelimPair(arguments, argCount, currentArgument, buffer);
-                        currentArgument++;
-                    }
+    }
+
+    private static void copyMessagePatternContainingEscapes(
+            final StringBuilder buffer,
+            final String pattern,
+            final int startIndex,
+            final int endIndex) {
+        boolean escaped = false;
+        int i = startIndex;
+        for (; i < endIndex; i++) {
+            final char c = pattern.charAt(i);
+            if (c == ESCAPE_CHAR) {
+                if (escaped) {
+                    // Found an escaped `\`, skip appending it
+                    escaped = false;
                 } else {
-                    handleLiteralChar(buffer, escapeCounter, curChar);
+                    escaped = true;
+                    buffer.append(c);
                 }
-                escapeCounter = 0;
+            } else {
+                if (escaped) {
+                    if (c == DELIM_START && pattern.charAt(i + 1) == DELIM_STOP) {
+                        // Found an escaped placeholder, override the earlier appended `\`
+                        buffer.setLength(buffer.length() - 1);
+                        buffer.append("{}");
+                        i++;
+                    } else {
+                        buffer.append(c);
+                    }
+                    escaped = false;
+                } else {
+                    buffer.append(c);
+                }
             }
-        }
-        handleRemainingCharIfAny(messagePattern, len, buffer, escapeCounter, i);
-    }
-
-    /**
-     * Returns {@code true} if the specified char and the char at {@code curCharIndex + 1} in the specified message
-     * pattern together form a "{}" delimiter pair, returns {@code false} otherwise.
-     */
-    // Profiling showed this method is important to log4j performance. Modify with care!
-    // 22 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static boolean isDelimPair(final char curChar, final String messagePattern, final int curCharIndex) {
-        return curChar == DELIM_START && messagePattern.charAt(curCharIndex + 1) == DELIM_STOP;
-    }
-
-    /**
-     * Detects whether the message pattern has been fully processed or if an unprocessed character remains and processes
-     * it if necessary, returning the resulting position in the result char array.
-     */
-    // Profiling showed this method is important to log4j performance. Modify with care!
-    // 28 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void handleRemainingCharIfAny(final String messagePattern, final int len,
-            final StringBuilder buffer, final int escapeCounter, final int i) {
-        if (i == len - 1) {
-            final char curChar = messagePattern.charAt(i);
-            handleLastChar(buffer, escapeCounter, curChar);
-        }
-    }
-
-    /**
-     * Processes the last unprocessed character and returns the resulting position in the result char array.
-     */
-    // Profiling showed this method is important to log4j performance. Modify with care!
-    // 28 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void handleLastChar(final StringBuilder buffer, final int escapeCounter, final char curChar) {
-        if (curChar == ESCAPE_CHAR) {
-            writeUnescapedEscapeChars(escapeCounter + 1, buffer);
-        } else {
-            handleLiteralChar(buffer, escapeCounter, curChar);
-        }
-    }
-
-    /**
-     * Processes a literal char (neither an '\' escape char nor a "{}" delimiter pair) and returns the resulting
-     * position.
-     */
-    // Profiling showed this method is important to log4j performance. Modify with care!
-    // 16 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void handleLiteralChar(final StringBuilder buffer, final int escapeCounter, final char curChar) {
-        // any other char beside ESCAPE or DELIM_START/STOP-combo
-        // write unescaped escape chars
-        writeUnescapedEscapeChars(escapeCounter, buffer);
-        buffer.append(curChar);
-    }
-
-    /**
-     * Writes "{}" to the specified result array at the specified position and returns the resulting position.
-     */
-    // Profiling showed this method is important to log4j performance. Modify with care!
-    // 18 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void writeDelimPair(final StringBuilder buffer) {
-        buffer.append(DELIM_START);
-        buffer.append(DELIM_STOP);
-    }
-
-    /**
-     * Returns {@code true} if the specified parameter is odd.
-     */
-    // Profiling showed this method is important to log4j performance. Modify with care!
-    // 11 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static boolean isOdd(final int number) {
-        return (number & 1) == 1;
-    }
-
-    /**
-     * Writes a '\' char to the specified result array (starting at the specified position) for each <em>pair</em> of
-     * '\' escape chars encountered in the message format and returns the resulting position.
-     */
-    // Profiling showed this method is important to log4j performance. Modify with care!
-    // 11 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void writeEscapedEscapeChars(final int escapeCounter, final StringBuilder buffer) {
-        final int escapedEscapes = escapeCounter >> 1; // divide by two
-        writeUnescapedEscapeChars(escapedEscapes, buffer);
-    }
-
-    /**
-     * Writes the specified number of '\' chars to the specified result array (starting at the specified position) and
-     * returns the resulting position.
-     */
-    // Profiling showed this method is important to log4j performance. Modify with care!
-    // 20 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void writeUnescapedEscapeChars(int escapeCounter, final StringBuilder buffer) {
-        while (escapeCounter > 0) {
-            buffer.append(ESCAPE_CHAR);
-            escapeCounter--;
-        }
-    }
-
-    /**
-     * Appends the argument at the specified argument index (or, if no such argument exists, the "{}" delimiter pair) to
-     * the specified result char array at the specified position and returns the resulting position.
-     */
-    // Profiling showed this method is important to log4j performance. Modify with care!
-    // 25 bytes (allows immediate JVM inlining: < 35 bytes) LOG4J2-1096
-    private static void writeArgOrDelimPair(final Object[] arguments, final int argCount, final int currentArgument,
-            final StringBuilder buffer) {
-        if (currentArgument < argCount) {
-            recursiveDeepToString(arguments[currentArgument], buffer);
-        } else {
-            writeDelimPair(buffer);
         }
     }
 
@@ -577,15 +502,14 @@ final class ParameterFormatter {
             final Map<?, ?> oMap = (Map<?, ?>) o;
             str.append('{');
             boolean isFirst = true;
-            for (final Object o1 : oMap.entrySet()) {
-                final Map.Entry<?, ?> current = (Map.Entry<?, ?>) o1;
+            for (final Map.Entry<?, ?> entry : oMap.entrySet()) {
                 if (isFirst) {
                     isFirst = false;
                 } else {
                     str.append(", ");
                 }
-                final Object key = current.getKey();
-                final Object value = current.getValue();
+                final Object key = entry.getKey();
+                final Object value = entry.getValue();
                 recursiveDeepToString(key, str, cloneDejaVu(effectiveDejaVu));
                 str.append('=');
                 recursiveDeepToString(value, str, cloneDejaVu(effectiveDejaVu));

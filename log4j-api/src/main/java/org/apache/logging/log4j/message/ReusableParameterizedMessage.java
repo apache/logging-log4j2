@@ -18,6 +18,7 @@ package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -33,16 +34,15 @@ import org.apache.logging.log4j.util.StringBuilders;
 public class ReusableParameterizedMessage implements ReusableMessage, ParameterVisitable, Clearable {
 
     private static final int MIN_BUILDER_SIZE = 512;
-    private static final int MAX_PARMS = 10;
+    private static final int MAX_PARAMS = 10;
     private static final long serialVersionUID = 7800075879295123856L;
     private transient ThreadLocal<StringBuilder> buffer; // non-static: LOG4J2-1583
 
     private String messagePattern;
+    private MessagePatternAnalysis patternAnalysis;
     private int argCount;
-    private int usedCount;
-    private final int[] indices = new int[256];
     private transient Object[] varargs;
-    private transient Object[] params = new Object[MAX_PARMS];
+    private transient Object[] params = new Object[MAX_PARAMS];
     private transient Throwable throwable;
     transient boolean reserved = false; // LOG4J2-1583 prevent scrambled logs with nested logging calls
 
@@ -66,7 +66,7 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         Object[] result;
         if (varargs == null) {
             result = params;
-            if (emptyReplacement.length >= MAX_PARMS) {
+            if (emptyReplacement.length >= MAX_PARAMS) {
                 params = emptyReplacement;
             } else if (argCount <= emptyReplacement.length) {
                 // Bad replacement! Too small, may blow up future 10-arg messages.
@@ -79,7 +79,7 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
                 result = emptyReplacement;
             } else {
                 // replacement array is too small for current content and future content: discard it
-                params = new Object[MAX_PARMS];
+                params = new Object[MAX_PARAMS];
             }
         } else {
             // The returned array will be reused by the caller in future swapParameter() calls.
@@ -119,30 +119,28 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         return new ParameterizedMessage(messagePattern, getTrimmedParams());
     }
 
-    private void init(final String messagePattern, final int argCount, final Object[] paramArray) {
+    private void init(final String messagePattern, final int argCount, final Object[] args) {
         this.varargs = null;
         this.messagePattern = messagePattern;
         this.argCount = argCount;
-        final int placeholderCount = count(messagePattern, indices);
-        initThrowable(paramArray, argCount, placeholderCount);
-        this.usedCount = Math.min(placeholderCount, argCount);
+        this.patternAnalysis = analyzePattern(messagePattern, patternAnalysis);
+        this.throwable = determineThrowable(args, argCount, patternAnalysis.placeholderCount);
     }
 
-    private static int count(final String messagePattern, final int[] indices) {
-        try {
-            // try the fast path first
-            return ParameterFormatter.countArgumentPlaceholders2(messagePattern, indices);
-        } catch (final Exception ex) { // fallback if more than int[] length (256) parameter placeholders
-            return ParameterFormatter.countArgumentPlaceholders(messagePattern);
-        }
+    private static MessagePatternAnalysis analyzePattern(final String pattern, final MessagePatternAnalysis patternAnalysis) {
+        return (patternAnalysis != null && ParameterFormatter.analyzePattern(pattern, patternAnalysis))
+                ? patternAnalysis
+                : ParameterFormatter.analyzePattern(pattern);
     }
 
-    private void initThrowable(final Object[] params, final int argCount, final int usedParams) {
-        if (usedParams < argCount && params[argCount - 1] instanceof Throwable) {
-            this.throwable = (Throwable) params[argCount - 1];
-        } else {
-            this.throwable = null;
+    private static Throwable determineThrowable(final Object[] args, final int argCount, final int placeholderCount) {
+        if (placeholderCount < argCount) {
+            final Object lastArg = args[argCount - 1];
+            if (lastArg instanceof Throwable) {
+                return (Throwable) lastArg;
+            }
         }
+        return null;
     }
 
     ReusableParameterizedMessage set(final String messagePattern, final Object... arguments) {
@@ -321,11 +319,7 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
 
     @Override
     public void formatTo(final StringBuilder builder) {
-        if (indices[0] < 0) {
-            ParameterFormatter.formatMessage(builder, messagePattern, getParams(), argCount);
-        } else {
-            ParameterFormatter.formatMessage2(builder, messagePattern, getParams(), usedCount, indices);
-        }
+        ParameterFormatter.formatMessage(builder, messagePattern, getParams(), argCount, patternAnalysis);
     }
 
     /**
