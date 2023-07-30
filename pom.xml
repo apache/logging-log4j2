@@ -364,7 +364,7 @@
     <rewrite-static-analysis.version>1.0.4</rewrite-static-analysis.version>
     <spotbugs-maven-plugin.version>4.7.3.5</spotbugs-maven-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
-    <surefire.version>3.0.0-M9</surefire.version>
+    <surefire.version>3.1.2</surefire.version>
     <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
     <!-- See https://maven.apache.org/plugins/maven-site-plugin/migrate.html -->
     <velocity.plugin.version>1.5</velocity.plugin.version>
