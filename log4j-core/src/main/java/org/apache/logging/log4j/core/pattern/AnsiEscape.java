@@ -347,6 +347,7 @@ public enum AnsiEscape {
      * Bright white background color.
      */
     BG_BRIGHT_WHITE("107");
+    private static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     private static final String DEFAULT_STYLE = CSI.getCode() + SUFFIX.getCode();
 
@@ -431,6 +432,8 @@ public enum AnsiEscape {
                 final String value = keyValue[1];
                 final boolean escape = Arrays.binarySearch(sortedIgnoreKeys, key) < 0;
                 map.put(key, escape ? createSequence(value.split("\\s")) : value);
+            } else {
+                LOGGER.warn("Usage of incorrect syntax for highlighting style: \"{}\". Provide style configuration as follows Key=Value", string);
             }
         }
         return map;
