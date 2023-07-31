@@ -369,7 +369,7 @@
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <rewrite-java.version>8.1.12</rewrite-java.version>
     <rewrite-maven-plugin.version>5.0.0</rewrite-maven-plugin.version>
-    <rewrite-static-analysis.version>1.0.0</rewrite-static-analysis.version>
+    <rewrite-static-analysis.version>1.0.4</rewrite-static-analysis.version>
     <spotbugs-maven-plugin.version>4.7.2.1</spotbugs-maven-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.0.0-M7</surefire.version>
