@@ -30,6 +30,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Implementation Documentation</docLabel>
     <projectDir>/core</projectDir>
+    <maven.compiler.release>9</maven.compiler.release>
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
   <dependencies>
@@ -102,13 +103,6 @@
               <goal>compile</goal>
             </goals>
             <phase>compile</phase>
-          </execution>
-          <execution>
-            <id>default-test-compile</id>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-            <phase>test-compile</phase>
           </execution>
         </executions>
       </plugin>

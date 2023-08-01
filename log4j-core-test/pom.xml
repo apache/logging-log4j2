@@ -446,4 +446,23 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>java9-tests</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <argLine>--illegal-access=warn</argLine>
+              <jdkToolchain>
+                <version>[9, )</version>
+              </jdkToolchain>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

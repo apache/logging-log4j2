@@ -21,14 +21,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -37,6 +33,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.NullOutputStream;
+import org.apache.logging.log4j.core.util.internal.UnsafeUtil;
 import org.apache.logging.log4j.util.Constants;
 
 //Lines too long...
@@ -222,17 +219,10 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         }
     }
 
-    private static void unsafeUnmap(final MappedByteBuffer mbb) throws PrivilegedActionException {
+    private static void unsafeUnmap(final MappedByteBuffer mbb) throws Exception {
         LOGGER.debug("MMapAppender unmapping old buffer...");
         final long startNanos = System.nanoTime();
-        AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
-            final Method getCleanerMethod = mbb.getClass().getMethod("cleaner");
-            getCleanerMethod.setAccessible(true);
-            final Object cleaner = getCleanerMethod.invoke(mbb); // sun.misc.Cleaner instance
-            final Method cleanMethod = cleaner.getClass().getMethod("clean");
-            cleanMethod.invoke(cleaner);
-            return null;
-        });
+        UnsafeUtil.clean(mbb);
         final float millis = (float) ((System.nanoTime() - startNanos) / NANOS_PER_MILLISEC);
         LOGGER.debug("MMapAppender unmapped buffer OK in {} millis", millis);
     }
