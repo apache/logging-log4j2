@@ -41,6 +41,8 @@ It is usually not possible to remove them. Please don't send and confidential in
 
 `Stack Overflow` is monitored when you ask questions tagged with either http://stackoverflow.com/questions/tagged/log4j[log4j] or http://stackoverflow.com/questions/tagged/log4j2[log4j2]. Please note that *Stack Overflow is monitored more casually due to time constraints*. If you don't receive an answer on Stack Overflow, please contact us on the mailing list mentioned above.
 
+Please also see our link:/faq.html[FAQ] before sending e-mails.
+
 == Maintainer Discussions
 
 Apache Log4j project officially uses mailing lists for discussions related
