@@ -42,6 +42,7 @@ public class ParameterFormatterTest {
             "1,0,true,{}\\{}",
             "1,2,true,\\\\{}",
             "2,8:10,true,foo \\{} {}{}",
+            "2,8:10,true,foo {\\} {}{}",
             "2,0:2,false,{}{}",
             "3,0:2:4,false,{}{}{}",
             "4,0:2:4:8,false,{}{}{}aa{}",
@@ -176,6 +177,12 @@ public class ParameterFormatterTest {
                         new Object[]{1, 2},
                         1,
                         "missing arg 1 {}"
+                },
+                new Object[]{
+                        "foo {\\} {}",
+                        new Object[]{"bar"},
+                        1,
+                        "foo {\\} bar"
                 }
         };
     }
