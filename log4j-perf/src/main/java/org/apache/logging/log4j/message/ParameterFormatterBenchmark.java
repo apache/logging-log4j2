@@ -47,48 +47,48 @@ public class ParameterFormatterBenchmark {
 
     @State(Scope.Thread)
     public static class ThreadState {
-        
+
         private final MessagePatternAnalysis analysis = new MessagePatternAnalysis();
-        
+
         private final StringBuilder buffer = new StringBuilder(2048);
-        
+
         public ThreadState() {
-            analysis.placeholderCharIndices = new int[9];
+            analysis.placeholderCharIndices = new int[10];
         }
-        
+
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int latency3ParamsVy(final ThreadState state) {
-        return latencyParamsVy(state, "p1={}, p2={}, p3={}");
+    public int latency3Params(final ThreadState state) {
+        return latencyParams(state, "p1={}, p2={}, p3={}");
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int latency5ParamsVy(final ThreadState state) {
-        return latencyParamsVy(state, "p1={}, p2={}, p3={}, p4={}, p5={}");
+    public int latency5Params(final ThreadState state) {
+        return latencyParams(state, "p1={}, p2={}, p3={}, p4={}, p5={}");
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int latency7ParamsVy(final ThreadState state) {
-        return latencyParamsVy(state, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}");
+    public int latency7Params(final ThreadState state) {
+        return latencyParams(state, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}");
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int latency9ParamsVy(final ThreadState state) {
-        return latencyParamsVy(state, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}");
+    public int latency9Params(final ThreadState state) {
+        return latencyParams(state, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}");
     }
 
-    private static int latencyParamsVy(final ThreadState state, final String pattern) {
+    private static int latencyParams(final ThreadState state, final String pattern) {
         state.buffer.setLength(0);
-        ParameterFormatter.analyzePattern(pattern, state.analysis);
+        ParameterFormatter.analyzePattern(pattern, -1, state.analysis);
         ParameterFormatter.formatMessage(state.buffer, pattern, ARGS, state.analysis.placeholderCount, state.analysis);
         return state.buffer.length();
     }

@@ -18,13 +18,7 @@ package org.apache.logging.log4j.message;
 
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.logging.log4j.util.StringBuilders;
 
@@ -82,13 +76,15 @@ final class ParameterFormatter {
      * </pre>
      *
      * @param pattern a message pattern to be analyzed
+     * @param argCount
+     * The number of arguments to be formatted.
+     * For instance, for a parametrized message containing 7 placeholders in the pattern and 4 arguments for formatting, analysis will only need to store the index of the first 4 placeholder characters.
+     * A negative value indicates no limit.
      * @return the analysis result
      */
-    static MessagePatternAnalysis analyzePattern(final String pattern) {
-        final int maxPlaceholderCount = pattern == null ? 0 : pattern.length() >> 1;
+    static MessagePatternAnalysis analyzePattern(final String pattern, final int argCount) {
         MessagePatternAnalysis analysis = new MessagePatternAnalysis();
-        analysis.placeholderCharIndices = new int[maxPlaceholderCount];
-        analyzePattern(pattern, analysis);
+        analyzePattern(pattern, argCount, analysis);
         return analysis;
     }
 
@@ -107,16 +103,22 @@ final class ParameterFormatter {
      * </pre>
      *
      * @param pattern a message pattern to be analyzed
+     * @param argCount
+     * The number of arguments to be formatted.
+     * For instance, for a parametrized message containing 7 placeholders in the pattern and 4 arguments for formatting, analysis will only need to store the index of the first 4 placeholder characters.
+     * A negative value indicates no limit.
      * @param analysis an object to store the results
-     * @return {@code true}, if analysis is successful; {@code false} on insufficient {@link MessagePatternAnalysis#placeholderCharIndices index array} capacity
      */
-    static boolean analyzePattern(final String pattern, final MessagePatternAnalysis analysis) {
+    static void analyzePattern(
+            final String pattern,
+            final int argCount,
+            final MessagePatternAnalysis analysis) {
 
         // Short-circuit if there is nothing interesting
         final int l;
         if (pattern == null || (l = pattern.length()) < 2) {
             analysis.placeholderCount = 0;
-            return true;
+            return;
         }
 
         // Count `{}` occurrences that is not escaped, i.e., not `\`-prefixed
@@ -131,26 +133,36 @@ final class ParameterFormatter {
             } else {
                 if (escaped) {
                     escaped = false;
-                    if (c == DELIM_START) {
-                        analysis.escapedCharFound = true;
-                    }
                 } else if (c == DELIM_START && pattern.charAt(i + 1) == DELIM_STOP) {
-                    if (analysis.placeholderCount < analysis.placeholderCharIndices.length) {
+                    if (argCount < 0 || analysis.placeholderCount < argCount) {
+                        analysis.ensurePlaceholderCharIndicesCapacity(argCount);
                         analysis.placeholderCharIndices[analysis.placeholderCount++] = i++;
-                    } else {
-                        return false;
+                    }
+                    // `argCount` is exceeded, skip storing the index
+                    else {
+                        analysis.placeholderCount++;
+                        i++;
                     }
                 }
             }
         }
-        return true;
 
     }
 
     /**
-     * @see #analyzePattern(String, MessagePatternAnalysis)
+     * @see #analyzePattern(String, int, MessagePatternAnalysis)
      */
     static final class MessagePatternAnalysis {
+
+        /**
+         * The size of the {@link #placeholderCharIndices} buffer to be allocated if it is found to be null.
+         */
+        private static final int PLACEHOLDER_CHAR_INDEX_BUFFER_INITIAL_SIZE = 8;
+
+        /**
+         * The size {@link #placeholderCharIndices} buffer will be extended with if it has found to be insufficient.
+         */
+        private static final int PLACEHOLDER_CHAR_INDEX_BUFFER_SIZE_INCREMENT = 8;
 
         /**
          * The total number of argument placeholder occurrences.
@@ -167,6 +179,26 @@ final class ParameterFormatter {
          */
         boolean escapedCharFound;
 
+        private void ensurePlaceholderCharIndicesCapacity(final int argCount) {
+
+            // Initialize the index buffer, if necessary
+            if (placeholderCharIndices == null) {
+                final int length = Math.max(argCount, PLACEHOLDER_CHAR_INDEX_BUFFER_INITIAL_SIZE);
+                placeholderCharIndices = new int[length];
+            }
+
+            // Extend the index buffer, if necessary
+            else if (placeholderCount >= placeholderCharIndices.length) {
+                final int newLength = argCount > 0
+                        ? argCount
+                        : Math.addExact(placeholderCharIndices.length, PLACEHOLDER_CHAR_INDEX_BUFFER_SIZE_INCREMENT);
+                final int[] newPlaceholderCharIndices = new int[newLength];
+                System.arraycopy(placeholderCharIndices, 0, newPlaceholderCharIndices, 0, placeholderCount);
+                placeholderCharIndices = newPlaceholderCharIndices;
+            }
+
+        }
+
     }
 
     /**
@@ -178,7 +210,7 @@ final class ParameterFormatter {
      */
     static String format(final String pattern, final Object[] args, int argCount) {
         final StringBuilder result = new StringBuilder();
-        final MessagePatternAnalysis analysis = analyzePattern(pattern);
+        final MessagePatternAnalysis analysis = analyzePattern(pattern, argCount);
         formatMessage(result, pattern, args, argCount, analysis);
         return result.toString();
     }

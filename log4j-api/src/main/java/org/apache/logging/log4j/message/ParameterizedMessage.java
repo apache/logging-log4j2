@@ -129,7 +129,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     public ParameterizedMessage(final String pattern, final Object[] args, final Throwable throwable) {
         this.args = args;
         this.pattern = pattern;
-        this.patternAnalysis = analyzePattern(pattern);
+        this.patternAnalysis = analyzePattern(pattern, args != null ? args.length : 0);
         this.throwable = determineThrowable(throwable, this.args, patternAnalysis);
     }
 
@@ -296,7 +296,10 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @return the number of argument placeholders
      */
     public static int countArgumentPlaceholders(final String pattern) {
-        return analyzePattern(pattern).placeholderCount;
+        if (pattern == null) {
+            return 0;
+        }
+        return analyzePattern(pattern, -1).placeholderCount;
     }
 
     /**

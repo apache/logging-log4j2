@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -54,7 +55,7 @@ public class ParameterFormatterTest {
             final String placeholderCharIndicesString,
             final boolean escapedPlaceholderFound,
             final String pattern) {
-        ParameterFormatter.MessagePatternAnalysis analysis = ParameterFormatter.analyzePattern(pattern);
+        MessagePatternAnalysis analysis = ParameterFormatter.analyzePattern(pattern, placeholderCount);
         assertThat(analysis.placeholderCount).isEqualTo(placeholderCount);
         if (placeholderCount > 0) {
             final int[] placeholderCharIndices = Arrays
@@ -73,7 +74,7 @@ public class ParameterFormatterTest {
             final Object[] args,
             final int argCount,
             final String expectedFormattedMessage) {
-        ParameterFormatter.MessagePatternAnalysis analysis = ParameterFormatter.analyzePattern(pattern);
+        MessagePatternAnalysis analysis = ParameterFormatter.analyzePattern(pattern, -1);
         final StringBuilder buffer = new StringBuilder();
         ParameterFormatter.formatMessage(buffer, pattern, args, argCount, analysis);
         String actualFormattedMessage = buffer.toString();

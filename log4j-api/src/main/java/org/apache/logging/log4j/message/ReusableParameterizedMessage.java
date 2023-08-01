@@ -39,7 +39,7 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
     private transient ThreadLocal<StringBuilder> buffer; // non-static: LOG4J2-1583
 
     private String messagePattern;
-    private MessagePatternAnalysis patternAnalysis;
+    private final MessagePatternAnalysis patternAnalysis = new MessagePatternAnalysis();
     private int argCount;
     private transient Object[] varargs;
     private transient Object[] params = new Object[MAX_PARAMS];
@@ -123,14 +123,8 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         this.varargs = null;
         this.messagePattern = messagePattern;
         this.argCount = argCount;
-        this.patternAnalysis = analyzePattern(messagePattern, patternAnalysis);
+        ParameterFormatter.analyzePattern(messagePattern, argCount, patternAnalysis);
         this.throwable = determineThrowable(args, argCount, patternAnalysis.placeholderCount);
-    }
-
-    private static MessagePatternAnalysis analyzePattern(final String pattern, final MessagePatternAnalysis patternAnalysis) {
-        return (patternAnalysis != null && ParameterFormatter.analyzePattern(pattern, patternAnalysis))
-                ? patternAnalysis
-                : ParameterFormatter.analyzePattern(pattern);
     }
 
     private static Throwable determineThrowable(final Object[] args, final int argCount, final int placeholderCount) {
@@ -346,5 +340,11 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         varargs = null;
         messagePattern = null;
         throwable = null;
+        // Cut down on the memory usage after an analysis with an excessive argument count
+        final int placeholderCharIndicesMaxLength = 16;
+        if (patternAnalysis.placeholderCharIndices != null && patternAnalysis.placeholderCharIndices.length > placeholderCharIndicesMaxLength) {
+            patternAnalysis.placeholderCharIndices = new int[placeholderCharIndicesMaxLength];
+        }
     }
+
 }
