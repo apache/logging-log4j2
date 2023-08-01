@@ -36,6 +36,9 @@ we welcome you to ask your questions on our official mailing list for users:
 
 Please post your _questions_ related to the usage of Log4j components there. Don't send these kinds of questions to the developers' list, except if you are asked to do so. If in doubt, use the log4j-user mailing list. If it is a bug, we will ask you to create an issue for the developers' team.
 
+*Important*: all messages sent to a public mailing list will be seen by many people and also re-published by 3rd party websites.
+It is usually not possible to remove them. Please don't send and confidential information to public mailing lists.
+
 `Stack Overflow` is monitored when you ask questions tagged with either http://stackoverflow.com/questions/tagged/log4j[log4j] or http://stackoverflow.com/questions/tagged/log4j2[log4j2]. Please note that *Stack Overflow is monitored more casually due to time constraints*. If you don't receive an answer on Stack Overflow, please contact us on the mailing list mentioned above.
 
 == Maintainer Discussions
