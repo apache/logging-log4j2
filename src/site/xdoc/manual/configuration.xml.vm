@@ -291,7 +291,7 @@ public class MyApp {
 }
 ]]></pre>
           <p>
-            <code>MyApp</code> begins by importing log4j related classes. It
+            <code>MyApp</code> begins by importing Log4j related classes. It
             then defines a static logger variable with the name <code>MyApp</code>
             which happens to be the fully qualified name of the class.
           </p>
