@@ -83,5 +83,5 @@ this purpose. Below is an example:
 ## Requirements
 
 The Log4j 2 Spring Cloud Configuration integration has a dependency on Log4j 2 API, Log4j 2 Core, and 
-Spring Boot versions 2.0.3.RELEASE or 2.1.1.RELEASE or later versions it either release series.
+Spring Boot version 2.4.0 or later versions it either release series.
 For more information, see [Runtime Dependencies](runtime-dependencies.html).
