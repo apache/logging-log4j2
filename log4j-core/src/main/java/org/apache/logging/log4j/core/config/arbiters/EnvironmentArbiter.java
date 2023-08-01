@@ -16,16 +16,16 @@
  */
 package org.apache.logging.log4j.core.config.arbiters;
 
-import org.apache.logging.log4j.core.config.Node;
-import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
 
 /**
  * Condition that determines if the specified environment variable is set.
  */
-@Plugin(name = "EnvironmentArbiter", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
-        deferChildren = true, printObject = true)
+@Configurable(elementType = Arbiter.ELEMENT_TYPE, printObject = true, deferChildren = true)
+@Plugin
 public class EnvironmentArbiter implements Arbiter {
 
     private final String propertyName;
