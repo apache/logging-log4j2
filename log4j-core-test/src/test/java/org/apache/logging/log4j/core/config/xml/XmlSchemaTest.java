@@ -53,7 +53,9 @@ public class XmlSchemaTest {
 
     private static final List<String> IGNORE_CONFIGS = Arrays.asList( //
             "log4j2-arbiters.xml", // Arbiters violate XML schema as they can appear anywhere
+            "log4j2-environmentArbiters.xml",
             "log4j2-scriptArbiters.xml",
+            "log4j2-systemPropertyArbiters.xml",
             "log4j2-selectArbiters.xml",
             "log4j-core-gctests/src/test/resources/gcFreeLogging.xml", // has 2 <Pattern> tags defined
             "legacy-plugins.xml", //
