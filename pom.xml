@@ -400,7 +400,7 @@
     <disruptor.version>3.4.4</disruptor.version>
     <elasticsearch.version>7.17.8</elasticsearch.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
-    <errorprone.version>2.7.1</errorprone.version>
+    <errorprone.version>2.21.0</errorprone.version>
     <felix.version>7.0.5</felix.version>
     <flapdoodle-embed.version>4.7.1</flapdoodle-embed.version>
     <flapdoodle-reverse.version>1.5.3</flapdoodle-reverse.version>
