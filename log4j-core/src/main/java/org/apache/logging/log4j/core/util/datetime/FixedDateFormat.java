@@ -256,7 +256,7 @@ public class FixedDateFormat {
         }
 
         /**
-         * Returns the length of the resulting formatted date and time strings.
+         * Returns the length of the resulting formatted date and time strings in the ROOT locale.
          *
          * @return the length of the resulting formatted date and time strings
          */
