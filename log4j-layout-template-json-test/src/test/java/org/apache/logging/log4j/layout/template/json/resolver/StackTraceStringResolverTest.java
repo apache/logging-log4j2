@@ -33,12 +33,18 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
+import org.apache.logging.log4j.util.Constants;
 import org.assertj.core.api.AbstractStringAssert;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.CONFIGURATION;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.JAVA_BASE_PREFIX;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.asMap;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.usingSerializedLogEventAccessor;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.writeJson;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class StackTraceStringResolverTest {
 
@@ -61,7 +67,7 @@ class StackTraceStringResolverTest {
     private static String exception1Regex(final boolean truncated) {
         final String truncationCorrectionRegex = truncationSuffixRegexOr(truncated, ".divide\\(");
         return "java.lang.ArithmeticException: Division by zero\r?\n" +
-                "\t+at java.math.BigDecimal" + truncationCorrectionRegex + ".*";
+                "\t+at " + JAVA_BASE_PREFIX + "java.math.BigDecimal" + truncationCorrectionRegex + ".*";
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -72,7 +78,7 @@ class StackTraceStringResolverTest {
     private static String exception2Regex(final boolean truncated) {
         final String truncationCorrectionRegex = truncationSuffixRegexOr(truncated, ".add\\(");
         return "java.lang.UnsupportedOperationException\r?\n" +
-                "\t+at java.util.AbstractList" + truncationCorrectionRegex + ".*";
+                "\t+at " + JAVA_BASE_PREFIX + "java.util.AbstractList" + truncationCorrectionRegex + ".*";
     }
 
     private static Throwable exception3() {
@@ -82,7 +88,7 @@ class StackTraceStringResolverTest {
     private static String exception3Regex(final boolean truncated) {
         final String truncationCorrectionRegex = truncationSuffixRegexOr(truncated, ".<init>");
         return "java.lang.IllegalArgumentException: Port value out of range: -1\r?\n" +
-                "\t+at java.net.ServerSocket" + truncationCorrectionRegex + ".*";
+                "\t+at " + JAVA_BASE_PREFIX + "java.net.ServerSocket" + truncationCorrectionRegex + ".*";
     }
 
     private static String truncationSuffixRegexOr(final boolean truncated, final String fallback) {
@@ -576,7 +582,15 @@ class StackTraceStringResolverTest {
         private String pointMatcherString(final Throwable exception) {
             final StackTraceElement stackTraceElement = exception.getStackTrace()[0];
             final String className = stackTraceElement.getClassName();
-            return "at " + className;
+            final String moduleName;
+            if (Constants.JAVA_MAJOR_VERSION > 8) {
+                moduleName = assertDoesNotThrow(
+                        () -> (String) StackTraceElement.class.getDeclaredMethod("getModuleName")
+                                .invoke(stackTraceElement));
+            } else {
+                moduleName = null;
+            }
+            return moduleName != null ? "at " + moduleName + "/" + className : "at " + className;
         }
 
         private String pointMatcherRegex(final Throwable exception) {
