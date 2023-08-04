@@ -17,30 +17,23 @@
 
 # Requirements
 
-* JDK 8 and 9+
-* Apache Maven 3.x
+* JDK 11+
+* JDK 8 (optional)
+* Apache Maven 3.x (optional)
 * A modern Linux, OSX, or Windows host
-
-<a name="toolchains"></a>
-# Configuring Maven Toolchains
-
-Maven Toolchains is used to employ multiple JDKs required for compilation.
-You either need to have a user-level configuration in `~/.m2/toolchains.xml` or explicitly provide one to the Maven: `./mvnw --global-toolchains /path/to/toolchains.xml`.
-See [`.github/workflows/maven-toolchains.xml`](.github/workflows/maven-toolchains.xml) used by CI for a sample Maven Toolchains configuration.
-Note that this file requires `JAVA_HOME_8_X64` and `JAVA_HOME_11_X64` environment variables to be defined, though these can very well be hardcoded.
 
 <a name="building"></a>
 # Building the sources
 
 You can build and verify the sources as follows:
-
-    ./mvnw verify
-
+```sh
+./mvnw verify
+```
 `verify` goal runs validation and test steps next to building (i.e., compiling) the sources.
 To speed up the build, you can skip verification:
-
-    ./mvnw -DskipTests package
-
+```sh
+./mvnw -DskipTests package
+```
 If you want to install generated artifacts to your local Maven repository, replace above `verify` and/or `package` goals with `install`.
 
 <a name="dns"></a>
@@ -50,16 +43,46 @@ Note that if your `/etc/hosts` file does not include an entry for your computer'
 many unit tests may execute slow due to DNS lookups to translate your hostname to an IP address in
 [`InetAddress.getLocalHost()`](http://docs.oracle.com/javase/7/docs/api/java/net/InetAddress.html#getLocalHost()).
 To remedy this, you can execute the following:
+```sh
+printf '127.0.0.1 %s\n::1 %s\n' `hostname` `hostname` | sudo tee -a /etc/hosts
+```
 
-    printf '127.0.0.1 %s\n::1 %s\n' `hostname` `hostname` | sudo tee -a /etc/hosts
+<a name="java8-tests"></a>
+# Java 8 tests
+
+To test the library against the target JRE (JRE 8), you need to configure a JDK 8 toolchains as explained below and run Maven with the `java8-tests` profile:
+```sh
+./mvnw verify -Pjava8-tests
+```
+
+<a name="toolchains"></a>
+## Configuring Maven Toolchains
+
+Maven Toolchains is used to employ additional JDKs required for tests.
+You either need to have a user-level configuration in `~/.m2/toolchains.xml` or explicitly provide one to the Maven: `./mvnw --global-toolchains /path/to/toolchains.xml`.
+```xml
+<?xml version="1.0" encoding="UTF8"?>
+<toolchains>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>1.8.0_372</version>
+    </provides>
+    <configuration>
+      <jdkHome>/usr/lib/jvm/java-8-openjdk-amd64</jdkHome>
+    </configuration>
+  </toolchain>
+</toolchains>
+```
 
 <a name="website"></a>
 # Building the website and manual
 
 You can build the website and manual as follows:
-
-    ./mvnw site
-
+```sh
+./mvnw site
+```
 And view it using a simple HTTP server, e.g., the one comes with the Python:
-
-    python3 -m http.server -d target/site
+```sh
+python3 -m http.server -d target/site
+```
