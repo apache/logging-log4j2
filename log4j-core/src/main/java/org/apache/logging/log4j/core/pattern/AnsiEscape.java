@@ -433,7 +433,7 @@ public enum AnsiEscape {
                 final boolean escape = Arrays.binarySearch(sortedIgnoreKeys, key) < 0;
                 map.put(key, escape ? createSequence(value.split("\\s")) : value);
             } else {
-                LOGGER.warn("Usage of incorrect syntax for highlighting style: \"{}\". Provide style configuration as follows Key=Value", string);
+                LOGGER.warn("Syntax error, missing '=': Expected \"{KEY1=VALUE, KEY2=VALUE, ...}");
             }
         }
         return map;

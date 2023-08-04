@@ -175,11 +175,12 @@ public class HighlightConverterTest {
     This test ensure that a keyvalue pair separated by = sign must be provided in order to configure the highlighting style
      */
     @Test
-    public void testBadStyleOption() {
+    @UsingStatusListener
+    public void testBadStyleOption(final ListStatusListener listener) {
         String defaultWarnColor = "yellow";
         String defaultInfoColor = "green";
         final String[] options = {"%5level", PatternParser.NO_CONSOLE_NO_ANSI + "=false, " + PatternParser.DISABLE_ANSI
-                + "=false" + "LOGBACK"};
+                + "=false, " + "LOGBACK"};
         final HighlightConverter converter = HighlightConverter.newInstance(null, options);
         assertNotNull(converter);
 
@@ -187,6 +188,7 @@ public class HighlightConverterTest {
         assertEquals(AnsiEscape.createSequence(defaultWarnColor), converter.getLevelStyle(Level.WARN));
         // As the default highlighting INFO color is Green while the LOGBACK color is Blue
         assertEquals(AnsiEscape.createSequence(defaultInfoColor), converter.getLevelStyle(Level.INFO));
+        assertThat(listener.findStatusData(Level.WARN)).hasSize(1);
     }
 
     private CharSequence toFormattedCharSeq(final HighlightConverter converter, final Level level) {
