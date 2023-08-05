@@ -16,18 +16,12 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import javax.xml.XMLConstants;
@@ -37,16 +31,16 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.mutable.MutableInt;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.XMLFilterImpl;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class XmlSchemaTest {
 
@@ -69,33 +63,24 @@ public class XmlSchemaTest {
             "XmlConfigurationSecurity.xml" // used for testing XML parser; shouldn't be parseable in secure settings
     );
 
-    private static String capitalizeTags(final String xml) {
-        final StringBuffer sb = new StringBuffer();
-        final Matcher m = Pattern.compile("([<][/]?[a-z])").matcher(xml);
-        while (m.find()) {
-            m.appendReplacement(sb, m.group(1).toUpperCase());
-        }
-        return m.appendTail(sb).toString();
+    static Stream<Path> testXmlSchemaValidation() throws IOException {
+        return Files.list(Paths.get("src", "test", "resources")).filter(filePath -> {
+            final String fileName = filePath.getFileName().toString();
+            if (!fileName.endsWith(".xml"))
+                return false;
+            for (final String ignore : IGNORE_CONFIGS) {
+                if (fileName.contains(ignore))
+                    return false;
+            }
+            return true;
+        });
     }
 
-    private static String fixXml(String xml) {
-        xml = StringUtils.replace(xml, "JSONLayout", "JsonLayout");
-        xml = StringUtils.replace(xml, "HTMLLayout", "HtmlLayout");
-        xml = StringUtils.replace(xml, "XMLLayout", "XmlLayout");
-        xml = StringUtils.replace(xml, "appender-ref", "AppenderRef");
-        xml = StringUtils.replace(xml, " onmatch=", " onMatch=");
-        xml = StringUtils.replace(xml, " onMisMatch=", " onMismatch=");
-        xml = StringUtils.replace(xml, " onmismatch=", " onMismatch=");
-        xml = StringUtils.replace(xml, "<Marker ", "<MarkerFilter ");
-        xml = StringUtils.replace(xml, " Value=", " value=");
-        xml = capitalizeTags(xml);
-        return xml;
-    }
-
-    @Test
-    public void testXmlSchemaValidation() throws SAXException, IOException {
+    @ParameterizedTest
+    @MethodSource
+    public void testXmlSchemaValidation(final Path filePath) throws SAXException, IOException {
         final SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        final Schema schema = factory.newSchema(new StreamSource(new File("src/main/resources/Log4j-config.xsd")));
+        final Schema schema = factory.newSchema(new StreamSource(getClass().getResourceAsStream("/Log4j-config.xsd")));
         final Validator validator = schema.newValidator();
 
         final XMLFilterImpl namespaceAdder = new XMLFilterImpl(XMLReaderFactory.createXMLReader()) {
@@ -106,35 +91,15 @@ public class XmlSchemaTest {
             }
         };
 
-        final MutableInt configs = new MutableInt();
-        final List<Exception> exceptions = new ArrayList<>();
-
-        try (final Stream<Path> testResources = Files.list(Paths.get("src", "test", "resources"))) {
-            testResources
-                    .filter(filePath -> {
-                        final String fileName = filePath.getFileName().toString();
-                        if (!fileName.endsWith(".xml"))
-                            return false;
-                        for (final String ignore : IGNORE_CONFIGS) {
-                            if (fileName.contains(ignore))
-                                return false;
-                        }
-                        return true;
-                    }) //
-                    .forEach(filePath -> {
-                        System.out.println("Validating " + configs.incrementAndGet() + ". [" + filePath + "]...");
-                        System.out.flush();
-
-                        try {
-                            final String xml = fixXml(new String(Files.readAllBytes(filePath), StandardCharsets.UTF_8));
-                            validator.validate(new SAXSource(namespaceAdder,
-                                    new InputSource(new ByteArrayInputStream(xml.getBytes()))), null);
-                        } catch (final Exception ex) {
-                            exceptions.add(ex);
-                        }
-                    });
-        }
-
-        assertThat(exceptions).isEmpty();
+        final InputSource source = new InputSource(filePath.toAbsolutePath().toString());
+        final SAXSource transformedSource = new SAXSource(namespaceAdder, source);
+        assertDoesNotThrow(() -> {
+            try {
+                validator.validate(transformedSource);
+            } catch (SAXParseException e) {
+                // Wrap the exception to capture the location
+                throw new RuntimeException(e.toString(), e);
+            }
+        });
     }
 }
