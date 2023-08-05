@@ -37,7 +37,9 @@ jobs:
         with:
           fetch-depth: 32
 
-      - name: Setup JDK 8
+        # JDK 11 is used for the build.
+        # JDK 8 is used for the tests.
+      - name: Setup JDK
         uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2   # 3.12.0
         with:
           distribution: temurin
