@@ -16,9 +16,9 @@
   ~ limitations under the License.
   -->
 <Configuration status="WARN">
-  <properties>
-    <property name="pattern">%d{ISO8601} %r [%t] %-5level %logger{1.} - %msg%n</property>
-  </properties>
+  <Properties>
+    <Property name="pattern">%d{ISO8601} %r [%t] %-5level %logger{1.} - %msg%n</Property>
+  </Properties>
   <Appenders>
     <Console name="CONSOLE" target="SYSTEM_OUT" follow="true">
       <PatternLayout pattern="${pattern}" />

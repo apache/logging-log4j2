@@ -18,7 +18,7 @@
 <Configuration status="OFF">
   <Appenders>
     <RandomAccessFile name="XmlRandomAccessFile" fileName="target/XmlRandomAccessFileAppenderTest.log" immediateFlush="false" append="false">
-      <XMLLayout complete="true"/>
+      <XmlLayout complete="true"/>
     </RandomAccessFile>
   </Appenders>
 

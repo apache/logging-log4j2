@@ -16,7 +16,7 @@
   ~ limitations under the License.
   -->
 <Configuration status="OFF" name="Flume">
-  <MarkerFilter marker="EVENT" onMatch="ACCEPT" onMisMatch="NEUTRAL"/>
+  <MarkerFilter marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
   <Appenders>
     <Flume name="eventLogger" ignoreExceptions="false" mdcPrefix="." compress="true">
       <Agent host="192.168.10.101" port="8800"/>

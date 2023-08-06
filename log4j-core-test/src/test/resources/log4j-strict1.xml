@@ -22,27 +22,27 @@
   <Filter type="ThresholdFilter" level="trace"/>
 
   <Appenders>
-    <appender type="Console" name="STDOUT">
-      <layout type="PatternLayout" pattern="%m MDC%X%n"/>
+    <Appender type="Console" name="STDOUT">
+      <Layout type="PatternLayout" pattern="%m MDC%X%n"/>
       <Filters>
         <Filter type="MarkerFilter" marker="FLOW" onMatch="DENY" onMismatch="NEUTRAL"/>
         <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="DENY" onMismatch="ACCEPT"/>
       </Filters>
-    </appender>
-    <appender type="Console" name="FLOW">
-      <layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/>
+    </Appender>
+    <Appender type="Console" name="FLOW">
+      <Layout type="PatternLayout" pattern="%C{1}.%M %m %ex%n"/>
       <Filters>
         <Filter type="MarkerFilter" marker="FLOW" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
         <Filter type="MarkerFilter" marker="EXCEPTION" onMatch="ACCEPT" onMismatch="DENY"/>
       </Filters>
-    </appender>
-    <appender type="File" name="File" fileName="${filename}">
-      <layout type="PatternLayout">
+    </Appender>
+    <Appender type="File" name="File" fileName="${filename}">
+      <Layout type="PatternLayout">
         <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-      </layout>
-    </appender>
-    <appender type="List" name="List">
-    </appender>
+      </Layout>
+    </Appender>
+    <Appender type="List" name="List">
+    </Appender>
   </Appenders>
 
   <Loggers>

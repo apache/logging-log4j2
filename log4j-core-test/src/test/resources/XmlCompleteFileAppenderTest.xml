@@ -18,7 +18,7 @@
 <Configuration status="OFF">
   <Appenders>
     <File name="XmlFile" fileName="target/XmlCompleteFileAppenderTest.log" immediateFlush="false" append="false">
-      <XMLLayout complete="true" charset="UTF-8"/>
+      <XmlLayout complete="true" charset="UTF-8"/>
     </File>
   </Appenders>
 

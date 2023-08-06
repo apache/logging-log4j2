@@ -15,18 +15,18 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<configuration status="warn">
-  <properties>
-    <property name="filters">org.junit,org.apache.maven,org.eclipse,sun.reflect,java.lang.reflect</property>
-  </properties>
-  <appenders>
-    <console name="console" target="SYSTEM_OUT">
-      <patternLayout pattern="%d{HH:mm:ss,SSS} [%t] %-5level [$${date:yyyyMMdd.HHmmSS}] %logger{1}.%method:%line - %msg%n%rEx{filters(${filters})}" />
-    </console>
-  </appenders>
-  <loggers>
-    <root level="warn">
-      <appenderRef ref="console" />
-    </root>
-  </loggers>
-</configuration>
+<Configuration status="warn">
+  <Properties>
+    <Property name="filters">org.junit,org.apache.maven,org.eclipse,sun.reflect,java.lang.reflect</Property>
+  </Properties>
+  <Appenders>
+    <Console name="console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss,SSS} [%t] %-5level [$${date:yyyyMMdd.HHmmSS}] %Logger{1}.%method:%line - %msg%n%rEx{filters(${filters})}" />
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="warn">
+      <AppenderRef ref="console" />
+    </Root>
+  </Loggers>
+</Configuration>

@@ -19,7 +19,7 @@
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout>
-        <pattern>%xEx{0}</pattern>
+        <Pattern>%xEx{0}</Pattern>
       </PatternLayout>
     </Console>
   </Appenders>
