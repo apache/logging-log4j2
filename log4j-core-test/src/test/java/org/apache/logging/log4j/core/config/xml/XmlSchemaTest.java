@@ -60,7 +60,8 @@ public class XmlSchemaTest {
             "perf-CountingNoOpAppender.xml", // uses test-appender CountingNoOp
             "reconfiguration-deadlock.xml", // uses test-appender ReconfigurationDeadlockTestAppender
             "AsyncWaitStrategy", // uses AsyncWaitStrategyFactory (LOG4J2-3472)
-            "XmlConfigurationSecurity.xml" // used for testing XML parser; shouldn't be parseable in secure settings
+            "XmlConfigurationSecurity.xml", // used for testing XML parser; shouldn't be parseable in secure settings
+            "InvalidConfig.xml", "InvalidXML.xml"
     );
 
     static Stream<Path> testXmlSchemaValidation() throws IOException {

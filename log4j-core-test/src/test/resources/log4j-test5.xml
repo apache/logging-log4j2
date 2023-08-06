@@ -19,7 +19,7 @@
   <Appenders>
     <RollingRandomAccessFile name="RollingFile" fileName="target/onStartup/onStartup.log"
                  filePattern="target/onStartup/onStartup-%d{MM-dd-yyyy}-%i.log">
-      <HTMLLayout title="test"/>
+      <HtmlLayout title="test"/>
       <Policies>
         <OnStartupTriggeringPolicy />
       </Policies>

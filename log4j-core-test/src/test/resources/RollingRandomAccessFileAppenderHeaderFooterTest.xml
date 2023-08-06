@@ -20,7 +20,7 @@
     <RollingRandomAccessFile name="RollingRandomAccessFile" fileName="target/RollingRandomAccessFileAppenderHeaderFooterTest.log"
                  filePattern="target/RollingRandomAccessFileAppenderHeaderFooterTest/rolled%i.log" append="false"
                  immediateFlush="true">
-      <HTMLLayout></HTMLLayout>
+      <HtmlLayout></HtmlLayout>
       <Policies>
       <!--
         <TimeBasedTriggeringPolicy />

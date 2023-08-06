@@ -19,7 +19,7 @@
   <Appenders>
     <List name="List">
       <PatternLayout>
-        <replace regex="\." replacement="/"/>
+        <Replace regex="\." replacement="/"/>
         <Pattern>%logger %msg{lookups}%n</Pattern>
       </PatternLayout>
     </List>

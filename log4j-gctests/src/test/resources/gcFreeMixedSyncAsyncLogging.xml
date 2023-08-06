@@ -25,7 +25,7 @@
       <KeyValuePair key="eventId" value="Login"/>
       <KeyValuePair key="eventId" value="Logout"/>
     </MapFilter>
-    <Marker marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+    <MarkerFilter marker="EVENT" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
     <ContextMapFilter onMatch="ACCEPT" onMismatch="NEUTRAL" operator="or">
       <KeyValuePair key="User1" value="DEBUG"/>
       <KeyValuePair key="User2" value="WARN"/>
