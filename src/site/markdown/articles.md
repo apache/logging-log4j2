@@ -42,8 +42,6 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 
 ## English
 
-* [Log4j2 Tutorial 8 – XML Configuration For Default Rollover Strategy With SizeBasedTriggeringPolicy](http://makeseleniumeasy.com/2021/05/01/log4j2-tutorial-8-xml-configuration-for-default-rollover-strategy-with-sizebasedtriggeringpolicy/)
-(May 1, 2021)
 * [Log4J2 | Create custom log levels and how to use them](https://medium.com/codex/log4j2-create-custom-log-levels-and-how-to-use-them-48685e133fd1)
 (April 29, 2021)  
 * [Log4j2 Tutorial 7 – Working Mechanism Of Default Rollover Strategy](http://makeseleniumeasy.com/2021/04/26/log4j2-tutorial-7-working-mechanism-of-default-rollover-strategy/)
