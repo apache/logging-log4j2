@@ -79,14 +79,12 @@
         </subsection>
         <subsection name="Log4j 2">
           <p>
-          Log4j 1.x has been widely adopted and used in many applications. However,
-          through the years development on it has slowed down. It has become more
-          difficult to maintain due to its need to be compliant with very old versions
-          of Java and became
-          <a href="https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces">End
-            of Life</a> in August 2015.
-          Its alternative, SLF4J/Logback made many needed improvements to the
-          framework. So why bother with Log4j 2? Here are a few of the reasons.
+            Log4j 1.x has been extensively adopted and utilized across various applications.
+            Its final release occurred in 2012, and in August 2015, the announcement was made
+            that Log4j 1.x had reached its <a href="https://news.apache.org/foundation/entry/apache_logging_services_project_announces">End of Life</a>.
+          </p>
+          <p>
+            So, what makes upgrading to Log4j 2 a wise decision? Here are a few compelling reasons.
           </p>
           <ol>
             <li>Log4j 2 is designed to be usable as an audit logging framework. Both Log4j
