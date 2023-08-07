@@ -234,8 +234,6 @@ guide for up-to-date and detailed information on how to configure and use Log4j 
 (September 23, 2015)
 * [log4j2の設定ファイル(XML)](https://qiita.com/pica/items/f801c74848f748f76b58)
 (July 27, 2015)
-* [Apache log4j2によるロギング機能の基本サンプル](https://japanengineers.seesaa.net/article/412195201.html)
-(January 12, 2015)
 * [Log4j2の使い方めも](https://yamashiro0110.hatenadiary.jp/entry/2014/08/24/093336)
 (August 24, 2014)
 * [Apache Log4j 2.0 - アップグレードする価値はあるか？](https://www.infoq.com/jp/news/2014/08/apache-log4j2/)
