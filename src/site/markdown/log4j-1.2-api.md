@@ -42,7 +42,16 @@ For more information, see [Runtime Dependencies](runtime-dependencies.html).
 
 ## Usage
 
-To use the Log4j Legacy Bridge just remove all the Log4j 1.x jars from the application and replace them
-with the bridge jar. Once in place all logging that uses Log4j 1.x will be routed to Log4j 2. However,
-applications that attempt to modify legacy Log4j by adding Appenders, Filters, etc may experience problems
-if they try to verify the success of these actions as these methods are largely no-ops.
+To use the Log4j Legacy Bridge, you must first identify and remove all the Log4j 1.x JARs from the application and 
+replace them with the bridge JAR. Once in place, all logging that uses Log4j 1.x will be routed to Log4j 2.
+
+If you are using Maven, you can easily identify any Log4j 1.x dependencies in your project by 
+running the following command in your terminal:
+
+    mvn dependency:tree | grep 'log4j:log4j:'
+
+This command will generate a dependency tree for your project and filter the results to show only Log4j 1.x dependencies. 
+If you find any, you will need to update your pom.xml file to remove Log4j1 or exclude them otherwise.
+
+However, applications that try to modify legacy Log4j by adding Appenders, Filters, etc, may experience problems.
+Most methods of this bridge are not doing anything.
