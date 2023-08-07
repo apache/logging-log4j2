@@ -20,11 +20,16 @@
 Apache Log4j 2 is an upgrade to Log4j that provides significant improvements over its predecessor, Log4j 1.x,
 and provides many of the improvements available in Logback while fixing some inherent problems in Logback's architecture.
 
-[![Maven Central](https://img.shields.io/maven-central/v/org.apache.logging.log4j/log4j-api.svg)](https://search.maven.org/artifact/org.apache.logging.log4j/log4j-api)
+[![Maven Central (2.x)](https://img.shields.io/maven-central/v/org.apache.logging.log4j/log4j-api?versionPrefix=2.
+)](https://search.maven.org/artifact/org.apache.logging.log4j/log4j-api)
 [![build (2.x)](https://img.shields.io/github/actions/workflow/status/apache/logging-log4j2/build.yml?branch=2.x&label=build%20%282.x%29)](https://github.com/apache/logging-log4j2/actions/workflows/build.yml)
-[![build (3.x)](https://img.shields.io/github/actions/workflow/status/apache/logging-log4j2/build.yml?branch=main&label=build%20%283.x%29)](https://github.com/apache/logging-log4j2/actions/workflows/build.yml)
+![Libraries.io dependency status for 2.x](https://img.shields.io/librariesio/release/maven/org.apache.logging.log4j%3Alog4j/2.20.0?label=dependencies%20(2.x))
 ![CodeQL](https://github.com/apache/logging-log4j2/actions/workflows/codeql-analysis.yml/badge.svg)
-![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/apache/logging-log4j2)
+
+[![Maven Central (3.x)](https://img.shields.io/maven-central/v/org.apache.logging.log4j/log4j-api?versionPrefix=3.)](https://search.maven.org/artifact/org.apache.logging.log4j/log4j-api)
+[![build (3.x)](https://img.shields.io/github/actions/workflow/status/apache/logging-log4j2/build.yml?branch=main&label=build%20%283.x%29)](https://github.com/apache/logging-log4j2/actions/workflows/build.yml)
+![Libraries.io dependency status for 3.x](https://img.shields.io/librariesio/release/maven/org.apache.logging.log4j%3Alog4j/3.0.0-alpha1?label=dependencies%20(3.x))
+
 
 ## Pull Requests on Github
 
