@@ -1244,14 +1244,6 @@ rootLogger = info, STDOUT
                 <th>Context</th>
               </tr>
               <tr>
-                <td>base64</td>
-                <td>
-                  Base64 encoded data. The format is <code>${dollar}{base64:Base64_encoded_data}</code>.
-                  For example:
-                  <code>${dollar}{base64:SGVsbG8gV29ybGQhCg==}</code> yields <code>Hello World!</code>.
-                </td>
-              </tr>
-              <tr>
                 <td>bundle</td>
                 <td>
                   Resource bundle. The format is <code>${dollar}{bundle:BundleName:BundleKey}</code>.
@@ -1261,26 +1253,73 @@ rootLogger = info, STDOUT
               </tr>
               <tr>
                 <td>ctx</td>
-                <td>Thread Context Map (MDC)</td>
+                <td>
+                  Retrieves a previously stored valued from the Thread Context Map (MDC).
+                  The format is <code>${dollar}{ctx:some.key}</code>.
+              </td>
               </tr>
               <tr>
                 <td>date</td>
-                <td>Inserts the current date and/or time using the specified format</td>
+                <td>
+                  Inserts the current date and/or time using the specified format pattern from the
+                  <a href="https://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a> class.
+                  If no pattern is specified, then the default pattern is used.
+                  The formats are <code>${dollar}{date:some.pattern}</code> and <code>${dollar}{date:}</code>.
+                </td>
+              </tr>
+              <tr>
+                <td>docker</td>
+                <td>
+                  Returns attributes from the Docker container the application is running in.
+                  The format is <code>${dollar}{docker:some.attribute}</code>.
+                  See <a href="../log4j-docker.html">Docker documentation</a> for requirements and a list of available attributes.
+                </td>
               </tr>
               <tr>
                 <td>env</td>
-                <td>System environment variables. The formats are <code>${dollar}{env:ENV_NAME}</code> and <code>${dollar}{env:ENV_NAME:-default_value}</code>.</td>
+                <td>
+                  Retrieves values from system environment variables or default value if the environment variable is not set.
+                  The formats are <code>${dollar}{env:ENV_NAME}</code> and <code>${dollar}{env:ENV_NAME:-default_value}</code>.
+                </td>
+              </tr>
+              <tr>
+                <td>event</td>
+                <td>
+                  Retrieves values from fields within the log event. The format is <code>${dollar}{event:some.field}</code>.
+                  See the <a href="lookups.html#eventlookup">Lookups</a> manual page for a list of available fields.
+                </td>
+              </tr>
+              <tr>
+                <td>java</td>
+                <td>
+                  Retrieves information about the Java environment the application is running in.
+                  The format is <code>${dollar}{java:some.property}</code>.
+                  See the <a href="lookups.html#java-lookup">Lookups</a> manual page for a list of available properties.
+                </td>
               </tr>
               <tr>
                 <td>jndi</td>
-                <td>A value set in the default JNDI Context. (Requires system property <code>log4j2.enableJndiLookup</code> to be set to <code>true</code>.)</td>
+                <td>
+                   A value set in the default JNDI Context. (Requires system property <code>log4j2.enableJndiLookup</code> to be set to <code>true</code>.)
+                   The format is <code>${dollar}{jndi:logging/context-name}</code>.
+                </td>
               </tr>
               <tr>
                 <td>jvmrunargs</td>
                 <td>
                   A JVM input argument accessed through JMX, but not a main argument;
                   see <a class="javadoc" href="https://docs.oracle.com/javase/6/docs/api/java/lang/management/RuntimeMXBean.html#getInputArguments--">RuntimeMXBean.getInputArguments()</a>.
-                  Not available on Android.</td>
+                  The format is <code>${dollar}{jvmrunargs:argument}</code>.
+                  Not available on Android or Google App Engine.
+                </td>
+              </tr>
+              <tr>
+                <td>k8s</td>
+                <td>
+                  Returns attributes from the Kubernetes environment the application is running in.
+                  The format is <code>${dollar}{k8s:some.attribute}</code>.
+                  See the <a href="lookups.html#kubernetes-lookup">Lookups</a> manual page for a list of available attributes.
+                </td>
               </tr>
               <tr>
                 <td>log4j</td>
@@ -1289,12 +1328,34 @@ rootLogger = info, STDOUT
                   to the log4j configuration file and its parent folder.</td>
               </tr>
               <tr>
+                <td>lower</td>
+                <td>
+                    Converts the passed in argument to lower case (usually used with nested lookups).
+                    The format is <code>${dollar}{lower:argument}</code>.
+                </td>
+              </tr>
+              <tr>
                 <td>main</td>
-                <td>A value set with <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments-java.lang.String:A-">MapLookup.setMainArguments(String[])</a></td>
+                <td>
+                    A value set with <a class="javadoc" href="../log4j-core/apidocs/org/apache/logging/log4j/core/lookup/MapLookup.html#setMainArguments-java.lang.String:A-">MapLookup.setMainArguments(String[])</a>.
+                    The formats are <code>${dollar}{main:index}</code> for a 0-based index into the argument list and <code>${dollar}{main:argument.name}</code> for name from the argument list.
+                </td>
               </tr>
               <tr>
                 <td>map</td>
-                <td>A value from a MapMessage</td>
+                <td>
+                    Provides a base for Properties in the configuration file or retrieves a value from a MapMessage.
+                    The format is <code>${dollar}{map:type}</code>.
+                    See the <a href="lookups.html#map-lookup">Lookups</a> manual page for further details.
+                </td>
+              </tr>
+              <tr>
+                <td>marker</td>
+                <td>
+                    Allows use of markers in configurations.
+                    The formats are <code>${dollar}{marker:}</code> and <code>${dollar}{marker:some.name}</code>.
+                    See the <a href="lookups.html#marker-lookup">Lookups</a> manual page for further details.
+                </td>
               </tr>
               <tr>
                 <td>sd</td>
@@ -1303,8 +1364,34 @@ rootLogger = info, STDOUT
                   retrieve individual elements from the Map.</td>
               </tr>
               <tr>
+                <td>spring</td>
+                <td>
+                  Returns values of Spring properties from the Spring configuration.
+                  The format is <code>${dollar}{spring:some.property}</code>.
+                  See the <a href="lookups.html#spring-boot-lookup">Lookups</a> manual page for requirements and details.
+                </td>
+              </tr>
+              <tr>
                 <td>sys</td>
-                <td>System properties. The formats are <code>${dollar}{sys:some.property}</code> and <code>${dollar}{sys:some.property:-default_value}</code>.</td>
+                <td>
+                  Retrieves values from system properties.
+                  The formats are <code>${dollar}{sys:some.property}</code> and <code>${dollar}{sys:some.property:-default_value}</code>.
+                </td>
+              </tr>
+              <tr>
+                <td>upper</td>
+                <td>
+                    Converts the passed in argument to upper case (usually used with nested lookups).
+                    The format is <code>${dollar}{upper:argument}</code>.
+                </td>
+              </tr>
+              <tr>
+                <td>web</td>
+                <td>
+                  Returns values of variables associated with the Servlet Context.
+                  The format is <code>${dollar}{spring:some.key}</code>.
+                  See the <a href="lookups.html#web-lookup">Lookups</a> manual page for a list of available keys.
+                </td>
               </tr>
             </table>
           <a name="DefaultProperties"/><h3>Default Properties</h3><p>

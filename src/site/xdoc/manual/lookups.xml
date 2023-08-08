@@ -88,7 +88,7 @@
   <KeyValuePair key="imageName" value="${docker:imageName}"/>
 </JsonLayout>]]></pre>
           <p>
-            This Lookup is subject to the requirements listed at <a href="../log4j-docker/index.html">Log4j Docker Support</a>
+            This Lookup is subject to the requirements listed at <a href="../log4j-docker.html">Log4j Docker Support</a>
           </p>
         </subsection>
         <a name="EnvironmentLookup"/>
@@ -582,6 +582,21 @@ logger.info(PERFORMANCE, "Message in Performance.log");]]></pre>
             existence of a marker where <code>name</code> is the marker name. If the marker exists, the expression returns
             the name, otherwise <code>null</code>.
           </p>
+        </subsection>
+        <a name="ResourceBundleLookup"/>
+        <subsection name="Resource Bundle Lookup">
+          <p>
+            The resource bundle lookup retrieves values from Resource Bundles
+            (see <a href="https://docs.oracle.com/javase/6/docs/api/java/util/ResourceBundle.html">Java documentation</a>). The format is
+            <code>${dollar}{bundle:BundleName:BundleKey}</code>. The bundle name follows package naming conventions, for example:
+            <code>${dollar}{bundle:com.domain.Messages:MyKey}</code>.
+          </p>
+          <pre class="prettyprint linenums"><![CDATA[
+<File name="Application" fileName="application-${spring:profiles.active[0]}.log">
+  <PatternLayout>
+    <pattern>%d %p %c{1.} [%t] $${bundle:MyBundle:MyKey} %m%n</pattern>
+  </PatternLayout>
+</File>]]></pre>
         </subsection>
         <a name="SpringLookup"/>
         <subsection name="Spring Boot Lookup">
