@@ -53,5 +53,6 @@ running the following command in your terminal:
 This command will generate a dependency tree for your project and filter the results to show only Log4j 1.x dependencies. 
 If you find any, you will need to update your pom.xml file to remove Log4j1 or exclude them otherwise.
 
-However, applications that try to modify legacy Log4j by adding Appenders, Filters, etc, may experience problems.
-Most methods of this bridge are not doing anything.
+While we have improved the compatibility of the bridge in the past, applications that try to modify legacy Log4j 
+by adding Appenders, Filters, etc, may experience problems. In this case, migrating those components to Log4j 2 
+first is recommended.
