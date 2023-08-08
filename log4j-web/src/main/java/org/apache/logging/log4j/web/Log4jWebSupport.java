@@ -76,7 +76,7 @@ public interface Log4jWebSupport {
 
     /**
      * Sets the logger context so that code executing afterwards can easily and quickly access loggers via
-     * {@link org.apache.logging.log4j.LogManager#getLogger}.
+     * {@link org.apache.logging.log4j.LogManager#getLogger()}.
      */
     void setLoggerContext();
 
