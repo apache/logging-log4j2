@@ -29,5 +29,5 @@ public interface BridgeAware {
      *
      * @param fqcn
      */
-    public void setEntryPoint(final String fqcn);
+    void setEntryPoint(final String fqcn);
 }
