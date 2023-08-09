@@ -367,7 +367,7 @@
     <maven-scm-plugin.version>1.12.2</maven-scm-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
-    <rewrite-java.version>8.1.12</rewrite-java.version>
+    <rewrite-java.version>8.1.15</rewrite-java.version>
     <rewrite-maven-plugin.version>5.0.0</rewrite-maven-plugin.version>
     <rewrite-static-analysis.version>1.0.4</rewrite-static-analysis.version>
     <spotbugs-maven-plugin.version>4.7.2.1</spotbugs-maven-plugin.version>
