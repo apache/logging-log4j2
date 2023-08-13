@@ -42,16 +42,16 @@ public class SslSocketManager extends TcpSocketManager {
     /**
     *
     *
-    * @param name          The unique name of this connection.
-    * @param os            The OutputStream.
-    * @param sock          The Socket.
-    * @param inetAddress          The Internet address of the host.
-    * @param host          The name of the host.
-    * @param port          The port number on the host.
-    * @param connectTimeoutMillis the connect timeout in milliseconds.
+    * @param name          the unique name of this connection
+    * @param os            the OutputStream
+    * @param sock          the Socket
+    * @param inetAddress          the Internet address of the host
+    * @param host          the name of the host
+    * @param port          the port number on the host
+    * @param connectTimeoutMillis the connect timeout in milliseconds
     * @param reconnectionDelayMillis         Reconnection interval.
-    * @param immediateFail
-    * @param layout        The Layout.
+    * @param immediateFail True if the write should fail if no socket is immediately available.
+    * @param layout        the Layout
     * @param bufferSize The buffer size.
     * @deprecated Use {@link #SslSocketManager(String, OutputStream, Socket, SslConfiguration, InetAddress, String, int, int, int, boolean, Layout, int, SocketOptions)}.
     */
@@ -75,7 +75,7 @@ public class SslSocketManager extends TcpSocketManager {
    * @param port          The port number on the host.
    * @param connectTimeoutMillis the connect timeout in milliseconds.
    * @param reconnectionDelayMillis         Reconnection interval.
-   * @param immediateFail
+   * @param immediateFail True if the write should fail if no socket is immediately available.
    * @param layout        The Layout.
    * @param bufferSize The buffer size.
    */

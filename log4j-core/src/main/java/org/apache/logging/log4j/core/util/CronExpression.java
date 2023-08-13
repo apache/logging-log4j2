@@ -44,6 +44,7 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
  * separated by white space. The fields respectively are described as follows:
  * <p/>
  * <table cellspacing="8">
+ * <caption>Cron Expressions Allowed Fields and Values</caption>
  * <tr>
  * <th align="left">Field Name</th>
  * <th align="left">&nbsp;</th>

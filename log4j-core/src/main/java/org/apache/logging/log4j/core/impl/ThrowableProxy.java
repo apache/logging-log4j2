@@ -178,7 +178,7 @@ public class ThrowableProxy implements Serializable {
      * Formats the specified Throwable.
      *  @param sb    StringBuilder to contain the formatted Throwable.
      * @param cause The Throwable to format.
-     * @param suffix
+     * @param suffix Append this to the end of each stack frame.
      */
     public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final String suffix) {
         this.formatWrapper(sb, cause, null, PlainTextRenderer.getInstance(), suffix);
@@ -189,7 +189,7 @@ public class ThrowableProxy implements Serializable {
      *  @param sb             StringBuilder to contain the formatted Throwable.
      * @param cause          The Throwable to format.
      * @param ignorePackages The List of packages to be suppressed from the trace.
-     * @param suffix
+     * @param suffix Append this to the end of each stack frame.
      */
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     public void formatWrapper(final StringBuilder sb, final ThrowableProxy cause, final List<String> ignorePackages, final String suffix) {
@@ -233,7 +233,7 @@ public class ThrowableProxy implements Serializable {
      * Formats the Throwable that is the cause of this Throwable.
      *
      * @return The formatted Throwable that caused this Throwable.
-     * @param suffix
+     * @param suffix Append this to the end of each stack frame.
      */
     public String getCauseStackTraceAsString(final String suffix) {
         return this.getCauseStackTraceAsString(null, PlainTextRenderer.getInstance(), suffix, EOL_STR);
@@ -411,7 +411,7 @@ public class ThrowableProxy implements Serializable {
      * Formats the suppressed Throwables.
      *
      * @return The formatted suppressed Throwables.
-     * @param suffix
+     * @param suffix Append this to the end of each stack frame.
      */
     public String getSuppressedStackTrace(final String suffix) {
         final ThrowableProxy[] suppressed = this.getSuppressedProxies();

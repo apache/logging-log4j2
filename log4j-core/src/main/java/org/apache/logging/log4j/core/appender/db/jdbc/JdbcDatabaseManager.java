@@ -421,13 +421,14 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
      *
      * @param name The name of the manager, which should include connection details and hashed passwords where possible.
      * @param bufferSize The size of the log event buffer.
-     * @param layout
+     * @param layout the Appender-level layout
      * @param connectionSource The source for connections to the database.
      * @param tableName The name of the database table to insert log events into.
      * @param columnConfigs Configuration information about the log table columns.
      * @param columnMappings column mapping configuration (including type conversion).
-     * @param reconnectIntervalMillis
-     * @param immediateFail
+     * @param reconnectIntervalMillis How often to reconnect to the database when a SQL exception is detected.
+     * @param immediateFail Whether to fail immediately with a {@link AppenderLoggingException} when connecting
+     * to JDBC fails.
      * @return a new or existing JDBC manager as applicable.
      * @deprecated use
      * {@link #getManager(String, int, Layout, ConnectionSource, String, ColumnConfig[], ColumnMapping[], boolean, long)}
