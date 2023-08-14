@@ -16,156 +16,106 @@
  */
 package org.apache.logging.log4j.message;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Tests {@link ParameterFormatter}.
  */
 public class ParameterFormatterTest {
 
-    @Test
-    public void testCountArgumentPlaceholders() {
-        assertEquals(0, ParameterFormatter.countArgumentPlaceholders(""));
-        assertEquals(0, ParameterFormatter.countArgumentPlaceholders("aaa"));
-        assertEquals(0, ParameterFormatter.countArgumentPlaceholders("\\{}"));
-        assertEquals(1, ParameterFormatter.countArgumentPlaceholders("{}"));
-        assertEquals(1, ParameterFormatter.countArgumentPlaceholders("{}\\{}"));
-        assertEquals(2, ParameterFormatter.countArgumentPlaceholders("{}{}"));
-        assertEquals(3, ParameterFormatter.countArgumentPlaceholders("{}{}{}"));
-        assertEquals(4, ParameterFormatter.countArgumentPlaceholders("{}{}{}aa{}"));
-        assertEquals(4, ParameterFormatter.countArgumentPlaceholders("{}{}{}a{]b{}"));
-        assertEquals(5, ParameterFormatter.countArgumentPlaceholders("{}{}{}a{}b{}"));
+    @ParameterizedTest
+    @CsvSource({
+        "0,,false,",
+        "0,,false,aaa",
+        "0,,true,\\{}",
+        "1,0,false,{}",
+        "1,0,true,{}\\{}",
+        "1,2,true,\\\\{}",
+        "2,8:10,true,foo \\{} {}{}",
+        "2,8:10,true,foo {\\} {}{}",
+        "2,0:2,false,{}{}",
+        "3,0:2:4,false,{}{}{}",
+        "4,0:2:4:8,false,{}{}{}aa{}",
+        "4,0:2:4:10,false,{}{}{}a{]b{}",
+        "5,0:2:4:7:10,false,{}{}{}a{}b{}"
+    })
+    public void test_pattern_analysis(
+            final int placeholderCount,
+            final String placeholderCharIndicesString,
+            final boolean escapedPlaceholderFound,
+            final String pattern) {
+        MessagePatternAnalysis analysis = ParameterFormatter.analyzePattern(pattern, placeholderCount);
+        assertThat(analysis.placeholderCount).isEqualTo(placeholderCount);
+        if (placeholderCount > 0) {
+            final int[] placeholderCharIndices = Arrays.stream(placeholderCharIndicesString.split(":"))
+                    .mapToInt(Integer::parseInt)
+                    .toArray();
+            assertThat(analysis.placeholderCharIndices).startsWith(placeholderCharIndices);
+            assertThat(analysis.escapedCharFound).isEqualTo(escapedPlaceholderFound);
+        }
     }
 
-    @Test
-    public void testFormat3StringArgs() {
-        final String testMsg = "Test message {}{} {}";
-        final String[] args = {"a", "b", "c"};
-        final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message ab c", result);
+    @ParameterizedTest
+    @MethodSource("messageFormattingTestCases")
+    void assertMessageFormatting(
+            final String pattern, final Object[] args, final int argCount, final String expectedFormattedMessage) {
+        MessagePatternAnalysis analysis = ParameterFormatter.analyzePattern(pattern, -1);
+        final StringBuilder buffer = new StringBuilder();
+        ParameterFormatter.formatMessage(buffer, pattern, args, argCount, analysis);
+        String actualFormattedMessage = buffer.toString();
+        assertThat(actualFormattedMessage).isEqualTo(expectedFormattedMessage);
     }
 
-    @Test
-    public void testFormatNullArgs() {
-        final String testMsg = "Test message {} {} {} {} {} {}";
-        final String[] args = {"a", null, "c", null, null, null};
-        final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message a null c null null null", result);
-    }
-
-    @Test
-    public void testFormatStringArgsIgnoresSuperfluousArgs() {
-        final String testMsg = "Test message {}{} {}";
-        final String[] args = {"a", "b", "c", "unnecessary", "superfluous"};
-        final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message ab c", result);
-    }
-
-    @Test
-    public void testFormatStringArgsWithEscape() {
-        final String testMsg = "Test message \\{}{} {}";
-        final String[] args = {"a", "b", "c"};
-        final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message {}a b", result);
-    }
-
-    @Test
-    public void testFormatStringArgsWithTrailingEscape() {
-        final String testMsg = "Test message {}{} {}\\";
-        final String[] args = {"a", "b", "c"};
-        final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message ab c\\", result);
-    }
-
-    @Test
-    public void testFormatStringArgsWithTrailingEscapedEscape() {
-        final String testMsg = "Test message {}{} {}\\\\";
-        final String[] args = {"a", "b", "c"};
-        final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message ab c\\\\", result);
-    }
-
-    @Test
-    public void testFormatStringArgsWithEscapedEscape() {
-        final String testMsg = "Test message \\\\{}{} {}";
-        final String[] args = {"a", "b", "c"};
-        final String result = ParameterFormatter.format(testMsg, args);
-        assertEquals("Test message \\ab c", result);
-    }
-
-    @Test
-    public void testFormatMessage3StringArgs() {
-        final String testMsg = "Test message {}{} {}";
-        final String[] args = {"a", "b", "c"};
-        final StringBuilder sb = new StringBuilder();
-        ParameterFormatter.formatMessage(sb, testMsg, args, 3);
-        final String result = sb.toString();
-        assertEquals("Test message ab c", result);
-    }
-
-    @Test
-    public void testFormatMessageNullArgs() {
-        final String testMsg = "Test message {} {} {} {} {} {}";
-        final String[] args = {"a", null, "c", null, null, null};
-        final StringBuilder sb = new StringBuilder();
-        ParameterFormatter.formatMessage(sb, testMsg, args, 6);
-        final String result = sb.toString();
-        assertEquals("Test message a null c null null null", result);
-    }
-
-    @Test
-    public void testFormatMessageStringArgsIgnoresSuperfluousArgs() {
-        final String testMsg = "Test message {}{} {}";
-        final String[] args = {"a", "b", "c", "unnecessary", "superfluous"};
-        final StringBuilder sb = new StringBuilder();
-        ParameterFormatter.formatMessage(sb, testMsg, args, 5);
-        final String result = sb.toString();
-        assertEquals("Test message ab c", result);
-    }
-
-    @Test
-    public void testFormatMessageStringArgsWithEscape() {
-        final String testMsg = "Test message \\{}{} {}";
-        final String[] args = {"a", "b", "c"};
-        final StringBuilder sb = new StringBuilder();
-        ParameterFormatter.formatMessage(sb, testMsg, args, 3);
-        final String result = sb.toString();
-        assertEquals("Test message {}a b", result);
-    }
-
-    @Test
-    public void testFormatMessageStringArgsWithTrailingEscape() {
-        final String testMsg = "Test message {}{} {}\\";
-        final String[] args = {"a", "b", "c"};
-        final StringBuilder sb = new StringBuilder();
-        ParameterFormatter.formatMessage(sb, testMsg, args, 3);
-        final String result = sb.toString();
-        assertEquals("Test message ab c\\", result);
-    }
-
-    @Test
-    public void testFormatMessageStringArgsWithTrailingEscapedEscape() {
-        final String testMsg = "Test message {}{} {}\\\\";
-        final String[] args = {"a", "b", "c"};
-        final StringBuilder sb = new StringBuilder();
-        ParameterFormatter.formatMessage(sb, testMsg, args, 3);
-        final String result = sb.toString();
-        assertEquals("Test message ab c\\\\", result);
-    }
-
-    @Test
-    public void testFormatMessageStringArgsWithEscapedEscape() {
-        final String testMsg = "Test message \\\\{}{} {}";
-        final String[] args = {"a", "b", "c"};
-        final StringBuilder sb = new StringBuilder();
-        ParameterFormatter.formatMessage(sb, testMsg, args, 3);
-        final String result = sb.toString();
-        assertEquals("Test message \\ab c", result);
+    static Object[][] messageFormattingTestCases() {
+        return new Object[][] {
+            new Object[] {"Test message {}{} {}", new Object[] {"a", "b", "c"}, 3, "Test message ab c"},
+            new Object[] {
+                "Test message {} {} {} {} {} {}",
+                new Object[] {"a", null, "c", null, null, null},
+                6,
+                "Test message a null c null null null"
+            },
+            new Object[] {
+                "Test message {}{} {}",
+                new Object[] {"a", "b", "c", "unnecessary", "superfluous"},
+                5,
+                "Test message ab c"
+            },
+            new Object[] {"Test message \\{}{} {}", new Object[] {"a", "b", "c"}, 3, "Test message {}a b"},
+            new Object[] {"Test message {}{} {}\\", new Object[] {"a", "b", "c"}, 3, "Test message ab c\\"},
+            new Object[] {"Test message {}{} {}\\\\", new Object[] {"a", "b", "c"}, 3, "Test message ab c\\"},
+            new Object[] {"Test message \\\\{}{} {}", new Object[] {"a", "b", "c"}, 3, "Test message \\ab c"},
+            new Object[] {"Test message {}{} {}", new Object[] {"a", "b", "c"}, 3, "Test message ab c"},
+            new Object[] {
+                "Test message {} {} {} {} {} {}",
+                new Object[] {"a", null, "c", null, null, null},
+                6,
+                "Test message a null c null null null"
+            },
+            new Object[] {
+                "Test message {}{} {}",
+                new Object[] {"a", "b", "c", "unnecessary", "superfluous"},
+                5,
+                "Test message ab c"
+            },
+            new Object[] {"Test message \\{}{} {}", new Object[] {"a", "b", "c"}, 3, "Test message {}a b"},
+            new Object[] {"Test message {}{} {}\\", new Object[] {"a", "b", "c"}, 3, "Test message ab c\\"},
+            new Object[] {"Test message {}{} {}\\\\", new Object[] {"a", "b", "c"}, 3, "Test message ab c\\"},
+            new Object[] {"Test message \\\\{}{} {}", new Object[] {"a", "b", "c"}, 3, "Test message \\ab c"},
+            new Object[] {"foo \\\\\\{} {}", new Object[] {"bar"}, 1, "foo \\{} bar"},
+            new Object[] {"missing arg {} {}", new Object[] {1, 2}, 1, "missing arg 1 {}"},
+            new Object[] {"foo {\\} {}", new Object[] {"bar"}, 1, "foo {\\} bar"}
+        };
     }
 
     @Test
@@ -177,7 +127,7 @@ public class ParameterFormatterTest {
         list.add(2);
         final String actual = ParameterFormatter.deepToString(list);
         final String expected = "[1, [..." + ParameterFormatter.identityToString(list) + "...], 2]";
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -191,7 +141,7 @@ public class ParameterFormatterTest {
         list.add(3);
         final String actual = ParameterFormatter.deepToString(list);
         final String expected = "[1, [0], 2, [0], 3]";
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -203,6 +153,6 @@ public class ParameterFormatterTest {
         list.add(2);
         final String actual = ParameterFormatter.identityToString(list);
         final String expected = list.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(list));
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 }

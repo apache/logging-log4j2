@@ -115,7 +115,7 @@ public class ParameterizedMessageTest {
         final String testMsg = "Test message {}{} {}\\\\";
         final String[] args = {"a", "b", "c"};
         final String result = ParameterizedMessage.format(testMsg, args);
-        assertEquals("Test message ab c\\\\", result);
+        assertEquals("Test message ab c\\", result);
     }
 
     @Test
