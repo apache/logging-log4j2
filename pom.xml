@@ -1891,7 +1891,7 @@
     <profile>
       <id>rewrite</id>
       <properties>
-        <rewrite-java.version>8.1.15</rewrite-java.version>
+        <rewrite-java.version>8.2.0</rewrite-java.version>
         <rewrite-maven-plugin.version>5.4.1</rewrite-maven-plugin.version>
         <rewrite-static-analysis.version>1.0.5</rewrite-static-analysis.version>
         <rewrite-testing.version>2.0.9</rewrite-testing.version>
