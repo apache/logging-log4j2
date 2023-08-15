@@ -361,9 +361,6 @@
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
-    <rewrite-java.version>8.1.15</rewrite-java.version>
-    <rewrite-maven-plugin.version>5.4.1</rewrite-maven-plugin.version>
-    <rewrite-static-analysis.version>1.0.5</rewrite-static-analysis.version>
     <spotbugs-maven-plugin.version>4.7.3.5</spotbugs-maven-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.1.2</surefire.version>
@@ -1465,29 +1462,6 @@
         </plugin>
 
         <plugin>
-          <groupId>org.openrewrite.maven</groupId>
-          <artifactId>rewrite-maven-plugin</artifactId>
-          <version>${rewrite-maven-plugin.version}</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.openrewrite</groupId>
-              <artifactId>rewrite-java</artifactId>
-              <version>${rewrite-java.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.openrewrite.recipe</groupId>
-              <artifactId>rewrite-static-analysis</artifactId>
-              <version>${rewrite-static-analysis.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.openrewrite.recipe</groupId>
-              <artifactId>rewrite-testing-frameworks</artifactId>
-              <version>2.0.9</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-
-        <plugin>
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
           <version>${spotbugs-maven-plugin.version}</version>
@@ -1914,6 +1888,46 @@
       </build>
     </profile>
 
+    <profile>
+      <id>rewrite</id>
+      <properties>
+        <rewrite-java.version>8.1.15</rewrite-java.version>
+        <rewrite-maven-plugin.version>5.4.1</rewrite-maven-plugin.version>
+        <rewrite-static-analysis.version>1.0.5</rewrite-static-analysis.version>
+        <rewrite-testing.version>2.0.9</rewrite-testing.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.openrewrite.maven</groupId>
+            <artifactId>rewrite-maven-plugin</artifactId>
+            <version>${rewrite-maven-plugin.version}</version>
+            <configuration>
+              <activeRecipes>
+                <recipe>org.apache.logging.log4j.rewrite.FinalizeAll</recipe>
+              </activeRecipes>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.openrewrite</groupId>
+                <artifactId>rewrite-java</artifactId>
+                <version>${rewrite-java.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.openrewrite.recipe</groupId>
+                <artifactId>rewrite-static-analysis</artifactId>
+                <version>${rewrite-static-analysis.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.openrewrite.recipe</groupId>
+                <artifactId>rewrite-testing-frameworks</artifactId>
+                <version>${rewrite-testing.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
 </project>
