@@ -26,7 +26,7 @@ updates:
     - dependency-name: "org.eclipse.jetty:*"
       update-types: ["version-update:semver-major"]
     # EclipseLink 3.x is Jakarta EE 9
-    - dependency-name: "org.eclipse.persitence:*"
+    - dependency-name: "org.eclipse.persistence:*"
       update-types: ["version-update:semver-major"]
     # Spring 6.x is Jakarta EE 9
     - dependency-name: "org.springframework:*"
@@ -93,7 +93,7 @@ updates:
     - dependency-name: "org.eclipse.jetty:*"
       update-types: ["version-update:semver-major"]
     # EclipseLink 3.x is Jakarta EE 9
-    - dependency-name: "org.eclipse.persitence:*"
+    - dependency-name: "org.eclipse.persistence:*"
       update-types: ["version-update:semver-major"]
     # Spring 6.x is Jakarta EE 9
     - dependency-name: "org.springframework:*"
