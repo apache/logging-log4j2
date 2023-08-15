@@ -79,9 +79,9 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
 
     /**
      *
-     * @param name
-     * @param required
-     * @param optional
+     * @param name The name portion of the id.
+     * @param required The list of keys that are required for this id.
+     * @param optional The list of keys that are optional for this id.
      */
     public StructuredDataId(final String name, final String[] required, final String[] optional) {
         this(name, required, optional, MAX_LENGTH);

@@ -47,7 +47,7 @@ public class MutableThreadContextStack implements ThreadContextStack, StringBuil
 
     /**
      * Constructs a new instance.
-     * @param list
+     * @param list Initial elements to be stored in this stack implementation.
      */
     public MutableThreadContextStack(final List<String> list) {
         this.list = new ArrayList<>(list);

@@ -28,7 +28,9 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
+ * <p>
  * <table>
+ * <caption>Level names with description</caption>
  * <tr>
  * <th>Name</th>
  * <th>Description</th>
@@ -66,6 +68,7 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
  * <td>All events should be logged.</td>
  * </tr>
  * </table>
+ * </p>
  * <p>
  * Typically, configuring a level in a filter or on a logger will cause logging events of that level and those that are
  * more specific to pass through the filter. A special level, {@link #ALL}, is guaranteed to capture all levels when
