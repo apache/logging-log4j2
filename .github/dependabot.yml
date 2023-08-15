@@ -66,6 +66,13 @@ updates:
     # Keep Jakarta EE at version 9.0
     - dependency-name: "jakarta.platform:*"
       versions: ["10.0.0,)"]
+    # OpenRewrite is quite noisy. Let us skip patch and minor updates:
+    - dependency-name: "org.openrewrite:*"
+      update-types: ["version-update:semver-minor", "version-update:semver-patch"]
+    - dependency-name: "org.openrewrite.maven:*"
+      update-types: ["version-update:semver-minor", "version-update:semver-patch"]
+    - dependency-name: "org.openrewrite.recipe:*"
+      update-types: ["version-update:semver-minor", "version-update:semver-patch"]
 
 - package-ecosystem: github-actions
   directory: "/"
@@ -108,6 +115,13 @@ updates:
     # Keep Jakarta EE at version 9.0
     - dependency-name: "jakarta.platform:*"
       versions: ["10.0.0,)"]
+    # OpenRewrite is quite noisy. Let us skip patch and minor updates:
+    - dependency-name: "org.openrewrite:*"
+      update-types: ["version-update:semver-minor", "version-update:semver-patch"]
+    - dependency-name: "org.openrewrite.maven:*"
+      update-types: ["version-update:semver-minor", "version-update:semver-patch"]
+    - dependency-name: "org.openrewrite.recipe:*"
+      update-types: ["version-update:semver-minor", "version-update:semver-patch"]
 
 - package-ecosystem: github-actions
   directory: "/"
