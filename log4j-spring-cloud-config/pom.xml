@@ -31,7 +31,7 @@
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring-cloud.version>2021.0.6</spring-cloud.version>
+    <spring-cloud.version>2021.0.8</spring-cloud.version>
     <log4jParentDir>${basedir}/..</log4jParentDir>
   </properties>
   <dependencyManagement>
