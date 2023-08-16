@@ -415,7 +415,7 @@
     <jakarta-activation.version>2.1.2</jakarta-activation.version>
     <jakarta-mail.version>2.1.2</jakarta-mail.version>
     <!-- BOM with Jakarta EE 9 APIs: -->
-    <jakartaee-bom.version>9.0.0</jakartaee-bom.version>
+    <jakartaee-bom.version>9.1.0</jakartaee-bom.version>
     <!-- No BOM for Java EE 8 APIs, so we list them separately: -->
     <javax-activation.version>1.2.0</javax-activation.version>
     <javax-inject.version>1</javax-inject.version>
