@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
+import org.apache.logging.log4j.core.impl.LocationAware;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.core.layout.TextEncoderHelper;
@@ -60,7 +61,7 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "JsonTemplateLayout",
         category = Node.CATEGORY,
         elementType = Layout.ELEMENT_TYPE)
-public final class JsonTemplateLayout implements StringLayout {
+public final class JsonTemplateLayout implements StringLayout, LocationAware {
 
     private static final Map<String, String> CONTENT_FORMAT =
             Collections.singletonMap("version", "1");
@@ -68,6 +69,8 @@ public final class JsonTemplateLayout implements StringLayout {
     private final Charset charset;
 
     private final String contentType;
+
+    private final boolean locationInfoEnabled;
 
     private final TemplateResolver<LogEvent> eventResolver;
 
@@ -98,6 +101,7 @@ public final class JsonTemplateLayout implements StringLayout {
     private JsonTemplateLayout(final Builder builder) {
         this.charset = builder.charset;
         this.contentType = "application/json; charset=" + charset;
+        this.locationInfoEnabled = builder.locationInfoEnabled;
         final String eventDelimiterSuffix = builder.isNullEventDelimiterEnabled() ? "\0" : "";
         this.eventDelimiter = builder.eventDelimiter + eventDelimiterSuffix;
         final Configuration configuration = builder.configuration;
@@ -326,6 +330,11 @@ public final class JsonTemplateLayout implements StringLayout {
     @Override
     public Charset getCharset() {
         return charset;
+    }
+
+    @Override
+    public boolean requiresLocation() {
+        return locationInfoEnabled;
     }
 
     @Override
