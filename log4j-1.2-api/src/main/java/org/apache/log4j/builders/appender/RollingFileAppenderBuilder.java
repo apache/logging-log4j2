@@ -160,6 +160,7 @@ public class RollingFileAppenderBuilder extends AbstractBuilder implements Appen
         final RolloverStrategy strategy = DefaultRolloverStrategy.newBuilder()
                 .setConfig(config)
                 .setMax(maxBackups)
+                .setFileIndex("min")
                 .build();
         return AppenderWrapper.adapt(RollingFileAppender.newBuilder()
                 .setName(name)

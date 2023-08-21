@@ -195,6 +195,9 @@ public abstract class AbstractLog4j1ConfigurationTest {
         assertEquals(name, appender.getName());
         assertTrue(appender.getClass().getName(), appender instanceof RollingFileAppender);
         final RollingFileAppender rfa = (RollingFileAppender) appender;
+
+        assertTrue("defaultRolloverStrategy", rfa.getManager().getRolloverStrategy() instanceof DefaultRolloverStrategy);
+        assertFalse("rolloverStrategy", ((DefaultRolloverStrategy) rfa.getManager().getRolloverStrategy()).isUseMax());
         assertEquals("append", false, getAppendProperty(rfa));
         assertEquals("bufferSize", 1000, rfa.getManager().getBufferSize());
         assertEquals("immediateFlush", false, rfa.getImmediateFlush());

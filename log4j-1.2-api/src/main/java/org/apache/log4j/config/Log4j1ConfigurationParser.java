@@ -241,8 +241,10 @@ public class Log4j1ConfigurationParser {
         final ComponentBuilder<?> triggeringPolicy = builder.newComponent("Policies")
                 .addComponent(builder.newComponent("TimeBasedTriggeringPolicy").addAttribute("modulate", true));
         appenderBuilder.addComponent(triggeringPolicy);
-        appenderBuilder
-                .addComponent(builder.newComponent("DefaultRolloverStrategy").addAttribute("max", Integer.MAX_VALUE));
+        appenderBuilder.addComponent(builder.newComponent("DefaultRolloverStrategy")
+                .addAttribute("max", Integer.MAX_VALUE)
+                .addAttribute("fileIndex", "min")
+        );
         builder.add(appenderBuilder);
     }
 
@@ -258,7 +260,10 @@ public class Log4j1ConfigurationParser {
                 builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", maxFileSizeString));
         appenderBuilder.addComponent(triggeringPolicy);
         appenderBuilder.addComponent(
-                builder.newComponent("DefaultRolloverStrategy").addAttribute("max", maxBackupIndexString));
+                builder.newComponent("DefaultRolloverStrategy")
+                    .addAttribute("max", maxBackupIndexString)
+                    .addAttribute("fileIndex", "min")
+        );
         builder.add(appenderBuilder);
     }
 
