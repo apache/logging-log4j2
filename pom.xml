@@ -400,7 +400,7 @@
     <errorprone.version>2.7.1</errorprone.version>
     <felix.version>7.0.5</felix.version>
     <flapdoodle-embed.version>4.7.1</flapdoodle-embed.version>
-    <flapdoodle-reverse.version>1.5.3</flapdoodle-reverse.version>
+    <flapdoodle-reverse.version>1.6.0</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
     <graalvm.version>23.0.1</graalvm.version>
     <groovy.version>4.0.6</groovy.version>
