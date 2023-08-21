@@ -349,7 +349,7 @@
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
     <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
     <checksum-maven-plugin.version>1.11</checksum-maven-plugin.version>
-    <docker-maven-plugin.version>0.43.3</docker-maven-plugin.version>
+    <docker-maven-plugin.version>0.43.4</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
     <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
     <log4j-tools.version>0.3.0</log4j-tools.version>
