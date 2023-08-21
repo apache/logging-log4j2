@@ -394,7 +394,7 @@
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
     <flapdoodle-embed.version>4.7.1</flapdoodle-embed.version>
-    <flapdoodle-reverse.version>1.5.3</flapdoodle-reverse.version>
+    <flapdoodle-reverse.version>1.6.0</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
     <groovy.version>3.0.18</groovy.version>
     <guava.version>32.1.2-jre</guava.version>
