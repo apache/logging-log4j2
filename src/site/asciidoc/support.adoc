@@ -23,53 +23,66 @@ The individuals who contribute to Apache projects do it either as part of specif
 [#discussions]
 == User support
 
-Our users are important to us, and we will do our best to help with any questions related to the usage of Log4j.
 If you have questions like:
 
-* How do I configure Log4j with the file appender?
-* My layout is not working as expected; what should I do?
-* How can I migrate from Log4j 1 with this special configuration?
+* _"How do I configure Log4j with the file appender?"_
+* _"My layout is not working as expected; what should I do?"_
+* _"How can I migrate from Log4j 1 with this custom configuration?"_
 
-we welcome you to ask your questions on our official mailing list for users:
+We urge you to first check our link:/faq.html[FAQ] to see if it has already been answered.
+If not, you can ask your questions on one of our official user support channels:
 
-`log4j-user@logging.apache.org` (public | mailto:log4j-user-subscribe@logging.apache.org[subscribe] | mailto:log4j-user-unsubscribe@logging.apache.org[unsubscribe] | mailto:log4j-user@logging.apache.org[post] | https://lists.apache.org/list.html?log4j-user%40logging.apache.org[archive])::
+* https://github.com/apache/logging-log4j2/discussions[GitHub Discussions] (**experimental**)
+* `log4j-user@logging.apache.org` mailing list (public | mailto:log4j-user-subscribe@logging.apache.org[subscribe] | mailto:log4j-user-unsubscribe@logging.apache.org[unsubscribe] | mailto:log4j-user@logging.apache.org[post] | https://lists.apache.org/list.html?log4j-user%40logging.apache.org[archive])
++
+[WARNING]
+====
+**You are expected to be subscribed** to a mailing list to receive replies to your posted questions!
+If you are not subscribed, when you post an email, it will be subject to moderation (hence, will be distributed with a delay) and the only way you would be able to follow the conversation is to use the mailing list archive.
+====
++
+[WARNING]
+====
+Messages sent to a public mailing list will be seen by many people and also re-published by 3rd party websites.
+It is usually not possible to remove them.
+Please **don't send mails containing confidential information** to public mailing lists.
+====
+* http://stackoverflow.com[Stack Overflow] (use http://stackoverflow.com/questions/tagged/log4j[log4j] or http://stackoverflow.com/questions/tagged/log4j2[log4j2] tags)
 
-Please post your _questions_ related to the usage of Log4j components there. Don't send these kinds of questions to the developers' list, except if you are asked to do so. If in doubt, use the log4j-user mailing list. If it is a bug, we will ask you to create an issue for the developers' team.
+== Maintainer discussions
 
-*Important*: all messages sent to a public mailing list will be seen by many people and also re-published by 3rd party websites.
-It is usually not possible to remove them. Please don't send and confidential information to public mailing lists.
+Apache Log4j project officially uses mailing lists for discussions related to maintenance and development.
 
-`Stack Overflow` is monitored when you ask questions tagged with either http://stackoverflow.com/questions/tagged/log4j[log4j] or http://stackoverflow.com/questions/tagged/log4j2[log4j2]. Please note that *Stack Overflow is monitored more casually due to time constraints*. If you don't receive an answer on Stack Overflow, please contact us on the mailing list mentioned above.
-
-Please also see our link:/faq.html[FAQ] before sending e-mails.
-
-== Maintainer Discussions
-
-Apache Log4j project officially uses mailing lists for discussions related
-to maintenance and developing.
+[WARNING]
+====
+**You are expected to be subscribed** to a mailing list to receive replies to your posted questions!
+If you are not subscribed, when you post an email, it will be subject to moderation (hence, will be distributed with a delay) and the only way you would be able to follow the conversation is to use the mailing list archive.
+====
 
 If you have questions or feedback like:
 
-* A Log4j class should have public visibility instead of package scoped
-* A plugin is missing important configuration options
-* You found a bug in a component like an Appender and want to work on the fix
+* A class should have public visibility instead of package-scoped
+* A plugin is missing configuration options
+* You found a bug
 
-then please contact us on the developers mailing list:
+then please contact us using the following mailing lists:
 
 `dev@logging.apache.org` (public | mailto:dev-subscribe@logging.apache.org[subscribe] | mailto:dev-unsubscribe@logging.apache.org[unsubscribe] | mailto:dev@logging.apache.org[post] | https://lists.apache.org/list.html?dev%40logging.apache.org[archive])::
 For _development_ discussions
 (Please prefix subjects with `[log4j]` when starting a new thread!)
-
-For reporting unlisted security vulnerabilities or other unexpected behaviour that has a security impact,
-please contact the security mailing list:
++
+[WARNING]
+====
+Messages sent to a public mailing list will be seen by many people and also re-published by 3rd party websites.
+It is usually not possible to remove them.
+Please **don't send mails containing confidential information** to public mailing lists.
+====
 
 `security@logging.apache.org` (private | mailto:security@logging.apache.org[post])::
-
-For the discussion of confidential topics within the Apache Logging Services project management committee
-we will use the private list. Usually, it is not required for any contributor to send emails to this
-list.
+For reporting unlisted **security vulnerabilities** or other unexpected behaviour that has a security impact
 
 `private@logging.apache.org` (private | mailto:private@logging.apache.org[post])::
+For the discussion of confidential topics within the Apache Logging Services project management committee.
 
 [#issues]
 == Issues
