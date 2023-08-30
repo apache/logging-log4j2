@@ -34,13 +34,14 @@ If not, you can ask your questions on one of our official user support channels:
 
 * https://github.com/apache/logging-log4j2/discussions[GitHub Discussions] (**experimental**)
 * `log4j-user@logging.apache.org` mailing list (public | mailto:log4j-user-subscribe@logging.apache.org[subscribe] | mailto:log4j-user-unsubscribe@logging.apache.org[unsubscribe] | mailto:log4j-user@logging.apache.org[post] | https://lists.apache.org/list.html?log4j-user%40logging.apache.org[archive])
-+
+
+
 [WARNING]
 ====
 **You are expected to be subscribed** to a mailing list to receive replies to your posted questions!
 If you are not subscribed, when you post an email, it will be subject to moderation (hence, will be distributed with a delay) and the only way you would be able to follow the conversation is to use the mailing list archive.
 ====
-+
+
 [WARNING]
 ====
 Messages sent to a public mailing list will be seen by many people and also re-published by 3rd party websites.
@@ -70,7 +71,7 @@ then please contact us using the following mailing lists:
 `dev@logging.apache.org` (public | mailto:dev-subscribe@logging.apache.org[subscribe] | mailto:dev-unsubscribe@logging.apache.org[unsubscribe] | mailto:dev@logging.apache.org[post] | https://lists.apache.org/list.html?dev%40logging.apache.org[archive])::
 For _development_ discussions
 (Please prefix subjects with `[log4j]` when starting a new thread!)
-+
+
 [WARNING]
 ====
 Messages sent to a public mailing list will be seen by many people and also re-published by 3rd party websites.
