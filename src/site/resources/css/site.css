@@ -1,0 +1,18 @@
+.admonitionblock.warning {
+    border: 1px solid black;
+    margin-bottom: 1em;
+}
+
+.admonitionblock.warning .icon {
+    background: salmon;
+    padding: 1.5em;
+}
+
+.admonitionblock.warning .icon .title {
+    font-weight: bold;
+}
+
+.admonitionblock.warning .content {
+    padding: 1.5em;
+    background-color: white;
+}
