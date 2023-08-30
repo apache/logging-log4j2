@@ -47,6 +47,7 @@ If you are not subscribed, when you post an email, it will be subject to moderat
 Messages sent to a public mailing list will be seen by many people and also re-published by 3rd party websites.
 It is usually not possible to remove them.
 Please **don't send mails containing confidential information** to public mailing lists.
+For more information, please see the https://privacy.apache.org/policies/privacy-policy-public.html[privacy policy]
 ====
 * http://stackoverflow.com[Stack Overflow] (use http://stackoverflow.com/questions/tagged/log4j[log4j] or http://stackoverflow.com/questions/tagged/log4j2[log4j2] tags)
 
@@ -77,6 +78,7 @@ For _development_ discussions
 Messages sent to a public mailing list will be seen by many people and also re-published by 3rd party websites.
 It is usually not possible to remove them.
 Please **don't send mails containing confidential information** to public mailing lists.
+For more information, please see the https://privacy.apache.org/policies/privacy-policy-public.html[privacy policy]
 ====
 
 `security@logging.apache.org` (private | mailto:security@logging.apache.org[post])::
