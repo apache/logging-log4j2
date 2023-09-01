@@ -2550,7 +2550,7 @@ public class JpaLogEntity extends AbstractLogEventWrapperEntity {
             </tr>
             <tr>
               <td>collectionSize</td>
-              <td>int</td>
+              <td>long</td>
               <td>Specify the size in bytes of the capped collection to use if enabled. The minimum size is 4096 bytes,
               and larger sizes will be increased to the nearest integer multiple of 256. See the capped collection documentation
               linked above for more information.</td>
