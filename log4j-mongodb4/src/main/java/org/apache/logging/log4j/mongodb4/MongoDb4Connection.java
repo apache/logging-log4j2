@@ -39,10 +39,7 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static MongoCollection<Document> getOrCreateMongoCollection(
-            final MongoDatabase database,
-            final String collectionName,
-            final boolean isCapped,
-            final Integer sizeInBytes) {
+            final MongoDatabase database, final String collectionName, final boolean isCapped, final Long sizeInBytes) {
         try {
             LOGGER.debug("Getting collection '{}'...", collectionName);
             // throws IllegalArgumentException if collectionName is invalid
@@ -71,7 +68,7 @@ public final class MongoDb4Connection extends AbstractNoSqlConnection<Document, 
             final MongoClient mongoClient,
             final MongoDatabase mongoDatabase,
             final boolean isCapped,
-            final Integer sizeInBytes) {
+            final Long sizeInBytes) {
         this.connectionString = connectionString;
         this.mongoClient = mongoClient;
         this.collection =

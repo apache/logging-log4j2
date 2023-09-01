@@ -23,11 +23,11 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -44,23 +44,23 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
     public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
             implements org.apache.logging.log4j.core.util.Builder<MongoDb4Provider> {
 
-        @PluginBuilderAttribute(value = "connection")
+        @PluginAttribute(value = "connection")
         @Required(message = "No connection string provided")
-        private String connection;
+        private String connectionStringSource;
 
-        @PluginBuilderAttribute
-        private int collectionSize = DEFAULT_COLLECTION_SIZE;
+        @PluginAttribute
+        private long collectionSize = DEFAULT_COLLECTION_SIZE;
 
-        @PluginBuilderAttribute("capped")
+        @PluginAttribute("capped")
         private boolean capped = false;
 
         @Override
         public MongoDb4Provider build() {
-            return new MongoDb4Provider(connection, capped, collectionSize);
+            return new MongoDb4Provider(connectionStringSource, capped, collectionSize);
         }
 
-        public B setConnectionStringSource(final String connection) {
-            this.connection = connection;
+        public B setConnectionStringSource(final String connectionStringSource) {
+            this.connectionStringSource = connectionStringSource;
             return asBuilder();
         }
 
@@ -69,7 +69,7 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
             return asBuilder();
         }
 
-        public B setCollectionSize(final int collectionSize) {
+        public B setCollectionSize(final long collectionSize) {
             this.collectionSize = collectionSize;
             return asBuilder();
         }
@@ -85,21 +85,20 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
     // @formatter:on
 
     // TODO Where does this number come from?
-    private static final int DEFAULT_COLLECTION_SIZE = 536_870_912;
+    private static final long DEFAULT_COLLECTION_SIZE = 536_870_912;
 
-    @PluginBuilderFactory
+    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
 
-    private final Integer collectionSize;
+    private final Long collectionSize;
     private final boolean isCapped;
     private final MongoClient mongoClient;
     private final MongoDatabase mongoDatabase;
     private final ConnectionString connectionString;
 
-    private MongoDb4Provider(
-            final String connectionStringSource, final boolean isCapped, final Integer collectionSize) {
+    private MongoDb4Provider(final String connectionStringSource, final boolean isCapped, final Long collectionSize) {
         LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
         this.connectionString = new ConnectionString(connectionStringSource);
         LOGGER.debug("Created ConnectionString {}", connectionString);

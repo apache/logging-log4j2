@@ -1426,7 +1426,7 @@ in the format `mongodb://[username:password@]host1[:port1][,host2[:port2],...[,h
 https://docs.mongodb.com/manual/core/capped-collections/[capped
 collections]
 
-|collectionSize |int |Specify the size in bytes of the capped collection
+|collectionSize |long |Specify the size in bytes of the capped collection
 to use if enabled. The minimum size is 4096 bytes, and larger sizes will
 be increased to the nearest integer multiple of 256. See the capped
 collection documentation linked above for more information.
