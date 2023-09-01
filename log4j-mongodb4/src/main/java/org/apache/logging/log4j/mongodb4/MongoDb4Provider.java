@@ -48,7 +48,7 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
         private String connectionStringSource;
 
         @PluginBuilderAttribute
-        private int collectionSize = DEFAULT_COLLECTION_SIZE;
+        private long collectionSize = DEFAULT_COLLECTION_SIZE;
 
         @PluginBuilderAttribute("capped")
         private boolean capped = false;
@@ -72,7 +72,12 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
             this.collectionSize = collectionSize;
             return asBuilder();
         }
-    }
+
+        public B setCollectionSize(final long collectionSize) {
+            this.collectionSize = collectionSize;
+            return asBuilder();
+        }
+}
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -84,21 +89,21 @@ public final class MongoDb4Provider implements NoSqlProvider<MongoDb4Connection>
     // @formatter:on
 
     // TODO Where does this number come from?
-    private static final int DEFAULT_COLLECTION_SIZE = 536_870_912;
+    private static final long DEFAULT_COLLECTION_SIZE = 536_870_912;
 
     @PluginBuilderFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
 
-    private final Integer collectionSize;
+    private final Long collectionSize;
     private final boolean isCapped;
     private final MongoClient mongoClient;
     private final MongoDatabase mongoDatabase;
     private final ConnectionString connectionString;
 
     private MongoDb4Provider(final String connectionStringSource, final boolean isCapped,
-            final Integer collectionSize) {
+            final Long collectionSize) {
         LOGGER.debug("Creating ConnectionString {}...", connectionStringSource);
         this.connectionString = new ConnectionString(connectionStringSource);
         LOGGER.debug("Created ConnectionString {}", connectionString);

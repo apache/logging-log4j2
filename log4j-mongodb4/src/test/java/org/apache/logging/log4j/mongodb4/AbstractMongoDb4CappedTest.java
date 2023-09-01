@@ -21,18 +21,15 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.bson.Document;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-@UsingMongoDb4
-@LoggerContextSource("log4j2-mongodb-capped.xml")
-public class MongoDb4CappedTest {
+public abstract class AbstractMongoDb4CappedTest {
 
     @Test
     public void test(final LoggerContext ctx, final MongoClient mongoClient) {
-        final Logger logger = ctx.getLogger(MongoDb4CappedTest.class);
+        final Logger logger = ctx.getLogger(AbstractMongoDb4CappedTest.class);
         logger.info("Hello log");
         final MongoDatabase database = mongoClient.getDatabase(MongoDb4TestConstants.DATABASE_NAME);
         Assertions.assertNotNull(database);
