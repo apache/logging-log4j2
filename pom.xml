@@ -350,7 +350,7 @@
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
     <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
     <checksum-maven-plugin.version>1.11</checksum-maven-plugin.version>
-    <docker-maven-plugin.version>0.43.2</docker-maven-plugin.version>
+    <docker-maven-plugin.version>0.43.4</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
     <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
     <log4j-tools.version>0.3.0</log4j-tools.version>
@@ -362,9 +362,6 @@
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
     <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
-    <rewrite-java.version>8.1.15</rewrite-java.version>
-    <rewrite-maven-plugin.version>5.4.1</rewrite-maven-plugin.version>
-    <rewrite-static-analysis.version>1.0.5</rewrite-static-analysis.version>
     <spotbugs-maven-plugin.version>4.7.3.5</spotbugs-maven-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.1.2</surefire.version>
@@ -382,14 +379,14 @@
     <assertj.version>3.24.2</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
-    <cassandra.version>3.11.15</cassandra.version>
+    <cassandra.version>3.11.16</cassandra.version>
     <cassandra-driver.version>3.11.4</cassandra-driver.version>
     <commons-codec.version>1.15</commons-codec.version>
     <commons-compress.version>1.23.0</commons-compress.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
     <commons-io.version>2.11.0</commons-io.version>
-    <commons-lang3.version>3.12.0</commons-lang3.version>
+    <commons-lang3.version>3.13.0</commons-lang3.version>
     <commons-logging.version>1.2</commons-logging.version>
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
@@ -398,11 +395,11 @@
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
     <flapdoodle-embed.version>4.7.1</flapdoodle-embed.version>
-    <flapdoodle-reverse.version>1.5.3</flapdoodle-reverse.version>
+    <flapdoodle-reverse.version>1.6.0</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
-    <groovy.version>3.0.18</groovy.version>
+    <groovy.version>3.0.19</groovy.version>
     <guava.version>32.1.2-jre</guava.version>
-    <h2.version>2.2.220</h2.version>
+    <h2.version>2.2.222</h2.version>
     <hadoop.version>1.2.1</hadoop.version>
     <hamcrest.version>2.2</hamcrest.version>
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
@@ -427,10 +424,10 @@
     <jctools.version>4.0.1</jctools.version>
     <je.version>18.3.12</je.version>
     <jeromq.version>0.5.3</jeromq.version>
-    <jetty.version>9.4.51.v20230217</jetty.version>
+    <jetty.version>9.4.52.v20230823</jetty.version>
     <jmdns.version>3.5.8</jmdns.version>
     <jmh.version>1.37</jmh.version>
-    <json-unit.version>2.36.1</json-unit.version>
+    <json-unit.version>2.38.0</json-unit.version>
     <junit.version>4.13.2</junit.version>
     <junit-jupiter.version>5.10.0</junit-jupiter.version>
     <junit-pioneer.version>1.9.1</junit-pioneer.version>
@@ -444,7 +441,7 @@
     <maven.version>3.9.0</maven.version>
     <mockito.version>4.11.0</mockito.version>
     <mongodb.version>4.10.2</mongodb.version>
-    <netty.version>4.1.96.Final</netty.version>
+    <netty.version>4.1.97.Final</netty.version>
     <org.eclipse.osgi.version>3.13.0.v20180226-1711</org.eclipse.osgi.version>
     <org.eclipse.persistence.version>2.7.11</org.eclipse.persistence.version>
     <oro.version>2.0.8</oro.version>
@@ -453,7 +450,7 @@
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.0</plexus-utils.version>
     <slf4j.version>1.7.36</slf4j.version>
-    <spring-boot.version>2.7.14</spring-boot.version>
+    <spring-boot.version>2.7.15</spring-boot.version>
     <spring-framework.version>5.3.29</spring-framework.version>
     <system-stubs.version>2.0.2</system-stubs.version>
     <tomcat-juli.version>10.0.27</tomcat-juli.version>
@@ -471,7 +468,7 @@
          of dependencies (requireUpperBoundDeps rule).
          ===================================================== -->
     <asm.version>9.5</asm.version>
-    <byte-buddy.version>1.14.5</byte-buddy.version>
+    <byte-buddy.version>1.14.7</byte-buddy.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
     <commons-pool2.version>2.11.1</commons-pool2.version>
     <httpclient.version>4.5.14</httpclient.version>
@@ -1466,29 +1463,6 @@
         </plugin>
 
         <plugin>
-          <groupId>org.openrewrite.maven</groupId>
-          <artifactId>rewrite-maven-plugin</artifactId>
-          <version>${rewrite-maven-plugin.version}</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.openrewrite</groupId>
-              <artifactId>rewrite-java</artifactId>
-              <version>${rewrite-java.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.openrewrite.recipe</groupId>
-              <artifactId>rewrite-static-analysis</artifactId>
-              <version>${rewrite-static-analysis.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.openrewrite.recipe</groupId>
-              <artifactId>rewrite-testing-frameworks</artifactId>
-              <version>2.0.9</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-
-        <plugin>
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
           <version>${spotbugs-maven-plugin.version}</version>
@@ -1915,6 +1889,46 @@
       </build>
     </profile>
 
+    <profile>
+      <id>rewrite</id>
+      <properties>
+        <rewrite-java.version>8.2.0</rewrite-java.version>
+        <rewrite-maven-plugin.version>5.4.1</rewrite-maven-plugin.version>
+        <rewrite-static-analysis.version>1.0.5</rewrite-static-analysis.version>
+        <rewrite-testing.version>2.0.9</rewrite-testing.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.openrewrite.maven</groupId>
+            <artifactId>rewrite-maven-plugin</artifactId>
+            <version>${rewrite-maven-plugin.version}</version>
+            <configuration>
+              <activeRecipes>
+                <recipe>org.apache.logging.log4j.rewrite.FinalizeAll</recipe>
+              </activeRecipes>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.openrewrite</groupId>
+                <artifactId>rewrite-java</artifactId>
+                <version>${rewrite-java.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.openrewrite.recipe</groupId>
+                <artifactId>rewrite-static-analysis</artifactId>
+                <version>${rewrite-static-analysis.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>org.openrewrite.recipe</groupId>
+                <artifactId>rewrite-testing-frameworks</artifactId>
+                <version>${rewrite-testing.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
 </project>

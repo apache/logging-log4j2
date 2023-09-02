@@ -19,7 +19,6 @@
 
 * JDK 11+
 * JDK 8 (optional)
-* Apache Maven 3.x (optional)
 * A modern Linux, OSX, or Windows host
 
 <a name="building"></a>

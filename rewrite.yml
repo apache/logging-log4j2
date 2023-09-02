@@ -1,5 +1,5 @@
 # Run with:
-# ./mvnw rewrite:run -Drewrite.activeRecipes=org.apache.logging.log4j.rewrite.FinalizeAll -pl !log4j-bom
+# ./mvnw -Prewrite rewrite:run -pl !log4j-bom
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.apache.logging.log4j.rewrite.FinalizeAll
