@@ -36,7 +36,6 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.TlsSyslogFrame;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.internal.ExcludeChecker;
 import org.apache.logging.log4j.core.layout.internal.IncludeChecker;
 import org.apache.logging.log4j.core.layout.internal.ListChecker;
@@ -57,7 +56,7 @@ import org.apache.logging.log4j.message.StructuredDataId;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -170,7 +169,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         this.appName = appName;
         this.messageId = messageId;
         this.useTlsMessageFormat = useTLSMessageFormat;
-        this.localHostName = NetUtils.getLocalHostname();
+        this.localHostName = NetUtils.getCanonicalLocalHostname();
         ListChecker checker = null;
         if (excludes != null) {
             final String[] array = excludes.split(Patterns.COMMA_SEPARATOR);
@@ -248,7 +247,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     /**
      * Create a PatternParser.
      *
-     * @param config The Configuration.
+     * @param config      The Configuration.
      * @param filterClass Filter the returned plugins after calling the plugin manager.
      * @return The PatternParser.
      */
@@ -617,105 +616,74 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         return sb.toString();
     }
 
-    /**
-     * Create the RFC 5424 Layout.
-     *
-     * @param facility The Facility is used to try to classify the message.
-     * @param id The default structured data id to use when formatting according to RFC 5424.
-     * @param enterpriseNumber The IANA enterprise number.
-     * @param includeMDC Indicates whether data from the ThreadContextMap will be included in the RFC 5424 Syslog
-     *            record. Defaults to "true:.
-     * @param mdcId The id to use for the MDC Structured Data Element.
-     * @param mdcPrefix The prefix to add to MDC key names.
-     * @param eventPrefix The prefix to add to event key names.
-     * @param newLine If true, a newline will be appended to the end of the syslog record. The default is false.
-     * @param escapeNL String that should be used to replace newlines within the message text.
-     * @param appName The value to use as the APP-NAME in the RFC 5424 syslog record.
-     * @param msgId The default value to be used in the MSGID field of RFC 5424 syslog records.
-     * @param excludes A comma separated list of MDC keys that should be excluded from the LogEvent.
-     * @param includes A comma separated list of MDC keys that should be included in the FlumeEvent.
-     * @param required A comma separated list of MDC keys that must be present in the MDC.
-     * @param exceptionPattern The pattern for formatting exceptions.
-     * @param useTlsMessageFormat If true the message will be formatted according to RFC 5425.
-     * @param loggerFields Container for the KeyValuePairs containing the patterns
-     * @param config The Configuration. Some Converters require access to the Interpolator.
-     * @return An Rfc5424Layout.
-     * @deprecated Use {@link Rfc5424LayoutBuilder instead}
-     */
     @PluginFactory
-    public static Rfc5424Layout createLayout(
-            // @formatter:off
-            @PluginAttribute(value = "facility", defaultString = "LOCAL0") final Facility facility,
-            @PluginAttribute("id") final String id,
-            @PluginAttribute(value = "enterpriseNumber", defaultInt = DEFAULT_ENTERPRISE_NUMBER)
-                    final int enterpriseNumber,
-            @PluginAttribute(value = "includeMDC", defaultBoolean = true) final boolean includeMDC,
-            @PluginAttribute(value = "mdcId", defaultString = DEFAULT_MDCID) final String mdcId,
-            @PluginAttribute("mdcPrefix") final String mdcPrefix,
-            @PluginAttribute("eventPrefix") final String eventPrefix,
-            @PluginAttribute(value = "newLine") final boolean newLine,
-            @PluginAttribute("newLineEscape") final String escapeNL,
-            @PluginAttribute final String appName,
-            @PluginAttribute("messageId") final String msgId,
-            @PluginAttribute("mdcExcludes") final String excludes,
-            @PluginAttribute("mdcIncludes") String includes,
-            @PluginAttribute("mdcRequired") final String required,
-            @PluginAttribute final String exceptionPattern,
-            // RFC 5425
-            @PluginAttribute final boolean useTlsMessageFormat,
-            @PluginElement final LoggerFields[] loggerFields,
-            @PluginConfiguration final Configuration config) {
-        // @formatter:on
-        if (includes != null && excludes != null) {
-            LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
-            includes = null;
-        }
-
-        return new Rfc5424Layout(
-                config,
-                facility,
-                id,
-                String.valueOf(enterpriseNumber),
-                includeMDC,
-                newLine,
-                escapeNL,
-                mdcId,
-                mdcPrefix,
-                eventPrefix,
-                appName,
-                msgId,
-                excludes,
-                includes,
-                required,
-                StandardCharsets.UTF_8,
-                exceptionPattern,
-                useTlsMessageFormat,
-                loggerFields);
+    public static Rfc5424LayoutBuilder newBuilder() {
+        return new Rfc5424LayoutBuilder();
     }
 
-    public static class Rfc5424LayoutBuilder {
-        private Configuration config;
+    public static class Rfc5424LayoutBuilder extends AbstractStringLayout.Builder<Rfc5424LayoutBuilder>
+            implements org.apache.logging.log4j.core.util.Builder<Rfc5424Layout> {
+
+        @PluginBuilderAttribute
         private Facility facility = Facility.LOCAL0;
+
+        @PluginBuilderAttribute
         private String id;
+
+        @PluginBuilderAttribute
         private String ein = String.valueOf(DEFAULT_ENTERPRISE_NUMBER);
+
+        @PluginBuilderAttribute
+        private Integer enterpriseNumber;
+
+        @PluginBuilderAttribute
         private boolean includeMDC = true;
+
+        @PluginBuilderAttribute
         private boolean includeNL;
+
+        @PluginBuilderAttribute
         private String escapeNL;
+
+        @PluginBuilderAttribute
         private String mdcId = DEFAULT_MDCID;
+
+        @PluginBuilderAttribute
         private String mdcPrefix;
+
+        @PluginBuilderAttribute
         private String eventPrefix;
+
+        @PluginBuilderAttribute
         private String appName;
+
+        @PluginBuilderAttribute
         private String messageId;
+
+        @PluginBuilderAttribute
         private String excludes;
+
+        @PluginBuilderAttribute
         private String includes;
+
+        @PluginBuilderAttribute
         private String required;
-        private Charset charset;
+
+        @PluginBuilderAttribute
         private String exceptionPattern;
+
+        @PluginBuilderAttribute
         private boolean useTLSMessageFormat;
+
+        @PluginElement(value = "loggerFields")
         private LoggerFields[] loggerFields;
 
+        /**
+         * @deprecated Since 2.24.0 use {@link #setConfiguration} instead.
+         */
+        @Deprecated
         public Rfc5424LayoutBuilder setConfig(final Configuration config) {
-            this.config = config;
+            setConfiguration(config);
             return this;
         }
 
@@ -789,9 +757,9 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return this;
         }
 
+        // Kept for binary compatibility
         public Rfc5424LayoutBuilder setCharset(final Charset charset) {
-            this.charset = charset;
-            return this;
+            return super.setCharset(charset);
         }
 
         public Rfc5424LayoutBuilder setExceptionPattern(final String exceptionPattern) {
@@ -809,19 +777,24 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return this;
         }
 
+        @Override
         public Rfc5424Layout build() {
             if (includes != null && excludes != null) {
                 LOGGER.error("mdcIncludes and mdcExcludes are mutually exclusive. Includes wil be ignored");
                 includes = null;
             }
 
+            if (enterpriseNumber != null) {
+                ein = String.valueOf(enterpriseNumber);
+            }
             if (ein != null && !ENTERPRISE_ID_PATTERN.matcher(ein).matches()) {
                 LOGGER.warn(String.format("provided EID %s is not in valid format!", ein));
                 return null;
             }
+            final Charset charset = getCharset();
 
             return new Rfc5424Layout(
-                    config,
+                    getConfiguration(),
                     facility,
                     id,
                     ein,
@@ -836,7 +809,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
                     excludes,
                     includes,
                     required,
-                    charset,
+                    charset != null ? charset : StandardCharsets.UTF_8,
                     exceptionPattern,
                     useTLSMessageFormat,
                     loggerFields);
@@ -925,5 +898,10 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     public String getMdcId() {
         return mdcId;
+    }
+
+    // Used in tests
+    String getLocalHostName() {
+        return localHostName;
     }
 }
