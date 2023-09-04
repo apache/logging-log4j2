@@ -92,15 +92,15 @@ public class LoggerConfigTest {
     public void testLevel() {
         final Configuration configuration = new DefaultConfiguration();
         final LoggerConfig config1 = LoggerConfig.newBuilder()
-        .withLoggerName("org.apache.logging.log4j.test")
-        .withLevel(Level.ERROR)
-        .withAdditivity(false)
-        .withConfig(configuration)
+        .setLoggerName("org.apache.logging.log4j.test")
+        .setLevel(Level.ERROR)
+        .setAdditivity(false)
+        .setConfig(configuration)
         .build();
         final LoggerConfig config2 = LoggerConfig.newBuilder()
-        .withLoggerName("org.apache.logging.log4j")
-        .withAdditivity(false)
-        .withConfig(configuration)
+        .setLoggerName("org.apache.logging.log4j")
+        .setAdditivity(false)
+        .setConfig(configuration)
         .build();
         config1.setParent(config2);
         assertEquals(config1.getLevel(), Level.ERROR, "Unexpected Level");
