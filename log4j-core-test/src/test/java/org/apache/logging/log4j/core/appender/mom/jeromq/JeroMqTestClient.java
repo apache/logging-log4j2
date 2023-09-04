@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.apache.logging.log4j.util.Constants;
+import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
 
 class JeroMqTestClient implements Callable<List<String>> {
@@ -40,9 +40,9 @@ class JeroMqTestClient implements Callable<List<String>> {
 
     @Override
     public List<String> call() throws Exception {
-        try (final ZMQ.Socket subscriber = context.socket(ZMQ.SUB)) {
+        try (final ZMQ.Socket subscriber = context.socket(SocketType.SUB)) {
             subscriber.connect(endpoint);
-            subscriber.subscribe(Constants.EMPTY_BYTE_ARRAY);
+            subscriber.subscribe(ZMQ.SUBSCRIPTION_ALL);
             for (int messageNum = 0; messageNum < receiveCount
                     && !Thread.currentThread().isInterrupted(); messageNum++) {
                 // Use trim to remove the tailing '0' character

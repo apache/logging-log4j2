@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
+import zmq.SocketBase;
 
 /**
  * Manager for publishing messages via JeroMq.
@@ -72,7 +73,7 @@ public final class JeroMqManager extends AbstractManager {
 
     private JeroMqManager(final String name, final JeroMqConfiguration config) {
         super(null, name);
-        publisher = CONTEXT.socket(SocketType.XPUB);
+        publisher = CONTEXT.socket(SocketType.PUB);
         publisher.setAffinity(config.affinity);
         publisher.setBacklog(config.backlog);
         publisher.setDelayAttachOnConnect(config.delayAttachOnConnect);
@@ -105,21 +106,15 @@ public final class JeroMqManager extends AbstractManager {
         return publisher.send(data);
     }
 
-    // not public, handy for testing
-    byte[] recv(final int timeoutMs) {
-        final int oldTimeoutMs = publisher.getReceiveTimeOut();
-        try {
-            publisher.setReceiveTimeOut(timeoutMs);
-            return publisher.recv();
-        } finally {
-            publisher.setReceiveTimeOut(oldTimeoutMs);
-        }
-    }
-
     @Override
     protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         publisher.close();
         return true;
+    }
+
+    // not public, handy for testing
+    SocketBase getPublisher() {
+        return publisher.base();
     }
 
     public static JeroMqManager getJeroMqManager(final String name, final long affinity, final long backlog,
