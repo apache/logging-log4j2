@@ -20,10 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
 
 class JeroMqTestClient implements Callable<List<String>> {
+
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final ZMQ.Context context;
 
@@ -46,7 +50,9 @@ class JeroMqTestClient implements Callable<List<String>> {
             for (int messageNum = 0; messageNum < receiveCount
                     && !Thread.currentThread().isInterrupted(); messageNum++) {
                 // Use trim to remove the tailing '0' character
-                messages.add(subscriber.recvStr(0).trim());
+                final String message = subscriber.recvStr(0).trim();
+                LOGGER.trace("Received 0MQ message: {}.", message);
+                messages.add(message);
             }
         }
         return messages;

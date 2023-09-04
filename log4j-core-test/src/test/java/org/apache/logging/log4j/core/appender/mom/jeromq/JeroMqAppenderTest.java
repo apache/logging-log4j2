@@ -17,7 +17,9 @@
 package org.apache.logging.log4j.core.appender.mom.jeromq;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,12 +33,16 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.util.ExecutorServices;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import zmq.SocketBase;
 import zmq.ZMQ;
+import zmq.io.net.Listener;
+import zmq.pipe.Pipe;
 import zmq.socket.pubsub.XPub;
+import zmq.util.MultiMap;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,11 +54,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 @LoggerContextSource(value = "JeroMqAppenderTest.xml", timeout = 60)
 public class JeroMqAppenderTest {
 
-    private static final String ENDPOINT = "tcp://localhost:5556";
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
     private static final String APPENDER_NAME = "JeroMQAppender";
 
-    private static final int DEFAULT_TIMEOUT_MILLIS = 60000;
+    private static final int DEFAULT_TIMEOUT_MS = 5000;
 
     @Test
     public void testAppenderLifeCycle() throws Exception {
@@ -62,14 +68,17 @@ public class JeroMqAppenderTest {
     }
 
     @Test
-    public void testClientServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx) throws Exception {
+    public void testClientServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx)
+            throws Exception {
         final Logger logger = ctx.getLogger(getClass());
         final int expectedReceiveCount = 3;
-        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), ENDPOINT, expectedReceiveCount);
+        final String endpoint = getTcpEndpoint(appender);
+        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), endpoint,
+                expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             final Future<List<String>> future = executor.submit(client);
-            waitForSubscription(appender, 5000);
+            final Pipe subscription = waitForSubscription(appender, DEFAULT_TIMEOUT_MS);
             appender.resetSendRcs();
             logger.info("Hello");
             logger.info("Again");
@@ -81,22 +90,25 @@ public class JeroMqAppenderTest {
             assertEquals("Hello", list.get(0));
             assertEquals("Again", list.get(1));
             assertEquals("barWorld", list.get(2));
+            waitForSubscriptionEnd(appender, subscription, DEFAULT_TIMEOUT_MS);
         } finally {
             executor.shutdown();
         }
     }
 
     @Test
-    public void testMultiThreadedServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx) throws Exception {
+    public void testMultiThreadedServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx)
+            throws Exception {
         final Logger logger = ctx.getLogger(getClass());
         final int nThreads = 10;
         final int expectedReceiveCount = 2 * nThreads;
-        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), ENDPOINT,
+        final String endpoint = getTcpEndpoint(appender);
+        final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), endpoint,
                 expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             final Future<List<String>> future = executor.submit(client);
-            waitForSubscription(appender, 5000);
+            final Pipe subscription = waitForSubscription(appender, DEFAULT_TIMEOUT_MS);
             appender.resetSendRcs();
             final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(nThreads);
             for (int i = 0; i < 10.; i++) {
@@ -112,20 +124,21 @@ public class JeroMqAppenderTest {
             int again = 0;
             for (final String string : list) {
                 switch (string) {
-                case "Hello":
-                    hello++;
-                    break;
-                case "Again":
-                    again++;
-                    break;
-                default:
-                    fail("Unexpected message: " + string);
+                    case "Hello":
+                        hello++;
+                        break;
+                    case "Again":
+                        again++;
+                        break;
+                    default:
+                        fail("Unexpected message: " + string);
                 }
             }
             assertEquals(nThreads, hello);
             assertEquals(nThreads, again);
+            waitForSubscriptionEnd(appender, subscription, DEFAULT_TIMEOUT_MS);
         } finally {
-            ExecutorServices.shutdown(executor, DEFAULT_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS,
+            ExecutorServices.shutdown(executor, DEFAULT_TIMEOUT_MS, TimeUnit.MILLISECONDS,
                     JeroMqAppenderTest.class.getSimpleName());
         }
     }
@@ -140,10 +153,48 @@ public class JeroMqAppenderTest {
         assertEquals(0, appender.getSendRcFalse());
     }
 
-    private void waitForSubscription(final JeroMqAppender appender, final int timeoutMs) throws Exception {
+
+    private String getTcpEndpoint(final JeroMqAppender appender) {
+        final SocketBase publisher = appender.getManager().getPublisher();
+        return assertDoesNotThrow(() -> {
+            final Field endpointsField = SocketBase.class.getDeclaredField("endpoints");
+            endpointsField.setAccessible(true);
+            final Field endpointField = Class.forName("zmq.SocketBase$EndpointPipe").getDeclaredField("endpoint");
+            endpointField.setAccessible(true);
+            final MultiMap<String, Object> endpoints = (MultiMap<String, Object>) endpointsField.get(publisher);
+            for (final Entry<Object, String> entry : endpoints.entries()) {
+                final Object endpointPipe = entry.getKey();
+                final Object listener = endpointField.get(endpointPipe);
+                if (listener instanceof Listener) {
+                    final String address = ((Listener) listener).getAddress();
+                    if (address.startsWith("tcp://")) {
+                        return address.replace("0.0.0.0", "localhost");
+                    }
+                }
+            }
+            fail("No TCP endpoint found.");
+            return null;
+        });
+    }
+
+    private Pipe waitForSubscription(final JeroMqAppender appender, final int timeoutMs) throws Exception {
         final long start = System.currentTimeMillis();
         while (System.currentTimeMillis() - start < timeoutMs) {
-            if (hasSubscriptions(appender)) {
+            final Set<Pipe> pipes = getSubscriptions(appender);
+            if (!pipes.isEmpty()) {
+                return pipes.iterator().next();
+            }
+            Thread.currentThread().sleep(100);
+        }
+        throw new TimeoutException();
+    }
+
+    private void waitForSubscriptionEnd(final JeroMqAppender appender, final Pipe subscription, final int timeoutMs)
+            throws Exception {
+        final long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() - start < timeoutMs) {
+            final Set<Pipe> pipes = getSubscriptions(appender);
+            if (!pipes.contains(subscription)) {
                 return;
             }
             Thread.currentThread().sleep(100);
@@ -151,7 +202,7 @@ public class JeroMqAppenderTest {
         throw new TimeoutException();
     }
 
-    private boolean hasSubscriptions(final JeroMqAppender appender) {
+    private Set<Pipe> getSubscriptions(final JeroMqAppender appender) {
         final SocketBase publisher = appender.getManager().getPublisher();
         // Process commands
         publisher.getSocketOpt(ZMQ.ZMQ_EVENTS);
@@ -161,8 +212,8 @@ public class JeroMqAppenderTest {
             final Object subscriptions = subscriptionsField.get(publisher);
             final Field pipesField = Class.forName("zmq.socket.pubsub.Mtrie").getDeclaredField("pipes");
             pipesField.setAccessible(true);
-            final Set<?> pipes = (Set<?>) pipesField.get(subscriptions);
-            return pipes != null && !pipes.isEmpty();
+            final Set<Pipe> pipes = (Set<Pipe>) pipesField.get(subscriptions);
+            return pipes != null ? pipes : Collections.emptySet();
         });
     }
 }

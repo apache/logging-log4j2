@@ -18,7 +18,7 @@
 <Configuration name="JeroMQAppenderTest" status="INFO">
   <Appenders>
     <JeroMQ name="JeroMQAppender">
-      <Property name="endpoint">tcp://*:5556</Property>
+      <Property name="endpoint">tcp://*:0</Property>
       <Property name="endpoint">ipc://info-topic</Property>
       <PatternLayout pattern="%X{foo}%m"/>
     </JeroMQ>
