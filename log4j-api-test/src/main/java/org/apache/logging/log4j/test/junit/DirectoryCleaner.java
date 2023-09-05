@@ -49,6 +49,10 @@ class DirectoryCleaner extends AbstractFileCleaner {
 
     @Override
     boolean delete(final Path path) throws IOException {
+        return deleteDirectory(path);
+    }
+
+    static boolean deleteDirectory(final Path path) throws IOException {
         if (Files.exists(path) && Files.isDirectory(path)) {
             Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
                 @Override

@@ -14,31 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.test;
+package org.apache.logging.log4j.test.junit;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.CleanupMode;
+
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * A container for per-test properties.
+ * Injects the given static field with a per test logging directory.
+ * <p>
+ * The same directory is set as "logging.path" Log4j2 property.
+ * </p>
  */
-public interface TestProperties {
+@Retention(RUNTIME)
+@Target({ ElementType.FIELD })
+@Inherited
+@Documented
+@ExtendWith(ExtensionContextAnchor.class)
+@ExtendWith(TempLoggingDirectory.class)
+public @interface TempLoggingDir {
 
-    /**
-     * Path to a directory specific to the test class,
-     */
-    public static final String LOGGING_PATH = "logging.path";
-
-    String getProperty(final String key);
-
-    boolean containsProperty(final String key);
-
-    void setProperty(final String key, final String value);
-
-    default void setProperty(final String key, final boolean value) {
-        setProperty(key, value ? "true" : "false");
-    }
-
-    default void setProperty(final String key, final int value) {
-        setProperty(key, Integer.toString(value));
-    }
-
-    void clearProperty(final String key);
+    CleanupMode cleanup() default CleanupMode.DEFAULT;
 }
