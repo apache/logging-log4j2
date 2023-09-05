@@ -25,7 +25,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -44,6 +43,9 @@ import zmq.pipe.Pipe;
 import zmq.socket.pubsub.XPub;
 import zmq.util.MultiMap;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
+import static org.awaitility.Awaitility.waitAtMost;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -78,7 +80,7 @@ public class JeroMqAppenderTest {
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             final Future<List<String>> future = executor.submit(client);
-            final Pipe subscription = waitForSubscription(appender, DEFAULT_TIMEOUT_MS);
+            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> !getSubscriptions(appender).isEmpty());
             appender.resetSendRcs();
             logger.info("Hello");
             logger.info("Again");
@@ -90,9 +92,9 @@ public class JeroMqAppenderTest {
             assertEquals("Hello", list.get(0));
             assertEquals("Again", list.get(1));
             assertEquals("barWorld", list.get(2));
-            waitForSubscriptionEnd(appender, subscription, DEFAULT_TIMEOUT_MS);
         } finally {
             executor.shutdown();
+            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> getSubscriptions(appender).isEmpty());
         }
     }
 
@@ -108,7 +110,7 @@ public class JeroMqAppenderTest {
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             final Future<List<String>> future = executor.submit(client);
-            final Pipe subscription = waitForSubscription(appender, DEFAULT_TIMEOUT_MS);
+            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> !getSubscriptions(appender).isEmpty());
             appender.resetSendRcs();
             final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(nThreads);
             for (int i = 0; i < 10.; i++) {
@@ -136,10 +138,10 @@ public class JeroMqAppenderTest {
             }
             assertEquals(nThreads, hello);
             assertEquals(nThreads, again);
-            waitForSubscriptionEnd(appender, subscription, DEFAULT_TIMEOUT_MS);
         } finally {
-            ExecutorServices.shutdown(executor, DEFAULT_TIMEOUT_MS, TimeUnit.MILLISECONDS,
+            ExecutorServices.shutdown(executor, DEFAULT_TIMEOUT_MS, MILLISECONDS,
                     JeroMqAppenderTest.class.getSimpleName());
+            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> getSubscriptions(appender).isEmpty());
         }
     }
 
@@ -175,31 +177,6 @@ public class JeroMqAppenderTest {
             fail("No TCP endpoint found.");
             return null;
         });
-    }
-
-    private Pipe waitForSubscription(final JeroMqAppender appender, final int timeoutMs) throws Exception {
-        final long start = System.currentTimeMillis();
-        while (System.currentTimeMillis() - start < timeoutMs) {
-            final Set<Pipe> pipes = getSubscriptions(appender);
-            if (!pipes.isEmpty()) {
-                return pipes.iterator().next();
-            }
-            Thread.currentThread().sleep(100);
-        }
-        throw new TimeoutException();
-    }
-
-    private void waitForSubscriptionEnd(final JeroMqAppender appender, final Pipe subscription, final int timeoutMs)
-            throws Exception {
-        final long start = System.currentTimeMillis();
-        while (System.currentTimeMillis() - start < timeoutMs) {
-            final Set<Pipe> pipes = getSubscriptions(appender);
-            if (!pipes.contains(subscription)) {
-                return;
-            }
-            Thread.currentThread().sleep(100);
-        }
-        throw new TimeoutException();
     }
 
     private Set<Pipe> getSubscriptions(final JeroMqAppender appender) {
