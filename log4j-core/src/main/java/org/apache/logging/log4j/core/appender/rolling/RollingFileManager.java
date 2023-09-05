@@ -495,6 +495,7 @@ public class RollingFileManager extends FileManager {
             releaseRequired = true;
         } catch (final InterruptedException e) {
             logError("Thread interrupted while attempting to check rollover", e);
+            semaphore.release();
             return false;
         }
 
