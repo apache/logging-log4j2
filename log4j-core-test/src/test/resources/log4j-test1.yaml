@@ -20,7 +20,7 @@ Configuration:
   properties:
     property:
       name: filename
-      value: target/test-yaml.log
+      value: ${test:logging.path}/test-yaml.log
   thresholdFilter:
     level: debug
   appenders:

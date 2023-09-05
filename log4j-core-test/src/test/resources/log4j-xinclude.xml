@@ -18,7 +18,7 @@
 <Configuration xmlns:xi="http://www.w3.org/2001/XInclude"
   status="OFF" name="XMLConfigTest">
   <Properties>
-    <Property name="filename">target/test-xinclude.log</Property>
+    <Property name="filename">${test:logging.path}/test-xinclude.log</Property>
   </Properties>
   <ThresholdFilter level="debug"/>
   <xi:include href="log4j-xinclude-appenders.xml" />
