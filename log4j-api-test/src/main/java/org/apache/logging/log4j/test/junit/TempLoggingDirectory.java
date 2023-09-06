@@ -64,7 +64,7 @@ public class TempLoggingDirectory implements BeforeAllCallback {
         final String baseDir = System.getProperty("basedir");
         final Path basePath = (baseDir != null ? Paths.get(baseDir, "target") : Paths.get(".")).resolve("logs");
         final Class<?> clazz = context.getRequiredTestClass();
-        final String dir = clazz.getName().replaceAll("[.$]", File.separator);
+        final String dir = clazz.getName().replaceAll("[.$]", File.separatorChar == '\\' ? "\\\\" : File.separator);
         final Path loggingPath = basePath.resolve(dir);
         Files.createDirectories(loggingPath);
         props.setProperty(TestProperties.LOGGING_PATH, loggingPath.toString());
