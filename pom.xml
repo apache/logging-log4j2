@@ -451,7 +451,7 @@
     <slf4j.version>1.7.36</slf4j.version>
     <spring-boot.version>2.7.15</spring-boot.version>
     <spring-framework.version>5.3.29</spring-framework.version>
-    <system-stubs.version>2.0.2</system-stubs.version>
+    <system-stubs.version>2.1.0</system-stubs.version>
     <tomcat-juli.version>10.0.27</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
     <wiremock.version>2.35.0</wiremock.version>
