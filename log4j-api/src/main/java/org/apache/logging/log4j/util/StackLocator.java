@@ -77,7 +77,6 @@ public final class StackLocator {
                 }
             }
         } catch (final Exception | LinkageError e) {
-            System.out.println("WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.");
             getCallerClassMethod = null;
             java7u25CompensationOffset = -1;
         }
