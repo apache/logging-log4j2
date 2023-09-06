@@ -16,11 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.mom.jeromq;
 
-import java.lang.reflect.Field;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -36,17 +32,13 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import zmq.SocketBase;
-import zmq.ZMQ;
-import zmq.io.net.Listener;
-import zmq.pipe.Pipe;
-import zmq.socket.pubsub.XPub;
-import zmq.util.MultiMap;
+import org.zeromq.ZMonitor;
+import org.zeromq.ZMonitor.Event;
+import org.zeromq.ZMonitor.ZEvent;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import static org.awaitility.Awaitility.waitAtMost;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -78,9 +70,10 @@ public class JeroMqAppenderTest {
         final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), endpoint,
                 expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
+        final ZMonitor monitor = createMonitor(appender);
         try {
             final Future<List<String>> future = executor.submit(client);
-            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> !getSubscriptions(appender).isEmpty());
+            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.ACCEPTED));
             appender.resetSendRcs();
             logger.info("Hello");
             logger.info("Again");
@@ -94,7 +87,8 @@ public class JeroMqAppenderTest {
             assertEquals("barWorld", list.get(2));
         } finally {
             executor.shutdown();
-            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> getSubscriptions(appender).isEmpty());
+            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.DISCONNECTED));
+            monitor.destroy();
         }
     }
 
@@ -108,9 +102,10 @@ public class JeroMqAppenderTest {
         final JeroMqTestClient client = new JeroMqTestClient(JeroMqManager.getContext(), endpoint,
                 expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
+        final ZMonitor monitor = createMonitor(appender);
         try {
             final Future<List<String>> future = executor.submit(client);
-            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> !getSubscriptions(appender).isEmpty());
+            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.ACCEPTED));
             appender.resetSendRcs();
             final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(nThreads);
             for (int i = 0; i < 10.; i++) {
@@ -141,7 +136,8 @@ public class JeroMqAppenderTest {
         } finally {
             ExecutorServices.shutdown(executor, DEFAULT_TIMEOUT_MS, MILLISECONDS,
                     JeroMqAppenderTest.class.getSimpleName());
-            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> getSubscriptions(appender).isEmpty());
+            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.DISCONNECTED));
+            monitor.destroy();
         }
     }
 
@@ -157,40 +153,29 @@ public class JeroMqAppenderTest {
 
 
     private String getTcpEndpoint(final JeroMqAppender appender) {
-        final SocketBase publisher = appender.getManager().getPublisher();
-        return assertDoesNotThrow(() -> {
-            final Field endpointsField = SocketBase.class.getDeclaredField("endpoints");
-            endpointsField.setAccessible(true);
-            final Field endpointField = Class.forName("zmq.SocketBase$EndpointPipe").getDeclaredField("endpoint");
-            endpointField.setAccessible(true);
-            final MultiMap<String, Object> endpoints = (MultiMap<String, Object>) endpointsField.get(publisher);
-            for (final Entry<Object, String> entry : endpoints.entries()) {
-                final Object endpointPipe = entry.getKey();
-                final Object listener = endpointField.get(endpointPipe);
-                if (listener instanceof Listener) {
-                    final String address = ((Listener) listener).getAddress();
-                    if (address.startsWith("tcp://")) {
-                        return address.replace("0.0.0.0", "localhost");
-                    }
-                }
+        for (final String endpoint : appender.getManager().getEndpoints()) {
+            if (endpoint.startsWith("tcp://0.0.0.0")) {
+                return endpoint.replace("0.0.0.0", "localhost");
             }
-            fail("No TCP endpoint found.");
-            return null;
-        });
+        }
+        fail("No TCP endpoint found.");
+        return null;
     }
 
-    private Set<Pipe> getSubscriptions(final JeroMqAppender appender) {
-        final SocketBase publisher = appender.getManager().getPublisher();
-        // Process commands
-        publisher.getSocketOpt(ZMQ.ZMQ_EVENTS);
-        return assertDoesNotThrow(() -> {
-            final Field subscriptionsField = XPub.class.getDeclaredField("subscriptions");
-            subscriptionsField.setAccessible(true);
-            final Object subscriptions = subscriptionsField.get(publisher);
-            final Field pipesField = Class.forName("zmq.socket.pubsub.Mtrie").getDeclaredField("pipes");
-            pipesField.setAccessible(true);
-            final Set<Pipe> pipes = (Set<Pipe>) pipesField.get(subscriptions);
-            return pipes != null ? pipes : Collections.emptySet();
-        });
+    private boolean hasEventOccurred(final ZMonitor monitor, final Event eventType) {
+        ZEvent event;
+        while ((event = monitor.nextEvent(false)) != null) {
+            if (event.type == eventType) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private ZMonitor createMonitor(final JeroMqAppender appender) {
+        final ZMonitor monitor = new ZMonitor(JeroMqManager.getZContext(), appender.getManager().getSocket());
+        monitor.add(Event.ACCEPTED, Event.DISCONNECTED);
+        monitor.start();
+        return monitor;
     }
 }
