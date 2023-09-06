@@ -90,7 +90,6 @@ public class JeroMqAppenderTest {
             assertEquals("Hello", list.get(0));
             assertEquals("Again", list.get(1));
             assertEquals("barWorld", list.get(2));
-            fail();
         } catch (final ConditionTimeoutException e) {
             LOGGER.warn("Timeout reached while waiting for JeroMqTestClient to connect.", e);
         } finally {
