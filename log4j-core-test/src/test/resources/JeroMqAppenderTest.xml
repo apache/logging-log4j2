@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration name="JeroMQAppenderTest" status="INFO">
+<Configuration name="JeroMQAppenderTest" status="OFF">
   <Appenders>
     <JeroMQ name="JeroMQAppender">
       <Property name="endpoint">tcp://*:0</Property>
