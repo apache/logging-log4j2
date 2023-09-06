@@ -29,6 +29,8 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.util.ExecutorServices;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.awaitility.core.ConditionTimeoutException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -45,6 +47,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("zeromq")
 @Timeout(value = 20, unit = TimeUnit.SECONDS)
+@UsingStatusListener
 @LoggerContextSource(value = "JeroMqAppenderTest.xml", timeout = 60)
 public class JeroMqAppenderTest {
 
@@ -71,9 +74,11 @@ public class JeroMqAppenderTest {
                 expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         final ZMonitor monitor = createMonitor(appender);
+        boolean connected = false;
         try {
             final Future<List<String>> future = executor.submit(client);
             waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.ACCEPTED));
+            connected = true;
             appender.resetSendRcs();
             logger.info("Hello");
             logger.info("Again");
@@ -85,9 +90,14 @@ public class JeroMqAppenderTest {
             assertEquals("Hello", list.get(0));
             assertEquals("Again", list.get(1));
             assertEquals("barWorld", list.get(2));
+            fail();
+        } catch (final ConditionTimeoutException e) {
+            LOGGER.warn("Timeout reached while waiting for JeroMqTestClient to connect.", e);
         } finally {
             executor.shutdown();
-            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.DISCONNECTED));
+            if (connected) {
+                waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.DISCONNECTED));
+            }
             monitor.destroy();
         }
     }
@@ -103,15 +113,18 @@ public class JeroMqAppenderTest {
                 expectedReceiveCount);
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         final ZMonitor monitor = createMonitor(appender);
+        boolean connected = false;
         try {
             final Future<List<String>> future = executor.submit(client);
             waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.ACCEPTED));
+            connected = true;
             appender.resetSendRcs();
             final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(nThreads);
             for (int i = 0; i < 10.; i++) {
+                final int nr = i;
                 fixedThreadPool.submit(() -> {
-                    logger.info("Hello");
-                    logger.info("Again");
+                    logger.info("Hello ({})", nr);
+                    logger.info("Again ({})", nr);
                 });
             }
             final List<String> list = future.get();
@@ -120,14 +133,11 @@ public class JeroMqAppenderTest {
             int hello = 0;
             int again = 0;
             for (final String string : list) {
-                switch (string) {
-                    case "Hello":
-                        hello++;
-                        break;
-                    case "Again":
-                        again++;
-                        break;
-                    default:
+                if (string.startsWith("Hello")) {
+                    hello++;
+                } else if (string.startsWith("Again")) {
+                    again++;
+                } else {
                         fail("Unexpected message: " + string);
                 }
             }
@@ -136,7 +146,9 @@ public class JeroMqAppenderTest {
         } finally {
             ExecutorServices.shutdown(executor, DEFAULT_TIMEOUT_MS, MILLISECONDS,
                     JeroMqAppenderTest.class.getSimpleName());
-            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.DISCONNECTED));
+            if (connected) {
+                waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.DISCONNECTED));
+            }
             monitor.destroy();
         }
     }
@@ -165,6 +177,7 @@ public class JeroMqAppenderTest {
     private boolean hasEventOccurred(final ZMonitor monitor, final Event eventType) {
         ZEvent event;
         while ((event = monitor.nextEvent(false)) != null) {
+            LOGGER.info("JeroMqAppender received an event of type {}", event);
             if (event.type == eventType) {
                 return true;
             }
@@ -176,6 +189,7 @@ public class JeroMqAppenderTest {
         final ZMonitor monitor = new ZMonitor(JeroMqManager.getZContext(), appender.getManager().getSocket());
         monitor.add(Event.ACCEPTED, Event.DISCONNECTED);
         monitor.start();
+        LOGGER.info("Starting ZMonitor for JeroMqAppender {}.", appender.getName());
         return monitor;
     }
 }

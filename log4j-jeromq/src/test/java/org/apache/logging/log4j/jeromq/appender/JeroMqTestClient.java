@@ -46,13 +46,15 @@ class JeroMqTestClient implements Callable<List<String>> {
     @Override
     public List<String> call() throws Exception {
         try (final ZMQ.Socket subscriber = context.createSocket(SocketType.SUB)) {
+            LOGGER.info("Starting JeroMqTestClient.");
             subscriber.connect(endpoint);
             subscriber.subscribe(ZMQ.SUBSCRIPTION_ALL);
+            LOGGER.info("Subscribing JeroMqTestClient to JeroMqAppender.");
             for (int messageNum = 0; messageNum < receiveCount
                     && !Thread.currentThread().isInterrupted(); messageNum++) {
                 // Use trim to remove the tailing '0' character
                 final String message = subscriber.recvStr(0).trim();
-                LOGGER.trace("Received 0MQ message: {}.", message);
+                LOGGER.debug("JeroMqTestClient received a message: {}.", message);
                 messages.add(message);
             }
         }
