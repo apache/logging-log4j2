@@ -25,8 +25,8 @@ import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.test.ListStatusListener;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
@@ -35,7 +35,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * context.
  */
 @Retention(RUNTIME)
-@Target({ FIELD, METHOD })
+@Target({ TYPE, METHOD })
 @Inherited
 @Documented
 @ExtendWith(ExtensionContextAnchor.class)
