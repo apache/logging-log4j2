@@ -18,7 +18,6 @@ package org.apache.logging.log4j.test.junit;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -89,7 +88,7 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
     private static class JUnitListStatusListener implements ListStatusListener {
 
         private final ExtensionContext context;
-        private final List<StatusData> statusData = Collections.synchronizedList(new ArrayList<StatusData>());
+        private final ArrayList<StatusData> statusData = new ArrayList<>();
 
         public JUnitListStatusListener(final ExtensionContext context) {
             this.context = context;
@@ -98,7 +97,9 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
         @Override
         public void log(final StatusData data) {
             if (context.equals(ExtensionContextAnchor.getContext())) {
-                statusData.add(data);
+                synchronized (statusData) {
+                    statusData.add(data);
+                }
             }
         }
 
@@ -114,8 +115,16 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
 
         @Override
         public Stream<StatusData> getStatusData() {
-            return statusData.stream();
+            synchronized (statusData) {
+                return ((List<StatusData>) statusData.clone()).stream();
+            }
         }
 
+        @Override
+        public void clear() {
+            synchronized (statusData) {
+                statusData.clear();
+            }
+        }
     }
 }
