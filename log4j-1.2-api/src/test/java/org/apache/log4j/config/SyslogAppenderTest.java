@@ -42,7 +42,7 @@ public class SyslogAppenderTest {
     @BeforeAll
     public static void beforeClass() throws IOException {
         initTCPTestEnvironment();
-        System.setProperty("SyslogAppenderTest.port", Integer.toString(syslogServer.getLocalPort()));
+        System.setProperty("syslog.port", Integer.toString(syslogServer.getLocalPort()));
         System.setProperty(CONFIG_V1_FILE_NAME.getKey(), "target/test-classes/log4j1-syslog.xml");
     }
 
