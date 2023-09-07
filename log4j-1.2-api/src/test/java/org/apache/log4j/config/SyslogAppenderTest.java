@@ -28,8 +28,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.apache.logging.log4j.core.impl.Log4jPropertyKey.CONFIG_V1_FILE_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Class Description goes here.
@@ -43,11 +43,12 @@ public class SyslogAppenderTest {
     public static void beforeClass() throws IOException {
         initTCPTestEnvironment();
         System.setProperty("SyslogAppenderTest.port", Integer.toString(syslogServer.getLocalPort()));
-        System.setProperty("log4j.configuration", "target/test-classes/log4j1-syslog.xml");
+        System.setProperty(CONFIG_V1_FILE_NAME.getKey(), "target/test-classes/log4j1-syslog.xml");
     }
 
     @AfterAll
     public static void cleanup() {
+        System.clearProperty(CONFIG_V1_FILE_NAME.getKey());
         syslogServer.shutdown();
     }
 
@@ -63,8 +64,7 @@ public class SyslogAppenderTest {
                 break;
             }
         }
-        assertNotNull(messages, "No messages received");
-        assertEquals(1, messages.size(), "Sent message not detected");
+        assertThat(messages).hasSize(1);
     }
 
 
