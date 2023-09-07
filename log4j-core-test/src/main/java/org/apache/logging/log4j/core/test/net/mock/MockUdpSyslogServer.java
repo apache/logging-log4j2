@@ -27,8 +27,17 @@ public class MockUdpSyslogServer extends MockSyslogServer {
     private volatile boolean shutdown = false;
     private Thread thread;
 
+    public MockUdpSyslogServer(final int numberOfMessagesToReceive, final int port) throws SocketException {
+        this(port);
+    }
+
     public MockUdpSyslogServer() throws SocketException {
-        this.socket = new DatagramSocket(0);
+        this(0);
+    }
+
+    private MockUdpSyslogServer(final int port) throws SocketException {
+        super(0, port);
+        this.socket = new DatagramSocket(port);
     }
 
     @Override

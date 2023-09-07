@@ -25,8 +25,18 @@ import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat;
 
 public class MockSyslogServerFactory {
 
+    public static MockSyslogServer createUDPSyslogServer(final int numberOfMessagesToReceive, final int port)
+            throws SocketException {
+        return new MockUdpSyslogServer(numberOfMessagesToReceive, port);
+    }
+
     public static MockSyslogServer createUDPSyslogServer() throws SocketException {
         return new MockUdpSyslogServer();
+    }
+
+    public static MockSyslogServer createTCPSyslogServer(final int numberOfMessagesToReceive, final int port)
+            throws IOException {
+        return new MockTcpSyslogServer(numberOfMessagesToReceive, port);
     }
 
     public static MockSyslogServer createTCPSyslogServer() throws IOException {

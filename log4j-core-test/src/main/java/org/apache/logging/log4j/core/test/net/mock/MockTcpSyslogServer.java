@@ -26,8 +26,17 @@ public class MockTcpSyslogServer extends MockSyslogServer {
     private volatile boolean shutdown = false;
     private Thread thread;
 
+    public MockTcpSyslogServer(final int numberOfMessagesToReceive, final int port) throws IOException {
+        this(port);
+    }
+
     public MockTcpSyslogServer() throws IOException {
-        serverSocket = new ServerSocket(0);
+        this(0);
+    }
+
+    private MockTcpSyslogServer(final int port) throws IOException {
+        super(0, port);
+        serverSocket = new ServerSocket(port);
     }
 
     @Override
