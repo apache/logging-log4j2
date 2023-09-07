@@ -27,9 +27,13 @@ public class MockUdpSyslogServer extends MockSyslogServer {
     private volatile boolean shutdown = false;
     private Thread thread;
 
-    public MockUdpSyslogServer(final int numberOfMessagesToReceive, final int port) throws SocketException {
-        super(numberOfMessagesToReceive, port);
-        this.socket = new DatagramSocket(port);
+    public MockUdpSyslogServer() throws SocketException {
+        this.socket = new DatagramSocket(0);
+    }
+
+    @Override
+    public int getLocalPort() {
+        return socket.getLocalPort();
     }
 
     @Override
@@ -42,29 +46,30 @@ public class MockUdpSyslogServer extends MockSyslogServer {
             thread.interrupt();
             try {
                 thread.join(100);
-            } catch (final InterruptedException ie) {
-                System.out.println("Shutdown of Log4j UDP server thread failed.");
+            } catch (final InterruptedException e) {
+                LOGGER.error("Shutdown of {} thread failed.", getName(), e);
             }
         }
     }
 
     @Override
     public void run() {
-        System.out.println("Log4j UDP Server started.");
+        LOGGER.info("{} started on port {}.", getName(), getLocalPort());
         this.thread = Thread.currentThread();
         final byte[] bytes = new byte[4096];
         final DatagramPacket packet = new DatagramPacket(bytes, bytes.length);
         try {
             while (!shutdown) {
                 socket.receive(packet);
-                final String str = new String(packet.getData(), 0, packet.getLength());
-                messageList.add(str);
+                final String message = new String(packet.getData(), 0, packet.getLength());
+                LOGGER.debug("{} received a message: {}", getName(), message);
+                messageList.add(message);
             }
         } catch (final Exception e) {
             if (!shutdown) {
                 Throwables.rethrow(e);
             }
         }
-        System.out.println("Log4j UDP server stopped.");
+        LOGGER.info("{} stopped.", getName());
     }
 }

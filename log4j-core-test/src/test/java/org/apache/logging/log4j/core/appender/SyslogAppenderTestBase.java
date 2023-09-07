@@ -39,7 +39,9 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public abstract class SyslogAppenderTestBase {
     protected static final String line1 =
@@ -47,7 +49,6 @@ public abstract class SyslogAppenderTestBase {
                     "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
     protected LoggerContext ctx = LoggerContext.getContext();
     protected static final int DEFAULT_TIMEOUT_IN_MS = 100;
-    protected static final int PORTNUM = 8199;
     protected MockSyslogServer syslogServer;
     protected SyslogAppender appender;
     protected Logger root = ctx.getLogger("SyslogAppenderTest");
