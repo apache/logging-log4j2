@@ -18,50 +18,55 @@ package org.apache.logging.log4j.core.test.net.mock;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class MockTcpSyslogServer extends MockSyslogServer {
-    private final ServerSocket socketServer;
+    private final ServerSocket serverSocket;
     private volatile boolean shutdown = false;
     private Thread thread;
 
-    public MockTcpSyslogServer(final int numberOfMessagesToReceive, final int port) throws IOException {
-        super(numberOfMessagesToReceive, port);
-        socketServer = new ServerSocket(port);
+    public MockTcpSyslogServer() throws IOException {
+        serverSocket = new ServerSocket(0);
+    }
+
+    @Override
+    public int getLocalPort() {
+        return serverSocket.getLocalPort();
     }
 
     @Override
     public void shutdown() {
         this.shutdown = true;
-        if (socketServer != null) {
-            try {
-                socketServer.close();
-            } catch (final IOException e) {
-                e.printStackTrace();
+        try {
+            if (serverSocket != null) {
+                try {
+                    this.serverSocket.close();
+                } catch (final Exception e) {
+                    LOGGER.error("The {} failed to close its socket.", getName(), e);
+                }
             }
+            this.interrupt();
+        } catch (final SecurityException e) {
+            LOGGER.error("Shutdown of {} failed", getName(), e);
         }
         if (thread != null) {
-            thread.interrupt();
             try {
                 thread.join(100);
-            } catch (InterruptedException ie) {
-                System.out.println("Shutdown of TCP server thread failed.");
+            } catch (final InterruptedException e) {
+                LOGGER.error("Shutdown of {} thread failed.", getName(), e);
             }
         }
     }
 
     @Override
     public void run() {
-        System.out.println("TCP Server started");
+        LOGGER.info("{} started on port {}.", getName(), getLocalPort());
         this.thread = Thread.currentThread();
         while (!shutdown) {
             try {
                 final byte[] buffer = new byte[4096];
-                Socket socket = null;
-                try {
-                    socket = socketServer.accept();
+                try (final Socket socket = serverSocket.accept()) {
                     socket.setSoLinger(true, 0);
                     final InputStream in = socket.getInputStream();
                     int i = in.read(buffer, 0, buffer.length);
@@ -71,24 +76,18 @@ public class MockTcpSyslogServer extends MockSyslogServer {
                             messageList.add(line);
                             i = in.read(buffer, 0, buffer.length);
                         } else if (i == 0) {
-                            System.out.println("No data received");
+                            LOGGER.warn("{} received no data.", getName());
                         } else {
-                            System.out.println("Message too long");
+                            LOGGER.warn("{} received a message longer than {}.", getName(), buffer.length);
                         }
                     }
-                } catch (BindException be) {
-                    be.printStackTrace();
-                } finally {
-                    if (socket != null) {
-                        socket.close();
-                    }
                 }
-            } catch (final Exception ex) {
+            } catch (final Exception e) {
                 if (!shutdown) {
-                    System.out.println("Caught exception: " + ex.getMessage());
+                    LOGGER.error("{} caught an exception.", getName(), e);
                 }
             }
         }
-        System.out.println("TCP Server stopped");
+        LOGGER.info("{} stopped.", getName());
     }
 }

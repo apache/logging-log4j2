@@ -19,25 +19,24 @@ package org.apache.logging.log4j.core.test.net.mock;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+
 public abstract class MockSyslogServer extends Thread {
-    protected List<String> messageList;
-    protected int port;
-    private final int numberOfMessagesToReceive;
 
-    public MockSyslogServer(final int numberOfMessagesToReceive, final int port) {
-        this.numberOfMessagesToReceive = numberOfMessagesToReceive;
-        this.messageList = new ArrayList<>();
-        this.port = port;
+    private static volatile int threadInitNumber;
+    protected static Logger LOGGER = StatusLogger.getLogger();
+
+    protected List<String> messageList = new ArrayList<>();
+
+    public MockSyslogServer() {
+        super();
+        setName(getClass().getSimpleName() + "-" + (++threadInitNumber));
     }
 
-    @Override
-    public void run() {
+    public abstract int getLocalPort();
 
-    }
-
-    public void shutdown() {
-
-    }
+    public abstract void shutdown();
 
     public int getNumberOfReceivedMessages() {
         return messageList.size();

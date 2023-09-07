@@ -33,7 +33,6 @@ import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.apache.logging.log4j.core.test.net.mock.MockSyslogServerFactory;
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat;
-import org.apache.logging.log4j.util.EnglishEnums;
 import org.junit.Test;
 
 public class TlsSyslogAppenderTest extends SyslogAppenderTest {
@@ -87,7 +86,7 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
         serverSocketFactory = sslConfiguration.getSslServerSocketFactory();
     }
 
-    private SyslogAppender createAppender() {
+    private SyslogAppender createAppender(final int port) {
         String format;
 
         if (messageFormat == TlsSyslogMessageFormat.LEGACY_BSD) {
@@ -95,56 +94,52 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
         } else {
             format = "RFC5424";
         }
-        final SslConfiguration sslConfiguration1 = sslConfiguration;
-        final boolean newLine = includeNewLine;
-        final String format1 = format;
 
-        // @formatter:off
         return SyslogAppender.newSyslogAppenderBuilder()
                 .setHost("localhost")
-                .setPort(PORTNUM)
-                .setProtocol(EnglishEnums.valueOf(Protocol.class, "SSL"))
-                .setSslConfiguration(sslConfiguration1)
+                .setPort(port)
+                .setProtocol(Protocol.SSL)
+                .setSslConfiguration(sslConfiguration)
                 .setConnectTimeoutMillis(0)
                 .setReconnectDelayMillis(-1)
                 .setImmediateFail(true)
                 .setName("TestApp")
                 .setImmediateFlush(true)
-                .setIgnoreExceptions(false).setFilter(null)
+                .setIgnoreExceptions(false)
+                .setFilter(null)
                 .setConfiguration(null)
                 .setAdvertise(false)
                 .setFacility(Facility.LOCAL0)
                 .setId("Audit")
-                .setEnterpriseNumber(18060)
+                .setEnterpriseNumber("18060")
                 .setIncludeMdc(true)
                 .setMdcId("RequestContext")
                 .setMdcPrefix(null)
                 .setEventPrefix(null)
-                .setNewLine(newLine)
+                .setNewLine(includeNewLine)
                 .setAppName("TestApp")
                 .setMsgId("Test")
                 .setExcludes(null)
                 .setIncludeMdc(true)
                 .setRequired(null)
-                .setFormat(format1)
+                .setFormat(format)
                 .setCharsetName(null)
                 .setExceptionPattern(null)
                 .setLoggerFields(null)
                 .build();
-        // @formatter:on
     }
 
     private void initTlsTestEnvironment(final int numberOfMessages, final TlsSyslogMessageFormat messageFormat) throws IOException {
         this.messageFormat = messageFormat;
-        final SSLServerSocket sslServerSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(PORTNUM);
+        final SSLServerSocket sslServerSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(0);
 
         syslogServer = MockSyslogServerFactory.createTLSSyslogServer(numberOfMessages, messageFormat, sslServerSocket);
         syslogServer.start();
-        initAppender();
+        initAppender(syslogServer.getLocalPort());
     }
 
-    protected void initAppender() {
-        appender = createAppender();
+    protected void initAppender(final int port) {
+        appender = createAppender(port);
         validate(appender);
         appender.start();
         initRootLogger(appender);
