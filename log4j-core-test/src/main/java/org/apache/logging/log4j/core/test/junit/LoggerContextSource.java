@@ -58,8 +58,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public @interface LoggerContextSource {
     /**
      * Specifies the name of the configuration file to use for the annotated test.
+     * <p>
+     * Defaults to the fully qualified name of the test class with '.xml' appended.
+     * E.g. this class would have a default of
+     * {@code org/apache/logging/log4j/core/test/junit/LoggerContextSource.xml}.
+     * </p>
      */
-    String value();
+    String value() default "";
 
     /**
      * Specifies when to {@linkplain LoggerContext#reconfigure() reconfigure} the logging system.

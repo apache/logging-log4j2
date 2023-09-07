@@ -137,10 +137,19 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         private LoggerContextConfig(final LoggerContextSource source, final ExtensionContext extensionContext) {
             final String displayName = extensionContext.getDisplayName();
             final ClassLoader classLoader = extensionContext.getRequiredTestClass().getClassLoader();
-            context = Configurator.initialize(displayName, classLoader, source.value());
+            context = Configurator.initialize(displayName, classLoader, getConfigLocation(source, extensionContext));
             reconfigurationPolicy = source.reconfigure();
             shutdownTimeout = source.timeout();
             unit = source.unit();
+        }
+
+        private static String getConfigLocation(final LoggerContextSource source,
+                final ExtensionContext extensionContext) {
+            final String value = source.value();
+            if (value.isEmpty()) {
+                return extensionContext.getRequiredTestClass().getName().replaceAll("[.$]", "/") + ".xml";
+            }
+            return value;
         }
 
         @Override
