@@ -28,9 +28,16 @@ public abstract class MockSyslogServer extends Thread {
     protected static Logger LOGGER = StatusLogger.getLogger();
 
     protected List<String> messageList = new ArrayList<>();
+    @Deprecated
+    protected int port;
+
+    @Deprecated
+    public MockSyslogServer(final int numberOfMessagesToReceive, final int port) {
+        this();
+        this.port = port;
+    }
 
     public MockSyslogServer() {
-        super();
         setName(getClass().getSimpleName() + "-" + (++threadInitNumber));
     }
 
