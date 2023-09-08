@@ -17,8 +17,8 @@
   -->
 <Configuration status="WARN" name="XMLConfigTest" monitorInterval="1">
   <Appenders>
-    <RollingFile name="RollingFile" fileName="target/onStartup/onStartup.log"
-                 filePattern="target/onStartup/onStartup-%d{MM-dd-yyyy}-%i.log">
+    <RollingFile name="RollingFile" fileName="${test:logging.path}/onStartup.log"
+                 filePattern="${test:logging.path}/onStartup-%d{MM-dd-yyyy}-%i.log">
       <PatternLayout>
         <Pattern>%m%n</Pattern>
       </PatternLayout>
