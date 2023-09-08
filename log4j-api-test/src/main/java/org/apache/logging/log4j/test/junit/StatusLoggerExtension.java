@@ -26,6 +26,7 @@ import org.apache.logging.log4j.status.StatusConsoleListener;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.ListStatusListener;
+import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
@@ -34,7 +35,7 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 
 class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListener>
-        implements BeforeEachCallback, TestExecutionExceptionHandler {
+        implements BeforeAllCallback, BeforeEachCallback, TestExecutionExceptionHandler {
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private static final StatusConsoleListener CONSOLE_LISTENER = new StatusConsoleListener(Level.ALL);
@@ -45,8 +46,20 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
     }
 
     @Override
+    public void beforeAll(ExtensionContext context) throws Exception {
+        // Stores the per-class status listener to catch the messages caused by other
+        // `beforeAll` methods and extensions.
+        final ListStatusListenerHolder holder = new ListStatusListenerHolder(context, null);
+        ExtensionContextAnchor.setAttribute(KEY, holder, context);
+    }
+
+    @Override
     public void beforeEach(final ExtensionContext context) throws Exception {
-        final ListStatusListenerHolder holder = new ListStatusListenerHolder(context);
+        // Retrieves the per-class status listener
+        final ListStatusListenerHolder parentHolder = ExtensionContextAnchor.getAttribute(KEY,
+                ListStatusListenerHolder.class, context);
+        final ListStatusListener parent = parentHolder != null ? parentHolder.getStatusListener() : null;
+        final ListStatusListenerHolder holder = new ListStatusListenerHolder(context, parent);
         ExtensionContextAnchor.setAttribute(KEY, holder, context);
     }
 
@@ -69,8 +82,8 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
 
         private final ListStatusListener statusListener;
 
-        public ListStatusListenerHolder(final ExtensionContext context) {
-            this.statusListener = new JUnitListStatusListener(context);
+        public ListStatusListenerHolder(final ExtensionContext context, final ListStatusListener parent) {
+            this.statusListener = new JUnitListStatusListener(context, parent);
             LOGGER.registerListener(statusListener);
         }
 
@@ -88,10 +101,12 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
     private static class JUnitListStatusListener implements ListStatusListener {
 
         private final ExtensionContext context;
+        private final ListStatusListener parent;
         private final ArrayList<StatusData> statusData = new ArrayList<>();
 
-        public JUnitListStatusListener(final ExtensionContext context) {
+        public JUnitListStatusListener(final ExtensionContext context, final ListStatusListener parent) {
             this.context = context;
+            this.parent = parent;
         }
 
         @Override
@@ -116,7 +131,8 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
         @Override
         public Stream<StatusData> getStatusData() {
             synchronized (statusData) {
-                return ((List<StatusData>) statusData.clone()).stream();
+                final List<StatusData> clone = (List<StatusData>) statusData.clone();
+                return parent != null ? Stream.concat(parent.getStatusData(), clone.stream()) : clone.stream();
             }
         }
 
