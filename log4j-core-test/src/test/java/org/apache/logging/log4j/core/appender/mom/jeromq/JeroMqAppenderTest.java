@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.mom.jeromq;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,7 +25,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.util.ExecutorServices;
@@ -67,6 +71,7 @@ public class JeroMqAppenderTest {
     @Test
     public void testClientServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx)
             throws Exception {
+        addLoggingFilter(appender);
         final Logger logger = ctx.getLogger(getClass());
         final int expectedReceiveCount = 3;
         final String endpoint = getTcpEndpoint(appender);
@@ -104,6 +109,7 @@ public class JeroMqAppenderTest {
     @Test
     public void testMultiThreadedServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx)
             throws Exception {
+        addLoggingFilter(appender);
         final Logger logger = ctx.getLogger(getClass());
         final int nThreads = 10;
         final int expectedReceiveCount = 2 * nThreads;
@@ -154,6 +160,7 @@ public class JeroMqAppenderTest {
 
     @Test
     public void testServerOnly(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx) {
+        addLoggingFilter(appender);
         final Logger logger = ctx.getLogger(getClass());
         appender.resetSendRcs();
         logger.info("Hello");
@@ -190,5 +197,18 @@ public class JeroMqAppenderTest {
         monitor.start();
         LOGGER.info("Starting ZMonitor for JeroMqAppender {}.", appender.getName());
         return monitor;
+    }
+
+    private void addLoggingFilter(final JeroMqAppender appender) {
+        final Layout<? extends Serializable> layout = appender.getLayout();
+        appender.addFilter(new AbstractFilter() {
+
+            @Override
+            public Result filter(LogEvent event) {
+                LOGGER.info("JeroMqAppender sent a message: {}.", layout.toSerializable(event));
+                return Result.NEUTRAL;
+            }
+
+        });
     }
 }
