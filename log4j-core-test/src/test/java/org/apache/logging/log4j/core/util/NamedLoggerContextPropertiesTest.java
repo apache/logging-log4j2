@@ -26,7 +26,7 @@ import org.apache.logging.log4j.core.selector.BasicContextSelector;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
-import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,7 +39,7 @@ public class NamedLoggerContextPropertiesTest {
     public void testProperties() {
         final LoggerContext context = LoggerContext.getContext();
         assertEquals(LifeCycle.State.STARTED, context.getState());
-        final PropertiesUtil props = context.getProperties();
+        final PropertyEnvironment props = context.getProperties();
         assertNotNull(props, "Logger Context Properties were not loaded");
         final String scriptLanguages = props.getStringProperty("Script.enableLanguages");
         assertEquals("Groovy,JavaScript", scriptLanguages);

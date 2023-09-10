@@ -60,6 +60,7 @@ import org.apache.logging.log4j.spi.LoggerRegistry;
 import org.apache.logging.log4j.spi.Terminable;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDOWN_HOOK_MARKER;
 
@@ -193,7 +194,7 @@ public class LoggerContext extends AbstractLifeCycle
     private void initializeInstanceFactory() {
         final var ref = Lazy.weak(this);
         instanceFactory.registerBinding(Binding.from(KEY).to(ref));
-        instanceFactory.registerInstancePostProcessor(new LoggerContextAwarePostProcessor(ref));
+        instanceFactory.registerInstancePostProcessor(new LoggerContextAwarePostProcessor(this));
     }
 
     public void setProperties(final PropertiesUtil properties) {
@@ -201,7 +202,7 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     @Override
-    public PropertiesUtil getProperties() {
+    public PropertyEnvironment getProperties() {
         return properties;
     }
 

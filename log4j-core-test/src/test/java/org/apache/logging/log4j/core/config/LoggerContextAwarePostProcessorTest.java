@@ -16,25 +16,28 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.lang.ref.WeakReference;
-
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.plugins.di.spi.InstancePostProcessor;
-import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
+import org.apache.logging.log4j.plugins.di.InstanceFactory;
+import org.junit.jupiter.api.Test;
 
-public class LoggerContextAwarePostProcessor implements InstancePostProcessor {
-    private final WeakReference<LoggerContext> loggerContextRef;
+import static org.assertj.core.api.Assertions.assertThat;
 
-    public LoggerContextAwarePostProcessor(final LoggerContext loggerContext) {
-        loggerContextRef = new WeakReference<>(loggerContext);
+class LoggerContextAwarePostProcessorTest {
+    static class TestBean implements LoggerContextAware {
+        LoggerContext context;
+
+        @Override
+        public void setLoggerContext(final LoggerContext loggerContext) {
+            context = loggerContext;
+        }
     }
 
-    @Override
-    public <T> T postProcessBeforeInitialization(final ResolvableKey<T> resolvableKey, final T instance) {
-        if (instance instanceof LoggerContextAware) {
-            final LoggerContext loggerContext = loggerContextRef.get();
-            ((LoggerContextAware) instance).setLoggerContext(loggerContext);
+    @Test
+    void loggerContextAwareInjection() {
+        try (final LoggerContext context = new LoggerContext(getClass().getName())) {
+            final InstanceFactory instanceFactory = context.getInstanceFactory();
+            final TestBean instance = instanceFactory.getInstance(TestBean.class);
+            assertThat(instance.context).isSameAs(context);
         }
-        return instance;
     }
 }
