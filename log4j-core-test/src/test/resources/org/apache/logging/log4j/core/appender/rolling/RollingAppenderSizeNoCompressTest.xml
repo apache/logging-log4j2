@@ -15,44 +15,20 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="off" name="XMLConfigTest">
-  <Properties>
-    <Property name="filename">target/rolling1/rollingtest.current</Property>
-  </Properties>
-  <ThresholdFilter level="debug"/>
-
+<Configuration status="OFF" name="RollingAppenderSizeNoCompressTest">
   <Appenders>
-    <Console name="STDOUT">
+    <RollingFile name="RollingFile"
+                 fileName="${test:logging.path}/rollingtest.log"
+                 filePattern="${test:logging.path}/rollingtest.log.%i">
       <PatternLayout pattern="%m%n"/>
-    </Console>
-    <RollingFile name="RollingFile" fileName="${filename}"
-                 filePattern="target/rolling1/rollingtest.%i.rolled">
-      <PatternLayout>
-        <Pattern>%m%n</Pattern>
-      </PatternLayout>
       <SizeBasedTriggeringPolicy size="1000" />
       <DefaultRolloverStrategy max="500"/>
     </RollingFile>
-    <List name="List">
-      <ThresholdFilter level="error"/>
-    </List>
   </Appenders>
 
   <Loggers>
-    <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
-      <ThreadContextMapFilter>
-        <KeyValuePair key="test" value="123"/>
-      </ThreadContextMapFilter>
-      <AppenderRef ref="STDOUT"/>
-    </Logger>
-
-    <Logger name="org.apache.logging.log4j.core.appender.rolling" level="debug" additivity="false">
+    <Root level="DEBUG">
       <AppenderRef ref="RollingFile"/>
-    </Logger>
-
-    <Root level="error">
-      <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>
-
 </Configuration>
