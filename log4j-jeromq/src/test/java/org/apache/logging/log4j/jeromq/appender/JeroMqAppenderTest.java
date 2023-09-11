@@ -24,7 +24,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.core.util.ExecutorServices;
@@ -67,6 +70,7 @@ public class JeroMqAppenderTest {
     @Test
     public void testClientServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx)
             throws Exception {
+        addLoggingFilter(appender);
         final Logger logger = ctx.getLogger(getClass());
         final int expectedReceiveCount = 3;
         final String endpoint = getTcpEndpoint(appender);
@@ -77,7 +81,8 @@ public class JeroMqAppenderTest {
         boolean connected = false;
         try {
             final Future<List<String>> future = executor.submit(client);
-            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.ACCEPTED));
+            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS)
+                    .until(() -> hasEventOccurred(monitor, Event.HANDSHAKE_PROTOCOL));
             connected = true;
             appender.resetSendRcs();
             logger.info("Hello");
@@ -104,6 +109,7 @@ public class JeroMqAppenderTest {
     @Test
     public void testMultiThreadedServer(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx)
             throws Exception {
+        addLoggingFilter(appender);
         final Logger logger = ctx.getLogger(getClass());
         final int nThreads = 10;
         final int expectedReceiveCount = 2 * nThreads;
@@ -115,7 +121,8 @@ public class JeroMqAppenderTest {
         boolean connected = false;
         try {
             final Future<List<String>> future = executor.submit(client);
-            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.ACCEPTED));
+            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS)
+                    .until(() -> hasEventOccurred(monitor, Event.HANDSHAKE_PROTOCOL));
             connected = true;
             appender.resetSendRcs();
             final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(nThreads);
@@ -154,6 +161,7 @@ public class JeroMqAppenderTest {
 
     @Test
     public void testServerOnly(@Named(APPENDER_NAME) final JeroMqAppender appender, final LoggerContext ctx) {
+        addLoggingFilter(appender);
         final Logger logger = ctx.getLogger(getClass());
         appender.resetSendRcs();
         logger.info("Hello");
@@ -186,9 +194,22 @@ public class JeroMqAppenderTest {
 
     private ZMonitor createMonitor(final JeroMqAppender appender) {
         final ZMonitor monitor = new ZMonitor(JeroMqManager.getZContext(), appender.getManager().getSocket());
-        monitor.add(Event.ACCEPTED, Event.DISCONNECTED);
+        monitor.add(Event.HANDSHAKE_PROTOCOL, Event.DISCONNECTED);
         monitor.start();
         LOGGER.info("Starting ZMonitor for JeroMqAppender {}.", appender.getName());
         return monitor;
+    }
+
+    private void addLoggingFilter(final JeroMqAppender appender) {
+        final Layout layout = appender.getLayout();
+        appender.addFilter(new AbstractFilter() {
+
+            @Override
+            public Result filter(LogEvent event) {
+                LOGGER.info("JeroMqAppender sent a message: {}.", layout.toSerializable(event));
+                return Result.NEUTRAL;
+            }
+
+        });
     }
 }
