@@ -82,7 +82,8 @@ public class JeroMqAppenderTest {
         boolean connected = false;
         try {
             final Future<List<String>> future = executor.submit(client);
-            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.ACCEPTED));
+            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS)
+                    .until(() -> hasEventOccurred(monitor, Event.HANDSHAKE_PROTOCOL));
             connected = true;
             appender.resetSendRcs();
             logger.info("Hello");
@@ -121,7 +122,8 @@ public class JeroMqAppenderTest {
         boolean connected = false;
         try {
             final Future<List<String>> future = executor.submit(client);
-            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS).until(() -> hasEventOccurred(monitor, Event.ACCEPTED));
+            waitAtMost(DEFAULT_TIMEOUT_MS, MILLISECONDS)
+                    .until(() -> hasEventOccurred(monitor, Event.HANDSHAKE_PROTOCOL));
             connected = true;
             appender.resetSendRcs();
             final ExecutorService fixedThreadPool = Executors.newFixedThreadPool(nThreads);
@@ -193,7 +195,7 @@ public class JeroMqAppenderTest {
 
     private ZMonitor createMonitor(final JeroMqAppender appender) {
         final ZMonitor monitor = new ZMonitor(JeroMqManager.getZContext(), appender.getManager().getSocket());
-        monitor.add(Event.ACCEPTED, Event.DISCONNECTED);
+        monitor.add(Event.HANDSHAKE_PROTOCOL, Event.DISCONNECTED);
         monitor.start();
         LOGGER.info("Starting ZMonitor for JeroMqAppender {}.", appender.getName());
         return monitor;
