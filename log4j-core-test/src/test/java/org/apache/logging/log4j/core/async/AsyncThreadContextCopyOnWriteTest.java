@@ -16,28 +16,23 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.nio.file.Path;
 
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 // Note: the different ThreadContextMap implementations cannot be parameterized:
 // ThreadContext initialization will result in static final fields being set in various components.
 // To use a different ThreadContextMap, the test needs to be run in a new JVM.
-@RunWith(Parameterized.class)
-@Category(AsyncLoggers.class)
-public class AsyncLoggerThreadContextGarbageFreeTest extends AbstractAsyncThreadContextTestBase {
-    @Parameterized.Parameters(name = "{0} {1}")
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { ContextImpl.GARBAGE_FREE, Mode.ALL_ASYNC},
-                { ContextImpl.GARBAGE_FREE, Mode.BOTH_ALL_ASYNC_AND_MIXED},
-        });
-    }
-    public AsyncLoggerThreadContextGarbageFreeTest(final ContextImpl contextImpl, final Mode asyncMode) {
-        super(contextImpl, asyncMode);
+public class AsyncThreadContextCopyOnWriteTest extends AbstractAsyncThreadContextTestBase {
+
+    @TempLoggingDir
+    private static Path loggingPath;
+
+    @ParameterizedTest
+    @EnumSource
+    public void testAsyncLogWritesToLog(Mode asyncMode) throws Exception {
+        testAsyncLogWritesToLog(ContextImpl.COPY_ON_WRITE, asyncMode, loggingPath);
     }
 }
