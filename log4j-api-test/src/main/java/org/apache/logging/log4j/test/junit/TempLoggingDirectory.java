@@ -23,11 +23,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.TestProperties;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
 import org.junit.jupiter.api.io.CleanupMode;
@@ -37,7 +40,7 @@ import org.junit.platform.commons.support.ModifierSupport;
 import static org.junit.jupiter.api.io.CleanupMode.NEVER;
 import static org.junit.jupiter.api.io.CleanupMode.ON_SUCCESS;
 
-public class TempLoggingDirectory implements BeforeAllCallback {
+public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallback {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -51,14 +54,24 @@ public class TempLoggingDirectory implements BeforeAllCallback {
                 LOGGER.warn("Multiple fields with @TempLoggingDir annotation are not supported.");
             } else {
                 final CleanupMode cleanup = determineCleanupMode(field);
-                loggingPath = createLoggingPath(context, cleanup);
+                loggingPath = createLoggingPath(context, cleanup).getPath();
             }
             field.setAccessible(true);
             field.set(null, loggingPath);
         }
     }
 
-    private Path createLoggingPath(final ExtensionContext context, final CleanupMode cleanup) throws IOException {
+    @Override
+    public void beforeEach(ExtensionContext context) throws Exception {
+        // JUnit 5 does not set an error on the parent context if one of the children
+        // fail. We record the list of children.
+        final PathHolder holder = ExtensionContextAnchor.getAttribute(PathHolder.class, PathHolder.class, context);
+        if (holder != null) {
+            holder.addContext(context);
+        }
+    }
+
+    private PathHolder createLoggingPath(final ExtensionContext context, final CleanupMode cleanup) throws IOException {
         final TestProperties props = TestPropertySource.createProperties(context);
         // Create temporary directory
         final String baseDir = System.getProperty("basedir");
@@ -71,7 +84,7 @@ public class TempLoggingDirectory implements BeforeAllCallback {
         // Register deletion
         final PathHolder holder = new PathHolder(loggingPath, cleanup, context);
         ExtensionContextAnchor.setAttribute(PathHolder.class, holder, context);
-        return loggingPath;
+        return holder;
     }
 
     private CleanupMode determineCleanupMode(final TempLoggingDir annotation) {
@@ -88,17 +101,26 @@ public class TempLoggingDirectory implements BeforeAllCallback {
 
         private final Path path;
         private final CleanupMode cleanupMode;
-        private final ExtensionContext context;
+        private final Map<ExtensionContext, Boolean> contexts = new ConcurrentHashMap<>();
 
         public PathHolder(final Path path, final CleanupMode cleanup, final ExtensionContext context) {
             this.path = path;
             this.cleanupMode = cleanup;
-            this.context = context;
+            this.contexts.put(context, Boolean.TRUE);
+        }
+
+        public void addContext(final ExtensionContext context) {
+            this.contexts.put(context, Boolean.TRUE);
+        }
+
+        public Path getPath() {
+            return path;
         }
 
         @Override
         public void close() throws IOException {
-            if (cleanupMode == NEVER || (cleanupMode == ON_SUCCESS && context.getExecutionException().isPresent())) {
+            if (cleanupMode == NEVER || (cleanupMode == ON_SUCCESS
+                    && contexts.keySet().stream().anyMatch(context -> context.getExecutionException().isPresent()))) {
                 LOGGER.debug("Skipping cleanup of directory {}.", path);
                 return;
             }
