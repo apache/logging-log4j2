@@ -24,6 +24,7 @@ import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringMap;
 
 /**
@@ -55,11 +56,12 @@ public class RingBufferLogEventTranslator implements
     @Override
     public void translateTo(final RingBufferLogEvent event, final long sequence) {
         try {
+            final ReadOnlyStringMap contextData = event.getContextData();
             event.setValues(asyncLogger, loggerName, marker, fqcn, level, message, thrown,
                     // config properties are taken care of in the EventHandler thread
                     // in the AsyncLogger#actualAsyncLog method
-                    contextDataInjector.injectContextData(null, (StringMap) event.getContextData()), contextStack,
-                    threadId, threadName, threadPriority, location, clock, nanoClock);
+                    contextDataInjector.injectContextData(null, contextData instanceof StringMap ? (StringMap) contextData : null),
+                    contextStack, threadId, threadName, threadPriority, location, clock, nanoClock);
         } finally {
             clear(); // clear the translator
         }

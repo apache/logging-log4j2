@@ -19,28 +19,33 @@ package org.apache.logging.log4j.core.async;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Path;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
-@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "AsyncLoggerThreadContextTest.xml")
+@UsingStatusListener
+@SetTestProperty(key = "Configuration.file", value = "AsyncLoggerThreadContextTest.xml")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
 public class AsyncLoggerThreadContextTest {
 
+    @TempLoggingDir
+    private static Path loggingPath;
     @Test
     public void testAsyncLogWritesToLog() throws Exception {
-        final File file = new File("target", "AsyncLoggerTest.log");
+        final File file = loggingPath.resolve("AsyncLoggerTest.log").toFile();
         // System.out.println(f.getAbsolutePath());
         file.delete();
 

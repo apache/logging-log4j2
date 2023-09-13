@@ -15,21 +15,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="OFF">
-  <Appenders>
-    <RandomAccessFile name="RandomAccessFile" fileName="${test:logging.path}/AsyncLoggerTest.log"
-	    		immediateFlush="false" append="false">
-      <PatternLayout>
-        <Pattern>%p %c{1.} %X{KEY} %x %X %m%ex%n</Pattern>
-      </PatternLayout>
-    </RandomAccessFile>
-  </Appenders>
-
-  <Loggers>
-    <Root level="info" includeLocation="false">
-      <Property name="configProp">configValue</Property>
-      <Property name="configProp2">configValue2</Property>
-      <AppenderRef ref="RandomAccessFile"/>
-    </Root>
-  </Loggers>
-</Configuration>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
+       type="fixed">
+  <issue id="1786" link="https://github.com/apache/logging-log4j2/issues/1786"/>
+  <author id="github:ppkarwasz"/>
+  <description format="asciidoc">
+    Fixes context data loss if `&lt;AsyncLogger&gt;` components are used with an all async logger context.
+  </description>
+</entry>
