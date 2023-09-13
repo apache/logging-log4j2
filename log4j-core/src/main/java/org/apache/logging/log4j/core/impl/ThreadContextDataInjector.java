@@ -102,7 +102,7 @@ public class ThreadContextDataInjector {
          * @return a {@code StringMap} combining configuration properties with thread context data
          */
         @Override
-        public StringMap injectContextData(final List<Property> props, final StringMap contextData) {
+        public StringMap injectContextData(final List<Property> props, final StringMap ignore) {
 
             final Map<String, String> copy;
 

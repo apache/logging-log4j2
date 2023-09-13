@@ -416,9 +416,8 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.contextStack = null;
         this.location = null;
         if (contextData != null) {
-            // came from CopyOnWrite thread context or createMemento() was called.
-            if (contextData.isFrozen()) {
-                contextData = ContextDataFactory.createContextData();
+            if (contextData.isFrozen()) { // came from CopyOnWrite thread context
+                contextData = null;
             } else {
                 contextData.clear();
             }
@@ -462,8 +461,15 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      * @param builder the builder whose fields to populate
      */
     public void initializeBuilder(final Log4jLogEvent.Builder builder) {
-        // Freeze the context data, so that they can be used on another thread
-        contextData.freeze();
+        // If the data is not frozen, make a copy of it.
+        final StringMap oldContextData = this.contextData;
+        final StringMap contextData;
+        if (oldContextData != null && !oldContextData.isFrozen()) {
+            contextData = ContextDataFactory.createContextData();
+            contextData.putAll(oldContextData);
+        } else {
+            contextData = oldContextData;
+        }
         builder.setContextData(contextData) //
                 .setContextStack(contextStack) //
                 .setEndOfBatch(endOfBatch) //
