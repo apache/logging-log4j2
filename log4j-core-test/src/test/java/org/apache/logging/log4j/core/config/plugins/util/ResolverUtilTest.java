@@ -31,31 +31,60 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.PluginTest;
-import org.apache.logging.log4j.core.test.junit.CleanFolders;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests the ResolverUtil class.
  */
 public class ResolverUtilTest {
 
-    static final String WORK_DIR = "target/testpluginsutil";
+    static Stream<Arguments> testExtractedPath() {
+        return Stream.of(
+                Arguments.of(
+                        "jar:file:/C:/Users/me/.m2/repository/junit/junit/4.11/junit-4.11.jar!/org/junit/Test.class",
+                        "/C:/Users/me/.m2/repository/junit/junit/4.11/junit-4.11.jar"),
+                Arguments.of(
+                        "jar:file:/path+with+plus/file+does+not+exist.jar!/some/file",
+                        "/path with plus/file does not exist.jar"),
+                Arguments.of(
+                        "file:/C:/Users/me/workspace/log4j2/log4j-core/target/test-classes/log4j2-config.xml",
+                        "/C:/Users/me/workspace/log4j2/log4j-core/target/test-classes/log4j2-config.xml"),
+                Arguments.of(
+                        "file:///path+with+plus/file+does+not+exist.xml",
+                        "/path with plus/file does not exist.xml"),
+                Arguments.of(
+                        "http://java.sun.com/index.html#chapter1",
+                        "/index.html"),
+                Arguments.of(
+                        "http://www.server.com/path+with+plus/file+name+with+plus.jar!/org/junit/Test.class",
+                        "/path with plus/file name with plus.jar"),
+                Arguments.of(
+                        "https://issues.apache.org/jira/browse/LOG4J2-445?focusedCommentId=13862479&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-13862479",
+                        "/jira/browse/LOG4J2-445"),
+                Arguments.of(
+                        "ftp://user001:secretpassword@private.ftp-servers.example.com/mydirectory/myfile.txt",
+                        "/mydirectory/myfile.txt"),
+                Arguments.of(
+                        "ftp://user001:secretpassword@private.ftp-servers.example.com/my+directory/my+file.txt",
+                        "/my directory/my file.txt")
+                );
+    }
 
-    @Rule
-    public RuleChain chain = RuleChain.outerRule(new CleanFolders(WORK_DIR));
-
-    @Test
-    public void testExtractPathFromJarUrl() throws Exception {
-        final URL url = new URL("jar:file:/C:/Users/me/.m2/repository/junit/junit/4.11/junit-4.11.jar!/org/junit/Test.class");
-        final String expected = "/C:/Users/me/.m2/repository/junit/junit/4.11/junit-4.11.jar";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
+    @ParameterizedTest
+    @MethodSource
+    public void testExtractedPath(final String urlAsString, final String expected) throws Exception {
+        final URL url = new URL(urlAsString);
+        assertThat(new ResolverUtil().extractPath(url)).isEqualTo(expected);
     }
 
     @Test
@@ -71,7 +100,7 @@ public class ResolverUtilTest {
             url = new URL("jar:" + url.toExternalForm() + "!/some/entry");
         }
         final String actual = new ResolverUtil().extractPath(url);
-        assertTrue("should not be decoded: " + actual, actual.endsWith(existingFile));
+        assertThat(actual).as("Not decoded path").endsWith(existingFile);
     }
 
     @Test
@@ -81,116 +110,63 @@ public class ResolverUtilTest {
     }
 
     @Test
-    public void testExtractPathFromJarUrlDecodedIfFileDoesNotExist() throws Exception {
-        final URL url = new URL("jar:file:/path+with+plus/file+does+not+exist.jar!/some/file");
-        final String expected = "/path with plus/file does not exist.jar";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
-    @Test
-    public void testExtractPathFromFileUrl() throws Exception {
-        final URL url = new URL("file:/C:/Users/me/workspace/log4j2/log4j-core/target/test-classes/log4j2-config.xml");
-        final String expected = "/C:/Users/me/workspace/log4j2/log4j-core/target/test-classes/log4j2-config.xml";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
-    @Test
     public void testExtractPathFromFileUrlNotDecodedIfFileExists() throws Exception {
         final String existingFile = "/log4j+config+with+plus+characters.xml";
         final URL url = ResolverUtilTest.class.getResource(existingFile);
-        assertTrue("should be file url but was " + url, "file".equals(url.getProtocol()));
-
+        assertThat(url).hasProtocol("file");
         final String actual = new ResolverUtil().extractPath(url);
-        assertTrue("should not be decoded: " + actual, actual.endsWith(existingFile));
+        assertThat(actual).endsWith(existingFile);
     }
 
     @Test
-    public void testExtractPathFromFileUrlDecodedIfFileDoesNotExist() throws Exception {
-        final URL url = new URL("file:///path+with+plus/file+does+not+exist.xml");
-        final String expected = "/path with plus/file does not exist.xml";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
-    @Test
-    public void testExtractPathFromHttpUrl() throws Exception {
-        final URL url = new URL("http://java.sun.com/index.html#chapter1");
-        final String expected = "/index.html";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
-    @Test
-    public void testExtractPathFromHttpUrlWithPlusCharacters() throws Exception {
-        final URL url = new URL("http://www.server.com/path+with+plus/file+name+with+plus.jar!/org/junit/Test.class");
-        final String expected = "/path with plus/file name with plus.jar";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
-    @Test
-    public void testExtractPathFromHttpsComplexUrl() throws Exception {
-        final URL url = new URL("https://issues.apache.org/jira/browse/LOG4J2-445?focusedCommentId=13862479&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-13862479");
-        final String expected = "/jira/browse/LOG4J2-445";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
-    @Test
-    public void testExtractPathFromFtpUrl() throws Exception {
-        final URL url = new URL("ftp://user001:secretpassword@private.ftp-servers.example.com/mydirectory/myfile.txt");
-        final String expected = "/mydirectory/myfile.txt";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
-    @Test
-    public void testExtractPathFromFtpUrlWithPlusCharacters() throws Exception {
-        final URL url = new URL("ftp://user001:secretpassword@private.ftp-servers.example.com/my+directory/my+file.txt");
-        final String expected = "/my directory/my file.txt";
-        assertEquals(expected, new ResolverUtil().extractPath(url));
-    }
-
-    @Test
-    public void testFindInPackageFromDirectoryPath() throws Exception {
-        try (final URLClassLoader cl = compileAndCreateClassLoader("1")) {
+    public void testFindInPackageFromDirectoryPath(final @TempDir File tmpDir) throws Exception {
+        try (final URLClassLoader cl = compileAndCreateClassLoader(tmpDir, "1")) {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(cl);
             resolverUtil.findInPackage(new PluginTest(), "customplugin1");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin1.FixedString1Layout"),
-                    resolverUtil.getClasses().iterator().next());
+            assertThat(resolverUtil.getClasses())
+                    .as("Number of plugin classes")
+                    .hasSize(1)
+                    .as("Plugin class")
+                    .contains(cl.loadClass("customplugin1.FixedString1Layout"));
         }
     }
 
     @Test
-    public void testFindInPackageFromJarPath() throws Exception {
-        try (final URLClassLoader cl = compileJarAndCreateClassLoader("2")) {
+    public void testFindInPackageFromJarPath(final @TempDir File tmpDir) throws Exception {
+        try (final URLClassLoader cl = compileJarAndCreateClassLoader(tmpDir, "2")) {
             final ResolverUtil resolverUtil = new ResolverUtil();
             resolverUtil.setClassLoader(cl);
             resolverUtil.findInPackage(new PluginTest(), "customplugin2");
-            assertEquals("Class not found in packages", 1, resolverUtil.getClasses().size());
-            assertEquals("Unexpected class resolved", cl.loadClass("customplugin2.FixedString2Layout"),
-                    resolverUtil.getClasses().iterator().next());
+            assertThat(resolverUtil.getClasses())
+                    .as("Number of plugin classes")
+                    .hasSize(1)
+                    .as("Plugin class")
+                    .contains(cl.loadClass("customplugin2.FixedString2Layout"));
         }
     }
 
-    static URLClassLoader compileJarAndCreateClassLoader(final String suffix) throws IOException, Exception {
-        final File workDir = compile(suffix);
-        final File jarFile = new File(workDir, "customplugin" + suffix + ".jar");
+    static URLClassLoader compileJarAndCreateClassLoader(final File tmpDir, final String suffix)
+            throws IOException, Exception {
+        compile(tmpDir, suffix);
+        final File jarFile = new File(tmpDir, "customplugin" + suffix + ".jar");
         final URI jarURI = jarFile.toURI();
-        createJar(jarURI, workDir, new File(workDir,
+        createJar(jarURI, tmpDir, new File(tmpDir,
               "customplugin" + suffix + "/FixedString" + suffix + "Layout.class"));
         return URLClassLoader.newInstance(new URL[] {jarURI.toURL()});
     }
 
-    static URLClassLoader compileAndCreateClassLoader(final String suffix) throws IOException {
-        final File workDir = compile(suffix);
-        return URLClassLoader.newInstance(new URL[] {workDir.toURI().toURL()});
+    static URLClassLoader compileAndCreateClassLoader(final File tmpDir, final String suffix) throws Exception {
+        compile(tmpDir, suffix);
+        return URLClassLoader.newInstance(new URL[] { tmpDir.toURI().toURL() });
     }
 
-    static File compile(final String suffix) throws IOException {
-        final File orig = new File("target/test-classes/customplugin/FixedStringLayout.java.source");
-        final File workDir = new File(WORK_DIR, "resolverutil" + suffix);
-        final File f = new File(workDir, "customplugin" + suffix + "/FixedString" + suffix + "Layout.java");
+    static void compile(final File tmpDir, final String suffix) throws Exception {
+        final File orig = new File(ResolverUtilTest.class.getResource("/customplugin/FixedStringLayout.java.source").toURI());
+        final File f = new File(tmpDir, "customplugin" + suffix + "/FixedString" + suffix + "Layout.java");
         final File parent = f.getParentFile();
         if (!parent.exists()) {
-          assertTrue("Create customplugin" + suffix + " folder KO", f.getParentFile().mkdirs());
+            assertTrue(f.getParentFile().mkdirs(), "Create customplugin" + suffix + " folder KO");
         }
 
         final String content = new String(Files.readAllBytes(orig.toPath()))
@@ -199,7 +175,6 @@ public class ResolverUtilTest {
         Files.write(f.toPath(), content.getBytes());
 
         PluginManagerPackagesTest.compile(f);
-        return workDir;
     }
 
     static void createJar(final URI jarURI, final File workDir, final File f) throws Exception {
