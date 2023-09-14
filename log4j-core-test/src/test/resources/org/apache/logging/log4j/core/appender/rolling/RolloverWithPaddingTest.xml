@@ -15,27 +15,19 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="WARN" name="RollingWithPadding">
-  <Properties>
-    <Property name="base">target/rolling-with-padding/</Property>
-  </Properties>
-
+<Configuration status="OFF" name="RolloverWithPaddingTest">
   <Appenders>
-    <RollingFile name="RollingFile" fileName="${base}/rollingtest.log" filePattern="${base}/test-%03i.log">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-      <Policies>
-        <SizeBasedTriggeringPolicy size="30" />
-      </Policies>
+    <RollingFile name="RollingFile"
+                 fileName="${test:logging.path}/rollingtest.log"
+                 filePattern="${test:logging.path}/test-%03i.log">
+      <SizeBasedTriggeringPolicy size="30" />
       <DefaultRolloverStrategy max="5" />
     </RollingFile>
   </Appenders>
 
   <Loggers>
-    <Root level="trace">
+    <Root level="TRACE">
       <AppenderRef ref="RollingFile" />
     </Root>
   </Loggers>
-
 </Configuration>

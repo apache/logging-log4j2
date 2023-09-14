@@ -16,52 +16,88 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.File;
-import java.util.Arrays;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import org.apache.commons.io.file.PathUtils;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * Tests that zero-padding in rolled files works correctly.
  */
+@UsingStatusListener
 public class RolloverWithPaddingTest {
-  private static final String CONFIG = "log4j-rolling-with-padding.xml";
-  private static final String DIR = "target/rolling-with-padding";
 
-  private final LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+    private static final String[] EXPECTED_FILES = { "rollingtest.log", "test-001.log", "test-002.log", "test-003.log",
+            "test-004.log", "test-005.log" };
+    private static final byte[] NOT_EMPTY_CONTENT = "Not empty".getBytes();
 
-  @Rule
-  public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+    @TempLoggingDir
+    private static Path loggingPath;
 
-  @Test
-  public void testAppender() throws Exception {
-    final Logger logger = loggerContextRule.getLogger();
-    for (int i = 0; i < 10; ++i) {
-      // 30 chars per message: each message triggers a rollover
-      logger.fatal("This is a test message number " + i); // 30 chars:
+    @Test
+    @LoggerContextSource
+    public void testPadding(final LoggerContext context) throws Exception {
+        final Logger logger = context.getLogger(getClass());
+        for (int i = 0; i < 10; ++i) {
+            // 30 chars per message: each message triggers a rollover
+            logger.fatal("This is a test message number " + i); // 30 chars:
+        }
+
+        assertThat(loggingPath).isDirectory();
+        final List<String> actual = sortedLogFiles();
+        assertThat(actual).containsExactly(EXPECTED_FILES);
+        PathUtils.deleteDirectory(loggingPath);
     }
-    Thread.sleep(100); // Allow time for rollover to complete
 
-    final File dir = new File(DIR);
-    assertTrue("Dir " + DIR + " should exist", dir.exists());
-    assertTrue("Dir " + DIR + " should contain files", dir.listFiles().length == 6);
+    @Test
+    @LoggerContextSource
+    public void testOldFileDeleted(final LoggerContext context) throws Exception {
+        final Logger logger = context.getLogger(getClass());
+        // Prepare directory
+        for (int i = 1; i <= 5; i++) {
+            final Path file = loggingPath.resolve("test-00" + i + ".log");
+            if (i == 1) {
+                assertDoesNotThrow(() -> Files.deleteIfExists(file));
+            } else {
+                assertDoesNotThrow(() -> {
+                    try (final OutputStream os = Files.newOutputStream(file)) {
+                        os.write(NOT_EMPTY_CONTENT);
+                    }
+                });
+            }
+        }
 
-    final File[] files = dir.listFiles();
-    final List<String> expected = Arrays.asList("rollingtest.log", "test-001.log", "test-002.log", "test-003.log", "test-004.log", "test-005.log");
-    assertEquals("Unexpected number of files", expected.size(), files.length);
-    for (final File file : files) {
-      if (!expected.contains(file.getName())) {
-        fail("unexpected file" + file);
-      }
+        for (int i = 0; i < 10; ++i) {
+            // 30 chars per message: each message triggers a rollover
+            logger.fatal("This is a test message number " + i); // 30 chars:
+        }
+        final List<String> actual = sortedLogFiles();
+        assertThat(actual).containsExactly(EXPECTED_FILES);
+        PathUtils.deleteDirectory(loggingPath);
     }
-  }
+
+    private static List<String> sortedLogFiles() throws IOException {
+        try (final DirectoryStream<Path> stream = Files.newDirectoryStream(loggingPath)) {
+            return StreamSupport
+                    .stream(stream.spliterator(), false)
+                    .map(p -> p.getFileName().toString())
+                    .sorted()
+                    .collect(Collectors.toList());
+        }
+    }
 }
