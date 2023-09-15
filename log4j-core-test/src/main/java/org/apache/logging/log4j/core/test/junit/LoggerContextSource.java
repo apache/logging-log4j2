@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.test.junit.TempLoggingDirectory;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -56,6 +57,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Documented
 @Inherited
 @Tag("functional")
+@ExtendWith(TempLoggingDirectory.class)
 @ExtendWith(LoggerContextResolver.class)
 @ExtendWith(ConfigurationResolver.class)
 @ExtendWith(AppenderResolver.class)
