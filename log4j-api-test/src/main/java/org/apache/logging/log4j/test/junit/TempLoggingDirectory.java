@@ -33,6 +33,10 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
+import org.junit.jupiter.api.extension.ExtensionContextException;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.junit.platform.commons.support.ModifierSupport;
@@ -40,7 +44,7 @@ import org.junit.platform.commons.support.ModifierSupport;
 import static org.junit.jupiter.api.io.CleanupMode.NEVER;
 import static org.junit.jupiter.api.io.CleanupMode.ON_SUCCESS;
 
-public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallback {
+public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallback, ParameterResolver {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -65,21 +69,68 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
     public void beforeEach(ExtensionContext context) throws Exception {
         // JUnit 5 does not set an error on the parent context if one of the children
         // fail. We record the list of children.
-        final PathHolder holder = ExtensionContextAnchor.getAttribute(PathHolder.class, PathHolder.class, context);
-        if (holder != null) {
-            holder.addContext(context);
+        context.getParent().ifPresent(c -> {
+            final PathHolder holder = ExtensionContextAnchor.getAttribute(PathHolder.class, PathHolder.class, c);
+            if (holder != null) {
+                holder.addContext(context);
+            }
+        });
+        // Inject fields
+        final List<Field> fields = AnnotationSupport.findAnnotatedFields(context.getRequiredTestClass(),
+                TempLoggingDir.class, ModifierSupport::isNotStatic);
+        Path loggingPath = null;
+        final Object instance = context.getRequiredTestInstance();
+        for (final Field field : fields) {
+            if (loggingPath != null) {
+                LOGGER.warn("Multiple fields with @TempLoggingDir annotation are not supported.");
+            } else {
+                final CleanupMode cleanup = determineCleanupMode(field);
+                loggingPath = createLoggingPath(context, cleanup).getPath();
+            }
+            field.setAccessible(true);
+            field.set(instance, loggingPath);
         }
     }
 
-    private PathHolder createLoggingPath(final ExtensionContext context, final CleanupMode cleanup) throws IOException {
+    @Override
+    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+            throws ParameterResolutionException {
+        if (parameterContext.getParameter().getType().isAssignableFrom(Path.class)) {
+            return parameterContext.findAnnotation(TempLoggingDir.class).isPresent();
+        }
+        return false;
+    }
+
+    @Override
+    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+            throws ParameterResolutionException {
+        final TempLoggingDir annotation = parameterContext.findAnnotation(TempLoggingDir.class).get();
+        // Get or create temporary directory
+        PathHolder holder = ExtensionContextAnchor.getAttribute(PathHolder.class, PathHolder.class, extensionContext);
+        if (holder == null || !extensionContext.equals(holder.getMainContext())) {
+            final CleanupMode mode = determineCleanupMode(annotation);
+            holder = createLoggingPath(extensionContext, mode);
+        }
+        return holder.getPath();
+    }
+
+    private PathHolder createLoggingPath(final ExtensionContext context, final CleanupMode cleanup) {
         final TestProperties props = TestPropertySource.createProperties(context);
         // Create temporary directory
         final String baseDir = System.getProperty("basedir");
         final Path basePath = (baseDir != null ? Paths.get(baseDir, "target") : Paths.get(".")).resolve("logs");
         final Class<?> clazz = context.getRequiredTestClass();
         final String dir = clazz.getName().replaceAll("[.$]", File.separatorChar == '\\' ? "\\\\" : File.separator);
-        final Path loggingPath = basePath.resolve(dir);
-        Files.createDirectories(loggingPath);
+        final Path perClassPath = basePath.resolve(dir);
+        // Per test subfolder
+        final Path loggingPath = context.getTestMethod()
+                .map(m -> perClassPath.resolve(m.getName()))
+                .orElse(perClassPath);
+        try {
+            Files.createDirectories(loggingPath);
+        } catch (final IOException e) {
+            throw new ExtensionContextException("Failed to create temporary directory.", e);
+        }
         props.setProperty(TestProperties.LOGGING_PATH, loggingPath.toString());
         // Register deletion
         final PathHolder holder = new PathHolder(loggingPath, cleanup, context);
@@ -101,12 +152,14 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
 
         private final Path path;
         private final CleanupMode cleanupMode;
+        private final ExtensionContext mainContext;
         private final Map<ExtensionContext, Boolean> contexts = new ConcurrentHashMap<>();
 
         public PathHolder(final Path path, final CleanupMode cleanup, final ExtensionContext context) {
             this.path = path;
             this.cleanupMode = cleanup;
             this.contexts.put(context, Boolean.TRUE);
+            this.mainContext = context;
         }
 
         public void addContext(final ExtensionContext context) {
@@ -115,6 +168,10 @@ public class TempLoggingDirectory implements BeforeAllCallback, BeforeEachCallba
 
         public Path getPath() {
             return path;
+        }
+
+        public ExtensionContext getMainContext() {
+            return mainContext;
         }
 
         @Override
