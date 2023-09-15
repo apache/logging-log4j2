@@ -18,7 +18,7 @@
 <Configuration status="ERROR">
   <Appenders>
     <File name="File"
-          fileName="target/AsyncLoggerConfigTest.log"
+          fileName="${test:logging.path}/AsyncLoggerConfigTest.log"
           bufferedIO="false"
           immediateFlush="true"
           append="false">

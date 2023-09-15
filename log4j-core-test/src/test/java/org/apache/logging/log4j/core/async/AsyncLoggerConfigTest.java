@@ -17,30 +17,28 @@
 package org.apache.logging.log4j.core.async;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.config.AppenderRef;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.async.AsyncLoggerConfig.RootLogger;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.message.SimpleMessage;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.timeout;
@@ -48,54 +46,49 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Category(AsyncLoggers.class)
+@Tag("AsyncLoggers")
+@UsingStatusListener
 public class AsyncLoggerConfigTest {
 
     private static final String FQCN = AsyncLoggerConfigTest.class.getName();
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigTest.xml");
-    }
+    @TempLoggingDir
+    private static Path loggingPath;
 
     @Test
-    public void testAdditivity() throws Exception {
-        final File file = new File("target", "AsyncLoggerConfigTest.log");
-        assertTrue("Deleted old file before test", !file.exists() || file.delete());
+    @LoggerContextSource
+    public void testAdditivity(final LoggerContext context) throws Exception {
+        final Path file = loggingPath.resolve("AsyncLoggerConfigTest.log");
+        assertThat(file).isEmptyFile();
 
-        final Logger log = LogManager.getLogger("com.foo.Bar");
+        final Logger log = context.getLogger("com.foo.Bar");
         final String msg = "Additive logging: 2 for the price of 1!";
         log.info(msg);
-        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
-
-        final BufferedReader reader = new BufferedReader(new FileReader(file));
-        final String line1 = reader.readLine();
-        final String line2 = reader.readLine();
-        reader.close();
-        file.delete();
-        assertNotNull("line1", line1);
-        assertNotNull("line2", line2);
-        assertTrue("line1 correct", line1.contains(msg));
-        assertTrue("line2 correct", line2.contains(msg));
+        CoreLoggerContexts.stopLoggerContext(file.toFile()); // stop async thread
 
         final String location = "testAdditivity";
-        assertTrue("location", line1.contains(location) || line2.contains(location));
+        try (final BufferedReader reader = Files.newBufferedReader(file)) {
+            for (int i = 0; i < 2; i++) {
+                assertThat(reader.readLine())
+                        .as("Message")
+                        .contains(msg)
+                        .as("Location")
+                        .contains(location);
+            }
+        }
     }
 
     @Test
     public void testIncludeLocationDefaultsToFalse() {
-        final LoggerConfig rootLoggerConfig =
-                AsyncLoggerConfig.RootLogger.createLogger(
-                        null, "INFO", null, new AppenderRef[0], null, new DefaultConfiguration(), null);
-        assertFalse("Include location should default to false for async loggers",
-                    rootLoggerConfig.isIncludeLocation());
+        final Configuration configuration = new NullConfiguration();
+        final LoggerConfig rootLoggerConfig = RootLogger.newAsyncRootBuilder().withConfig(configuration).build();
+        assertFalse(rootLoggerConfig.isIncludeLocation(), "Include location should default to false for async loggers");
 
-        final LoggerConfig loggerConfig =
-                AsyncLoggerConfig.createLogger(
-                        null, "INFO", "com.foo.Bar", null, new AppenderRef[0], null, new DefaultConfiguration(),
-                        null);
-        assertFalse("Include location should default to false for async loggers",
-                    loggerConfig.isIncludeLocation());
+        final LoggerConfig loggerConfig = AsyncLoggerConfig.newAsyncBuilder()
+                .withConfig(configuration)
+                .withLoggerName("com.foo.Bar")
+                .build();
+        assertFalse(loggerConfig.isIncludeLocation(), "Include location should default to false for async loggers");
     }
 
     @Test
