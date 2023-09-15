@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.test.junit;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -25,6 +24,8 @@ import java.lang.annotation.Target;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.CleanupMode;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
@@ -34,7 +35,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * </p>
  */
 @Retention(RUNTIME)
-@Target({ ElementType.FIELD })
+@Target({ FIELD, PARAMETER })
 @Inherited
 @Documented
 @ExtendWith(ExtensionContextAnchor.class)
