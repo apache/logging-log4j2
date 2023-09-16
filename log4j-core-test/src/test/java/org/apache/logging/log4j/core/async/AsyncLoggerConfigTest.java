@@ -38,9 +38,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -113,7 +116,7 @@ public class AsyncLoggerConfigTest {
         disruptor.start();
         try {
             config.log(FQCN, FQCN, null, Level.INFO, new SimpleMessage(), null);
-            verify(appender, times(1)).append(any());
+            verify(appender, timeout(100).times(1)).append(any());
             verify(filter, times(1)).filter(any());
         } finally {
             disruptor.stop();
