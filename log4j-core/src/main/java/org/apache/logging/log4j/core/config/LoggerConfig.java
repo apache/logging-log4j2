@@ -245,7 +245,7 @@ public class LoggerConfig extends AbstractFilterable {
             final Level level, final boolean additive, final Property[] properties, final Configuration config,
             final boolean includeLocation, final LogEventFactory logEventFactory) {
         super(filter, null);
-        this.logEventFactory = logEventFactory;
+        this.logEventFactory = logEventFactory != null ? logEventFactory : DefaultLogEventFactory.newInstance();
         this.name = name;
         this.appenderRefs = appenders;
         this.level = level;
