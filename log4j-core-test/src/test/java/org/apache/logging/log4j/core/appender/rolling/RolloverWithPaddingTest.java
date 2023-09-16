@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.apache.commons.io.file.PathUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
@@ -47,7 +46,7 @@ public class RolloverWithPaddingTest {
     private static final byte[] NOT_EMPTY_CONTENT = "Not empty".getBytes();
 
     @TempLoggingDir
-    private static Path loggingPath;
+    private Path loggingPath;
 
     @Test
     @LoggerContextSource
@@ -59,9 +58,8 @@ public class RolloverWithPaddingTest {
         }
 
         assertThat(loggingPath).isDirectory();
-        final List<String> actual = sortedLogFiles();
+        final List<String> actual = sortedLogFiles(loggingPath);
         assertThat(actual).containsExactly(EXPECTED_FILES);
-        PathUtils.deleteDirectory(loggingPath);
     }
 
     @Test
@@ -86,12 +84,11 @@ public class RolloverWithPaddingTest {
             // 30 chars per message: each message triggers a rollover
             logger.fatal("This is a test message number " + i); // 30 chars:
         }
-        final List<String> actual = sortedLogFiles();
+        final List<String> actual = sortedLogFiles(loggingPath);
         assertThat(actual).containsExactly(EXPECTED_FILES);
-        PathUtils.deleteDirectory(loggingPath);
     }
 
-    private static List<String> sortedLogFiles() throws IOException {
+    private static List<String> sortedLogFiles(final Path loggingPath) throws IOException {
         try (final DirectoryStream<Path> stream = Files.newDirectoryStream(loggingPath)) {
             return StreamSupport
                     .stream(stream.spliterator(), false)
