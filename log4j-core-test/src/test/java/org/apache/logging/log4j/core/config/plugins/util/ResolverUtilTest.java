@@ -162,7 +162,9 @@ public class ResolverUtilTest {
     }
 
     static void compile(final File tmpDir, final String suffix) throws Exception {
-        final File orig = new File(ResolverUtilTest.class.getResource("/customplugin/FixedStringLayout.java.source").toURI());
+        final URL resource = ResolverUtilTest.class.getResource("/customplugin/FixedStringLayout.java.source");
+        assertThat(resource).isNotNull();
+        final File orig = new File(resource.toURI());
         final File f = new File(tmpDir, "customplugin" + suffix + "/FixedString" + suffix + "Layout.java");
         final File parent = f.getParentFile();
         if (!parent.exists()) {

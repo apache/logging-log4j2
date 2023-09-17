@@ -18,8 +18,10 @@ package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -32,8 +34,9 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PluginManagerPackagesTest {
     private static Configuration config;
@@ -53,11 +56,13 @@ public class PluginManagerPackagesTest {
         // To ensure our custom plugin is NOT included in the log4j plugin metadata file,
         // we make sure the class does not exist until after the build is finished.
         // So we don't create the custom plugin class until this test is run.
-        final File orig = new File("target/test-classes/customplugin/FixedStringLayout.java.source");
+        final URL resource = PluginManagerPackagesTest.class.getResource("/customplugin/FixedStringLayout.java.source");
+        assertThat(resource).isNotNull();
+        final File orig = new File(resource.toURI());
         final File f = new File(orig.getParentFile(), "FixedStringLayout.java");
-        assertTrue(orig.renameTo(f), "renamed source file failed");
+        assertDoesNotThrow(() -> FileUtils.copyFile(orig, f));
         compile(f);
-        assertTrue(f.renameTo(orig), "reverted source file failed");
+        assertDoesNotThrow(() -> FileUtils.delete(f));
 
         // load the compiled class
         Class.forName("customplugin.FixedStringLayout");
