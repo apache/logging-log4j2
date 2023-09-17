@@ -81,12 +81,12 @@ public class AsyncLoggerConfigTest {
     @Test
     public void testIncludeLocationDefaultsToFalse() {
         final Configuration configuration = new NullConfiguration();
-        final LoggerConfig rootLoggerConfig = RootLogger.newAsyncRootBuilder().withConfig(configuration).build();
+        final LoggerConfig rootLoggerConfig = RootLogger.newAsyncRootBuilder().setConfig(configuration).build();
         assertFalse(rootLoggerConfig.isIncludeLocation(), "Include location should default to false for async loggers");
 
         final LoggerConfig loggerConfig = AsyncLoggerConfig.newAsyncBuilder()
-                .withConfig(configuration)
-                .withLoggerName("com.foo.Bar")
+                .setConfig(configuration)
+                .setLoggerName("com.foo.Bar")
                 .build();
         assertFalse(loggerConfig.isIncludeLocation(), "Include location should default to false for async loggers");
     }
