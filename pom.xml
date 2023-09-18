@@ -237,7 +237,6 @@
     <module>log4j-jdbc-dbcp2</module>
     <module>log4j-jeromq</module>
     <module>log4j-jms</module>
-    <module>log4j-jmx-gui</module>
     <module>log4j-jndi</module>
     <module>log4j-jndi-test</module>
     <module>log4j-jpa</module>
