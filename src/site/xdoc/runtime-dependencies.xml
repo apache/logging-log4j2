@@ -137,11 +137,6 @@
             <td>Automatic Module</td>
           </tr>
           <tr>
-            <td>log4j-jmx-gui</td>
-            <td>org.apache.logging.log4j.jmx.gui</td>
-            <td>Automatic Module</td>
-          </tr>
-          <tr>
             <td>log4j-jul</td>
             <td>org.apache.logging.log4j.jul</td>
             <td>Automatic Module</td>
@@ -389,14 +384,6 @@
         The Log4j <a href="log4j-taglib/index.html">Log Tag Library</a> requires the
         <a href="https://jakarta.apache.org/taglibs/log/">Jakarta Commons Log Taglib</a> and the Servlet API. See the
         <a href="log4j-taglib/dependencies.html#Dependency_Tree">Dependency Tree</a> for the exact list of JAR files needed.
-      </p>
-
-      <a name="log4j-jmx-gui" />
-      <h4>log4j-jmx-gui</h4>
-      <p>
-        The Log4j <a href="log4j-jmx-gui/index.html">JMX GUI</a> requires the JConsole jar when run as a JConsole plugin.
-        Otherwise it has no external dependencies. See the
-        <a href="log4j-jmx-gui/dependencies.html#Dependency_Tree">Dependency Tree</a> for the exact list of JAR files needed.
       </p>
 
       <a name="log4j-web" />

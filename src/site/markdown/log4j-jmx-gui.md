@@ -18,16 +18,5 @@
 
 # Log4j JMX GUI
 
-JMX GUI provides a Swing-based client for remotely editing the log4j configuration 
-and remotely monitoring StatusLogger output. 
-
-The JMX GUI can be run as a stand-alone application or as a JConsole plug-in.
-
-## Requirements
-
-The JMX GUI is dependent on Log4j 2 Core.
-For more information, see [Runtime Dependencies](runtime-dependencies.html).
-
-## Usage
-
-See the [JMX manual](manual/jmx.html#ClientGUI) page for details.
+[The Apache Log4j JMX GUI](https://github.com/apache/logging-log4j-jmx-gui) is a basic client GUI that can be used to monitor the `StatusLogger` output and to remotely modify the Log4j configuration.
+The client GUI can be run as a stand-alone application or as a JConsole plug-in.
