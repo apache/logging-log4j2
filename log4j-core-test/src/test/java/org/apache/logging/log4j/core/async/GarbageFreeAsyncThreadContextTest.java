@@ -16,15 +16,29 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.nio.file.Path;
+
+import org.apache.logging.log4j.test.TestProperties;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.apache.logging.log4j.test.junit.UsingTestProperties;
 import org.junit.jupiter.api.Test;
 
 /**
  * Provided as a dedicated test as it depends on cached state during Log4j startup.
  */
+@UsingStatusListener
+@UsingTestProperties
 class GarbageFreeAsyncThreadContextTest {
+
+    private static TestProperties props;
+
+    @TempLoggingDir
+    private static Path loggingPath;
+
     @Test
     void garbageFreeMixed() throws Exception {
         AsyncThreadContextTest.doTestAsyncLogWritesToLog(AsyncThreadContextTest.ContextImpl.GARBAGE_FREE,
-                AsyncThreadContextTest.Mode.MIXED, getClass());
+                AsyncThreadContextTest.Mode.MIXED, getClass(), loggingPath, props);
     }
 }

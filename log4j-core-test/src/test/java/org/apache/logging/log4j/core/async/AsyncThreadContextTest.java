@@ -115,10 +115,10 @@ public class AsyncThreadContextTest {
             "GARBAGE_FREE, BOTH_ALL_ASYNC_AND_MIXED",
     })
     public void testAsyncLogWritesToLog(final ContextImpl contextImpl, final Mode asyncMode) throws Exception {
-        doTestAsyncLogWritesToLog(contextImpl, asyncMode, getClass());
+        doTestAsyncLogWritesToLog(contextImpl, asyncMode, getClass(), loggingPath, props);
     }
 
-    static void doTestAsyncLogWritesToLog(final ContextImpl contextImpl, final Mode asyncMode, final Class<?> testClass) throws Exception {
+    static void doTestAsyncLogWritesToLog(final ContextImpl contextImpl, final Mode asyncMode, final Class<?> testClass, final Path loggingPath, final TestProperties props) throws Exception {
         final Path testLoggingPath = loggingPath.resolve(contextImpl.toString()).resolve(asyncMode.toString());
         props.setProperty("logging.path", testLoggingPath.toString());
         final Injector injector = DI.createInjector();
