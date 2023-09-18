@@ -17,64 +17,46 @@
 package org.apache.log4j.config;
 
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import org.apache.log4j.ListAppender;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.bridge.AppenderAdapter;
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test configuration from XML.
  */
 @Tag("sleepy")
+@UsingStatusListener
 public class AsyncAppenderTest {
 
-    @Test
-    public void testAsyncXml() throws Exception {
-        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-async.xml")) {
-            final Logger logger = LogManager.getLogger("test");
-            logger.debug("This is a test of the root logger");
-            Thread.sleep(50);
-            final Configuration configuration = loggerContext.getConfiguration();
-            final Map<String, Appender> appenders = configuration.getAppenders();
-            ListAppender messageAppender = null;
-            for (final Map.Entry<String, Appender> entry : appenders.entrySet()) {
-                if (entry.getKey().equals("list")) {
-                    messageAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
-                }
-            }
-            assertNotNull(messageAppender, "No Message Appender");
-            final List<String> messages = messageAppender.getMessages();
-            assertTrue(messages != null && messages.size() > 0, "No messages");
-        }
+    private static long DEFAULT_TIMEOUT_MS = 500;
+
+    static Stream<String> testAsyncAppender() {
+        return Stream.of("/log4j1-async.xml", "/log4j1-async.properties")
+                .map(config -> AsyncAppenderTest.class.getResource(config).getPath());
     }
 
-    @Test
-    public void testAsyncProperties() throws Exception {
-        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-async.properties")) {
+    @ParameterizedTest
+    @MethodSource
+    public void testAsyncAppender(final String configLocation) throws Exception {
+        try (final LoggerContext loggerContext = TestConfigurator.configure(configLocation)) {
             final Logger logger = LogManager.getLogger("test");
             logger.debug("This is a test of the root logger");
-            Thread.sleep(50);
-            final Configuration configuration = loggerContext.getConfiguration();
-            final Map<String, Appender> appenders = configuration.getAppenders();
-            ListAppender messageAppender = null;
-            for (final Map.Entry<String, Appender> entry : appenders.entrySet()) {
-                if (entry.getKey().equals("list")) {
-                    messageAppender = (ListAppender) ((AppenderAdapter.Adapter) entry.getValue()).getAppender();
-                }
-            }
-            assertNotNull(messageAppender, "No Message Appender");
-            final List<String> messages = messageAppender.getMessages();
-            assertTrue(messages != null && messages.size() > 0, "No messages");
+            final AppenderAdapter.Adapter adapter = loggerContext.getConfiguration().getAppender("list");
+            assertThat(adapter).isNotNull();
+            final ListAppender appender = (ListAppender) adapter.getAppender();
+            final List<String> messages = appender.getMessages(1, DEFAULT_TIMEOUT_MS, TimeUnit.MILLISECONDS);
+            assertThat(messages).hasSize(1);
         }
     }
 }
