@@ -123,7 +123,12 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- TODO: fix concurrent download of MongoDB distribution. -->
+          <forkCount>1</forkCount>
+        </configuration>
         <dependencies>
           <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -135,7 +140,6 @@
             <artifactId>slf4j-nop</artifactId>
             <version>${slf4j.version}</version>
           </dependency>
-
         </dependencies>
       </plugin>
     </plugins>
