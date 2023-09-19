@@ -37,10 +37,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("functional")
 public class LateConfigTest {
@@ -64,19 +61,21 @@ public class LateConfigTest {
     @ParameterizedTest
     @MethodSource("selectors")
     public void testReconfiguration(final Log4jContextFactory factory) throws Exception {
-        LoggerContext context = factory.getContext(FQCN, null, null, false);
-        final Configuration cfg = context.getConfiguration();
-        assertNotNull(cfg, "No configuration");
-        assertTrue(cfg instanceof DefaultConfiguration, "Not set to default configuration");
-        final URI configLocation = LateConfigTest.class.getResource(CONFIG).toURI();
-        final LoggerContext loggerContext = factory.getContext(FQCN, null, null, false, configLocation, null);
-        assertNotNull(loggerContext, "No Logger Context");
-        assertThat(loggingPath.resolve("test-xml.log")).exists();
-        final Configuration newConfig = loggerContext.getConfiguration();
-        assertNotSame(cfg, newConfig, "Configuration not reset");
-        assertTrue(newConfig instanceof XmlConfiguration, "Reconfiguration failed");
-        context = factory.getContext(FQCN, null, null, false);
-        final Configuration sameConfig = context.getConfiguration();
-        assertSame(newConfig, sameConfig, "Configuration should not have been reset");
+        try (final LoggerContext context = factory.getContext(FQCN, null, null, false)) {
+            final Configuration defaultConfig = context.getConfiguration();
+            assertThat(defaultConfig).isInstanceOf(DefaultConfiguration.class);
+
+            final URI configLocation = LateConfigTest.class.getResource(CONFIG).toURI();
+            final LoggerContext context1 = factory.getContext(FQCN, null, null, false, configLocation, null);
+            assertThat(context1).isSameAs(context);
+            assertThat(loggingPath.resolve("test-xml.log")).exists();
+            final Configuration newConfig = context.getConfiguration();
+            assertThat(newConfig).isInstanceOf(XmlConfiguration.class);
+
+            final LoggerContext context2 = factory.getContext(FQCN, null, null, false);
+            assertThat(context2).isSameAs(context);
+            final Configuration sameConfig = context.getConfiguration();
+            assertSame(newConfig, sameConfig, "Configuration should not have been reset");
+        }
     }
 }
