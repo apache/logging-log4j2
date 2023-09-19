@@ -129,7 +129,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
             System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY.getSystemKey(), configLocation);
             configUri = null; // handled by system property
         } else {
-            configUri = configLocation.isEmpty() ? null : NetUtils.toURI(configLocation);
+            configUri = NetUtils.toURI(configLocation);
         }
         final LoggerContext context = loggerContextFactory.getContext(FQCN, classLoader, injectorContext, false, configUri, displayName);
         assertNotNull(context, () -> "No LoggerContext created for " + testClass + " and config file " + configLocation);

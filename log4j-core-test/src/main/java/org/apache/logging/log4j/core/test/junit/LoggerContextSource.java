@@ -67,7 +67,7 @@ public @interface LoggerContextSource {
     /**
      * Specifies the name of the configuration file to use for the annotated test.
      */
-    String value();
+    String value() default "";
 
     /**
      * Specifies when to {@linkplain LoggerContext#reconfigure() reconfigure} the logging system.
