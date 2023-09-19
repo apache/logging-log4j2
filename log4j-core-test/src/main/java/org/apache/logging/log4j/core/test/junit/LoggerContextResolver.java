@@ -123,7 +123,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         final ClassLoader classLoader = testClass.getClassLoader();
         final Map.Entry<String, Object> injectorContext = Map.entry(Injector.class.getName(), injector);
-        final String configLocation = source.value();
+        final String configLocation = getConfigLocation(source, extensionContext);
         final URI configUri;
         if (source.v1config()) {
             System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY.getSystemKey(), configLocation);
@@ -137,6 +137,15 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         store.put(ReconfigurationPolicy.class, source.reconfigure());
         store.put(LoggerContextAccessor.class, new ContextHolder(context, source.timeout(), source.unit()));
         return context;
+    }
+
+    private static String getConfigLocation(final LoggerContextSource source,
+                                            final ExtensionContext extensionContext) {
+        final String value = source.value();
+        if (value.isEmpty()) {
+            return extensionContext.getRequiredTestClass().getName().replaceAll("[.$]", "/") + ".xml";
+        }
+        return value;
     }
 
     private static final class ContextHolder implements Store.CloseableResource, LoggerContextAccessor {
