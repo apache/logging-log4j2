@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="${sys:log4j.level}" strict="false" name="DSI">
+<Configuration status="${test:log4j.level}" strict="false" name="CustomConfigurationTest">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="[%-5level] %msg%n" />
@@ -23,7 +23,7 @@
   </Appenders>
 
   <Loggers>
-    <Root level="${sys:log.level}">
+    <Root level="${test:log.level}">
       <AppenderRef ref="Console" />
     </Root>
   </Loggers>
