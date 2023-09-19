@@ -35,9 +35,9 @@ public final class ReusableMessageFactory implements MessageFactory {
      */
     public static final ReusableMessageFactory INSTANCE = new ReusableMessageFactory();
 
-    private static final ThreadLocal<ReusableParameterizedMessage> threadLocalParameterized = new ThreadLocal<>();
-    private static final ThreadLocal<ReusableSimpleMessage> threadLocalSimpleMessage = new ThreadLocal<>();
-    private static final ThreadLocal<ReusableObjectMessage> threadLocalObjectMessage = new ThreadLocal<>();
+    private final ThreadLocal<ReusableParameterizedMessage> threadLocalParameterized = new ThreadLocal<>();
+    private final ThreadLocal<ReusableSimpleMessage> threadLocalSimpleMessage = new ThreadLocal<>();
+    private final ThreadLocal<ReusableObjectMessage> threadLocalObjectMessage = new ThreadLocal<>();
 
     /**
      * Constructs a message factory.
@@ -46,7 +46,7 @@ public final class ReusableMessageFactory implements MessageFactory {
         super();
     }
 
-    private static ReusableParameterizedMessage getParameterized() {
+    private ReusableParameterizedMessage getParameterized() {
         ReusableParameterizedMessage result = threadLocalParameterized.get();
         if (result == null) {
             result = new ReusableParameterizedMessage();
@@ -55,7 +55,7 @@ public final class ReusableMessageFactory implements MessageFactory {
         return result.reserved ? new ReusableParameterizedMessage().reserve() : result.reserve();
     }
 
-    private static ReusableSimpleMessage getSimple() {
+    private ReusableSimpleMessage getSimple() {
         ReusableSimpleMessage result = threadLocalSimpleMessage.get();
         if (result == null) {
             result = new ReusableSimpleMessage();
@@ -64,7 +64,7 @@ public final class ReusableMessageFactory implements MessageFactory {
         return result;
     }
 
-    private static ReusableObjectMessage getObject() {
+    private ReusableObjectMessage getObject() {
         ReusableObjectMessage result = threadLocalObjectMessage.get();
         if (result == null) {
             result = new ReusableObjectMessage();
