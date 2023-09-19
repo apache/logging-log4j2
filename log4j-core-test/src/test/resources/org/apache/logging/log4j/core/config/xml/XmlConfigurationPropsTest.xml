@@ -15,16 +15,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration strict="false" name="DSI">
-  <Appenders>
-    <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="[%-5level] %msg%n" />
-    </Console>
-  </Appenders>
-
+<Configuration status="${test:status.level}" name="XmlConfigurationPropsTest">
   <Loggers>
-    <Root level="${sys:log.level}">
-      <AppenderRef ref="Console" />
-    </Root>
+    <Root level="${test:root.level}"/>
   </Loggers>
 </Configuration>
