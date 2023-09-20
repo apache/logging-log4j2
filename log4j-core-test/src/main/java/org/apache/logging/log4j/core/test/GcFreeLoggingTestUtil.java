@@ -83,6 +83,7 @@ public enum GcFreeLoggingTestUtil {;
         final String[] exclude = new String[] {
                 "java/util/concurrent/locks/AbstractQueuedSynchronizer$Node", //
                 "com/google/monitoring/runtime/instrumentation/Sampler", //
+                "com/lmax/disruptor/InsufficientCapacityException"
         };
         final AtomicBoolean samplingEnabled = new AtomicBoolean(true);
         final Sampler sampler = (count, desc, newObj, size) -> {
