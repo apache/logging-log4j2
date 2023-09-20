@@ -15,17 +15,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="WARN">
+<Configuration status="OFF" name="QueueFullAbstractTest">
   <Appenders>
-    <Blocking name="Blocking">
-    </Blocking>
-    <Async name="async" bufferSize="128">
-      <AppenderRef ref="Blocking"/>
-    </Async>
+    <Blocking name="Blocking" />
   </Appenders>
   <Loggers>
     <Root level="debug">
-      <AppenderRef ref="async" />
+      <AppenderRef ref="Blocking" />
     </Root>
   </Loggers>
 </Configuration>
