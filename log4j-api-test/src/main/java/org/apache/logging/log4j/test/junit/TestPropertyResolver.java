@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.test.junit;
 
+import java.util.List;
+
 import org.apache.logging.log4j.test.TestProperties;
 import org.apache.logging.log4j.util.ReflectionUtil;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -23,6 +25,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.platform.commons.support.AnnotationSupport;
 import org.junit.platform.commons.support.HierarchyTraversalMode;
 import org.junit.platform.commons.support.ModifierSupport;
 import org.junit.platform.commons.support.ReflectionSupport;
@@ -37,9 +40,10 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
     @Override
     public void beforeEach(final ExtensionContext context) throws Exception {
         final TestProperties props = TestPropertySource.createProperties(context);
-        final SetTestProperty[] setProperties = context.getRequiredTestMethod()
-                .getAnnotationsByType(SetTestProperty.class);
-        if (setProperties.length > 0) {
+        final List<SetTestProperty> setProperties = AnnotationSupport.findRepeatableAnnotations(
+                context.getRequiredTestMethod(),
+                SetTestProperty.class);
+        if (setProperties.size() > 0) {
             for (final SetTestProperty setProperty : setProperties) {
                 props.setProperty(setProperty.key(), setProperty.value());
             }
@@ -57,9 +61,10 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
     @Override
     public void beforeAll(final ExtensionContext context) throws Exception {
         final TestProperties props = TestPropertySource.createProperties(context);
-        final SetTestProperty[] setProperties = context.getRequiredTestClass()
-                .getAnnotationsByType(SetTestProperty.class);
-        if (setProperties.length > 0) {
+        final List<SetTestProperty> setProperties = AnnotationSupport.findRepeatableAnnotations(
+                context.getRequiredTestClass(),
+                SetTestProperty.class);
+        if (setProperties.size() > 0) {
             for (final SetTestProperty setProperty : setProperties) {
                 props.setProperty(setProperty.key(), setProperty.value());
             }
