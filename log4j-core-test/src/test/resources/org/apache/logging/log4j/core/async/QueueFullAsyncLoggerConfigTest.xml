@@ -15,17 +15,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="off">
+<Configuration status="OFF" name="QueueFullAsyncLoggerConfigTest">
   <Appenders>
-    <Blocking name="Blocking">
-    </Blocking>
-    <Async name="async" bufferSize="128">
-      <AppenderRef ref="Blocking"/>
-    </Async>
+    <Blocking name="Blocking" />
   </Appenders>
   <Loggers>
-    <Root level="debug">
-      <AppenderRef ref="async" />
-    </Root>
+    <AsyncRoot level="debug">
+      <AppenderRef ref="Blocking" />
+    </AsyncRoot>
   </Loggers>
 </Configuration>

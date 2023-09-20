@@ -16,58 +16,21 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.concurrent.CountDownLatch;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+
 
 /**
- * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
+ * Needs to be a separate class since {@link org.apache.logging.log4j.core.util.Constants#FORMAT_MESSAGES_IN_BACKGROUND}
+ * is immutable.
  */
-@RunWith(BlockJUnit4ClassRunner.class)
-@Category(AsyncLoggers.class)
-public class QueueFullAsyncLoggerTest2 extends QueueFullAbstractTest {
+@SetTestProperty(key = "AsyncLogger.formatMsg", value = "true")
+public class QueueFullAsyncLoggerTest2 extends QueueFullAsyncLoggerTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND.getSystemKey(), "true");
-        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE.getSystemKey(), "128"); // minimum ringbuffer size
-    }
-
-    @AfterClass
-    public static void afterClass() {
-        System.clearProperty(Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND.getSystemKey());
-        System.clearProperty(Log4jPropertyKey.ASYNC_CONFIG_RING_BUFFER_SIZE.getSystemKey());
-    }
-
-    @Rule
-    public LoggerContextRule context = new LoggerContextRule(
-            "log4j2-queueFull.xml", AsyncLoggerContextSelector.class);
-
-    @Before
-    public void before() throws Exception {
-        blockingAppender = context.getRequiredAppender("Blocking", BlockingAppender.class);
-    }
-
-
-    @Test(timeout = 5000)
-    public void testNormalQueueFullKeepsMessagesInOrder() {
-        final Logger logger = context.getLogger(this.getClass());
-
-        blockingAppender.countDownLatch = new CountDownLatch(1);
-        unlocker = new Unlocker(new CountDownLatch(129));
-        unlocker.start();
-
-        QueueFullAsyncLoggerTest.asyncLoggerTest(logger, unlocker, blockingAppender);
+    @Override
+    protected void checkConfig(final LoggerContext ctx) {
+        super.checkConfig(ctx);
+        assertFormatMessagesInBackground();
     }
 }
