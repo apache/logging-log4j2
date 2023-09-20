@@ -65,7 +65,7 @@ public class XmlConfigurationPropsTest {
     }
 
     @Test
-    @SetTestProperty(key = "Configuration.file", value = "WARN")
+    @SetTestProperty(key = "StatusLogger.defaultStatusLevel", value = "WARN")
     @LoggerContextSource(value = CONFIG1)
     public void testDefaultStatus(final Configuration config) {
         testConfiguration(config, CONFIG1_NAME, Level.WARN, null);
