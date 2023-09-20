@@ -1552,6 +1552,7 @@
             <exclude>**/rabbitmq.config</exclude>
             <exclude>**/MANIFEST.MF</exclude>
             <exclude>.surefire-*</exclude>
+            <exclude>.mvn/jvm.config</exclude>
             <exclude>**/*.slim</exclude>
           </excludes>
         </configuration>
