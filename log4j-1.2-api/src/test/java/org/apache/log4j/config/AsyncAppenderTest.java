@@ -16,6 +16,8 @@
  */
 package org.apache.log4j.config;
 
+import java.net.URI;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -30,6 +32,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * Test configuration from XML.
@@ -41,7 +44,12 @@ public class AsyncAppenderTest {
 
     static Stream<String> testAsyncAppender() {
         return Stream.of("/log4j1-async.xml", "/log4j1-async.properties")
-                .map(config -> AsyncAppenderTest.class.getResource(config).getPath());
+                .map(config ->
+                        assertDoesNotThrow(() -> {
+                            final URI uri = AsyncAppenderTest.class.getResource(config).toURI();
+                            return Paths.get(uri).toString();
+                        })
+                );
     }
 
     @ParameterizedTest
