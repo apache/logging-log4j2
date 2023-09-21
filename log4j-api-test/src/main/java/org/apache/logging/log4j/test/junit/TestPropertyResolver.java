@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.test.junit;
 
-import java.util.List;
-
 import org.apache.logging.log4j.test.TestProperties;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -39,14 +37,8 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
     @Override
     public void beforeEach(final ExtensionContext context) throws Exception {
         final TestProperties props = TestPropertySource.createProperties(context);
-        final List<SetTestProperty> setProperties = AnnotationSupport.findRepeatableAnnotations(
-                context.getRequiredTestMethod(),
-                SetTestProperty.class);
-        if (setProperties.size() > 0) {
-            for (final SetTestProperty setProperty : setProperties) {
-                props.setProperty(setProperty.key(), setProperty.value());
-            }
-        }
+        AnnotationSupport.findRepeatableAnnotations(context.getRequiredTestMethod(), SetTestProperty.class)
+                .forEach(setProperty -> props.setProperty(setProperty.key(), setProperty.value()));
         final Class<?> testClass = context.getRequiredTestClass();
         final Object testInstance = context.getRequiredTestInstance();
         ReflectionSupport
@@ -67,14 +59,8 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
     @Override
     public void beforeAll(final ExtensionContext context) throws Exception {
         final TestProperties props = TestPropertySource.createProperties(context);
-        final List<SetTestProperty> setProperties = AnnotationSupport.findRepeatableAnnotations(
-                context.getRequiredTestClass(),
-                SetTestProperty.class);
-        if (setProperties.size() > 0) {
-            for (final SetTestProperty setProperty : setProperties) {
-                props.setProperty(setProperty.key(), setProperty.value());
-            }
-        }
+        AnnotationSupport.findRepeatableAnnotations(context.getRequiredTestClass(), SetTestProperty.class)
+                .forEach(setProperty -> props.setProperty(setProperty.key(), setProperty.value()));
         final Class<?> testClass = context.getRequiredTestClass();
         ReflectionSupport
                 .findFields(testClass,
