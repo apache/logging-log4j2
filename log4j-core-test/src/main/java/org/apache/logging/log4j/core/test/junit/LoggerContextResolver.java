@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.test.junit;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +37,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
+import org.junit.jupiter.api.extension.ExtensionContextException;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -139,14 +142,26 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         return context;
     }
 
-    private static String getConfigLocation(final LoggerContextSource source,
-                                            final ExtensionContext extensionContext) {
-        final String value = source.value();
-        if (value.isEmpty()) {
-            return extensionContext.getRequiredTestClass().getName().replaceAll("[.$]", "/") + ".xml";
+        private static String getConfigLocation(final LoggerContextSource source,
+                                                final ExtensionContext extensionContext) {
+            final String value = source.value();
+            if (value.isEmpty()) {
+                Class<?> clazz = extensionContext.getRequiredTestClass();
+                while (clazz != null) {
+                    final URL url = clazz.getResource(clazz.getSimpleName() + ".xml");
+                    if (url != null) {
+                        try {
+                            return url.toURI().toString();
+                        } catch (URISyntaxException e) {
+                            throw new ExtensionContextException("An error occurred accessing the configuration.", e);
+                        }
+                    }
+                    clazz = clazz.getSuperclass();
+                }
+                return extensionContext.getRequiredTestClass().getName().replaceAll("[.$]", "/") + ".xml";
+            }
+            return value;
         }
-        return value;
-    }
 
     private static final class ContextHolder implements Store.CloseableResource, LoggerContextAccessor {
         private final LoggerContext context;
