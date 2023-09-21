@@ -22,23 +22,28 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.status.StatusConsoleListener;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
+import org.apache.logging.log4j.simple.SimpleLogger;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.ListStatusListener;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
+import org.junit.jupiter.api.extension.ExtensionContextException;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
+import org.junit.platform.commons.support.HierarchyTraversalMode;
+import org.junit.platform.commons.support.ModifierSupport;
+import org.junit.platform.commons.support.ReflectionSupport;
 
 class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListener>
         implements BeforeAllCallback, BeforeEachCallback, TestExecutionExceptionHandler {
 
-    private static final StatusLogger LOGGER = StatusLogger.getLogger();
-    private static final StatusConsoleListener CONSOLE_LISTENER = new StatusConsoleListener(Level.ALL);
     private static final Object KEY = ListStatusListener.class;
 
     public StatusLoggerExtension() {
@@ -51,6 +56,16 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
         // `beforeAll` methods and extensions.
         final ListStatusListenerHolder holder = new ListStatusListenerHolder(context, null);
         ExtensionContextAnchor.setAttribute(KEY, holder, context);
+        ReflectionSupport.findFields(context.getRequiredTestClass(),
+                f -> ModifierSupport.isStatic(f) && f.getType().equals(ListStatusListener.class),
+                HierarchyTraversalMode.TOP_DOWN).forEach(f -> {
+            try {
+                f.setAccessible(true);
+                f.set(null, holder.getStatusListener());
+            } catch (final ReflectiveOperationException e) {
+                throw new ExtensionContextException("Failed to inject field.", e);
+            }
+        });
     }
 
     @Override
@@ -61,12 +76,26 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
         final ListStatusListener parent = parentHolder != null ? parentHolder.getStatusListener() : null;
         final ListStatusListenerHolder holder = new ListStatusListenerHolder(context, parent);
         ExtensionContextAnchor.setAttribute(KEY, holder, context);
+        ReflectionSupport.findFields(context.getRequiredTestClass(),
+                f -> ModifierSupport.isNotStatic(f) && f.getType().equals(ListStatusListener.class),
+                HierarchyTraversalMode.TOP_DOWN).forEach(f -> {
+            try {
+                f.setAccessible(true);
+                f.set(context.getRequiredTestInstance(), holder.getStatusListener());
+            } catch (final ReflectiveOperationException e) {
+                throw new ExtensionContextException("Failed to inject field.", e);
+            }
+        });
     }
 
     @Override
     public void handleTestExecutionException(final ExtensionContext context, final Throwable throwable) throws Throwable {
-        final ListStatusListener statusListener = resolveParameter(null, context);
-        statusListener.getStatusData().forEach(CONSOLE_LISTENER::log);
+        final ListStatusListenerHolder holder = ExtensionContextAnchor.getAttribute(KEY,
+                ListStatusListenerHolder.class,
+                context);
+        if (holder != null) {
+            holder.handleException(context, throwable);
+        }
         throw throwable;
     }
 
@@ -80,11 +109,13 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
 
     private static class ListStatusListenerHolder implements CloseableResource {
 
+        private final StatusLogger statusLogger;
         private final ListStatusListener statusListener;
 
         public ListStatusListenerHolder(final ExtensionContext context, final ListStatusListener parent) {
+            this.statusLogger = StatusLogger.getLogger();
             this.statusListener = new JUnitListStatusListener(context, parent);
-            LOGGER.registerListener(statusListener);
+            statusLogger.registerListener(statusListener);
         }
 
         public ListStatusListener getStatusListener() {
@@ -93,9 +124,28 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
 
         @Override
         public void close() throws Throwable {
-            LOGGER.removeListener(statusListener);
+            statusLogger.removeListener(statusListener);
         }
 
+        public void handleException(final ExtensionContext context, final Throwable throwable) {
+            final Logger logger = new SimpleLogger("StatusLoggerExtension",
+                    Level.ALL,
+                    false,
+                    false,
+                    true,
+                    false,
+                    "HH:mm:ss.SSS",
+                    ParameterizedNoReferenceMessageFactory.INSTANCE,
+                    PropertiesUtil.getProperties(),
+                    System.err);
+            logger.error("Test {} failed.\nDumping status data:", context.getDisplayName());
+            statusListener.getStatusData().forEach(data -> {
+                logger.atLevel(data.getLevel())
+                        .withThrowable(data.getThrowable())
+                        .withLocation(data.getStackTraceElement())
+                        .log(data.getMessage());
+            });
+        }
     }
 
     private static class JUnitListStatusListener implements ListStatusListener {
