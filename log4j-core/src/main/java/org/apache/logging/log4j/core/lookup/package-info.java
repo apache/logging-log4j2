@@ -20,4 +20,7 @@
  * {@linkplain org.apache.logging.log4j.core.config.plugins.Plugin#category() plugin category}
  * {@link org.apache.logging.log4j.core.lookup.StrLookup#CATEGORY Lookup}.
  */
+@Export
 package org.apache.logging.log4j.core.lookup;
+
+import org.osgi.annotation.bundle.Export;
