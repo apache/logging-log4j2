@@ -23,6 +23,9 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
+import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
@@ -33,6 +36,7 @@ import static org.apache.logging.log4j.util.Chars.LF;
  * Captures information about all running Threads.
  */
 @AsynchronouslyFormattable
+@ServiceConsumer(value = ThreadInfoFactory.class, resolution = Resolution.OPTIONAL)
 public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     private static final long serialVersionUID = -1103400781608841088L;
     private static ThreadInfoFactory FACTORY;

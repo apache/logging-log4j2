@@ -26,6 +26,8 @@ import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -35,6 +37,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * container framework, any Log4j Providers not accessible through standard classpath scanning should
  * {@link #loadProvider(java.net.URL, ClassLoader)} a classpath accordingly.
  */
+@ServiceConsumer(value = Provider.class, resolution = Resolution.OPTIONAL)
 public final class ProviderUtil {
 
     /**
