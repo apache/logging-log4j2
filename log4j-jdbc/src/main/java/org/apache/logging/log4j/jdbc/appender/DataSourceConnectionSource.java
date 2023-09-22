@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.jdbc.appender.util.JndiUtil;
+import org.apache.logging.log4j.jdbc.appender.internal.JndiUtil;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;

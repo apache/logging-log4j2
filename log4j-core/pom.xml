@@ -35,7 +35,41 @@
     <!--
       ~ OSGi and JPMS options
       -->
-    <bnd-multi-release>true</bnd-multi-release>
+    <bnd-extra-package-options>
+      <!-- External optional dependencies -->
+      com.conversantmedia.util.concurrent;resolution:=optional;
+      com.fasterxml.jackson.*;resolution:=optional,
+      com.lmax.disruptor.*;resolution:=optional,
+      org.apache.commons.compress.*;resolution:=optional,
+      org.fusesource.jansi;resolution:=optional,
+      org.jctools.*;resolution:=optional,
+      <!-- Optional Java modules -->
+      <!-- java.management -->
+      java.lang.management;resolution:=optional,
+      javax.management.*;resolution:=optional,
+      <!-- java.sql -->
+      java.sql.*;resolution:=optional,
+      <!-- java.xml -->
+      javax.xml.*;resolution:=optional,
+      org.w3c.*;resolution:=optional,
+      org.xml.*;resolution:=optional,
+      <!-- jdk.unsupported -->
+      sun.misc;resolution:=optional
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Optional dependencies can not be transitive -->
+      com.conversantmedia.disruptor;transitive=false,
+      com.lmax.disruptor;transitive=false,
+      java.management;transitive=false,
+      java.sql;transitive=false,
+      java.xml;transitive=false,
+      jdk.unsupported;transitive=false,
+      org.fusesource.jansi;transitive=false,
+      <!-- BND 6.x does not recognize multi-release JARs. Remove when 7.x is published -->
+      com.fasterxml.jackson.core;substitute="jackson-core";transitive=false,
+      com.fasterxml.jackson.databind;substitute="jackson-databind";transitive=false,
+      com.fasterxml.jackson.dataformat.yaml;substitute="jackson-dataformat-yaml";transitive=false
+    </bnd-extra-module-options>
   </properties>
   <dependencies>
     <!-- Used for OSGi bundle support -->
@@ -141,6 +175,21 @@
   </dependencies>
   <build>
     <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
@@ -148,6 +197,7 @@
           <skipTests>true</skipTests>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 </project>

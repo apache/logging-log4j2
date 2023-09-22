@@ -18,4 +18,9 @@
 /**
  * Java annotation processor for pre-scanning Log4j 2 plugins.
  */
+@Export
+@Version("1.0.0")
 package org.apache.logging.log4j.plugin.processor;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

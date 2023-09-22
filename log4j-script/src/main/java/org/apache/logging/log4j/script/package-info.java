@@ -17,4 +17,9 @@
 /**
  * Log4j 2 Script support.
  */
+@Export
+@Version("1.0.0")
 package org.apache.logging.log4j.script;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

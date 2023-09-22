@@ -30,7 +30,14 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Kafka Documentation</docLabel>
     <projectDir>/log4j-kafka</projectDir>
-    <module.name>org.apache.logging.log4j.kafka</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- Filebased module names must be `static` -->
+      kafka.clients;substitute="kafka-clients";static=true;transitive=false
+    </bnd-extra-module-options>
   </properties>
 
   <dependencies>
@@ -84,4 +91,22 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

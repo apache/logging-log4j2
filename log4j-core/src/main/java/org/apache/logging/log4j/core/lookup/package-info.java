@@ -19,4 +19,7 @@
  * {@link org.apache.logging.log4j.core.lookup.StrLookup} plugins should use the
  * {@link org.apache.logging.log4j.core.lookup.Lookup} plugin namespace annotation.
  */
+@Export
 package org.apache.logging.log4j.core.lookup;
+
+import org.osgi.annotation.bundle.Export;

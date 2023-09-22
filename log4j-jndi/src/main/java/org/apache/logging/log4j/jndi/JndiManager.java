@@ -28,7 +28,7 @@ import javax.naming.NamingException;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.jndi.util.JndiCloser;
+import org.apache.logging.log4j.jndi.internal.JndiCloser;
 
 /**
  * Manages a JNDI {@link javax.naming.Context}.

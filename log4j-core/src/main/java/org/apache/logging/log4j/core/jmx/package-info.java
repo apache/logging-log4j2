@@ -17,4 +17,7 @@
 /**
  * Log4j 2 JMX support.
  */
+@Export
 package org.apache.logging.log4j.core.jmx;
+
+import org.osgi.annotation.bundle.Export;

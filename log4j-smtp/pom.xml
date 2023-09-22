@@ -30,7 +30,14 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j SMTP Appender Documentation</docLabel>
     <projectDir>/log4j-smtp</projectDir>
-    <module.name>org.apache.logging.log4j.smtp</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- Filebased module names must be `static` -->
+      javax.mail.api;substitute="javax.mail-api";static=true;transitive=false
+    </bnd-extra-module-options>
   </properties>
 
   <dependencies>

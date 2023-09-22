@@ -17,4 +17,7 @@
 /**
  * Log4j 2 command line tools.
  */
+@Export
 package org.apache.logging.log4j.core.tools;
+
+import org.osgi.annotation.bundle.Export;

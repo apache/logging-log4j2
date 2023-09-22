@@ -18,4 +18,9 @@
  * The JDBC Appender supports writing log events to a relational database using standard JDBC connections. You will need
  * a JDBC driver on your classpath for the database you wish to log to.
  */
+@Export
+@Version("1.0.0")
 package org.apache.logging.log4j.jdbc.appender;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

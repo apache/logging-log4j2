@@ -19,12 +19,15 @@ package org.apache.logging.log4j.core.osgi;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.LogManager;
+import org.osgi.annotation.bundle.Header;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * OSGi BundleActivator.
  */
+@Header(name = org.osgi.framework.Constants.BUNDLE_ACTIVATOR, value = "${@class}")
+@Header(name = org.osgi.framework.Constants.BUNDLE_ACTIVATIONPOLICY, value = org.osgi.framework.Constants.ACTIVATION_LAZY)
 public final class Activator implements BundleActivator {
     private final AtomicReference<BundleContext> contextRef = new AtomicReference<>();
     private OsgiBundlePostProcessor bundlePostProcessor;
