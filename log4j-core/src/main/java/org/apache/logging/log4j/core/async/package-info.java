@@ -17,4 +17,7 @@
 /**
  * Provides Asynchronous Logger classes and interfaces for low-latency logging.
  */
+@Export
 package org.apache.logging.log4j.core.async;
+
+import org.osgi.annotation.bundle.Export;

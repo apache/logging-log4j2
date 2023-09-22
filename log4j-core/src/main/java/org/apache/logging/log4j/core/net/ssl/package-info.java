@@ -17,4 +17,7 @@
 /**
  * Log4j 2 SSL support
  */
+@Export
 package org.apache.logging.log4j.core.net.ssl;
+
+import org.osgi.annotation.bundle.Export;

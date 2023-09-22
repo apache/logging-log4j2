@@ -18,4 +18,7 @@
 /**
  * Annotations for Log4j 2 plugins.
  */
+@Export
 package org.apache.logging.log4j.core.config.plugins;
+
+import org.osgi.annotation.bundle.Export;

@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderActivator;
+import org.osgi.annotation.bundle.Header;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -42,6 +43,8 @@ import org.osgi.framework.wiring.BundleWiring;
 /**
  * OSGi BundleActivator.
  */
+@Header(name = org.osgi.framework.Constants.BUNDLE_ACTIVATOR, value = "${@class}")
+@Header(name = org.osgi.framework.Constants.BUNDLE_ACTIVATIONPOLICY, value = org.osgi.framework.Constants.ACTIVATION_LAZY)
 public final class Activator extends ProviderActivator implements SynchronousBundleListener {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

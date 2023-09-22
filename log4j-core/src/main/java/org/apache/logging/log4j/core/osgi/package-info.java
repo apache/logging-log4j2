@@ -18,4 +18,7 @@
 /**
  * Collection of OSGi-specific classes for bundles.
  */
+@Export
 package org.apache.logging.log4j.core.osgi;
+
+import org.osgi.annotation.bundle.Export;

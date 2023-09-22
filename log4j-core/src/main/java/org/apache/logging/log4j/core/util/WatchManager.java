@@ -31,6 +31,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
@@ -44,6 +47,7 @@ import org.apache.logging.log4j.util.ServiceLoaderUtil;
  * @see FileWatcher
  * @see ConfigurationScheduler
  */
+@ServiceConsumer(value = WatchEventService.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
 public class WatchManager extends AbstractLifeCycle {
 
     private final class ConfigurationMonitor {

@@ -17,4 +17,7 @@
 /**
  * Classes and interfaces supporting configuration of Log4j 2 with YAML.
  */
+@Export
 package org.apache.logging.log4j.core.config.yaml;
+
+import org.osgi.annotation.bundle.Export;
