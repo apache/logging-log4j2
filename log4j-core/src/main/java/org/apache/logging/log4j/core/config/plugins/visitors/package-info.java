@@ -21,4 +21,7 @@
  * and the corresponding annotation must be annotated with
  * {@link org.apache.logging.log4j.core.config.plugins.PluginVisitorStrategy}.
  */
+@Export
 package org.apache.logging.log4j.core.config.plugins.visitors;
+
+import org.osgi.annotation.bundle.Export;

@@ -27,6 +27,7 @@ import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
+import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
@@ -39,6 +40,8 @@ import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAliases;
 import org.apache.logging.log4j.util.Strings;
@@ -48,6 +51,7 @@ import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 /**
  * Annotation processor for pre-scanning Log4j 2 plugins.
  */
+@ServiceProvider(value = Processor.class, resolution = Resolution.OPTIONAL)
 @SupportedAnnotationTypes("org.apache.logging.log4j.core.config.plugins.*")
 public class PluginProcessor extends AbstractProcessor {
 

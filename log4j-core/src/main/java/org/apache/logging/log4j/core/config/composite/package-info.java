@@ -18,4 +18,7 @@
 /**
  * Support for composite configurations.
  */
+@Export
 package org.apache.logging.log4j.core.config.composite;
+
+import org.osgi.annotation.bundle.Export;

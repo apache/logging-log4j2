@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" child.project.url.inherit.append.path="false" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -258,11 +258,11 @@
 
   </modules>
 
-  <scm>
+  <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false">
     <connection>scm:git:https://github.com/apache/logging-log4j2.git</connection>
-    <developerConnection>scm:git:https://github.com/apache/logging-log4j2.git</developerConnection>
+    <developerConnection>scm:git:git@github.com:apache/logging-log4j2.git</developerConnection>
     <tag>log4j-2.20.1-rc1</tag>
-    <url>https://github.com/apache/logging-log4j2</url>
+    <url>https://github.com/apache/logging-log4j2/tree/2.x</url>
   </scm>
 
   <issueManagement>
@@ -313,6 +313,7 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <module.name />
+    <jpms.options>org.osgi.core;static=true</jpms.options>
 
     <!-- ========================
          Site-specific properties
@@ -346,6 +347,7 @@
          Plugin version properties (in alphabetical order)
          ================================================= -->
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
+    <bnd-maven-plugin.version>6.4.0</bnd-maven-plugin.version>
     <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
     <checksum-maven-plugin.version>1.11</checksum-maven-plugin.version>
     <docker-maven-plugin.version>0.43.4</docker-maven-plugin.version>
@@ -376,6 +378,7 @@
     <angus-mail.version>2.0.2</angus-mail.version>
     <assertj.version>3.24.2</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
+    <bnd.annotation.version>6.4.1</bnd.annotation.version>
     <bsh.version>2.0b6</bsh.version>
     <cassandra.version>3.11.16</cassandra.version>
     <cassandra-driver.version>3.11.5</cassandra-driver.version>
@@ -445,6 +448,8 @@
     <oro.version>2.0.8</oro.version>
     <!-- The OSGi API version MUST always be the MINIMUM version Log4j supports: -->
     <osgi.api.version>6.0.0</osgi.api.version>
+    <osgi.annotation.version>8.1.0</osgi.annotation.version>
+    <osgi.annotation.bundle.version>2.0.0</osgi.annotation.bundle.version>
     <pax-exam.version>4.13.5</pax-exam.version>
     <plexus-utils.version>3.5.0</plexus-utils.version>
     <slf4j.version>1.7.36</slf4j.version>
@@ -601,6 +606,12 @@
         <groupId>org.awaitility</groupId>
         <artifactId>awaitility</artifactId>
         <version>${awaitility.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>biz.aQute.bnd.annotation</artifactId>
+        <version>${bnd.annotation.version}</version>
       </dependency>
 
       <dependency>
@@ -1184,6 +1195,18 @@
       </dependency>
 
       <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>osgi.annotation</artifactId>
+        <version>${osgi.annotation.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.annotation.bundle</artifactId>
+        <version>${osgi.annotation.bundle.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>oro</groupId>
         <artifactId>oro</artifactId>
         <version>${oro.version}</version>
@@ -1314,12 +1337,64 @@
     </dependencies>
   </dependencyManagement>
 
+  <dependencies>
+
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bnd.annotation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.annotation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.annotation.bundle</artifactId>
+      <version>${osgi.annotation.bundle.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.component.annotations</artifactId>
+      <version>1.5.1</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
   <build>
 
     <defaultGoal>clean verify</defaultGoal>
 
     <pluginManagement>
       <plugins>
+
+        <plugin>
+          <groupId>biz.aQute.bnd</groupId>
+          <artifactId>bnd-maven-plugin</artifactId>
+          <version>6.4.0</version>
+          <extensions>true</extensions>
+          <configuration>
+            <bnd><![CDATA[maven-symbolicname: org.apache.logging.$[subst;$[project.artifactId];-;.]
+              Bundle-SymbolicName: $[maven-symbolicname]
+              -fixupmessages: "Classes found in the wrong directory";restrict:=error;is:=warning
+              -jpms-module-info: $[maven-symbolicname];access=0
+              -jpms-module-info-options: $[jpms.options]
+              -jpms-multi-release: true]]></bnd>
+          </configuration>
+          <executions>
+            <execution>
+              <id>default-jar</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
 
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -1357,22 +1432,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-artifact-plugin</artifactId>
           <version>${maven-artifact-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <version>${maven-bundle-plugin.version}</version>
-          <extensions>true</extensions>
-          <inherited>true</inherited>
-          <executions>
-            <execution>
-              <goals>
-                <goal>manifest</goal>
-              </goals>
-              <phase>process-classes</phase>
-            </execution>
-          </executions>
         </plugin>
 
         <plugin>
@@ -1624,6 +1683,10 @@
         </executions>
       </plugin>
 
+      <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-maven-plugin</artifactId>
+      </plugin>
       <!-- ███████ ████████  █████  ██████  ████████        ███████ ██ ████████ ███████
            ██         ██    ██   ██ ██   ██    ██    ██     ██      ██    ██    ██
            ███████    ██    ███████ ██████     ██           ███████ ██    ██    █████

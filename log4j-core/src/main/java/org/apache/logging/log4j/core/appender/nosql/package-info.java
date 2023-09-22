@@ -21,4 +21,7 @@
  * {@link org.apache.logging.log4j.core.appender.nosql.NoSqlConnection NoSqlConnection}, and
  * {@link org.apache.logging.log4j.core.appender.nosql.NoSqlProvider NoSqlProvider}.
  */
+@Export
 package org.apache.logging.log4j.core.appender.nosql;
+
+import org.osgi.annotation.bundle.Export;

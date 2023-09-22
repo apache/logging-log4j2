@@ -31,6 +31,39 @@
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
     <javadoc.skip>false</javadoc.skip>
+    <jpms.options>
+      <!-- OSGI is optional in JPMS -->
+      org.osgi.core;static=true,
+      <!-- BND seems to always add `java.logging` (dependency of `java.sql`) -->
+      java.logging;static=true,
+      java.sql;static=true
+    </jpms.options>
+    <Import-Package>
+      <!-- External optional dependencies -->
+      com.conversantmedia.util.concurrent;resolution:=optional;
+      com.fasterxml.jackson.*;resolution:=optional,
+      com.lmax.disruptor.*;resolution:=optional,
+      javax.activation;resolution:=optional,
+      javax.jms;version="[1.1,3)";resolution:=optional,
+      javax.mail.*;version="[1.6,2)";resolution:=optional,
+      org.apache.commons.compress.*;resolution:=optional,
+      org.apache.commons.csv;resolution:=optional,
+      org.apache.kafka.*;resolution:=optional,
+      org.codehaus.stax2;resolution:=optional,
+      org.fusesource.jansi;resolution:=optional,
+      org.jctools.*;resolution:=optional,
+      org.zeromq;resolution:=optional,
+      <!-- `java.compiler` is optional -->
+      javax.annotation.processing;resolution:=optional,
+      javax.lang.model.*;resolution:=optional,
+      javax.tools;resolution:=optional,
+      <!-- `java.sql`, which depends on `java.logging` is optional -->
+      javax.sql;resolution:=optional,
+      java.util.logging;resolution:=optional,
+      <!-- `java.naming` is optional -->
+      javax.naming;resolution:=optional,
+      *
+    </Import-Package>
   </properties>
   <dependencies>
     <dependency>
@@ -176,26 +209,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
-            <!-- TODO: exclude internal classes from export -->
-            <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
-            <Import-Package>javax.activation;version="[1.2,2)";resolution:=optional,
-              javax.jms;version="[1.1,3)";resolution:=optional,
-              javax.mail;version="[1.6,2)";resolution:=optional,
-              javax.mail.internet;version="[1.6,2)";resolution:=optional,
-              javax.mail.util;version="[1.6,2)";resolution:=optional,
-              sun.reflect;resolution:=optional,
-              *</Import-Package>
-            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-            <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
