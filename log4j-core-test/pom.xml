@@ -327,53 +327,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
-            <!-- TODO: exclude internal classes from export -->
-            <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
-            <Import-Package>sun.reflect;resolution:=optional,
-              org.apache.logging.log4j.util,
-              org.apache.logging.log4j.plugins,
-              org.apache.logging.log4j.plugins.convert,
-              org.apache.logging.log4j.plugins.processor,
-              org.apache.logging.log4j.plugins.util,
-              org.apache.logging.log4j.plugins.validation,
-              org.apache.logging.log4j.plugins.inject,
-              *</Import-Package>
-            <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-      <!-- We delete the module descriptor to prevent compiling tests as a module -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>remove-module-info</id>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-            <phase>process-classes</phase>
-            <configuration>
-              <excludeDefaultDirectories>true</excludeDefaultDirectories>
-              <filesets>
-                <fileset>
-                  <directory>${project.build.outputDirectory}</directory>
-                  <includes>
-                    <include>module-info.class</include>
-                  </includes>
-                </fileset>
-              </filesets>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <executions>
           <execution>
@@ -382,18 +335,6 @@
               <compilerArgs>
                 <arg>-ApluginPackage=org.apache.logging.log4j.core.junit</arg>
               </compilerArgs>
-            </configuration>
-          </execution>
-          <execution>
-            <id>compile-module-info</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>prepare-package</phase>
-            <configuration>
-              <compileSourceRoots>
-                <compileSourceRoot>${project.basedir}/src/main/module</compileSourceRoot>
-              </compileSourceRoots>
             </configuration>
           </execution>
         </executions>

@@ -81,22 +81,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>org.apache.logging.log4j.plugins</Bundle-SymbolicName>
-            <!-- TODO: exclude internal classes from export -->
-            <Export-Package>org.apache.logging.log4j.plugins.*</Export-Package>
-            <Import-Package>org.apache.logging.log4j,
-              org.apache.logging.log4j.status,
-              org.apache.logging.log4j.util,
-              org.osgi.framework.*</Import-Package>
-            <Bundle-Activator>org.apache.logging.log4j.plugins.osgi.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <executions>
