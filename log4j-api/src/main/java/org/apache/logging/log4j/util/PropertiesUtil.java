@@ -483,10 +483,7 @@ public final class PropertiesUtil {
             final Set<String> keys = new HashSet<>();
             sources.stream()
                    .map(PropertySource::getPropertyNames)
-                   .reduce(keys, (left, right) -> {
-                       left.addAll(right);
-                       return left;
-                   });
+                   .forEach(keys::addAll);
             // 2. Fills the property caches. Sources with higher priority values don't override the previous ones.
             keys.stream()
                 .filter(Objects::nonNull)

@@ -434,11 +434,6 @@ public class Rfc5424LayoutTest {
     public void testDiscardEmptyLoggerFields() {
         final String mdcId = "RequestContext";
 
-        Arrays.asList(
-                "[BAZ@32473 baz=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]"  +
-                        "[RequestContext@3692 bar=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]"
-        );
-
         for (final Appender appender : root.getAppenders().values()) {
             root.removeAppender(appender);
         }

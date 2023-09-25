@@ -647,6 +647,7 @@ class StackTraceStringResolverTest {
         private static final NonAsciiUtf8MethodNameContainingException INSTANCE =
                 createInstance();
 
+        @SuppressWarnings("UnicodeInCode")
         private static NonAsciiUtf8MethodNameContainingException createInstance() {
             try {
                 throwException_அஆஇฬ๘();
@@ -656,7 +657,7 @@ class StackTraceStringResolverTest {
             }
         }
 
-        @SuppressWarnings("NonAsciiCharacters")
+        @SuppressWarnings({"NonAsciiCharacters", "UnicodeInCode"})
         private static void throwException_அஆஇฬ๘() {
             throw new NonAsciiUtf8MethodNameContainingException(
                     "exception with non-ASCII UTF-8 method name");

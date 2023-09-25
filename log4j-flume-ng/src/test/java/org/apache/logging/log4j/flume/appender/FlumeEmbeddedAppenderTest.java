@@ -196,7 +196,7 @@ public class FlumeEmbeddedAppenderTest {
     }
     /* Flume 1.4.0 does not support interceptors on the embedded agent
     @Test      */
-    public void testHeaderAddedByInterceptor() {
+    private void testHeaderAddedByInterceptor() {
 
         final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
         EventLogger.logEvent(msg);
@@ -208,7 +208,7 @@ public class FlumeEmbeddedAppenderTest {
     }
 
     /* @Test */
-    public void testPerformance() throws Exception {
+    private void testPerformance() throws Exception {
         final long start = System.currentTimeMillis();
         final int count = 10000;
         for (int i = 0; i < count; ++i) {

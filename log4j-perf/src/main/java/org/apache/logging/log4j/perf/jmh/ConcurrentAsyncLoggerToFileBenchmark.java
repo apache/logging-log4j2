@@ -54,6 +54,15 @@ import org.openjdk.jmh.annotations.Warmup;
 @Measurement(iterations = 3, time = 15)
 public class ConcurrentAsyncLoggerToFileBenchmark {
 
+    private static final Map<String, String> ENQUEUE_UNSYNCHRONIZED_PROPS;
+    static {
+        final Map<String, String> map = new HashMap<>();
+        map.put("log4j2.AsyncQueueFullPolicy", "Default");
+        map.put("AsyncLogger.SynchronizeEnqueueWhenQueueFull", "false");
+        map.put("AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", "false");
+        ENQUEUE_UNSYNCHRONIZED_PROPS = Collections.unmodifiableMap(map);
+    }
+
     @Benchmark
     @Threads(32)
     @BenchmarkMode(Mode.Throughput)
@@ -100,12 +109,7 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
         @SuppressWarnings("unused") // Used by JMH
         public enum QueueFullPolicy {
             ENQUEUE(Collections.singletonMap("log4j2.AsyncQueueFullPolicy", "Default")),
-            ENQUEUE_UNSYNCHRONIZED(new HashMap<>() {{
-                put("log4j2.AsyncQueueFullPolicy", "Default");
-                put("AsyncLogger.SynchronizeEnqueueWhenQueueFull", "false");
-                put("AsyncLoggerConfig.SynchronizeEnqueueWhenQueueFull", "false");
-            }
-            }),
+            ENQUEUE_UNSYNCHRONIZED(ENQUEUE_UNSYNCHRONIZED_PROPS),
             SYNCHRONOUS(Collections.singletonMap("log4j2.AsyncQueueFullPolicy",
                     SynchronousAsyncQueueFullPolicy.class.getName()));
 
