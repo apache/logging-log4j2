@@ -69,6 +69,7 @@ public class RoutingAppenderWithJndiTest {
     }
 
     @Test
+    @SuppressWarnings("BanJNDI")
     public void routingTest() throws NamingException {
         // default route when there's no jndi resource
         StructuredDataMessage msg = new StructuredDataMessage("Test", "This is a message from unknown context", "Context");

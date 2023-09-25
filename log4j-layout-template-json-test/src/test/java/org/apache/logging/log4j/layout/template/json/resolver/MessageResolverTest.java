@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -168,10 +169,9 @@ class MessageResolverTest {
         // Create the log event.
         final int id = 0xDEADBEEF;
         final String name = "name-" + id;
-        final Object attachment = new LinkedHashMap<String, Object>() {{
-            put("id", id);
-            put("name", name);
-        }};
+        final Map<String, Object> attachment = new LinkedHashMap<>();
+        attachment.put("id", id);
+        attachment.put("name", name);
         final ObjectMessage message = new ObjectMessage(attachment);
         final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()

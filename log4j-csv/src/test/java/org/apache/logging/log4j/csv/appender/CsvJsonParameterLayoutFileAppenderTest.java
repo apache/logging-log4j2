@@ -45,7 +45,7 @@ public class CsvJsonParameterLayoutFileAppenderTest {
     @Rule
     public RuleChain rule = loggerContextRule.withCleanFilesRule(FILE_PATH);
 
-    public void testNoNulCharacters(final String message, final String expected) throws IOException {
+    private void testNoNulCharacters(final String message, final String expected) throws IOException {
         @SuppressWarnings("resource")
         final LoggerContext loggerContext = loggerContextRule.getLoggerContext();
         final Logger logger = loggerContext.getLogger("com.example");

@@ -37,6 +37,7 @@ class CharSequencePointerTest {
     }
 
     @Test
+    @SuppressWarnings("ReturnValueIgnored")
     void toString_should_fail_without_reset() {
         // noinspection ResultOfMethodCallIgnored
         assertMissingReset(pointer::toString);
