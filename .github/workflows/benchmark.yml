@@ -30,7 +30,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744   # 3.6.0
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608   # 4.1.0
 
       - name: Set up JDK 11
         uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2   # 3.12.0
@@ -75,7 +75,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744   # 3.6.0
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608   # 4.1.0
 
       - name: Download built sources
         uses: actions/download-artifact@v3
@@ -181,7 +181,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744   # 3.6.0
+        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608   # 4.1.0
         with:
           ref: gh-pages
 
