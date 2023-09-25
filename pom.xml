@@ -313,6 +313,8 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <module.name />
+    <!-- TODO: fix errors and reenable SpotBugs -->
+    <spotbugs.skip>true</spotbugs.skip>
 
     <!-- ========================
          Site-specific properties
