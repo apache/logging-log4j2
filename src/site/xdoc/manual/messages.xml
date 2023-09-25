@@ -143,7 +143,7 @@ public class MyApp {
     private static final Marker QUERY_MARKER = MarkerManager.getMarker("SQL_QUERY", SQL_MARKER);
 
     public String doQuery(String table) {
-        logger.entry(param);
+        logger.entry(table);
 
         logger.debug(QUERY_MARKER, new SQLMessage(SQLMessage.SQLType.QUERY, table));
 
