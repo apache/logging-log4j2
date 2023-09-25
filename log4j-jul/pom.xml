@@ -73,16 +73,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>org.apache.logging.log4j.jul</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>

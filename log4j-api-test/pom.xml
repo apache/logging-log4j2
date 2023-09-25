@@ -108,18 +108,6 @@
     <plugins>
 
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.api</Fragment-Host>
-            <Export-Package>org.apache.logging.log4j.*</Export-Package>
-            <Import-Package />
-          </instructions>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
