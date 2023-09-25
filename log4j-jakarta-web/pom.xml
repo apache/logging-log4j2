@@ -81,20 +81,4 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <!-- we require 5.0 minimum -->
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Import-Package>jakarta.servlet;version="[5.0,4)",*</Import-Package>
-            <Export-Package>org.apache.logging.log4j.web</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>
