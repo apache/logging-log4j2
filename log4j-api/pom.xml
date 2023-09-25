@@ -60,23 +60,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Private-Package>*.internal</Private-Package>
-            <Export-Package>!*.internal,
-              org.apache.logging.log4j.*</Export-Package>
-            <Import-Package>!*.internal,
-              sun.reflect;resolution:=optional,
-              *</Import-Package>
-            <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
-            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-            <_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <executions>
