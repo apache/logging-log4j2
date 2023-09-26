@@ -62,7 +62,7 @@ public class PluginElementFactoryResolver implements FactoryResolver {
         final Collection<String> aliases = resolvableKey.getAliases();
         return () -> {
             final Node node = instanceFactory.getInstance(Node.CURRENT_NODE);
-            LOGGER.debug("Configuring node {} element {}", node.getName(), key);
+            LOGGER.trace("Configuring node {} element {}", node.getName(), key);
             final String name = key.getName();
             final Class<?> rawType = key.getRawType();
             final Class<?> componentType = rawType.getComponentType();

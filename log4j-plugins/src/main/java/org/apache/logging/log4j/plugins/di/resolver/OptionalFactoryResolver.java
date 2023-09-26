@@ -51,7 +51,7 @@ public class OptionalFactoryResolver implements FactoryResolver {
             try {
                 return Optional.ofNullable(instanceFactory.getInstance(itemKey, aliases, dependencyChain));
             } catch (final PluginException e) {
-                StatusLogger.getLogger().debug("Error while getting instance for {} with dependencies {}",
+                StatusLogger.getLogger().trace("Error while getting instance for {} with dependencies {}",
                         itemKey, dependencyChain, e);
                 return Optional.empty();
             }

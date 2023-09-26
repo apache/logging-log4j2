@@ -62,16 +62,16 @@ public abstract class AbstractAttributeFactoryResolver<A extends Annotation> imp
             } else {
                 resolver = StringValueResolver.NOOP;
             }
-            LOGGER.debug("Configuring node {} attribute {}", node.getName(), key);
+            LOGGER.trace("Configuring node {} attribute {}", node.getName(), key);
             final String attribute = node.removeMatchingAttribute(key.getName(), resolvableKey.getAliases())
                     .map(resolver::resolve)
                     .orElse(null);
             if (attribute != null) {
-                LOGGER.debug("Configured node {} {}={}", node.getName(), key, sensitive ? "(sensitive)" : attribute);
+                LOGGER.trace("Configured node {} {}={}", node.getName(), key, sensitive ? "(sensitive)" : attribute);
                 return typeConverter.convert(attribute, null, sensitive);
             }
             final Object defaultValue = getDefaultValue(annotation, resolver, type, typeConverter);
-            LOGGER.debug("Configured node {} {}={} (default value)", node.getName(), key, defaultValue);
+            LOGGER.trace("Configured node {} {}={} (default value)", node.getName(), key, defaultValue);
             return defaultValue;
         };
     }
