@@ -21,9 +21,9 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
@@ -127,17 +127,17 @@ public class MapMessageTest {
                         Arrays.asList(true, false),
                         new BigDecimal(30),
                         Collections.singletonMap("key3.3", "val3.3")))
-                .with("key4", new LinkedHashMap<String, Object>() {{
-                    put("chars", new char[]{'a', 'b', 'c'});
-                    put("booleans", new boolean[]{true, false});
-                    put("bytes", new byte[]{1, 2});
-                    put("shorts", new short[]{3, 4});
-                    put("ints", new int[]{256, 257});
-                    put("longs", new long[]{2147483648L, 2147483649L});
-                    put("floats", new float[]{1.0F, 1.1F});
-                    put("doubles", new double[]{2.0D, 2.1D});
-                    put("objects", new Object[]{"foo", "bar"});
-                }})
+                .with("key4", Map.of(
+                    "chars", new char[]{'a', 'b', 'c'},
+                    "booleans", new boolean[]{true, false},
+                    "bytes", new byte[]{1, 2},
+                    "shorts", new short[]{3, 4},
+                    "ints", new int[]{256, 257},
+                    "longs", new long[]{2147483648L, 2147483649L},
+                    "floats", new float[]{1.0F, 1.1F},
+                    "doubles", new double[]{2.0D, 2.1D},
+                    "objects", new Object[]{"foo", "bar"}
+                ))
                 .getFormattedMessage(new String[]{"JSON"});
         final String expectedJson = ("{" +
                 "'key1':'val1'," +
