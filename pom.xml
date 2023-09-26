@@ -1316,6 +1316,29 @@
     </dependencies>
   </dependencyManagement>
 
+  <!-- Common annotations used in all the modules -->
+  <dependencies>
+
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bnd.annotation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.annotation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.annotation.bundle</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+  </dependencies>
+
   <build>
 
     <defaultGoal>clean verify</defaultGoal>
