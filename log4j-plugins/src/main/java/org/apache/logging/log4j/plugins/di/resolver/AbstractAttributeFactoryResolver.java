@@ -32,7 +32,7 @@ import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 import org.apache.logging.log4j.status.StatusLogger;
 
-public abstract class AbstractAttributeFactoryResolver<A extends Annotation> implements FactoryResolver {
+public abstract class AbstractAttributeFactoryResolver<T, A extends Annotation> implements FactoryResolver<T> {
     protected static final Logger LOGGER = StatusLogger.getLogger();
     protected final Class<A> annotationType;
 
@@ -46,12 +46,12 @@ public abstract class AbstractAttributeFactoryResolver<A extends Annotation> imp
     }
 
     @Override
-    public Supplier<?> getFactory(final ResolvableKey<?> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<T> getFactory(final ResolvableKey<T> resolvableKey, final InstanceFactory instanceFactory) {
         final InjectionPoint<?> injectionPoint = instanceFactory.getInstance(InjectionPoint.CURRENT_INJECTION_POINT);
         return () -> {
             final Key<?> key = resolvableKey.getKey();
             final Type type = key.getType();
-            final TypeConverter<?> typeConverter = instanceFactory.getTypeConverter(type);
+            final TypeConverter<T> typeConverter = instanceFactory.getTypeConverter(type);
             final AnnotatedElement element = injectionPoint.getElement();
             final A annotation = element.getAnnotation(annotationType);
             final boolean sensitive = isSensitive(annotation);
@@ -70,7 +70,7 @@ public abstract class AbstractAttributeFactoryResolver<A extends Annotation> imp
                 LOGGER.trace("Configured node {} {}={}", node.getName(), key, sensitive ? "(sensitive)" : attribute);
                 return typeConverter.convert(attribute, null, sensitive);
             }
-            final Object defaultValue = getDefaultValue(annotation, resolver, type, typeConverter);
+            final T defaultValue = getDefaultValue(annotation, resolver, type, typeConverter);
             LOGGER.trace("Configured node {} {}={} (default value)", node.getName(), key, defaultValue);
             return defaultValue;
         };
@@ -78,6 +78,6 @@ public abstract class AbstractAttributeFactoryResolver<A extends Annotation> imp
 
     protected abstract boolean isSensitive(final A annotation);
 
-    protected abstract Object getDefaultValue(final A annotation, final StringValueResolver resolver,
-                                              final Type type, final TypeConverter<?> typeConverter);
+    protected abstract T getDefaultValue(final A annotation, final StringValueResolver resolver,
+                                         final Type type, final TypeConverter<T> typeConverter);
 }

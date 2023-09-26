@@ -64,15 +64,21 @@ public class PluginAnnotationFactoryResolversPostProcessor extends FactoryResolv
     public PluginAnnotationFactoryResolversPostProcessor() {
         super(List.of(
                 new PluginNamespaceFactoryResolver(),
-                new PluginTypeFactoryResolver(),
-                new PluginMapFactoryResolver(),
-                new PluginStreamFactoryResolver(),
-                new PluginSetFactoryResolver(),
-                new PluginListFactoryResolver(),
-                new PluginOptionalFactoryResolver(),
-                new PluginElementFactoryResolver(),
-                new PluginAttributeFactoryResolver(),
-                new PluginBuilderAttributeFactoryResolver(),
+                new PluginTypeFactoryResolver<>(),
+                new PluginMapSupplierFactoryResolver<>(),
+                new PluginMapFactoryResolver<>(),
+                new PluginStreamPluginTypeFactoryResolver<>(),
+                new PluginStreamSupplierFactoryResolver<>(),
+                new PluginStreamFactoryResolver<>(),
+                new PluginSetSupplierFactoryResolver<>(),
+                new PluginSetFactoryResolver<>(),
+                new PluginListSupplierFactoryResolver<>(),
+                new PluginListFactoryResolver<>(),
+                new PluginOptionalSupplierFactoryResolver<>(),
+                new PluginOptionalFactoryResolver<>(),
+                new PluginElementFactoryResolver<>(),
+                new PluginAttributeFactoryResolver<>(),
+                new PluginBuilderAttributeFactoryResolver<>(),
                 new PluginValueFactoryResolver()
         ));
     }

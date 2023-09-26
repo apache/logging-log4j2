@@ -30,7 +30,7 @@ import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
  * Blueprint for supporting generic injection points or keys with a type {@link Supplier Supplier&lt;T&gt;} for
  * some other type {@code T}.
  */
-public class SupplierFactoryResolver implements FactoryResolver {
+public class SupplierFactoryResolver<T> implements FactoryResolver<Supplier<T>> {
     @Override
     public boolean supportsKey(final Key<?> key) {
         final Type type = key.getType();
@@ -38,8 +38,8 @@ public class SupplierFactoryResolver implements FactoryResolver {
     }
 
     @Override
-    public Supplier<?> getFactory(final ResolvableKey<?> resolvableKey, final InstanceFactory instanceFactory) {
-        final Key<Object> key = resolvableKey.getKey().getSuppliedType();
+    public Supplier<Supplier<T>> getFactory(final ResolvableKey<Supplier<T>> resolvableKey, final InstanceFactory instanceFactory) {
+        final Key<T> key = resolvableKey.getKey().getSuppliedType();
         final Collection<String> aliases = resolvableKey.getAliases();
         // dependencies ignored as this is a lazy binding
         return () -> instanceFactory.getFactory(key, aliases);

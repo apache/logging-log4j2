@@ -117,7 +117,7 @@ public interface ConfigurableInstanceFactory extends InstanceFactory {
      *
      * @param resolver factory resolver to add to this instance factory
      */
-    void registerFactoryResolver(final FactoryResolver resolver);
+    void registerFactoryResolver(final FactoryResolver<?> resolver);
 
     /**
      * Registers an instance post-processor. Instance post-processors provide hooks into the lifecycle of instance

@@ -35,7 +35,7 @@ import org.apache.logging.log4j.util.Strings;
  * values are similar to attributes but can be specified as a value node in configuration formats that make such
  * a distinction like XML.
  */
-public class PluginValueFactoryResolver implements FactoryResolver {
+public class PluginValueFactoryResolver implements FactoryResolver<String> {
     private final Class<? extends Annotation> annotationType;
 
     public PluginValueFactoryResolver() {
@@ -52,7 +52,7 @@ public class PluginValueFactoryResolver implements FactoryResolver {
     }
 
     @Override
-    public Supplier<?> getFactory(final ResolvableKey<?> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<String> getFactory(final ResolvableKey<String> resolvableKey, final InstanceFactory instanceFactory) {
         return () -> {
             final Node node = instanceFactory.getInstance(Node.CURRENT_NODE);
             final String name = resolvableKey.getKey().getName();

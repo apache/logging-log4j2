@@ -28,6 +28,6 @@ import org.apache.logging.log4j.plugins.di.spi.FactoryResolversPostProcessor;
 @Ordered(1000)
 public class GenericFactoryResolversPostProcessor extends FactoryResolversPostProcessor {
     public GenericFactoryResolversPostProcessor() {
-        super(List.of(new OptionalFactoryResolver(), new SupplierFactoryResolver()));
+        super(List.of(new OptionalFactoryResolver<>(), new SupplierFactoryResolver<>()));
     }
 }

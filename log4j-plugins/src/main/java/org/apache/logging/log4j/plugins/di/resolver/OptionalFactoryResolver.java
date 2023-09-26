@@ -31,7 +31,7 @@ import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.status.StatusLogger;
 
-public class OptionalFactoryResolver implements FactoryResolver {
+public class OptionalFactoryResolver<T> implements FactoryResolver<Optional<T>> {
     @Override
     public boolean supportsKey(final Key<?> key) {
         final Type type = key.getType();
@@ -39,9 +39,9 @@ public class OptionalFactoryResolver implements FactoryResolver {
     }
 
     @Override
-    public Supplier<?> getFactory(final ResolvableKey<?> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<Optional<T>> getFactory(final ResolvableKey<Optional<T>> resolvableKey, final InstanceFactory instanceFactory) {
         final Key<?> key = resolvableKey.getKey();
-        final Key<?> itemKey = key.getParameterizedTypeArgument(0);
+        final Key<T> itemKey = key.getParameterizedTypeArgument(0);
         final Collection<String> aliases = resolvableKey.getAliases();
         final DependencyChain dependencyChain = resolvableKey.getDependencyChain();
         if (itemKey == null) {

@@ -26,14 +26,14 @@ import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 
 @SuppressWarnings("deprecation")
-public class LegacyPluginNodeFactoryResolver implements FactoryResolver {
+public class LegacyPluginNodeFactoryResolver implements FactoryResolver<Node> {
     @Override
     public boolean supportsKey(final Key<?> key) {
         return key.getQualifierType() == PluginNode.class;
     }
 
     @Override
-    public Supplier<?> getFactory(final ResolvableKey<?> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<Node> getFactory(final ResolvableKey<Node> resolvableKey, final InstanceFactory instanceFactory) {
         return instanceFactory.getFactory(Node.CURRENT_NODE);
     }
 }

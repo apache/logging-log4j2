@@ -28,14 +28,14 @@ import org.apache.logging.log4j.plugins.model.PluginRegistry;
 /**
  * Factory resolver for {@link PluginNamespace}. Keys must have a namespace defined.
  */
-public class PluginNamespaceFactoryResolver implements FactoryResolver {
+public class PluginNamespaceFactoryResolver implements FactoryResolver<PluginNamespace> {
     @Override
     public boolean supportsKey(final Key<?> key) {
         return key.getRawType() == PluginNamespace.class && !key.getNamespace().isEmpty();
     }
 
     @Override
-    public Supplier<?> getFactory(final ResolvableKey<?> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<PluginNamespace> getFactory(final ResolvableKey<PluginNamespace> resolvableKey, final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.getKey().getNamespace();
         return () -> instanceFactory.getInstance(PluginRegistry.class).getNamespace(namespace);
     }

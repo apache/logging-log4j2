@@ -25,7 +25,7 @@ import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 /**
  * Factory resolver for {@link PluginBuilderAttribute}-annotated keys. This injects a plugin configuration option.
  */
-public class PluginBuilderAttributeFactoryResolver extends AbstractAttributeFactoryResolver<PluginBuilderAttribute> {
+public class PluginBuilderAttributeFactoryResolver<T> extends AbstractAttributeFactoryResolver<T, PluginBuilderAttribute> {
     public PluginBuilderAttributeFactoryResolver() {
         super(PluginBuilderAttribute.class);
     }
@@ -36,8 +36,8 @@ public class PluginBuilderAttributeFactoryResolver extends AbstractAttributeFact
     }
 
     @Override
-    protected Object getDefaultValue(final PluginBuilderAttribute annotation, final StringValueResolver resolver,
-                                     final Type type, final TypeConverter<?> typeConverter) {
+    protected T getDefaultValue(final PluginBuilderAttribute annotation, final StringValueResolver resolver,
+                                final Type type, final TypeConverter<T> typeConverter) {
         return null;
     }
 }

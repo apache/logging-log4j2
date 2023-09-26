@@ -24,24 +24,26 @@ import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.NotInjectableException;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.plugins.model.PluginType;
+import org.apache.logging.log4j.util.Cast;
 
 /**
  * Factory resolver for {@link PluginType}. Keys must have a namespace defined as default namespace plugins are
  * not indexed and therefore have no plugin type metadata.
  */
-public class PluginTypeFactoryResolver extends AbstractPluginFactoryResolver {
+public class PluginTypeFactoryResolver<T> extends AbstractPluginFactoryResolver<PluginType<T>> {
     @Override
     protected boolean supportsType(final Type rawType, final Type... typeArguments) {
         return rawType == PluginType.class && typeArguments.length == 1;
     }
 
     @Override
-    public Supplier<?> getFactory(final ResolvableKey<?> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<PluginType<T>> getFactory(final ResolvableKey<PluginType<T>> resolvableKey, final InstanceFactory instanceFactory) {
         final ParameterizedType type = (ParameterizedType) resolvableKey.getType();
         final String namespace = resolvableKey.getNamespace();
         final Type requestedType = type.getActualTypeArguments()[0];
-        return () -> Plugins.streamPluginTypesMatching(instanceFactory, namespace, requestedType)
+        return () -> Plugins.<T>streamPluginTypesMatching(instanceFactory, namespace, requestedType)
                 .findFirst()
+                .map(Cast::<PluginType<T>>cast)
                 .orElseThrow(() -> new NotInjectableException(resolvableKey));
     }
 }

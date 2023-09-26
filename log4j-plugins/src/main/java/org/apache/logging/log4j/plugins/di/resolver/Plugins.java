@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.plugins.di.resolver;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Comparator;
 import java.util.function.Supplier;
@@ -28,6 +27,7 @@ import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.plugins.util.OrderedComparator;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
+import org.apache.logging.log4j.util.Cast;
 
 class Plugins {
 
@@ -38,35 +38,24 @@ class Plugins {
                 .get();
     }
 
-    static Stream<PluginType<?>> streamPluginTypesMatching(final InstanceFactory instanceFactory,
+    static <T> Stream<? extends PluginType<? extends T>> streamPluginTypesMatching(final InstanceFactory instanceFactory,
                                                            final String namespace, final Type type) {
         return instanceFactory.getInstance(Key.forClass(PluginNamespace.class).withNamespace(namespace))
                 .stream()
                 .filter(pluginType -> TypeUtil.isAssignable(type, pluginType.getPluginClass()))
-                .sorted(Comparator.comparing(PluginType::getPluginClass, OrderedComparator.INSTANCE));
+                .sorted(Comparator.comparing(PluginType::getPluginClass, OrderedComparator.INSTANCE))
+                .map(Cast::cast);
     }
 
-    static Stream<?> streamPluginsMatching(final InstanceFactory instanceFactory,
-                                           final String namespace, final Type type) {
-        if (type instanceof ParameterizedType) {
-            final ParameterizedType parameterizedType = (ParameterizedType) type;
-            if (parameterizedType.getRawType() == Supplier.class) {
-                final Type suppliedType = parameterizedType.getActualTypeArguments()[0];
-                return streamPluginFactoriesMatching(instanceFactory, namespace, suppliedType);
-            }
-        }
-        return streamPluginInstancesMatching(instanceFactory, namespace, type);
-    }
-
-    private static Stream<Supplier<?>> streamPluginFactoriesMatching(final InstanceFactory instanceFactory,
+    static <T> Stream<? extends Supplier<? extends T>> streamPluginFactoriesMatching(final InstanceFactory instanceFactory,
                                                                      final String namespace, final Type type) {
-        return streamPluginTypesMatching(instanceFactory, namespace, type)
+        return Plugins.<T>streamPluginTypesMatching(instanceFactory, namespace, type)
                 .map(pluginType -> instanceFactory.getFactory(pluginKey(pluginType)));
     }
 
-    private static Stream<?> streamPluginInstancesMatching(final InstanceFactory instanceFactory,
+    static <T> Stream<? extends T> streamPluginInstancesMatching(final InstanceFactory instanceFactory,
                                                            final String namespace, final Type type) {
-        return streamPluginTypesMatching(instanceFactory, namespace, type)
+        return Plugins.<T>streamPluginTypesMatching(instanceFactory, namespace, type)
                 .map(pluginType -> instanceFactory.getInstance(pluginKey(pluginType)));
     }
 }

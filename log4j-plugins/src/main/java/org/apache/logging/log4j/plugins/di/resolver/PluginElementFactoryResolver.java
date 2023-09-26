@@ -34,11 +34,12 @@ import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Cast;
 
 /**
  * Factory resolver for {@link PluginElement}-annotated keys. This injects configurable child plugin instances.
  */
-public class PluginElementFactoryResolver implements FactoryResolver {
+public class PluginElementFactoryResolver<T> implements FactoryResolver<T> {
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Class<? extends Annotation> annotationType;
@@ -57,7 +58,7 @@ public class PluginElementFactoryResolver implements FactoryResolver {
     }
 
     @Override
-    public Supplier<?> getFactory(final ResolvableKey<?> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<T> getFactory(final ResolvableKey<T> resolvableKey, final InstanceFactory instanceFactory) {
         final Key<?> key = resolvableKey.getKey();
         final Collection<String> aliases = resolvableKey.getAliases();
         return () -> {
@@ -72,7 +73,7 @@ public class PluginElementFactoryResolver implements FactoryResolver {
         };
     }
 
-    private static Object findChildElements(
+    private static <T> T findChildElements(
             final Node node, final String name, final Collection<String> aliases, final Class<?> componentType) {
         final Iterator<Node> iterator = node.getChildren().iterator();
         final List<Object> values = new ArrayList<>();
@@ -87,7 +88,7 @@ public class PluginElementFactoryResolver implements FactoryResolver {
                 }
                 iterator.remove();
                 if (value.getClass().isArray()) {
-                    return value;
+                    return Cast.cast(value);
                 }
                 values.add(value);
             }
@@ -97,10 +98,10 @@ public class PluginElementFactoryResolver implements FactoryResolver {
         for (int i = 0; i < size; i++) {
             Array.set(array, i, values.get(i));
         }
-        return array;
+        return Cast.cast(array);
     }
 
-    private static Object findChildElement(
+    private static <T> T findChildElement(
             final Node node, final String name, final Collection<String> aliases, final Class<?> targetType) {
         final List<Node> children = node.getChildren();
         final Iterator<Node> iterator = children.iterator();

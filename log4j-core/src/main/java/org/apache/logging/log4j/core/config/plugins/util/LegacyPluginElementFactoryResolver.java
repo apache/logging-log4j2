@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core.config.plugins.util;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.di.resolver.PluginElementFactoryResolver;
 
-public class LegacyPluginElementFactoryResolver extends PluginElementFactoryResolver {
+public class LegacyPluginElementFactoryResolver<T> extends PluginElementFactoryResolver<T> {
     @SuppressWarnings("deprecation")
     public LegacyPluginElementFactoryResolver() {
         super(PluginElement.class);

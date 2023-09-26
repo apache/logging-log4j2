@@ -25,7 +25,7 @@ import org.apache.logging.log4j.plugins.di.Key;
  * Strategy for resolving factories from existing factories. This is useful for supporting plugin system
  * dependency injection such as configuration attributes, trees of plugin objects, and other conveniences.
  */
-public interface FactoryResolver {
+public interface FactoryResolver<T> {
     /**
      * Checks if this resolver supports the provided key. If this returns {@code true}, then the factory
      * returned by {@link #getFactory(ResolvableKey, InstanceFactory)} will be used to create a binding
@@ -45,5 +45,5 @@ public interface FactoryResolver {
      * @param instanceFactory the existing instance factory to use for composing bindings
      * @return a factory for instances described by the provided key
      */
-    Supplier<?> getFactory(final ResolvableKey<?> resolvableKey, final InstanceFactory instanceFactory);
+    Supplier<T> getFactory(final ResolvableKey<T> resolvableKey, final InstanceFactory instanceFactory);
 }

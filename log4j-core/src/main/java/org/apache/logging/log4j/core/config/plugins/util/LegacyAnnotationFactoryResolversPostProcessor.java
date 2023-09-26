@@ -28,9 +28,9 @@ import org.apache.logging.log4j.plugins.di.spi.FactoryResolversPostProcessor;
 public class LegacyAnnotationFactoryResolversPostProcessor extends FactoryResolversPostProcessor {
     public LegacyAnnotationFactoryResolversPostProcessor() {
         super(List.of(
-                new LegacyPluginElementFactoryResolver(),
-                new LegacyPluginAttributeFactoryResolver(),
-                new LegacyPluginBuilderAttributeFactoryResolver(),
+                new LegacyPluginElementFactoryResolver<>(),
+                new LegacyPluginAttributeFactoryResolver<>(),
+                new LegacyPluginBuilderAttributeFactoryResolver<>(),
                 new LegacyPluginValueFactoryResolver(),
                 new LegacyPluginNodeFactoryResolver(),
                 new PluginConfigurationFactoryResolver(),

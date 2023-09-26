@@ -24,7 +24,7 @@ import org.apache.logging.log4j.plugins.di.resolver.AbstractAttributeFactoryReso
 import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 
 @SuppressWarnings("deprecation")
-public class LegacyPluginBuilderAttributeFactoryResolver extends AbstractAttributeFactoryResolver<PluginBuilderAttribute> {
+public class LegacyPluginBuilderAttributeFactoryResolver<T> extends AbstractAttributeFactoryResolver<T, PluginBuilderAttribute> {
     public LegacyPluginBuilderAttributeFactoryResolver() {
         super(PluginBuilderAttribute.class);
     }
@@ -35,8 +35,8 @@ public class LegacyPluginBuilderAttributeFactoryResolver extends AbstractAttribu
     }
 
     @Override
-    protected Object getDefaultValue(final PluginBuilderAttribute annotation, final StringValueResolver resolver,
-                                     final Type type, final TypeConverter<?> typeConverter) {
+    protected T getDefaultValue(final PluginBuilderAttribute annotation, final StringValueResolver resolver,
+                                final Type type, final TypeConverter<T> typeConverter) {
         return null;
     }
 }

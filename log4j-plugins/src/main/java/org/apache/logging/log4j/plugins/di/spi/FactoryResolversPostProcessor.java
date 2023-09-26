@@ -27,9 +27,9 @@ import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
  * @see FactoryResolver
  */
 public abstract class FactoryResolversPostProcessor implements ConfigurableInstanceFactoryPostProcessor {
-    private final List<FactoryResolver> factoryResolvers;
+    private final List<FactoryResolver<?>> factoryResolvers;
 
-    protected FactoryResolversPostProcessor(final List<FactoryResolver> factoryResolvers) {
+    protected FactoryResolversPostProcessor(final List<FactoryResolver<?>> factoryResolvers) {
         this.factoryResolvers = factoryResolvers;
     }
 

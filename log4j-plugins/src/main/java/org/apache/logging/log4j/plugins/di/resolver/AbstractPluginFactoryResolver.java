@@ -22,7 +22,7 @@ import java.lang.reflect.Type;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
 
-public abstract class AbstractPluginFactoryResolver implements FactoryResolver {
+public abstract class AbstractPluginFactoryResolver<T> implements FactoryResolver<T> {
     @Override
     public boolean supportsKey(final Key<?> key) {
         if (key.getNamespace().isEmpty()) {

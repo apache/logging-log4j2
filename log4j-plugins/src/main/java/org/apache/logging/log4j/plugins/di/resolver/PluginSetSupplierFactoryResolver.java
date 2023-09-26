@@ -18,29 +18,35 @@ package org.apache.logging.log4j.plugins.di.resolver;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Optional;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.plugins.di.InstanceFactory;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
+import org.apache.logging.log4j.plugins.util.TypeUtil;
 
-/**
- * Factory resolver for {@code Optional<T>} plugin instances.
- */
-public class PluginOptionalFactoryResolver<T>
-        extends AbstractPluginFactoryResolver<Optional<? extends T>> {
+public class PluginSetSupplierFactoryResolver<T>
+        extends AbstractPluginFactoryResolver<Set<? extends Supplier<? extends T>>> {
     @Override
     protected boolean supportsType(final Type rawType, final Type... typeArguments) {
-        return Optional.class == rawType;
+        final Type typeArgument = typeArguments[0];
+        return TypeUtil.isAssignable(rawType, LinkedHashSet.class) &&
+                TypeUtil.isAssignable(Supplier.class, typeArgument) &&
+                typeArgument instanceof ParameterizedType &&
+                ((ParameterizedType) typeArgument).getActualTypeArguments().length == 1;
     }
 
     @Override
-    public Supplier<Optional<? extends T>> getFactory(
-            final ResolvableKey<Optional<? extends T>> resolvableKey,
+    public Supplier<Set<? extends Supplier<? extends T>>> getFactory(
+            final ResolvableKey<Set<? extends Supplier<? extends T>>> resolvableKey,
             final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.getNamespace();
         final ParameterizedType containerType = (ParameterizedType) resolvableKey.getType();
-        final Type componentType = containerType.getActualTypeArguments()[0];
-        return () -> Plugins.<T>streamPluginInstancesMatching(instanceFactory, namespace, componentType).findFirst();
+        final ParameterizedType supplierType = (ParameterizedType) containerType.getActualTypeArguments()[0];
+        final Type componentType = supplierType.getActualTypeArguments()[0];
+        return () -> Plugins.<T>streamPluginFactoriesMatching(instanceFactory, namespace, componentType)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }

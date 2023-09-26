@@ -19,6 +19,7 @@ package org.apache.logging.log4j.plugins.di.resolver;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -30,18 +31,20 @@ import org.apache.logging.log4j.plugins.util.TypeUtil;
  * Factory resolver for {@code List<T>} of plugin instances or factories within a namespace.
  * Value types can be {@code Supplier<T>} to inject plugin factories instead of plugin instances.
  */
-public class PluginListFactoryResolver extends AbstractPluginFactoryResolver {
+public class PluginListFactoryResolver<T> extends AbstractPluginFactoryResolver<List<? extends T>> {
     @Override
     protected boolean supportsType(final Type rawType, final Type... typeArguments) {
         return TypeUtil.isAssignable(rawType, ArrayList.class);
     }
 
     @Override
-    public Supplier<?> getFactory(final ResolvableKey<?> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<List<? extends T>> getFactory(
+            final ResolvableKey<List<? extends T>> resolvableKey,
+            final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.getNamespace();
         final ParameterizedType containerType = (ParameterizedType) resolvableKey.getType();
         final Type componentType = containerType.getActualTypeArguments()[0];
-        return () -> Plugins.streamPluginsMatching(instanceFactory, namespace, componentType)
+        return () -> Plugins.<T>streamPluginInstancesMatching(instanceFactory, namespace, componentType)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 }

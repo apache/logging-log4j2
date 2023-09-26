@@ -25,14 +25,16 @@ import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
 import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 
-public class PluginLoggerContextFactoryResolver implements FactoryResolver {
+public class PluginLoggerContextFactoryResolver implements FactoryResolver<LoggerContext> {
     @Override
     public boolean supportsKey(final Key<?> key) {
         return key.getQualifierType() == PluginLoggerContext.class;
     }
 
     @Override
-    public Supplier<?> getFactory(final ResolvableKey<?> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<LoggerContext> getFactory(
+            final ResolvableKey<LoggerContext> resolvableKey,
+            final InstanceFactory instanceFactory) {
         return instanceFactory.getFactory(LoggerContext.KEY);
     }
 }

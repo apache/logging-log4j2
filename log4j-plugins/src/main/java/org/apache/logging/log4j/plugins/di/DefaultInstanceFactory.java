@@ -66,7 +66,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
 
     private final BindingMap bindings;
     private final HierarchicalMap<Class<? extends Annotation>, Scope> scopes;
-    private final List<FactoryResolver> factoryResolvers;
+    private final List<FactoryResolver<?>> factoryResolvers;
     private final SortedSet<InstancePostProcessor> instancePostProcessors = new ConcurrentSkipListSet<>(
             Comparator.comparing(InstancePostProcessor::getClass, OrderedComparator.INSTANCE));
     private ReflectionAgent agent = object -> object.setAccessible(true);
@@ -87,7 +87,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
 
     private DefaultInstanceFactory(final BindingMap bindings,
                                    final HierarchicalMap<Class<? extends Annotation>, Scope> scopes,
-                                   final List<FactoryResolver> factoryResolvers,
+                                   final List<FactoryResolver<?>> factoryResolvers,
                                    final Collection<InstancePostProcessor> instancePostProcessors) {
         this.bindings = bindings;
         this.scopes = scopes;
@@ -120,7 +120,8 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
         return factoryResolvers.stream()
                 .filter(resolver -> resolver.supportsKey(resolvableKey.getKey()))
                 .findFirst()
-                .map(resolver -> Cast.cast(resolver.getFactory(resolvableKey, this)));
+                .map(Cast::<FactoryResolver<T>>cast)
+                .map(resolver -> resolver.getFactory(resolvableKey, this));
     }
 
     protected <T> Supplier<T> createDefaultFactory(final ResolvableKey<T> resolvableKey) {
@@ -315,7 +316,7 @@ public class DefaultInstanceFactory implements ConfigurableInstanceFactory {
     }
 
     @Override
-    public void registerFactoryResolver(final FactoryResolver resolver) {
+    public void registerFactoryResolver(final FactoryResolver<?> resolver) {
         factoryResolvers.add(resolver);
     }
 

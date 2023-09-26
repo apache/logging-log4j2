@@ -23,13 +23,14 @@ import java.util.function.Function;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
 import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Strings;
 
 /**
  * Factory resolver for {@link PluginAttribute}-annotated keys. This injects configuration parameters to a
  * configurable plugin.
  */
-public class PluginAttributeFactoryResolver extends AbstractAttributeFactoryResolver<PluginAttribute> {
+public class PluginAttributeFactoryResolver<T> extends AbstractAttributeFactoryResolver<T, PluginAttribute> {
     private static final Map<Type, Function<PluginAttribute, ?>> DEFAULT_VALUE_EXTRACTORS = Map.ofEntries(
             Map.entry(int.class, PluginAttribute::defaultInt),
             Map.entry(Integer.class, PluginAttribute::defaultInt),
@@ -60,9 +61,9 @@ public class PluginAttributeFactoryResolver extends AbstractAttributeFactoryReso
     }
 
     @Override
-    protected Object getDefaultValue(final PluginAttribute annotation, final StringValueResolver resolver,
-                                     final Type type, final TypeConverter<?> typeConverter) {
-        final Function<PluginAttribute, ?> extractor = DEFAULT_VALUE_EXTRACTORS.get(type);
+    protected T getDefaultValue(final PluginAttribute annotation, final StringValueResolver resolver,
+                                final Type type, final TypeConverter<T> typeConverter) {
+        final Function<PluginAttribute, T> extractor = Cast.cast(DEFAULT_VALUE_EXTRACTORS.get(type));
         if (extractor != null) {
             return extractor.apply(annotation);
         }

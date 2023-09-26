@@ -19,6 +19,7 @@ package org.apache.logging.log4j.plugins.di.resolver;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -30,18 +31,20 @@ import org.apache.logging.log4j.plugins.util.TypeUtil;
  * Factory resolver for {@code Set<T>} of plugin instances or factories within a namespace.
  * Value types can be {@code Supplier<T>} to inject plugin factories instead of plugin instances.
  */
-public class PluginSetFactoryResolver extends AbstractPluginFactoryResolver {
+public class PluginSetFactoryResolver<T> extends AbstractPluginFactoryResolver<Set<? extends T>> {
     @Override
     protected boolean supportsType(final Type rawType, final Type... typeArguments) {
         return TypeUtil.isAssignable(rawType, LinkedHashSet.class);
     }
 
     @Override
-    public Supplier<?> getFactory(final ResolvableKey<?> resolvableKey, final InstanceFactory instanceFactory) {
+    public Supplier<Set<? extends T>> getFactory(
+            final ResolvableKey<Set<? extends T>> resolvableKey,
+            final InstanceFactory instanceFactory) {
         final String namespace = resolvableKey.getNamespace();
         final ParameterizedType containerType = (ParameterizedType) resolvableKey.getType();
         final Type componentType = containerType.getActualTypeArguments()[0];
-        return () -> Plugins.streamPluginsMatching(instanceFactory, namespace, componentType)
+        return () -> Plugins.<T>streamPluginInstancesMatching(instanceFactory, namespace, componentType)
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }
