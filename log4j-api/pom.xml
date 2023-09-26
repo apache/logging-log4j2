@@ -35,7 +35,11 @@
     <!--
       ~ OSGi and JPMS options
       -->
-    <bnd-multi-release>true</bnd-multi-release>
+    <bnd-module-name>org.apache.logging.log4j</bnd-module-name>
+    <bnd-extra-module-options>
+      <!-- Used in StringBuilders through reflection -->
+      java.sql;static=true
+    </bnd-extra-module-options>
   </properties>
   <dependencies>
     <dependency>

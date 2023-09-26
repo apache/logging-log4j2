@@ -18,4 +18,7 @@
  * Internal interfaces and classes to be used by authors of logging implementations or for internal use by
  * API classes.
  */
+@Export
 package org.apache.logging.log4j.spi;
+
+import org.osgi.annotation.bundle.Export;

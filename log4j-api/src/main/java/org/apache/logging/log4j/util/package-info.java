@@ -18,4 +18,7 @@
 /**
  * Utility APIs used elsewhere in Log4j API.
  */
+@Export
 package org.apache.logging.log4j.util;
+
+import org.osgi.annotation.bundle.Export;

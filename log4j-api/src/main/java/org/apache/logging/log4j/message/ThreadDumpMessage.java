@@ -20,6 +20,10 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
+import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.ServiceRegistry;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -29,6 +33,7 @@ import org.apache.logging.log4j.util.Strings;
  * Captures information about all running Threads.
  */
 @AsynchronouslyFormattable
+@ServiceConsumer(value = ThreadInfoFactory.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.SINGLE)
 public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     private static final Lazy<ThreadInfoFactory> FACTORY = Lazy.lazy(() -> {
         final var services = ServiceRegistry.getInstance()

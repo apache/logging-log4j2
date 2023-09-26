@@ -25,6 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
+
 /**
  * PropertySource backed by the current system properties. Other than having a
  * higher priority over normal properties, this follows the same rules as
@@ -32,6 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @since 2.10.0
  */
+@ServiceProvider(value = PropertySource.class, resolution = Resolution.OPTIONAL)
 public class SystemPropertiesPropertySource extends ContextAwarePropertySource implements PropertySource {
 
     private static final int DEFAULT_PRIORITY = 0;

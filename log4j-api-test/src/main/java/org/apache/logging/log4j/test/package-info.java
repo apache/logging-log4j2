@@ -14,11 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-
-/**
- * Public Message Types used for Log4j 2. Users may implement their own Messages.
- */
 @Export
-package org.apache.logging.log4j.message;
+@Version("2.21.0")
+package org.apache.logging.log4j.test;
 
 import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

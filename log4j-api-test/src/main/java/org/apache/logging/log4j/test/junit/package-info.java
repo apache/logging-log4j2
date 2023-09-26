@@ -14,24 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-import org.apache.logging.log4j.util.PropertySource;
-import org.apache.logging.log4j.test.junit.TestPropertySource;
-module org.apache.logging.log4j.test {
-    exports org.apache.logging.log4j.test;
-    exports org.apache.logging.log4j.test.junit;
+@Export
+@Version("2.21.0")
+package org.apache.logging.log4j.test.junit;
 
-    opens org.apache.logging.log4j.test.junit to org.junit.platform.commons;
-
-    requires transitive org.apache.logging.log4j;
-    requires static org.apache.commons.lang3;
-    requires static org.assertj.core;
-    requires static org.hamcrest;
-    requires static org.junit.jupiter.api;
-    requires static org.junit.jupiter.params;
-    requires static org.junit.platform.commons;
-    requires static org.junit.platform.launcher;
-    requires static org.junitpioneer;
-    requires static junit;
-
-    provides PropertySource with TestPropertySource;
-}
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;
