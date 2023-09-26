@@ -30,7 +30,9 @@ import org.apache.logging.log4j.util.Strings;
  * of a configuration tree. Each configuration element may have zero or more {@linkplain PluginAttribute attributes}
  * where attribute values are converted from strings into other types via {@link TypeConverter}, an optional
  * {@linkplain PluginValue value} (another type of plugin attribute which may have dedicated syntax in some configuration
- * formats such as XML), and zero or more child elements.
+ * formats such as XML), and zero or more child elements. Configurable plugins are not the only type of plugin that
+ * may be referenced in a configuration file; other plugin namespaces may define their own rules for interpreting
+ * configuration data if the node tree representation is inadequate.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.TYPE_USE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
