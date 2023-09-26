@@ -19,6 +19,9 @@ package org.apache.logging.log4j.util;
 import java.util.Collection;
 import java.util.Map;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
+
 /**
  * PropertySource implementation that uses environment variables as a source.
  * All environment variables must begin with {@code LOG4J_} so as not to
@@ -28,6 +31,7 @@ import java.util.Map;
  *
  * @since 2.10.0
  */
+@ServiceProvider(value = PropertySource.class, resolution = Resolution.OPTIONAL)
 public class EnvironmentPropertySource implements PropertySource {
 
     private static final String PREFIX = "LOG4J_";

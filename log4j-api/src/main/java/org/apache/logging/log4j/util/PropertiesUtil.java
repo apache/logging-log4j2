@@ -35,6 +35,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
+
 /**
  * <em>Consider this class private.</em>
  * <p>
@@ -48,6 +52,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
  *
  * @see PropertySource
  */
+@ServiceConsumer(value = PropertySource.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
 public final class PropertiesUtil {
 
     private static final String LOG4J_PROPERTIES_FILE_NAME = "log4j2.component.properties";

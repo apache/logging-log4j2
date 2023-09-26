@@ -26,7 +26,6 @@
       <directory>${project.build.outputDirectory}</directory>
       <outputDirectory>/classes/META-INF/versions/9</outputDirectory>
       <includes>
-        <include>module-info.class</include>
         <include>org/apache/logging/log4j/util/Base64Util.class</include>
         <include>org/apache/logging/log4j/util/ProcessIdUtil.class</include>
         <include>org/apache/logging/log4j/util/StackLocator.class</include>
