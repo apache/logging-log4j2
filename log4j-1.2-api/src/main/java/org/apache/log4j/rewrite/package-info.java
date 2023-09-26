@@ -14,10 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-/**
- * Log4j 1.x compatibility layer.
- */
 @Export
-package org.apache.log4j;
+package org.apache.log4j.rewrite;
 
 import org.osgi.annotation.bundle.Export;
