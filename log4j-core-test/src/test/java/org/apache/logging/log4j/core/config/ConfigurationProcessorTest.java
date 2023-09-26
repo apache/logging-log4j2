@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.from;
-import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
 class ConfigurationProcessorTest {
     final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
@@ -57,67 +56,83 @@ class ConfigurationProcessorTest {
     @BeforeEach
     void setUp() {
         instanceFactory.injectMembers(this);
+        assertThat(this).hasNoNullFieldsOrProperties();
         assertThat(configurablePluginType).isNotNull();
     }
 
     @Test
     void validatingPlugin() {
-        final Node alpha = new Node(null, "alpha", validatingPluginType);
-        alpha.setAttribute("name", "Alpha");
-        final Object object = configurationProcessor.processNodeTree(alpha);
+        final Node alpha = Node.newBuilder()
+                .setName("alpha")
+                .setPluginType(validatingPluginType)
+                .setAttribute("name", "Alpha")
+                .get();
+        final ValidatingPlugin object = configurationProcessor.processNodeTree(alpha);
         assertThat(object)
-                .asInstanceOf(type(ValidatingPlugin.class))
                 .returns("Alpha", from(ValidatingPlugin::getName));
     }
 
     @Test
     void validatingPluginWithGenericBuilder() {
-        final Node beta = new Node(null, "beta", validatingPluginWithGenericBuilderPluginType);
-        beta.setAttribute("name", "Beta");
-        final Object object = configurationProcessor.processNodeTree(beta);
+        final Node beta = Node.newBuilder()
+                .setName("beta")
+                .setPluginType(validatingPluginWithGenericBuilderPluginType)
+                .setAttribute("name", "Beta")
+                .get();
+        final ValidatingPluginWithGenericBuilder object = configurationProcessor.processNodeTree(beta);
         assertThat(object)
-                .asInstanceOf(type(ValidatingPluginWithGenericBuilder.class))
                 .returns("Beta", from(ValidatingPluginWithGenericBuilder::getName));
     }
 
     @Test
     void validatingPluginWithTypedBuilder() {
-        final Node gamma = new Node(null, "gamma", validatingPluginWithTypedBuilderPluginType);
-        gamma.setAttribute("name", "Gamma");
-        final Object object = configurationProcessor.processNodeTree(gamma);
+        final Node gamma = Node.newBuilder()
+                .setName("gamma")
+                .setPluginType(validatingPluginWithTypedBuilderPluginType)
+                .setAttribute("name", "Gamma")
+                .get();
+        final ValidatingPluginWithTypedBuilder object = configurationProcessor.processNodeTree(gamma);
         assertThat(object)
-                .asInstanceOf(type(ValidatingPluginWithTypedBuilder.class))
                 .returns("Gamma", from(ValidatingPluginWithTypedBuilder::getName));
     }
 
     @Test
     void pluginWithGenericSubclassFoo1Builder() {
-        final Node delta = new Node(null, "delta", pluginWithGenericSubclassFoo1BuilderPluginType);
-        delta.setAttribute("thing", "thought");
-        delta.setAttribute("foo1", "bar2");
-        final Object object = configurationProcessor.processNodeTree(delta);
+        final Node delta = Node.newBuilder()
+                .setName("delta")
+                .setPluginType(pluginWithGenericSubclassFoo1BuilderPluginType)
+                .setAttribute("thing", "thought")
+                .setAttribute("foo1", "bar2")
+                .get();
+        final PluginWithGenericSubclassFoo1Builder object = configurationProcessor.processNodeTree(delta);
         assertThat(object)
-                .asInstanceOf(type(PluginWithGenericSubclassFoo1Builder.class))
                 .returns("bar2", from(PluginWithGenericSubclassFoo1Builder::getFoo1))
                 .returns("thought", from(PluginWithGenericSubclassFoo1Builder::getThing));
     }
 
     @Test
     void configurablePlugin() {
-        final Node root = new Node(null, "root", configurablePluginType);
-        final Node alpha = new Node(root, "alpha", validatingPluginType);
-        alpha.setAttribute("name", "Alpha");
-        root.addChild(alpha);
-        final Node beta = new Node(root, "beta", validatingPluginWithGenericBuilderPluginType);
-        beta.setAttribute("name", "Beta");
-        root.addChild(beta);
-        final Node gamma = new Node(root, "gamma", validatingPluginWithTypedBuilderPluginType);
-        gamma.setAttribute("name", "Gamma");
-        root.addChild(gamma);
-        final Node delta = new Node(root, "delta", pluginWithGenericSubclassFoo1BuilderPluginType);
-        delta.setAttribute("thing", "thought");
-        delta.setAttribute("foo1", "bar2");
-        root.addChild(delta);
+        final Node root = Node.newBuilder()
+                .setName("root")
+                .setPluginType(configurablePluginType)
+                .addChild(builder -> builder
+                        .setName("alpha")
+                        .setPluginType(validatingPluginType)
+                        .setAttribute("name", "Alpha"))
+                .addChild(builder -> builder
+                        .setName("beta")
+                        .setPluginType(validatingPluginWithGenericBuilderPluginType)
+                        .setAttribute("name", "Beta"))
+                .addChild(builder -> builder
+                        .setName("gamma")
+                        .setPluginType(validatingPluginWithTypedBuilderPluginType)
+                        .setAttribute("name", "Gamma"))
+                .addChild(builder -> builder
+                        .setName("delta")
+                        .setPluginType(pluginWithGenericSubclassFoo1BuilderPluginType)
+                        .setAttribute("thing", "thought")
+                        .setAttribute("foo1", "bar2"))
+                .get();
         final ConfigurablePlugin result = configurationProcessor.processNodeTree(root);
         assertThat(result)
                 .hasNoNullFieldsOrProperties()

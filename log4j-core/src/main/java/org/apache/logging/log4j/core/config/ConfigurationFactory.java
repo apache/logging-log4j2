@@ -16,17 +16,14 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.lang.ref.WeakReference;
 import java.net.URI;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
-import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
@@ -56,7 +53,7 @@ import org.apache.logging.log4j.util.PropertyKey;
  * be called in their respective order. DefaultConfiguration is always called
  * last if no configuration has been returned.
  */
-public abstract class ConfigurationFactory extends ConfigurationBuilderFactory implements LoggerContextAware {
+public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     public ConfigurationFactory() {
         super();
@@ -128,19 +125,6 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory i
         return provider;
     }
 
-    protected StrSubstitutor substitutor;
-    protected WeakReference<LoggerContext> loggerContextRef;
-
-    @Inject
-    public void setSubstitutor(final StrSubstitutor substitutor) {
-        this.substitutor = substitutor;
-    }
-
-    @Override
-    public void setLoggerContext(final LoggerContext loggerContext) {
-        loggerContextRef = new WeakReference<>(loggerContext);
-    }
-
     protected abstract String[] getSupportedTypes();
 
     protected String getTestPrefix() {
@@ -159,7 +143,6 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory i
         return true;
     }
 
-    // TODO(ms): remove the LoggerContext parameter again and deprecate or remove old idea
     public abstract Configuration getConfiguration(final LoggerContext loggerContext, ConfigurationSource source);
 
     /**

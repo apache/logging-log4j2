@@ -121,8 +121,9 @@ public class DefaultBundle {
 
     @SingletonFactory
     @ConditionalOnMissingBinding
-    public ConfigurationFactory configurationFactory(final ConfigurableInstanceFactory instanceFactory) {
-        return new DefaultConfigurationFactory(instanceFactory);
+    public ConfigurationFactory configurationFactory(
+            final ConfigurableInstanceFactory instanceFactory, final StrSubstitutor substitutor) {
+        return new DefaultConfigurationFactory(instanceFactory, substitutor);
     }
 
     @SingletonFactory

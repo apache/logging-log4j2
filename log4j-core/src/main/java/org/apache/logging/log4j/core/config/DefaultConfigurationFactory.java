@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.Inject;
@@ -48,10 +49,12 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     private static final String OVERRIDE_PARAM = "override";
 
     private final Lazy<List<ConfigurationFactory>> configurationFactories;
+    private final StrSubstitutor substitutor;
 
     @Inject
-    public DefaultConfigurationFactory(final ConfigurableInstanceFactory instanceFactory) {
+    public DefaultConfigurationFactory(final ConfigurableInstanceFactory instanceFactory, final StrSubstitutor substitutor) {
         configurationFactories = Lazy.lazy(() -> loadConfigurationFactories(instanceFactory));
+        this.substitutor = substitutor;
     }
 
     /**
