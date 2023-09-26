@@ -14,10 +14,9 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-/**
- * Log4j 1.x compatibility layer.
- */
-@Export
-package org.apache.log4j;
+@ExportTo("org.apache.logging.log4j.core")
+@Open("org.apache.logging.log4j.core")
+package org.apache.log4j.builders;
 
-import org.osgi.annotation.bundle.Export;
+import aQute.bnd.annotation.jpms.ExportTo;
+import aQute.bnd.annotation.jpms.Open;

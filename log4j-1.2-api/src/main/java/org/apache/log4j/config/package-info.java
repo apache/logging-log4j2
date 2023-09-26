@@ -17,4 +17,9 @@
 /**
  * Log4j 1.x compatibility layer.
  */
+@ExportTo("org.apache.logging.log4j.core")
+@Open("org.apache.logging.log4j.core")
 package org.apache.log4j.config;
+
+import aQute.bnd.annotation.jpms.ExportTo;
+import aQute.bnd.annotation.jpms.Open;
