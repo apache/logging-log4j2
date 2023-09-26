@@ -40,13 +40,18 @@ public class MockTlsSyslogServer extends MockSyslogServer {
     private Thread thread;
 
     private TlsSyslogMessageFormat messageFormat = TlsSyslogMessageFormat.SYSLOG;
-    private final int loopLen;
+    private final int numberOfMessageToReceive;
 
-    public MockTlsSyslogServer(final int loopLen, final TlsSyslogMessageFormat format, final SSLServerSocket serverSocket) {
-        super(loopLen, serverSocket.getLocalPort());
+    public MockTlsSyslogServer(final int numberOfMessagesToReceive, final TlsSyslogMessageFormat format,
+            final SSLServerSocket serverSocket) {
         this.messageFormat = format;
-        this.loopLen = loopLen;
+        this.numberOfMessageToReceive = numberOfMessagesToReceive;
         this.serverSocket = serverSocket;
+    }
+
+    @Override
+    public int getLocalPort() {
+        return serverSocket.getLocalPort();
     }
 
     @Override
@@ -57,25 +62,25 @@ public class MockTlsSyslogServer extends MockSyslogServer {
                 try {
                     this.serverSocket.close();
                 } catch (final Exception e) {
-                    e.printStackTrace();
+                    LOGGER.error("The {} failed to close its socket.", getName(), e);
                 }
             }
             this.interrupt();
-        } catch (final Exception e) {
-            e.printStackTrace();
+        } catch (final SecurityException e) {
+            LOGGER.error("Shutdown of {} failed", getName(), e);
         }
         if (thread != null) {
             try {
                 thread.join(100);
-            } catch (InterruptedException ie) {
-                System.out.println("Shutdown of TLS server thread failed.");
+            } catch (final InterruptedException e) {
+                LOGGER.error("Shutdown of {} thread failed.", getName(), e);
             }
         }
     }
 
     @Override
     public void run() {
-        System.out.println("TLS Server Started");
+        LOGGER.info("{} started on port {}.", getName(), getLocalPort());
         this.thread = currentThread();
         try {
             waitForConnection();
@@ -85,7 +90,7 @@ public class MockTlsSyslogServer extends MockSyslogServer {
         } finally {
             closeSockets();
         }
-        System.out.println("TLS Server stopped");
+        LOGGER.info("{} stopped.", getName());
     }
 
     private void waitForConnection() throws IOException {
@@ -129,6 +134,7 @@ public class MockTlsSyslogServer extends MockSyslogServer {
             while (!shutdown) {
                 String message = Strings.EMPTY;
                 message = syslogReader.read();
+                LOGGER.debug("{} received a message: {}", getName(), message);
                 messageList.add(message);
                 count++;
                 if (isEndOfMessages(count)) {
@@ -144,7 +150,7 @@ public class MockTlsSyslogServer extends MockSyslogServer {
     }
 
     private boolean isEndOfMessages(final int count) {
-        return count == loopLen;
+        return count == numberOfMessageToReceive;
     }
 
     @Override

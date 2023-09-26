@@ -438,6 +438,15 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      * @param builder the builder whose fields to populate
      */
     public void initializeBuilder(final Log4jLogEvent.Builder builder) {
+        // If the data is not frozen, make a copy of it.
+        // TODO: merge with MementoLogEvent#memento
+        final StringMap oldContextData = this.contextData;
+        final StringMap contextData;
+        if (oldContextData != null && !oldContextData.isFrozen()) {
+            contextData = ContextDataFactory.createContextData(oldContextData);
+        } else {
+            contextData = oldContextData;
+        }
         builder.setContextData(contextData) //
                 .setContextStack(contextStack) //
                 .setEndOfBatch(endOfBatch) //

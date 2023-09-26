@@ -16,7 +16,8 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.io.File;
+import java.net.URI;
+import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.core.async.AsyncLoggerContextSelector;
@@ -30,18 +31,23 @@ import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 @Tag("functional")
 public class LateConfigTest {
 
-    private static final String CONFIG = "target/test-classes/log4j-test1.xml";
+    private static final String CONFIG = "/log4j-test1.xml";
     // This class will be the caller of `Log4jContextFactory`
     private static final String FQCN = Log4jContextFactory.class.getName();
+
+    @TempLoggingDir
+    private static Path loggingPath;
 
     static Stream<Log4jContextFactory> selectors() {
         final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
@@ -57,18 +63,21 @@ public class LateConfigTest {
     @ParameterizedTest(name = "reconfigure {0}")
     @MethodSource("selectors")
     public void testReconfiguration(final Log4jContextFactory factory) throws Exception {
-        LoggerContext context = factory.getContext(FQCN, null, null, false);
-        final Configuration cfg = context.getConfiguration();
-        assertNotNull(cfg, "No configuration");
-        assertTrue(cfg instanceof DefaultConfiguration, "Not set to default configuration");
-        final File file = new File(CONFIG);
-        final LoggerContext loggerContext = factory.getContext(FQCN, null, null, false, file.toURI(), null);
-        assertNotNull(loggerContext, "No Logger Context");
-        final Configuration newConfig = loggerContext.getConfiguration();
-        assertNotSame(cfg, newConfig, "Configuration not reset");
-        assertTrue(newConfig instanceof XmlConfiguration, "Reconfiguration failed");
-        context = factory.getContext(FQCN, null, null, false);
-        final Configuration sameConfig = context.getConfiguration();
-        assertSame(newConfig, sameConfig, "Configuration should not have been reset");
+        try (final LoggerContext context = factory.getContext(FQCN, null, null, false)) {
+            final Configuration defaultConfig = context.getConfiguration();
+            assertThat(defaultConfig).isInstanceOf(DefaultConfiguration.class);
+
+            final URI configLocation = LateConfigTest.class.getResource(CONFIG).toURI();
+            final LoggerContext context1 = factory.getContext(FQCN, null, null, false, configLocation, null);
+            assertThat(context1).isSameAs(context);
+            assertThat(loggingPath.resolve("test-xml.log")).exists();
+            final Configuration newConfig = context.getConfiguration();
+            assertThat(newConfig).isInstanceOf(XmlConfiguration.class);
+
+            final LoggerContext context2 = factory.getContext(FQCN, null, null, false);
+            assertThat(context2).isSameAs(context);
+            final Configuration sameConfig = context.getConfiguration();
+            assertSame(newConfig, sameConfig, "Configuration should not have been reset");
+        }
     }
 }

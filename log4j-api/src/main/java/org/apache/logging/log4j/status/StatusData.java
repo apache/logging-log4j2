@@ -139,4 +139,12 @@ public class StatusData {
         }
         return sb.toString();
     }
+
+    /**
+     * Used in tests
+     */
+    @Override
+    public String toString() {
+        return getMessage().getFormattedMessage();
+    }
 }

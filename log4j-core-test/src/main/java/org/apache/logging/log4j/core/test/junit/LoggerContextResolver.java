@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.test.junit;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -37,6 +39,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
+import org.junit.jupiter.api.extension.ExtensionContextException;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -130,13 +133,13 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         final ClassLoader classLoader = testClass.getClassLoader();
         final Map.Entry<String, Object> injectorContext = Map.entry(ConfigurableInstanceFactory.class.getName(), instanceFactory);
-        final String configLocation = source.value();
+        final String configLocation = getConfigLocation(source, extensionContext);
         final URI configUri;
         if (source.v1config()) {
             System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY.getSystemKey(), configLocation);
             configUri = null; // handled by system property
         } else {
-            configUri = configLocation.isEmpty() ? null : NetUtils.toURI(configLocation);
+            configUri = NetUtils.toURI(configLocation);
         }
         final LoggerContext context = loggerContextFactory.getContext(FQCN, classLoader, injectorContext, false, configUri, displayName);
         assertNotNull(context, () -> "No LoggerContext created for " + testClass + " and config file " + configLocation);
@@ -145,6 +148,27 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         store.put(LoggerContextAccessor.class, new ContextHolder(context, source.timeout(), source.unit()));
         return context;
     }
+
+        private static String getConfigLocation(final LoggerContextSource source,
+                                                final ExtensionContext extensionContext) {
+            final String value = source.value();
+            if (value.isEmpty()) {
+                Class<?> clazz = extensionContext.getRequiredTestClass();
+                while (clazz != null) {
+                    final URL url = clazz.getResource(clazz.getSimpleName() + ".xml");
+                    if (url != null) {
+                        try {
+                            return url.toURI().toString();
+                        } catch (URISyntaxException e) {
+                            throw new ExtensionContextException("An error occurred accessing the configuration.", e);
+                        }
+                    }
+                    clazz = clazz.getSuperclass();
+                }
+                return extensionContext.getRequiredTestClass().getName().replaceAll("[.$]", "/") + ".xml";
+            }
+            return value;
+        }
 
     private static final class ContextHolder implements Store.CloseableResource, LoggerContextAccessor {
         private final LoggerContext context;

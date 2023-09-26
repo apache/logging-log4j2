@@ -16,58 +16,20 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.concurrent.CountDownLatch;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+
 
 /**
  * Tests queue full scenarios with AsyncLoggers in configuration.
  */
-@RunWith(BlockJUnit4ClassRunner.class)
-@Category(AsyncLoggers.class)
-public class QueueFullAsyncLoggerConfigLoggingFromToStringTest2 extends QueueFullAbstractTest {
+@SetTestProperty(key = "AsyncLogger.formatMsg", value = "true")
+public class QueueFullAsyncLoggerConfigLoggingFromToStringTest2 extends QueueFullAsyncLoggerConfigLoggingFromToStringTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND.getSystemKey(), "true");
-        System.setProperty(Log4jPropertyKey.ASYNC_CONFIG_RING_BUFFER_SIZE.getSystemKey(), "128");
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        System.clearProperty(Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND.getSystemKey());
-        System.clearProperty(Log4jPropertyKey.ASYNC_CONFIG_RING_BUFFER_SIZE.getSystemKey());
-    }
-
-    @Rule
-    public LoggerContextRule context = new LoggerContextRule(
-            "log4j2-queueFullAsyncLoggerConfig.xml");
-
-    @Before
-    public void before() throws Exception {
-        blockingAppender = context.getRequiredAppender("Blocking", BlockingAppender.class);
-    }
-
-    @Test(timeout = 5000)
-    public void testLoggingFromToStringCausesOutOfOrderMessages() {
-        //TRACE = true;
-        final Logger logger = context.getLogger(this.getClass());
-
-        blockingAppender.countDownLatch = new CountDownLatch(1);
-        unlocker = new Unlocker(new CountDownLatch(129)); // count slightly different from "pure" async loggers
-        unlocker.start();
-
-        QueueFullAsyncLoggerConfigLoggingFromToStringTest.asyncLoggerConfigRecursiveTest(logger, unlocker, blockingAppender, this);
+    @Override
+    protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {
+        super.checkConfig(ctx);
+        assertFormatMessagesInBackground();
     }
 }

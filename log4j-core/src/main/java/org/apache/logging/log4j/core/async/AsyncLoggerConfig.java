@@ -112,15 +112,17 @@ public class AsyncLoggerConfig extends LoggerConfig {
             // This is the first AsnycLoggerConfig encountered by this LogEvent
             ASYNC_LOGGER_ENTERED.set(Boolean.TRUE);
             try {
-                // Detect the first time we encounter an AsyncLoggerConfig. We must log
-                // to all non-async loggers first.
-                super.log(event, LoggerConfigPredicate.SYNCHRONOUS_ONLY);
-                // Then pass the event to the background thread where
-                // all async logging is executed. It is important this
-                // happens at most once and after all synchronous loggers
-                // have been invoked, because we lose parameter references
-                // from reusable messages.
-                logToAsyncDelegate(event);
+                if (!isFiltered(event)) {
+                    // Detect the first time we encounter an AsyncLoggerConfig. We must log
+                    // to all non-async loggers first.
+                    processLogEvent(event, LoggerConfigPredicate.SYNCHRONOUS_ONLY);
+                    // Then pass the event to the background thread where
+                    // all async logging is executed. It is important this
+                    // happens at most once and after all synchronous loggers
+                    // have been invoked, because we lose parameter references
+                    // from reusable messages.
+                    logToAsyncDelegate(event);
+                }
             } finally {
                 ASYNC_LOGGER_ENTERED.set(Boolean.FALSE);
             }
@@ -140,13 +142,11 @@ public class AsyncLoggerConfig extends LoggerConfig {
     }
 
     private void logToAsyncDelegate(final LogEvent event) {
-        if (!isFiltered(event)) {
-            // Passes on the event to a separate thread that will call
-            // asyncCallAppenders(LogEvent).
-            populateLazilyInitializedFields(event);
-            if (!delegate.tryEnqueue(event, this)) {
-                handleQueueFull(event);
-            }
+        // Passes on the event to a separate thread that will call
+        // asyncCallAppenders(LogEvent).
+        populateLazilyInitializedFields(event);
+        if (!delegate.tryEnqueue(event, this)) {
+            handleQueueFull(event);
         }
     }
 
@@ -178,7 +178,8 @@ public class AsyncLoggerConfig extends LoggerConfig {
      * default {@link LoggerConfig} definitions), which will be invoked on the <b>calling thread</b>.
      */
     void logToAsyncLoggerConfigsOnCurrentThread(final LogEvent event) {
-        log(event, LoggerConfigPredicate.ASYNCHRONOUS_ONLY);
+        // skip the filter, which was already called on the logging thread
+        processLogEvent(event, LoggerConfigPredicate.ASYNCHRONOUS_ONLY);
     }
 
     private String displayName() {

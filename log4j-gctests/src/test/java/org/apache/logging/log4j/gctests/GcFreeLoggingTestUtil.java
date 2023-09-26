@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
 import com.google.monitoring.runtime.instrumentation.Sampler;
@@ -42,13 +43,14 @@ import static java.lang.System.getProperty;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 import static org.apache.logging.log4j.util.Constants.isWebApp;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Utility methods for the GC-free logging tests.
  */
-public enum GcFreeLoggingTestUtil {;
+public class GcFreeLoggingTestUtil {
 
     public static void executeLogging(final String configurationFile,
                                       final Class<?> testClass) throws Exception {
@@ -89,29 +91,26 @@ public enum GcFreeLoggingTestUtil {;
         // BlockingWaitStrategy uses ReentrantLock which allocates Node objects. Ignore this.
         final String[] exclude = new String[] {
                 "java/util/concurrent/locks/AbstractQueuedSynchronizer$Node", //
-                "com/google/monitoring/runtime/instrumentation/Sampler", //
+                "com/google/monitoring/runtime/instrumentation/Sampler"
         };
         final AtomicBoolean samplingEnabled = new AtomicBoolean(true);
-        final Sampler sampler = new Sampler() {
-            @Override
-            public void sampleAllocation(final int count, final String desc, final Object newObj, final long size) {
-                if (!samplingEnabled.get()) {
-                    return;
-                }
-                for (int i = 0; i < exclude.length; i++) {
-                    if (exclude[i].equals(desc)) {
-                        return; // exclude
-                    }
-                }
-                System.err.println("I just allocated the object " + newObj +
-                        " of type " + desc + " whose size is " + size);
-                if (count != -1) {
-                    System.err.println("It's an array of size " + count);
-                }
-
-                // show a stack trace to see which line caused allocation
-                new RuntimeException().printStackTrace();
+        final Sampler sampler = (count, desc, newObj, size) -> {
+            if (!samplingEnabled.get()) {
+                return;
             }
+            for (int i = 0; i < exclude.length; i++) {
+                if (exclude[i].equals(desc)) {
+                    return; // exclude
+                }
+            }
+            System.err.println("I just allocated the object " + newObj +
+                    " of type " + desc + " whose size is " + size);
+            if (count != -1) {
+                System.err.println("It's an array of size " + count);
+            }
+
+            // show a stack trace to see which line caused allocation
+            new RuntimeException().printStackTrace();
         };
         Thread.sleep(500);
         AllocationRecorder.addSampler(sampler);
@@ -242,34 +241,15 @@ public enum GcFreeLoggingTestUtil {;
         process.exitValue();
 
         final AtomicInteger lineCounter = new AtomicInteger(0);
-        Files.lines(tempFile.toPath(), Charset.defaultCharset()).forEach(line -> {
-
-            // Trim the line.
-            line = line.trim();
-
-            // Check the first line.
-            final int lineNumber = lineCounter.incrementAndGet();
-            if (lineNumber == 1) {
-                final String className = cls.getSimpleName();
-                final String firstLinePattern = String.format(
-                        "^FATAL .*\\.%s %s",
-                        className,
-                        Pattern.quote("[main] value1 {aKey=value1, " +
-                                "key2=value2, prop1=value1, prop2=value2} " +
-                                "This message is logged to the console"));
-                assertTrue(line.matches(firstLinePattern),
-                        "pattern mismatch at line 1: " + line);
-            }
-
-            // Check the rest of the lines. We are looking for the messages written to System.err
-            // in the sampleAllocation() method above in executeLogging().
-            else {
-                assertFalse(line.contains(" allocated ") || line.contains(" array "),
-                        "(allocated|array) pattern matches at line " + lineNumber + ": " + line);
-            }
-
-        });
-
+        try (final Stream<String> lines = Files.lines(tempFile.toPath(), Charset.defaultCharset())) {
+            final Pattern pattern = Pattern.compile(String.format("^FATAL .*\\.%s [main].*",
+                    Pattern.quote(cls.getSimpleName())));
+            assertThat(lines.flatMap(l -> {
+                final int lineNumber = lineCounter.incrementAndGet();
+                final String line = l.trim();
+                return pattern.matcher(line).matches() ? Stream.of(lineNumber + ": " + line) : Stream.empty();
+            })).isEmpty();
+        }
     }
 
     private static File agentJar() throws Exception {

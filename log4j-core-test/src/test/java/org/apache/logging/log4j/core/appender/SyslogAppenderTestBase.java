@@ -34,28 +34,29 @@ import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Priority;
 import org.apache.logging.log4j.core.test.net.mock.MockSyslogServer;
 import org.apache.logging.log4j.message.StructuredDataMessage;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+@UsingStatusListener
 public abstract class SyslogAppenderTestBase {
     protected static final String line1 =
             "TestApp - Audit [Transfer@18060 Amount=\"200.00\" FromAccount=\"123457\" ToAccount=\"123456\"]" +
                     "[RequestContext@18060 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"] Transfer Complete";
     protected LoggerContext ctx = LoggerContext.getContext();
     protected static final int DEFAULT_TIMEOUT_IN_MS = 100;
-    protected static final int PORTNUM = 8199;
     protected MockSyslogServer syslogServer;
     protected SyslogAppender appender;
     protected Logger root = ctx.getLogger("SyslogAppenderTest");
     protected List<String> sentMessages = new ArrayList<>();
     protected boolean includeNewLine = true;
 
-    @BeforeClass
+    @BeforeAll
     public static void setupClass() throws Exception {
         LoggerContext.getContext().reconfigure();
     }

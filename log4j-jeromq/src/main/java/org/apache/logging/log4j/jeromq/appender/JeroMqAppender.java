@@ -68,7 +68,7 @@ public final class JeroMqAppender extends AbstractAppender {
             final long maxMsgSize, final long rcvHwm, final long receiveBufferSize, final int receiveTimeOut,
             final long reconnectIVL, final long reconnectIVLMax, final long sendBufferSize, final int sendTimeOut,
             final long sndHWM, final int tcpKeepAlive, final long tcpKeepAliveCount, final long tcpKeepAliveIdle,
-            final long tcpKeepAliveInterval, final boolean xpubVerbose, Property[] properties) {
+            final long tcpKeepAliveInterval, final boolean xpubVerbose, final Property[] properties) {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = JeroMqManager.getJeroMqManager(name, affinity, backlog, delayAttachOnConnect, identity, ipv4Only,
             linger, maxMsgSize, rcvHwm, receiveBufferSize, receiveTimeOut, reconnectIVL, reconnectIVLMax,
@@ -173,8 +173,8 @@ public final class JeroMqAppender extends AbstractAppender {
     }
 
     // not public, handy for testing
-    byte[] recv(final int timeoutMs) {
-        return manager.recv(timeoutMs);
+    JeroMqManager getManager() {
+        return manager;
     }
 
     @Override

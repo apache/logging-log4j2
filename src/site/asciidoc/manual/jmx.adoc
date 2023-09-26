@@ -16,6 +16,7 @@
 ////
 = JMX
 Remko Popma <remkop@yahoo.com>
+Volkan Yazıcı <vy@apache.org>
 
 ++++
 <link rel="stylesheet" type="text/css" href="../css/tables.css">
@@ -89,10 +90,7 @@ of forcing a stop-the-world collection.
 [#Log4j_MBeans]
 == Log4j Instrumented Components
 
-The best way to find out which methods and attributes of the various
-Log4j components are accessible via JMX is to look at the
-link:../log4j-core/apidocs/org/apache/logging/log4j/core/jmx/package-summary.html[Javadoc]
-or by exploring directly in JConsole.
+The best way to find out which methods and attributes of the various  Log4j components are accessible via JMX is to look at the `org.apache.logging.log4j.core.jmx` package contents in the `log4j-core` artifact or by exploring directly in JConsole.
 
 The screenshot below shows the Log4j MBeans in JConsole.
 
@@ -102,111 +100,5 @@ MBeans tab]
 [#ClientGUI]
 == Client GUI
 
-Log4j includes a basic client GUI that can be used to monitor the
-StatusLogger output and to remotely modify the Log4j configuration. The
-client GUI can be run as a stand-alone application or as a JConsole
-plug-in.
-
-=== Running the Client GUI as a JConsole Plug-in
-
-To run the Log4j JMX Client GUI as a JConsole Plug-in, start JConsole
-with the following command:
-
-`$JAVA_HOME/bin/jconsole -pluginpath /path/to/log4j-api-{Log4jReleaseVersion}.jar:/path/to/log4j-core-{Log4jReleaseVersion}.jar:/path/to/log4j-jmx-gui-{Log4jReleaseVersion}.jar`
-
-or on Windows:
-
-`%JAVA_HOME%\bin\jconsole -pluginpath \path\to\log4j-api-{Log4jReleaseVersion}.jar;\path\to\log4j-core-{Log4jReleaseVersion}.jar;\path\to\log4j-jmx-gui-{Log4jReleaseVersion}.jar`
-
-If you execute the above command and connect to your application, you
-will see an extra "Log4j 2" tab in the JConsole window. This tab
-contains the client GUI, with the StatusLogger selected. The screenshot
-below shows the StatusLogger panel in JConsole.
-
-image:../images/jmx-jconsole-statuslogger.png[JConsole screenshot of the
-StatusLogger display]
-
-=== Remotely Editing the Log4j Configuration
-
-The client GUI also contains a simple editor that can be used to
-remotely change the Log4j configuration.
-
-The screenshot below shows the configuration edit panel in JConsole.
-
-image:../images/jmx-jconsole-editconfig.png[JConsole screenshot of the
-configuration file editor]
-
-The configuration edit panel provides two ways to modify the Log4j
-configuration: specifying a different configuration location URI, or
-modifying the configuration XML directly in the editor panel.
-
-If you specify a different configuration location URI and click the
-"Reconfigure from Location" button, the specified file or resource must
-exist and be readable by the application, or an error will occur and the
-configuration will not change. If an error occurred while processing the
-contents of the specified resource, Log4j will keep its original
-configuration, but the editor panel will show the contents of the file
-you specified.
-
-The text area showing the contents of the configuration file is
-editable, and you can directly modify the configuration in this editor
-panel. Clicking the "Reconfigure with XML below" button will send the
-configuration text to the remote application where it will be used to
-reconfigure Log4j on the fly. This will not overwrite any configuration
-file. Reconfiguring with text from the editor happens in memory only and
-the text is not permanently stored anywhere.
-
-[#ClientStandAlone]
-=== Running the Client GUI as a Stand-alone Application
-
-To run the Log4j JMX Client GUI as a stand-alone application, run the
-following command:
-
-`$JAVA_HOME/bin/java -cp /path/to/log4j-api-{Log4jReleaseVersion}.jar:/path/to/log4j-core-{Log4jReleaseVersion}.jar:/path/to/log4j-jmx-gui-{Log4jReleaseVersion}.jar org.apache.logging.log4j.jmx.gui.ClientGui <options>`
-
-or on Windows:
-
-`%JAVA_HOME%\bin\java -cp \path\to\log4j-api-{Log4jReleaseVersion}.jar;\path\to\log4j-core-{Log4jReleaseVersion}.jar;\path\to\log4j-jmx-gui-{Log4jReleaseVersion}.jar org.apache.logging.log4j.jmx.gui.ClientGui <options>`
-
-Where `options` are one of the following:
-
-* `<host>:<port>`
-* `service:jmx:rmi:///jndi/rmi://<host>:<port>/jmxrmi`
-* `service:jmx:rmi://<host>:<port>/jndi/rmi://<host>:<port>/jmxrmi`
-
-The port number must be the same as the portNum specified when you
-started the application you want to monitor.
-
-For example, if you started your application with these options:
-
-....
-com.sun.management.jmxremote.port=33445
-com.sun.management.jmxremote.authenticate=false
-com.sun.management.jmxremote.ssl=false
-....
-
-*(Note that this disables _all_ security so this is not recommended for
-production environments. Oracle's documentation on
-https://docs.oracle.com/javase/7/docs/technotes/guides/management/agent.html#gdenl[Remote
-Monitoring and Management] provides details on how to configure JMX more
-securely with password authentication and SSL.)*
-
-Then you can run the client with this command:
-
-`$JAVA_HOME/bin/java -cp /path/to/log4j-api-{Log4jReleaseVersion}.jar:/path/to/log4j-core-{Log4jReleaseVersion}.jar:/path/to/log4j-jmx-gui-{Log4jReleaseVersion}.jar org.apache.logging.log4j.jmx.gui.ClientGui localhost:33445`
-
-or on Windows:
-
-`%JAVA_HOME%\bin\java -cp \path\to\log4j-api-{Log4jReleaseVersion}.jar;\path\to\log4j-core-{Log4jReleaseVersion}.jar;\path\to\log4j-jmx-gui-{Log4jReleaseVersion}.jar org.apache.logging.log4j.jmx.gui.ClientGui localhost:33445`
-
-The screenshot below shows the StatusLogger panel of the client GUI when
-running as a stand-alone application.
-
-image:../images/jmx-standalone-statuslogger.png[JMX GUI screenshot of
-StatusLogger display]
-
-The screenshot below shows the configuration editor panel of the client
-GUI when running as a stand-alone application.
-
-image:../images/jmx-standalone-editconfig.png[JMX GUI screenshot of
-configuration editor]
+https://github.com/apache/logging-log4j-jmx-gui[The Apache Log4j JMX GUI] is a basic client GUI that can be used to monitor the `StatusLogger` output and to remotely modify the Log4j configuration.
+The client GUI can be run as a stand-alone application or as a JConsole plug-in.

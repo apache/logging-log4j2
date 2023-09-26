@@ -17,59 +17,46 @@
 package org.apache.logging.log4j.core.async;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.GarbageCollectionHelper;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.message.Message;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Tests queue full scenarios with pure AsyncLoggers (all loggers async).
  */
-@RunWith(BlockJUnit4ClassRunner.class)
-@Category(AsyncLoggers.class)
+@SetTestProperty(key = "LoggerContext.selector", value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
+@SetTestProperty(key = "AsyncLogger.ringBufferSize", value = "128")
+@SetTestProperty(key = "AsyncLogger.formatMsg", value = "true")
+@SetTestProperty(key = "AsyncLogger.queueFullPolicy", value="Discard")
 public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND.getKey(), "true");
-        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(), "discard");
-        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE.getKey(), "128"); // minimum ringbuffer size
+    @Override
+    protected void checkConfig(final LoggerContext ctx) {
+        assertAsyncLogger(ctx, 128);
+        assertFormatMessagesInBackground();
+        assertThat(AsyncQueueFullPolicyFactory.create()).isInstanceOf(DiscardingAsyncQueueFullPolicy.class);
     }
 
-    @AfterClass
-    public static void afterClass() {
-        System.clearProperty(Log4jPropertyKey.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND.getKey());
-        System.clearProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey());
-        System.clearProperty(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE.getKey());
-    }
-
-    @Rule
-    public LoggerContextRule context = new LoggerContextRule(
-            "log4j2-queueFull.xml", AsyncLoggerContextSelector.class);
-
-    @Before
-    public void before() throws Exception {
-        blockingAppender = context.getRequiredAppender("Blocking", BlockingAppender.class);
-    }
-
-
-    @Test(timeout = 15000)
-    public void discardedMessagesShouldBeGarbageCollected() throws InterruptedException {
-        final Logger logger = context.getLogger(this.getClass());
+    @Test
+    @Timeout(value = 15 , unit = SECONDS)
+    @LoggerContextSource
+    public void discardedMessagesShouldBeGarbageCollected(final LoggerContext ctx,
+                                                           final @Named(APPENDER_NAME) BlockingAppender blockingAppender)
+            throws InterruptedException {
+        checkConfig(ctx);
+        final Logger logger = ctx.getLogger(getClass());
 
         blockingAppender.logEvents = null;
         blockingAppender.countDownLatch = new CountDownLatch(1);
@@ -80,9 +67,12 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
         }
         blockingAppender.countDownLatch.countDown();
 
-        try (final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
-            gcHelper.run();
-            assertTrue("Parameter should have been garbage collected", garbageCollectionLatch.await(30, TimeUnit.SECONDS));
+        final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper();
+        gcHelper.run();
+        try {
+            assertTrue("Parameter should have been garbage collected", garbageCollectionLatch.await(30, SECONDS));
+        } finally {
+            gcHelper.close();
         }
     }
 
@@ -106,7 +96,7 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
 
         @Override
         public Object[] getParameters() {
-            return new Object[0];
+            return org.apache.logging.log4j.util.Constants.EMPTY_OBJECT_ARRAY;
         }
 
         @Override

@@ -15,9 +15,9 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="off">
+<Configuration status="OFF">
   <Appenders>
-    <RandomAccessFile name="AsyncLoggerAndAsyncAppenderFile" fileName="target/AsyncLoggerAndAsyncAppenderTest.log"
+    <RandomAccessFile name="AsyncLoggerAndAsyncAppenderFile" fileName="${test:logging.path}/AsyncLoggerAndAsyncAppenderTest.log"
         immediateFlush="false" append="false">
       <PatternLayout>
         <Pattern>%p %c{1.} %X{KEY} %x %X %m%ex%n</Pattern>
@@ -26,7 +26,7 @@
     <Async name="AsyncLoggerAndAsyncAppender">
       <AppenderRef ref="AsyncLoggerAndAsyncAppenderFile" />
     </Async>
-    <RandomAccessFile name="AsyncAppenderFile" fileName="target/AsyncAppenderContextTest.log"
+    <RandomAccessFile name="AsyncAppenderFile" fileName="${test:logging.path}/AsyncAppenderContextTest.log"
         immediateFlush="false" append="false">
       <PatternLayout>
         <Pattern>%p %c{1.} %X{KEY} %x %X %m%ex%n</Pattern>
@@ -35,13 +35,13 @@
     <Async name="AsyncAppender">
       <AppenderRef ref="AsyncAppenderFile" />
     </Async>
-    <RandomAccessFile name="RandomAccessFile" fileName="target/AsyncLoggerTest.log"
+    <RandomAccessFile name="RandomAccessFile" fileName="${test:logging.path}/AsyncLoggerTest.log"
         immediateFlush="false" append="false">
       <PatternLayout>
         <Pattern>%p %c{1.} %X{KEY} %x %X %m%ex%n</Pattern>
       </PatternLayout>
     </RandomAccessFile>
-    <RandomAccessFile name="SynchronousRandomAccessFile" fileName="target/SynchronousContextTest.log"
+    <RandomAccessFile name="SynchronousRandomAccessFile" fileName="${test:logging.path}/SynchronousContextTest.log"
 	    		immediateFlush="true" append="false">
       <PatternLayout>
         <Pattern>%p %c{1.} %X{KEY} %x %X %m%ex%n</Pattern>

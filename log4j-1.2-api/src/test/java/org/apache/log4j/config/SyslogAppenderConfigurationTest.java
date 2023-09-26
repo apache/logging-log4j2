@@ -17,6 +17,7 @@
 package org.apache.log4j.config;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.Map;
 
 import org.apache.logging.log4j.Level;
@@ -26,7 +27,11 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.net.AbstractSocketManager;
 import org.apache.logging.log4j.core.net.Protocol;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.WritesSystemProperty;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -35,7 +40,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Tests configuring a Syslog appender.
  */
+@UsingStatusListener
+@WritesSystemProperty
 public class SyslogAppenderConfigurationTest {
+
+    private static ServerSocket tcpSocket;
+
+    @BeforeAll
+    static void setup() throws IOException {
+        // TCP appenders log an error if there is no server socket
+        tcpSocket = new ServerSocket(0);
+        System.setProperty("syslog.port", Integer.toString(tcpSocket.getLocalPort()));
+    }
+
+    @AfterAll
+    static void cleanup() throws IOException {
+        System.clearProperty("syslog.port");
+        tcpSocket.close();
+    }
 
     private void check(final Protocol expected, final Configuration configuration) {
         final Map<String, Appender> appenders = configuration.getAppenders();
@@ -47,14 +69,15 @@ public class SyslogAppenderConfigurationTest {
         @SuppressWarnings("resource")
         final AbstractSocketManager manager = syslogAppender.getManager();
         final String prefix = expected + ":";
-        assertTrue(manager.getName().startsWith(prefix), () -> String.format("'%s' does not start with '%s'", manager.getName(), prefix));
+        assertTrue(manager.getName().startsWith(prefix),
+                () -> String.format("'%s' does not start with '%s'", manager.getName(), prefix));
         // Threshold
         final ThresholdFilter filter = (ThresholdFilter) syslogAppender.getFilter();
         assertEquals(Level.DEBUG, filter.getLevel());
         // Host
         assertEquals("localhost", manager.getHost());
         // Port
-        assertEquals(9999, manager.getPort());
+        assertEquals(tcpSocket.getLocalPort(), manager.getPort());
     }
 
     private void checkProtocolPropertiesConfig(final Protocol expected, final String xmlPath) throws IOException {

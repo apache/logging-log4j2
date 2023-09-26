@@ -245,7 +245,7 @@ public class LoggerConfig extends AbstractFilterable {
             final Level level, final boolean additive, final Property[] properties, final Configuration config,
             final boolean includeLocation, final LogEventFactory logEventFactory) {
         super(filter, null);
-        this.logEventFactory = logEventFactory;
+        this.logEventFactory = logEventFactory != null ? logEventFactory : DefaultLogEventFactory.newInstance();
         this.name = name;
         this.appenderRefs = appenders;
         this.level = level;
@@ -564,9 +564,9 @@ public class LoggerConfig extends AbstractFilterable {
     /**
      * Logs an event.
      *
-     * @param event The log event.
-     * @param predicate predicate for which LoggerConfig instances to append to.
-     *                  A null value is equivalent to a true predicate.
+     * @param event     The log event.
+     * @param predicate predicate for which LoggerConfig instances to append to. A
+     *                  {@literal null} value is equivalent to a true predicate.
      */
     protected void log(final LogEvent event, final LoggerConfigPredicate predicate) {
         if (!isFiltered(event)) {
@@ -584,9 +584,16 @@ public class LoggerConfig extends AbstractFilterable {
         return reliabilityStrategy;
     }
 
-    private void processLogEvent(final LogEvent event, final LoggerConfigPredicate predicate) {
+    /**
+     * Logs an event, bypassing filters.
+     *
+     * @param event     The log event.
+     * @param predicate predicate for which LoggerConfig instances to append to. A
+     *                  {@literal null} value is equivalent to a true predicate.
+     */
+    protected void processLogEvent(final LogEvent event, final LoggerConfigPredicate predicate) {
         event.setIncludeLocation(isIncludeLocation());
-        if (predicate.allow(this)) {
+        if (predicate == null || predicate.allow(this)) {
             callAppenders(event);
         }
         logParent(event, predicate);

@@ -21,6 +21,11 @@ package org.apache.logging.log4j.test;
  */
 public interface TestProperties {
 
+    /**
+     * Path to a directory specific to the test class,
+     */
+    public static final String LOGGING_PATH = "logging.path";
+
     String getProperty(final String key);
 
     boolean containsProperty(final String key);

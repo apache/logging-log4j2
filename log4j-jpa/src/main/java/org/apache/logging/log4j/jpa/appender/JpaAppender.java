@@ -92,7 +92,7 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
                 LoaderUtil.loadClass(entityClassName).asSubclass(AbstractLogEventWrapperEntity.class);
 
             try {
-                entityClass.getConstructor();
+                final Constructor<?> ignored = entityClass.getConstructor();
             } catch (final NoSuchMethodException e) {
                 LOGGER.error("Entity class [{}] does not have a no-arg constructor. The JPA provider will reject it.",
                         entityClassName);

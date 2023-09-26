@@ -17,160 +17,141 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
-import org.apache.commons.compress.compressors.CompressorException;
-import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.core.util.Closer;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.jupiter.api.Tag;
-import org.junit.rules.RuleChain;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-/**
- *
- */
-@RunWith(Parameterized.class)
-@Tag("sleepy")
+@UsingStatusListener
 public class RollingAppenderSizeTest {
 
-    @Rule
-    public RuleChain chain;
+    private static long DEFAULT_SHUTDOWN_MS = 500;
 
-    private static final String DIR = "target/rolling1";
+    private static final Pattern MESSAGE_PATTERN = Pattern.compile("This is test message numer \\d+.");
 
-    private final String fileExtension;
+    private static final List<String> FILE_EXTENSIONS = Arrays.asList(
+            "gz",
+            "zip",
+            "bz2",
+            "deflate",
+            "pack200",
+            "xz");
 
-    private Logger logger;
-
-    private final boolean createOnDemand;
-
-    @Parameterized.Parameters(name = "{0} \u2192 {1} (createOnDemand = {2})")
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] { //
-                // @formatter:off
-               {"log4j-rolling-gz-lazy.xml", ".gz", true},
-               {"log4j-rolling-gz.xml", ".gz", false},
-               {"log4j-rolling-numbered-gz.xml", ".gz", false},
-               {"log4j-rolling-zip-lazy.xml", ".zip", true},
-               {"log4j-rolling-zip.xml", ".zip", false},
-                // Apache Commons Compress
-               {"log4j-rolling-bzip2-lazy.xml", ".bz2", true},
-               {"log4j-rolling-bzip2.xml", ".bz2", false},
-               {"log4j-rolling-deflate-lazy.xml", ".deflate", true},
-               {"log4j-rolling-deflate.xml", ".deflate", false},
-               {"log4j-rolling-pack200-lazy.xml", ".pack200", true},
-               {"log4j-rolling-pack200.xml", ".pack200", false},
-               {"log4j-rolling-xz-lazy.xml", ".xz", true},
-               {"log4j-rolling-xz.xml", ".xz", false},
-                });
-                // @formatter:on
+    static Stream<Arguments> parameters() {
+        return FILE_EXTENSIONS.stream().flatMap(fileExtension -> {
+            return Stream.of(Arguments.of(fileExtension, true), Arguments.of(fileExtension, false));
+        });
     }
 
-    private final LoggerContextRule loggerContextRule;
+    @TempLoggingDir
+    private static Path loggingPath;
 
-    public RollingAppenderSizeTest(final String configFile, final String fileExtension, final boolean createOnDemand) {
-        this.fileExtension = fileExtension;
-        this.createOnDemand = createOnDemand;
-        this.loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(configFile);
-        this.chain = loggerContextRule.withCleanFoldersRule(DIR);
+    private static RollingFileAppender createRollingFileAppender(final String fileExtension,
+            final boolean createOnDemand) {
+        final Path folder = loggingPath.resolve(fileExtension);
+        final String fileName = folder.resolve("rollingtest.log").toString();
+        final String filePattern = folder.resolve("rollingtest-%i.log." + fileExtension).toString();
+        final RollingFileAppender appender = RollingFileAppender.newBuilder()
+                .setName("RollingFile")
+                .setFileName(fileName)
+                .setFilePattern(filePattern)
+                .setLayout(PatternLayout.createDefaultLayout())
+                .setPolicy(SizeBasedTriggeringPolicy.createPolicy("500"))
+                .setCreateOnDemand(createOnDemand)
+                .build();
+        appender.start();
+        return appender;
     }
 
-    @Before
-    public void setUp() throws Exception {
-        this.logger = this.loggerContextRule.getLogger(RollingAppenderSizeTest.class.getName());
+    private static LogEvent createEvent(final String pattern, final Object p0) {
+        return Log4jLogEvent.newBuilder()
+                .setMessage(new ParameterizedMessage(pattern, p0))
+                .build();
     }
 
-    @Test
-    public void testIsCreateOnDemand() {
-        final RollingFileAppender rfAppender = loggerContextRule.getRequiredAppender("RollingFile",
-                RollingFileAppender.class);
-        final RollingFileManager manager = rfAppender.getManager();
-        Assert.assertNotNull(manager);
-        Assert.assertEquals(createOnDemand, manager.isCreateOnDemand());
-    }
-
-    @Test
-    public void testAppender() throws Exception {
-        final Path path = Paths.get(DIR, "rollingtest.log");
-        if (Files.exists(path) && createOnDemand) {
-            Assert.fail(String.format("Unexpected file: %s (%s bytes)", path, Files.getAttribute(path, "size")));
-        }
-        for (int i = 0; i < 500; ++i) {
-            logger.debug("This is test message number " + i);
-        }
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testIsCreateOnDemand(final String fileExtension, final boolean createOnDemand) throws IOException {
+        final Path extensionFolder = loggingPath.resolve(fileExtension);
+        RollingFileAppender appender = null;
         try {
-            Thread.sleep(100);
-        } catch (final InterruptedException ie) {
-            // Ignore the error.
-        }
+            appender = createRollingFileAppender(fileExtension, createOnDemand);
+            final RollingFileManager manager = appender.getManager();
+            assertThat(manager).isNotNull().extracting("createOnDemand").isEqualTo(createOnDemand);
 
-        final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
-        final File[] files = dir.listFiles();
-        assertNotNull(files);
-        assertThat(files, hasItemInArray(that(hasName(that(endsWith(fileExtension))))));
+        } finally {
+            appender.stop(DEFAULT_SHUTDOWN_MS, TimeUnit.MILLISECONDS);
+            FileUtils.deleteDirectory(extensionFolder.toFile());
+        }
+    }
 
-        final FileExtension ext = FileExtension.lookup(fileExtension);
-        if (ext == null || FileExtension.ZIP == ext || FileExtension.PACK200 == ext) {
-            return; // Apache Commons Compress cannot deflate zip? TODO test decompressing these formats
-        }
-        // Stop the context to make sure all files are compressed and closed. Trying to remedy failures in CI builds.
-        if (!loggerContextRule.getLoggerContext().stop(30, TimeUnit.SECONDS)) {
-            System.err.println("Could not stop cleanly " + loggerContextRule + " for " + this);
-        }
-        for (final File file : files) {
-            if (file.getName().endsWith(fileExtension)) {
-                CompressorInputStream in = null;
-                try (final FileInputStream fis = new FileInputStream(file)) {
-                    try {
-                        in = new CompressorStreamFactory().createCompressorInputStream(toRootLowerCase(ext.name()), fis);
-                    } catch (final CompressorException ce) {
-                        ce.printStackTrace();
-                        fail("Error creating input stream from " + file.toString() + ": " + ce.getMessage());
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void testAppender(final String fileExtension, final boolean createOnDemand) throws Exception {
+        final Path extensionFolder = loggingPath.resolve(fileExtension);
+        RollingFileAppender appender = null;
+        try {
+            appender = createRollingFileAppender(fileExtension, createOnDemand);
+            final Path currentLog = extensionFolder.resolve("rollingtest.log");
+            if (createOnDemand) {
+                assertThat(currentLog).as("file created on demand").doesNotExist();
+            }
+            for (int i = 0; i < 500; ++i) {
+                appender.append(createEvent("This is test message numer {}.", i));
+            }
+            appender.stop(DEFAULT_SHUTDOWN_MS, TimeUnit.MILLISECONDS);
+
+            assertThat(extensionFolder).isDirectoryContaining("glob:**/*." + fileExtension);
+
+            final FileExtension ext = FileExtension.lookup(fileExtension);
+            if (ext == null || FileExtension.ZIP == ext || FileExtension.PACK200 == ext) {
+                return; // Apache Commons Compress cannot deflate zip? TODO test decompressing these
+                        // formats
+            }
+
+            for (final Path file : Files.newDirectoryStream(extensionFolder)) {
+                if (file.getFileName().endsWith(fileExtension)) {
+                    try (final InputStream fis = Files.newInputStream(file);
+                            final InputStream in = new CompressorStreamFactory()
+                                    .createCompressorInputStream(toRootLowerCase(ext.name()), fis)) {
+                        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        assertThat(in).as("compressed input stream").isNotNull();
+                        assertDoesNotThrow(() -> IOUtils.copy(in, baos));
+                        final String text = new String(baos.toByteArray(), Charset.defaultCharset());
+                        final String[] lines = text.split("[\\r\\n]+");
+                        assertThat(lines).allMatch(message -> MESSAGE_PATTERN.matcher(message).matches());
                     }
-                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    assertNotNull("No input stream for " + file.getName(), in);
-                    try {
-                        IOUtils.copy(in, baos);
-                    } catch (final Exception ex) {
-                        ex.printStackTrace();
-                        fail("Unable to decompress " + file.getAbsolutePath());
-                    }
-                    final String text = new String(baos.toByteArray(), Charset.defaultCharset());
-                    final String[] lines = text.split("[\\r\\n]+");
-                    for (final String line : lines) {
-                        assertTrue(line.contains(
-                                "DEBUG o.a.l.l.c.a.r.RollingAppenderSizeTest [main] This is test message number"));
-                    }
-                } finally {
-                    Closer.close(in);
                 }
             }
+        } finally {
+            if (appender.isStarted()) {
+                appender.stop(DEFAULT_SHUTDOWN_MS, TimeUnit.MILLISECONDS);
+            }
+            FileUtils.deleteDirectory(extensionFolder.toFile());
         }
     }
 }

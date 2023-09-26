@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.test.junit.TempLoggingDirectory;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -58,6 +59,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Documented
 @Inherited
 @Tag("functional")
+@ExtendWith(TempLoggingDirectory.class)
 @ExtendWith(LoggerContextResolver.class)
 @ExtendWith(ConfigurationResolver.class)
 @ExtendWith(AppenderResolver.class)
@@ -67,7 +69,7 @@ public @interface LoggerContextSource {
     /**
      * Specifies the name of the configuration file to use for the annotated test.
      */
-    String value();
+    String value() default "";
 
     /**
      * Specifies when to {@linkplain LoggerContext#reconfigure() reconfigure} the logging system.

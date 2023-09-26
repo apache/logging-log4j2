@@ -15,9 +15,9 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="off">
+<Configuration status="OFF">
   <Appenders>
-    <RandomAccessFile name="RandomAccessFile" fileName="target/AsyncLoggerTest.log"
+    <RandomAccessFile name="RandomAccessFile" fileName="${test:logging.path}/AsyncLoggerTest.log"
 	    		immediateFlush="false" append="false">
       <PatternLayout>
         <Pattern>%p %c{1.} %X{KEY} %x %X %m%ex%n</Pattern>

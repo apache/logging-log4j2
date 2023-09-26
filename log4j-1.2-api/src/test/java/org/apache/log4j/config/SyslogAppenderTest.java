@@ -23,14 +23,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.net.mock.MockSyslogServer;
 import org.apache.logging.log4j.core.test.net.mock.MockSyslogServerFactory;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.apache.logging.log4j.core.impl.Log4jPropertyKey.CONFIG_V1_FILE_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Class Description goes here.
@@ -38,29 +37,23 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Tag("sleepy")
 public class SyslogAppenderTest {
 
-    // TODO Use an ephemeral port, save it in a sys prop, and update test config files.
-    private static final int PORTNUM = 9999;
-    private MockSyslogServer syslogServer;
+    private static MockSyslogServer syslogServer;
 
     @BeforeAll
-    public static void beforeClass() {
-        System.setProperty("log4j.configuration", "target/test-classes/log4j1-syslog.xml");
+    public static void beforeClass() throws IOException {
+        initTCPTestEnvironment();
+        System.setProperty("syslog.port", Integer.toString(syslogServer.getLocalPort()));
+        System.setProperty(CONFIG_V1_FILE_NAME.getKey(), "target/test-classes/log4j1-syslog.xml");
     }
 
-    @BeforeEach
-    public void setUp() {
-    }
-
-    @AfterEach
-    public void teardown() {
-        if (syslogServer != null) {
-            syslogServer.shutdown();
-        }
+    @AfterAll
+    public static void cleanup() {
+        System.clearProperty(CONFIG_V1_FILE_NAME.getKey());
+        syslogServer.shutdown();
     }
 
     @Test
     public void sendMessage() throws Exception {
-        initTCPTestEnvironment();
         final Logger logger = LogManager.getLogger(SyslogAppenderTest.class);
         logger.info("This is a test");
         List<String> messages = null;
@@ -71,13 +64,12 @@ public class SyslogAppenderTest {
                 break;
             }
         }
-        assertNotNull(messages, "No messages received");
-        assertEquals(1, messages.size(), "Sent message not detected");
+        assertThat(messages).hasSize(1);
     }
 
 
-    protected void initTCPTestEnvironment() throws IOException {
-        syslogServer = MockSyslogServerFactory.createTCPSyslogServer(1, PORTNUM);
+    protected static void initTCPTestEnvironment() throws IOException {
+        syslogServer = MockSyslogServerFactory.createTCPSyslogServer();
         syslogServer.start();
     }
 }

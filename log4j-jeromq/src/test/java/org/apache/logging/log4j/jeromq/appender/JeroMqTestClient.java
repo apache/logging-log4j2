@@ -20,18 +20,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.zeromq.SocketType;
+import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
 
 class JeroMqTestClient implements Callable<List<String>> {
 
-    private final ZMQ.Context context;
+    private static final Logger LOGGER = StatusLogger.getLogger();
+
+    private final ZContext context;
 
     private final String endpoint;
     private final List<String> messages;
     private final int receiveCount;
 
-    JeroMqTestClient(final ZMQ.Context context, final String endpoint, final int receiveCount) {
-        super();
+    JeroMqTestClient(final ZContext context, final String endpoint, final int receiveCount) {
         this.context = context;
         this.endpoint = endpoint;
         this.receiveCount = receiveCount;
@@ -40,13 +45,17 @@ class JeroMqTestClient implements Callable<List<String>> {
 
     @Override
     public List<String> call() throws Exception {
-        try (final ZMQ.Socket subscriber = context.socket(ZMQ.SUB)) {
+        try (final ZMQ.Socket subscriber = context.createSocket(SocketType.SUB)) {
+            LOGGER.info("Starting JeroMqTestClient.");
             subscriber.connect(endpoint);
-            subscriber.subscribe(new byte[0]);
+            subscriber.subscribe(ZMQ.SUBSCRIPTION_ALL);
+            LOGGER.info("Subscribing JeroMqTestClient to JeroMqAppender.");
             for (int messageNum = 0; messageNum < receiveCount
                     && !Thread.currentThread().isInterrupted(); messageNum++) {
                 // Use trim to remove the tailing '0' character
-                messages.add(subscriber.recvStr(0).trim());
+                final String message = subscriber.recvStr(0).trim();
+                LOGGER.debug("JeroMqTestClient received a message: {}.", message);
+                messages.add(message);
             }
         }
         return messages;

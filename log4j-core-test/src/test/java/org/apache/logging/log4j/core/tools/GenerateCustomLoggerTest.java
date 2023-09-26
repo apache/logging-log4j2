@@ -70,6 +70,7 @@ public class GenerateCustomLoggerTest {
     }
 
     @Test
+    @SuppressWarnings("ReturnValueIgnored")
     public void testGenerateSource() throws Exception {
         final String CLASSNAME = "org.apache.logging.log4j.core.MyCustomLogger";
 

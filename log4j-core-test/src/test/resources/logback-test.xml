@@ -16,16 +16,16 @@
   ~ limitations under the License.
   -->
 <configuration>
- <appender name="TestLogfile" class="ch.qos.logback.core.FileAppender">
-   <file>target/testlogback.log</file>
+  <appender name="TestLogfile" class="ch.qos.logback.core.FileAppender">
+    <file>target/testlogback.log</file>
     <append>false</append>
-   <encoder>
-     <immediateFlush>false</immediateFlush>
-     <Pattern>%d %5p [%t] %c{0} %X{transactionId} - %m%n</Pattern>
-   </encoder>
- </appender>
+    <immediateFlush>false</immediateFlush>
+    <encoder>
+      <pattern>%d %5p [%t] %c{0} %X{transactionId} - %m%n</pattern>
+    </encoder>
+  </appender>
 
- <root level="debug">
-   <appender-ref ref="TestLogfile" />
- </root>
+  <root level="debug">
+    <appender-ref ref="TestLogfile" />
+  </root>
 </configuration>
