@@ -31,6 +31,11 @@
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
     <javadoc.skip>false</javadoc.skip>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-multi-release>true</bnd-multi-release>
   </properties>
   <dependencies>
     <!-- Used for OSGi bundle support -->
