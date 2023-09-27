@@ -1386,25 +1386,6 @@
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <release>${maven.compiler.release}</release>
-            <parameters>true</parameters>
-            <showDeprecation>true</showDeprecation>
-            <showWarnings>true</showWarnings>
-            <encoding>UTF-8</encoding>
-            <fork>true</fork>
-            <meminitial>256</meminitial>
-            <maxmem>1024</maxmem>
-            <compilerArguments>
-              <Xmaxwarns>10000</Xmaxwarns>
-              <Xlint />
-            </compilerArguments>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
           <version>${maven-dependency-plugin.version}</version>
         </plugin>
@@ -1511,6 +1492,21 @@
             <phase>validate</phase>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <!-- TODO: this only applies to `log4j-core` dependents -->
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-core</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
       </plugin>
 
       <!-- Ensure that version for each dependency resolved during a build, is equal to or higher than all transitive dependency declarations.

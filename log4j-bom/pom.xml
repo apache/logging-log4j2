@@ -37,6 +37,9 @@
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <project.build.outputTimestamp>1676697577</project.build.outputTimestamp>
+    <!-- JDK version of the main Maven process (used in ASF parent POM) -->
+    <minimalJavaBuildVersion>[11, )</minimalJavaBuildVersion>
+    <revision>2.21.0-SNAPSHOT</revision>
   </properties>
 
   <dependencyManagement>
