@@ -31,6 +31,11 @@
     <docLabel>API Documentation</docLabel>
     <projectDir>/api</projectDir>
     <javadoc.skip>false</javadoc.skip>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-multi-release>true</bnd-multi-release>
   </properties>
   <dependencies>
     <dependency>
