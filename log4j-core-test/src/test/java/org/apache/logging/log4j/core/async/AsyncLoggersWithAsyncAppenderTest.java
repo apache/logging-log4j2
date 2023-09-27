@@ -27,7 +27,6 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
