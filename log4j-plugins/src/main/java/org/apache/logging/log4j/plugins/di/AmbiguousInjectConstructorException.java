@@ -22,6 +22,11 @@ import org.apache.logging.log4j.plugins.Inject;
  * Exception thrown when a class has multiple constructors annotated with {@link Inject}.
  */
 public class AmbiguousInjectConstructorException extends InjectException {
+    /**
+     * Constructs an ambiguous {@link Inject}-annotated constructor exception for the target class.
+     *
+     * @param injectClass class with multiple {@code @Inject} constructors
+     */
     public AmbiguousInjectConstructorException(final Class<?> injectClass) {
         super("Multiple @Inject constructors found in " + injectClass);
     }

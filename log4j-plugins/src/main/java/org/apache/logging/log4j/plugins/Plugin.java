@@ -40,6 +40,7 @@ import org.apache.logging.log4j.util.Strings;
  * that factory returns a new instance.</p>
  *
  * @see Inject
+ * @see Configurable
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

@@ -29,8 +29,8 @@ import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.BasicContextSelector;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,15 +50,17 @@ public class LateConfigTest {
     private static Path loggingPath;
 
     static Stream<Log4jContextFactory> selectors() {
-        final Injector injector = DI.createInjector();
-        injector.init();
+        final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
         return Stream
-                .<ContextSelector>of(new ClassLoaderContextSelector(injector.copy()), new BasicContextSelector(injector.copy()),
-                        new AsyncLoggerContextSelector(injector.copy()), new BasicAsyncLoggerContextSelector(injector.copy()))
+                .<ContextSelector>of(
+                        new ClassLoaderContextSelector(instanceFactory.newChildInstanceFactory()),
+                        new BasicContextSelector(instanceFactory.newChildInstanceFactory()),
+                        new AsyncLoggerContextSelector(instanceFactory.newChildInstanceFactory()),
+                        new BasicAsyncLoggerContextSelector(instanceFactory.newChildInstanceFactory()))
                 .map(Log4jContextFactory::new);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "reconfigure {0}")
     @MethodSource("selectors")
     public void testReconfiguration(final Log4jContextFactory factory) throws Exception {
         try (final LoggerContext context = factory.getContext(FQCN, null, null, false)) {

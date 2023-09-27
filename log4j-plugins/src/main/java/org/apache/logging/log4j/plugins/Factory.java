@@ -36,6 +36,8 @@ import java.lang.annotation.Target;
  *     or a type variable for each parameter, the latter case also required to be unscoped.</li>
  *     <li>Classes may declare multiple factory methods to create different instance types or qualified instances.</li>
  *     <li>Factory methods are <em>not inherited</em> by subclasses.</li>
+ *     <li>Classes annotated with {@link Configurable} can specify a static factory method instead of relying on
+ *     {@link Inject}.</li>
  * </ul>
  */
 @Target(ElementType.METHOD)

@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -50,8 +50,8 @@ public class AsyncLoggerContext extends LoggerContext {
         loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
-    public AsyncLoggerContext(final String name, final Object externalContext, final URI configLocn, final Injector injector) {
-        super(name, externalContext, configLocn, injector);
+    public AsyncLoggerContext(final String name, final Object externalContext, final URI configLocn, final ConfigurableInstanceFactory instanceFactory) {
+        super(name, externalContext, configLocn, instanceFactory);
         loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 
@@ -61,8 +61,8 @@ public class AsyncLoggerContext extends LoggerContext {
     }
 
     public AsyncLoggerContext(
-            final String name, final Object externalContext, final String configLocn, final Injector injector) {
-        super(name, externalContext, configLocn, injector);
+            final String name, final Object externalContext, final String configLocn, final ConfigurableInstanceFactory instanceFactory) {
+        super(name, externalContext, configLocn, instanceFactory);
         loggerDisruptor = new AsyncLoggerDisruptor(name, () -> getConfiguration().getAsyncWaitStrategyFactory());
     }
 

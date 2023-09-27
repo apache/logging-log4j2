@@ -20,8 +20,9 @@ import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +37,15 @@ class OnMissingBindingConditionTest {
         }
     }
 
+    static class DefaultFactory {
+        @Factory
+        Bean defaultBean() {
+            return new Bean("default");
+        }
+    }
+
     static class ConditionalFactory {
+        @ConditionalOnMissingBinding
         @Namespace("foo")
         @Named("bar")
         @Factory
@@ -59,26 +68,26 @@ class OnMissingBindingConditionTest {
         @Namespace("foo") @Named("bar") Bean value;
     }
 
-    final Injector injector = DI.createInjector(new Object() {
-        @Factory
-        Bean defaultBean() {
-            return new Bean("default");
-        }
-    });
+    final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
+
+    @BeforeEach
+    void setUp() {
+        instanceFactory.registerBundle(DefaultFactory.class);
+    }
 
     @Test
     void whenMissingShouldUseConditionalFactory() {
-        injector.registerBundle(ConditionalFactory.class);
-        final Fixture fixture = injector.getInstance(Fixture.class);
+        instanceFactory.registerBundle(ConditionalFactory.class);
+        final Fixture fixture = instanceFactory.getInstance(Fixture.class);
         assertThat(fixture.value).hasFieldOrPropertyWithValue("name", "backup");
         assertThat(fixture.defaultValue).hasFieldOrPropertyWithValue("name", "default");
     }
 
     @Test
     void whenPresentShouldNotUseConditionalFactory() {
-        injector.registerBundle(UnconditionalFactory.class);
-        injector.registerBundle(ConditionalFactory.class);
-        final Fixture fixture = injector.getInstance(Fixture.class);
+        instanceFactory.registerBundle(UnconditionalFactory.class);
+        instanceFactory.registerBundle(ConditionalFactory.class);
+        final Fixture fixture = instanceFactory.getInstance(Fixture.class);
         assertThat(fixture.value).hasFieldOrPropertyWithValue("name", "foobar");
         assertThat(fixture.defaultValue).hasFieldOrPropertyWithValue("name", "default");
     }

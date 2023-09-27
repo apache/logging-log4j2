@@ -135,7 +135,7 @@ public final class PatternParser {
         final PluginNamespace plugins;
         final Key<PluginNamespace> pluginCategoryKey = PLUGIN_CATEGORY_KEY.withNamespace(converterKey);
         if (config == null) {
-            plugins = DI.createInjector().getInstance(pluginCategoryKey);
+            plugins = DI.createInitializedFactory().getInstance(pluginCategoryKey);
         } else {
             plugins = config.getComponent(pluginCategoryKey);
         }

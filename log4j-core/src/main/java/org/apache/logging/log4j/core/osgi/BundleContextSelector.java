@@ -27,7 +27,7 @@ import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleReference;
@@ -43,8 +43,8 @@ import org.osgi.framework.FrameworkUtil;
 @Singleton
 public class BundleContextSelector extends ClassLoaderContextSelector {
     @Inject
-    public BundleContextSelector(final Injector injector) {
-        super(injector);
+    public BundleContextSelector(final ConfigurableInstanceFactory instanceFactory) {
+        super(instanceFactory);
     }
 
     @Override

@@ -22,9 +22,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.logging.log4j.plugins.visit.NodeVisitor;
-import org.apache.logging.log4j.plugins.visit.PluginNodeVisitor;
-
 /**
  * Identifies the configuration {@link Node} currently being configured. This can be injected as a parameter to a static
  * {@linkplain PluginFactory factory method}, or as a field or single-parameter method in a plugin
@@ -32,8 +29,7 @@ import org.apache.logging.log4j.plugins.visit.PluginNodeVisitor;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
-@NodeVisitor.Kind(PluginNodeVisitor.class)
+@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD, ElementType.TYPE_USE})
 @QualifierType
 public @interface PluginNode {
     // empty

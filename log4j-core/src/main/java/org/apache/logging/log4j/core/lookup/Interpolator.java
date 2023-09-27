@@ -20,15 +20,14 @@ import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
 import org.apache.logging.log4j.core.config.LoggerContextAware;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.status.StatusLogger;
 
 import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
@@ -70,11 +69,12 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
      */
     public Interpolator(final StrLookup defaultLookup) {
         this.defaultLookup = defaultLookup == null ? new PropertiesLookup(Map.of()) : defaultLookup;
-        final Injector injector = DI.createInjector();
-        injector.getInstance(PLUGIN_CATEGORY_KEY)
+        final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
+        // TODO(ms): this should use plugin map injection
+        instanceFactory.getInstance(PLUGIN_CATEGORY_KEY)
                 .forEach((key, value) -> {
                     try {
-                        strLookups.put(key, injector.getFactory(value.getPluginClass().asSubclass(StrLookup.class)));
+                        strLookups.put(key, instanceFactory.getFactory(value.getPluginClass().asSubclass(StrLookup.class)));
                     } catch (final Throwable t) {
                         handleError(key, t);
                     }
@@ -108,12 +108,6 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
 
     public StrLookup getDefaultLookup() {
         return defaultLookup;
-    }
-
-    public Map<String, StrLookup> getStrLookupMap() {
-        return strLookups.entrySet()
-                .stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get()));
     }
 
     private void handleError(final String lookupKey, final Throwable t) {
@@ -194,6 +188,7 @@ public class Interpolator extends AbstractConfigurationAwareLookup implements Lo
         return null;
     }
 
+    @Override
     public void setLoggerContext(final LoggerContext loggerContext) {
         if (loggerContext == null) {
             return;

@@ -58,7 +58,7 @@ import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -145,7 +145,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
     public static FlumePersistentManager getManager(
             final String name, final Agent[] agents, final Property[] properties, int batchSize, final int retries,
             final int connectionTimeout, final int requestTimeout, final int delayMillis, final int lockTimeoutRetryCount,
-            final String dataDir, final Injector injector) {
+            final String dataDir, final ConfigurableInstanceFactory instanceFactory) {
         if (agents == null || agents.length == 0) {
             throw new IllegalArgumentException("At least one agent is required");
         }
@@ -167,7 +167,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         sb.append(']');
         sb.append(' ').append(dataDirectory);
         return getManager(sb.toString(), factory, new FactoryData(name, agents, batchSize, retries,
-            connectionTimeout, requestTimeout, delayMillis, lockTimeoutRetryCount, dataDir, properties, injector));
+            connectionTimeout, requestTimeout, delayMillis, lockTimeoutRetryCount, dataDir, properties, instanceFactory));
     }
 
     @Override
@@ -344,7 +344,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
         private final int delayMillis;
         private final int lockTimeoutRetryCount;
         private final Property[] properties;
-        private final Injector injector;
+        private final ConfigurableInstanceFactory instanceFactory;
 
         /**
          * Constructor.
@@ -357,7 +357,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                 final String name, final Agent[] agents, final int batchSize, final int retries,
                 final int connectionTimeout, final int requestTimeout, final int delayMillis,
                 final int lockTimeoutRetryCount, final String dataDir, final Property[] properties,
-                final Injector injector) {
+                final ConfigurableInstanceFactory instanceFactory) {
             this.name = name;
             this.agents = agents;
             this.batchSize = batchSize;
@@ -368,7 +368,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
             this.delayMillis = delayMillis;
             this.lockTimeoutRetryCount = lockTimeoutRetryCount;
             this.properties = properties;
-            this.injector = injector;
+            this.instanceFactory = instanceFactory;
         }
     }
 
@@ -433,8 +433,8 @@ public class FlumePersistentManager extends FlumeAvroManager {
                     }
                 }
                 if (key != null) {
-                    final Injector injector = data.injector;
-                    final Map<String, Supplier<SecretKeyProvider>> plugins = injector.getInstance(SecretKeyProvider.PLUGIN_MAP_KEY);
+                    final var instanceFactory = data.instanceFactory;
+                    final Map<String, Supplier<SecretKeyProvider>> plugins = instanceFactory.getInstance(SecretKeyProvider.PLUGIN_MAP_KEY);
                     if (plugins != null) {
                         final Supplier<SecretKeyProvider> providerFactory = plugins.get(key);
                         if (providerFactory != null) {

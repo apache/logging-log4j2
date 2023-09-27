@@ -18,11 +18,14 @@ package org.apache.logging.log4j.plugins.condition;
 
 import java.lang.reflect.AnnotatedElement;
 
-import org.apache.logging.log4j.plugins.di.Key;
 
 /**
  * Checks an annotated element to see if it matches some condition.
+ *
+ * @implSpec Must have a default constructor. The class should be used in a {@link Conditional} annotation on an
+ * annotation class to provide parameters to the condition.
  */
+@FunctionalInterface
 public interface Condition {
-    boolean matches(final Key<?> key, final AnnotatedElement element);
+    boolean matches(final ConditionContext context, final AnnotatedElement element);
 }

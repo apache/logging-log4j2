@@ -25,8 +25,6 @@ import java.lang.annotation.Target;
 import org.apache.logging.log4j.core.config.plugins.util.PluginValueNameProvider;
 import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.visit.NodeVisitor;
-import org.apache.logging.log4j.plugins.visit.PluginValueVisitor;
 
 /**
  * Identifies a parameter as a value. These correspond with property values generally, but are meant as values to be
@@ -38,7 +36,6 @@ import org.apache.logging.log4j.plugins.visit.PluginValueVisitor;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-@NodeVisitor.Kind(PluginValueVisitor.class)
 @NameProvider(PluginValueNameProvider.class)
 @QualifierType
 @Deprecated(since = "3.0.0")

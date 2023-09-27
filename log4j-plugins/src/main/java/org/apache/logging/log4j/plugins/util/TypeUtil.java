@@ -26,6 +26,8 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.logging.log4j.util.Cast;
+
 /**
  * Utility class for working with Java {@link Type}s and derivatives. This class is adapted heavily from the
  * <a href="http://projects.spring.io/spring-framework/">Spring Framework</a>, specifically the
@@ -219,25 +221,26 @@ public final class TypeUtil {
     /**
      * Extracts the raw type equivalent of a given type.
      */
-    public static Class<?> getRawType(final Type type) {
+    public static <T> Class<T> getRawType(final Type type) {
         if (type instanceof Class<?>) {
-            return (Class<?>) type;
+            return Cast.cast(type);
         }
         if (type instanceof ParameterizedType) {
             return getRawType(((ParameterizedType) type).getRawType());
         }
         if (type instanceof GenericArrayType) {
-            return Array.newInstance(getRawType(((GenericArrayType) type).getGenericComponentType()), 0).getClass();
+            final Type componentType = ((GenericArrayType) type).getGenericComponentType();
+            return Cast.cast(Array.newInstance(getRawType(componentType), 0).getClass());
         }
         if (type instanceof WildcardType) {
             final Type[] bounds = ((WildcardType) type).getUpperBounds();
-            return bounds.length > 0 ? getRawType(bounds[0]) : Object.class;
+            return bounds.length > 0 ? getRawType(bounds[0]) : Cast.cast(Object.class);
         }
         if (type instanceof TypeVariable<?>) {
             final Type[] bounds = ((TypeVariable<?>) type).getBounds();
-            return bounds.length > 0 ? getRawType(bounds[0]) : Object.class;
+            return bounds.length > 0 ? getRawType(bounds[0]) : Cast.cast(Object.class);
         }
-        return Object.class;
+        return Cast.cast(Object.class);
     }
 
     private static final Map<Class<?>, Class<?>> PRIMITIVE_BOXED_TYPES = Map.of(

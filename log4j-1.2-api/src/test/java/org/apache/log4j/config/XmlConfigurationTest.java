@@ -33,9 +33,8 @@ import org.apache.log4j.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -45,6 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Test configuration from XML.
  */
+@ConfigurationFactoryType(XmlConfigurationFactory.class)
 public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
 
     private static final String SUFFIX = ".xml";
@@ -53,12 +53,10 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
     Configuration getConfiguration(final String configResourcePrefix) throws URISyntaxException, IOException {
         final String configResource = configResourcePrefix + SUFFIX;
         final InputStream inputStream = ClassLoader.getSystemResourceAsStream(configResource);
+        assertNotNull(inputStream);
         final ConfigurationSource source = new ConfigurationSource(inputStream);
         final LoggerContext context = LoggerContext.getContext(false);
-        final Configuration configuration = context.getInjector()
-                .registerBinding(ConfigurationFactory.KEY, Lazy.lazy(XmlConfigurationFactory::new))
-                .getInstance(ConfigurationFactory.KEY)
-                .getConfiguration(context, source);
+        final Configuration configuration = context.getConfiguration(source);
         assertNotNull(configuration, "No configuration created");
         configuration.initialize();
         return configuration;

@@ -157,7 +157,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
                 final URL url = ResourceUtils.getURL(location);
                 final ConfigurationSource source = getConfigurationSource(url);
                 if (source != null) {
-                    ctx.start(ConfigurationFactory.getInstance().getConfiguration(ctx, source));
+                    ctx.start(ctx.getConfiguration(source));
                 }
             } else {
                 final List<AbstractConfiguration> configs = new ArrayList<>();
@@ -166,7 +166,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
                     final ConfigurationSource source = getConfigurationSource(ResourceUtils.getURL(sourceLocation));
                     if (source != null) {
                         try {
-                            final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, source);
+                            final Configuration config = ctx.getConfiguration(source);
                             if (config instanceof AbstractConfiguration) {
                                 configs.add((AbstractConfiguration) config);
                             } else {

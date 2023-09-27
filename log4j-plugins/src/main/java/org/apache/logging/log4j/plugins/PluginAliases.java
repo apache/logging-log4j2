@@ -33,7 +33,6 @@ import org.apache.logging.log4j.plugins.name.PluginAliasesProvider;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.TYPE, ElementType.FIELD, ElementType.METHOD})
 @AliasesProvider(PluginAliasesProvider.class)
-@QualifierType
 public @interface PluginAliases {
 
     /**

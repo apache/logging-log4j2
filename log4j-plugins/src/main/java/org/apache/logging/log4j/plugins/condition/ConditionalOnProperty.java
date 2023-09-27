@@ -33,4 +33,6 @@ public @interface ConditionalOnProperty {
     String name();
 
     String value() default "";
+
+    boolean matchIfMissing() default false;
 }

@@ -16,8 +16,11 @@
  */
 package org.apache.logging.log4j.plugins.model;
 
+import java.lang.ref.WeakReference;
+
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util.Strings;
 
 /**
  * Plugin Descriptor. This is a memento object for Plugin annotations paired to their annotated classes.
@@ -49,11 +52,17 @@ public class PluginType<T> {
      */
     public PluginType(final PluginEntry pluginEntry, final ClassLoader classLoader) {
         this.pluginEntry = pluginEntry;
+        final WeakReference<ClassLoader> classLoaderRef = new WeakReference<>(classLoader);
         this.pluginClass = Lazy.lazy(() -> {
+            final ClassLoader loader = classLoaderRef.get();
+            if (loader == null) {
+                throw new IllegalStateException("ClassLoader has been destroyed already");
+            }
+            final String className = pluginEntry.getClassName();
             try {
-                return Cast.cast(classLoader.loadClass(pluginEntry.getClassName()));
+                return Cast.cast(loader.loadClass(className));
             } catch (final ClassNotFoundException e) {
-                throw new IllegalStateException("No class named " + pluginEntry.getClassName() +
+                throw new IllegalStateException("No class named " + className +
                         " located for element " + pluginEntry.getName(), e);
             }
         });
@@ -99,6 +108,10 @@ public class PluginType<T> {
 
     public String getName() {
         return pluginEntry.getName();
+    }
+
+    public String getElementName() {
+        return Strings.trimToOptional(getElementType()).orElseGet(this::getName);
     }
 
     @Override

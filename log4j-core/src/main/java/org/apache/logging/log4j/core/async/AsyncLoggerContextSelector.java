@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -47,13 +47,13 @@ public class AsyncLoggerContextSelector extends ClassLoaderContextSelector {
     }
 
     @Inject
-    public AsyncLoggerContextSelector(final Injector injector) {
-        super(injector);
+    public AsyncLoggerContextSelector(final ConfigurableInstanceFactory instanceFactory) {
+        super(instanceFactory);
     }
 
     @Override
-    protected LoggerContext createContext(final String name, final URI configLocation, final Injector injector) {
-        return new AsyncLoggerContext(name, null, configLocation, injector);
+    protected LoggerContext createContext(final String name, final URI configLocation, final ConfigurableInstanceFactory instanceFactory) {
+        return new AsyncLoggerContext(name, null, configLocation, instanceFactory);
     }
 
     @Override

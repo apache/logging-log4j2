@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.SingletonFactory;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AsyncLoggersWithAsyncAppenderTest {
 
     @SingletonFactory
-    public ContextSelector contextSelector(final Injector injector) {
+    public ContextSelector contextSelector(final ConfigurableInstanceFactory injector) {
         return new AsyncLoggerContextSelector(injector);
     }
 

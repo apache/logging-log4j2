@@ -23,8 +23,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.apache.logging.log4j.plugins.QualifierType;
-import org.apache.logging.log4j.plugins.visit.NodeVisitor;
-import org.apache.logging.log4j.plugins.visit.PluginNodeVisitor;
 
 /**
  * Identifies a Plugin configuration Node.
@@ -33,7 +31,6 @@ import org.apache.logging.log4j.plugins.visit.PluginNodeVisitor;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-@NodeVisitor.Kind(PluginNodeVisitor.class)
 @QualifierType
 @Deprecated(since = "3.0.0")
 public @interface PluginNode {

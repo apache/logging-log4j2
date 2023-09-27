@@ -26,29 +26,38 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.function.Supplier;
 
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.QualifierType;
+import org.apache.logging.log4j.plugins.di.spi.InjectionPoint;
+import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
+import org.apache.logging.log4j.plugins.di.spi.Scope;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.plugins.util.TypeUtil;
-import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Type with an optional {@link QualifierType} type, name, and namespace. Keys are used for binding to and looking up instance
- * factories via {@link Injector}.
+ * Keys represent a reified type with an optional {@link QualifierType} type, name, and namespace.
+ * A key is used in two related contexts: describing an {@link InjectionPoint} requesting a dependency
+ * for injection and describing a {@link Binding} where a {@linkplain Scope scoped} factory is
+ * registered for providing dependencies.
  *
  * @param <T> type of key
+ * @see InstanceFactory
+ * @see ConfigurableInstanceFactory
+ * @see Keys
+ * @see ResolvableKey
  */
-public class Key<T> implements StringBuilderFormattable {
+public class Key<T> implements StringBuilderFormattable, Comparable<Key<T>> {
     private final Type type;
     private final Class<T> rawType;
     private final Class<? extends Annotation> qualifierType;
     private final String name;
     private final String namespace;
-    private final int order;
+    private final OptionalInt order;
     private final int hashCode;
     private String toString;
 
@@ -65,19 +74,19 @@ public class Key<T> implements StringBuilderFormattable {
      */
     protected Key() {
         type = TypeUtil.getSuperclassTypeParameter(getClass());
-        rawType = Cast.cast(TypeUtil.getRawType(type));
+        rawType = TypeUtil.getRawType(type);
         final AnnotatedType superclass = getClass().getAnnotatedSuperclass();
-        final Annotation qualifier = AnnotationUtil.getMetaAnnotation(superclass, QualifierType.class);
+        final Annotation qualifier = AnnotationUtil.getElementAnnotationHavingMetaAnnotation(superclass, QualifierType.class);
         qualifierType = qualifier != null ? qualifier.annotationType() : null;
         name = Keys.getName(superclass);
         namespace = Keys.getNamespace(superclass);
-        order = getOrder(superclass);
+        order = AnnotationUtil.getOrder(superclass);
         hashCode = Objects.hash(type, qualifierType, name.toLowerCase(Locale.ROOT), namespace.toLowerCase(Locale.ROOT));
     }
 
     private Key(
             final Type type, final Class<T> rawType, final Class<? extends Annotation> qualifierType, final String name,
-            final String namespace, final int order) {
+            final String namespace, final OptionalInt order) {
         this.type = type;
         this.rawType = rawType;
         this.qualifierType = qualifierType;
@@ -96,14 +105,18 @@ public class Key<T> implements StringBuilderFormattable {
 
     /**
      * Returns the raw type of this key corresponding to its generic type.
+     *
+     * @see TypeUtil#getRawType(Type)
      */
     public final Class<T> getRawType() {
         return rawType;
     }
 
     /**
-     * Returns the name of this key. Names are case-insensitive. If this key has no defined name, then this returns
-     * an empty string.
+     * Returns the name of this key. If this key has no defined name, then this returns an empty string.
+     *
+     * @apiNote Names are case-preserving but should be compared using case-insensitive string comparison.
+     * @see Keys#hasName(AnnotatedElement)
      */
     public final String getName() {
         return name;
@@ -111,6 +124,10 @@ public class Key<T> implements StringBuilderFormattable {
 
     /**
      * Returns the namespace of this key. If this key has no defined namespace, then this returns an empty string.
+     *
+     * @apiNote A namespace of the empty string is considered the default namespace which is used when no
+     * namespace is defined or if the namespace is explicitly defined as the empty string.
+     * @see Keys#getNamespace(AnnotatedElement)
      */
     public final String getNamespace() {
         return namespace;
@@ -128,8 +145,25 @@ public class Key<T> implements StringBuilderFormattable {
      * Returns the ordinal value of this key. Keys that are otherwise equal can be compared by this
      * ordinal using the natural integer comparator where ties should default to keeping an existing binding intact.
      */
-    public final int getOrder() {
+    public final OptionalInt getOrder() {
         return order;
+    }
+
+    /**
+     * Returns a new key using the provided type. The name, namespace, qualifier, and order of this key are
+     * copied into the new key.
+     */
+    public final <U> Key<U> withType(final Type type) {
+        final Class<U> rawType = TypeUtil.getRawType(type);
+        return new Key<>(type, rawType, qualifierType, name, namespace, order);
+    }
+
+    /**
+     * Returns a new key using the provided class. The name, namespace, qualifier, and order of this key are
+     * copied into the new key.
+     */
+    public final <U> Key<U> withType(final Class<U> type) {
+        return new Key<>(type, type, qualifierType, name, namespace, order);
     }
 
     /**
@@ -156,25 +190,40 @@ public class Key<T> implements StringBuilderFormattable {
     /**
      * If this key's type {@code T} is a subtype of {@code Supplier<P>} for some supplied type {@code P}, then this
      * returns a new key with that type argument along with the same name and qualifier type as this key.
+     *
+     * @return a new instance from this using the supplied type or {@code null} if this key did not contain a
+     * supplier type
      */
     public final <P> Key<P> getSuppliedType() {
         if (type instanceof ParameterizedType && Supplier.class.isAssignableFrom(rawType)) {
             final Type typeArgument = ((ParameterizedType) type).getActualTypeArguments()[0];
-            final Class<P> rawType = Cast.cast(TypeUtil.getRawType(typeArgument));
-            return new Key<>(typeArgument, rawType, qualifierType, name, namespace, order);
+            return withType(typeArgument);
         }
         return null;
     }
 
     /**
-     * If this key's type {@code T} is a parameterized type, then this returns a new key corresponding to the
-     * requested parameterized type argument along with the same remaining values as this key.
+     * If this key's type {@code T} is a parameterized type such that {@code T} can be represented as
+     * {@code R<P0, P1, P2, ...>} with raw type {@code R} and type arguments {@code P0}, {@code P1}, etc.,
+     * then this returns a new key corresponding to the requested parameterized type argument along with
+     * the same remaining values as this key.
+     *
+     * @param arg the index of the type argument to create a new key from
+     * @return a new instance from this using the type argument if defined or {@code null}
+     * @throws IndexOutOfBoundsException if {@code arg} is negative or otherwise outside the bounds of the actual
+     *                                   number of type arguments of this key's type
      */
     public final <P> Key<P> getParameterizedTypeArgument(final int arg) {
+        if (arg < 0) {
+            throw new IndexOutOfBoundsException(arg);
+        }
         if (type instanceof ParameterizedType) {
-            final Type typeArgument = ((ParameterizedType) type).getActualTypeArguments()[arg];
-            final Class<P> rawType = Cast.cast(TypeUtil.getRawType(typeArgument));
-            return new Key<>(typeArgument, rawType, qualifierType, name, namespace, order);
+            final Type[] typeArguments = ((ParameterizedType) type).getActualTypeArguments();
+            if (arg > typeArguments.length) {
+                throw new IndexOutOfBoundsException(arg);
+            }
+            final Type typeArgument = typeArguments[arg];
+            return withType(typeArgument);
         }
         return null;
     }
@@ -203,7 +252,7 @@ public class Key<T> implements StringBuilderFormattable {
     public final String toString() {
         String string = toString;
         if (string == null) {
-            final StringBuilder sb = new StringBuilder(32);
+            StringBuilder sb = new StringBuilder(32);
             formatTo(sb);
             toString = string = sb.toString();
         }
@@ -225,6 +274,25 @@ public class Key<T> implements StringBuilderFormattable {
         buffer.append(']');
     }
 
+    @Override
+    public int compareTo(final Key<T> o) {
+        final OptionalInt otherOrder = o.order;
+        if (order.isPresent() && otherOrder.isPresent()) {
+            return Integer.compare(order.getAsInt(), otherOrder.getAsInt());
+        }
+        if (order.isPresent()) {
+            return -1;
+        }
+        if (otherOrder.isPresent()) {
+            return 1;
+        }
+        if (equals(o)) {
+            return 0;
+        }
+        // FIXME: reconsider the use here or provide an alternative that throws an exception at this point
+        return name.compareToIgnoreCase(o.name);
+    }
+
     private static final String TO_STRING_PREFIX = "Key[type: ";
     private static final String NAMESPACE = "; namespace: ";
     private static final String NAME = "; name: ";
@@ -234,23 +302,24 @@ public class Key<T> implements StringBuilderFormattable {
      * Creates a Key for the class.
      */
     public static <T> Key<T> forClass(final Class<T> clazz) {
-        return Key.builder(clazz)
+        final Builder<T> builder = Key.builder(clazz)
                 .setQualifierType(getQualifierType(clazz))
                 .setName(Keys.getName(clazz))
-                .setNamespace(Keys.getNamespace(clazz))
-                .setOrder(getOrder(clazz))
-                .get();
+                .setNamespace(Keys.getNamespace(clazz));
+        AnnotationUtil.getOrder(clazz).ifPresent(builder::setOrder);
+        return builder.get();
     }
 
     /**
      * Creates a Key for the return type of the method.
      */
     public static <T> Key<T> forMethod(final Method method) {
-        return Key.<T>builder(method.getGenericReturnType())
+        final Builder<T> builder = Key.builder(method.getGenericReturnType());
+        AnnotationUtil.getOrder(method).ifPresent(builder::setOrder);
+        return builder
                 .setQualifierType(getQualifierType(method))
                 .setName(Keys.getName(method))
                 .setNamespace(Keys.getNamespace(method))
-                .setOrder(getOrder(method))
                 .get();
     }
 
@@ -298,13 +367,10 @@ public class Key<T> implements StringBuilderFormattable {
     }
 
     private static Class<? extends Annotation> getQualifierType(final AnnotatedElement element) {
-        final Annotation qualifierAnnotation = AnnotationUtil.getMetaAnnotation(element, QualifierType.class);
-        return qualifierAnnotation != null ? qualifierAnnotation.annotationType() : null;
-    }
-
-    private static int getOrder(final AnnotatedElement element) {
-        final Ordered annotation = element.getAnnotation(Ordered.class);
-        return annotation != null ? annotation.value() : 0;
+        return AnnotationUtil.findAnnotatedAnnotations(element, QualifierType.class)
+                .map(annotatedAnnotation -> annotatedAnnotation.getAnnotation().annotationType())
+                .findFirst()
+                .orElse(null);
     }
 
     /**
@@ -312,17 +378,17 @@ public class Key<T> implements StringBuilderFormattable {
      *
      * @param <T> type of key
      */
-    public static final class Builder<T> implements Supplier<Key<T>> {
+    public static class Builder<T> implements Supplier<Key<T>> {
         private final Type type;
         private final Class<T> rawType;
         private Class<? extends Annotation> qualifierType;
         private String name;
         private String namespace;
-        private Integer order;
+        private OptionalInt order = OptionalInt.empty();
 
         private Builder(final Type type) {
             this.type = type;
-            rawType = Cast.cast(TypeUtil.getRawType(type));
+            rawType = TypeUtil.getRawType(type);
         }
 
         private Builder(final Class<T> type) {
@@ -369,7 +435,7 @@ public class Key<T> implements StringBuilderFormattable {
          * the {@link Ordered} annotation on the type of the key.
          */
         public Builder<T> setOrder(final int order) {
-            this.order = order;
+            this.order = OptionalInt.of(order);
             return this;
         }
 
@@ -378,13 +444,16 @@ public class Key<T> implements StringBuilderFormattable {
          */
         @Override
         public Key<T> get() {
-            if (name == null) {
+            if (Strings.isBlank(name)) {
                 name = Strings.EMPTY;
             }
-            if (namespace == null) {
+            if (Strings.isBlank(namespace)) {
                 namespace = Strings.EMPTY;
             }
-            final int order = this.order != null ? this.order : getOrder(rawType);
+            OptionalInt order = this.order;
+            if (order.isEmpty()) {
+                order = AnnotationUtil.getOrder(rawType);
+            }
             return new Key<>(type, rawType, qualifierType, name, namespace, order);
         }
     }

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.util;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
+import java.lang.ref.WeakReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
@@ -63,6 +64,34 @@ final class LazyUtil {
         @Override
         public String toString() {
             return String.valueOf(value);
+        }
+    }
+
+    static class WeakConstant<T> implements Lazy<T> {
+        private final WeakReference<T> reference;
+
+        WeakConstant(final T value) {
+            reference = new WeakReference<>(value);
+        }
+
+        @Override
+        public T value() {
+            return reference.get();
+        }
+
+        @Override
+        public boolean isInitialized() {
+            return true;
+        }
+
+        @Override
+        public void set(final T newValue) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(value());
         }
     }
 

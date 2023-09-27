@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.async;
 
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -28,9 +27,7 @@ public class AsyncLoggerContextSelectorInitialStateTest {
 
     @Test
     public void testLoggerContextsListInitiallyEmpty() {
-        final Injector injector = DI.createInjector();
-        injector.init();
-        final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector(injector);
+        final AsyncLoggerContextSelector selector = new AsyncLoggerContextSelector(DI.createInitializedFactory());
         assertTrue(selector.getLoggerContexts().isEmpty());
     }
 }

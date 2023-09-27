@@ -19,7 +19,6 @@ package org.apache.logging.log4j.plugins.convert;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -66,10 +65,9 @@ class TypeConverterRegistryTest {
 
     @Test
     public void testMultipleComparableConverters() {
-        final Injector injector = DI.createInjector();
-        injector.init();
-        final TypeConverter<?> converter = injector.getTypeConverter(CustomTestClass1.class);
-        assertThat(converter, instanceOf(CustomTestClass1Converter2.class));
+        final TypeConverter<CustomTestClass1> typeConverter = DI.createInitializedFactory()
+                .getTypeConverter(CustomTestClass1.class);
+        assertThat(typeConverter, instanceOf(CustomTestClass1Converter2.class));
     }
 
     public static final class CustomTestClass2 {
@@ -104,10 +102,9 @@ class TypeConverterRegistryTest {
 
     @Test
     public void testMultipleIncomparableConverters() {
-        final Injector injector = DI.createInjector();
-        injector.init();
-        final TypeConverter<?> converter = injector.getTypeConverter(CustomTestClass2.class);
-        assertThat(converter, instanceOf(CustomTestClass2Converter1.class));
+        final TypeConverter<CustomTestClass2> typeConverter = DI.createInitializedFactory()
+                .getTypeConverter(CustomTestClass2.class);
+        assertThat(typeConverter, instanceOf(CustomTestClass2Converter1.class));
     }
 
 }

@@ -100,14 +100,6 @@ public interface Configuration extends Filterable {
 
     void removeLogger(final String name);
 
-    /**
-     * Returns the list of packages to scan for plugins for this Configuration.
-     *
-     * @return the list of plugin packages.
-     * @since 2.1
-     */
-    List<String> getPluginPackages();
-
     Map<String, String> getProperties();
 
     /**

@@ -18,7 +18,7 @@ package org.apache.logging.log4j.plugins.test.validation;
 
 import java.util.Objects;
 
-import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -27,7 +27,7 @@ import org.apache.logging.log4j.plugins.validation.constraints.Required;
 /**
  *
  */
-@Namespace("Test")
+@Configurable
 @Plugin("ValidatingPluginWithGenericBuilder")
 public class ValidatingPluginWithGenericBuilder {
 

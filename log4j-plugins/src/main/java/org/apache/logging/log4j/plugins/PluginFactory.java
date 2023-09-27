@@ -22,18 +22,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.logging.log4j.plugins.visit.NodeVisitor;
-
 /**
- * Identifies a static method as a factory to create a {@link Configurable} plugin or a
- * {@linkplain org.apache.logging.log4j.plugins.util.Builder builder class} for constructing a plugin.
- * Factory methods should annotate their parameters with {@link PluginAttribute}, {@link PluginElement},
- * {@link PluginValue}, or other plugin annotations annotated with {@link NodeVisitor.Kind}.
- * If a factory method returns a builder class, this method should have no arguments; instead, the builder class should
- * annotate its fields or parameters in methods to inject plugin configuration data.
- * <p>
- * There can only be one factory method per class.
- * </p>
+ * Annotates a static method as a {@link Factory} within a {@link Plugin}-annotated class. This annotation is provided
+ * for simplifying migrations from the v2 annotation API to v3; new plugins may use {@link Factory} directly.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

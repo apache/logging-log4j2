@@ -16,14 +16,11 @@
  */
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
 
-import java.util.function.Function;
-
-import org.apache.logging.log4j.plugins.Namespace;
+import org.apache.logging.log4j.core.Core;
+import org.apache.logging.log4j.core.config.ConfigurationProcessor;
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.plugins.test.validation.ValidatingPlugin;
@@ -36,12 +33,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @StatusLoggerLevel("OFF")
 public class RequiredValidatorTest {
 
-    private final Injector injector = DI.createInjector().registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity);
+    private final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
+    private final ConfigurationProcessor processor = new ConfigurationProcessor(instanceFactory);
     private Node node;
 
     @BeforeEach
     public void setUp() throws Exception {
-        final PluginNamespace category = injector.getInstance(new @Namespace("Test") Key<>() {});
+        final PluginNamespace category = instanceFactory.getInstance(Core.PLUGIN_NAMESPACE_KEY);
         final PluginType<?> pluginType = category.get("Validator");
         assertNotNull(pluginType, "Rebuild this module to make sure annotation processing kicks in.");
         node = new Node(null, "Validator", pluginType);
@@ -49,14 +47,14 @@ public class RequiredValidatorTest {
 
     @Test
     public void testNullDefaultValue() throws Exception {
-        final ValidatingPlugin validatingPlugin = injector.configure(node);
+        final ValidatingPlugin validatingPlugin = processor.processNodeTree(node);
         assertNull(validatingPlugin);
     }
 
     @Test
     public void testNonNullValue() throws Exception {
         node.getAttributes().put("name", "foo");
-        final ValidatingPlugin validatingPlugin = injector.configure(node);
+        final ValidatingPlugin validatingPlugin = processor.processNodeTree(node);
         assertEquals("foo", validatingPlugin.getName());
     }
 }

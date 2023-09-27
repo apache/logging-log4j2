@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Function;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
@@ -30,35 +29,32 @@ import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationProcessor;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.ProcessIdUtil;
 import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.di.Binding;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
+@ConfigurationFactoryType(BasicConfigurationFactory.class)
 public class Rfc5424LayoutTest {
     LoggerContext ctx = LoggerContext.getContext();
     Logger root = ctx.getRootLogger();
@@ -81,20 +77,6 @@ public class Rfc5424LayoutTest {
     private static final String collectionLine2 = "[Extra@18060 Item1=\"Hello\" Item2=\"World\"]";
     private static final String collectionLine3 = "[RequestContext@3692 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"]";
     private static final String collectionEndOfLine = "Transfer Complete";
-
-
-    @BeforeAll
-    public static void setupClass() {
-        StatusLogger.getLogger().setLevel(Level.OFF);
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, Lazy.lazy(BasicConfigurationFactory::new));
-        ctx.reconfigure();
-    }
-
-    @AfterAll
-    public static void cleanupClass() {
-        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
-    }
 
     /**
      * Test case for MDC conversion pattern.
@@ -572,18 +554,18 @@ public class Rfc5424LayoutTest {
         final Rfc5424Layout layout = new Rfc5424Layout.Rfc5424LayoutBuilder().build();
         checkDefaultValues(layout);
 
-        final PluginNamespace corePlugins = ctx.getInjector().getInstance(Core.PLUGIN_NAMESPACE_KEY);
+        final PluginNamespace corePlugins = ctx.getInstanceFactory().getInstance(Core.PLUGIN_NAMESPACE_KEY);
         final PluginType<?> pluginType = corePlugins.get("Rfc5424Layout");
         assertNotNull(pluginType);
         final Node node = new Node(null, "Rfc5424Layout", pluginType);
         node.getAttributes().put("name", "Rfc5242Layout");
 
-        final Injector injector = DI.createInjector()
-                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .registerBinding(Configuration.KEY, () -> ctx.getConfiguration());
-        final Object obj = injector.configure(node);
-        assertThat(obj).isInstanceOf(Rfc5424Layout.class);
-        checkDefaultValues((Rfc5424Layout) obj);
+        final ConfigurableInstanceFactory factory = DI.createInitializedFactory();
+        factory.registerBinding(Binding.from(Configuration.KEY).toInstance(ctx.getConfiguration()));
+        final ConfigurationProcessor processor = new ConfigurationProcessor(factory);
+        final Rfc5424Layout object = processor.processNodeTree(node);
+        assertNotNull(object);
+        checkDefaultValues(object);
     }
 
     private void checkDefaultValues(final Rfc5424Layout layout) {

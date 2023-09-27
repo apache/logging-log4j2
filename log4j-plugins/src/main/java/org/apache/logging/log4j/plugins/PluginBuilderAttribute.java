@@ -24,18 +24,16 @@ import java.lang.annotation.Target;
 
 import org.apache.logging.log4j.plugins.name.NameProvider;
 import org.apache.logging.log4j.plugins.name.PluginBuilderAttributeNameProvider;
-import org.apache.logging.log4j.plugins.visit.NodeVisitor;
-import org.apache.logging.log4j.plugins.visit.PluginBuilderAttributeVisitor;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Marks an annotated element as a plugin attribute. Treated similarly to {@link PluginAttribute} but without any
- * default value injection.
+ * Qualifier for a plugin attribute for configuration options of a plugin. This works similarly to {@link PluginAttribute}
+ * but without a default value being specified in the annotation; instead, default values should be handled programmatically
+ * such as through a default field value.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.TYPE})
-@NodeVisitor.Kind(PluginBuilderAttributeVisitor.class)
+@Target({ElementType.PARAMETER, ElementType.FIELD, ElementType.TYPE, ElementType.TYPE_USE})
 @NameProvider(PluginBuilderAttributeNameProvider.class)
 @QualifierType
 public @interface PluginBuilderAttribute {

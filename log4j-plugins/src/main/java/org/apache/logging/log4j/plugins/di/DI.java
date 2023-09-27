@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.plugins.di;
 
-import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
 
 /**
- * Factory for {@linkplain Injector factory factories}.
+ * Factory for {@linkplain InstanceFactory instance factories}.
  */
 public final class DI {
     private DI() {
@@ -27,22 +27,50 @@ public final class DI {
     }
 
     /**
-     * Creates a new Injector with no bindings.
+     * Creates a new {@linkplain #initializeFactory(ConfigurableInstanceFactory) initialized} instance factory.
+     *
+     * @return the initialized instance factory
      */
-    public static Injector createInjector() {
-        return new DefaultInjector();
+    public static ConfigurableInstanceFactory createInitializedFactory() {
+        final var factory = createFactory();
+        initializeFactory(factory);
+        return factory;
     }
 
     /**
-     * Creates a new Injector with the provided bundles as initial bindings. Bundles may be either Class instances or object
-     * instances with {@link Factory}-annotated methods. Classes are dependency-injected before scanning for factory methods
-     * while instances are assumed to be already configured.
+     * Creates a new instance factory with the provided initial bindings and subsequently
+     * {@linkplain #initializeFactory(ConfigurableInstanceFactory) initializes} it.
+     *
+     * @param bindings the bindings to register before initializing the factory
+     * @return the initialized instance factory
      */
-    public static Injector createInjector(final Object... bundles) {
-        final var injector = new DefaultInjector();
-        for (final Object module : bundles) {
-            injector.registerBundle(module);
+    public static ConfigurableInstanceFactory createInitializedFactory(final Binding<?>... bindings) {
+        final var factory = createFactory();
+        for (final Binding<?> binding : bindings) {
+            factory.registerBinding(binding);
         }
-        return injector;
+        initializeFactory(factory);
+        return factory;
+    }
+
+    /**
+     * Creates a new instance factory. This should be {@linkplain #initializeFactory(ConfigurableInstanceFactory)
+     * initialized} after setup.
+     *
+     * @return a new instance factory
+     */
+    public static ConfigurableInstanceFactory createFactory() {
+        return new DefaultInstanceFactory();
+    }
+
+    /**
+     * Initializes the given instance factory with all registered {@link ConfigurableInstanceFactoryPostProcessor}
+     * services.
+     *
+     * @param factory the instance factory to initialize
+     */
+    public static void initializeFactory(final ConfigurableInstanceFactory factory) {
+        ConfigurableInstanceFactoryPostProcessor.getPostProcessors()
+                .forEach(processor -> processor.postProcessFactory(factory));
     }
 }

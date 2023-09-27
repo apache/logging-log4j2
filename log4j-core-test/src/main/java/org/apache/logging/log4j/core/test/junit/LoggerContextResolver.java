@@ -27,9 +27,11 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.LoggerContextAccessor;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
+import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.plugins.di.Binding;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.test.junit.TypeBasedParameterResolver;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -114,18 +116,23 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
 
     private static LoggerContext setUpLoggerContext(final LoggerContextSource source, final ExtensionContext extensionContext) {
         final String displayName = extensionContext.getDisplayName();
-        final Injector injector = extensionContext.getTestInstance().map(DI::createInjector).orElseGet(DI::createInjector);
-        injector.init();
+        final ConfigurableInstanceFactory instanceFactory = DI.createFactory();
+        extensionContext.getTestInstance().ifPresent(instanceFactory::registerBundle);
+        final Class<? extends ContextSelector> contextSelectorClass = source.selector();
+        if (contextSelectorClass != ContextSelector.class) {
+            instanceFactory.registerBinding(Binding.from(ContextSelector.KEY).to(instanceFactory.getFactory(contextSelectorClass)));
+        }
+        DI.initializeFactory(instanceFactory);
         final Log4jContextFactory loggerContextFactory;
         if (source.bootstrap()) {
-            loggerContextFactory = new Log4jContextFactory(injector);
+            loggerContextFactory = new Log4jContextFactory(instanceFactory);
             LogManager.setFactory(loggerContextFactory);
         } else {
             loggerContextFactory = (Log4jContextFactory) LogManager.getFactory();
         }
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         final ClassLoader classLoader = testClass.getClassLoader();
-        final Map.Entry<String, Object> injectorContext = Map.entry(Injector.class.getName(), injector);
+        final Map.Entry<String, Object> injectorContext = Map.entry(ConfigurableInstanceFactory.class.getName(), instanceFactory);
         final String configLocation = getConfigLocation(source, extensionContext);
         final URI configUri;
         if (source.v1config()) {

@@ -34,8 +34,9 @@ import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.plugins.di.Binding;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
@@ -121,10 +122,10 @@ public class AsyncThreadContextTest {
     static void doTestAsyncLogWritesToLog(final ContextImpl contextImpl, final Mode asyncMode, final Class<?> testClass, final Path loggingPath, final TestProperties props) throws Exception {
         final Path testLoggingPath = loggingPath.resolve(contextImpl.toString()).resolve(asyncMode.toString());
         props.setProperty("logging.path", testLoggingPath.toString());
-        final Injector injector = DI.createInjector();
-        injector.registerBinding(ContextSelector.KEY, injector.getFactory(asyncMode.contextSelectorType));
-        injector.init();
-        final Log4jContextFactory factory = new Log4jContextFactory(injector);
+        final ConfigurableInstanceFactory instanceFactory = DI.createFactory();
+        instanceFactory.registerBinding(Binding.from(ContextSelector.KEY).to(instanceFactory.getFactory(asyncMode.contextSelectorType)));
+        DI.initializeFactory(instanceFactory);
+        final Log4jContextFactory factory = new Log4jContextFactory(instanceFactory);
         final String fqcn = testClass.getName();
         final ClassLoader classLoader = testClass.getClassLoader();
         final String name = contextImpl.toString() + ' ' + asyncMode;

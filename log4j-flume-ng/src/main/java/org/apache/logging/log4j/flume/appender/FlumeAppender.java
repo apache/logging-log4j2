@@ -34,7 +34,7 @@ import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.util.Timer;
 
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
@@ -214,7 +214,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
             @PluginElement final FlumeEventFactory factory,
             @PluginElement Layout layout,
             @PluginElement final Filter filter,
-            final Injector injector) {
+            final ConfigurableInstanceFactory instanceFactory) {
 
         final boolean embed = embedded != null ? Boolean.parseBoolean(embedded) :
             (agents == null || agents.length == 0 || hosts == null || hosts.isEmpty()) && properties != null && properties.length > 0;
@@ -285,7 +285,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
                 break;
             case PERSISTENT:
                 manager = FlumePersistentManager.getManager(name, getAgents(agents, hosts), properties, batchCount, retries,
-                        connectTimeoutMillis, reqTimeoutMillis, delayMillis, lockTimeoutRetryCount, dataDir, injector);
+                        connectTimeoutMillis, reqTimeoutMillis, delayMillis, lockTimeoutRetryCount, dataDir, instanceFactory);
                 break;
             default:
                 LOGGER.debug("No manager type specified. Defaulting to AVRO");

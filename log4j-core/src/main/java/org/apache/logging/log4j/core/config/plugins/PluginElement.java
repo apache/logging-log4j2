@@ -25,8 +25,6 @@ import java.lang.annotation.Target;
 import org.apache.logging.log4j.core.config.plugins.util.PluginElementNameProvider;
 import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.name.NameProvider;
-import org.apache.logging.log4j.plugins.visit.NodeVisitor;
-import org.apache.logging.log4j.plugins.visit.PluginElementVisitor;
 
 /**
  * Identifies a parameter as a Plugin and corresponds with an XML element (or equivalent) in configuration files.
@@ -35,7 +33,6 @@ import org.apache.logging.log4j.plugins.visit.PluginElementVisitor;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
-@NodeVisitor.Kind(PluginElementVisitor.class)
 @NameProvider(PluginElementNameProvider.class)
 @QualifierType
 @Deprecated(since = "3.0.0")

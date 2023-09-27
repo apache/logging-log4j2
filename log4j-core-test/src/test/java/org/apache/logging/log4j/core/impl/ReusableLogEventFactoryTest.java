@@ -20,9 +20,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,16 +31,11 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class ReusableLogEventFactoryTest {
 
-    private final Injector injector = DI.createInjector();
-
-    @BeforeEach
-    void setUp() {
-        injector.init();
-    }
+    private final ConfigurableInstanceFactory instanceFactory = DI.createInitializedFactory();
 
     @Test
     public void testCreateEventReturnsDifferentInstanceIfNotReleased() throws Exception {
-        final ReusableLogEventFactory factory = injector.getInstance(ReusableLogEventFactory.class);
+        final ReusableLogEventFactory factory = instanceFactory.getInstance(ReusableLogEventFactory.class);
         final LogEvent event1 = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
         final LogEvent event2 = callCreateEvent(factory, "b", Level.INFO, new SimpleMessage("xyz"), null);
         assertNotSame(event1, event2);
@@ -51,7 +45,7 @@ public class ReusableLogEventFactoryTest {
 
     @Test
     public void testCreateEventReturnsSameInstance() throws Exception {
-        final ReusableLogEventFactory factory = injector.getInstance(ReusableLogEventFactory.class);
+        final ReusableLogEventFactory factory = instanceFactory.getInstance(ReusableLogEventFactory.class);
         final LogEvent event1 = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
         ReusableLogEventFactory.release(event1);
         final LogEvent event2 = callCreateEvent(factory, "b", Level.INFO, new SimpleMessage("xyz"), null);
@@ -65,7 +59,7 @@ public class ReusableLogEventFactoryTest {
 
     @Test
     public void testCreateEventOverwritesFields() throws Exception {
-        final ReusableLogEventFactory factory = injector.getInstance(ReusableLogEventFactory.class);
+        final ReusableLogEventFactory factory = instanceFactory.getInstance(ReusableLogEventFactory.class);
         final LogEvent event1 = callCreateEvent(factory, "a", Level.DEBUG, new SimpleMessage("abc"), null);
         assertEquals("a", event1.getLoggerName(), "logger");
         assertEquals(Level.DEBUG, event1.getLevel(), "level");
@@ -90,7 +84,7 @@ public class ReusableLogEventFactoryTest {
 
     @Test
     public void testCreateEventReturnsThreadLocalInstance() throws Exception {
-        final ReusableLogEventFactory factory = injector.getInstance(ReusableLogEventFactory.class);
+        final ReusableLogEventFactory factory = instanceFactory.getInstance(ReusableLogEventFactory.class);
         final LogEvent[] event1 = new LogEvent[1];
         final LogEvent[] event2 = new LogEvent[1];
         final Thread t1 = new Thread("THREAD 1") {
@@ -129,7 +123,7 @@ public class ReusableLogEventFactoryTest {
 
     @Test
     public void testCreateEventInitFieldsProperly() throws Exception {
-        final ReusableLogEventFactory factory = injector.getInstance(ReusableLogEventFactory.class);
+        final ReusableLogEventFactory factory = instanceFactory.getInstance(ReusableLogEventFactory.class);
         final LogEvent event = callCreateEvent(factory, "logger", Level.INFO, new SimpleMessage("xyz"), null);
         try {
             assertNotNull(event.getContextData());
