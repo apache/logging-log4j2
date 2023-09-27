@@ -184,15 +184,21 @@
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths combine.self="override" />
+        </configuration>
         <executions>
           <execution>
             <!-- disable annotation processing for first pass -->
             <id>default-compile</id>
             <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-              <proc>none</proc>
+              <annotationProcessorPaths>
+                <path>
+                  <groupId>com.google.errorprone</groupId>
+                  <artifactId>error_prone_core</artifactId>
+                  <version>${error-prone.version}</version>
+                </path>
+              </annotationProcessorPaths>
             </configuration>
           </execution>
           <execution>
@@ -203,9 +209,7 @@
             </goals>
             <phase>process-classes</phase>
             <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
+              <compilerArgs combine.self="override" />
               <proc>only</proc>
             </configuration>
           </execution>
