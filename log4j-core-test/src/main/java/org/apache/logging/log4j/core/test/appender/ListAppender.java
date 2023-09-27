@@ -38,6 +38,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.layout.SerializedLayout;
+import org.awaitility.Awaitility;
 
 /**
  * This appender is primarily used for testing. Use in a real environment is discouraged as the
@@ -212,10 +213,7 @@ public class ListAppender extends AbstractAppender {
      * what we have so far.
      */
     public List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit) throws InterruptedException {
-        final long endMillis = System.currentTimeMillis() + timeUnit.toMillis(timeout);
-        while (messages.size() < minSize && System.currentTimeMillis() < endMillis) {
-            Thread.sleep(100);
-        }
+        Awaitility.waitAtMost(timeout, timeUnit).until(() -> messages.size() >= minSize);
         return getMessages();
     }
 

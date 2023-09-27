@@ -46,6 +46,10 @@
       <artifactId>assertj-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+    </dependency>
+    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
@@ -90,11 +94,6 @@
           <artifactId>geronimo-jms_1.1_spec</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.awaitility</groupId>
-      <artifactId>awaitility</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache-extras.beanshell</groupId>
