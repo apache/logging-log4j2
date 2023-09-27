@@ -15,7 +15,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="off">
+<Configuration status="OFF">
   <Appenders>
     <List name="List">
       <PatternLayout pattern="%c %testformat - %testparameters - %m"/>
