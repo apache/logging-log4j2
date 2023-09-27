@@ -26,13 +26,14 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.SingletonFactory;
 import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("async")
+@UsingStatusListener
 public class AsyncLoggersWithAsyncAppenderTest {
 
     @SingletonFactory
@@ -41,18 +42,17 @@ public class AsyncLoggersWithAsyncAppenderTest {
     }
 
     @Test
-    @LoggerContextSource("AsyncLoggersWithAsyncAppenderTest.xml")
+    @LoggerContextSource
     public void testLoggingWorks(final Logger logger, @Named("List") final ListAppender appender) throws Exception {
         logger.error("This {} a test", "is");
         logger.warn("Hello {}!", "world");
-        final List<String> list = appender.getMessages(2, 100, TimeUnit.MILLISECONDS);
-        assertNotNull(list, "No events generated");
-        assertEquals(2, list.size(), "Incorrect number of events ");
+        final List<String> list = appender.getMessages(2, 1, TimeUnit.SECONDS);
+        assertThat(list).as("Log events").hasSize(2);
         String msg = list.get(0);
         String expected = getClass().getName() + " This {} a test - [is] - This is a test";
-        assertEquals(expected, msg);
+        assertThat(msg).isEqualTo(expected);
         msg = list.get(1);
         expected = getClass().getName() + " Hello {}! - [world] - Hello world!";
-        assertEquals(expected, msg);
+        assertThat(msg).isEqualTo(expected);
     }
 }
