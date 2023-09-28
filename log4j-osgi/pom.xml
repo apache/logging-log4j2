@@ -31,6 +31,7 @@
     <docLabel>OSGi Documentation</docLabel>
     <projectDir>/osgi</projectDir>
     <module.name>org.apache.logging.log4j.osgi</module.name>
+    <skipTests>true</skipTests>
   </properties>
   <dependencies>
     <dependency>
