@@ -30,7 +30,16 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Kubernetes Library Documentation</docLabel>
     <projectDir>/kubernetes</projectDir>
-    <module.name>org.apache.logging.log4j.kubernetes</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- Standardize names -->
+      kubernetes.client;substitute="kubernetes-client",
+      kubernetes.model.core;substitute="kubernetes-model-core
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
   <dependencies>
     <dependency>

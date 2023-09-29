@@ -20,4 +20,9 @@
  * and your JPA provider of choice on the class path; these Maven dependencies are optional and will not automatically
  * be added to your classpath.
  */
+@Export
+@Open("org.apache.logging.log4j.core")
 package org.apache.logging.log4j.core.appender.db.jpa;
+
+import aQute.bnd.annotation.jpms.Open;
+import org.osgi.annotation.bundle.Export;

@@ -15,11 +15,6 @@
  * limitations under the license.
  */
 /**
- * The classes in this package contain the MongoDB provider for the NoSQL Appender.
+ * Internal representation of Docker objects.
  */
-@Export
-@Open("org.apache.logging.log4j.core")
-package org.apache.logging.log4j.mongodb3;
-
-import aQute.bnd.annotation.jpms.Open;
-import org.osgi.annotation.bundle.Export;
+package org.apache.logging.log4j.docker.model;
