@@ -30,7 +30,16 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Tag Library Documentation</docLabel>
     <projectDir>/taglib</projectDir>
-    <module.name>org.apache.logging.log4j.taglib</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- Correct module names -->
+      javax.servlet.api;substitute="javax.servlet-api",
+      javax.servlet.jsp.api;substitute="javax.servlet.jsp-api"
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
   <dependencies>
     <dependency>

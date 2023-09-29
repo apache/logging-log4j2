@@ -15,11 +15,12 @@
  * limitations under the license.
  */
 /**
- * The classes in this package contain the MongoDB provider for the NoSQL Appender.
+ * The classes in this package contain the MongoDB provider for the NoSQL
+ * Appender.
  */
 @Export
 @Open("org.apache.logging.log4j.core")
-package org.apache.logging.log4j.mongodb3;
+package org.apache.logging.log4j.spring.boot;
 
 import aQute.bnd.annotation.jpms.Open;
 import org.osgi.annotation.bundle.Export;

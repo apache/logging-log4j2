@@ -30,7 +30,16 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Cassandra Documentation</docLabel>
     <projectDir>/log4j-cassandra</projectDir>
-    <module.name>org.apache.logging.log4j.cassandra</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- Standardize name -->
+      cassandra.driver.core;substitute="cassandra-driver-core"
+    </bnd-extra-module-options>
+
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
     <!-- cassandra-all breaks with a newer version -->
     <!-- at least this version has one CVE less than the one suggested by Cassandra -->

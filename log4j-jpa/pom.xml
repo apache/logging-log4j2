@@ -30,7 +30,16 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j JPA Documentation</docLabel>
     <projectDir>/log4j-jpa</projectDir>
-    <module.name>org.apache.logging.log4j.jpa</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- Non detected module names -->
+      com.fasterxml.jackson.core;substitute="jackson-core",
+      com.fasterxml.jackson.databind;substitute="jackson-databind"
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
 
   <dependencies>

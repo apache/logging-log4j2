@@ -38,6 +38,8 @@ import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.internet.MimeUtility;
 import jakarta.mail.util.ByteArrayDataSource;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -227,6 +229,7 @@ public class SmtpManager extends MailManager {
     /**
      * Factory to create the SMTP Manager.
      */
+    @ServiceProvider(value = MailManagerFactory.class, resolution = Resolution.OPTIONAL)
     public static class SMTPManagerFactory implements MailManagerFactory {
 
         @Override

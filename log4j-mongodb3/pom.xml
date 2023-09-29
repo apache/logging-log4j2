@@ -30,7 +30,15 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>MongoDB 3 Documentation</docLabel>
     <projectDir>/log4j-mongodb3</projectDir>
-    <module.name>org.apache.logging.log4j.mongodb3</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- Correct module names -->
+      mongodb.driver.legacy;substitute="mongodb-driver-legacy"
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
     <!-- Override of the parent POM version -->
     <mongodb.version>3.12.11</mongodb.version>

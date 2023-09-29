@@ -18,4 +18,9 @@
  * The classes in this package contain the MongoDB provider for the NoSQL
  * Appender.
  */
+@Export
+@Open("org.apache.logging.log4j.core")
 package org.apache.logging.log4j.mongodb4;
+
+import aQute.bnd.annotation.jpms.Open;
+import org.osgi.annotation.bundle.Export;

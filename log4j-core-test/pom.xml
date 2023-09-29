@@ -30,6 +30,32 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.logging.log4j.core.test</bnd-module-name>
+    <bnd-extra-package-options>
+      <!-- Both JUnit 4 and JUnit 5 are not required -->
+      org.junit.*;resolution:=optional,
+      org.hamcrest.*;resolution:=optional,
+      org.junitpioneer.*;resolution:=optional,
+      com.google.monitoring.*;resolution:=optional,
+      javax.tools;resolution:=optional,
+      org.assertj.*;resolution:=optional,
+      org.awaitility.*;resolution:=optional,
+      org.springframework.mock.*;resolution:=optional
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Non-transitive modules -->
+      junit;transitive=false,
+      org.hamcrest;transitive=false,
+      org.junit.jupiter.api;transitive=false,
+      <!-- Name changes -->
+      org.assertj.core;substitute="assertj-core",
+      java.allocation.instrumenter;substitute="java-allocation-instrumenter",
+      spring.test;substitute="spring-test"
+    </bnd-extra-module-options>
   </properties>
   <dependencies>
     <!-- Pull in useful test classes from API -->
