@@ -536,8 +536,7 @@ public class Bar {
             automatically tail the log file (notice the file:// advertiseURI):
           </p>
           <p>
-            <b>Please note, you must add the JmDns library from <a href="https://jmdns.sourceforge.net">https://jmdns.sourceforge.net</a>
-            to your application classpath in order to advertise with the 'multicastdns' advertiser.</b>
+            <b>Please note, you must add the JmDNS library mentioned above.</b>
           </p>
           <pre class="prettyprint linenums"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
