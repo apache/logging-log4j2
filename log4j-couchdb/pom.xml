@@ -30,7 +30,11 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>CouchDB Documentation</docLabel>
     <projectDir>/log4j-couchdb</projectDir>
-    <module.name>org.apache.logging.log4j.couchdb</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
 
   <dependencies>
@@ -74,4 +78,21 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

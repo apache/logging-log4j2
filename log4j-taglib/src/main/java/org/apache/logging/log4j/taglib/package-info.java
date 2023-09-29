@@ -19,4 +19,7 @@
  *
  * @since 2.0
  */
+@Export
 package org.apache.logging.log4j.taglib;
+
+import org.osgi.annotation.bundle.Export;

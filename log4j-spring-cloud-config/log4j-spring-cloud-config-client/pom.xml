@@ -30,7 +30,16 @@
     <log4jParentDir>${basedir}/../..</log4jParentDir>
     <docLabel>Log4j Spring Cloud Config Client Documentation</docLabel>
     <projectDir>/log4j-spring-cloud-config-client</projectDir>
-    <module.name>org.apache.logging.log4j.spring.cloud.config.client</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.logging.log4j.spring.cloud.config.client</bnd-module-name>
+    <bnd-extra-module-options>
+      <!-- Correct module names -->
+      spring.cloud.context;substitute="spring-cloud-context"
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
   <dependencyManagement>
     <dependencies>

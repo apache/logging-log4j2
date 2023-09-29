@@ -30,6 +30,30 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>API Documentation</docLabel>
     <projectDir>/api</projectDir>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.logging.log4j.test</bnd-module-name>
+    <bnd-extra-package-options>
+      <!-- Both JUnit 4 and JUnit 5 are not required -->
+      org.junit.*;resolution:=optional,
+      org.hamcrest.*;resolution:=optional,
+      org.junitpioneer.*;resolution:=optional,
+      org.apache.maven.*;resolution:=optional,
+      org.codehaus.plexus.util.*;resolution:=optional,
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Non-transitive static modules -->
+      junit;transitive=false,
+      maven.core;substitute="maven-core";transitive=false,
+      maven.model;substitute="maven-model";transitive=false,
+      maven.model.builder;substitute="maven-model-builder";transitive=false,
+      org.hamcrest;transitive=false,
+      org.junit.jupiter.api;transitive=false,
+      org.junitpioneer;transitive=false
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
   <dependencies>
     <dependency>

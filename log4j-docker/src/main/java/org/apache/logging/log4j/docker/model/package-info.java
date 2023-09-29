@@ -14,19 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-module org.apache.logging.log4j.layout.template.json {
-
-    exports org.apache.logging.log4j.layout.template.json;
-    exports org.apache.logging.log4j.layout.template.json.resolver;
-    exports org.apache.logging.log4j.layout.template.json.util;
-
-    opens org.apache.logging.log4j.layout.template.json;
-    opens org.apache.logging.log4j.layout.template.json.resolver;
-    opens org.apache.logging.log4j.layout.template.json.util;
-
-    requires org.apache.logging.log4j;
-    requires org.apache.logging.log4j.plugins;
-    requires org.apache.logging.log4j.core;
-    requires org.jctools.core;
-
-}
+/**
+ * Internal representation of Docker objects.
+ */
+package org.apache.logging.log4j.docker.model;

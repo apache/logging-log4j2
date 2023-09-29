@@ -32,7 +32,12 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Tests for the JSON Template Layout of Apache Log4j</docLabel>
     <projectDir>/log4j-layout-template-json-test</projectDir>
-    <module.name>org.apache.logging.log4j.layout.template.json.test</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.logging.log4j.layout.template.json.test</bnd-module-name>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
 
   <dependencies>
@@ -107,6 +112,19 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
       <!-- Disable ITs, which are Docker-dependent, by default. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
