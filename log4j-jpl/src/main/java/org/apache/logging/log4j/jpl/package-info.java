@@ -14,9 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-module org.apache.logging.log4j.jpl {
-    requires org.apache.logging.log4j;
-    requires transitive org.apache.logging.log4j.core;
+@Export
+package org.apache.logging.log4j.jpl;
 
-    provides java.lang.System.LoggerFinder with org.apache.logging.log4j.jpl.Log4jSystemLoggerFinder;
-}
+import org.osgi.annotation.bundle.Export;

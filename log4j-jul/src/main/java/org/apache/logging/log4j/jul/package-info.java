@@ -14,16 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-module org.apache.logging.log4j.tojul.test {
-    exports org.apache.logging.log4j.tojul.test to org.junit.platform.commons;
+@Export
+package org.apache.logging.log4j.jul;
 
-    requires guava.testlib;
-    requires org.apache.logging.log4j;
-    requires org.apache.logging.log4j.tojul;
-    requires org.assertj.core;
-    requires org.junit.jupiter.api;
-    requires org.junit.jupiter.engine;
-    requires org.junit.platform.commons;
-    requires org.junit.platform.engine;
-    requires java.logging;
-}
+import org.osgi.annotation.bundle.Export;

@@ -34,7 +34,26 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-appserver</projectDir>
-    <module.name>org.apache.logging.log4j.appserver</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-package-options>
+      <!--
+        ~ The Tomcat Log interface hasn't changed in a long time. Since 8.x ServiceLoader is used.
+        -->
+      org.apache.juli.logging;version="[8.0,12)";resolution:=optional,
+      <!--
+        ~ Jetty's AbstractLogger is available since version 7.6.
+        ~ Jetty 10.x uses SLF4J.
+        -->
+      org.eclipse.jetty.util.log;version="[7.6,10)";resolution:=optional
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Non-transitive -->
+      org.apache.tomcat.juli;transitive=false,
+      org.eclipse.jetty.util;transitive=false
+    </bnd-extra-module-options>
   </properties>
 
   <dependencies>

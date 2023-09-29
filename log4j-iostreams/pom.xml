@@ -30,7 +30,6 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Streaming Documentation</docLabel>
     <projectDir>/log4j-iostreams</projectDir>
-    <module.name>org.apache.logging.log4j.iostreams</module.name>
   </properties>
   <dependencies>
     <dependency>
