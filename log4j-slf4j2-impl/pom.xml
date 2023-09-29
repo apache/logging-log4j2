@@ -32,9 +32,22 @@
     <projectDir>/slf4j2-impl</projectDir>
     <!-- Override parent's default -->
     <slf4j.version>2.0.6</slf4j.version>
-    <module.name>org.apache.logging.log4j.slf4j</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- The module descriptor is in `META-INF/versions/9`
+           BND can not find it -->
+      org.slf4j;substitute="slf4j-api"
+    </bnd-extra-module-options>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
@@ -42,11 +55,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-ext</artifactId>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -66,6 +74,11 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-to-slf4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-ext</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -14,15 +14,7 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
-/**
- * SLF4J support. Note that this does indeed share the same package namespace as the one found in log4j-to-slf4j;
- * this is intentional. The two JARs should <em>not</em> be used at the same time! Thus, in an OSGi environment
- * where split packages are not allowed, this error is prevented due to both JARs sharing an exported package name.
- */
 @Export
-@Header(name = Constants.BUNDLE_ACTIVATIONPOLICY, value = Constants.ACTIVATION_LAZY)
-package org.apache.logging.slf4j;
+package org.apache.logging.log4j.jpl;
 
 import org.osgi.annotation.bundle.Export;
-import org.osgi.annotation.bundle.Header;
-import org.osgi.framework.Constants;
