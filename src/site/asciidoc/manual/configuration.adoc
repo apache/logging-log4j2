@@ -548,9 +548,7 @@ Here is an example advertisement-enabled appender configuration which
 can be used by a locally-running Chainsaw to automatically tail the log
 file (notice the file:// advertiseURI):
 
-*Please note, you must add the JmDns library from
-http://jmdns.sourceforge.net to your application classpath in order to
-advertise with the 'multicastdns' advertiser.*
+*Please note, you must add the JmDNS library mentioned above.*
 
 [source,xml]
 ----
