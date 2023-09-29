@@ -30,7 +30,10 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>JCL Bridge Documentation</docLabel>
     <projectDir>/jcl-bridge</projectDir>
-    <module.name>org.apache.logging.log4j.jcl</module.name>
+    <bnd-extra-module-options>
+      <!-- Use module name returned by `jar -d` -->
+      commons.logging;substitute="commons-logging"
+    </bnd-extra-module-options>
   </properties>
   <dependencies>
     <dependency>

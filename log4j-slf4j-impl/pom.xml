@@ -33,9 +33,27 @@
     <!-- Do not upgrade the SLF4J version. 1.7.26 broke backward compatibility. Users can update the version if
       they do not require support for SLF4J's EventData -->
     <slf4j.version>1.7.25</slf4j.version>
-    <module.name>org.apache.logging.log4j.slf4j</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-package-options>
+      <!-- Optional dependencies -->
+      org.slf4j.ext;resolution:=optional
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Optional module -->
+      slf4j.ext;substitute="slf4j-ext";static=true;transitive=false,
+      <!-- Version 1.7.25 has not module name, but 1.7.36 does -->
+      org.slf4j;substitute="slf4j-api"
+    </bnd-extra-module-options>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>

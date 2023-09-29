@@ -29,7 +29,14 @@
 
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
-    <module.name>org.apache.logging.log4j.jul</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-package-options>
+      <!-- Log4j Core is optional -->
+      org.apache.logging.log4j.core.*;resolution:=optional
+    </bnd-extra-package-options>
   </properties>
 
   <dependencies>
