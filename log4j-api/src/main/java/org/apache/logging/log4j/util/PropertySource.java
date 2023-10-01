@@ -38,12 +38,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public interface PropertySource {
 
-    public static final String PREFIX = "log4j2.";
-    public static final String SYSTEM_CONTEXT = "*";
+    String PREFIX = "log4j2.";
+    String SYSTEM_CONTEXT = "*";
 
-    public static final int DEFAULT_PRIORITY = 200;
+    int DEFAULT_PRIORITY = 200;
 
-    static final String MAPPING_FILE = "log4j2.propertyMapping.json";
+    String MAPPING_FILE = "log4j2.propertyMapping.json";
 
     /**
      * Returns the order in which this PropertySource has priority. A higher value means that the source will be

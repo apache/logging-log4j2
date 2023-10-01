@@ -39,7 +39,7 @@ public interface PropertyEnvironment {
     /**
      * Returns {@code true} if the specified property is defined, regardless of its value (it may not have a value).
      *
-     * @param nkey the key of the property to verify
+     * @param key the key of the property to verify
      * @return {@code true} if the specified property is defined, regardless of its value
      */
     default boolean hasProperty(final PropertyKey key) {
@@ -281,7 +281,6 @@ public interface PropertyEnvironment {
     /**
      * Gets the named property as a long.
      *
-     * @param component the owning component of the property
      * @param name         the name of the property to look up
      * @param defaultValue the default value to use if the property is undefined
      * @return the parsed long value of the property or {@code defaultValue} if it was undefined or could not be parsed.

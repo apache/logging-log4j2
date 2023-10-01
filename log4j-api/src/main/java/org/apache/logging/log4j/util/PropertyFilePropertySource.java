@@ -40,7 +40,7 @@ public class PropertyFilePropertySource extends PropertiesPropertySource {
         super(loadPropertiesFile(fileName, useTccl), SYSTEM_CONTEXT, 20, includeInvalid);
     }
 
-    private static Properties loadPropertiesFile(final String fileName, final boolean useTccl) {
+    static Properties loadPropertiesFile(final String fileName, final boolean useTccl) {
         final Properties props = new Properties();
         for (final URL url : LoaderUtil.findResources(fileName, useTccl)) {
             try (final InputStream in = url.openStream()) {

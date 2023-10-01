@@ -361,7 +361,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
                             LOGGER.info("Unable to access configuration {}, ignoring", configLocation.toString());
                         }
                     }
-                    if (configurations.size() == 0) {
+                    if (configurations.isEmpty()) {
                         LOGGER.error("No configurations could be created for {}", configLocations.toString());
                     } else if (configurations.size() == 1) {
                         ctx.start(configurations.get(0));
