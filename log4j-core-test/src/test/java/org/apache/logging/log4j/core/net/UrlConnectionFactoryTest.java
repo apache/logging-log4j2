@@ -46,6 +46,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
@@ -63,6 +64,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 /**
  * Tests the UrlConnectionFactory
  */
+@Isolated
 public class UrlConnectionFactoryTest {
 
     private static final Logger LOGGER = LogManager.getLogger(UrlConnectionFactoryTest.class);
