@@ -238,6 +238,7 @@ public enum LoggingSystemProperty implements PropertyKey {
         return systemKey;
     }
 
+    @Override
     public String toString() {
         return getKey();
     }

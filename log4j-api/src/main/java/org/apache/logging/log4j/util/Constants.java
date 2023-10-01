@@ -28,7 +28,8 @@ public final class Constants {
 
     private static final LazyBoolean isWebApp = new LazyBoolean(() -> PropertiesUtil.getProperties()
             .getBooleanProperty(LoggingSystemProperty.IS_WEBAPP,
-                    isClassAvailable("javax.servlet.Servlet") || isClassAvailable("jakarta.servlet.Servlet")));
+                    LoaderUtil.isClassAvailable("javax.servlet.Servlet") ||
+                            LoaderUtil.isClassAvailable("jakarta.servlet.Servlet")));
 
     /**
      * {@code true} if we think we are running in a web container, based on the boolean value of system property
@@ -88,7 +89,7 @@ public final class Constants {
      * After a large message has been delivered to the appenders, the StringBuilder is trimmed to this size.
      * <p>
      * The default value is 518, which allows the StringBuilder to resize three times from its initial size.
-     * Users can override with system property {@value LoggingSystemProperty#GC_REUSABLE_MESSAGE_MAX_SIZE}.
+     * Users can override with system property {@link LoggingSystemProperty#GC_REUSABLE_MESSAGE_MAX_SIZE}.
      * </p>
      * @since 2.9
      */
@@ -97,20 +98,6 @@ public final class Constants {
 
     private static int size(final PropertyKey property, final int defaultValue) {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
-    }
-
-    /**
-     * Determines if a named Class can be loaded or not.
-     *
-     * @param className The class name.
-     * @return {@code true} if the class could be found or {@code false} otherwise.
-     */
-    private static boolean isClassAvailable(final String className) {
-        try {
-            return LoaderUtil.loadClass(className) != null;
-        } catch (final Throwable e) {
-            return false;
-        }
     }
 
     /**

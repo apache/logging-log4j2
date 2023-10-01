@@ -27,8 +27,6 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
  */
 public class ExtendedLoggerWrapper extends AbstractLogger {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * The wrapped Logger.
      */

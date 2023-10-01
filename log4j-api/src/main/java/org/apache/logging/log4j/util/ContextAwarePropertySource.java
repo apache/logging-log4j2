@@ -34,7 +34,7 @@ public abstract class ContextAwarePropertySource implements PropertySource {
 
     protected final Map<String, Properties> propertiesMap;
     private final String contextName;
-    private boolean includeInvalid;
+    private final boolean includeInvalid;
 
     public ContextAwarePropertySource(final Properties properties, final String contextName,
                                       final boolean includeInvalid) {

@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.util;
 
 
+import java.util.Locale;
+
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**

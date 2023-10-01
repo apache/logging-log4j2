@@ -218,7 +218,7 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     @Override
     public boolean isEmpty() {
         final StringMap map = localMap.get();
-        return map == null || map.size() == 0;
+        return map == null || map.isEmpty();
     }
 
     @Override

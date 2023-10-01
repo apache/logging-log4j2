@@ -178,7 +178,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
     @Override
     public boolean isEmpty() {
         final Map<String, String> map = localMap.get();
-        return map == null || map.size() == 0;
+        return map == null || map.isEmpty();
     }
 
     @Override

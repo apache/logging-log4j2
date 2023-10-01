@@ -329,10 +329,10 @@ public class LoggingSystem {
          * Creates the ThreadContextMap instance used by the ThreadContext.
          * <p>
          * If {@linkplain Constants#isThreadLocalsEnabled() Log4j can use ThreadLocals}, a garbage-free StringMap-based context map can
-         * be installed by setting system property {@value LoggingSystemProperty#THREAD_CONTEXT_GARBAGE_FREE_ENABLED} to {@code true}.
+         * be installed by setting system property {@link LoggingSystemProperty#THREAD_CONTEXT_GARBAGE_FREE_ENABLED} to {@code true}.
          * </p><p>
          * Furthermore, any custom {@code ThreadContextMap} can be installed by setting system property
-         * {@value LoggingSystemProperty#THREAD_CONTEXT_MAP_CLASS} to the fully qualified class name of the class implementing the
+         * {@link LoggingSystemProperty#THREAD_CONTEXT_MAP_CLASS} to the fully qualified class name of the class implementing the
          * {@code ThreadContextMap} interface. (Also implement the {@code ReadOnlyThreadContextMap} interface if your custom
          * {@code ThreadContextMap} implementation should be accessible to applications via the
          * {@link ThreadContext#getThreadContextMap()} method.)
