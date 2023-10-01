@@ -592,7 +592,7 @@ public class PropertiesConfiguration extends Log4j1Configuration {
     private static <T> T newInstanceOf(final String className, final String type) {
         try {
             return LoaderUtil.newInstanceOf(className);
-        } catch (ReflectiveOperationException ex) {
+        } catch (ReflectiveOperationException | LinkageError | RuntimeException ex) {
             LOGGER.error("Unable to create {} {} due to {}:{}", type, className, ex.getClass().getSimpleName(), ex.getMessage(), ex);
             return null;
         }

@@ -112,12 +112,12 @@ public class PropertiesUtil implements PropertyEnvironment {
     private PropertiesUtil(final String contextName, final String propertiesFileName, final boolean useTccl) {
         final List<PropertySource> sources = new ArrayList<>();
         if (propertiesFileName.endsWith(".json") || propertiesFileName.endsWith(".jsn")) {
-            final PropertySource source = getJsonPropertySource(propertiesFileName, useTccl, 50);
+            final PropertySource source = getJsonPropertySource(propertiesFileName, 50);
             if (source != null) {
                 sources.add(source);
             }
         } else {
-            final PropertySource source = new PropertiesPropertySource(PropertyFilePropertySource.loadPropertiesFile(propertiesFileName, useTccl),
+            final PropertySource source = new PropertiesPropertySource(PropertyFilePropertySource.loadPropertiesFile(propertiesFileName),
                 null, 60, true);
             sources.add(source);
         }
@@ -173,10 +173,10 @@ public class PropertiesUtil implements PropertyEnvironment {
     private static Environment getEnvironment(final String namespace, final boolean useTccl) {
         final List<PropertySource> sources = new ArrayList<>();
         final String fileName = String.format("log4j2.%s.properties", namespace);
-        final Properties properties = PropertyFilePropertySource.loadPropertiesFile(fileName, useTccl);
+        final Properties properties = PropertyFilePropertySource.loadPropertiesFile(fileName);
         PropertySource source = new PropertiesPropertySource(properties, 50);
         sources.add(source);
-        source = getJsonPropertySource(String.format("log4j2.%s.json", namespace), useTccl, 60);
+        source = getJsonPropertySource(String.format("log4j2.%s.json", namespace), 60);
         if (source != null) {
             sources.add(source);
         }
@@ -344,7 +344,7 @@ public class PropertiesUtil implements PropertyEnvironment {
         return sources;
     }
 
-    private static PropertySource getJsonPropertySource(final String fileName, final boolean useTccl, int priority) {
+    private static PropertySource getJsonPropertySource(final String fileName, int priority) {
         if (fileName.startsWith("file://")) {
             try {
                 final URL url = new URL(fileName);
@@ -365,7 +365,7 @@ public class PropertiesUtil implements PropertyEnvironment {
                     LowLevelLogUtil.logException("Unable to read " + fileName, ioe);
                 }
             } else {
-                for (final URL url : LoaderUtil.findResources(fileName, useTccl)) {
+                for (final URL url : LoaderUtil.findResources(fileName)) {
                     try (final InputStream in = url.openStream()) {
                         return parseJsonProperties(new String(in.readAllBytes(),
                                 StandardCharsets.UTF_8), PropertySource.SYSTEM_CONTEXT, priority);
@@ -440,7 +440,7 @@ public class PropertiesUtil implements PropertyEnvironment {
 
         private Environment(final String contextName, final List<PropertySource> propertySources) {
             try {
-                final Properties sysProps = PropertyFilePropertySource.loadPropertiesFile(LOG4J_SYSTEM_PROPERTIES_FILE_NAME, false);
+                final Properties sysProps = PropertyFilePropertySource.loadPropertiesFile(LOG4J_SYSTEM_PROPERTIES_FILE_NAME);
                 for (String key : sysProps.stringPropertyNames()) {
                     if (System.getProperty(key) == null) {
                         System.setProperty(key, sysProps.getProperty(key));

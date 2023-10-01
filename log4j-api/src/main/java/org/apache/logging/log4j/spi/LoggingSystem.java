@@ -221,7 +221,7 @@ public class LoggingSystem {
     }
 
     private static List<Provider> loadLegacyProviders() {
-        return LoaderUtil.findUrlResources(PROVIDER_RESOURCE, false)
+        return LoaderUtil.findUrlResources(PROVIDER_RESOURCE)
                 .stream()
                 .map(urlResource -> loadLegacyProvider(urlResource.getUrl(), urlResource.getClassLoader()))
                 .filter(Objects::nonNull)
