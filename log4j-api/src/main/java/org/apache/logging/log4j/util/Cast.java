@@ -18,7 +18,19 @@ package org.apache.logging.log4j.util;
 
 @InternalApi
 public final class Cast {
+
+    /**
+     * Returns the provided object cast to the generic parameter type or null when the argument is null.
+     *
+     * @param o   object to cast
+     * @param <T> the type to cast
+     * @return object after casting or null if the object was null
+     * @throws ClassCastException if the object cannot be cast to the provided type
+     */
     public static <T> T cast(final Object o) {
+        if (o == null) {
+            return null;
+        }
         @SuppressWarnings("unchecked") final T t = (T) o;
         return t;
     }

@@ -94,8 +94,15 @@ import org.apache.logging.log4j.util.ServiceRegistry;
  */
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
 
+    /**
+     * The instance factory for this configuration. This may be a child factory to a LoggerContext
+     * in most cases, though this might be a root level factory for null configurations.
+     */
     protected final ConfigurableInstanceFactory instanceFactory;
 
+    /**
+     * The configuration processor for transforming a node tree into plugin instances.
+     */
     protected final ConfigurationProcessor configurationProcessor;
 
     /**
