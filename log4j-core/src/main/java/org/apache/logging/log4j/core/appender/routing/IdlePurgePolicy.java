@@ -21,6 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
@@ -49,6 +51,7 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
     private RoutingAppender routingAppender;
     private final ConfigurationScheduler scheduler;
     private volatile ScheduledFuture<?> future;
+    private final Lock updateLock = new ReentrantLock();
 
     public IdlePurgePolicy(final long timeToLive, final long checkInterval, final ConfigurationScheduler scheduler) {
         this.timeToLive = timeToLive;
@@ -91,10 +94,13 @@ public class IdlePurgePolicy extends AbstractLifeCycle implements PurgePolicy, R
         final long now = System.currentTimeMillis();
         appendersUsage.put(key, now);
         if (future == null) {
-            synchronized (this) {
+            updateLock.lock();
+            try {
                 if (future == null) {
                     scheduleNext();
                 }
+            } finally {
+                updateLock.unlock();
             }
         }
 

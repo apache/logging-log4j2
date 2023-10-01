@@ -141,7 +141,6 @@ public class TcpSocketManager extends AbstractSocketManager {
                 connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, socketOptions), FACTORY);
     }
 
-    @SuppressWarnings("sync-override") // synchronization on "this" is done within the method
     @Override
     protected void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
         if (socket == null) {
@@ -152,35 +151,36 @@ public class TcpSocketManager extends AbstractSocketManager {
                 throw new AppenderLoggingException("Error writing to " + getName() + ": socket not available");
             }
         }
-        synchronized (this) {
-            try {
-                writeAndFlush(bytes, offset, length, immediateFlush);
-            } catch (final IOException causeEx) {
-                final String config = inetAddress + ":" + port;
-                if (retry && reconnector == null) {
-                    reconnector = createReconnector();
-                    try {
-                        reconnector.reconnect();
-                    } catch (final IOException reconnEx) {
-                        LOGGER.debug("Cannot reestablish socket connection to {}: {}; starting reconnector thread {}",
-                                config, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
-                        reconnector.start();
-                        throw new AppenderLoggingException(
-                                String.format("Error sending to %s for %s", getName(), config), causeEx);
-                    }
-                    try {
-                        writeAndFlush(bytes, offset, length, immediateFlush);
-                    } catch (final IOException e) {
-                        throw new AppenderLoggingException(
-                                String.format("Error writing to %s after reestablishing connection for %s", getName(),
-                                        config),
-                                causeEx);
-                    }
-                    return;
+        writeLock.lock();
+        try {
+            writeAndFlush(bytes, offset, length, immediateFlush);
+        } catch (final IOException causeEx) {
+            final String config = inetAddress + ":" + port;
+            if (retry && reconnector == null) {
+                reconnector = createReconnector();
+                try {
+                    reconnector.reconnect();
+                } catch (final IOException reconnEx) {
+                    LOGGER.debug("Cannot reestablish socket connection to {}: {}; starting reconnector thread {}",
+                            config, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
+                    reconnector.start();
+                    throw new AppenderLoggingException(
+                            String.format("Error sending to %s for %s", getName(), config), causeEx);
                 }
-                final String message = String.format("Error writing to %s for connection %s", getName(), config);
-                throw new AppenderLoggingException(message, causeEx);
+                try {
+                    writeAndFlush(bytes, offset, length, immediateFlush);
+                } catch (final IOException e) {
+                    throw new AppenderLoggingException(
+                            String.format("Error writing to %s after reestablishing connection for %s", getName(),
+                                    config),
+                            causeEx);
+                }
+                return;
             }
+            final String message = String.format("Error writing to %s for connection %s", getName(), config);
+            throw new AppenderLoggingException(message, causeEx);
+        } finally {
+            writeLock.unlock();
         }
     }
 
@@ -195,24 +195,29 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     @Override
-    protected synchronized boolean closeOutputStream() {
-        final boolean closed = super.closeOutputStream();
-        if (reconnector != null) {
-            reconnector.shutdown();
-            reconnector.interrupt();
-            reconnector = null;
-        }
-        final Socket oldSocket = socket;
-        socket = null;
-        if (oldSocket != null) {
-            try {
-                oldSocket.close();
-            } catch (final IOException e) {
-                LOGGER.error("Could not close socket {}", socket);
-                return false;
+    protected boolean closeOutputStream() {
+        writeLock.lock();
+        try {
+            final boolean closed = super.closeOutputStream();
+            if (reconnector != null) {
+                reconnector.shutdown();
+                reconnector.interrupt();
+                reconnector = null;
             }
+            final Socket oldSocket = socket;
+            socket = null;
+            if (oldSocket != null) {
+                try {
+                    oldSocket.close();
+                } catch (final IOException e) {
+                    LOGGER.error("Could not close socket {}", socket);
+                    return false;
+                }
+            }
+            return closed;
+        } finally {
+            writeLock.unlock();
         }
-        return closed;
     }
 
     public int getConnectTimeoutMillis() {
@@ -245,7 +250,7 @@ public class TcpSocketManager extends AbstractSocketManager {
 
         private boolean shutdown = false;
 
-        private final Object owner;
+        private final OutputStreamManager owner;
 
         public Reconnector(final OutputStreamManager owner) {
             super("TcpSocketManager-Reconnector");
@@ -307,13 +312,14 @@ public class TcpSocketManager extends AbstractSocketManager {
             @SuppressWarnings("resource") // newOS is managed by the enclosing Manager.
             final OutputStream newOS = sock.getOutputStream();
             final InetAddress prev = socket != null ? socket.getInetAddress() : null;
-            synchronized (owner) {
-                Closer.closeSilently(getOutputStream());
+            final OutputStream oldOS = getOutputStream();
+            owner.withLock(() -> {
+                Closer.closeSilently(oldOS);
                 setOutputStream(newOS);
                 socket = sock;
                 reconnector = null;
                 shutdown = true;
-            }
+            });
             final String type = prev != null && prev.getHostAddress().equals(socketAddress.getAddress().getHostAddress()) ?
                     "reestablished" : "established";
             LOGGER.debug("Connection to {}:{} {}: {}", host, port, type, socket);

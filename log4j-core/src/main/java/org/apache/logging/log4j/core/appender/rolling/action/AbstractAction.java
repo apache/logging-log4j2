@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.appender.rolling.action;
 
 import java.io.IOException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -41,6 +43,8 @@ public abstract class AbstractAction implements Action {
      */
     private boolean interrupted = false;
 
+    private final Lock lock = new ReentrantLock();
+
     /**
      * Constructor.
      */
@@ -60,20 +64,25 @@ public abstract class AbstractAction implements Action {
      * {@inheritDoc}
      */
     @Override
-    public synchronized void run() {
-        if (!interrupted) {
-            try {
-                execute();
-            } catch (final RuntimeException | IOException ex) {
-                reportException(ex);
-            } catch (final Error e) {
-                // reportException takes Exception, widening to Throwable would break custom implementations
-                // so we wrap Errors in RuntimeException for handling.
-                reportException(new RuntimeException(e));
-            }
+    public void run() {
+        lock.lock();
+        try {
+            if (!interrupted) {
+                try {
+                    execute();
+                } catch (final RuntimeException | IOException ex) {
+                    reportException(ex);
+                } catch (final Error e) {
+                    // reportException takes Exception, widening to Throwable would break custom implementations
+                    // so we wrap Errors in RuntimeException for handling.
+                    reportException(new RuntimeException(e));
+                }
 
-            complete = true;
-            interrupted = true;
+                complete = true;
+                interrupted = true;
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -81,8 +90,13 @@ public abstract class AbstractAction implements Action {
      * {@inheritDoc}
      */
     @Override
-    public synchronized void close() {
-        interrupted = true;
+    public void close() {
+        lock.lock();
+        try {
+            interrupted = true;
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**

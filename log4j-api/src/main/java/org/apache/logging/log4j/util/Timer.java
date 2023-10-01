@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.util;
 
 import java.text.DecimalFormat;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Primarily used in unit tests, but can be used to track elapsed time for a request or portion of any other operation
@@ -36,6 +38,7 @@ public class Timer implements StringBuilderFormattable {
     private static final long NANO_PER_MINUTE = NANO_PER_SECOND * 60;
     private static final long NANO_PER_HOUR = NANO_PER_MINUTE * 60;
     private final ThreadLocal<Long> startTime = ThreadLocal.withInitial(() -> 0L);
+    private final Lock stateChangeLock = new ReentrantLock();
 
 
     /**
@@ -63,18 +66,27 @@ public class Timer implements StringBuilderFormattable {
     /**
      * Start the timer.
      */
-    public synchronized void start()
-    {
-        startTime.set(System.nanoTime());
-        elapsedTime = 0;
-        status = Status.Started;
+    public void start() {
+        stateChangeLock.lock();
+        try {
+            startTime.set(System.nanoTime());
+            elapsedTime = 0;
+            status = Status.Started;
+        } finally {
+            stateChangeLock.unlock();
+        }
     }
 
-    public synchronized void startOrResume() {
-        if (status == Status.Stopped) {
-            start();
-        } else {
-            resume();
+    public void startOrResume() {
+        stateChangeLock.lock();
+        try {
+            if (status == Status.Stopped) {
+                start();
+            } else {
+                resume();
+            }
+        } finally {
+            stateChangeLock.unlock();
         }
     }
 
@@ -82,31 +94,43 @@ public class Timer implements StringBuilderFormattable {
      * Stop the timer.
      * @return the String result of the timer completing.
      */
-    public synchronized String stop()
-    {
-        elapsedTime += System.nanoTime() - startTime.get();
-        startTime.set(0L);
-        status = Status.Stopped;
-        return toString();
+    public String stop() {
+        stateChangeLock.lock();
+        try {
+            elapsedTime += System.nanoTime() - startTime.get();
+            startTime.set(0L);
+            status = Status.Stopped;
+            return toString();
+        } finally {
+            stateChangeLock.unlock();
+        }
     }
 
     /**
      * Pause the timer.
      */
-    public synchronized void pause()
-    {
-        elapsedTime += System.nanoTime() - startTime.get();
-        startTime.set(0L);
-        status = Status.Paused;
+    public void pause() {
+        stateChangeLock.lock();
+        try {
+            elapsedTime += System.nanoTime() - startTime.get();
+            startTime.set(0L);
+            status = Status.Paused;
+        } finally {
+            stateChangeLock.unlock();
+        }
     }
 
     /**
      * Resume the timer.
      */
-    public synchronized void resume()
-    {
-        startTime.set(System.nanoTime());
-        status = Status.Started;
+    public void resume() {
+        stateChangeLock.lock();
+        try {
+            startTime.set(System.nanoTime());
+            status = Status.Started;
+        } finally {
+            stateChangeLock.unlock();
+        }
     }
 
     /**

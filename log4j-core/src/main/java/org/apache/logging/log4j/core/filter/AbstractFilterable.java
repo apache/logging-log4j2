@@ -16,8 +16,9 @@
  */
 package org.apache.logging.log4j.core.filter;
 
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
@@ -74,6 +75,8 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      */
     private volatile Filter filter;
 
+    private final Lock filterLock = new ReentrantLock();
+
     private final Property[] propertyArray;
 
     protected AbstractFilterable() {
@@ -90,17 +93,23 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      * @param filter The Filter to add.
      */
     @Override
-    public synchronized void addFilter(final Filter filter) {
+    public void addFilter(final Filter filter) {
         if (filter == null) {
             return;
         }
-        if (this.filter == null) {
-            this.filter = filter;
-        } else if (this.filter instanceof CompositeFilter) {
-            this.filter = ((CompositeFilter) this.filter).addFilter(filter);
-        } else {
-            final Filter[] filters = new Filter[] {this.filter, filter};
-            this.filter = CompositeFilter.createFilters(filters);
+        filterLock.lock();
+        try {
+            final var currentFilter = this.filter;
+            if (currentFilter == null) {
+                this.filter = filter;
+            } else if (currentFilter instanceof CompositeFilter) {
+                this.filter = ((CompositeFilter) currentFilter).addFilter(filter);
+            } else {
+                final Filter[] filters = new Filter[]{currentFilter, filter};
+                this.filter = CompositeFilter.createFilters(filters);
+            }
+        } finally {
+            filterLock.unlock();
         }
     }
 
@@ -141,23 +150,28 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
      * @param filter The Filter to remove.
      */
     @Override
-    public synchronized void removeFilter(final Filter filter) {
-        if (this.filter == null || filter == null) {
+    public void removeFilter(final Filter filter) {
+        if (filter == null) {
             return;
         }
-        if (this.filter == filter || this.filter.equals(filter)) {
-            this.filter = null;
-        } else if (this.filter instanceof CompositeFilter) {
-            CompositeFilter composite = (CompositeFilter) this.filter;
-            composite = composite.removeFilter(filter);
-            if (composite.size() > 1) {
-                this.filter = composite;
-            } else if (composite.size() == 1) {
-                final Iterator<Filter> iter = composite.iterator();
-                this.filter = iter.next();
-            } else {
+        filterLock.lock();
+        try {
+            final var currentFilter = this.filter;
+            if (currentFilter == filter || currentFilter.equals(filter)) {
                 this.filter = null;
+            } else if (currentFilter instanceof CompositeFilter) {
+                CompositeFilter composite = (CompositeFilter) currentFilter;
+                composite = composite.removeFilter(filter);
+                if (composite.isEmpty()) {
+                    this.filter = null;
+                } else if (composite.size() == 1) {
+                    this.filter = composite.iterator().next();
+                } else {
+                    this.filter = composite;
+                }
             }
+        } finally {
+            filterLock.unlock();
         }
     }
 

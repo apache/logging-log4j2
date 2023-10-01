@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -124,6 +126,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      * Date format used if header = true.
      */
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH);
+    private final Lock dateFormatLock = new ReentrantLock();
 
     /**
      * Host name used to identify messages from this appender.
@@ -167,12 +170,17 @@ public final class SyslogLayout extends AbstractStringLayout {
         return buf.toString();
     }
 
-    private synchronized void addDate(final long timestamp, final StringBuilder buf) {
-        final int index = buf.length() + 4;
-        buf.append(dateFormat.format(new Date(timestamp)));
-        //  RFC 3164 says leading space, not leading zero on days 1-9
-        if (buf.charAt(index) == '0') {
-            buf.setCharAt(index, Chars.SPACE);
+    private void addDate(final long timestamp, final StringBuilder buf) {
+        dateFormatLock.lock();
+        try {
+            final int index = buf.length() + 4;
+            buf.append(dateFormat.format(new Date(timestamp)));
+            //  RFC 3164 says leading space, not leading zero on days 1-9
+            if (buf.charAt(index) == '0') {
+                buf.setCharAt(index, Chars.SPACE);
+            }
+        } finally {
+            dateFormatLock.unlock();
         }
     }
 

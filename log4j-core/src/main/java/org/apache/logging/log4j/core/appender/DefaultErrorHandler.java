@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
@@ -43,6 +45,8 @@ public class DefaultErrorHandler implements ErrorHandler {
     private int exceptionCount = 0;
 
     private long lastExceptionInstantNanos = System.nanoTime() - EXCEPTION_INTERVAL_NANOS - 1;
+
+    private final Lock permitAcquisitionLock = new ReentrantLock();
 
     private final Appender appender;
 
@@ -99,7 +103,8 @@ public class DefaultErrorHandler implements ErrorHandler {
 
     private boolean acquirePermit() {
         final long currentInstantNanos = System.nanoTime();
-        synchronized (this) {
+        permitAcquisitionLock.lock();
+        try {
             if (currentInstantNanos - lastExceptionInstantNanos > EXCEPTION_INTERVAL_NANOS) {
                 lastExceptionInstantNanos = currentInstantNanos;
                 return true;
@@ -110,6 +115,8 @@ public class DefaultErrorHandler implements ErrorHandler {
             } else {
                 return false;
             }
+        } finally {
+            permitAcquisitionLock.unlock();
         }
     }
 

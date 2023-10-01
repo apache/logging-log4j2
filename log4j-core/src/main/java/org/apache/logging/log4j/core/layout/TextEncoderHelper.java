@@ -79,9 +79,7 @@ public final class TextEncoderHelper {
         }
         result = charsetEncoder.flush(byteBuf);
         if (!result.isUnderflow()) {
-            synchronized (destination) {
-                flushRemainingBytes(charsetEncoder, destination, byteBuf);
-            }
+            destination.withLock(() -> flushRemainingBytes(charsetEncoder, destination, byteBuf));
             return;
         }
         // Thread-safety note: no explicit synchronization on ByteBufferDestination below. This is safe, because
@@ -105,12 +103,9 @@ public final class TextEncoderHelper {
      * @since 2.9
      */
     private static void writeChunkedEncodedText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            final ByteBufferDestination destination, ByteBuffer byteBuf, final CoderResult result) {
-        synchronized (destination) {
-            byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf,
-                    result);
-            flushRemainingBytes(charsetEncoder, destination, byteBuf);
-        }
+            final ByteBufferDestination destination, final ByteBuffer byteBuf, final CoderResult result) {
+        destination.withLock(() -> flushRemainingBytes(charsetEncoder, destination,
+                writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf, result)));
     }
 
     /**
@@ -122,7 +117,7 @@ public final class TextEncoderHelper {
      * @since 2.9
      */
     private static void encodeChunkedText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            ByteBuffer byteBuf, final StringBuilder text, final ByteBufferDestination destination) {
+            final ByteBuffer byteBuf, final StringBuilder text, final ByteBufferDestination destination) {
 
         // LOG4J2-1874 ByteBuffer, CharBuffer and CharsetEncoder are thread-local, so no need to synchronize while
         // modifying these objects. Postpone synchronization until accessing the ByteBufferDestination.
@@ -141,24 +136,27 @@ public final class TextEncoderHelper {
             writeEncodedText(charsetEncoder, charBuf, byteBuf, destination, result);
             return;
         }
-        synchronized (destination) {
-            byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf,
-                    result);
-            while (!endOfInput) {
-                result = CoderResult.UNDERFLOW;
-                while (!endOfInput && result.isUnderflow()) {
+        final CoderResult intermediateResult = result;
+        final int intermediatePosition = start;
+        destination.withLock(() -> {
+            var buf = writeAndEncodeAsMuchAsPossible(
+                    charsetEncoder, charBuf, false, destination, byteBuf, intermediateResult);
+            boolean end = false;
+            int position = intermediatePosition;
+            while (!end) {
+                CoderResult coderResult = CoderResult.UNDERFLOW;
+                while (!end && coderResult.isUnderflow()) {
                     charBuf.clear();
-                    final int copied = copy(text, start, charBuf);
-                    start += copied;
-                    endOfInput = start >= text.length();
+                    final int copied = copy(text, position, charBuf);
+                    position += copied;
+                    end = position >= text.length();
                     charBuf.flip();
-                    result = charsetEncoder.encode(charBuf, byteBuf, endOfInput);
+                    coderResult = charsetEncoder.encode(charBuf, buf, end);
                 }
-                byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf,
-                        result);
+                buf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, end, destination, buf, coderResult);
             }
-            flushRemainingBytes(charsetEncoder, destination, byteBuf);
-        }
+            flushRemainingBytes(charsetEncoder, destination, buf);
+        });
     }
 
     /**
@@ -168,11 +166,11 @@ public final class TextEncoderHelper {
     public static void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
             final ByteBufferDestination destination) {
         charsetEncoder.reset();
-        synchronized (destination) {
+        destination.withLock(() -> {
             ByteBuffer byteBuf = destination.getByteBuffer();
             byteBuf = encodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf);
             flushRemainingBytes(charsetEncoder, destination, byteBuf);
-        }
+        });
     }
 
     /**
@@ -247,17 +245,17 @@ public final class TextEncoderHelper {
         if (result.isOverflow()) { // byte buffer full
             // all callers already synchronize on destination but for safety ensure we are synchronized because
             // below calls to drain() may cause destination to swap in a new ByteBuffer object
-            synchronized (destination) {
+            return destination.withLock(() -> {
                 final ByteBuffer destinationBuffer = destination.getByteBuffer();
                 if (destinationBuffer != temp) {
                     temp.flip();
-                    ByteBufferDestinationHelper.writeToUnsynchronized(temp, destination);
+                    destination.unsynchronizedWrite(temp);
                     temp.clear();
                     return destination.getByteBuffer();
                 } else {
                     return destination.drain(destinationBuffer);
                 }
-            }
+            });
         } else {
             return temp;
         }
@@ -276,7 +274,7 @@ public final class TextEncoderHelper {
         }
         if (temp.remaining() > 0 && temp != destination.getByteBuffer()) {
             temp.flip();
-            ByteBufferDestinationHelper.writeToUnsynchronized(temp, destination);
+            destination.unsynchronizedWrite(temp);
             temp.clear();
         }
     }

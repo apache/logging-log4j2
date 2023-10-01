@@ -33,6 +33,8 @@ import java.util.TimeZone;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -584,6 +586,7 @@ public class FastDateParser implements DateParser {
 
     @SuppressWarnings("unchecked") // OK because we are creating an array with no entries
     private static final ConcurrentMap<Locale, Strategy>[] caches = new ConcurrentMap[Calendar.FIELD_COUNT];
+    private static final Lock CACHE_LOCK = new ReentrantLock();
 
     /**
      * Get a cache of Strategies for a particular field
@@ -591,11 +594,14 @@ public class FastDateParser implements DateParser {
      * @return a cache of Locale to Strategy
      */
     private static ConcurrentMap<Locale, Strategy> getCache(final int field) {
-        synchronized (caches) {
+        CACHE_LOCK.lock();
+        try {
             if (caches[field] == null) {
                 caches[field] = new ConcurrentHashMap<>(3);
             }
             return caches[field];
+        } finally {
+            CACHE_LOCK.unlock();
         }
     }
 

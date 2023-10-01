@@ -209,15 +209,26 @@ public class RollingFileManager extends FileManager {
 
     // override to make visible for unit tests
     @Override
-    protected synchronized void write(final byte[] bytes, final int offset, final int length,
+    protected void write(final byte[] bytes, final int offset, final int length,
             final boolean immediateFlush) {
-        super.write(bytes, offset, length, immediateFlush);
+        writeLock.lock();
+        try {
+            size += length;
+            super.write(bytes, offset, length, immediateFlush);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
-    protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
-        size += length;
-        super.writeToDestination(bytes, offset, length);
+    protected void writeToDestination(final byte[] bytes, final int offset, final int length) {
+        writeLock.lock();
+        try {
+            size += length;
+            super.writeToDestination(bytes, offset, length);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     public boolean isRenameEmptyFiles() {
@@ -248,9 +259,14 @@ public class RollingFileManager extends FileManager {
      * Determines if a rollover should occur.
      * @param event The LogEvent.
      */
-    public synchronized void checkRollover(final LogEvent event) {
-        if (triggeringPolicy.isTriggeringEvent(event)) {
-            rollover();
+    public void checkRollover(final LogEvent event) {
+        writeLock.lock();
+        try {
+            if (triggeringPolicy.isTriggeringEvent(event)) {
+                rollover();
+            }
+        } finally {
+            writeLock.unlock();
         }
     }
 
@@ -301,58 +317,68 @@ public class RollingFileManager extends FileManager {
         return status;
     }
 
-    public synchronized void rollover(final long prevFileTime, final long prevRollTime) {
-        LOGGER.debug("Rollover PrevFileTime: {}, PrevRollTime: {}", prevFileTime, prevRollTime);
-        getPatternProcessor().setPrevFileTime(prevFileTime);
-        getPatternProcessor().setCurrentFileTime(prevRollTime);
-        rollover();
+    public void rollover(final long prevFileTime, final long prevRollTime) {
+        writeLock.lock();
+        try {
+            LOGGER.debug("Rollover PrevFileTime: {}, PrevRollTime: {}", prevFileTime, prevRollTime);
+            getPatternProcessor().setPrevFileTime(prevFileTime);
+            getPatternProcessor().setCurrentFileTime(prevRollTime);
+            rollover();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
-    public synchronized void rollover() {
-        if (!hasOutputStream() && !isCreateOnDemand() && !isDirectWrite()) {
-            return;
-        }
-        final String currentFileName = fileName;
-        if (rolloverListeners.size() > 0) {
-            for (final RolloverListener listener : rolloverListeners) {
-                try {
-                    listener.rolloverTriggered(currentFileName);
-                } catch (final Exception ex) {
-                    LOGGER.warn("Rollover Listener {} failed with {}: {}", listener.getClass().getSimpleName(),
-                            ex.getClass().getName(), ex.getMessage());
+    public void rollover() {
+        writeLock.lock();
+        try {
+            if (!hasOutputStream() && !isCreateOnDemand() && !isDirectWrite()) {
+                return;
+            }
+            final String currentFileName = fileName;
+            if (!rolloverListeners.isEmpty()) {
+                for (final RolloverListener listener : rolloverListeners) {
+                    try {
+                        listener.rolloverTriggered(currentFileName);
+                    } catch (final Exception ex) {
+                        LOGGER.warn("Rollover Listener {} failed with {}: {}",
+                                listener.getClass().getSimpleName(), ex.getClass().getName(), ex.getMessage());
+                    }
                 }
             }
-        }
 
-        final boolean interrupted = Thread.interrupted(); // clear interrupted state
-        try {
-            if (interrupted) {
-                LOGGER.warn("RollingFileManager cleared thread interrupted state, continue to rollover");
+            final boolean interrupted = Thread.interrupted(); // clear interrupted state
+            try {
+                if (interrupted) {
+                    LOGGER.warn("RollingFileManager cleared thread interrupted state, continue to rollover");
+                }
+
+                if (rollover(rolloverStrategy)) {
+                    try {
+                        size = 0;
+                        initialTime = System.currentTimeMillis();
+                        createFileAfterRollover();
+                    } catch (final IOException e) {
+                        logError("Failed to create file after rollover", e);
+                    }
+                }
+            } finally {
+                if (interrupted) { // restore interrupted state
+                    Thread.currentThread().interrupt();
+                }
             }
-
-            if (rollover(rolloverStrategy)) {
-                try {
-                    size = 0;
-                    initialTime = System.currentTimeMillis();
-                    createFileAfterRollover();
-                } catch (final IOException e) {
-                    logError("Failed to create file after rollover", e);
+            if (!rolloverListeners.isEmpty()) {
+                for (final RolloverListener listener : rolloverListeners) {
+                    try {
+                        listener.rolloverComplete(currentFileName);
+                    } catch (final Exception ex) {
+                        LOGGER.warn("Rollover Listener {} failed with {}: {}",
+                                listener.getClass().getSimpleName(), ex.getClass().getName(), ex.getMessage());
+                    }
                 }
             }
         } finally {
-            if (interrupted) { // restore interrupted state
-                Thread.currentThread().interrupt();
-            }
-        }
-        if (rolloverListeners.size() > 0) {
-            for (final RolloverListener listener : rolloverListeners) {
-                try {
-                    listener.rolloverComplete(currentFileName);
-                } catch (final Exception ex) {
-                    LOGGER.warn("Rollover Listener {} failed with {}: {}", listener.getClass().getSimpleName(),
-                            ex.getClass().getName(), ex.getMessage());
-                }
-            }
+            writeLock.unlock();
         }
     }
 

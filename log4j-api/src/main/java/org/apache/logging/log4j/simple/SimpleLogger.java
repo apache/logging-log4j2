@@ -20,6 +20,8 @@ import java.io.PrintStream;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
@@ -35,8 +37,6 @@ import org.apache.logging.log4j.util.Strings;
  */
 public class SimpleLogger extends AbstractLogger {
 
-    private static final long serialVersionUID = 1L;
-
     private static final char SPACE = ' ';
 
     /**
@@ -46,6 +46,7 @@ public class SimpleLogger extends AbstractLogger {
      * </p>
      */
     private final DateFormat dateFormatter;
+    private final Lock dateFormatterLock = new ReentrantLock();
 
     private Level level;
 
@@ -200,8 +201,11 @@ public class SimpleLogger extends AbstractLogger {
         if (showDateTime) {
             final Date now = new Date();
             final String dateText;
-            synchronized (dateFormatter) {
+            dateFormatterLock.lock();
+            try {
                 dateText = dateFormatter.format(now);
+            } finally {
+                dateFormatterLock.unlock();
             }
             sb.append(dateText);
             sb.append(SPACE);

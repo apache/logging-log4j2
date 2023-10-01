@@ -21,6 +21,8 @@ import java.util.Calendar;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.core.time.Instant;
 
@@ -413,6 +415,7 @@ public class FixedDateFormat {
     // See http://g.oswego.edu/dl/jmm/cookbook.html
     private char[] cachedDate; // may be null
     private int dateLength;
+    private final Lock cacheLock = new ReentrantLock();
 
     /**
      * Constructs a FixedDateFormat for the specified fixed format.
@@ -542,12 +545,15 @@ public class FixedDateFormat {
 
     private void updateMidnightMillis(final long now) {
         if (now >= midnightTomorrow || now < midnightToday) {
-            synchronized (this) {
+            cacheLock.lock();
+            try {
                 updateCachedDate(now);
                 midnightToday = calcMidnightMillis(now, 0);
                 midnightTomorrow = calcMidnightMillis(now, 1);
 
                 updateDaylightSavingTime();
+            } finally {
+                cacheLock.unlock();
             }
         }
     }

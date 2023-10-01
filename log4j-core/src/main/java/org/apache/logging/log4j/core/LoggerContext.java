@@ -83,7 +83,7 @@ public class LoggerContext extends AbstractLifeCycle
 
     private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
     private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
-    private volatile List<LoggerContextShutdownAware> listeners;
+    private final Lazy<List<LoggerContextShutdownAware>> listeners = Lazy.relaxed(CopyOnWriteArrayList::new);
     private final ConfigurableInstanceFactory instanceFactory;
     private PropertiesUtil properties;
 
@@ -207,18 +207,11 @@ public class LoggerContext extends AbstractLifeCycle
     }
 
     public void addShutdownListener(final LoggerContextShutdownAware listener) {
-        if (listeners == null) {
-            synchronized(this) {
-                if (listeners == null) {
-                    listeners = new CopyOnWriteArrayList<>();
-                }
-            }
-        }
-        listeners.add(listener);
+        listeners.get().add(listener);
     }
 
     public List<LoggerContextShutdownAware> getListeners() {
-        return listeners;
+        return listeners.get();
     }
 
     /**
@@ -441,14 +434,12 @@ public class LoggerContext extends AbstractLifeCycle
             configLock.unlock();
             this.setStopped();
         }
-        if (listeners != null) {
-            for (final LoggerContextShutdownAware listener : listeners) {
+        if (listeners.isInitialized()) {
+            listeners.get().forEach(listener -> {
                 try {
                     listener.contextShutdown(this);
-                } catch (final Exception ex) {
-                    // Ignore the exception.
-                }
-            }
+                } catch (final RuntimeException ignored) {}
+            });
         }
         LOGGER.debug("Stopped {} with status {}", this, true);
         return true;
@@ -851,18 +842,23 @@ public class LoggerContext extends AbstractLifeCycle
      * @param reconfigurable The Configuration that can be reconfigured.
      */
     @Override
-    public synchronized void onChange(final Reconfigurable reconfigurable) {
-        final long startMillis = System.currentTimeMillis();
-        LOGGER.debug("Reconfiguration started for context {} ({})", contextName, this);
-        initApiModule();
-        final Configuration newConfig = reconfigurable.reconfigure();
-        if (newConfig != null) {
-            setConfiguration(newConfig);
-            LOGGER.debug("Reconfiguration completed for {} ({}) in {} milliseconds.", contextName, this,
-                    System.currentTimeMillis() - startMillis);
-        } else {
-            LOGGER.debug("Reconfiguration failed for {} ({}) in {} milliseconds.", contextName, this,
-                    System.currentTimeMillis() - startMillis);
+    public void onChange(final Reconfigurable reconfigurable) {
+        configLock.lock();
+        try {
+            final long startMillis = System.currentTimeMillis();
+            LOGGER.debug("Reconfiguration started for context {} ({})", contextName, this);
+            initApiModule();
+            final Configuration newConfig = reconfigurable.reconfigure();
+            if (newConfig != null) {
+                setConfiguration(newConfig);
+                LOGGER.debug("Reconfiguration completed for {} ({}) in {} milliseconds.", contextName, this,
+                        System.currentTimeMillis() - startMillis);
+            } else {
+                LOGGER.debug("Reconfiguration failed for {} ({}) in {} milliseconds.", contextName, this,
+                        System.currentTimeMillis() - startMillis);
+            }
+        } finally {
+            configLock.unlock();
         }
     }
 

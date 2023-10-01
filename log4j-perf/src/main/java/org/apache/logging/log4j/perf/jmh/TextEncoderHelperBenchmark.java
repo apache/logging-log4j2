@@ -27,7 +27,6 @@ import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
-import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.layout.StringBuilderEncoder;
 import org.apache.logging.log4j.message.Message;
@@ -96,12 +95,12 @@ public class TextEncoderHelperBenchmark {
 
         @Override
         public void writeBytes(final ByteBuffer data) {
-            ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
+            unsynchronizedWrite(data);
         }
 
         @Override
         public void writeBytes(final byte[] data, final int offset, final int length) {
-            ByteBufferDestinationHelper.writeToUnsynchronized(data, offset, length, this);
+            unsynchronizedWrite(data, offset, length);
         }
     }
 

@@ -27,7 +27,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -76,16 +75,17 @@ public abstract class AbstractManager implements AutoCloseable {
      */
     protected static final Logger LOGGER = StatusLogger.getLogger();
 
-    // Need to lock that map instead of using a ConcurrentMap due to stop removing the
-    // manager from the map and closing the stream, requiring the whole stop method to be locked.
-    private static final Map<String, AbstractManager> MAP = new HashMap<>();
-
-    private static final Lock LOCK = new ReentrantLock();
+    private static final ManagerRegistry REGISTRY = new ManagerRegistry();
 
     /**
      * Number of Appenders using this manager.
      */
     protected int count;
+
+    /**
+     * Lock for ensuring exclusive write access to the underlying output destination.
+     */
+    protected final Lock writeLock = new ReentrantLock();
 
     private final String name;
 
@@ -106,20 +106,7 @@ public abstract class AbstractManager implements AutoCloseable {
     }
 
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
-        boolean stopped = true;
-        LOCK.lock();
-        try {
-            --count;
-            if (count <= 0) {
-                MAP.remove(name);
-                LOGGER.debug("Shutting down {} {}", this.getClass().getSimpleName(), getName());
-                stopped = releaseSub(timeout, timeUnit);
-                LOGGER.debug("Shut down {} {}, all resources released: {}", this.getClass().getSimpleName(), getName(), stopped);
-            }
-        } finally {
-            LOCK.unlock();
-        }
-        return stopped;
+        return REGISTRY.releaseManager(this, timeout, timeUnit);
     }
 
     /**
@@ -131,29 +118,9 @@ public abstract class AbstractManager implements AutoCloseable {
      * @param <T> The type of the Factory data.
      * @return A Manager with the specified name and type.
      */
-    // @SuppressWarnings("resource"): this is a factory method, the resource is allocated and released elsewhere.
-    @SuppressWarnings("resource")
     public static <M extends AbstractManager, T> M getManager(final String name, final ManagerFactory<M, T> factory,
                                                               final T data) {
-        LOCK.lock();
-        try {
-            @SuppressWarnings("unchecked")
-            M manager = (M) MAP.get(name);
-            if (manager == null) {
-                manager = factory.createManager(name, data);
-                if (manager == null) {
-                    throw new IllegalStateException("ManagerFactory [" + factory + "] unable to create manager for ["
-                            + name + "] with data [" + data + "]");
-                }
-                MAP.put(name, manager);
-            } else {
-                manager.updateData(data);
-            }
-            manager.count++;
-            return manager;
-        } finally {
-            LOCK.unlock();
-        }
+        return REGISTRY.getOrCreateManager(name, factory, data);
     }
 
     /**
@@ -171,12 +138,7 @@ public abstract class AbstractManager implements AutoCloseable {
      * @return True if the Manager exists, false otherwise.
      */
     public static boolean hasManager(final String name) {
-        LOCK.lock();
-        try {
-            return MAP.containsKey(name);
-        } finally {
-            LOCK.unlock();
-        }
+        return REGISTRY.hasManager(name);
     }
 
     /**
@@ -185,18 +147,19 @@ public abstract class AbstractManager implements AutoCloseable {
      * @param manager the manager object to return
      * @param <M> the narrow type
      * @return the specified manager, cast to the specified narrow type
-     * @throws ConfigurationException if the manager cannot be cast to the specified type, which only happens when
+     * @throws ManagerException if the manager cannot be cast to the specified type, which only happens when
      *          the configuration has multiple incompatible appenders pointing to the same resource
      * @since 2.9
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-1908">LOG4J2-1908</a>
      */
     protected static <M extends AbstractManager> M narrow(final Class<M> narrowClass, final AbstractManager manager) {
-        if (narrowClass.isAssignableFrom(manager.getClass())) {
-            return (M) manager;
+        try {
+            return narrowClass.cast(manager);
+        } catch (final ClassCastException e) {
+            throw new ManagerException(
+                    "Configuration has multiple incompatible Appenders pointing to the same resource '" +
+                            manager.getName() + "'", e);
         }
-        throw new ConfigurationException(
-                "Configuration has multiple incompatible Appenders pointing to the same resource '" +
-                        manager.getName() + "'");
     }
 
     protected static StatusLogger logger() {

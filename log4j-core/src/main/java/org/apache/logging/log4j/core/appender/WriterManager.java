@@ -62,24 +62,30 @@ public class WriterManager extends AbstractManager {
         }
     }
 
-    protected synchronized void closeWriter() {
+    protected void closeWriter() {
         final Writer w = writer; // access volatile field only once per method
+        writeLock.lock();
         try {
             w.close();
         } catch (final IOException ex) {
             logError("Unable to close stream", ex);
+        } finally {
+            writeLock.unlock();
         }
     }
 
     /**
      * Flushes any buffers.
      */
-    public synchronized void flush() {
+    public void flush() {
+        writeLock.lock();
         try {
             writer.flush();
         } catch (final IOException ex) {
             final String msg = "Error flushing stream " + getName();
             throw new AppenderLoggingException(msg, ex);
+        } finally {
+            writeLock.unlock();
         }
     }
 
@@ -125,12 +131,15 @@ public class WriterManager extends AbstractManager {
      * @param str the string to write
      * @throws AppenderLoggingException if an error occurs.
      */
-    protected synchronized void write(final String str)  {
+    protected void write(final String str)  {
+        writeLock.lock();
         try {
             writer.write(str);
         } catch (final IOException ex) {
             final String msg = "Error writing to stream " + getName();
             throw new AppenderLoggingException(msg, ex);
+        } finally {
+            writeLock.unlock();
         }
     }
 

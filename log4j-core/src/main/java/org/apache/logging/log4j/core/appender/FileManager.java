@@ -169,11 +169,11 @@ public class FileManager extends OutputStreamManager {
     }
 
     @Override
-    protected synchronized void write(final byte[] bytes, final int offset, final int length,
+    protected void write(final byte[] bytes, final int offset, final int length,
             final boolean immediateFlush) {
         if (isLocking) {
+            writeLock.lock();
             try {
-                @SuppressWarnings("resource")
                 final FileChannel channel = ((FileOutputStream) getOutputStream()).getChannel();
                 /*
                  * Lock the whole file. This could be optimized to only lock from the current file position. Note that
@@ -183,11 +183,13 @@ public class FileManager extends OutputStreamManager {
                  * Hopefully, that will be avoided since every file should have a single file manager - unless two
                  * different files strings are configured that somehow map to the same file.
                  */
-                try (final FileLock lock = channel.lock(0, Long.MAX_VALUE, false)) {
+                try (final FileLock ignored = channel.lock(0, Long.MAX_VALUE, false)) {
                     super.write(bytes, offset, length, immediateFlush);
                 }
             } catch (final IOException ex) {
                 throw new AppenderLoggingException("Unable to obtain lock on " + getName(), ex);
+            } finally {
+                writeLock.unlock();
             }
         } else {
             super.write(bytes, offset, length, immediateFlush);
@@ -203,10 +205,10 @@ public class FileManager extends OutputStreamManager {
      * @since 2.8
      */
     @Override
-    protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
+    protected void writeToDestination(final byte[] bytes, final int offset, final int length) {
         if (isLocking) {
+            writeLock.lock();
             try {
-                @SuppressWarnings("resource")
                 final FileChannel channel = ((FileOutputStream) getOutputStream()).getChannel();
                 /*
                  * Lock the whole file. This could be optimized to only lock from the current file position. Note that
@@ -216,11 +218,13 @@ public class FileManager extends OutputStreamManager {
                  * Hopefully, that will be avoided since every file should have a single file manager - unless two
                  * different files strings are configured that somehow map to the same file.
                  */
-                try (final FileLock lock = channel.lock(0, Long.MAX_VALUE, false)) {
+                try (final FileLock ignored = channel.lock(0, Long.MAX_VALUE, false)) {
                     super.writeToDestination(bytes, offset, length);
                 }
             } catch (final IOException ex) {
                 throw new AppenderLoggingException("Unable to obtain lock on " + getName(), ex);
+            } finally {
+                writeLock.unlock();
             }
         } else {
             super.writeToDestination(bytes, offset, length);

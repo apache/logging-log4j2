@@ -17,8 +17,13 @@
 package org.apache.logging.log4j.core.async;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.lmax.disruptor.AlertException;
+import com.lmax.disruptor.BatchEventProcessor;
+import com.lmax.disruptor.EventProcessor;
 import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceBarrier;
 import com.lmax.disruptor.TimeoutException;
@@ -39,8 +44,12 @@ import com.lmax.disruptor.WaitStrategy;
 // This class is package-protected, so that it can be used internally as the default WaitStrategy
 // by Log4j Async Loggers, but can be removed in a future Log4j release without impacting binary compatibility.
 // (disruptor-4.0.0-RC1 requires Java 11 and has other incompatible changes so cannot be used in Log4j 2.x.)
+//
+// Log4j 3.0.0 NOTE:
+// Implementation was updated to use Lock/Condition API for https://github.com/apache/logging-log4j2/issues/1532
 class TimeoutBlockingWaitStrategy implements WaitStrategy {
-    private final Object mutex = new Object();
+    private final Lock mutex = new ReentrantLock();
+    private final Condition condition = mutex.newCondition();
     private final long timeoutInNanos;
 
     /**
@@ -62,14 +71,17 @@ class TimeoutBlockingWaitStrategy implements WaitStrategy {
 
         long availableSequence;
         if (cursorSequence.get() < sequence) {
-            synchronized (mutex) {
+            mutex.lock();
+            try {
                 while (cursorSequence.get() < sequence) {
                     barrier.checkAlert();
-                    timeoutNanos = awaitNanos(mutex, timeoutNanos);
+                    timeoutNanos = condition.awaitNanos(timeoutNanos);
                     if (timeoutNanos <= 0) {
                         throw TimeoutException.INSTANCE;
                     }
                 }
+            } finally {
+                mutex.unlock();
             }
         }
 
@@ -82,8 +94,11 @@ class TimeoutBlockingWaitStrategy implements WaitStrategy {
 
     @Override
     public void signalAllWhenBlocking() {
-        synchronized (mutex) {
-            mutex.notifyAll();
+        mutex.lock();
+        try {
+            condition.signalAll();
+        } finally {
+            mutex.unlock();
         }
     }
 
@@ -95,23 +110,4 @@ class TimeoutBlockingWaitStrategy implements WaitStrategy {
                 '}';
     }
 
-    // below code is from com.lmax.disruptor.util.Util class in disruptor 4.0.0-RC1
-    private static final int ONE_MILLISECOND_IN_NANOSECONDS = 1_000_000;
-
-    /**
-     * @param mutex        The object to wait on
-     * @param timeoutNanos The number of nanoseconds to wait for
-     * @return the number of nanoseconds waited (approximately)
-     * @throws InterruptedException if the underlying call to wait is interrupted
-     */
-    private static long awaitNanos(final Object mutex, final long timeoutNanos) throws InterruptedException {
-        final long millis = timeoutNanos / ONE_MILLISECOND_IN_NANOSECONDS;
-        final long nanos = timeoutNanos % ONE_MILLISECOND_IN_NANOSECONDS;
-
-        final long t0 = System.nanoTime();
-        mutex.wait(millis, (int) nanos);
-        final long t1 = System.nanoTime();
-
-        return timeoutNanos - (t1 - t0);
-    }
 }

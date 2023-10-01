@@ -47,7 +47,7 @@ public class OutputStreamManagerTest {
             data = statusData.get(1);
         }
         assertEquals(Level.ERROR, data.getLevel());
-        assertEquals("Could not configure plugin element RollingRandomAccessFile: org.apache.logging.log4j.core.config.ConfigurationException: Configuration has multiple incompatible Appenders pointing to the same resource 'target/multiIncompatibleAppender.log'",
+        assertEquals("Could not configure plugin element RollingRandomAccessFile: org.apache.logging.log4j.core.appender.ManagerException: Configuration has multiple incompatible Appenders pointing to the same resource 'target/multiIncompatibleAppender.log'",
                 data.getMessage().getFormattedMessage());
     }
 

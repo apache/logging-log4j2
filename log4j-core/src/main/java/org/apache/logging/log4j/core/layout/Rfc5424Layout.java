@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -126,7 +128,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final boolean useTlsMessageFormat;
 
     private long lastTimestamp = -1;
-    private String timestamppStr;
+    private String timestampStr;
+    private final Lock timestampComputationLock = new ReentrantLock();
 
     private final List<PatternFormatter> exceptionFormatters;
     private final Map<String, FieldFormatter> fieldFormatters;
@@ -453,11 +456,14 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private String computeTimeStampString(final long now) {
         final long last;
-        synchronized (this) {
+        timestampComputationLock.lock();
+        try {
             last = lastTimestamp;
             if (now == lastTimestamp) {
-                return timestamppStr;
+                return timestampStr;
             }
+        } finally {
+            timestampComputationLock.unlock();
         }
 
         final StringBuilder buffer = new StringBuilder();
@@ -493,11 +499,14 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             buffer.append(':');
             pad(tzmin, TWO_DIGITS, buffer);
         }
-        synchronized (this) {
+        timestampComputationLock.lock();
+        try {
             if (last == lastTimestamp) {
                 lastTimestamp = now;
-                timestamppStr = buffer.toString();
+                timestampStr = buffer.toString();
             }
+        } finally {
+            timestampComputationLock.unlock();
         }
         return buffer.toString();
     }

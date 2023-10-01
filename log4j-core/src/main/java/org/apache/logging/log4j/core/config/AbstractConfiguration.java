@@ -32,6 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Level;
@@ -151,6 +153,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private AsyncWaitStrategyFactory asyncWaitStrategyFactory;
     private final WeakReference<LoggerContext> loggerContext;
     private PropertyEnvironment contextProperties;
+    private final Lock configLock = new ReentrantLock();
 
     /**
      * Constructor.
@@ -868,23 +871,28 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param appender The Appender.
      */
     @Override
-    public synchronized void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger,
+    public void addLoggerAppender(final org.apache.logging.log4j.core.Logger logger,
             final Appender appender) {
         if (appender == null || logger == null) {
             return;
         }
-        final String loggerName = logger.getName();
-        appenders.putIfAbsent(appender.getName(), appender);
-        final LoggerConfig lc = getLoggerConfig(loggerName);
-        if (lc.getName().equals(loggerName)) {
-            lc.addAppender(appender, null, null);
-        } else {
-            final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
-            nlc.addAppender(appender, null, null);
-            nlc.setParent(lc);
-            loggerConfigs.putIfAbsent(loggerName, nlc);
-            setParents();
-            logger.getContext().updateLoggers();
+        configLock.lock();
+        try {
+            final String loggerName = logger.getName();
+            appenders.putIfAbsent(appender.getName(), appender);
+            final LoggerConfig lc = getLoggerConfig(loggerName);
+            if (lc.getName().equals(loggerName)) {
+                lc.addAppender(appender, null, null);
+            } else {
+                final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
+                nlc.addAppender(appender, null, null);
+                nlc.setParent(lc);
+                loggerConfigs.putIfAbsent(loggerName, nlc);
+                setParents();
+                logger.getContext().updateLoggers();
+            }
+        } finally {
+            configLock.unlock();
         }
     }
 
@@ -898,18 +906,23 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param filter The Filter.
      */
     @Override
-    public synchronized void addLoggerFilter(final org.apache.logging.log4j.core.Logger logger, final Filter filter) {
-        final String loggerName = logger.getName();
-        final LoggerConfig lc = getLoggerConfig(loggerName);
-        if (lc.getName().equals(loggerName)) {
-            lc.addFilter(filter);
-        } else {
-            final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
-            nlc.addFilter(filter);
-            nlc.setParent(lc);
-            loggerConfigs.putIfAbsent(loggerName, nlc);
-            setParents();
-            logger.getContext().updateLoggers();
+    public void addLoggerFilter(final org.apache.logging.log4j.core.Logger logger, final Filter filter) {
+        configLock.lock();
+        try {
+            final String loggerName = logger.getName();
+            final LoggerConfig lc = getLoggerConfig(loggerName);
+            if (lc.getName().equals(loggerName)) {
+                lc.addFilter(filter);
+            } else {
+                final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), lc.isAdditive());
+                nlc.addFilter(filter);
+                nlc.setParent(lc);
+                loggerConfigs.putIfAbsent(loggerName, nlc);
+                setParents();
+                logger.getContext().updateLoggers();
+            }
+        } finally {
+            configLock.unlock();
         }
     }
 
@@ -923,17 +936,22 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param additive True if the LoggerConfig should be additive, false otherwise.
      */
     @Override
-    public synchronized void setLoggerAdditive(final org.apache.logging.log4j.core.Logger logger, final boolean additive) {
-        final String loggerName = logger.getName();
-        final LoggerConfig lc = getLoggerConfig(loggerName);
-        if (lc.getName().equals(loggerName)) {
-            lc.setAdditive(additive);
-        } else {
-            final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), additive);
-            nlc.setParent(lc);
-            loggerConfigs.putIfAbsent(loggerName, nlc);
-            setParents();
-            logger.getContext().updateLoggers();
+    public void setLoggerAdditive(final org.apache.logging.log4j.core.Logger logger, final boolean additive) {
+        configLock.lock();
+        try {
+            final String loggerName = logger.getName();
+            final LoggerConfig lc = getLoggerConfig(loggerName);
+            if (lc.getName().equals(loggerName)) {
+                lc.setAdditive(additive);
+            } else {
+                final LoggerConfig nlc = new LoggerConfig(loggerName, lc.getLevel(), additive);
+                nlc.setParent(lc);
+                loggerConfigs.putIfAbsent(loggerName, nlc);
+                setParents();
+                logger.getContext().updateLoggers();
+            }
+        } finally {
+            configLock.unlock();
         }
     }
 
@@ -944,14 +962,19 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      *
      * @param appenderName the name of the appender to remove.
      */
-    public synchronized void removeAppender(final String appenderName) {
-        for (final LoggerConfig logger : loggerConfigs.values()) {
-            logger.removeAppender(appenderName);
-        }
-        final Appender app = appenderName != null ? appenders.remove(appenderName) : null;
+    public void removeAppender(final String appenderName) {
+        configLock.lock();
+        try {
+            for (final LoggerConfig logger : loggerConfigs.values()) {
+                logger.removeAppender(appenderName);
+            }
+            final Appender app = appenderName != null ? appenders.remove(appenderName) : null;
 
-        if (app != null) {
-            app.stop();
+            if (app != null) {
+                app.stop();
+            }
+        } finally {
+            configLock.unlock();
         }
     }
 
@@ -1031,9 +1054,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param loggerConfig The LoggerConfig.
      */
     @Override
-    public synchronized void addLogger(final String loggerName, final LoggerConfig loggerConfig) {
-        loggerConfigs.putIfAbsent(loggerName, loggerConfig);
-        setParents();
+    public void addLogger(final String loggerName, final LoggerConfig loggerConfig) {
+        configLock.lock();
+        try {
+            loggerConfigs.putIfAbsent(loggerName, loggerConfig);
+            setParents();
+        } finally {
+            configLock.unlock();
+        }
     }
 
     /**
@@ -1042,9 +1070,14 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      * @param loggerName The name of the Logger.
      */
     @Override
-    public synchronized void removeLogger(final String loggerName) {
-        loggerConfigs.remove(loggerName);
-        setParents();
+    public void removeLogger(final String loggerName) {
+        configLock.lock();
+        try {
+            loggerConfigs.remove(loggerName);
+            setParents();
+        } finally {
+            configLock.unlock();
+        }
     }
 
     @Override

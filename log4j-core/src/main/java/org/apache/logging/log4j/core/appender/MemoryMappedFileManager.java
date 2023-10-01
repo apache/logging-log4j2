@@ -123,23 +123,28 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     @Override
-    protected synchronized void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
-        int currentOffset = offset;
-        int currentLength = length;
-        while (currentLength > mappedBuffer.remaining()) {
-            final int chunk = mappedBuffer.remaining();
-            mappedBuffer.put(bytes, currentOffset, chunk);
-            currentOffset += chunk;
-            currentLength -= chunk;
-            remap();
-        }
-        mappedBuffer.put(bytes, currentOffset, currentLength);
+    protected void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
+        writeLock.lock();
+        try {
+            int currentOffset = offset;
+            int currentLength = length;
+            while (currentLength > mappedBuffer.remaining()) {
+                final int chunk = mappedBuffer.remaining();
+                mappedBuffer.put(bytes, currentOffset, chunk);
+                currentOffset += chunk;
+                currentLength -= chunk;
+                remap();
+            }
+            mappedBuffer.put(bytes, currentOffset, currentLength);
 
-        // no need to call flush() if force is true,
-        // already done in AbstractOutputStreamAppender.append
+            // no need to call flush() if force is true,
+            // already done in AbstractOutputStreamAppender.append
+        } finally {
+            writeLock.unlock();
+        }
     }
 
-    private synchronized void remap() {
+    private void remap() {
         final long offset = this.mappingOffset + mappedBuffer.position();
         final int length = mappedBuffer.remaining() + regionLength;
         try {
@@ -163,28 +168,38 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     @Override
-    public synchronized void flush() {
-        mappedBuffer.force();
+    public void flush() {
+        writeLock.lock();
+        try {
+            mappedBuffer.force();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
-    public synchronized boolean closeOutputStream() {
-        final long position = mappedBuffer.position();
-        final long length = mappingOffset + position;
+    public boolean closeOutputStream() {
+        writeLock.lock();
         try {
-            unsafeUnmap(mappedBuffer);
-        } catch (final Exception ex) {
-            logError("Unable to unmap MappedBuffer", ex);
-        }
-        try {
-            LOGGER.debug("MMapAppender closing. Setting {} length to {} (offset {} + position {})", getFileName(),
-                    length, mappingOffset, position);
-            randomAccessFile.setLength(length);
-            randomAccessFile.close();
-            return true;
-        } catch (final IOException ex) {
-            logError("Unable to close MemoryMappedFile", ex);
-            return false;
+            final long position = mappedBuffer.position();
+            final long length = mappingOffset + position;
+            try {
+                unsafeUnmap(mappedBuffer);
+            } catch (final Exception ex) {
+                logError("Unable to unmap MappedBuffer", ex);
+            }
+            try {
+                LOGGER.debug("MMapAppender closing. Setting {} length to {} (offset {} + position {})",
+                        getFileName(), length, mappingOffset, position);
+                randomAccessFile.setLength(length);
+                randomAccessFile.close();
+                return true;
+            } catch (final IOException ex) {
+                logError("Unable to close MemoryMappedFile", ex);
+                return false;
+            }
+        } finally {
+            writeLock.unlock();
         }
     }
 
@@ -290,8 +305,13 @@ public class MemoryMappedFileManager extends OutputStreamManager {
 
     @Override
     public ByteBuffer drain(final ByteBuffer buf) {
-        remap();
-        return mappedBuffer;
+        writeLock.lock();
+        try {
+            remap();
+            return mappedBuffer;
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     /**

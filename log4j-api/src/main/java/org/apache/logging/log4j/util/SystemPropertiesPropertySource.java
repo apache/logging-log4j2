@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * PropertySource backed by the current system properties. Other than having a
@@ -40,6 +42,8 @@ public class SystemPropertiesPropertySource extends ContextAwarePropertySource i
     private static volatile int hashcode = 0;
 
     private static final Map<String, Properties> systemPropertiesMap = new ConcurrentHashMap<>();
+
+    private static final Lock RELOAD_LOCK = new ReentrantLock();
 
     public SystemPropertiesPropertySource() {
         super(null, SYSTEM_CONTEXT, true);
@@ -127,16 +131,16 @@ public class SystemPropertiesPropertySource extends ContextAwarePropertySource i
         /**
          * Copy the properties while locked.
          */
-        synchronized (PREFIX) {
+        RELOAD_LOCK.lock();
+        try {
             final Properties props = getProperties();
             if (props == null) {
                 return false;
             }
             sysProps = new Properties();
             sysProps.putAll(props);
-        }
-        if (sysProps == null) {
-            return false;
+        } finally {
+            RELOAD_LOCK.unlock();
         }
         if (hashcode == 0) {
             refresh = true;

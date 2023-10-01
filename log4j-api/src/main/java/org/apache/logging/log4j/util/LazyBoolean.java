@@ -16,10 +16,13 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BooleanSupplier;
 
 public class LazyBoolean implements BooleanSupplier {
     private final BooleanSupplier supplier;
+    private final Lock lock = new ReentrantLock();
     private volatile boolean initialized;
     private volatile boolean value;
 
@@ -32,21 +35,29 @@ public class LazyBoolean implements BooleanSupplier {
         boolean uninitialized = !initialized;
         boolean value = this.value;
         if (uninitialized) {
-            synchronized (this) {
+            lock.lock();
+            try {
                 uninitialized = !initialized;
                 if (uninitialized) {
                     this.value = value = supplier.getAsBoolean();
                     initialized = true;
                 }
+            } finally {
+                lock.unlock();
             }
         }
         return value;
     }
 
-    public synchronized void setAsBoolean(final boolean b) {
-        initialized = false;
-        value = b;
-        initialized = true;
+    public void setAsBoolean(final boolean b) {
+        lock.lock();
+        try {
+            initialized = false;
+            value = b;
+            initialized = true;
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void reset() {

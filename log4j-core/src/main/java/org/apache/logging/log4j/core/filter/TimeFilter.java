@@ -23,6 +23,8 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Level;
@@ -68,6 +70,8 @@ public final class TimeFilter extends AbstractFilter {
     private volatile long end;
     private final LocalTime endTime;
 
+    private final Lock lock = new ReentrantLock();
+
     private final long duration;
 
     /**
@@ -110,7 +114,7 @@ public final class TimeFilter extends AbstractFilter {
         this(start, end, timeZone, onMatch, onMismatch, LocalDate.now(timeZone), clock);
     }
 
-    private synchronized void adjustTimes(final long currentTimeMillis) {
+    private void adjustTimes(final long currentTimeMillis) {
         if (currentTimeMillis <= end) {
             return;
         }
@@ -138,7 +142,12 @@ public final class TimeFilter extends AbstractFilter {
      */
     Result filter(final long currentTimeMillis) {
         if (currentTimeMillis > end) {
-            adjustTimes(currentTimeMillis);
+            lock.lock();
+            try {
+                adjustTimes(currentTimeMillis);
+            } finally {
+                lock.unlock();
+            }
         }
         return currentTimeMillis >= start && currentTimeMillis <= end ? onMatch : onMismatch;
     }

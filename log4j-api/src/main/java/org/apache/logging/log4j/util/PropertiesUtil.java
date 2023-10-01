@@ -36,6 +36,8 @@ import java.util.ResourceBundle;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.internal.CopyOnWriteNavigableSet;
 
@@ -67,6 +69,7 @@ public class PropertiesUtil implements PropertyEnvironment {
     private static final ThreadLocal<PropertiesUtil> environments = new InheritableThreadLocal<>();
 
     private final Environment environment;
+    private final Lock reloadLock = new ReentrantLock();
 
     /**
      * Constructs a PropertiesUtil using a given Properties object as its source of defined properties.
@@ -253,7 +256,12 @@ public class PropertiesUtil implements PropertyEnvironment {
      * @since 2.10.0
      */
     public void reload() {
-        environment.reload();
+        reloadLock.lock();
+        try {
+            environment.reload();
+        } finally {
+            reloadLock.unlock();
+        }
     }
 
     /**
@@ -468,7 +476,7 @@ public class PropertiesUtil implements PropertyEnvironment {
             sources.add(propertySource);
         }
 
-        private synchronized void reload() {
+        private void reload() {
             literal.clear();
             sources.forEach((s) -> {
                 if (s instanceof ReloadablePropertySource) {

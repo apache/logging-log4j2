@@ -23,6 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -167,6 +169,7 @@ public final class RoutingAppender extends AbstractAppender {
     private final Script defaultRouteScript;
     private final ConcurrentMap<Object, Object> scriptStaticVariables = new ConcurrentHashMap<>();
     private final Boolean requiresLocation;
+    private final Lock lock = new ReentrantLock();
 
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
             final RewritePolicy rewritePolicy, final Configuration configuration, final PurgePolicy purgePolicy,
@@ -253,7 +256,13 @@ public final class RoutingAppender extends AbstractAppender {
         final String pattern = routes.getPattern(event, scriptStaticVariables);
         final String key = pattern != null ? configuration.getStrSubstitutor().replace(event, pattern) :
                 defaultRoute.getKey() != null ? defaultRoute.getKey() : DEFAULT_KEY;
-        final RouteAppenderControl control = getControl(key, event);
+        final RouteAppenderControl control;
+        lock.lock();
+        try {
+            control = getControl(key, event);
+        } finally {
+            lock.unlock();
+        }
         if (control != null) {
             try {
                 control.callAppender(event);
@@ -273,7 +282,8 @@ public final class RoutingAppender extends AbstractAppender {
         }
     }
 
-    private synchronized RouteAppenderControl getControl(final String key, final LogEvent event) {
+    // should be called with a lock
+    private RouteAppenderControl getControl(final String key, final LogEvent event) {
         RouteAppenderControl control = getAppender(key);
         if (control != null) {
             control.checkout();
@@ -358,8 +368,11 @@ public final class RoutingAppender extends AbstractAppender {
             LOGGER.debug("Stopping route with {} key", key);
             // Synchronize with getControl to avoid triggering stopAppender before RouteAppenderControl.checkout
             // can be invoked.
-            synchronized (this) {
+            lock.lock();
+            try {
                 control.pendingDeletion = true;
+            } finally {
+                lock.unlock();
             }
             // Don't attempt to stop the appender in a synchronized block, since it may block flushing events
             // to disk.

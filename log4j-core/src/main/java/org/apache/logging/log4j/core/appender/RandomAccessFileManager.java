@@ -102,19 +102,27 @@ public class RandomAccessFileManager extends OutputStreamManager {
     }
 
     @Override
-    public synchronized void flush() {
-        flushBuffer(byteBuffer);
+    public void flush() {
+        writeLock.lock();
+        try {
+            flushBuffer(byteBuffer);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
-    public synchronized boolean closeOutputStream() {
-        flush();
+    public boolean closeOutputStream() {
+        writeLock.lock();
         try {
+            flush();
             randomAccessFile.close();
             return true;
         } catch (final IOException ex) {
             logError("Unable to close RandomAccessFile", ex);
             return false;
+        } finally {
+            writeLock.unlock();
         }
     }
 

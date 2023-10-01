@@ -120,13 +120,14 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
 
     // override to make visible for unit tests
     @Override
-    protected synchronized void write(final byte[] bytes, final int offset, final int length,
+    protected void write(final byte[] bytes, final int offset, final int length,
             final boolean immediateFlush) {
         super.write(bytes, offset, length, immediateFlush);
     }
 
     @Override
-    protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
+    protected void writeToDestination(final byte[] bytes, final int offset, final int length) {
+        writeLock.lock();
         try {
             if (randomAccessFile == null) {
                 final String fileName = getFileName();
@@ -139,6 +140,8 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         } catch (final IOException ex) {
             final String msg = "Error writing to RandomAccessFile " + getName();
             throw new AppenderLoggingException(msg, ex);
+        } finally {
+            writeLock.unlock();
         }
     }
 
@@ -159,23 +162,33 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     }
 
     @Override
-    public synchronized void flush() {
-        flushBuffer(byteBuffer);
+    public void flush() {
+        writeLock.lock();
+        try {
+            flushBuffer(byteBuffer);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
-    public synchronized boolean closeOutputStream() {
-        flush();
-        if (randomAccessFile != null) {
-            try {
-                randomAccessFile.close();
-                return true;
-            } catch (final IOException e) {
-                logError("Unable to close RandomAccessFile", e);
-                return false;
+    public boolean closeOutputStream() {
+        writeLock.lock();
+        try {
+            flush();
+            if (randomAccessFile != null) {
+                try {
+                    randomAccessFile.close();
+                    return true;
+                } catch (final IOException e) {
+                    logError("Unable to close RandomAccessFile", e);
+                    return false;
+                }
             }
+            return true;
+        } finally {
+            writeLock.unlock();
         }
-        return true;
     }
 
     /**

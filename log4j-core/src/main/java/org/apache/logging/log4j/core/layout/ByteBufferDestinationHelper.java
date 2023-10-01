@@ -22,7 +22,9 @@ import java.nio.ByteBuffer;
  * Helper class for ByteBufferDestination implementors.
  *
  * @since 2.9 (see LOG4J2-1874)
+ * @deprecated use methods on ByteBufferDestination directly
  */
+@Deprecated(since = "3.0.0")
 public final class ByteBufferDestinationHelper {
 
     private ByteBufferDestinationHelper() {
@@ -34,18 +36,11 @@ public final class ByteBufferDestinationHelper {
      *
      * @param source        the data to write
      * @param destination the {@code ByteBufferDestination} to write to
+     * @deprecated use {@link ByteBufferDestination#unsynchronizedWrite(ByteBuffer)}
      */
+    @Deprecated(since = "3.0.0")
     public static void writeToUnsynchronized(final ByteBuffer source, final ByteBufferDestination destination) {
-        ByteBuffer destBuff = destination.getByteBuffer();
-        while (source.remaining() > destBuff.remaining()) {
-            final int originalLimit = source.limit();
-            source.limit(Math.min(source.limit(), source.position() + destBuff.remaining()));
-            destBuff.put(source);
-            source.limit(originalLimit);
-            destBuff = destination.drain(destBuff);
-        }
-        destBuff.put(source);
-        // No drain in the end.
+        destination.unsynchronizedWrite(source);
     }
 
     /**
@@ -56,20 +51,11 @@ public final class ByteBufferDestinationHelper {
      * @param offset      where to start in the specified data array
      * @param length      the number of bytes to write
      * @param destination the {@code ByteBufferDestination} to write to
+     * @deprecated use {@link ByteBufferDestination#unsynchronizedWrite(byte[], int, int)}
      */
+    @Deprecated(since = "3.0.0")
     public static void writeToUnsynchronized(final byte[] data, final int offset, final int length,
             final ByteBufferDestination destination) {
-        ByteBuffer buffer = destination.getByteBuffer();
-        int currentOffset = offset;
-        int currentLength = length;
-        while (currentLength > buffer.remaining()) {
-            final int chunk = buffer.remaining();
-            buffer.put(data, currentOffset, chunk);
-            currentOffset += chunk;
-            currentLength -= chunk;
-            buffer = destination.drain(buffer);
-        }
-        buffer.put(data, currentOffset, currentLength);
-        // No drain in the end.
+        destination.unsynchronizedWrite(data, offset, length);
     }
 }

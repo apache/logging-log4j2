@@ -74,8 +74,14 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
      * @return The parent Logger.
      */
     public Logger getParent() {
-        final LoggerConfig lc = privateConfig.loggerConfig.getName().equals(getName()) ? privateConfig.loggerConfig
-                .getParent() : privateConfig.loggerConfig;
+        return getParent(privateConfig);
+    }
+
+    private Logger getParent(final PrivateConfig config) {
+        final LoggerConfig lc =
+                config.loggerConfig.getName().equals(getName())
+                        ? config.loggerConfig.getParent()
+                        : config.loggerConfig;
         if (lc == null) {
             return null;
         }
@@ -104,18 +110,19 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
      *
      * @param level The Level to use on this Logger, may be null.
      */
-    public synchronized void setLevel(final Level level) {
-        if (level == getLevel()) {
+    public void setLevel(final Level level) {
+        var currentConfig = privateConfig;
+        if (level == currentConfig.loggerConfigLevel) {
             return;
         }
         final Level actualLevel;
         if (level != null) {
             actualLevel = level;
         } else {
-            final Logger parent = getParent();
-            actualLevel = parent != null ? parent.getLevel() : privateConfig.loggerConfigLevel;
+            final Logger parent = getParent(currentConfig);
+            actualLevel = parent != null ? parent.getLevel() : currentConfig.loggerConfigLevel;
         }
-        privateConfig = new PrivateConfig(privateConfig, actualLevel);
+        privateConfig = new PrivateConfig(currentConfig, actualLevel);
     }
 
     /*
