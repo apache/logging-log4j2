@@ -218,10 +218,12 @@ public enum LoggingSystemProperty implements PropertyKey {
         return null;
     }
 
+    @Override
     public String getComponent() {
         return component.getName();
     }
 
+    @Override
     public String getName() {
         return name;
     }

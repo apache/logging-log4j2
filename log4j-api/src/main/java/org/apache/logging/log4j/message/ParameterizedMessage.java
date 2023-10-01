@@ -65,8 +65,6 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      */
     public static final String ERROR_SUFFIX = ParameterFormatter.ERROR_SUFFIX;
 
-    private static final int HASHVAL = 31;
-
     // storing JDK classes in ThreadLocals does not cause memory leaks in web apps, so this is okay
     private static final ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
 
@@ -74,7 +72,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     private final Object[] argArray;
 
     private String formattedMessage;
-    private transient Throwable throwable;
+    private Throwable throwable;
     private int[] indices;
     private int usedCount;
 
@@ -236,7 +234,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     @Override
     public int hashCode() {
         int result = Objects.hash(messagePattern);
-        result = HASHVAL * result + Arrays.hashCode(argArray);
+        result = 31 * result + Arrays.hashCode(argArray);
         return result;
     }
 

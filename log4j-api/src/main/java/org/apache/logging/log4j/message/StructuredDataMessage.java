@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.message;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -412,34 +413,16 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         final StructuredDataMessage that = (StructuredDataMessage) o;
-
-        if (!super.equals(o)) {
-            return false;
-        }
-        if (type != null ? !type.equals(that.type) : that.type != null) {
-            return false;
-        }
-        if (id != null ? !id.equals(that.id) : that.id != null) {
-            return false;
-        }
-        return message != null ? message.equals(that.message) : that.message == null;
+        return Objects.equals(id, that.id) && Objects.equals(message, that.message) && Objects.equals(type, that.type);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = HASHVAL * result + (type != null ? type.hashCode() : 0);
-        result = HASHVAL * result + (id != null ? id.hashCode() : 0);
-        result = HASHVAL * result + (message != null ? message.hashCode() : 0);
-        return result;
+        return Objects.hash(super.hashCode(), id, message, type);
     }
 
     @Override

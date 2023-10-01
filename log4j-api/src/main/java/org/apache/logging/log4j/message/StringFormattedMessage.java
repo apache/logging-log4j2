@@ -38,8 +38,6 @@ public class StringFormattedMessage implements Message {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final int HASHVAL = 31;
-
     private final String messagePattern;
     private final Object[] argArray;
     private String formattedMessage;
@@ -127,11 +125,10 @@ public class StringFormattedMessage implements Message {
 
     @Override
     public int hashCode() {
-        int result = messagePattern != null ? messagePattern.hashCode() : 0;
-        result = HASHVAL * result + (argArray != null ? Arrays.hashCode(argArray) : 0);
+        int result = Objects.hash(messagePattern);
+        result = 31 * result + Arrays.hashCode(argArray);
         return result;
     }
-
 
     @Override
     public String toString() {

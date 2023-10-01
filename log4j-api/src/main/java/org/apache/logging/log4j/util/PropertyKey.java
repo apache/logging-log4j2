@@ -30,5 +30,6 @@ public interface PropertyKey {
         return "log4j2.*." + getKey();
     }
 
+    @Override
     String toString();
 }

@@ -45,7 +45,7 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
     private final String key;
     private final Object[] argArray;
     private String formattedMessage;
-    private transient Throwable throwable;
+    private Throwable throwable;
 
     /**
      * Constructor with message pattern and arguments.

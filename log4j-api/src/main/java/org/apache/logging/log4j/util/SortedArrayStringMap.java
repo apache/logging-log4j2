@@ -240,7 +240,7 @@ public class SortedArrayStringMap implements IndexedStringMap {
             } else {
                 merge((SortedArrayStringMap) source);
             }
-        } else if (source != null) {
+        } else {
             source.forEach(PUT_ALL, this);
         }
     }

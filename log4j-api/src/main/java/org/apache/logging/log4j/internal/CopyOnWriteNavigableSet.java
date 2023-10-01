@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class CopyOnWriteNavigableSet<E> extends TreeSet<E> {
+    private static final long serialVersionUID = 1L;
 
     private volatile NavigableSet<E> set;
     private final Comparator<? super E> comparator;

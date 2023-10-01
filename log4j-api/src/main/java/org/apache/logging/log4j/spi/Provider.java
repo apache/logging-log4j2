@@ -18,6 +18,7 @@ package org.apache.logging.log4j.spi;
 
 import java.lang.ref.WeakReference;
 import java.net.URL;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
@@ -42,7 +43,7 @@ public class Provider {
      */
     public static final String LOGGER_CONTEXT_FACTORY = "LoggerContextFactory";
 
-    private static final Integer DEFAULT_PRIORITY = Integer.valueOf(-1);
+    private static final Integer DEFAULT_PRIORITY = -1;
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Integer priority;
@@ -221,33 +222,17 @@ public class Provider {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         final Provider provider = (Provider) o;
-
-        if (priority != null ? !priority.equals(provider.priority) : provider.priority != null) {
-            return false;
-        }
-        if (className != null ? !className.equals(provider.className) : provider.className != null) {
-            return false;
-        }
-        if (loggerContextFactoryClass != null ? !loggerContextFactoryClass.equals(provider.loggerContextFactoryClass) : provider.loggerContextFactoryClass != null) {
-            return false;
-        }
-        return versions != null ? versions.equals(provider.versions) : provider.versions == null;
+        return Objects.equals(priority, provider.priority) &&
+                Objects.equals(className, provider.className) &&
+                Objects.equals(loggerContextFactoryClass, provider.loggerContextFactoryClass) &&
+                Objects.equals(versions, provider.versions);
     }
 
     @Override
     public int hashCode() {
-        int result = priority != null ? priority.hashCode() : 0;
-        result = 31 * result + (className != null ? className.hashCode() : 0);
-        result = 31 * result + (loggerContextFactoryClass != null ? loggerContextFactoryClass.hashCode() : 0);
-        result = 31 * result + (versions != null ? versions.hashCode() : 0);
-        return result;
+        return Objects.hash(priority, className, loggerContextFactoryClass, versions);
     }
 }

@@ -97,7 +97,7 @@ public class PropertiesUtil implements PropertyEnvironment {
      * @param propertiesFileName the location of properties file to load
      */
     public PropertiesUtil(final String propertiesFileName) {
-        this(PropertySource.SYSTEM_CONTEXT, propertiesFileName, true);
+        this(PropertySource.SYSTEM_CONTEXT, propertiesFileName);
     }
     /**
      * Constructs a PropertiesUtil for a given properties file name on the classpath. The properties specified in this
@@ -106,10 +106,6 @@ public class PropertiesUtil implements PropertyEnvironment {
      * @param propertiesFileName the location of properties file to load
      */
     public PropertiesUtil(final String contextName, final String propertiesFileName) {
-        this(contextName, propertiesFileName, true);
-    }
-
-    private PropertiesUtil(final String contextName, final String propertiesFileName, final boolean useTccl) {
         final List<PropertySource> sources = new ArrayList<>();
         if (propertiesFileName.endsWith(".json") || propertiesFileName.endsWith(".jsn")) {
             final PropertySource source = getJsonPropertySource(propertiesFileName, 50);
@@ -117,15 +113,15 @@ public class PropertiesUtil implements PropertyEnvironment {
                 sources.add(source);
             }
         } else {
-            final PropertySource source = new PropertiesPropertySource(PropertyFilePropertySource.loadPropertiesFile(propertiesFileName),
-                null, 60, true);
+            final Properties properties = PropertyFilePropertySource.loadPropertiesFile(propertiesFileName);
+            final PropertySource source = new PropertiesPropertySource(properties, null, 60, true);
             sources.add(source);
         }
         this.environment = new Environment(contextName, sources);
     }
 
     private PropertiesUtil() {
-        this.environment = getEnvironment(LOG4J_NAMESPACE, true);
+        this.environment = getEnvironment(LOG4J_NAMESPACE);
     }
 
     /**
@@ -167,10 +163,10 @@ public class PropertiesUtil implements PropertyEnvironment {
     }
 
     public static PropertyEnvironment getProperties(final String namespace) {
-        return getEnvironment(namespace, true);
+        return getEnvironment(namespace);
     }
 
-    private static Environment getEnvironment(final String namespace, final boolean useTccl) {
+    private static Environment getEnvironment(final String namespace) {
         final List<PropertySource> sources = new ArrayList<>();
         final String fileName = String.format("log4j2.%s.properties", namespace);
         final Properties properties = PropertyFilePropertySource.loadPropertiesFile(fileName);

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.message;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.util.BiConsumer;
@@ -477,21 +478,15 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || this.getClass() != o.getClass()) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         final MapMessage<?, ?> that = (MapMessage<?, ?>) o;
-
-        return this.data.equals(that.data);
+        return Objects.equals(data, that.data);
     }
 
     @Override
     public int hashCode() {
-        return data.hashCode();
+        return Objects.hash(data);
     }
 
     /**

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -28,8 +27,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-
-
 
 /**
  * A source for global configuration properties.
@@ -128,7 +125,7 @@ public interface PropertySource {
      * @since 2.10.0
      */
     final class Util {
-        private static final Map<CharSequence, List<CharSequence>> CACHE = new ConcurrentHashMap<>();
+        private static final Map<String, List<CharSequence>> CACHE = new ConcurrentHashMap<>();
         // List of "shorthand" properties and the property they map to.
         static {
             populateCache();
@@ -143,11 +140,12 @@ public interface PropertySource {
          * @return the property broken into lower case tokens
          */
         public static List<CharSequence> tokenize(final CharSequence value) {
-            if (CACHE.containsKey(value)) {
-                return CACHE.get(value);
+            final String key = value.toString();
+            if (CACHE.containsKey(key)) {
+                return CACHE.get(key);
             }
-            final List<CharSequence> tokens = Arrays.asList(value.toString().split("[._/]+"));
-            CACHE.put(value, tokens);
+            final List<CharSequence> tokens = List.of(key.split("[._/]+"));
+            CACHE.put(key, tokens);
             return tokens;
         }
 

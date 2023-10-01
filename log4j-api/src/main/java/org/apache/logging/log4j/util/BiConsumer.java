@@ -31,5 +31,6 @@ public interface BiConsumer<K, V> extends java.util.function.BiConsumer<K, V> {
      * @param k the first input argument
      * @param v the second input argument
      */
+    @Override
     void accept(K k, V v);
 }
