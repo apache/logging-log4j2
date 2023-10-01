@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.Strings;
@@ -57,7 +58,6 @@ public class UrlConnectionFactory {
     private static final String NO_PROTOCOLS = "_none";
     public static final String ALLOWED_PROTOCOLS = "log4j2.Configuration.allowedProtocols";
 
-    @SuppressWarnings("unchecked")
     public static <T extends URLConnection> T createConnection(final URL url, final long lastModifiedMillis,
             final SslConfiguration sslConfiguration, final AuthorizationProvider authorizationProvider)
         throws IOException {
@@ -110,7 +110,7 @@ public class UrlConnectionFactory {
         } else {
             urlConnection = url.openConnection();
         }
-        return (T) urlConnection;
+        return Cast.cast(urlConnection);
     }
 
     public static URLConnection createConnection(final URL url) throws IOException {

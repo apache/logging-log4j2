@@ -41,7 +41,7 @@ public class DefaultAdvertiser implements Advertiser {
 
     /**
      * Does nothing.
-     * @param advertisedObject
+     * @param advertisedObject ignored
      */
     @Override
     public void unadvertise(final Object advertisedObject) {

@@ -23,6 +23,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.apache.logging.log4j.util.Cast;
+
 /**
  *
  */
@@ -68,19 +70,17 @@ public class CronScheduledFuture<V> implements ScheduledFuture<V> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public V get() throws InterruptedException, ExecutionException {
-        return (V) futureData.scheduledFuture.get();
+        return Cast.cast(futureData.scheduledFuture.get());
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public V get(final long timeout, final TimeUnit unit)
             throws InterruptedException, ExecutionException, TimeoutException {
-        return (V) futureData.scheduledFuture.get(timeout, unit);
+        return Cast.cast(futureData.scheduledFuture.get(timeout, unit));
     }
 
-    private class FutureData {
+    private static class FutureData {
 
         private final ScheduledFuture<?> scheduledFuture;
         private final Date runDate;

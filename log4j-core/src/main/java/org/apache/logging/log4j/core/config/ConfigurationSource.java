@@ -177,15 +177,15 @@ public class ConfigurationSource {
     }
 
     private boolean isFile() {
-        return source == null ? false : source.getFile() != null;
+        return source != null && source.getFile() != null;
     }
 
     private boolean isURL() {
-        return source == null ? false : source.getURI() != null;
+        return source != null && source.getURI() != null;
     }
 
     private boolean isLocation() {
-        return source == null ? false : source.getLocation() != null;
+        return source != null && source.getLocation() != null;
     }
 
     /**
@@ -196,14 +196,6 @@ public class ConfigurationSource {
      */
     public URL getURL() {
         return source == null ? null : source.getURL();
-    }
-
-    /**
-     * @deprecated Not used internally, no replacement. TODO remove and make source final.
-     */
-    @Deprecated
-    public void setSource(final Source source) {
-        this.source = source;
     }
 
     public void setData(final byte[] data) {
