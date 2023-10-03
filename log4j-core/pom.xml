@@ -71,18 +71,19 @@
       com.fasterxml.jackson.annotation;transitive=false,
       com.lmax.disruptor;transitive=false,
       disruptor;transitive=false,
-      jackson-core;transitive=false,
-      jackson-databind;transitive=false,
-      jackson-dataformat-xml;transitive=false,
-      jackson-dataformat-yaml;transitive=false,
+      com.fasterxml.jackson.core;substitute="jackson-core";transitive=false,
+      com.fasterxml.jackson.databind;substitute="jackson-databind";transitive=false,
+      com.fasterxml.jackson.dataformat.xml;substitute="jackson-dataformat-xml";transitive=false,
+      com.fasterxml.jackson.dataformat.yaml;substitute="jackson-dataformat-yaml";transitive=false,
       java.compiler;transitive=false,
       java.naming;transitive=false,
-      javax.jms-api;transitive=false,
-      javax.mail-api;transitive=false,
       jeromq;transitive=false,
-      kafka-clients;transitive=false,
       org.apache.commons.csv;transitive=false,
       org.fusesource.jansi;transitive=false
+      <!-- Workaround https://github.com/bndtools/bnd/issues/5792 -->
+      kafka.clients;substitute="kafka-clients";transitive=false,
+      javax.jms.api;substitute="javax.jms-api";transitive=false,
+      javax.mail.api;substitute="javax.mail-api";transitive=false,
     </bnd-extra-module-options>
   </properties>
   <dependencies>
