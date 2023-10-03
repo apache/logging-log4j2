@@ -25,6 +25,7 @@
     <version>10.1.1</version>
     <relativePath />
   </parent>
+  <!-- Dummy change to test release -->
 
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j</artifactId>
