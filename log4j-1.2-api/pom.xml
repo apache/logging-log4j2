@@ -47,6 +47,8 @@
     <bnd-extra-module-options>
       <!-- Log4j Core is not transitive -->
       org.apache.logging.log4j.core;transitive=false;static=true
+      <!-- Workaround https://github.com/bndtools/bnd/issues/5792 -->
+      javax.jms.api;substitute="javax.jms-api"
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
