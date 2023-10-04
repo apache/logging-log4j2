@@ -228,9 +228,6 @@
     <module>log4j-core-its</module>
     <module>log4j-core-test</module>
     <module>log4j-couchdb</module>
-    <!-- `log4j-distribution` is excluded to speed up the build.
-         It is only needed while creating a release.
-         It is enabled by the `apache-release` profile defined below. -->
     <module>log4j-docker</module>
     <module>log4j-flume-ng</module>
     <module>log4j-iostreams</module>
@@ -296,7 +293,6 @@
     <log4jReleaseVersion>2.20.0</log4jReleaseVersion>
     <log4jReleaseVersionJava7>2.12.4</log4jReleaseVersionJava7>
     <log4jReleaseVersionJava6>2.3.2</log4jReleaseVersionJava6>
-    <log4jSigningUserName>rgoers@apache.org</log4jSigningUserName>
     <revision>2.21.0-SNAPSHOT</revision>
 
     <!-- =================
@@ -1374,9 +1370,6 @@
             <exclude>src/site/resources/js/jquery.js</exclude>
             <exclude>src/site/resources/js/jquery.min.js</exclude>
             <!-- Generated files -->
-            <exclude>log4j-distribution/target/**/*</exclude>
-            <exclude>log4j-distribution/.project</exclude>
-            <exclude>log4j-distribution/.settings/**</exclude>
             <exclude>**/.toDelete</exclude>
             <exclude>velocity.log</exclude>
             <!-- Other -->
@@ -1522,7 +1515,7 @@
               <outputDirectory>${project.build.directory}/generated-sources/site</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${log4jParentDir}/src/site</directory>
+                  <directory>${project.basedir}/src/site</directory>
                   <excludes>
                     <exclude>/resources/glyphicons-halflings-2-1.zip</exclude>
                     <exclude>/resources/logo/**/*</exclude>
@@ -1540,7 +1533,7 @@
             <phase>site</phase>
             <configuration>
               <skip>${javadoc.skip}</skip>
-              <outputDirectory>${log4jParentDir}/target/site/javadoc/${project.artifactId}</outputDirectory>
+              <outputDirectory>${project.basedir}/target/site/javadoc/${project.artifactId}</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.build.directory}/site/apidocs</directory>
@@ -1550,6 +1543,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
