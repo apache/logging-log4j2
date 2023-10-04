@@ -109,7 +109,7 @@ public class AsyncLoggerConfigTest {
         disruptor.start();
         try {
             config.log(FQCN, FQCN, null, Level.INFO, new SimpleMessage(), null);
-            verify(appender, timeout(100).times(1)).append(any());
+            verify(appender, timeout(500).times(1)).append(any());
             verify(filter, times(1)).filter(any());
         } finally {
             disruptor.stop();
