@@ -296,8 +296,6 @@
     <log4jReleaseVersion>2.20.0</log4jReleaseVersion>
     <log4jReleaseVersionJava7>2.12.4</log4jReleaseVersionJava7>
     <log4jReleaseVersionJava6>2.3.2</log4jReleaseVersionJava6>
-    <log4jReleaseManager>Ralph Goers</log4jReleaseManager>
-    <log4jReleaseKey>B3D8E1BA</log4jReleaseKey>
     <log4jSigningUserName>rgoers@apache.org</log4jSigningUserName>
     <revision>2.21.0-SNAPSHOT</revision>
 
@@ -1586,8 +1584,6 @@
             <Log4jReleaseVersion>${log4jReleaseVersion}</Log4jReleaseVersion>
             <Log4jReleaseVersionJava6>${log4jReleaseVersionJava6}</Log4jReleaseVersionJava6>
             <Log4jReleaseVersionJava7>${log4jReleaseVersionJava7}</Log4jReleaseVersionJava7>
-            <Log4jReleaseManager>${log4jReleaseManager}</Log4jReleaseManager>
-            <Log4jReleaseKey>${log4jReleaseKey}</Log4jReleaseKey>
           </attributes>
         </configuration>
         <dependencies>

@@ -59,8 +59,6 @@ than from a mirror. Then verify the signatures using
     gpg --import KEYS
     gpg --verify apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc
 
-Apache Log4j ${Log4jReleaseVersion} is signed by ${Log4jReleaseManager} (${Log4jReleaseKey})
-
 Alternatively, you can verify the SHA512 signature on the files. A Unix program called sha or sha512sum is included
 in many Unix distributions.
 
