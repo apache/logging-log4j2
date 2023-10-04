@@ -35,9 +35,9 @@
       ~ OSGi and JPMS options
       -->
     <bnd-extra-module-options>
-      <!-- Standardize names -->
-      kubernetes.client;substitute="kubernetes-client",
-      kubernetes.model.core;substitute="kubernetes-model-core
+      <!-- Filebased module names: MUST be static -->
+      kubernetes.client;substitute="kubernetes-client";transitive=false;static=true,
+      kubernetes.model.core;substitute="kubernetes-model-core";transitive=false;static=true
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>

@@ -36,8 +36,8 @@
       -->
     <bnd-module-name>org.apache.logging.log4j.spring.cloud.config.client</bnd-module-name>
     <bnd-extra-module-options>
-      <!-- Correct module names -->
-      spring.cloud.context;substitute="spring-cloud-context"
+      <!-- Filebased module names: MUST be static -->
+      spring.cloud.context;substitute="spring-cloud-context";static=true;transitive=false
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>

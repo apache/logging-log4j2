@@ -37,8 +37,8 @@
       ~ OSGi and JPMS options
       -->
     <bnd-extra-module-options>
-      <!-- Correct module names -->
-      javax.servlet.api;substitute="javax.servlet-api"
+      <!-- Filebased module names: MUST be static -->
+      javax.servlet.api;substitute="javax.servlet-api";transitive=true;static=true
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
