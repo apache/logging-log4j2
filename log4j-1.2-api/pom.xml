@@ -44,13 +44,8 @@
       <!-- Log4j Core is optional -->
       org.apache.logging.log4j.core.*;resolution:=optional
     </bnd-extra-package-options>
-    <bnd-extra-module-options>
-      <!-- Log4j Core is not transitive -->
-      org.apache.logging.log4j.core;transitive=false;static=true
-      <!-- Workaround https://github.com/bndtools/bnd/issues/5792 -->
-      javax.jms.api;substitute="javax.jms-api"
-    </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
+    <!-- we have an `bnd.bnd` file to override the parent's defaults -->
   </properties>
   <dependencies>
     <!-- Used for JMS appenders (needs an implementation of course) -->
