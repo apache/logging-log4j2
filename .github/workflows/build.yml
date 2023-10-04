@@ -73,7 +73,6 @@ jobs:
         shell: bash
         run: |
           ./mvnw \
-          -Pjava8-tests \
           clean install
 
       - name: Upload Surefire Reports
