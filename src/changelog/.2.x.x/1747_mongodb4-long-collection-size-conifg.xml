@@ -23,6 +23,6 @@
   <author name="Gary Gregory" id="github:garydgregory"/>
   <author name=" Jordi Font" id="github:jfont-teg"/>
   <description format="asciidoc">
-    The MongoDb4 appender now supports long values to configure `collectionSize`
+    Added support for `long` values in MongoDb 4 appender to configure `collectionSize`
   </description>
 </entry>

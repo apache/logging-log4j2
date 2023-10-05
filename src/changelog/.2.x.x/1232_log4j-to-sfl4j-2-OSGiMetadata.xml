@@ -23,7 +23,7 @@
   <author id="hanneswell"/>
   <author name="Hannes Wellmann"/>
   <description format="asciidoc">
-    Adapt the OSGi metadata of `log4j-to-slf4j` to work with SLF4J 1 and 2.
-    To achieve that use a version range of `[1.7,3)` for the imported SLF4J packages.
+    Adapted the OSGi metadata of `log4j-to-slf4j` to work with SLF4J 1 and 2.
+    To achieve that used a version range of `[1.7,3)` for the imported SLF4J packages.
   </description>
 </entry>

@@ -23,6 +23,6 @@
   <author id="github:rgoers"/>
   <author id="github:ppkarwasz"/>
   <description format="asciidoc">
-    Improve formatting and serialization of `StackTraceElement` on JDK 9+.
+    Improved formatting and serialization of `StackTraceElement` on JDK 9+
   </description>
 </entry>

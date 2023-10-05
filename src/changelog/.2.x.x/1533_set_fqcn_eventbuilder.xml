@@ -24,6 +24,6 @@
   <!-- Committer -->
   <author name="github:pkarwasz"/>
   <description format="asciidoc">
-    Allow to override fqcn in `Log4jEventBuilder` by implementing `CallerBoundaryAware`.
+    Allowed to override FQCN in `Log4jEventBuilder` by implementing `CallerBoundaryAware`
   </description>
 </entry>

@@ -21,7 +21,7 @@
        type="changed">
   <author id="ggregory"/>
   <description format="asciidoc">
-    Log a status error event instead of an NPE in
+    Started logging a status error event instead of an NPE in
     `OsgiServiceLocator.loadServices(Class, Lookup, boolean)`
     when a bundle has no valid `BundleContext` for a service type
   </description>

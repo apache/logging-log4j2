@@ -22,6 +22,6 @@
   <issue id="1366" link="https://github.com/apache/logging-log4j2/pull/1366"/>
   <author id="github:Hikarikun92" name="Lucas Souza"/>
   <description format="asciidoc">
-    Fixed logging of java.sql.Date objects by appending it before Log4J tries to call java.util.Date.toInstant() on it.
+    Fixed logging of `java.sql.Date` objects by appending it before Log4J tries to call `java.util.Date.toInstant()` on it
   </description>
 </entry>

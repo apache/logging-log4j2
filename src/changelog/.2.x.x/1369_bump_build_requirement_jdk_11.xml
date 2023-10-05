@@ -22,6 +22,6 @@
   <issue id="1369" link="https://github.com/apache/logging-log4j2/issues/1369"/>
   <author id="github:ppkarwasz"/>
   <description format="asciidoc">
-    Bump the minimum Java version required for the build to JDK 11. Runtime requirements remain unchanged.
+    Bumped the minimum Java version required for the build to JDK 11. Runtime requirements remain unchanged.
   </description>
 </entry>

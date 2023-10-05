@@ -24,6 +24,6 @@
   <!-- Committer -->
   <author id="github:ppkarwasz"/>
   <description format="asciidoc">
-    Add validation to rolling file manager path conditions.
+    Added validation to rolling file manager path conditions
   </description>
 </entry>

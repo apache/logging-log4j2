@@ -22,5 +22,5 @@
   <issue id="1284" link="https://github.com/apache/logging-log4j2/pull/1284"/>
   <author id="vy"/>
   <author name="Alexander Brandes"/>
-  <description format="asciidoc"><![CDATA[Redirect old `/<module>/apidocs` URLs (broken in 2.20.0) to `/javadoc/<module>`]]></description>
+  <description format="asciidoc"><![CDATA[Redirected old `/<module>/apidocs` URLs (broken in 2.20.0) to `/javadoc/<module>`]]></description>
 </entry>

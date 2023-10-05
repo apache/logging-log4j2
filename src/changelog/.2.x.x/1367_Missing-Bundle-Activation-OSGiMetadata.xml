@@ -24,7 +24,7 @@
   <!-- Committer -->
   <author name="github:ppkarwasz"/>
   <description format="asciidoc">
-    Adapt the OSGi metadata of `log4j-api`, `log4j-core`, `log4j-slf4j-impl` and `log4j-slf4j2-impl` to activate the bundle when it is accessed.
+    Adapted the OSGi metadata of `log4j-api`, `log4j-core`, `log4j-slf4j-impl` and `log4j-slf4j2-impl` to activate the bundle when it is accessed.
     To achieve that set the `Bundle-ActivationPolicy` to `lazy` for the log4j bundles.
   </description>
 </entry>

@@ -23,6 +23,6 @@
   <author name="Jalyn Xing" id="github:jalynxing"/>
   <author id="github:vy"/>
   <description format="asciidoc">
-    `JsonTemplateLayout` was missing to implement `LocationAware` and this was causing location not being passed to underlying appenders
+    Implemented `LocationAware` for `JsonTemplateLayout`, since this was causing location not being passed to underlying appenders
   </description>
 </entry>

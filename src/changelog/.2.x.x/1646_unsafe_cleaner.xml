@@ -22,6 +22,6 @@
   <issue id="1646" link="https://github.com/apache/logging-log4j2/issues/1646"/>
   <author id="github:ppkarwasz"/>
   <description format="asciidoc">
-    Fix `MemoryMappedFileAppender` buffer unmapping on JRE 9+.
+    Fixed `MemoryMappedFileAppender` buffer unmapping on JRE 9+
   </description>
 </entry>

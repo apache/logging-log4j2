@@ -24,6 +24,6 @@
   <author name="Yakov Shafranovich" id="github:yakovsh"/>
   <author id="github:vy"/>
   <description format="asciidoc">
-    Remove incorrect mention of `base64` lookup and improve the rest of the lookup manual
+    Removed incorrect mention of `base64` lookup and improve the rest of the lookup manual
   </description>
 </entry>

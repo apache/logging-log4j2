@@ -24,6 +24,6 @@
   <!-- Committer -->
   <author id="github:ppkarwasz"/>
   <description format="asciidoc">
-    Add environment variable arbiter.
+    Added environment variable arbiter
   </description>
 </entry>

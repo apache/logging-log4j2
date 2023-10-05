@@ -21,5 +21,5 @@
        type="fixed">
   <issue id="1380" link="https://github.com/apache/logging-log4j2/pull/1380"/>
   <author id="vy"/>
-  <description format="asciidoc">Avoid using released objects in `StackTraceStringResolver` of JSON Template Layout</description>
+  <description format="asciidoc">Avoided using released objects in `StackTraceStringResolver` of `JsonTemplateLayout`</description>
 </entry>

@@ -23,5 +23,5 @@
   <author id="lenoch7" name="Radek Kraus"/>
   <!-- Committer -->
   <author id="pkarwasz"/>
-  <description format="asciidoc">Fix file descriptor leak on Tomcat.</description>
+  <description format="asciidoc">Fixed file descriptor leak on Tomcat</description>
 </entry>

@@ -22,5 +22,5 @@
   <issue id="1485" link="https://github.com/apache/logging-log4j2/issues/1485"/>
   <author name="Stephan Markwalder" id="smarkwal"/>
   <author id="vy"/>
-  <description format="asciidoc">Fix concurrent date-time formatting issue in `PatternLayout`</description>
+  <description format="asciidoc">Fixed concurrent date-time formatting issue in `PatternLayout`</description>
 </entry>

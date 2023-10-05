@@ -24,6 +24,6 @@
   <!-- Committer -->
   <author id="github:ppkarwasz"/>
   <description format="asciidoc">
-    Fixed rollover strategy in the Log4j 1.x compatibility layer.
+    Fixed rollover strategy in the Log4j 1.x compatibility layer
   </description>
 </entry>
