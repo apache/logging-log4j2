@@ -96,7 +96,8 @@
         <item name="ThreadContext" href="/manual/thread-context.html"/>
       </item>
 
-      <item name="Scala API" href="/manual/scala-api.html"/>
+      <item name="Kotlin API" href="https://logging.apache.org/log4j/kotlin"/>
+      <item name="Scala API" href="https://logging.apache.org/log4j/scala"/>
 
       <item name="Configuration" href="/manual/configuration.html" collapse="true">
         <item name="Configuration Architecture" href="/manual/configuration.html#Architecture"/>

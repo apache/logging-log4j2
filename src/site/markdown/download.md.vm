@@ -18,6 +18,8 @@
 #set($h1='#')
 #set($h2='##')
 #set($h3='###')
+#set($Log4jReleaseVersionJava7 = '2.12.4')
+#set($Log4jReleaseVersionJava6 = '2.3.2')
 
 $h1 Download Apache Log4j™ 2
 
@@ -73,7 +75,6 @@ All previous releases of Apache log4j can be found in the
 [ASF archive repository](https://archive.apache.org/dist/logging/log4j/). Of course, all releases are available for
 use as dependencies from the [Maven Central Repository](https://search.maven.org/search?q=org.apache.logging.log4j)
 
-#set($Log4jReleaseVersionJava7 = '2.12.4')
 $h3 Java 7 Release ${Log4jReleaseVersionJava7}
 
 | Distribution                   | Mirrors                                                         | Checksum                                                        | Signature                                                                           |
@@ -96,7 +97,6 @@ $h3 Java 7 Release ${Log4jReleaseVersionJava7}
 [srczipsha512J7]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-src.zip.sha512
 [srczipascJ7]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-src.zip.asc
 
-#set($Log4jReleaseVersionJava6 = '2.3.2')
 $h3 Java 6 Release ${Log4jReleaseVersionJava6}
 
 | Distribution                   | Mirrors                                                         | Checksum                                                        | Signature                                                                           |
