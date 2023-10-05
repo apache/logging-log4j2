@@ -45,7 +45,8 @@ public class FileRenameActionTest {
 
         final File dest = new File(tempDir, "newFile.log");
         final FileRenameAction action = new FileRenameAction(file, dest, false);
-        action.execute();
+        boolean renameResult = action.execute();
+        assertTrue(renameResult, "Rename action returned false");
         assertTrue(dest.exists(), "Renamed file does not exist");
         assertFalse(file.exists(), "Old file exists");
     }
@@ -59,7 +60,8 @@ public class FileRenameActionTest {
         assertTrue(file.exists(), "File to rename does not exist");
         final File dest = new File(tempDir, "newFile.log");
         final FileRenameAction action = new FileRenameAction(file, dest, false);
-        action.execute();
+        boolean renameResult = action.execute();
+        assertTrue(renameResult, "Rename action returned false");
         assertFalse(dest.exists(), "Renamed file should not exist");
         assertFalse(file.exists(), "Old file still exists");
     }
@@ -73,7 +75,8 @@ public class FileRenameActionTest {
         assertTrue(file.exists(), "File to rename does not exist");
         final File dest = new File(tempDir, "newFile.log");
         final FileRenameAction action = new FileRenameAction(file, dest, true);
-        action.execute();
+        boolean renameResult = action.execute();
+        assertTrue(renameResult, "Rename action returned false");
         assertTrue(dest.exists(), "Renamed file should exist");
         assertFalse(file.exists(), "Old file still exists");
     }
@@ -89,7 +92,8 @@ public class FileRenameActionTest {
 
         final File dest = new File(tempDir, "newFile.log");
         final FileRenameAction action = new FileRenameAction(file, dest, false);
-        action.execute();
+        boolean renameResult = action.execute();
+        assertTrue(renameResult, "Rename action returned false");
         assertTrue(dest.exists(), "Renamed file does not exist");
         assertFalse(file.exists(), "Old file exists");
     }
