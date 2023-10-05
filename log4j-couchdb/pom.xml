@@ -33,6 +33,10 @@
     <!--
       ~ OSGi and JPMS options
       -->
+    <bnd-extra-module-options>
+      <!-- Filebase module names: MUST be static -->
+      lightcouch;transitive=false;static=true
+    </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
 

@@ -45,12 +45,14 @@
     <bnd-extra-module-options>
       <!-- Non-transitive static modules -->
       junit;transitive=false,
-      maven.core;substitute="maven-core";transitive=false,
-      maven.model;substitute="maven-model";transitive=false,
-      maven.model.builder;substitute="maven-model-builder";transitive=false,
       org.hamcrest;transitive=false,
       org.junit.jupiter.api;transitive=false,
-      org.junitpioneer;transitive=false
+      org.junitpioneer;transitive=false,
+      <!-- Filebased module names: MUST be static -->
+      maven.core;substitute="maven-core";transitive=false;static=true,
+      maven.model;substitute="maven-model";transitive=false;static=true,
+      maven.model.builder;substitute="maven-model-builder";transitive=false;static=true,
+      plexus.utils;substitute="plexus-utils";transitive=false;static=true
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>

@@ -34,10 +34,9 @@
       ~ OSGi and JPMS options
       -->
     <bnd-extra-module-options>
-      <!-- Standardize name -->
-      cassandra.driver.core;substitute="cassandra-driver-core"
+      <!-- Filebased module names: MUST be static -->
+      cassandra.driver.core;substitute="cassandra-driver-core";transitive=false;static=true
     </bnd-extra-module-options>
-
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
     <!-- cassandra-all breaks with a newer version -->

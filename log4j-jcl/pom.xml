@@ -30,8 +30,8 @@
     <docLabel>JCL Bridge Documentation</docLabel>
     <projectDir>/jcl-bridge</projectDir>
     <bnd-extra-module-options>
-      <!-- Use module name returned by `jar -d` -->
-      commons.logging;substitute="commons-logging"
+      <!-- Filebase module names: MUST be static -->
+      commons.logging;substitute="commons-logging";transitive=false;static=true
     </bnd-extra-module-options>
   </properties>
   <dependencies>

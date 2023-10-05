@@ -34,8 +34,8 @@
       ~ OSGi and JPMS options
       -->
     <bnd-extra-module-options>
-      <!-- Correct module names -->
-      mongodb.driver.legacy;substitute="mongodb-driver-legacy"
+      <!-- Filebased module names: MUST be static -->
+      mongodb.driver.legacy;substitute="mongodb-driver-legacy";static=true;transitive=false
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 

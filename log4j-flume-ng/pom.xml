@@ -34,6 +34,10 @@
       ~ OSGi and JPMS options
       -->
     <bnd-module-name>org.apache.logging.log4j.flume</bnd-module-name>
+    <bnd-extra-module-options>
+      <!-- Filebased module names: MUST be static -->
+      je;transitive=false;static=true
+    </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
   <dependencies>
