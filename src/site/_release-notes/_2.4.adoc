@@ -1,0 +1,141 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-4]
+== 2.4
+
+This is the eighth GA release.
+It contains several bugfixes and new features.
+As of this release Log4j now requires a minimum of Java 7.
+
+Apache Log4j 2.4 requires a minimum of Java 7 to build and run.
+Log4j 2.4 and greater requires Java 7, version 2.3 required Java 6.
+
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Add a way to route messages based on the %marker in Layout for RoutingAppender. (https://issues.apache.org/jira/browse/LOG4J2-1015[LOG4J2-1015])
+* New RewritePolicy for changing level of a log event. (https://issues.apache.org/jira/browse/LOG4J2-1023[LOG4J2-1023])
+* Add a Log4jLookup class to help write log files relative to log4j2.xml. (https://issues.apache.org/jira/browse/LOG4J2-1050[LOG4J2-1050])
+* Add API org.apache.logging.log4j.LogManager.getFormatterLogger(). (https://issues.apache.org/jira/browse/LOG4J2-1057[LOG4J2-1057])
+* Expose Log4jContextFactory's ShutdownCallbackRegistry. (https://issues.apache.org/jira/browse/LOG4J2-1066[LOG4J2-1066])
+* Added support for system nanosecond time in pattern layout. (https://issues.apache.org/jira/browse/LOG4J2-1074[LOG4J2-1074])
+* Added support for compressing to bzip2 format on file rollover. (https://issues.apache.org/jira/browse/LOG4J2-1075[LOG4J2-1075])
+* Support additional Apache Commons Compress compression formats on rollover: Deflate, Pack200, XY. (https://issues.apache.org/jira/browse/LOG4J2-1077[LOG4J2-1077])
+* Add Comma Separated Value (CSV) layouts for parameter and event logging. (https://issues.apache.org/jira/browse/LOG4J2-1088[LOG4J2-1088])
+* Add Core Configurator APIs to change a logger's level. (https://issues.apache.org/jira/browse/LOG4J2-1090[LOG4J2-1090])
+* Add API org.apache.logging.log4j.Level.isInRange(Level, Level). (https://issues.apache.org/jira/browse/LOG4J2-1105[LOG4J2-1105])
+* Add a LevelRangeFilter class. (https://issues.apache.org/jira/browse/LOG4J2-1106[LOG4J2-1106])
+* New Appender for Apache Kafka. (https://issues.apache.org/jira/browse/LOG4J2-1107[LOG4J2-1107])
+* New publisher Appender for ZeroMQ (using JeroMQ). (https://issues.apache.org/jira/browse/LOG4J2-1113[LOG4J2-1113])
+* Updated Logger wrapper generator tool to add Java 8 lambda support for custom log levels. (https://issues.apache.org/jira/browse/LOG4J2-1118[LOG4J2-1118])
+* Added support for Java 8 lambda expressions to lazily construct a log message only if the requested log level is enabled. (https://issues.apache.org/jira/browse/LOG4J2-599[LOG4J2-599])
+* Add support for configuration via Properties. (https://issues.apache.org/jira/browse/LOG4J2-635[LOG4J2-635])
+* New module for Liquibase integration. (https://issues.apache.org/jira/browse/LOG4J2-767[LOG4J2-767])
+* Add ConfigurationBuilder for programmatic configuration. (https://issues.apache.org/jira/browse/LOG4J2-952[LOG4J2-952])
+
+=== Changed
+
+* Pass log event when interpolating logger properties. (https://issues.apache.org/jira/browse/LOG4J2-1010[LOG4J2-1010])
+* Update Java platform from Java 6 to 7. From this version onwards, log4j 2 requires Java 7. (https://issues.apache.org/jira/browse/LOG4J2-1017[LOG4J2-1017])
+* Update database tests from H2 1.3.175 to 1.3.176. (https://issues.apache.org/jira/browse/LOG4J2-1018[LOG4J2-1018])
+* Allow a list of keys to be specified in the MDC pattern converter. (https://issues.apache.org/jira/browse/LOG4J2-1022[LOG4J2-1022])
+* Log4j2 tries to SystemClassLoader when running on Google AppEngine. (https://issues.apache.org/jira/browse/LOG4J2-1035[LOG4J2-1035])
+* Update Apache Flume from 1.5.2 to 1.6.0. (https://issues.apache.org/jira/browse/LOG4J2-1036[LOG4J2-1036])
+* Update MongoDB driver from 2.11.2 to 2.13.2. (https://issues.apache.org/jira/browse/LOG4J2-1041[LOG4J2-1041])
+* Support batchSize in FlumeAvroManager. (https://issues.apache.org/jira/browse/LOG4J2-1044[LOG4J2-1044])
+* Avoid creating temporary array object in org.apache.logging.slf4j.Log4jMarker.iterator(). (https://issues.apache.org/jira/browse/LOG4J2-1063[LOG4J2-1063])
+* Define org.apache.logging.log4j.Marker.equals(Object) and org.apache.logging.log4j.Marker.hashCode(). (https://issues.apache.org/jira/browse/LOG4J2-1065[LOG4J2-1065])
+* Update Java Mail from 1.5.2 to 1.5.4. (https://issues.apache.org/jira/browse/LOG4J2-1070[LOG4J2-1070])
+* Update Jackson from 2.5.3 to 2.5.4. (https://issues.apache.org/jira/browse/LOG4J2-1079[LOG4J2-1079])
+* Update Jackson from 2.6.0 to 2.6.1. (https://issues.apache.org/jira/browse/LOG4J2-1092[LOG4J2-1092])
+* Improved performance of ParameterizedMessage::getFormattedMessage by ~2X. (https://issues.apache.org/jira/browse/LOG4J2-1096[LOG4J2-1096])
+* PatternLayout timestamp formatting performance improvement: predefined date formats (and variants using a period '.' millisecond separator instead of ',') are now formatted ~2-10X faster than other date formats. (https://issues.apache.org/jira/browse/LOG4J2-1097[LOG4J2-1097])
+* Update Apache Commons Compress from 1.9 to 1.10. (https://issues.apache.org/jira/browse/LOG4J2-1104[LOG4J2-1104])
+* Add thread name to status logger layout. (https://issues.apache.org/jira/browse/LOG4J2-1114[LOG4J2-1114])
+* LoggerConfig performance improvements: avoid unnecessary lock acquisition, use more efficient data structure. (https://issues.apache.org/jira/browse/LOG4J2-1120[LOG4J2-1120])
+* PatternLayout performance improvement by caching and reusing a ThreadLocal StringBuilder. (https://issues.apache.org/jira/browse/LOG4J2-1125[LOG4J2-1125])
+* Update Jackson from 2.5.4 to 2.6.0. (https://issues.apache.org/jira/browse/LOG4J2-1879[LOG4J2-1879])
+* MongoDB appender, username and password should be optional. (https://issues.apache.org/jira/browse/LOG4J2-403[LOG4J2-403])
+* PatternLayout timestamp formatting performance improvement: replaced synchronized SimpleDateFormat with Apache Commons FastDateFormat. This and better caching resulted in a ~3-30X faster timestamp formatting. (https://issues.apache.org/jira/browse/LOG4J2-812[LOG4J2-812])
+* log4j-web-2.1 should work around a bug in JBOSS EAP 6.2. (https://issues.apache.org/jira/browse/LOG4J2-890[LOG4J2-890])
+* Fix FindBugs DM_DEFAULT_ENCODING bug in SimpleLogger.logMessage() and simplify code. (https://issues.apache.org/jira/browse/LOG4J2-959[LOG4J2-959])
+
+=== Removed
+
+* Removed experimental interface LevelLogger which got committed to master by mistake.
+
+=== Fixed
+
+* ZipCompressAction leaves files open until GC when an IO error takes place. (https://issues.apache.org/jira/browse/LOG4J2-1019[LOG4J2-1019])
+* GzCompressAction leaves files open until GC when an IO error takes place. (https://issues.apache.org/jira/browse/LOG4J2-1020[LOG4J2-1020])
+* Custom java.util.logging.Level gives null Log4j Level and causes NPE. (https://issues.apache.org/jira/browse/LOG4J2-1025[LOG4J2-1025])
+* HighlightConverter does not obey noConsoleNoAnsi. (https://issues.apache.org/jira/browse/LOG4J2-1026[LOG4J2-1026])
+* SimpleLogger creates unnecessary Map objects by calling ThreadContext.getContext() instead of getImmutableContext(). (https://issues.apache.org/jira/browse/LOG4J2-1033[LOG4J2-1033])
+* Backward compatibility issue in log4j-1.2-api NDC pop() and peek(). (https://issues.apache.org/jira/browse/LOG4J2-1037[LOG4J2-1037])
+* Incorrect documentation for layout default charset. (https://issues.apache.org/jira/browse/LOG4J2-1038[LOG4J2-1038])
+* Socket and Syslog appenders don't take timeout into account at startup. (https://issues.apache.org/jira/browse/LOG4J2-1042[LOG4J2-1042])
+* Write pending events to Flume when the appender is stopped. (https://issues.apache.org/jira/browse/LOG4J2-1044[LOG4J2-1044])
+* Externalize log4j2.xml via URL resource. (https://issues.apache.org/jira/browse/LOG4J2-1045[LOG4J2-1045])
+* Circular Exception cause throws StackOverflowError. (https://issues.apache.org/jira/browse/LOG4J2-1046[LOG4J2-1046])
+* FileConfigurationMonitor unnecessarily calls System.currentTimeMillis() causing high CPU usage. (https://issues.apache.org/jira/browse/LOG4J2-1048[LOG4J2-1048])
+* AsyncAppender now resets the thread interrupted flag after catching InterruptedException. (https://issues.apache.org/jira/browse/LOG4J2-1049[LOG4J2-1049])
+* NoClassDefFoundError when starting app on Google App Engine. (https://issues.apache.org/jira/browse/LOG4J2-1051[LOG4J2-1051])
+* Log4jMarker#contains(String) does not respect org.slf4j.Marker contract. (https://issues.apache.org/jira/browse/LOG4J2-1058[LOG4J2-1058])
+* Log4jMarker#contains(Marker) does not respect org.slf4j.Marker contract. (https://issues.apache.org/jira/browse/LOG4J2-1060[LOG4J2-1060])
+* Log4jMarker#remove(Marker) does not respect org.slf4j.Marker contract. (https://issues.apache.org/jira/browse/LOG4J2-1061[LOG4J2-1061])
+* Log4jMarker#add(Marker) does not respect org.slf4j.Marker contract. (https://issues.apache.org/jira/browse/LOG4J2-1062[LOG4J2-1062])
+* org.apache.logging.slf4j.Log4jMarker does not implement org.slf4j.Marker.equals(Object) org.slf4j.Marker.hashCode(). (https://issues.apache.org/jira/browse/LOG4J2-1064[LOG4J2-1064])
+* ThrowableProxy getExtendedStackTraceAsString throws NPE on deserialized nested exceptions. (https://issues.apache.org/jira/browse/LOG4J2-1067[LOG4J2-1067])
+* Exceptions not logged when using TcpSocketServer + SerializedLayout. (https://issues.apache.org/jira/browse/LOG4J2-1068[LOG4J2-1068])
+* Improper handling of JSON escape chars when deserializing JSON log events. (https://issues.apache.org/jira/browse/LOG4J2-1069[LOG4J2-1069])
+* GelfLayout throws exception if some log event fields are null. (https://issues.apache.org/jira/browse/LOG4J2-1078[LOG4J2-1078])
+* Misleading StatusLogger WARN event in LogManager with java.util.Map. (https://issues.apache.org/jira/browse/LOG4J2-1084[LOG4J2-1084])
+* NullPointerException when passing null to java.util.logging.Logger.setLevel(). (https://issues.apache.org/jira/browse/LOG4J2-1108[LOG4J2-1108])
+* org.apache.logging.log4j.jul.CoreLogger.setLevel() checks for security permission too late. (https://issues.apache.org/jira/browse/LOG4J2-1110[LOG4J2-1110])
+* OutputStreamManager in ConsoleAppender leaking managers. (https://issues.apache.org/jira/browse/LOG4J2-1117[LOG4J2-1117])
+* Fixed potential race condition on reconfiguration. Introduced ReliabilityStrategy to facilitate switching between different mechanisms for preventing log events from being dropped on reconfiguration. (https://issues.apache.org/jira/browse/LOG4J2-1121[LOG4J2-1121])
+* Core Configurator.initialize(String, ClassLoader, String) fails to work when config location is a file path. (https://issues.apache.org/jira/browse/LOG4J2-1123[LOG4J2-1123])
+* ExtendedThrowablePatternConverter does not print suppressed exceptions. (https://issues.apache.org/jira/browse/LOG4J2-684[LOG4J2-684])
+* Header in layout should not be written on application startup if appending to an existing file. Fixes LOG4J2-1030. (https://issues.apache.org/jira/browse/LOG4J2-889[LOG4J2-889])
+* Clarify documentation for combining async with sync loggers. (https://issues.apache.org/jira/browse/LOG4J2-918[LOG4J2-918])
+* Circular suppressed Exception throws StackOverflowError. (https://issues.apache.org/jira/browse/LOG4J2-934[LOG4J2-934])
+* Use System.nanoTime() to measure time intervals. (https://issues.apache.org/jira/browse/LOG4J2-982[LOG4J2-982])

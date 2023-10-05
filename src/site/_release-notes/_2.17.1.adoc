@@ -1,0 +1,69 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-17-1]
+== 2.17.1
+
+Release date:: 2021-12-27
+
+This release addresses CVE-2021-44832 and contains other minor fixes.
+
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+`log4j-slf4j-impl` should be used with SLF4J 1.7.x and earlier and `log4j-slf4j18-impl` should be used with SLF4J 1.8.x and later.
+SLF4J-2.0.0 alpha releases are not fully supported.
+See https://issues.apache.org/jira/browse/LOG4J2-2975[LOG4J2-2975] and https://jira.qos.ch/browse/SLF4J-511[SLF4J-511].
+
+The Log4j 2.17.1 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Apache Log4j 2.17.1 requires a minimum of Java 8 to build and run.
+Log4j 2.12.2 is the last release to support Java 7.
+Java 7 is no longer supported by the Log4j team.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Fixed
+
+* Fix NPE when input is null in StrSubstitutor.replace(String, Properties).
+* Correct SpringLookup package name in Interpolator. (https://issues.apache.org/jira/browse/LOG4J2-3204[LOG4J2-3204])
+* Reduce ignored package scope of KafkaAppender. (https://issues.apache.org/jira/browse/LOG4J2-3256[LOG4J2-3256])
+* Fix MapLookup to lookup MapMessage before DefaultMap (https://issues.apache.org/jira/browse/LOG4J2-3264[LOG4J2-3264])
+* Lookups with no prefix only read values from the configuration properties as expected. (https://issues.apache.org/jira/browse/LOG4J2-3270[LOG4J2-3270])
+* Buffered I/O checked had inverted logic in RollingFileAppenderBuilder. (https://issues.apache.org/jira/browse/LOG4J2-3274[LOG4J2-3274])
+* log4j-to-slf4j takes the provided MessageFactory into account (https://issues.apache.org/jira/browse/LOG4J2-3284[LOG4J2-3284])
+* log4j-to-slf4j no longer re-interpolates formatted message contents. (https://issues.apache.org/jira/browse/LOG4J2-3289[LOG4J2-3289])
+* Remove unused method. (https://issues.apache.org/jira/browse/LOG4J2-3290[LOG4J2-3290])
+* ExtendedLoggerWrapper.logMessage no longer double-logs when location is requested. (https://issues.apache.org/jira/browse/LOG4J2-3292[LOG4J2-3292])
+* JdbcAppender now uses JndiManager to access JNDI resources. JNDI is only enabled when system property log4j2.enableJndiJdbc is set to true. (https://issues.apache.org/jira/browse/LOG4J2-3293[LOG4J2-3293])

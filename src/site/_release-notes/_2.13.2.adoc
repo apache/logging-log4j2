@@ -1,0 +1,87 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-13-2]
+== 2.13.2
+
+Release date:: 2020-04-23
+
+This release contains bugfixes and minor enhancements.
+
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+`log4j-slf4j-impl` should be used with SLF4J 1.7.x and earlier and `log4j-slf4j18-impl` should be used with SLF4J 1.8.x and later.
+
+Note that the XML, JSON and YAML formats changed in the 2.11.0 release: they no longer have the `timeMillis` attribute and instead have an `Instant` element with `epochSecond` and `nanoOfSecond` attributes.
+
+The Log4j 2.13.2 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.13.2 requires a minimum of Java 8 to build and run.
+Log4j 2.3 was the last release that supported Java 6 and Log4j 2.11.2 is the last release to support Java 7.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Provide a Log4j implementation of System.Logger. (https://issues.apache.org/jira/browse/LOG4J2-1360[LOG4J2-1360])
+* Added EventLookup to retrieve fields from the log event. (https://issues.apache.org/jira/browse/LOG4J2-2807[LOG4J2-2807])
+
+=== Changed
+
+* Allow the file extension in the file pattern to be modified during reconfiguration. (https://issues.apache.org/jira/browse/LOG4J2-2457[LOG4J2-2457])
+* Allow servlet context path to be retrieved without "/". (https://issues.apache.org/jira/browse/LOG4J2-2520[LOG4J2-2520])
+* Add ContextDataProviders as an alternative to having to implement a ContextDataInjector. (https://issues.apache.org/jira/browse/LOG4J2-2779[LOG4J2-2779])
+* [JDBC] Throw a AppenderLoggingException instead of an NPE in the JDBC database manager. (https://issues.apache.org/jira/browse/LOG4J2-2812[LOG4J2-2812])
+* Allow Spring Boot applications to use composite configurations. (https://issues.apache.org/jira/browse/LOG4J2-2815[LOG4J2-2815])
+* Allow Spring Lookup to return default and active profiles. (https://issues.apache.org/jira/browse/LOG4J2-2818[LOG4J2-2818])
+* Add support for specifying an SSL configuration for SmtpAppender. (https://issues.apache.org/jira/browse/LOG4J2-2819[LOG4J2-2819])
+
+=== Fixed
+
+* Add option to restore printing timeMillis in the JsonLayout. (https://issues.apache.org/jira/browse/LOG4J2-2588[LOG4J2-2588])
+* Fix Exceptions when whitespace is in the file path and Java security manager is used. (https://issues.apache.org/jira/browse/LOG4J2-2761[LOG4J2-2761])
+* Initialize pattern processor before triggering policy during reconfiguration. (https://issues.apache.org/jira/browse/LOG4J2-2766[LOG4J2-2766])
+* Conditionally allocate PluginEntry during PluginCache loading. (https://issues.apache.org/jira/browse/LOG4J2-2790[LOG4J2-2790])
+* Correct JsonLayout timestamp sorting issue. (https://issues.apache.org/jira/browse/LOG4J2-2791[LOG4J2-2791])
+* Allow trailing and leading spaces in log level. (https://issues.apache.org/jira/browse/LOG4J2-2793[LOG4J2-2793])
+* Make YamlLayoutTest more resilient to environmental differences. (https://issues.apache.org/jira/browse/LOG4J2-2794[LOG4J2-2794])
+* TimeFilter did not handle daylight saving time transitions and did not support a range over 2 days. (https://issues.apache.org/jira/browse/LOG4J2-2805[LOG4J2-2805])
+* Avoid NullPointerException when StackWalker returns null. (https://issues.apache.org/jira/browse/LOG4J2-2809[LOG4J2-2809])
+* Add information about using a url in log4j.configurationFile. (https://issues.apache.org/jira/browse/LOG4J2-2810[LOG4J2-2810])
+* Add missing includeLocation parameter when creating AsyncLogger. (https://issues.apache.org/jira/browse/LOG4J2-2811[LOG4J2-2811])
+* serializeToBytes was checking wrong variable for null. (https://issues.apache.org/jira/browse/LOG4J2-2813[LOG4J2-2813])
+* Fix Javadoc for ScriptPatternSelector. (https://issues.apache.org/jira/browse/LOG4J2-2814[LOG4J2-2814])
+* Allow the file size action to parse the value without being sensitive to the current locale. (https://issues.apache.org/jira/browse/LOG4J2-2817[LOG4J2-2817])
+* Implement requiresLocation in GelfLayout to reflect whether location information is used in the message Pattern. (https://issues.apache.org/jira/browse/LOG4J2-2824[LOG4J2-2824])

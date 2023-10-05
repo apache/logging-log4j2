@@ -1,0 +1,87 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-0-beta5]
+== 2.0-beta5
+
+Release date:: 2013-04-20
+
+
+=== Added
+
+* Added FlumePersistentManager which writes to BerkeleyDB and then writes to Flume asynchronously.
+* Expose file appender configuration details via an advertisement mechanism. (https://issues.apache.org/jira/browse/LOG4J2-155[LOG4J2-155])
+* Add support for asynchronous loggers. (https://issues.apache.org/jira/browse/LOG4J2-163[LOG4J2-163])
+* Add methods is/setEndOfBatch to LogEvent. (https://issues.apache.org/jira/browse/LOG4J2-164[LOG4J2-164])
+* Add Logger interface APIs to log at given levels. (https://issues.apache.org/jira/browse/LOG4J2-179[LOG4J2-179])
+* Add tag library. (https://issues.apache.org/jira/browse/LOG4J2-187[LOG4J2-187])
+* Add JMX support. (https://issues.apache.org/jira/browse/LOG4J2-207[LOG4J2-207])
+
+=== Changed
+
+* Allow Logger and LoggerContext to be subclassed. (https://issues.apache.org/jira/browse/LOG4J2-151[LOG4J2-151])
+* Added ability to include or exclude location information. (https://issues.apache.org/jira/browse/LOG4J2-153[LOG4J2-153])
+* Allowed Loggers access to the properties in the LoggerConfig. (https://issues.apache.org/jira/browse/LOG4J2-157[LOG4J2-157])
+* Add RFC 5424 compliant escaping rules to RFC5424Layout. (https://issues.apache.org/jira/browse/LOG4J2-158[LOG4J2-158])
+* Move Throwable pattern converter options processing to ThrowableFormatOptions class. (https://issues.apache.org/jira/browse/LOG4J2-160[LOG4J2-160])
+* Move async subproject into core. (https://issues.apache.org/jira/browse/LOG4J2-208[LOG4J2-208])
+* Async documentation update. (https://issues.apache.org/jira/browse/LOG4J2-214[LOG4J2-214])
+
+=== Fixed
+
+* Add Fragment-Host to MANIFEST.MF for log4j-core. (https://issues.apache.org/jira/browse/LOG4J2-159[LOG4J2-159])
+* Modify ClassLoaderContextSelector to use the first ClassLoader in the child parent hierarchy that has a Context with a configuration to allow JSPs to use the WebApp's context and configuration. (https://issues.apache.org/jira/browse/LOG4J2-161[LOG4J2-161])
+* Configurator throws a ClassCastException if LogManager returns a SimpleLoggerContext. (https://issues.apache.org/jira/browse/LOG4J2-167[LOG4J2-167])
+* ConfigurationFactory was adding factories on every call. (https://issues.apache.org/jira/browse/LOG4J2-169[LOG4J2-169])
+* Plugin cache should be reset when addPackages is called. (https://issues.apache.org/jira/browse/LOG4J2-175[LOG4J2-175])
+* Avoid IllegalArgumentException in AsynchAppender. (https://issues.apache.org/jira/browse/LOG4J2-176[LOG4J2-176])
+* Fix NullPointerException in DatagramOutputStream when flush is called from multiple threads. (https://issues.apache.org/jira/browse/LOG4J2-177[LOG4J2-177])
+* OutputStreamManager now adds the layout header whenever the OutputStream is set. (https://issues.apache.org/jira/browse/LOG4J2-181[LOG4J2-181])
+* AppenderRefs on AsynchAppender didn't support the level and filter elements. (https://issues.apache.org/jira/browse/LOG4J2-188[LOG4J2-188])
+* The blocking parameter did not work properly on AsynchAppender. (https://issues.apache.org/jira/browse/LOG4J2-189[LOG4J2-189])
+* BaseConfiguration addLoggerAppender saved appender using the Logger name. (https://issues.apache.org/jira/browse/LOG4J2-190[LOG4J2-190])
+* RollingFastFileAppender (in log4j-async) did not roll over. (https://issues.apache.org/jira/browse/LOG4J2-193[LOG4J2-193])
+* ThrowableFormatOptionsTest failed on Windows due to CR/LF issue. (https://issues.apache.org/jira/browse/LOG4J2-194[LOG4J2-194])
+* Unit tests now create files in the target directory. (https://issues.apache.org/jira/browse/LOG4J2-195[LOG4J2-195])
+* FlumeAvroManager now uses Flume RPCClient. (https://issues.apache.org/jira/browse/LOG4J2-196[LOG4J2-196])
+* FlumeAvroManager now uses Flume RPCClient. (https://issues.apache.org/jira/browse/LOG4J2-198[LOG4J2-198])
+* Highlight subprojects in sub-navigation. (https://issues.apache.org/jira/browse/LOG4J2-199[LOG4J2-199])
+* LoggerContext method renamed to removeFilter from removeFiler. (https://issues.apache.org/jira/browse/LOG4J2-200[LOG4J2-200])
+* Fix deadlock in SocketAppender. Added option to not wait for socket reconnect. (https://issues.apache.org/jira/browse/LOG4J2-205[LOG4J2-205])
+* Use the Maven group ID org.apache.logging.log4j for all artifacts. (https://issues.apache.org/jira/browse/LOG4J2-207[LOG4J2-207])
+* MapMessage was not enclosing key value in quotes when generating XML. (https://issues.apache.org/jira/browse/LOG4J2-210[LOG4J2-210])
+* Removing extra spaces in entry and exit method output. (https://issues.apache.org/jira/browse/LOG4J2-211[LOG4J2-211])
+* Call LoggerContext.stop when the application is shutdown. (https://issues.apache.org/jira/browse/LOG4J2-212[LOG4J2-212])
+* Loggers without a "." had no parent logger. (https://issues.apache.org/jira/browse/LOG4J2-212[LOG4J2-212])

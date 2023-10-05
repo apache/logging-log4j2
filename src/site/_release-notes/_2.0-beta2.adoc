@@ -1,0 +1,65 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-0-beta2]
+== 2.0-beta2
+
+Release date:: 2012-10-07
+
+
+=== Added
+
+* Add getFormats to MultiformatMessage and allow StructuredDataMessage to format as XML.
+* Add support for ANSI colors by adding the highlight and style pattern converters. Fix pattern parsing to allow nested patterns.
+* Allow the status logging to be directed to stderr or to a file.
+* Add interval and modulate options to TimeBasedTriggeringPolicy to allow more fine-grained control of when file rolling should occur. (https://issues.apache.org/jira/browse/LOG4J2-35[LOG4J2-35])
+* Add support for filtering packages from stack traces. (https://issues.apache.org/jira/browse/LOG4J2-58[LOG4J2-58])
+* If system property "disableThreadContextMap" is set puts to the ThreadContext will be ignored. If system property "disableThreadContext" is set both puts and pushes will be ignored. (https://issues.apache.org/jira/browse/LOG4J2-83[LOG4J2-83])
+* If system property "disableThreadContextStack" is set pushes to the ThreadContext will be ignored. If system property "disableThreadContext" is set both puts and pushes will be ignored. (https://issues.apache.org/jira/browse/LOG4J2-84[LOG4J2-84])
+
+=== Changed
+
+* Made ParameterizedMessage, StringFormattedMessage and ThreadDumpMessage immutable. LocalizedMessage is immutable except that it will be updated with the logger name when it is added to the LogEvent.
+
+=== Fixed
+
+* DefaultConfiguration was not starting the Console Appender.
+* If the ThreadContext map is empty the LogEvent will contain a null value to reduce the overhead of creating log events and in the size of the serialized object. (https://issues.apache.org/jira/browse/LOG4J2-83[LOG4J2-83])
+* If the ThreadContext stack is empty the LogEvent will contain a null value to reduce the overhead of creating log events and in the size of the serialized object. Changed the ThreadContext stack to use a custom stack interface instead of java.util.Stack as that class is overly heavy. This change will cause an API incompatibility. (https://issues.apache.org/jira/browse/LOG4J2-84[LOG4J2-84])
+* Many logging methods in AbstractLogger were set to an incorrect logging level. catching was using the THROWING marker and was set to debug instead of error. (https://issues.apache.org/jira/browse/LOG4J2-88[LOG4J2-88])
+* Add documentation on client vs server mode to performance page. (https://issues.apache.org/jira/browse/LOG4J2-90[LOG4J2-90])
+* Log4j 1.2 adapter's Category class was missing 3 log methods. (https://issues.apache.org/jira/browse/LOG4J2-91[LOG4J2-91])
+* Converted DynamicThresholdFilter to use KeyValuePair. Fixed bugs in the Map-based filters to allow declaration of multiple values for a key to match the documentation. (https://issues.apache.org/jira/browse/LOG4J2-92[LOG4J2-92])
+* Move variable substitution from PatternLayout to appropriate converters to improve performance.

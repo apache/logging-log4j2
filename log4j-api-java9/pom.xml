@@ -27,7 +27,6 @@
   <name>Apache Log4j API Java 9 support</name>
   <description>The Apache Log4j API (Java 9)</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>API Documentation</docLabel>
     <projectDir>/api</projectDir>
     <maven.deploy.skip>true</maven.deploy.skip>

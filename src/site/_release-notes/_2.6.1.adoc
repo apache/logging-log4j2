@@ -1,0 +1,101 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-6-1]
+== 2.6.1
+
+Release date:: 2016-06-05
+
+This is the eleventh GA release.
+It is primarily a bugfix release.
+More details on the fixes are itemized below.
+
+Note that subsequent to the 2.6 release a minor source incompatibility was found due to the addition of new methods to the `Logger` interface.
+If you have code that does:
+
+[source,java]
+----
+logger.error(null, “This is the log message”, throwable);
+----
+
+or similar with any log level you will get a compiler error saying the reference is ambiguous.
+To correct this either do:
+
+[source,java]
+----
+logger.error(“This is the log message”, throwable);
+----
+
+or
+
+[source,java]
+----
+logger.error((Marker) null, “This is the log message”, throwable);
+----
+
+Log4j 2.6.1 maintains binary compatibility with previous releases.
+
+Log4j 2.6.1 requires a minimum of Java 7 to build and run.
+Log4j 2.3 was the last release that supported Java 6.
+
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Added documentation about plugin builders compared to factories. (https://issues.apache.org/jira/browse/LOG4J2-1411[LOG4J2-1411])
+
+=== Changed
+
+* (GC) CSV layouts should not create a new CSVPrinter for each log event. Requires Apache Commons CSV 1.4. (https://issues.apache.org/jira/browse/LOG4J2-1385[LOG4J2-1385])
+* Update liquibase-core from 3.4.2 to 3.5.1. (https://issues.apache.org/jira/browse/LOG4J2-1398[LOG4J2-1398])
+* Update Apache Commons CSV from 1.3 to 1.4. (https://issues.apache.org/jira/browse/LOG4J2-1399[LOG4J2-1399])
+
+=== Fixed
+
+* Changed RenameAction to use java.nio to better report rename failures. (https://issues.apache.org/jira/browse/LOG4J2-1032[LOG4J2-1032])
+* Logger cache now accounts for message factory. (https://issues.apache.org/jira/browse/LOG4J2-1180[LOG4J2-1180])
+* Fixed minor issues with the 2.6 website. (https://issues.apache.org/jira/browse/LOG4J2-1394[LOG4J2-1394])
+* Fix regression in properties configuration to support arbitrary component ids. (https://issues.apache.org/jira/browse/LOG4J2-1402[LOG4J2-1402])
+* OnStartupTriggeringPolicy was forcing a rollover of empty files at startup and would append a second footer that was added by the prior shutdown. (https://issues.apache.org/jira/browse/LOG4J2-1405[LOG4J2-1405])
+* Fixed bug in ReusableParameterizedMessage where Throwable was never updated so first error was logged over and over again and subsequent errors were not logged. (https://issues.apache.org/jira/browse/LOG4J2-1406[LOG4J2-1406])
+* Fixed misleading WARN log events from Log4j about message factories and unexpected formatting. (https://issues.apache.org/jira/browse/LOG4J2-1407[LOG4J2-1407])
+* Added the module log4j-liquibase to BOM POM. (https://issues.apache.org/jira/browse/LOG4J2-1408[LOG4J2-1408])
+* Fixed ArrayIndexOutOfBoundsException that may occur in ReusableParameterizedMessage. (https://issues.apache.org/jira/browse/LOG4J2-1409[LOG4J2-1409])
+* Add filter and remove filter were not working properly in AbstractFilterable. (https://issues.apache.org/jira/browse/LOG4J2-997[LOG4J2-997])

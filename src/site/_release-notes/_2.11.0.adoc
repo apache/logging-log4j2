@@ -1,0 +1,202 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-11-0]
+== 2.11.0
+
+Release date:: 2018-03-11
+
+This release contains new features, bugfixes and minor enhancements.
+Some of the new features include support for the Java 9 module system, support for the new SLF4j 1.8 binding mechanism, simplification of the Log4j property naming scheme, and native support of Jetty's logger.
+Log4j API is now a fully compliant module while the other Log4j jars are named automatic modules.
+
+As of Log4j 2.9.0, the Log4j API was modified to use `java.util.ServiceLoader` to locate Log4j implementations, although the former binding mechanism is still supported.
+The Log4j API JAR is now a multi-release JAR to provide implementations of Java 9 specific classes.
+Multi-release JARs are not supported by the OSGi specification so OSGi modules will not be able to take advantage of these implementations but will not lose functionality as they will fall back to the implementations used in Java 7 and 8.
+More details on the new features and fixes are itemized below.
+Note that some tools are not compatible with multi-release JARs and may fail trying to process class files in the `META-INF/versions/9` folder.
+Those errors should be reported to the tool vendor.
+
+Note that subsequent to the 2.9.0 release, for security reasons, `SerializedLayout` is deprecated and no longer used as default in the Socket and JMS appenders.
+`SerializedLayout` can still be used as before, but has to be specified explicitly.
+To retain old behaviour, you have to change configuration like:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500"/>
+</Appenders>
+----
+
+into:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500">
+    <SerializedLayout/>
+  </Socket>
+</Appenders>
+----
+
+We do, however, discourage the use of `SerializedLayout` and recommend `JsonLayout` as a replacement:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500">
+    <JsonLayout properties="true"/>
+  </Socket>
+</Appenders>
+----
+
+Note that subsequent to the 2.9.0 release, for security reasons, Log4j does not process DTD in XML files.
+If you used DTD for including snippets, you have to use XInclude or Composite Configuration instead.
+
+The Log4j 2.11.0 API, as well as many core components, maintains binary compatibility with previous releases with the following exceptions to Log4j Core.
+Log4j 2.11.0 moves code from `log4j-core` to several new Maven modules.
+Dependencies to other JARs that used to be optional in `log4j-core` are now required in the new modules.
+The code in these modules have been repackaged.
+These changes do not affect your configuration files.
+
+The new modules are:
+
+`log4j-jdbc-dbc2`::
+* Group ID: `org.apache.logging.log4j
+* Artifact ID: `log4j-jdbc-dbc2`
+* Old package: `org.apache.logging.log4j.core.appender.db.jdbc`
+* New package: `org.apache.logging.log4j.jdbc.appender`
+
+`log4j-jpa`::
+* Group ID: `org.apache.logging.log4j`
+* Artifact ID: `log4j-jpa`
+* Old package 1: `org.apache.logging.log4j.core.appender.db.jpa`
+* New package 1: `org.apache.logging.log4j.jpa.appender`
+* Old package 2: `org.apache.logging.log4j.core.appender.db.jpa.converter`
+* New package 2: `org.apache.logging.log4j.jpa.converter`
+
+`log4j-mongodb2`::
+* Group ID: `org.apache.logging.log4j`
+* Artifact ID: `log4j-mongodb2`
+* Old package: `org.apache.logging.log4j.mongodb`
+* New package: `org.apache.logging.log4j.mongodb2`
+
+`log4j-mongodb3`::
+* Group ID: `org.apache.logging.log4j`
+* Artifact ID: `log4j-mongodb3`
+* Old package: `org.apache.logging.log4j.mongodb`
+* New package: `org.apache.logging.log4j.mongodb3`
+
+Log4j 2.11.0 requires a minimum of Java 7 to build and run.
+Log4j 2.3 was the last release that supported Java 6.
+
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Added support for precise (micro and nanosecond) timestamps when running on Java 9. A limited number of precise %d date formats are supported with PatternLayout. POTENTIAL BREAKING CHANGE: The XML, JSON and YAML formats have changed: they no longer have the "timeMillis" attribute and instead have an "Instant" element with "epochSecond" and "nanoOfSecond" attributes. (https://issues.apache.org/jira/browse/LOG4J2-1883[LOG4J2-1883])
+* Add missing converters to PatternLayout. (https://issues.apache.org/jira/browse/LOG4J2-2143[LOG4J2-2143])
+* Add API org.apache.logging.log4j.core.lookup.Interpolator.getStrLookupMap(). (https://issues.apache.org/jira/browse/LOG4J2-2160[LOG4J2-2160])
+* The MongoDB Appender should use a keys and values for a Log4j MapMessage. (https://issues.apache.org/jira/browse/LOG4J2-2179[LOG4J2-2179])
+* Add a MongoDbProvider builder for and deprecate org.apache.logging.log4j.mongodb.MongoDbProvider.createNoSqlProvider(). (https://issues.apache.org/jira/browse/LOG4J2-2180[LOG4J2-2180])
+* The JDBC Appender should use keys and values from a Log4j MapMessage. (https://issues.apache.org/jira/browse/LOG4J2-2181[LOG4J2-2181])
+* Add a simple JDBC DriverManager-based ConnectionSource that uses JDBC's DriverManager#getConnection(String, String, String). (https://issues.apache.org/jira/browse/LOG4J2-2185[LOG4J2-2185])
+* Add a JDBC ConnectionSource that provides pooling through Apache Commons DBCP 2. (https://issues.apache.org/jira/browse/LOG4J2-2186[LOG4J2-2186])
+* Add a hook for a Connection Source for a JDBC Appender to release its resources. (https://issues.apache.org/jira/browse/LOG4J2-2187[LOG4J2-2187])
+* Output JSON object for ObjectMessage in JsonLayout. (https://issues.apache.org/jira/browse/LOG4J2-2190[LOG4J2-2190])
+* Made log4j-core a multi-release ("multi-version") jar, added log4j-core-java9 module. (https://issues.apache.org/jira/browse/LOG4J2-2191[LOG4J2-2191])
+* Add org.apache.logging.log4j.core.util.WatchManager#unwatch(File). (https://issues.apache.org/jira/browse/LOG4J2-2203[LOG4J2-2203])
+* Add method org.apache.logging.log4j.core.util.WatchManager.reset(File) and reset(). (https://issues.apache.org/jira/browse/LOG4J2-2206[LOG4J2-2206])
+* Add debug logging to org.apache.logging.log4j.mongodb.MongoDbConnection. (https://issues.apache.org/jira/browse/LOG4J2-2208[LOG4J2-2208])
+* Add API to enable iterating over message parameters without creating temporary objects. (https://issues.apache.org/jira/browse/LOG4J2-2253[LOG4J2-2253])
+
+=== Changed
+
+* Removed unnecessary threadlocal StringBuilder field from MdcPatternConverter. (https://issues.apache.org/jira/browse/LOG4J2-2127[LOG4J2-2127])
+* Update ZeroMQ's jeromq from 0.4.2 to 0.4.3. (https://issues.apache.org/jira/browse/LOG4J2-2132[LOG4J2-2132])
+* Update version of maven bundle plugin to 3.4.0. Convert bundle plugin error to a warning. (https://issues.apache.org/jira/browse/LOG4J2-2146[LOG4J2-2146])
+* Update Jackson from 2.9.2 to 2.9.3. (https://issues.apache.org/jira/browse/LOG4J2-2165[LOG4J2-2165])
+* NullPointerException at org.apache.logging.log4j.util.Activator.loadProvider(Activator.java:81) in log4j 2.10.0. (https://issues.apache.org/jira/browse/LOG4J2-2182[LOG4J2-2182])
+* Update MongoDB driver from 3.0.4 to 3.6.1. (https://issues.apache.org/jira/browse/LOG4J2-2184[LOG4J2-2184])
+* Split off JPA support into a new module log4j-jpa. (https://issues.apache.org/jira/browse/LOG4J2-2188[LOG4J2-2188])
+* Update JMH to version 1.19 from 1.1.1. (https://issues.apache.org/jira/browse/LOG4J2-2193[LOG4J2-2193])
+* Require Java 9 to compile the log4j-perf module to allow benchmarking with Java 9 APIs. (https://issues.apache.org/jira/browse/LOG4J2-2194[LOG4J2-2194])
+* Document default property value support. (https://issues.apache.org/jira/browse/LOG4J2-2197[LOG4J2-2197])
+* Update MongoDB dependencies from classic to modern. (https://issues.apache.org/jira/browse/LOG4J2-2198[LOG4J2-2198])
+* MarkerFilter onMismatch invalid attribute in .properties. (https://issues.apache.org/jira/browse/LOG4J2-2202[LOG4J2-2202])
+* org.apache.logging.log4j.core.util.WatchManager.getWatchers() should pre-allocate its new Map. (https://issues.apache.org/jira/browse/LOG4J2-2204[LOG4J2-2204])
+* New module log4j-mongodb3: Remove use of deprecated MongoDB APIs and code to the Java driver version 3 API. (https://issues.apache.org/jira/browse/LOG4J2-2205[LOG4J2-2205])
+* Rename existing MongoDb plugin and related artifacts from MongoDb to MongoDb2. (https://issues.apache.org/jira/browse/LOG4J2-2209[LOG4J2-2209])
+* Fix error log message for Script which says ScriptFile instead. (https://issues.apache.org/jira/browse/LOG4J2-2210[LOG4J2-2210])
+* Unnecessary contention in CopyOnWriteSortedArrayThreadContextMap. (https://issues.apache.org/jira/browse/LOG4J2-2212[LOG4J2-2212])
+* Unnecessary contention in GarbageFreeSortedArrayThreadContextMap. (https://issues.apache.org/jira/browse/LOG4J2-2213[LOG4J2-2213])
+* Unnecessary contention in DefaultThreadContextMap. (https://issues.apache.org/jira/browse/LOG4J2-2214[LOG4J2-2214])
+* Reduce compiler warnings in log4j-api. (https://issues.apache.org/jira/browse/LOG4J2-2215[LOG4J2-2215])
+* Configuration builder classes should look for "onMismatch", not "onMisMatch". (https://issues.apache.org/jira/browse/LOG4J2-2219[LOG4J2-2219])
+* Update Jackson from 2.9.3 to 2.9.4. (https://issues.apache.org/jira/browse/LOG4J2-2229[LOG4J2-2229])
+* Removed unnecessary dependency on jcommander since Log4j uses embedded picocli since 2.9. (https://issues.apache.org/jira/browse/LOG4J2-2236[LOG4J2-2236])
+* Cannot see or copy all of certain JAnsi exception messages on Windows due to NUL characters. (https://issues.apache.org/jira/browse/LOG4J2-2243[LOG4J2-2243])
+* Update Apache Commons Compress from 1.15 to 1.16.1. (https://issues.apache.org/jira/browse/LOG4J2-2245[LOG4J2-2245])
+* The internal status logger timestamp format is now configurable with system property `log4j2.StatusLogger.DateFormat`. (https://issues.apache.org/jira/browse/LOG4J2-2250[LOG4J2-2250])
+* Reusable LogEvents now pass the original format string to downstream components like layouts and filters. (https://issues.apache.org/jira/browse/LOG4J2-2252[LOG4J2-2252])
+* Update MongoDB 3 module from driver 3.6.1 to 3.6.3. (https://issues.apache.org/jira/browse/LOG4J2-2259[LOG4J2-2259])
+* [SMTP] Update javax.mail from 1.6.0 to 1.6.1. (https://issues.apache.org/jira/browse/LOG4J2-2260[LOG4J2-2260])
+* Update JAnsi from 1.16 to 1.17. (https://issues.apache.org/jira/browse/LOG4J2-2264[LOG4J2-2264])
+* Documentation fix in manual page for custom configurations. (https://issues.apache.org/jira/browse/LOG4J2-2273[LOG4J2-2273])
+
+=== Fixed
+
+* Revert OSGi API version to 4.3.1. (https://issues.apache.org/jira/browse/LOG4J2-1976[LOG4J2-1976])
+* Avoid null attribute values in DefaultConfigurationBuilder. (https://issues.apache.org/jira/browse/LOG4J2-2002[LOG4J2-2002])
+* LoaderUtil was not looping properly over class loaders. (https://issues.apache.org/jira/browse/LOG4J2-2104[LOG4J2-2104])
+* DefaultMergeStrategy did not merge filters on loggers correctly. (https://issues.apache.org/jira/browse/LOG4J2-2123[LOG4J2-2123])
+* Removed compile-time dependency on Java Management APIs from Log4J API module to improve compatibility with Android Platform which does not support JMX extensions. (https://issues.apache.org/jira/browse/LOG4J2-2126[LOG4J2-2126])
+* Log4j2 throws NoClassDefFoundError in Java 9 in java.util.ServiceLoader. (https://issues.apache.org/jira/browse/LOG4J2-2129[LOG4J2-2129])
+* Don't create exit message in traceExit(R) when logging is disabled. (https://issues.apache.org/jira/browse/LOG4J2-2157[LOG4J2-2157])
+* Fixed bug where ThreadContext map was cleared, resulting in entries being only available for one log event. (https://issues.apache.org/jira/browse/LOG4J2-2158[LOG4J2-2158])
+* Allow SortedArrayStringMap to be filtered upon deserialization. Fix build error in Java 9 when compiling log4j-core test classes. (https://issues.apache.org/jira/browse/LOG4J2-2163[LOG4J2-2163])
+* Fix typo in Property Substitution docs. (https://issues.apache.org/jira/browse/LOG4J2-2175[LOG4J2-2175])
+* NullPointerException would occur when header was provided to a Layout on RollingRandingAccessFileAppender with DirectWriteRolloverStrategy. (https://issues.apache.org/jira/browse/LOG4J2-2247[LOG4J2-2247])
+* Incorrect automatics module name header was being included in manifests. (https://issues.apache.org/jira/browse/LOG4J2-2254[LOG4J2-2254])
+* Strings::join, when called with [null] returns "null" instead of EMPTY. (https://issues.apache.org/jira/browse/LOG4J2-2270[LOG4J2-2270])
+* Move module-info.class to META-INF/versions/9 directory. (https://issues.apache.org/jira/browse/LOG4J2-2271[LOG4J2-2271])
+* Allow EnvironmentPropertySource to run with a SecurityManager that rejects environment variable access. (https://issues.apache.org/jira/browse/LOG4J2-2274[LOG4J2-2274])
+* ConcurrentModificationException from org.apache.logging.log4j.status.StatusLogger.<clinit>(StatusLogger.java:71). (https://issues.apache.org/jira/browse/LOG4J2-2276[LOG4J2-2276])
+* Allow SystemPropertiesPropertySource to run with a SecurityManager that rejects system property access. (https://issues.apache.org/jira/browse/LOG4J2-2279[LOG4J2-2279])

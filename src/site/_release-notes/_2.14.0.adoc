@@ -1,0 +1,113 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-14-0]
+== 2.14.0
+
+Release date:: 2020-11-06
+
+This release contains a new Layout, `JsonTemplateLayout`, that is intended to ultimately replace `JsonLayout`.
+As its name suggests it uses a template to define the elements to include in the JSON.
+This Layout was contributed by the author of the https://github.com/vy/log4j2-logstash-layout[log4j2-logstash-layout], and who is now a member of the Log4j community.
+
+Log4j 2.14.0 adds support for MongoDB 4 and removes support for MongoDB 2.
+
+This release also contains a number of bug fixes which are listed below.
+
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+`log4j-slf4j-impl` should be used with SLF4J 1.7.x and earlier and `log4j-slf4j18-impl` should be used with SLF4J 1.8.x and later.
+
+The Log4j 2.14.0 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.14.0 requires a minimum of Java 8 to build and run.
+Log4j 2.12.1 is the last release to support Java 7.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Create module log4j-mongodb4 to use new major version 4 MongoDB driver. (https://issues.apache.org/jira/browse/LOG4J2-2848[LOG4J2-2848])
+* More flexible configuration of the Disruptor WaitStrategy. (https://issues.apache.org/jira/browse/LOG4J2-2858[LOG4J2-2858])
+* Add JsonTemplateLayout. (https://issues.apache.org/jira/browse/LOG4J2-2957[LOG4J2-2957])
+
+=== Changed
+
+* Add date pattern support for HTML layout. (https://issues.apache.org/jira/browse/LOG4J2-2889[LOG4J2-2889])
+* Allow GelfLayout to produce newline delimited events. (https://issues.apache.org/jira/browse/LOG4J2-2892[LOG4J2-2892])
+* Update MongoDB tests to require Java 8 unconditionally now that Log4j requires Java 8.
+* Update com.fasterxml.jackson.* 2.10.2 -> 2.11.0.
+* Update jackson 2.11.0 -> 2.11.2.
+* Update mongodb3.version from 3.12.1 to 3.12.6.
+* Update org.apache.activemq:activemq-broker 5.15.11 -> 5.16.0.
+* Update org.apache.commons:commons-compress 1.19 -> 1.20.
+* Update org.apache.commons:commons-csv 1.7 -> 1.8.
+* Update org.apache.commons:commons-lang3 3.9 -> 3.10.
+* Update org.codehaus.groovy:* 2.5.6 -> 3.0.5.
+* Update tests commons-io:commons-io 2.6 -> 2.7.
+* Update tests hsqldb 2.5.0 -> 2.5.1.
+* Update tests junit:junit 4.12 -> 4.13.
+
+=== Removed
+
+* Drop log4j-mongodb2 module. (https://issues.apache.org/jira/browse/LOG4J2-2851[LOG4J2-2851])
+
+=== Fixed
+
+* Javadoc link in ThreadContext description was incorrect. (https://issues.apache.org/jira/browse/LOG4J2-2822[LOG4J2-2822])
+* Correct class name printed in error message in RollingFileAppender. (https://issues.apache.org/jira/browse/LOG4J2-2832[LOG4J2-2832])
+* Disruptor and JUL no longer recursively start the AsyncLoggerDisruptor resulting in an extra disruptor background thread constantly waiting. (https://issues.apache.org/jira/browse/LOG4J2-2837[LOG4J2-2837])
+* Null pointer exception when no network interfaces are available. (https://issues.apache.org/jira/browse/LOG4J2-2844[LOG4J2-2844])
+* Fixed typos where mergeFactory should be mergeStrategy. (https://issues.apache.org/jira/browse/LOG4J2-2859[LOG4J2-2859])
+* Obtain ContextDataProviders asynchronously. (https://issues.apache.org/jira/browse/LOG4J2-2867[LOG4J2-2867])
+* RingBufferLogEventTranslator uses a static ContextDataInjector instead of initializing a new object on each thread. (https://issues.apache.org/jira/browse/LOG4J2-2867[LOG4J2-2867])
+* Rollover was failing to create directories when using a DirectFileRolloverStrategy. (https://issues.apache.org/jira/browse/LOG4J2-2875[LOG4J2-2875])
+* Determine the container id to obtain container and image information. (https://issues.apache.org/jira/browse/LOG4J2-2877[LOG4J2-2877])
+* Create StackWalker benchmark. Revert back to StackWalker.walk based on benchmark results. (https://issues.apache.org/jira/browse/LOG4J2-2880[LOG4J2-2880])
+* Support java.util.logging filters when using that API. (https://issues.apache.org/jira/browse/LOG4J2-2882[LOG4J2-2882])
+* When using DirectFileRolloverStrategy the file pattern was not being recalculated on size based rollover after a time based rollover had occurred. (https://issues.apache.org/jira/browse/LOG4J2-2883[LOG4J2-2883])
+* Fix spelling error in log message. (https://issues.apache.org/jira/browse/LOG4J2-2894[LOG4J2-2894])
+* Fix potential deadlock in asynchronous logging by avoiding blocking for queue space on Log4jThreads (https://issues.apache.org/jira/browse/LOG4J2-2895[LOG4J2-2895])
+* Avoid initializing volatile fields with default values. (https://issues.apache.org/jira/browse/LOG4J2-2898[LOG4J2-2898])
+* Fix log4j-1.2-api LogEventWrapper threadId and priority accessors when called multiple times. (https://issues.apache.org/jira/browse/LOG4J2-2899[LOG4J2-2899])
+* Missing configuration files should be ignored when creating a composite configuration. (https://issues.apache.org/jira/browse/LOG4J2-2901[LOG4J2-2901])
+* Fix UnsupportedOperationException when initializing the Log4j2CloudConfigLoggingSystem. (https://issues.apache.org/jira/browse/LOG4J2-2906[LOG4J2-2906])
+* Move Spring Lookup and Spring PropertySource to its own module. (https://issues.apache.org/jira/browse/LOG4J2-2908[LOG4J2-2908])
+* Log4j-web should now store the servlet context as a map entry instead of in the single external context field. (https://issues.apache.org/jira/browse/LOG4J2-2910[LOG4J2-2910])
+* Log4j2EventListener in spring.cloud.config.client listens for wrong event. (https://issues.apache.org/jira/browse/LOG4J2-2911[LOG4J2-2911])
+* Call ReliabilityStrategy's beforeStopAppenders() method before stopping AsyncAppender. (https://issues.apache.org/jira/browse/LOG4J2-2919[LOG4J2-2919])
+* Fix broken link in FAQ. (https://issues.apache.org/jira/browse/LOG4J2-2925[LOG4J2-2925])
+* Fix NPE in MDCContextMap on 'contains' and 'isEmpty' invocations. (https://issues.apache.org/jira/browse/LOG4J2-2939[LOG4J2-2939])
+* Prevent premature garbage collection of shutdown hooks in DefaultShutdownCallbackRegistry. (https://issues.apache.org/jira/browse/LOG4J2-2954[LOG4J2-2954])

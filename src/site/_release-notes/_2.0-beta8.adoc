@@ -1,0 +1,75 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-0-beta8]
+== 2.0-beta8
+
+Release date:: 2013-07-10
+
+
+=== Changed
+
+* Include arbitrary message fields in RFC-5424 structured data. (https://issues.apache.org/jira/browse/LOG4J2-168[LOG4J2-168])
+* Improved logging initialization in Servlet containers, especially Servlet 3.0 and newer where Log4j now initializes and deinitializes automatically with no deployment descriptor configuration. (https://issues.apache.org/jira/browse/LOG4J2-270[LOG4J2-270])
+* Wasted work in XMLLayout.toSerializable(). (https://issues.apache.org/jira/browse/LOG4J2-273[LOG4J2-273])
+* Wasted work in UUIDUtil initialization. (https://issues.apache.org/jira/browse/LOG4J2-274[LOG4J2-274])
+* Wasted work in RollingAppenderSizeTest.testAppender() and others. (https://issues.apache.org/jira/browse/LOG4J2-277[LOG4J2-277])
+* Allow the default status level to be specified as a system property. (https://issues.apache.org/jira/browse/LOG4J2-282[LOG4J2-282])
+* Remove dependency on Apache ORO jar. (https://issues.apache.org/jira/browse/LOG4J2-283[LOG4J2-283])
+* Update Log4j 1 dependency to 1.2.17 from 1.2.16. (https://issues.apache.org/jira/browse/LOG4J2-284[LOG4J2-284])
+* Update Jansi jar to 1.11 from 1.9. (https://issues.apache.org/jira/browse/LOG4J2-285[LOG4J2-285])
+* Update test H2 JDBC driver to 1.172 from 1.171. (https://issues.apache.org/jira/browse/LOG4J2-286[LOG4J2-286])
+* Update JUnit to 4.11 from 4.7. (https://issues.apache.org/jira/browse/LOG4J2-288[LOG4J2-288])
+* LogManager.getLogger can now be called without a logger name or with a null logger name. (https://issues.apache.org/jira/browse/LOG4J2-294[LOG4J2-294])
+* Add printf methods to Logger API. (https://issues.apache.org/jira/browse/LOG4J2-301[LOG4J2-301])
+* Update NoSQL dependencies: lightcouch 0.0.6 from 0.0.5, mongodb 2.11.2 from 2.11.1. (https://issues.apache.org/jira/browse/LOG4J2-386[LOG4J2-386])
+
+=== Fixed
+
+* Fix NullPointerException (regression due to fix for LOG4J2-228) (https://issues.apache.org/jira/browse/LOG4J2-139[LOG4J2-139])
+* FastRollingFileAppender with TimeBasedTriggeringPolicy now works correctly if append=false. (https://issues.apache.org/jira/browse/LOG4J2-267[LOG4J2-267])
+* FastRollingFileAppender with TimeBasedTriggeringPolicy now works correctly if append=false. (https://issues.apache.org/jira/browse/LOG4J2-271[LOG4J2-271])
+* FlumeAvroManager fails to notify client of failing event if Flume RPCClient cannot be created. (https://issues.apache.org/jira/browse/LOG4J2-275[LOG4J2-275])
+* Filter calls from Avro or Flume to be ignored by the FlumeAppender. (https://issues.apache.org/jira/browse/LOG4J2-278[LOG4J2-278])
+* FlumePersistentManager now calls Berkeley DB from threads to avoid encountering interrupts in the application. (https://issues.apache.org/jira/browse/LOG4J2-279[LOG4J2-279])
+* AsyncLogger threads are now daemon threads and won't prevent the JVM from shutting down anymore. (https://issues.apache.org/jira/browse/LOG4J2-280[LOG4J2-280])
+* Upgrade javadoc plugin to 2.9.1 to fix javadoc security issue. (https://issues.apache.org/jira/browse/LOG4J2-289[LOG4J2-289])
+* Fast(Rolling)FileAppender now correctly appends to (does not overwrite) existing file. (https://issues.apache.org/jira/browse/LOG4J2-292[LOG4J2-292])
+* Fast(Rolling)FileAppender now correctly handles messages exceeding the buffer size. (https://issues.apache.org/jira/browse/LOG4J2-295[LOG4J2-295])
+* Wasted work in FlumePersistentManager.createManager. (https://issues.apache.org/jira/browse/LOG4J2-296[LOG4J2-296])
+* Wasted work in TestConfigurator.testEnvironment. (https://issues.apache.org/jira/browse/LOG4J2-297[LOG4J2-297])
+* Wasted work in StyleConverterTest.setupClass. (https://issues.apache.org/jira/browse/LOG4J2-298[LOG4J2-298])
+* WriterThread was ending when no agents are available which caused an OutOfMemoryError. (https://issues.apache.org/jira/browse/LOG4J2-300[LOG4J2-300])
+* Added toString methods to ThreadContextStack/Map implementation classes. (https://issues.apache.org/jira/browse/LOG4J2-302[LOG4J2-302])

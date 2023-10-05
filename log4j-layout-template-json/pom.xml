@@ -30,7 +30,6 @@
   <description>Apache Log4j Layout for JSON template.</description>
 
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Layout for JSON Template Documentation</docLabel>
     <projectDir>/log4j-layout-template-json</projectDir>
 

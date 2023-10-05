@@ -27,7 +27,6 @@
   <name>Apache Log4j API Tests</name>
   <description>The Apache Log4j API Test</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>API Documentation</docLabel>
     <projectDir>/api</projectDir>
 

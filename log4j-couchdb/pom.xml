@@ -27,7 +27,6 @@
   <name>Apache Log4j CouchDB</name>
   <description>CouchDB appender for Log4j.</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>CouchDB Documentation</docLabel>
     <projectDir>/log4j-couchdb</projectDir>
 

@@ -1,0 +1,97 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-20-0]
+== 2.20.0
+
+Release date:: 2023-02-17
+
+This release primarily contains bug fixes and minor enhancements.
+
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+`log4j-slf4j-impl` should be used with SLF4J 1.7.x and earlier and `log4j-slf4j18-impl` should be used with SLF4J 1.8.x and later.
+SLF4J-2.0.0 alpha releases are not fully supported.
+See https://issues.apache.org/jira/browse/LOG4J2-2975[LOG4J2-2975] and https://jira.qos.ch/browse/SLF4J-511[SLF4J-511].
+
+The Log4j 2.20.0 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Apache Log4j 2.20.0 requires a minimum of Java 8 to build and run.
+Log4j 2.12.4 is the last release to support Java 7.
+Log4j 2.3.2 is the last release to support Java 6.
+Java 6 and Java 7 are no longer supported by the Log4j team.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Add support for timezones in `RollingFileAppender` date pattern (https://issues.apache.org/jira/browse/LOG4J2-1631[LOG4J2-1631])
+* Add `LogEvent` timestamp to `ProducerRecord` in `KafkaAppender` (https://issues.apache.org/jira/browse/LOG4J2-2678[LOG4J2-2678])
+* Add `PatternLayout` support for abbreviating the name of all logger components except the 2 rightmost (https://issues.apache.org/jira/browse/LOG4J2-2785[LOG4J2-2785])
+* Removes internal field that leaked into public API. (https://issues.apache.org/jira/browse/LOG4J2-3615[LOG4J2-3615])
+* Add a `LogBuilder#logAndGet()` method to emulate the `Logger#traceEntry` method. (https://issues.apache.org/jira/browse/LOG4J2-3645[LOG4J2-3645])
+
+=== Changed
+
+* Simplify site generation (https://github.com/apache/logging-log4j2/pull/1166[1166])
+* Switch the issue tracker from https://issues.apache.org/jira/browse/LOG4J2[JIRA] to https://github.com/apache/logging-log4j2/issues[GitHub Issues] (https://github.com/apache/logging-log4j2/pull/1172[1172])
+* Remove liquibase-log4j2 maven module (https://github.com/apache/logging-log4j2/pull/1193[1193])
+* Fix order of stacktrace elements, that causes cache misses in `ThrowableProxyHelper`. (https://github.com/apache/logging-log4j2/pull/1214[1214])
+* Switch from `com.sun.mail` to Eclipse Angus. (https://issues.apache.org/jira/browse/LOG4J2-3554[LOG4J2-3554])
+* Add Log4j2 Core as default runtime dependency of the SLF4J2-to-Log4j2 API bridge. (https://issues.apache.org/jira/browse/LOG4J2-3601[LOG4J2-3601])
+* Replace `maven-changes-plugin` with a custom changelog implementation (https://issues.apache.org/jira/browse/LOG4J2-3628[LOG4J2-3628])
+* Moved `log4j-api` and `log4j-core` artifacts with classifier `tests` to `log4j-api-test` and `log4j-core-test` respectively. (https://issues.apache.org/jira/browse/LOG4J2-3650[LOG4J2-3650])
+
+=== Deprecated
+
+* Deprecate support for package scanning for plugins (https://issues.apache.org/jira/browse/LOG4J2-3644[LOG4J2-3644])
+
+=== Fixed
+
+* Copy programmatically supplied location even if `includeLocation="false"`. (https://github.com/apache/logging-log4j2/pull/1197[1197])
+* Eliminate status logger warning, when `disableAnsi` or `noConsoleNoAnsi` is used the style and highlight patterns. (https://github.com/apache/logging-log4j2/pull/1202[1202])
+* Fix detection of location requirements in `RewriteAppender`. (https://github.com/apache/logging-log4j2/pull/1274[1274])
+* Replace regex with manual code to escape characters in Rfc5424Layout. (https://github.com/apache/logging-log4j2/pull/1277[1277])
+* Fix `java.sql.Time` object formatting in `MapMessage` (https://issues.apache.org/jira/browse/LOG4J2-2297[LOG4J2-2297])
+* Fix previous fire time computation in `CronTriggeringPolicy` (https://issues.apache.org/jira/browse/LOG4J2-3357[LOG4J2-3357])
+* Correct default to not include location for ``AsyncRootLogger``s (https://issues.apache.org/jira/browse/LOG4J2-3487[LOG4J2-3487])
+* Lazily evaluate the level of a SLF4J `LogEventBuilder` (https://issues.apache.org/jira/browse/LOG4J2-3598[LOG4J2-3598])
+* Fixes priority of Legacy system properties, which are now back to having higher priority than Environment variables. (https://issues.apache.org/jira/browse/LOG4J2-3621[LOG4J2-3615])
+* Protects `ServiceLoaderUtil` from unchecked `ServiceLoader` exceptions. (https://issues.apache.org/jira/browse/LOG4J2-3624[LOG4J2-3624])
+* Fix `Configurator#setLevel` for internal classes (https://issues.apache.org/jira/browse/LOG4J2-3631[LOG4J2-3631])
+* Fix level propagation in `Log4jBridgeHandler` (https://issues.apache.org/jira/browse/LOG4J2-3634[LOG4J2-3634])
+* Disable `OsgiServiceLocator` if not running in OSGI container. (https://issues.apache.org/jira/browse/LOG4J2-3642[LOG4J2-3642])
+* When using a Date Lookup in the file pattern the current time should be used. (https://issues.apache.org/jira/browse/LOG4J2-3643[LOG4J2-3643])
+* Fixed `LogBuilder` filtering in the presence of global filters. (https://issues.apache.org/jira/browse/LOG4J2-3647[LOG4J2-3647])

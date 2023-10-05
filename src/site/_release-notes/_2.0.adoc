@@ -1,0 +1,79 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-0]
+== 2.0
+
+Release date:: 2014-07-12
+
+This is the first GA release, after thirteen prior releases over the last 4 years.
+
+Apache Log4j 2.0 requires a minimum of Java 6 to build and run.
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports,
+patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Added support for generating custom logger wrappers that replace the existing log levels and extended logger wrappers that add custom log levels to the existing ones. (https://issues.apache.org/jira/browse/LOG4J2-519[LOG4J2-519])
+* RegexFilter does not match multiline log messages. (https://issues.apache.org/jira/browse/LOG4J2-696[LOG4J2-696])
+
+=== Changed
+
+* Make org.apache.logging.log4j.core.layout.AbstractLayout immutable. (https://issues.apache.org/jira/browse/LOG4J2-685[LOG4J2-685])
+* Update Jackson to 2.4.1. (https://issues.apache.org/jira/browse/LOG4J2-689[LOG4J2-689])
+* Update Apache Commons Logging to 1.2 from 1.1.3. (https://issues.apache.org/jira/browse/LOG4J2-709[LOG4J2-709])
+
+=== Fixed
+
+* LoggerConfigs with no Level now inherit the Level from their parent. (https://issues.apache.org/jira/browse/LOG4J2-441[LOG4J2-441])
+* JMX GUI: fixed occasional ArrayIndexOutOfBoundsException after pressing "reconfigure with XML below". (Fixed in RC2, but wasn't included in release notes.) (https://issues.apache.org/jira/browse/LOG4J2-538[LOG4J2-538])
+* Fixed Serialization error with SocketAppender and Async Loggers. (Fixed in RC2, but wasn't included in release notes.) (https://issues.apache.org/jira/browse/LOG4J2-625[LOG4J2-625])
+* Update docs to clarify how to use formatter logger and standard logger together. (https://issues.apache.org/jira/browse/LOG4J2-631[LOG4J2-631])
+* AsyncLoggerContextSelector should ensure that different AsyncLoggerContext objects created by web app classloaders have unique names. (https://issues.apache.org/jira/browse/LOG4J2-666[LOG4J2-666])
+* Special characters (tab and so on) in PatternLayout do not work. (https://issues.apache.org/jira/browse/LOG4J2-682[LOG4J2-682])
+* Fix annotation processor warnings on JDK 1.7+. (https://issues.apache.org/jira/browse/LOG4J2-683[LOG4J2-683])
+* Core's OptionConverter support for \b is broken (affects PatternLayout). (https://issues.apache.org/jira/browse/LOG4J2-686[LOG4J2-686])
+* Rename org.apache.logging.log4j.core.util.Closer.closeSilent() to closeSilently(). (https://issues.apache.org/jira/browse/LOG4J2-687[LOG4J2-687])
+* Make org.apache.logging.log4j.core.layout.PatternLayout immutable. (https://issues.apache.org/jira/browse/LOG4J2-688[LOG4J2-688])
+* Log4j Web test dependencies should be in scope "test" in the pom. (https://issues.apache.org/jira/browse/LOG4J2-690[LOG4J2-690])
+* Update documentation to specify only Maven 3 is supported. (https://issues.apache.org/jira/browse/LOG4J2-692[LOG4J2-692])
+* Fix strange compilation error that popped up in a test class. (https://issues.apache.org/jira/browse/LOG4J2-694[LOG4J2-694])
+* PatternLayout manual page missing documentation on header/footer. (https://issues.apache.org/jira/browse/LOG4J2-699[LOG4J2-699])
+* Fixed issue where Async Logger does not log thread context stack data. API change: added method getImmutableStackOrNull() to ThreadContext.ContextStack interface. (https://issues.apache.org/jira/browse/LOG4J2-705[LOG4J2-705])
+* Some exceptions are not logged when configuration problems are detected. (https://issues.apache.org/jira/browse/LOG4J2-707[LOG4J2-707])

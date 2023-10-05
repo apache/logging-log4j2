@@ -1,0 +1,104 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-8-2]
+== 2.8.2
+
+Release date:: 2017-04-02
+
+This release primarily contains bugfixes and minor enhancements.
+More details on the new features and fixes are itemized below.
+
+Note that subsequent to the 2.6 release a minor source incompatibility was found due to the addition of new methods to the `Logger` interface.
+If you have code that does:
+
+[source,java]
+----
+logger.error(null, “This is the log message”, throwable);
+----
+
+or similar with any log level you will get a compiler error saying the reference is ambiguous.
+To correct this either do:
+
+[source,java]
+----
+logger.error(“This is the log message”, throwable);
+----
+
+or
+
+[source,java]
+----
+logger.error((Marker) null, “This is the log message”, throwable);
+----
+
+The Log4j 2.8.2 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.8.2 requires a minimum of Java 7 to build and run.
+Log4j 2.3 was the last release that supported Java 6.
+
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Add support for appending common suffix to each line of extended and root throwable stack trace. (https://issues.apache.org/jira/browse/LOG4J2-1838[LOG4J2-1838])
+* Add support for appending common suffix to each line of throwable stack trace. (https://issues.apache.org/jira/browse/LOG4J2-1843[LOG4J2-1843])
+* Add JSON encoding support to EncodingPatternConverter %encode{}. (https://issues.apache.org/jira/browse/LOG4J2-1848[LOG4J2-1848])
+* Add support for filtering input in TcpSocketServer and UdpSocketServer. (https://issues.apache.org/jira/browse/LOG4J2-1863[LOG4J2-1863])
+
+=== Changed
+
+* Move integration tests to their own module to speed up build. (https://issues.apache.org/jira/browse/LOG4J2-1827[LOG4J2-1827])
+* Update Jackson from 2.8.6 to 2.8.7. (https://issues.apache.org/jira/browse/LOG4J2-1856[LOG4J2-1856])
+
+=== Fixed
+
+* Log4j 2.8 can lose exceptions when a security manager is present. (https://issues.apache.org/jira/browse/LOG4J2-1820[LOG4J2-1820])
+* NullPointerException in HtmlLayout. (https://issues.apache.org/jira/browse/LOG4J2-1831[LOG4J2-1831])
+* Fix documentation about the licensing for JeroMQ. (https://issues.apache.org/jira/browse/LOG4J2-1835[LOG4J2-1835])
+* Update the API version to 2.6.0. (https://issues.apache.org/jira/browse/LOG4J2-1836[LOG4J2-1836])
+* Fix typo in %replace converter documentation. (https://issues.apache.org/jira/browse/LOG4J2-1840[LOG4J2-1840])
+* Handle when LogEvent.getLoggerName() returns null in KafkaAppender. (https://issues.apache.org/jira/browse/LOG4J2-1845[LOG4J2-1845])
+* Handle when LogEvent.getLoggerName() returns null in LoggerNameLevelRewritePolicy. (https://issues.apache.org/jira/browse/LOG4J2-1846[LOG4J2-1846])
+* Fixed daylight savings time (DST) issue with FixedDateFormat. (https://issues.apache.org/jira/browse/LOG4J2-1849[LOG4J2-1849])
+* Fix CassandraRule and unit tests on Windows. (https://issues.apache.org/jira/browse/LOG4J2-1850[LOG4J2-1850])
+* The default value of RandomAccessFileAppender.Builder append field is wrong. (https://issues.apache.org/jira/browse/LOG4J2-1853[LOG4J2-1853])
+* Fix JavaDoc on org.apache.logging.log4j.ThreadContext about inheritance. (https://issues.apache.org/jira/browse/LOG4J2-1861[LOG4J2-1861])
+* Fix JavaDoc about @Order and OrderComparator ordering. (https://issues.apache.org/jira/browse/LOG4J2-1862[LOG4J2-1862])

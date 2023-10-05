@@ -27,7 +27,6 @@
   <name>Apache Log4j Commons Logging Bridge</name>
   <description>The Apache Log4j Commons Logging Adapter</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>JCL Bridge Documentation</docLabel>
     <projectDir>/jcl-bridge</projectDir>
     <bnd-extra-module-options>

@@ -27,7 +27,6 @@
   <name>Apache Log4j Kubernetes Library</name>
   <description>Apache Log4j Kubernetes Support</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Kubernetes Library Documentation</docLabel>
     <projectDir>/kubernetes</projectDir>
 

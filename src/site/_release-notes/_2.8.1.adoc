@@ -1,0 +1,101 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-8-1]
+== 2.8.1
+
+Release date:: 2017-02-26
+
+This release primarily contains bugfixes and minor enhancements.
+More details on the new features and fixes are itemized below.
+
+Note that subsequent to the 2.6 release a minor source incompatibility was found due to the addition of new methods to the `Logger` interface.
+If you have code that does:
+
+[source,java]
+----
+logger.error(null, “This is the log message”, throwable);
+----
+
+or similar with any log level you will get a compiler error saying the reference is ambiguous.
+To correct this either do:
+
+[source,java]
+----
+logger.error(“This is the log message”, throwable);
+----
+
+or
+
+[source,java]
+----
+logger.error((Marker) null, “This is the log message”, throwable);
+----
+
+The Log4j 2.8.1 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.8.1 requires a minimum of Java 7 to build and run.
+Log4j 2.3 was the last release that supported Java 6.
+
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* [core] Add and implement LogEvent.toImmutable(). (https://issues.apache.org/jira/browse/LOG4J2-1807[LOG4J2-1807])
+* Remove deprecation on MessageSupplier lambda functions in Logger API. (https://issues.apache.org/jira/browse/LOG4J2-1823[LOG4J2-1823])
+
+=== Changed
+
+* Update to use Logback 1.1.10 and then Logback 1.2 for tests. (https://issues.apache.org/jira/browse/LOG4J2-1810[LOG4J2-1810])
+* Improved error message when log4j 2 configuration file not found. (https://issues.apache.org/jira/browse/LOG4J2-1812[LOG4J2-1812])
+* Update Jackson from 2.8.5 to 2.8.6. (https://issues.apache.org/jira/browse/LOG4J2-1819[LOG4J2-1819])
+* Update SLF4J to 1.7.24. (https://issues.apache.org/jira/browse/LOG4J2-1822[LOG4J2-1822])
+
+=== Fixed
+
+* Fix ClassNotFoundException org.apache.logging.log4j.core.util.ExecutorServices in OSGi tests. (https://issues.apache.org/jira/browse/LOG4J2-1753[LOG4J2-1753])
+* Fixed bug in PropertiesUtil::getCharsetProperty that caused UnsupportedCharsetException for ConsoleAppender. (https://issues.apache.org/jira/browse/LOG4J2-1799[LOG4J2-1799])
+* Report errors when sending to Kafka when using syncSend=false. (https://issues.apache.org/jira/browse/LOG4J2-1800[LOG4J2-1800])
+* Fix Maven POM to ensure JMH generated classes in log4j-perf are included in benchmarks jar. (https://issues.apache.org/jira/browse/LOG4J2-1803[LOG4J2-1803])
+* Allow %i in file pattern to be preceded with characters other than just '-'. (https://issues.apache.org/jira/browse/LOG4J2-1804[LOG4J2-1804])
+* Fixed rare race condition in FixedDateFormat, made FixedDateFormat::millisSinceMidnight method public. (https://issues.apache.org/jira/browse/LOG4J2-1805[LOG4J2-1805])
+* Fix Javadoc for DefaultRolloverStrategy::purgeAscending (https://issues.apache.org/jira/browse/LOG4J2-1806[LOG4J2-1806])
+* Change minOccur to minOccurs in Log4j-config.xsd. (https://issues.apache.org/jira/browse/LOG4J2-1816[LOG4J2-1816])
+* Fix rollover to work when filePattern contains no directory components. (https://issues.apache.org/jira/browse/LOG4J2-1818[LOG4J2-1818])

@@ -27,7 +27,6 @@
   <name>Apache Log4j JPA</name>
   <description>Apache Log4j Java Persistence API Appender.</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j JPA Documentation</docLabel>
     <projectDir>/log4j-jpa</projectDir>
 

@@ -28,8 +28,6 @@
   <description>The Apache Log4j implementation of java.util.logging</description>
 
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-
     <!--
       ~ OSGi and JPMS options
       -->

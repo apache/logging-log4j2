@@ -1,0 +1,74 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-0-beta7]
+== 2.0-beta7
+
+Release date:: 2013-06-01
+
+
+=== Added
+
+* Break up core into multiple osgi jars. (https://issues.apache.org/jira/browse/LOG4J2-10[LOG4J2-10])
+* New JDBC, JPA, and NoSQL database Appenders. (https://issues.apache.org/jira/browse/LOG4J2-229[LOG4J2-229])
+* Provide configuration information (location, content type, content if possible) via a registered Advertiser. (https://issues.apache.org/jira/browse/LOG4J2-251[LOG4J2-251])
+
+=== Changed
+
+* Improve ThreadContext performance with copy-on-write map and stack. (https://issues.apache.org/jira/browse/LOG4J2-154[LOG4J2-154])
+* Allow custom LogEventFactories. (https://issues.apache.org/jira/browse/LOG4J2-243[LOG4J2-243])
+* Allow context parameters in Log4jContextListener to include properties. (https://issues.apache.org/jira/browse/LOG4J2-249[LOG4J2-249])
+* Add support for interceptors in the embedded Flume Appender. (https://issues.apache.org/jira/browse/LOG4J2-262[LOG4J2-262])
+* Method name changes in interface org.apache.logging.log4j.spi.ThreadContextMap: getContext() to getCopy(), get() to getImmutableMapOrNull().
+
+=== Fixed
+
+* Remove LoggerContext when LoggerContext is stopped. (https://issues.apache.org/jira/browse/LOG4J2-223[LOG4J2-223])
+* UDP now sends one event per packet. (https://issues.apache.org/jira/browse/LOG4J2-228[LOG4J2-228])
+* StringFormattedMessage and MessageFormatMessage now will accept a Throwable as their last argument and pass it on. (https://issues.apache.org/jira/browse/LOG4J2-242[LOG4J2-242])
+* Rewrite Appender was ignoring filters on referenced appenders. (https://issues.apache.org/jira/browse/LOG4J2-244[LOG4J2-244])
+* Avoid EmptyStack exception if getCallerClass and SecurityManager are not available. (https://issues.apache.org/jira/browse/LOG4J2-245[LOG4J2-245])
+* Data buffer is reset in finally clause. (https://issues.apache.org/jira/browse/LOG4J2-246[LOG4J2-246])
+* SocketServer.isActive should be volatile because it is accessed from different threads. (https://issues.apache.org/jira/browse/LOG4J2-247[LOG4J2-247])
+* Mark OutputStream in OutputStreamManager as volatile. Mark header and footer as final. (https://issues.apache.org/jira/browse/LOG4J2-254[LOG4J2-254])
+* Multi-byte character strings are now assumed to be in the platform default encoding, not UTF-8. (https://issues.apache.org/jira/browse/LOG4J2-255[LOG4J2-255])
+* XML layout ignores charset for the XML processing instruction's encoding attribute. (https://issues.apache.org/jira/browse/LOG4J2-257[LOG4J2-257])
+* HTML layout does not output meta element for charset. (https://issues.apache.org/jira/browse/LOG4J2-258[LOG4J2-258])
+* HTML layout does not specify charset in content type. (https://issues.apache.org/jira/browse/LOG4J2-259[LOG4J2-259])
+* XML layout does not specify charset in content type. (https://issues.apache.org/jira/browse/LOG4J2-260[LOG4J2-260])
+* Add missing "not" to error message. (https://issues.apache.org/jira/browse/LOG4J2-261[LOG4J2-261])
+* Do not allow a charset on RFC5424Layout - use UTF-8. (https://issues.apache.org/jira/browse/LOG4J2-263[LOG4J2-263])
+* Add guid to FlumeEvent headers for non-Map Messages. (https://issues.apache.org/jira/browse/LOG4J2-268[LOG4J2-268])
+* Use transaction when batch size is 1. (https://issues.apache.org/jira/browse/LOG4J2-269[LOG4J2-269])

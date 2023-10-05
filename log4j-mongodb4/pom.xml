@@ -27,7 +27,6 @@
   <name>Apache Log4j MongoDB 4</name>
   <description>MongoDB appender for Log4j using the MongoDB 4 driver API.</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>MongoDB 4 Documentation</docLabel>
     <projectDir>/log4j-mongodb4</projectDir>
 

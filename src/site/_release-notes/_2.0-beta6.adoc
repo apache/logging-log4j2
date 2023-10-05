@@ -1,0 +1,66 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-0-beta6]
+== 2.0-beta6
+
+Release date:: 2013-05-05
+
+
+=== Changed
+
+* Documentation updates to clarify use and impact of location in pattern layouts. (https://issues.apache.org/jira/browse/LOG4J2-225[LOG4J2-225])
+* Improved error reporting when misconfigured. (https://issues.apache.org/jira/browse/LOG4J2-230[LOG4J2-230])
+* Moved JMX Client GUI classes into separate jmx-gui submodule. (https://issues.apache.org/jira/browse/LOG4J2-237[LOG4J2-237])
+* Moved Clock interface to package org.apache.logging.log4j.core.helpers.
+* Removed CheckStyle false positives for NewlineAtEndOfFile and whitespace following '*' at end of line in javadoc.
+* Renamed AsynchAppender to AsyncAppender. Plugin name became Async (was Asynch).
+
+=== Fixed
+
+* Use OSGi version format in Fragment-Host (https://issues.apache.org/jira/browse/LOG4J2-159[LOG4J2-159])
+* Add support for interpolating Environment variables when processing the configuration. (https://issues.apache.org/jira/browse/LOG4J2-192[LOG4J2-192])
+* Renamed Plugin annotation attribute from "type" to "category". (https://issues.apache.org/jira/browse/LOG4J2-201[LOG4J2-201])
+* Various small documentation fixes. (https://issues.apache.org/jira/browse/LOG4J2-215[LOG4J2-215])
+* Ensure PluginManager streams are always closed. (https://issues.apache.org/jira/browse/LOG4J2-217[LOG4J2-217])
+* Fix: install default root logger if not configured (this is unchanged), but make sure to include configured named loggers. Clarified documentation. (https://issues.apache.org/jira/browse/LOG4J2-219[LOG4J2-219])
+* Remove hundreds of compiler warnings. (https://issues.apache.org/jira/browse/LOG4J2-221[LOG4J2-221])
+* Disruptor will now shut down during Tomcat shutdown. (https://issues.apache.org/jira/browse/LOG4J2-222[LOG4J2-222])
+* Fix LoggerContext start and stop to eliminate IllegalStateException and NoClassDefFound errors. (https://issues.apache.org/jira/browse/LOG4J2-223[LOG4J2-223])
+* The FlumeAppender failed to start if the Flume RPCClient could not connect to any Flume agents. (https://issues.apache.org/jira/browse/LOG4J2-224[LOG4J2-224])
+* Logger.getParent() was not returning the correct Logger. (https://issues.apache.org/jira/browse/LOG4J2-231[LOG4J2-231])
+* Fixed link to log4j-user mailing list. (https://issues.apache.org/jira/browse/LOG4J2-233[LOG4J2-233])
+* RegexFilter threw a NullPointerException when used as a context-wide filter. (https://issues.apache.org/jira/browse/LOG4J2-234[LOG4J2-234])
+* Removed dependency on tools jar from core module, made jconsole dependency optional. (https://issues.apache.org/jira/browse/LOG4J2-235[LOG4J2-235])

@@ -14,9 +14,10 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 ////
-#set($dollar = '$')
 = JSON Template Layout
 Volkan Yazıcı <vy@apache.org>
+
+include::_constants.adoc[]
 
 `JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON
 generating layout. It encodes ``LogEvent``s according to the structure described
@@ -41,12 +42,12 @@ by the JSON template provided. In a nutshell, it shines with its
 Adding `log4j-layout-template-json` artifact to your list of dependencies is
 enough to enable access to `JsonTemplateLayout` in your Log4j configuration:
 
-[source,xml]
+[source,xml,subs="+attributes"]
 ----
 <dependency>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j-layout-template-json</artifactId>
-    <version>${Log4jReleaseVersion}</version>
+    <version>{project-version}</version>
 </dependency>
 ----
 
@@ -433,7 +434,7 @@ Event template resolvers consume a `LogEvent` and render a certain property of
 it at the point of the JSON where they are declared. For instance, `marker`
 resolver renders the marker of the event, `level` resolver renders the level,
 and so on. An event template resolver is denoted with a special object
-containing a`${dollar}resolver` key:
+containing a`$resolver` key:
 
 .Example event template demonstrating the usage of `level` resolver
 [source,json]
@@ -602,7 +603,7 @@ locale:
   "$resolver": "caseConverter",
   "case": "lower",
   "locale": "nl_NL",
-  "input": "${dollar}{env:USER}"
+  "input": "${env:USER}"
 }
 ----
 
@@ -1441,7 +1442,7 @@ generates garbage, though most (e.g., `int`, `long`, `String`, `List`,
 `boolean[]`, etc.) don't.
 ====
 
-`"${dollar}resolver"` is left out in the following examples, since it is to be
+`"$resolver"` is left out in the following examples, since it is to be
 defined by the actual resolver, e.g., `map`, `mdc`.
 
 Resolve the value of the field keyed with `user:role`:
@@ -1968,8 +1969,8 @@ alternatives.
 [#faq-lookups]
 === Are lookups supported in templates?
 
-Yes, link:lookups.html[lookups] (e.g., `${dollar}{java:version}`,
-`${dollar}{env:USER}`, `${dollar}{date:MM-dd-yyyy}`) are supported in string
+Yes, link:lookups.html[lookups] (e.g., `${java:version}`,
+`${env:USER}`, `${date:MM-dd-yyyy}`) are supported in string
 literals of templates. Though note that they are not garbage-free.
 
 === Are recursive collections supported?

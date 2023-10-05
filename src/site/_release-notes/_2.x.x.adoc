@@ -1,0 +1,100 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-x-x]
+== 2.x.x
+
+
+
+This release primarily contains bug fixes and minor enhancements.
+
+The Log4j 2.20.1 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Apache Log4j 2.20.1 requires a minimum of Java 11 to build and Java 8 to run.
+Log4j 2.12.4 is the last release to support Java 7.
+Log4j 2.3.2 is the last release to support Java 6.
+Java 6 and Java 7 are no longer supported by the Log4j team.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Add marker parent support to `JsonTemplateLayout` (https://github.com/apache/logging-log4j2/pull/1381[1381])
+
+=== Changed
+
+* Bump the minimum Java version required for the build to JDK 11. Runtime requirements remain unchanged. (https://github.com/apache/logging-log4j2/issues/1369[1369])
+* Set the default `minLevel` and `maxLevel` of `LevelRangeFilter` to `OFF` and `ALL`, respectively (https://github.com/apache/logging-log4j2/pull/1503[1503])
+* Removes additional `isFiltered` checks in `AsyncLoggerConfig`. (https://github.com/apache/logging-log4j2/pull/1550[1550])
+* Log a status error event instead of an NPE in `OsgiServiceLocator.loadServices(Class, Lookup, boolean)` when a bundle has no valid `BundleContext` for a service type
+
+=== Removed
+
+* Moved `log4j-jmx-gui` to https://github.com/apache/logging-log4j-jmx-gui/actions[its own repository] along with its own release cycle
+
+=== Fixed
+
+* Add validation to rolling file manager path conditions. (https://github.com/apache/logging-log4j2/issues/1231[1231])
+* Adapt the OSGi metadata of `log4j-to-slf4j` to work with SLF4J 1 and 2. To achieve that use a version range of `[1.7,3)` for the imported SLF4J packages. (https://github.com/apache/logging-log4j2/issues/1232[1232])
+* Remove locale-dependent `toLowerCase/toUpperCase` calls. (https://github.com/apache/logging-log4j2/pull/1281[1281])
+* Redirect old `/<module>/apidocs` URLs (broken in 2.20.0) to `/javadoc/<module>` (https://github.com/apache/logging-log4j2/pull/1284[1284])
+* Add environment variable arbiter. (https://github.com/apache/logging-log4j2/issues/1312[1312])
+* Fixed logging of java.sql.Date objects by appending it before Log4J tries to call java.util.Date.toInstant() on it. (https://github.com/apache/logging-log4j2/pull/1366[1366])
+* Adapt the OSGi metadata of `log4j-api`, `log4j-core`, `log4j-slf4j-impl` and `log4j-slf4j2-impl` to activate the bundle when it is accessed. To achieve that set the `Bundle-ActivationPolicy` to `lazy` for the log4j bundles. (https://github.com/apache/logging-log4j2/issues/1367[1367])
+* Avoid using released objects in `StackTraceStringResolver` of JSON Template Layout (https://github.com/apache/logging-log4j2/pull/1380[1380])
+* Added missing setter for `connectionStringSource` in `MongoDb4Provider` builder (https://github.com/apache/logging-log4j2/issues/1389[1389])
+* Fix NPE in `PluginElementVisitor` (https://github.com/apache/logging-log4j2/issues/1391[1391])
+* Fix buffer size in `Log4jFixedFormatter` date time formatter. (https://github.com/apache/logging-log4j2/pull/1418[1418])
+* Fix concurrent date-time formatting issue in `PatternLayout` (https://github.com/apache/logging-log4j2/issues/1485[1485])
+* Fix runtime dependencies documentation. (https://github.com/apache/logging-log4j2/pull/1530[1530])
+* Allow to override fqcn in `Log4jEventBuilder` by implementing `CallerBoundaryAware`. (https://github.com/apache/logging-log4j2/pull/1533[1533])
+* Migrate MongoDB tests to JUnit 5 and Flapdoodle Embedded MongoDB 4. (https://github.com/apache/logging-log4j2/issues/1589[1589])
+* Rewrote message parameter formatter with improved escape handling (https://github.com/apache/logging-log4j2/issues/1626[1626])
+* Improve formatting and serialization of `StackTraceElement` on JDK 9+. (https://github.com/apache/logging-log4j2/issues/1640[1640])
+* Fix `MemoryMappedFileAppender` buffer unmapping on JRE 9+. (https://github.com/apache/logging-log4j2/issues/1646[1646])
+* Fixed rollover strategy in the Log4j 1.x compatibility layer. (https://github.com/apache/logging-log4j2/issues/1650[1650])
+* Remove incorrect mention of `base64` lookup and improve the rest of the lookup manual (https://github.com/apache/logging-log4j2/issues/1681[1681], https://issues.apache.org/jira/browse/LOG4J2-3504[LOG4J2-3504])
+* `JsonTemplateLayout` was missing to implement `LocationAware` and this was causing location not being passed to underlying appenders (https://github.com/apache/logging-log4j2/issues/1692[1692])
+* The MongoDb4 appender now supports long values to configure `collectionSize` (https://github.com/apache/logging-log4j2/issues/1747[1747])
+* Fixes context data loss if `<AsyncLogger>` components are used with an all async logger context. (https://github.com/apache/logging-log4j2/issues/1786[1786])
+* Fixed `JsonTemplateLayout` NPE thrown on custom log levels (https://github.com/apache/logging-log4j2/issues/1805[1805])
+* Improve `Log4j-config.xsd` schema. (https://issues.apache.org/jira/browse/LOG4J2-170[LOG4J2-170])
+* Fix NPE in `ContextSelector` (https://issues.apache.org/jira/browse/LOG4J2-3217[LOG4J2-3217], https://github.com/apache/logging-log4j2/pull/1538[1538])
+* When ``ThreadLocal``s are disabled, avoid allocating them in `AbstractLogger` causing memory leaks due to retained reference to class loaders in web applications (https://issues.apache.org/jira/browse/LOG4J2-3657[LOG4J2-3657])
+* Fix `%notEmpty` directive of `PatternLayout` for empty MDC/NDC inputs (https://issues.apache.org/jira/browse/LOG4J2-3660[LOG4J2-3660])
+* Fix file descriptor leak on Tomcat. (https://issues.apache.org/jira/browse/LOG4J2-3663[LOG4J2-3663])
+* Ensure `FileOutputStream` is closed in `CommonsCompressAction.execute()`
+* Update maven-surefire-plugin to 3.1.2.

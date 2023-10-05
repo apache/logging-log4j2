@@ -29,7 +29,6 @@
   <description>The Apache Log4j support for Jakarta EE 9+ web servlet containers</description>
 
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-jakarta-web</projectDir>
 

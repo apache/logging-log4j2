@@ -27,7 +27,6 @@
   <name>Apache Log4j Core</name>
   <description>The Apache Log4j Implementation</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
     <javadoc.skip>false</javadoc.skip>

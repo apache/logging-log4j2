@@ -27,7 +27,6 @@
   <name>Apache Log4j Flume Bridge</name>
   <description>The Apache Log4j Flume Appender</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Flume Documentation</docLabel>
     <projectDir>/flume-ng</projectDir>
 

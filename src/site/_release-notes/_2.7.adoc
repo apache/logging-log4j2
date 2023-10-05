@@ -1,0 +1,191 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-7]
+== 2.7
+
+Release date:: 2016-10-02
+
+This release contains several bugfixes and new features.
+The new features include new logging API modules for Scala 2.10 and 2.11, and support for various non-blocking queue implementations in `AsyncAppender`.
+Furthermore the `ThreadContext` map can now be configured to be garbage-free, and users can now inject context data from other sources than `ThreadContext`.
+Context data values can be any `Object`, not just ``String``s.
+More details on the fixes are itemized below.
+
+Note that subsequent to the 2.6 release a minor source incompatibility was found due to the addition of new methods to the `Logger` interface.
+If you have code that does:
+
+[source,java]
+----
+logger.error(null, “This is the log message”, throwable);
+----
+
+or similar with any log level you will get a compiler error saying the reference is ambiguous.
+To correct this either do:
+
+[source,java]
+----
+logger.error(“This is the log message”, throwable);
+----
+
+or
+
+[source,java]
+----
+logger.error((Marker) null, “This is the log message”, throwable);
+----
+
+The Log4j 2.7 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.7 requires a minimum of Java 7 to build and run.
+Log4j 2.3 was the last release that supported Java 6.
+
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Users can now inject context data from other sources than ThreadContext. Values can be any Object, not just Strings. (https://issues.apache.org/jira/browse/LOG4J2-1010[LOG4J2-1010])
+* Added Logging API for Scala 2.10 and 2.11. (https://issues.apache.org/jira/browse/LOG4J2-1181[LOG4J2-1181])
+* (GC) Added support for garbage-free ThreadContext map. Disabled by default, users need to enable this explicitly. (https://issues.apache.org/jira/browse/LOG4J2-1349[LOG4J2-1349])
+* Added optional support for Conversant DisruptorBlockingQueue in AsyncAppender. (https://issues.apache.org/jira/browse/LOG4J2-1430[LOG4J2-1430])
+* Added optional support for JCTools MPSC bounded lock-free queue in AsyncAppender. (https://issues.apache.org/jira/browse/LOG4J2-1439[LOG4J2-1439])
+* (GC) Changed LogEvent's internal data structure for context data to be garbage-free. Added method LogEvent#getContextData(), deprecated method #getContextMap(). (https://issues.apache.org/jira/browse/LOG4J2-1447[LOG4J2-1447])
+* [PatternLayout] Add an ANSI option to %message. (https://issues.apache.org/jira/browse/LOG4J2-1458[LOG4J2-1458])
+* [PatternLayout] Add an ANSI option to %xThrowable. (https://issues.apache.org/jira/browse/LOG4J2-1471[LOG4J2-1471])
+* org.apache.logging.log4j.core.LoggerContext now implements Closeable. (https://issues.apache.org/jira/browse/LOG4J2-1472[LOG4J2-1472])
+* FileAppender is now able to create files on-demand. (https://issues.apache.org/jira/browse/LOG4J2-1501[LOG4J2-1501])
+* RollingFileAppender is now able to create files on-demand. (https://issues.apache.org/jira/browse/LOG4J2-1504[LOG4J2-1504])
+* Create a Builder for the FileAppender plugin to facilitate adding attributes in the future. (https://issues.apache.org/jira/browse/LOG4J2-1505[LOG4J2-1505])
+* Allow Builders to be completely generic. (https://issues.apache.org/jira/browse/LOG4J2-1507[LOG4J2-1507])
+* Allow a Builder to subclass another Builder. (https://issues.apache.org/jira/browse/LOG4J2-1508[LOG4J2-1508])
+* Added options to exclude stack trace from JSON, XML and YAML layouts. (https://issues.apache.org/jira/browse/LOG4J2-1512[LOG4J2-1512])
+* Add ThreadContextMap2 interface supporting method putAll(Map<String, String>). (https://issues.apache.org/jira/browse/LOG4J2-1516[LOG4J2-1516])
+* Add ThreadContext.putAll(Map<String, String>). (https://issues.apache.org/jira/browse/LOG4J2-1519[LOG4J2-1519])
+* Add JUnit Rule implementations to manage the thread context. (https://issues.apache.org/jira/browse/LOG4J2-1520[LOG4J2-1520])
+* Added ability to generate Log4j 2-style XML configuration file from ConfigurationBuilder. (https://issues.apache.org/jira/browse/LOG4J2-1528[LOG4J2-1528])
+* Added Core API Configurator.shutdown(LoggerContext, long, TimeUnit). (https://issues.apache.org/jira/browse/LOG4J2-1539[LOG4J2-1539])
+* The Core AbstractManager now tracks its LoggerContext. (https://issues.apache.org/jira/browse/LOG4J2-1540[LOG4J2-1540])
+* The Core AbstractConfiguration now tracks its LoggerContext and add Configuration.getLoggerContext(). (https://issues.apache.org/jira/browse/LOG4J2-1547[LOG4J2-1547])
+* AbstractManager now implements AutoCloseable. (https://issues.apache.org/jira/browse/LOG4J2-1553[LOG4J2-1553])
+* Add a Builder for the SocketAppender (deprecates factory method). (https://issues.apache.org/jira/browse/LOG4J2-1557[LOG4J2-1557])
+* SocketAppender now supports IO buffering. (https://issues.apache.org/jira/browse/LOG4J2-1558[LOG4J2-1558])
+* Added support for java.util.concurrent.LinkedTransferQueue to AsyncAppender. (https://issues.apache.org/jira/browse/LOG4J2-1568[LOG4J2-1568])
+* Add a Builder to the RoutingAppender and deprecate factory method. (https://issues.apache.org/jira/browse/LOG4J2-1577[LOG4J2-1577])
+* RoutingAppender can be configured with scripts. Add Script in a Routes element. (https://issues.apache.org/jira/browse/LOG4J2-1578[LOG4J2-1578])
+* Add a ScriptAppenderSelector to create an Appender specified by a Script. (https://issues.apache.org/jira/browse/LOG4J2-1597[LOG4J2-1597])
+* Add a Builder to ServletAppender and deprecate factory method. (https://issues.apache.org/jira/browse/LOG4J2-1609[LOG4J2-1609])
+
+=== Changed
+
+* Updated Jackson from 2.7.5 to 2.8.0. (https://issues.apache.org/jira/browse/LOG4J2-1458[LOG4J2-1458])
+* Updated JMS test from ActiveMQ 5.13.3 to 5.13.4. (https://issues.apache.org/jira/browse/LOG4J2-1487[LOG4J2-1487])
+* Updated Jackson from 2.8.0 to 2.8.1. (https://issues.apache.org/jira/browse/LOG4J2-1494[LOG4J2-1494])
+* Updated LMAX Disruptor from 3.3.4 to 3.3.5. (https://issues.apache.org/jira/browse/LOG4J2-1495[LOG4J2-1495])
+* Updated Kafka client from 0.9.1.0 to 0.10.0.0. (https://issues.apache.org/jira/browse/LOG4J2-1496[LOG4J2-1496])
+* Updated Kafka client from 0.10.0.0 to 0.10.0.1. (https://issues.apache.org/jira/browse/LOG4J2-1533[LOG4J2-1533])
+* Removed deprecated Core API org.apache.logging.log4j.core.util.Constants.UTF_8. (https://issues.apache.org/jira/browse/LOG4J2-1543[LOG4J2-1543])
+* Removed deprecated Core API org.apache.logging.log4j.core.util.Assert.requireNonNull(T, String). (https://issues.apache.org/jira/browse/LOG4J2-1544[LOG4J2-1544])
+* Removed deprecated Web API org.apache.logging.log4j.web.WebLookup.getServletContext(). (https://issues.apache.org/jira/browse/LOG4J2-1545[LOG4J2-1545])
+* Updated JMS test from ActiveMQ 5.13.4 to 5.14.0. (https://issues.apache.org/jira/browse/LOG4J2-1551[LOG4J2-1551])
+* Custom Log4j threads now extend Log4jThread. (https://issues.apache.org/jira/browse/LOG4J2-1556[LOG4J2-1556])
+* Updated Jackson from 2.8.1 to 2.8.2. (https://issues.apache.org/jira/browse/LOG4J2-1569[LOG4J2-1569])
+* Allow the RollingFileAppender to use default pattern layout. (https://issues.apache.org/jira/browse/LOG4J2-1574[LOG4J2-1574])
+* Updated Jackson from 2.8.2 to 2.8.3. (https://issues.apache.org/jira/browse/LOG4J2-1598[LOG4J2-1598])
+* Log4j2 TcpSocketServer in background. (https://issues.apache.org/jira/browse/LOG4J2-1604[LOG4J2-1604])
+* Improve error messages for TcpSocketServer and UdpSocketServer. (https://issues.apache.org/jira/browse/LOG4J2-1605[LOG4J2-1605])
+* Update Apache Commons Compress from 1.12 to 1.13. (https://issues.apache.org/jira/browse/LOG4J2-1757[LOG4J2-1757])
+
+=== Fixed
+
+* When starting on Google App Engine, Interpolator now suppresses the NoClassDefFoundError stack trace for the jvmrunargs lookup. (https://issues.apache.org/jira/browse/LOG4J2-1051[LOG4J2-1051])
+* Documented that JVM Input Arguments Lookup (JMX) is not available on Google App Engine. (https://issues.apache.org/jira/browse/LOG4J2-1199[LOG4J2-1199])
+* org.apache.logging.log4j.core.appender.routing.IdlePurgePolicy was not working correctly. (https://issues.apache.org/jira/browse/LOG4J2-1235[LOG4J2-1235])
+* Log4j threads are no longer leaking on Tomcat shutdown. (https://issues.apache.org/jira/browse/LOG4J2-1259[LOG4J2-1259])
+* Prevent NullPointerException in FastDateParser$TimeZoneStrategy. (https://issues.apache.org/jira/browse/LOG4J2-1279[LOG4J2-1279])
+* Properties declared in configuration can now have their value either in the element body or in an attribute named "value". (https://issues.apache.org/jira/browse/LOG4J2-1313[LOG4J2-1313])
+* Support Property values to be specified in configuration as a value attribute as well as an element. (https://issues.apache.org/jira/browse/LOG4J2-1313[LOG4J2-1313])
+* Support loading custom plugins from jar files and directories whose classpath entries use the "vfs" URL protocol. (https://issues.apache.org/jira/browse/LOG4J2-1320[LOG4J2-1320])
+* (GC) HighlightConverter and StyleConverter are now GC-free. (https://issues.apache.org/jira/browse/LOG4J2-1341[LOG4J2-1341])
+* (GC) Added method getParameter() to ObjectMessage (and ReusableObjectMessage). (https://issues.apache.org/jira/browse/LOG4J2-1438[LOG4J2-1438])
+* Allow comma separated agents, host list to be passed to FlumeAppender. (https://issues.apache.org/jira/browse/LOG4J2-1448[LOG4J2-1448])
+* Fixed class loader deadlock when using async logging and extended stack trace pattern. (https://issues.apache.org/jira/browse/LOG4J2-1457[LOG4J2-1457])
+* [OSGi] Fixed missing import package. (https://issues.apache.org/jira/browse/LOG4J2-1467[LOG4J2-1467])
+* Fixed improper header in CsvParameterLayout. (https://issues.apache.org/jira/browse/LOG4J2-1482[LOG4J2-1482])
+* (GC) Fixed ISO8601 %date conversion pattern with a period '.' separator for milliseconds is now garbage free. (https://issues.apache.org/jira/browse/LOG4J2-1488[LOG4J2-1488])
+* (GC) Fixed %date conversion patterns with a timezone parameter are now garbage free. (https://issues.apache.org/jira/browse/LOG4J2-1489[LOG4J2-1489])
+* Log4j2 should postpone creating log file until the appender actually receives an event. (https://issues.apache.org/jira/browse/LOG4J2-1490[LOG4J2-1490])
+* Merging configurations failed with an NPE when comparing Nodes with different attributes. (https://issues.apache.org/jira/browse/LOG4J2-1500[LOG4J2-1500])
+* Fixed issue where CsvParameterLayout and CsvLogEventLayout inserted NUL characters if data starts with {, (, [ or " (https://issues.apache.org/jira/browse/LOG4J2-1502[LOG4J2-1502])
+* Log4j should not unregister JMX MBeans when log4j2.disable.jmx property is true. (https://issues.apache.org/jira/browse/LOG4J2-1506[LOG4J2-1506])
+* DynamicThresholdFilter filtered incorrectly when params were passed as individual arguments instead of varargs. (https://issues.apache.org/jira/browse/LOG4J2-1511[LOG4J2-1511])
+* Prevent deadlock in Async Loggers when queue is full and logged Object's toString() logs another message. (https://issues.apache.org/jira/browse/LOG4J2-1518[LOG4J2-1518])
+* Added support for setting StatusLogger destination in ConfigurationBuilder. (https://issues.apache.org/jira/browse/LOG4J2-1526[LOG4J2-1526])
+* Prevent NPE in RingBufferLogEvent.getFormattedMessage() when used in web applications. (https://issues.apache.org/jira/browse/LOG4J2-1527[LOG4J2-1527])
+* Attributes were not merged properly in composite configurations. (https://issues.apache.org/jira/browse/LOG4J2-1529[LOG4J2-1529])
+* Fixed issue where LogEvent.getContextStack() returned null. (https://issues.apache.org/jira/browse/LOG4J2-1530[LOG4J2-1530])
+* Attributes were not merged properly in composite configurations. (https://issues.apache.org/jira/browse/LOG4J2-1532[LOG4J2-1532])
+* Prevent NPE when dynamically removing filters. (https://issues.apache.org/jira/browse/LOG4J2-1538[LOG4J2-1538])
+* Fix file handle resource leak in XmlConfiguration.XmlConfiguration(ConfigurationSource). (https://issues.apache.org/jira/browse/LOG4J2-1541[LOG4J2-1541])
+* Prevent ArrayIndexOutOfBoundsException in ParameterizedMessage.formatTo for single-char or empty messages. (https://issues.apache.org/jira/browse/LOG4J2-1542[LOG4J2-1542])
+* [CronTriggeringPolicy] ConfigurationScheduler scheduled the task infinitely after first fire. (https://issues.apache.org/jira/browse/LOG4J2-1548[LOG4J2-1548])
+* Fixed issue where AsyncLoggerContextSelector+PropertiesConfigurationBuilder defaulted to includeLocation=true. (https://issues.apache.org/jira/browse/LOG4J2-1549[LOG4J2-1549])
+* Prevent NPE in Level.isInRange. (https://issues.apache.org/jira/browse/LOG4J2-1559[LOG4J2-1559])
+* Prevent SocketAppender memory usage from growing unbounded if it cannot connect to a server. (https://issues.apache.org/jira/browse/LOG4J2-1562[LOG4J2-1562])
+* Fix to prevent Log4j 2.6.2 and higher from losing exceptions when a security manager is present. (https://issues.apache.org/jira/browse/LOG4J2-1563[LOG4J2-1563])
+* Layout is no longer optional. (https://issues.apache.org/jira/browse/LOG4J2-1573[LOG4J2-1573])
+* (GC) LoggerConfig now stores configuration properties in a List, not a Map to prevent creating temporary Iterator objects. Added method LoggerConfig#getPropertyList(), deprecated method #getProperties(). (https://issues.apache.org/jira/browse/LOG4J2-1575[LOG4J2-1575])
+* Unregistering JMX components no longer prints a stack trace when the MBean has already been unregistered. (https://issues.apache.org/jira/browse/LOG4J2-1581[LOG4J2-1581])
+* When initializing on platforms where JMX is not available, Interpolator component no longer prints stack trace for warning messages. (https://issues.apache.org/jira/browse/LOG4J2-1582[LOG4J2-1582])
+* Fixed scrambled log messages triggered by nested logging from toString() method of a logging parameter object. (https://issues.apache.org/jira/browse/LOG4J2-1583[LOG4J2-1583])
+* Fixed issue with filters extending AbstractFilter that did not override methods with unrolled varargs. (https://issues.apache.org/jira/browse/LOG4J2-1590[LOG4J2-1590])
+* Introduced new interface LifeCycle2 with stop(long,TimeUnit) method to avoid breaking backwards compatibility with new Configurator.shutdown(LoggerContext, long, TimeUnit) API. (https://issues.apache.org/jira/browse/LOG4J2-1591[LOG4J2-1591])
+* Prevent potential NPE in org.apache.logging.log4j.message.ParameterFormatter.formatMessage3(StringBuilder, char[], int, Object[], int, int[]). (https://issues.apache.org/jira/browse/LOG4J2-1599[LOG4J2-1599])
+* Prevent potential NPE due to org.apache.logging.log4j.core.layout.MarkerPatternSelector.createSelector(PatternMatch[], String, boolean, boolean, Configuration). (https://issues.apache.org/jira/browse/LOG4J2-1600[LOG4J2-1600])
+* Prevent potential NPE due to org.apache.logging.log4j.core.layout.ScriptPatternSelector.createSelector(AbstractScript, PatternMatch[], String, boolean, boolean, Configuration). (https://issues.apache.org/jira/browse/LOG4J2-1601[LOG4J2-1601])
+* Prevent potential NPE in org.apache.logging.log4j.core.util.datetime.FormatCache.MultipartKey.equals(Object) when object is null. (https://issues.apache.org/jira/browse/LOG4J2-1602[LOG4J2-1602])
+* Redo hashCode() and equals() methods in org.apache.logging.log4j.core.net.ssl classes. (https://issues.apache.org/jira/browse/LOG4J2-1603[LOG4J2-1603])
+* ServletAppender does not provide throwable object to ServletContext. (https://issues.apache.org/jira/browse/LOG4J2-1608[LOG4J2-1608])
+* Add targetNamespace to log4j-config.xsd. GitHub #43. (https://issues.apache.org/jira/browse/LOG4J2-1610[LOG4J2-1610])
+* Improved performance of context data injector for web applications to be on par with standalone applications. (https://issues.apache.org/jira/browse/LOG4J2-1611[LOG4J2-1611])
+* Fixed ClassCastException when using JUL logging during shutdown. (https://issues.apache.org/jira/browse/LOG4J2-1618[LOG4J2-1618])
+* new Log4jLogEvent().toString() throws an NPE. (https://issues.apache.org/jira/browse/LOG4J2-1619[LOG4J2-1619])
+* 2.7-rc1: RollingFileAppender immediateFlush default value should be true, not false. (https://issues.apache.org/jira/browse/LOG4J2-1620[LOG4J2-1620])
+* [OSGi] Fixed wrong Fragment-Host in manifest files. (https://issues.apache.org/jira/browse/LOG4J2-351[LOG4J2-351])
+* Added ability to disable (date) lookup completely for compatibility with other libraries like Camel. (https://issues.apache.org/jira/browse/LOG4J2-905[LOG4J2-905])

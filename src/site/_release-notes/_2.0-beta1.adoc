@@ -1,0 +1,62 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-0-beta1]
+== 2.0-beta1
+
+Release date:: 2012-09-18
+
+
+=== Added
+
+* Added AsynchAppender.
+
+=== Changed
+
+* Update the versions of SLF4J and Logback.
+
+=== Fixed
+
+* Created web module to allow web applications to include the Log4j context listener in WEB-INF/lib even if Log4j is in the container's class path. Allow locating the LoggerContext to include the ClassLoader. Updated the Loader utility to always choose the child ClassLoader. Verified in Jboss 5 and Tomcat.
+* FileRenameAction did not create the parent directories of the archive files causing the rollover to fail. (https://issues.apache.org/jira/browse/LOG4J2-71[LOG4J2-71])
+* NullPointerException in RollingFileManager when filePattern does not cause the file to be compressed. (https://issues.apache.org/jira/browse/LOG4J2-72[LOG4J2-72])
+* Logger.error(Marker, Message, Throwable) was internally using Level.TRACE. (https://issues.apache.org/jira/browse/LOG4J2-74[LOG4J2-74])
+* Enhanced Log4jContextListener to accept a configuration file location. Modified FileConfigurationMonitor to monitor files configured that way. Fixed other reconfiguration related bugs. Tested in JBoss and Tomcat. (https://issues.apache.org/jira/browse/LOG4J2-75[LOG4J2-75])
+* RewriteAppender was calling the stop method of the referenced appender causing the referenced appender's manager to have its use count decremented too many times. (https://issues.apache.org/jira/browse/LOG4J2-76[LOG4J2-76])
+* RoutingAppender was calling the stop method for each of its referenced Appenders and was calling the stop method of the default Appender a second time. It will now only call the stop method of Appenders it creates. (https://issues.apache.org/jira/browse/LOG4J2-77[LOG4J2-77])
+* LogFactoryImpl.setAttribute in the Commons Logging bridge got a NullPointerException when passed a null value. It will now remove the attribute. (https://issues.apache.org/jira/browse/LOG4J2-78[LOG4J2-78])
+* Allow Log4j 2 to be used as the implementation with SLF4J and SLF4J's jcl-over-slf4j by adding filtering to the log method in SLF4JLogger. (https://issues.apache.org/jira/browse/LOG4J2-80[LOG4J2-80])
+* PatternLayout was not honoring format modifiers. (https://issues.apache.org/jira/browse/LOG4J2-81[LOG4J2-81])
+* MarkerFilter called MarkerManager.getMarker causing the Marker to be created during the processing of the configuration. This prevents the application from creating the Marker with any parents. MarkerWrapper in SLF4J-impl was getting a ClassCastException in instanceOf because the Marker isn't a MarkerWrapper. (https://issues.apache.org/jira/browse/LOG4J2-82[LOG4J2-82])

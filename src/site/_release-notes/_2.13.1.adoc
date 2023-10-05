@@ -1,0 +1,100 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-13-1]
+== 2.13.1
+
+Release date:: 2020-02-25
+
+This release contains bugfixes and minor enhancements.
+
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+`log4j-slf4j-impl` should be used with SLF4J 1.7.x and earlier and `log4j-slf4j18-impl` should be used with SLF4J 1.8.x and later.
+
+Note that the XML, JSON and YAML formats changed in the 2.11.0 release: they no longer have the `timeMillis` attribute and instead have an `Instant` element with `epochSecond` and `nanoOfSecond` attributes.
+
+The Log4j 2.13.1 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.13.1 requires a minimum of Java 8 to build and run.
+Log4j 2.3 was the last release that supported Java 6 and Log4j 2.11.2 is the last release to support Java 7.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Implement ISO8601_PERIOD_MICROS fixed date format matching ISO8601_PERIOD with support for microsecond precision. (https://issues.apache.org/jira/browse/LOG4J2-2748[LOG4J2-2748])
+
+=== Changed
+
+* Update log4j-slf4j18-impl slf4j version to 1.8.0-beta4 from 1.8.0-alpha2. (https://issues.apache.org/jira/browse/LOG4J2-2745[LOG4J2-2745])
+* Update dependencies. (https://issues.apache.org/jira/browse/LOG4J2-2763[LOG4J2-2763])
+* Add a retry count attribute to the KafkaAppender. (https://issues.apache.org/jira/browse/LOG4J2-2777[LOG4J2-2777])
+* Use LinkedBlockingQueue instead of synchronized collection in StatusConfiguration. (https://issues.apache.org/jira/browse/LOG4J2-2782[LOG4J2-2782])
+* Conditionally perform status logging calculations in PluginRegistry. (https://issues.apache.org/jira/browse/LOG4J2-2789[LOG4J2-2789])
+
+=== Fixed
+
+* Rollover fails when file matches pattern but index is too large. (https://issues.apache.org/jira/browse/LOG4J2-2039[LOG4J2-2039])
+* Allow Lookup keys with leading dashes by using a slash as an escape character. (https://issues.apache.org/jira/browse/LOG4J2-2211[LOG4J2-2211])
+* Fix lock contention in the classloader using new versions of slf4j without EventData on slf4j logger creation. (https://issues.apache.org/jira/browse/LOG4J2-2415[LOG4J2-2415])
+* CronExpression.getBeforeTime() would sometimes return incorrect result. (https://issues.apache.org/jira/browse/LOG4J2-2575[LOG4J2-2575])
+* GraalVM does not allow use of MethodHandles. (https://issues.apache.org/jira/browse/LOG4J2-2649[LOG4J2-2649])
+* JSON output wrong when using additional fields. (https://issues.apache.org/jira/browse/LOG4J2-2652[LOG4J2-2652])
+* PluginProcessor should use Messager instead of System.out. (https://issues.apache.org/jira/browse/LOG4J2-2676[LOG4J2-2676])
+* Rollover handles parallel file deletion gracefully. (https://issues.apache.org/jira/browse/LOG4J2-2677[LOG4J2-2677])
+* MapMessage.getFormattedMessage() would incorrectly format objects. (https://issues.apache.org/jira/browse/LOG4J2-2703[LOG4J2-2703])
+* Slow initialization on Windows due to accessing network interfaces. (https://issues.apache.org/jira/browse/LOG4J2-2717[LOG4J2-2717])
+* PluginCache output is reproducible allowing the annotation processor to produce deterministic results. (https://issues.apache.org/jira/browse/LOG4J2-2735[LOG4J2-2735])
+* Fix erroneous log4j-jul recursive logger detection resulting in some no-op JUL loggers and 'WARN Recursive call to getLogger' being reported by the status logger. (https://issues.apache.org/jira/browse/LOG4J2-2739[LOG4J2-2739])
+* Remove unnecessary EventLogger references from log4j-slf4j18-impl due to removal from slf4j. (https://issues.apache.org/jira/browse/LOG4J2-2744[LOG4J2-2744])
+* ClassLoaderContextSelector was not locating the LoggerContext during shutdown. (https://issues.apache.org/jira/browse/LOG4J2-2746[LOG4J2-2746])
+* Fix a memory leak using fully asynchronous logging when the queue is full using the 'discard' asynchronous queue full strategy. (https://issues.apache.org/jira/browse/LOG4J2-2747[LOG4J2-2747])
+* Fix StackLocator.getCallerClass performance in cases where Reflection.getCallerClass is not accessible. (https://issues.apache.org/jira/browse/LOG4J2-2751[LOG4J2-2751])
+* MutableLogEvent and RingBufferLogEvent avoid StringBuffer and parameter array allocation unless reusable messages are used. (https://issues.apache.org/jira/browse/LOG4J2-2752[LOG4J2-2752])
+* LoaderUtil.getClassLoaders may discover additional loaders and no longer erroneously returns a result with a null element in some environments. (https://issues.apache.org/jira/browse/LOG4J2-2754[LOG4J2-2754])
+* Prevent LoggerContext from being garbage collected while being created. (https://issues.apache.org/jira/browse/LOG4J2-2756[LOG4J2-2756])
+* NullPointerException when using a custom DirectFileRolloverStrategy without a file name. (https://issues.apache.org/jira/browse/LOG4J2-2758[LOG4J2-2758])
+* RollingFileAppender was not rolling on startup if createOnDemand was set to true. (https://issues.apache.org/jira/browse/LOG4J2-2759[LOG4J2-2759])
+* Always write header on a new OutputStream. (https://issues.apache.org/jira/browse/LOG4J2-2760[LOG4J2-2760])
+* [JDBC] MS-SQL Server JDBC driver throws SQLServerException when inserting a null value for a VARBINARY column. (https://issues.apache.org/jira/browse/LOG4J2-2762[LOG4J2-2762])
+* Warn if pattern is missing on Routes element. Use default route. (https://issues.apache.org/jira/browse/LOG4J2-2767[LOG4J2-2767])
+* Add multi-parameter overloads to LogBuilder. (https://issues.apache.org/jira/browse/LOG4J2-2768[LOG4J2-2768])
+* Do not log an error if Files.move does not work. (https://issues.apache.org/jira/browse/LOG4J2-2769[LOG4J2-2769])
+* Fixed NullPointerException after reconfiguring via JMX. (https://issues.apache.org/jira/browse/LOG4J2-2770[LOG4J2-2770])
+* NullPointerException after reconfiguring via JMX. (https://issues.apache.org/jira/browse/LOG4J2-2770[LOG4J2-2770])
+* An error message in RollingFileAppender uses a placeholder for the name but does not specify the name argument in the logging call (https://issues.apache.org/jira/browse/LOG4J2-2776[LOG4J2-2776])
+* ServletContainerInitializer was obtaining the StatusLogger too soon. (https://issues.apache.org/jira/browse/LOG4J2-2781[LOG4J2-2781])
+* Counter stuck at 10 and overwriting files when leading zeros used in the file pattern count. (https://issues.apache.org/jira/browse/LOG4J2-2784[LOG4J2-2784])

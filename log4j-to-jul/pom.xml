@@ -28,7 +28,6 @@
   <description>The Apache Log4j binding between Log4j 2 API and java.util.logging (JUL).</description>
   <inceptionYear>2022</inceptionYear>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j to JUL Documentation</docLabel>
     <projectDir>/log4j-to-jul</projectDir>
   </properties>

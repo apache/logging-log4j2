@@ -1,0 +1,88 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-0-beta4]
+== 2.0-beta4
+
+Release date:: 2013-01-28
+
+
+=== Added
+
+* Add MessageFormatMessage and FormattedMessage.
+* Added Flume Appender samples.
+* Added Log4j 2 to SLF4J adapter.
+* Added hostName and contextName to property map.
+* Add SMTPAppender. (https://issues.apache.org/jira/browse/LOG4J2-131[LOG4J2-131])
+* Allow custom message creation via a message factory. (https://issues.apache.org/jira/browse/LOG4J2-133[LOG4J2-133])
+* Use %red, %white, %blue, and so on in the console appender. (https://issues.apache.org/jira/browse/LOG4J2-134[LOG4J2-134])
+
+=== Changed
+
+* Renamed log4j12-api to log4j-1.2-api. (https://issues.apache.org/jira/browse/LOG4J2-110[LOG4J2-110])
+* Add unit test to verify exceptions are thrown when the socket connection fails. (https://issues.apache.org/jira/browse/LOG4J2-122[LOG4J2-122])
+* Add follow attribute to Console Appender. (https://issues.apache.org/jira/browse/LOG4J2-128[LOG4J2-128])
+* Allow newlines to be escaped in Syslog and RFC5424 layouts. Allow Throwables to be included in the output from RFC5424Layout. (https://issues.apache.org/jira/browse/LOG4J2-136[LOG4J2-136])
+
+=== Fixed
+
+* Allow FlumeAvroManager to initialize even if it cannot connect to an agent.
+* Enhanced javadoc copyright statement. (https://issues.apache.org/jira/browse/LOG4J2-111[LOG4J2-111])
+* StructuredDataFilter createFilter was annotated with PluginAttr instead of PluginElement for the KeyValuePairs. (https://issues.apache.org/jira/browse/LOG4J2-113[LOG4J2-113])
+* StructuredDataMessage was validating the length of the values in the event Map instead of the lengths of the keys. (https://issues.apache.org/jira/browse/LOG4J2-114[LOG4J2-114])
+* ThreadContext Map elements with null values are now ignored when constructing a Flume event and in the RFC5424 Layout. (https://issues.apache.org/jira/browse/LOG4J2-115[LOG4J2-115])
+* File renaming was using the wrong date value. Enhanced DefaultRolloverStrategy to store newest files in highest index as well as lowest. (https://issues.apache.org/jira/browse/LOG4J2-116[LOG4J2-116])
+* A broken socket connection would cause the TCPSocketManager to continuously reconnect. (https://issues.apache.org/jira/browse/LOG4J2-119[LOG4J2-119])
+* TCPSocketManager would fail if the initial connection could not be established. (https://issues.apache.org/jira/browse/LOG4J2-120[LOG4J2-120])
+* The example for ThreadContextMapFilter was incorrect. (https://issues.apache.org/jira/browse/LOG4J2-123[LOG4J2-123])
+* JMSQueue and JMSTopic Appenders did not allow name to be specified. (https://issues.apache.org/jira/browse/LOG4J2-125[LOG4J2-125])
+* Allow JMS appenders to recover if the queue or topic is unavailable. (https://issues.apache.org/jira/browse/LOG4J2-126[LOG4J2-126])
+* AbstractLogger methods were not passing Markers to the isEnabled methods. (https://issues.apache.org/jira/browse/LOG4J2-127[LOG4J2-127])
+* RoutingAppender was only creating a single appender for the default Route. (https://issues.apache.org/jira/browse/LOG4J2-129[LOG4J2-129])
+* PatternLayout should format throwables without requiring a converter. (https://issues.apache.org/jira/browse/LOG4J2-130[LOG4J2-130])
+* AbstractLogger.catching(Throwable) checks for DEBUG level but logs at ERROR level. (https://issues.apache.org/jira/browse/LOG4J2-132[LOG4J2-132])
+* BaseConfiguration does not close the first appender. (https://issues.apache.org/jira/browse/LOG4J2-135[LOG4J2-135])
+* Fix hang in Dumbster SMTP test server. (https://issues.apache.org/jira/browse/LOG4J2-137[LOG4J2-137])
+* Fix null pointer exception in SocketAppender if no protocol is specified. The protocol will default to TCP for the SocketAppender and UDP for the SyslogAppender. (https://issues.apache.org/jira/browse/LOG4J2-139[LOG4J2-139])
+* Typo in documentation of SocketAppender. (https://issues.apache.org/jira/browse/LOG4J2-140[LOG4J2-140])
+* Serialized LogEvents were not reset in the output stream causing them to deserialize incorrectly. (https://issues.apache.org/jira/browse/LOG4J2-142[LOG4J2-142])
+* MessagePatternConverter now returns "null" if the log message is null. (https://issues.apache.org/jira/browse/LOG4J2-143[LOG4J2-143])
+* NullPointerException in RFC5424Layout. (https://issues.apache.org/jira/browse/LOG4J2-144[LOG4J2-144])
+* Add missing serial version IDs. (https://issues.apache.org/jira/browse/LOG4J2-145[LOG4J2-145])
+* ThreadContextMapFilter was matching on the key instead of the value of the key. (https://issues.apache.org/jira/browse/LOG4J2-147[LOG4J2-147])
+* SMTPAppender will only cache filtered events. (https://issues.apache.org/jira/browse/LOG4J2-149[LOG4J2-149])
+* Convert all System.getProperty calls to use PropertiesUtil to suppress SecurityExceptions. (https://issues.apache.org/jira/browse/LOG4J2-150[LOG4J2-150])
+* RollingFileAppender's FileRenameAction was throwing a NullPointerException if no directory was specified on the target file name. (https://issues.apache.org/jira/browse/LOG4J2-152[LOG4J2-152])
+* LocalizedMessageTest fails on linux system. (https://issues.apache.org/jira/browse/LOG4J2-156[LOG4J2-156])

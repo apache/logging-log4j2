@@ -27,7 +27,6 @@
   <name>Apache Log4j Core Tests</name>
   <description>The Apache Log4j Implementation Tests</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
 

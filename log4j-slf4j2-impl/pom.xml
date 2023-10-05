@@ -27,7 +27,6 @@
   <name>Apache Log4j SLF4J 2.0 Binding</name>
   <description>The Apache Log4j SLF4J 2.0 API binding to Log4j 2 Core</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>SLF4J Documentation</docLabel>
     <projectDir>/slf4j2-impl</projectDir>
     <!-- Override parent's default -->

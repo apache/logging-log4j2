@@ -1,0 +1,116 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-9-1]
+== 2.9.1
+
+Release date:: 2017-09-17
+
+This release contains bugfixes and minor enhancements.
+
+As of Log4j 2.9.0, the Log4j API was modified to use `java.util.ServiceLoader` to locate Log4j implementations, although the former binding mechanism is still supported.
+The Log4j JAR is now a multi-release JAR to provide implementations of the Java 9 specific classes.
+Multi-release JARs are not supported by the OSGi specification so OSGi modules will not be able to take advantage of these implementations but will not lose functionality as they will fall back to the implementations used in Java 7 and 8.
+More details on the new features and fixes are itemized below.
+
+Note that subsequent to the 2.9.0 release, for security reasons, `SerializedLayout` is deprecated and no longer used as default in the Socket and JMS appenders.
+`SerializedLayout` can still be used as before, but has to be specified explicitly.
+To retain old behaviour, you have to change configuration like:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500"/>
+</Appenders>
+----
+
+into:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500">
+    <SerializedLayout/>
+  </Socket>
+</Appenders>
+----
+
+We do, however, discourage the use of `SerializedLayout` and recommend `JsonLayout` as a replacement:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500">
+    <JsonLayout properties="true"/>
+  </Socket>
+</Appenders>
+----
+
+Note that subsequent to the 2.9.0 release, for security reasons, Log4j does not process DTD in XML files.
+If you used DTD for including snippets, you have to use XInclude or Composite Configuration instead.
+
+The Log4j 2.9.1 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.9.1 requires a minimum of Java 7 to build and run.
+Log4j 2.3 was the last release that supported Java 6.
+
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Changed
+
+* Use a class' canonical name instead of name to create its logger name. (https://issues.apache.org/jira/browse/LOG4J2-2023[LOG4J2-2023])
+* Update Jackson from 2.9.0 to 2.9.1 (fix for Java 9.) (https://issues.apache.org/jira/browse/LOG4J2-2043[LOG4J2-2043])
+* Update Apache Commons CSV from 1.4 to 1.5. (https://issues.apache.org/jira/browse/LOG4J2-2044[LOG4J2-2044])
+* Update javax.mail from 1.5.6 to 1.6.0. (https://issues.apache.org/jira/browse/LOG4J2-2045[LOG4J2-2045])
+* Update Apache Commons Compress from 1.13 to 1.14. (https://issues.apache.org/jira/browse/LOG4J2-2046[LOG4J2-2046])
+* Update Cassandra driver from 3.1.0 to 3.1.4. (https://issues.apache.org/jira/browse/LOG4J2-2047[LOG4J2-2047])
+* Update Apache Kafka Client from 0.11.0.0 to 0.11.0.1. (https://issues.apache.org/jira/browse/LOG4J2-2049[LOG4J2-2049])
+
+=== Fixed
+
+* Prevent ConcurrentModificationException with AsyncLoggerConfig. (https://issues.apache.org/jira/browse/LOG4J2-1914[LOG4J2-1914])
+* ClassNotFoundException when making all loggers asynchronous under OSGi environment. (https://issues.apache.org/jira/browse/LOG4J2-1936[LOG4J2-1936])
+* Prevent ConcurrentModificationException with AsyncLoggerConfig. (https://issues.apache.org/jira/browse/LOG4J2-1988[LOG4J2-1988])
+* java.lang.AbstractMethodError: javax.xml.parsers.DocumentBuilderFactory.setFeature(). (https://issues.apache.org/jira/browse/LOG4J2-2026[LOG4J2-2026])
+* Java 9 StackLocator was not properly skipping the initial stack frames. (https://issues.apache.org/jira/browse/LOG4J2-2028[LOG4J2-2028])
+* Marker examples should not use deprecated flow APIs. (https://issues.apache.org/jira/browse/LOG4J2-2029[LOG4J2-2029])
+* Inspect all known ClassLoaders to locate the service provider. (https://issues.apache.org/jira/browse/LOG4J2-2030[LOG4J2-2030])
+* Fix documentation to clarify disruptor-3.3.4 is now required for async loggers (previously the docs referred to disruptor-3.3.3 which was never released). (https://issues.apache.org/jira/browse/LOG4J2-2035[LOG4J2-2035])
+* Increase default queue size for AsyncAppender from 128 to 1024. (https://issues.apache.org/jira/browse/LOG4J2-2048[LOG4J2-2048])

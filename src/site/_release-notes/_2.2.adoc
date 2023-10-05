@@ -1,0 +1,93 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-2]
+== 2.2
+
+Release date:: 2015-02-22
+
+This is the fifth GA release.
+It contains several bugfixes and new features.
+
+Apache Log4j 2.2 requires a minimum of Java 6 to build and run.
+Future releases may require a minimum of Java 7.
+
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Specify the SyslogAppender connect timeout value as part of the configuration. The SyslogAppender takes a new parameter connectTimeoutMillis. (https://issues.apache.org/jira/browse/LOG4J2-895[LOG4J2-895])
+* Specify the SocketAppender connect timeout value as part of the configuration. The SyslogAppender takes a new parameter connectTimeoutMillis. (https://issues.apache.org/jira/browse/LOG4J2-899[LOG4J2-899])
+* HTML layout should not use attribute minimalization for hr noshade. (https://issues.apache.org/jira/browse/LOG4J2-933[LOG4J2-933])
+* Allow JSON layout to create one compact log record per line. (https://issues.apache.org/jira/browse/LOG4J2-941[LOG4J2-941])
+
+=== Changed
+
+* Update Jackson from 2.4.2 to 2.4.3. (https://issues.apache.org/jira/browse/LOG4J2-881[LOG4J2-881])
+* Update maven-core from 3.1.0 to 3.2.3. (https://issues.apache.org/jira/browse/LOG4J2-882[LOG4J2-882])
+* Update tests from org.apache.felix.framework 4.2.1 to 4.4.1. (https://issues.apache.org/jira/browse/LOG4J2-883[LOG4J2-883])
+* Update org.eclipse.osgi from 3.6.0 to 3.7.1. (https://issues.apache.org/jira/browse/LOG4J2-884[LOG4J2-884])
+* Update Apache Flume from 1.5.0.1 to 1.5.2. (https://issues.apache.org/jira/browse/LOG4J2-900[LOG4J2-900])
+* Update docs for SyslogAppender: "No structured id name was supplied" (https://issues.apache.org/jira/browse/LOG4J2-901[LOG4J2-901])
+* Update Jackson from 2.4.3 to 2.4.4. (https://issues.apache.org/jira/browse/LOG4J2-910[LOG4J2-910])
+* Update from Jackson 2.4.4 to 2.5.0. (https://issues.apache.org/jira/browse/LOG4J2-925[LOG4J2-925])
+* Incorrect attribute name in PropertiesRewritePolicy example. (https://issues.apache.org/jira/browse/LOG4J2-950[LOG4J2-950])
+* Documentation: clarify system properties to control status logger, improve troubleshooting FAQ entry. (https://issues.apache.org/jira/browse/LOG4J2-955[LOG4J2-955])
+* Update from Jackson 2.5.0 to 2.5.1. (https://issues.apache.org/jira/browse/LOG4J2-958[LOG4J2-958])
+
+=== Fixed
+
+* ThrowableProxy throws NoClassDefFoundError. (https://issues.apache.org/jira/browse/LOG4J2-834[LOG4J2-834])
+* AbstractLifecycle should not implement equals() and hashCode(). (https://issues.apache.org/jira/browse/LOG4J2-881[LOG4J2-881])
+* AbstractLifecycle should not implement equals() and hashCode(). (https://issues.apache.org/jira/browse/LOG4J2-891[LOG4J2-891])
+* JUL adapter does not map Log4j'2 FATAL level to a JUL level. (https://issues.apache.org/jira/browse/LOG4J2-892[LOG4J2-892])
+* NullPointerException on filter when mapping JUL to Log4j2. (https://issues.apache.org/jira/browse/LOG4J2-893[LOG4J2-893])
+* Javadoc for org.apache.log4j.BasicConfigurator.configure() is incorrect. (https://issues.apache.org/jira/browse/LOG4J2-897[LOG4J2-897])
+* ClassLoaderContextSelector uses ClassLoader.toString() as a key (https://issues.apache.org/jira/browse/LOG4J2-903[LOG4J2-903])
+* XML configuration does not report full error message for XInclude parser configuration problems. (https://issues.apache.org/jira/browse/LOG4J2-912[LOG4J2-912])
+* ThrowableProxy.getExtendedStackTraceAsString causes NullPointerException. (https://issues.apache.org/jira/browse/LOG4J2-914[LOG4J2-914])
+* Logging system fails to initialize if XInclude API is not available. (https://issues.apache.org/jira/browse/LOG4J2-919[LOG4J2-919])
+* Log4j 1.2 Bridge doesn't map level ALL correctly in Category.getEffectiveLevel(). (https://issues.apache.org/jira/browse/LOG4J2-924[LOG4J2-924])
+* ConsoleAppender is missing @PluginFactory annotation at createAppender method. (https://issues.apache.org/jira/browse/LOG4J2-931[LOG4J2-931])
+* (JMX) To avoid memory leaks when web applications are restarted, JMX notifications are sent from the caller thread in web applications. For non-web applications notifications are sent from a background thread as before. (https://issues.apache.org/jira/browse/LOG4J2-938[LOG4J2-938])
+* Log4j Flume appender is not adding millisecond to the event headers when the event is logged at 000 milliseconds. (https://issues.apache.org/jira/browse/LOG4J2-944[LOG4J2-944])
+* [docs] Using Log4j 2 in Web Applications: Update example (Log4jWebLifeCycle is not visible). (https://issues.apache.org/jira/browse/LOG4J2-946[LOG4J2-946])
+* Manual refers to Route "AppenderRef" attribute, should be "ref". (https://issues.apache.org/jira/browse/LOG4J2-956[LOG4J2-956])
+* Missing toUpperCase(Locale.ENGLISH). (https://issues.apache.org/jira/browse/LOG4J2-957[LOG4J2-957])

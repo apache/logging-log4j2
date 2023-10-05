@@ -1,0 +1,91 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-19-0]
+== 2.19.0
+
+Release date:: 2022-09-09
+
+This release primarily contains bug fixes and minor enhancements.
+
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+`log4j-slf4j-impl` should be used with SLF4J 1.7.x and earlier and `log4j-slf4j18-impl` should be used with SLF4J 1.8.x and later.
+SLF4J-2.0.0 alpha releases are not fully supported.
+See https://issues.apache.org/jira/browse/LOG4J2-2975[LOG4J2-2975] and https://jira.qos.ch/browse/SLF4J-511[SLF4J-511].
+
+The Log4j 2.19.0 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Apache Log4j 2.19.0 requires a minimum of Java 8 to build and run.
+Log4j 2.12.4 is the last release to support Java 7.
+Log4j 2.3.2 is the last release to support Java 6.
+Java 6 and Java 7 are no longer supported by the Log4j team.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Add implementation of SLF4J2 fluent API. (https://issues.apache.org/jira/browse/LOG4J2-2975[LOG4J2-2975])
+* Add support for SLF4J2 stack-valued MDC. (https://issues.apache.org/jira/browse/LOG4J2-3583[LOG4J2-3583])
+
+=== Changed
+
+* Add getExplicitLevel method to LoggerConfig. (https://issues.apache.org/jira/browse/LOG4J2-3572[LOG4J2-3572])
+* Allow PropertySources to be added. (https://issues.apache.org/jira/browse/LOG4J2-3588[LOG4J2-3588])
+* Allow Plugins to be injected with the LoggerContext reference. (https://issues.apache.org/jira/browse/LOG4J2-3589[LOG4J2-3589])
+
+=== Removed
+
+* Removed build page in favor of a single build instructions file. (https://issues.apache.org/jira/browse/LOG4J2-3573[LOG4J2-3573])
+* Remove SLF4J 1.8.x binding. (https://issues.apache.org/jira/browse/LOG4J2-3590[LOG4J2-3590])
+
+=== Fixed
+
+* Add correct manifest entries for OSGi to log4j-jcl (https://issues.apache.org/jira/browse/LOG4J2-3545[LOG4J2-3545])
+* Improve support for passwordless keystores. (https://issues.apache.org/jira/browse/LOG4J2-3548[LOG4J2-3548])
+* SystemPropertyArbiter was assigning the value as the name. (https://issues.apache.org/jira/browse/LOG4J2-3550[LOG4J2-3550])
+* Make JsonTemplateLayout stack trace truncation operate for each label block. (https://issues.apache.org/jira/browse/LOG4J2-3556[LOG4J2-3556])
+* Fix recursion between Log4j 1.2 LogManager and Category. (https://issues.apache.org/jira/browse/LOG4J2-3557[LOG4J2-3557])
+* Fix resolution of properties not starting with `log4j2.`. (https://issues.apache.org/jira/browse/LOG4J2-3559[LOG4J2-3559])
+* Logger$PrivateConfig.filter(Level, Marker, String) was allocating empty varargs array. (https://issues.apache.org/jira/browse/LOG4J2-3560[LOG4J2-3560])
+* Allows a space separated list of style specifiers in the %style pattern for consistency with %highlight. (https://issues.apache.org/jira/browse/LOG4J2-3561[LOG4J2-3561])
+* Fix NPE in `log4j-to-jul` in the case the root logger level is null. (https://issues.apache.org/jira/browse/LOG4J2-3564[LOG4J2-3564])
+* Fix RollingRandomAccessFileAppender with DirectWriteRolloverStrategy can't create the first log file of different directory. (https://issues.apache.org/jira/browse/LOG4J2-3565[LOG4J2-3565])
+* Generate new SSL certs for testing. (https://issues.apache.org/jira/browse/LOG4J2-3578[LOG4J2-3578])
+* Fix ServiceLoaderUtil behavior in the presence of a SecurityManager. (https://issues.apache.org/jira/browse/LOG4J2-3579[LOG4J2-3579])
+* Make StatusConsoleListener use SimpleLogger internally. (https://issues.apache.org/jira/browse/LOG4J2-3584[LOG4J2-3584])
+* Fix regression in Rfc5424Layout default values. (https://issues.apache.org/jira/browse/LOG4J2-3587[LOG4J2-3587])
+* Harden InstantFormatter against delegate failures. (https://issues.apache.org/jira/browse/LOG4J2-3614[LOG4J2-3614])
+* Add async support to `Log4jServletFilter`. (https://issues.apache.org/jira/browse/LOG4J2-708[LOG4J2-708])

@@ -27,7 +27,6 @@
   <name>Apache Log4j Core Integration Tests</name>
   <description>Integration Tests for the Apache Log4j Implementation</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
     <maven.deploy.skip>true</maven.deploy.skip>

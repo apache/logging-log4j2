@@ -259,7 +259,7 @@
   <scm>
     <connection>scm:git:https://github.com/apache/logging-log4j2.git</connection>
     <developerConnection>scm:git:https://github.com/apache/logging-log4j2.git</developerConnection>
-    <tag>log4j-2.20.1-rc1</tag>
+    <tag>2.x</tag>
     <url>https://github.com/apache/logging-log4j2</url>
   </scm>
 
@@ -289,10 +289,6 @@
     <!-- ===========================
          Release-specific properties
          =========================== -->
-    <log4jParentDir>${basedir}</log4jParentDir>
-    <log4jReleaseVersion>2.20.0</log4jReleaseVersion>
-    <log4jReleaseVersionJava7>2.12.4</log4jReleaseVersionJava7>
-    <log4jReleaseVersionJava6>2.3.2</log4jReleaseVersionJava6>
     <revision>2.21.0-SNAPSHOT</revision>
 
     <!-- =================
@@ -303,9 +299,6 @@
     <maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
     <!-- JDK version of the main Maven process (used in ASF parent POM) -->
     <minimalJavaBuildVersion>[11, )</minimalJavaBuildVersion>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- Fixed `project.build.outputTimestamp` is required for reproducible builds: https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
-    <project.build.outputTimestamp>1676697577</project.build.outputTimestamp>
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <module.name />
@@ -1321,8 +1314,6 @@
 
   <build>
 
-    <defaultGoal>clean verify</defaultGoal>
-
     <pluginManagement>
       <plugins>
 
@@ -1470,35 +1461,6 @@
         </executions>
       </plugin>
 
-      <!-- Export AsciiDoc-formatted sources to `target/generated-sources/site/asciidoc/release-notes` -->
-      <plugin>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-changelog-maven-plugin</artifactId>
-        <inherited>false</inherited>
-        <configuration>
-          <outputDirectory>${project.build.directory}/generated-sources/site/asciidoc/release-notes</outputDirectory>
-          <indexTemplates>
-            <template>
-              <source>.index.adoc.ftl</source>
-            </template>
-          </indexTemplates>
-          <changelogTemplates>
-            <template>
-              <source>.release-notes.adoc.ftl</source>
-              <target>%v.adoc</target>
-            </template>
-          </changelogTemplates>
-        </configuration>
-        <executions>
-          <execution>
-            <id>generate-changelog</id>
-            <goals>
-              <goal>export</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -1574,10 +1536,7 @@
             <xdoc>navigation.xml</xdoc>
           </moduleExcludes>
           <attributes>
-            <!-- copy any site properties wanted in asciidoc files -->
-            <Log4jReleaseVersion>${log4jReleaseVersion}</Log4jReleaseVersion>
-            <Log4jReleaseVersionJava6>${log4jReleaseVersionJava6}</Log4jReleaseVersionJava6>
-            <Log4jReleaseVersionJava7>${log4jReleaseVersionJava7}</Log4jReleaseVersionJava7>
+            <Log4jReleaseVersion>${revision}</Log4jReleaseVersion>
           </attributes>
         </configuration>
         <dependencies>
