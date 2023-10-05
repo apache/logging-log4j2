@@ -72,12 +72,12 @@ public final class StackLocator {
             } else {
                 o = getCallerClassMethod.invoke(null, 1);
                 if (o == sunReflectionClass) {
-                    System.out.println("WARNING: Unexpected result from sun.reflect.Reflection.getCallerClass(int), adjusting offset for future calls.");
+                    System.err.println("WARNING: Unexpected result from sun.reflect.Reflection.getCallerClass(int), adjusting offset for future calls.");
                     java7u25CompensationOffset = 1;
                 }
             }
         } catch (final Exception | LinkageError e) {
-            System.out.println("WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.");
+            System.err.println("WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact performance.");
             getCallerClassMethod = null;
             java7u25CompensationOffset = -1;
         }
