@@ -29,7 +29,7 @@ import org.slf4j.Marker;
 /**
  * Log4j/SLF4J {@link Marker} type bridge.
  */
-class Log4jMarker implements Marker {
+public class Log4jMarker implements Marker {
 
     public static final long serialVersionUID = 1590472L;
 

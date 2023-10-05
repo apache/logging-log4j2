@@ -78,6 +78,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Avoided using released objects in `StackTraceStringResolver` of `JsonTemplateLayout` (https://github.com/apache/logging-log4j2/pull/1380[1380])
 * Added missing setter for `connectionStringSource` in `MongoDb4Provider` builder (https://github.com/apache/logging-log4j2/issues/1389[1389])
 * Fixed NPE in `PluginElementVisitor` (https://github.com/apache/logging-log4j2/issues/1391[1391])
+* Restored `Log4jMarker` visibility in SLF4J adapters (https://github.com/apache/logging-log4j2/issues/1414[1414])
 * Fixed buffer size in `Log4jFixedFormatter` date time formatter (https://github.com/apache/logging-log4j2/pull/1418[1418])
 * Replaced the usage of `System.out` in `StackLocator` for warnings with `System.err` (https://github.com/apache/logging-log4j2/issues/1484[1484])
 * Fixed concurrent date-time formatting issue in `PatternLayout` (https://github.com/apache/logging-log4j2/issues/1485[1485])
