@@ -59,6 +59,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Bumped the minimum Java version required for the build to JDK 11. Runtime requirements remain unchanged. (https://github.com/apache/logging-log4j2/issues/1369[1369])
 * Set the default `minLevel` and `maxLevel` of `LevelRangeFilter` to `OFF` and `ALL`, respectively (https://github.com/apache/logging-log4j2/pull/1503[1503])
 * Removed additional `isFiltered` checks in `AsyncLoggerConfig` (https://github.com/apache/logging-log4j2/pull/1550[1550])
+* Use Java version-specific warnings in `StackLocator` (https://github.com/apache/logging-log4j2/pull/1760[1760])
 * Started logging a status error event instead of an NPE in `OsgiServiceLocator.loadServices(Class, Lookup, boolean)` when a bundle has no valid `BundleContext` for a service type
 * Implemented a CI-based release process
 
@@ -80,6 +81,8 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Fixed NPE in `PluginElementVisitor` (https://github.com/apache/logging-log4j2/issues/1391[1391])
 * Restored `Log4jMarker` visibility in SLF4J adapters (https://github.com/apache/logging-log4j2/issues/1414[1414])
 * Fixed buffer size in `Log4jFixedFormatter` date time formatter (https://github.com/apache/logging-log4j2/pull/1418[1418])
+* Fixed the propagation of synchronous action failures in `RollingFileManager` and `FileRenameAction` (https://github.com/apache/logging-log4j2/issues/1445[1445], https://github.com/apache/logging-log4j2/pull/1549[1549])
+* Fixed `RollingFileManager` to propagate failed synchronous actions correctly. (https://github.com/apache/logging-log4j2/issues/1445[1445])
 * Replaced the usage of `System.out` in `StackLocator` for warnings with `System.err` (https://github.com/apache/logging-log4j2/issues/1484[1484])
 * Fixed concurrent date-time formatting issue in `PatternLayout` (https://github.com/apache/logging-log4j2/issues/1485[1485])
 * Fixed runtime dependencies documentation (https://github.com/apache/logging-log4j2/pull/1530[1530])
