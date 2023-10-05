@@ -78,6 +78,10 @@ public final class ColumnMapping {
         private String source;
 
         @PluginBuilderAttribute
+        @Deprecated
+        private Class<?> type;
+
+        @PluginBuilderAttribute
         @Required(message = "No conversion type provided")
         private Class<?> columnType = String.class;
 
@@ -90,6 +94,7 @@ public final class ColumnMapping {
                     .withAlwaysWriteExceptions(false)
                     .build();
             }
+            final Class<?> columnType = type != null ? type : this.columnType;
             if (!(layout == null
                 || literal == null
                 || Date.class.isAssignableFrom(columnType)
@@ -194,7 +199,7 @@ public final class ColumnMapping {
          */
         @Deprecated
         public Builder setType(final Class<?> type) {
-            this.columnType = type;
+            this.type = type;
             return this;
         }
 
