@@ -25,7 +25,6 @@
     <version>10.1.1</version>
     <relativePath />
   </parent>
-  <!-- Dummy change to test release -->
 
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j</artifactId>
@@ -38,8 +37,6 @@
 
   <inceptionYear>1999</inceptionYear>
 
-  <!-- Developer IDs are used to map author IDs to names while exporting changelogs.
-       Hence, updates here need to be reflected to `.changelog-entries.adoc.ftl` too. -->
   <developers>
 
     <developer>
@@ -207,6 +204,14 @@
       <unsubscribe>dev-unsubscribe@logging.apache.org</unsubscribe>
       <post>dev@logging.apache.org</post>
       <archive>https://lists.apache.org/list.html?dev@logging.apache.org</archive>
+    </mailingList>
+
+    <mailingList>
+      <name>security</name>
+      <subscribe>security-subscribe@logging.apache.org</subscribe>
+      <unsubscribe>security-unsubscribe@logging.apache.org</unsubscribe>
+      <post>security@logging.apache.org</post>
+      <archive>https://lists.apache.org/list.html?security@logging.apache.org</archive>
     </mailingList>
 
   </mailingLists>
