@@ -29,3 +29,6 @@ reason = "log4j:log4j is a test dependency used in performance comparisons"
 [[IgnoredVulns]]
 id = "GHSA-w9p3-5cr8-m3jj"
 reason = "log4j:log4j is a test dependency used in performance comparisons"
+[[IgnoredVulns]]
+id = "GHSA-59j4-wjwp-mw9m"
+reason = "Velocity templates are only used at build time and modifiable by committers."
