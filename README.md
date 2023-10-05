@@ -30,7 +30,7 @@ and provides many of the improvements available in Logback while fixing some inh
 [![build (3.x)](https://img.shields.io/github/actions/workflow/status/apache/logging-log4j2/build.yml?branch=main&label=build%20%283.x%29)](https://github.com/apache/logging-log4j2/actions/workflows/build.yml)
 ![Libraries.io dependency status for 3.x](https://img.shields.io/librariesio/release/maven/org.apache.logging.log4j%3Alog4j/3.0.0-alpha1?label=dependencies%20(3.x))
 
-[![OpenSSF Best Practices](https://www.bestpractices.dev/badge_static/96)](https://www.bestpractices.dev/en/projects/6952)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/6952/badge)](https://www.bestpractices.dev/projects/6952)
 
 ## Pull Requests on Github
 
