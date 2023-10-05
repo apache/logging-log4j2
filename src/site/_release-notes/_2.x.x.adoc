@@ -53,6 +53,7 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 === Added
 
 * Added marker parent support to `JsonTemplateLayout` (https://github.com/apache/logging-log4j2/pull/1381[1381])
+* Added a warning for incorrect syntax of highlighting styles (https://github.com/apache/logging-log4j2/issues/1545[1545], https://github.com/apache/logging-log4j2/pull/1637[1637])
 
 === Changed
 
