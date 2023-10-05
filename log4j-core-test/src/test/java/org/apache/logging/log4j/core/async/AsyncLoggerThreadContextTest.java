@@ -17,45 +17,45 @@
 package org.apache.logging.log4j.core.async;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.util.Strings;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.test.TestProperties;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.apache.logging.log4j.test.junit.UsingTestProperties;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@Category(AsyncLoggers.class)
+@Tag("AsyncLoggers")
+@UsingTestProperties
+@UsingStatusListener
 public class AsyncLoggerThreadContextTest {
 
-    @BeforeClass
-    public static void beforeClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
-                AsyncLoggerContextSelector.class.getName());
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                "AsyncLoggerThreadContextTest.xml");
-    }
+    private static TestProperties props;
 
-    @AfterClass
-    public static void afterClass() {
-        System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
+    @TempLoggingDir
+    private static Path loggingPath;
+
+    @BeforeAll
+    public static void beforeClass() {
+        props.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+                AsyncLoggerContextSelector.class.getName());
     }
 
     @Test
+    @LoggerContextSource("AsyncLoggerThreadContextTest.xml")
     public void testAsyncLogWritesToLog() throws Exception {
-        final File file = new File("target", "AsyncLoggerTest.log");
-        // System.out.println(f.getAbsolutePath());
-        file.delete();
+        final Path file = loggingPath.resolve("AsyncLoggerTest.log");
 
         ThreadContext.push("stackvalue");
         ThreadContext.put("KEY", "mapvalue");
@@ -63,17 +63,13 @@ public class AsyncLoggerThreadContextTest {
         final Logger log = LogManager.getLogger("com.foo.Bar");
         final String msg = "Async logger msg";
         log.info(msg, new InternalError("this is not a real error"));
-        CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(false, file.toFile()); // stop async thread
 
-        final BufferedReader reader = new BufferedReader(new FileReader(file));
+        final BufferedReader reader = Files.newBufferedReader(file);
         final String line1 = reader.readLine();
         reader.close();
-        file.delete();
-        assertNotNull("line1", line1);
-        assertTrue("line1 correct", line1.contains(msg));
-
-        assertTrue("ThreadContext.map", line1.contains("mapvalue"));
-        assertTrue("ThreadContext.stack", line1.contains("stackvalue"));
+        Files.delete(file);
+        assertThat(line1).contains(msg, "mapvalue", "stackvalue");
     }
 
 }

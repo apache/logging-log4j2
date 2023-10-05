@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.core.test.junit;
 
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.LoggerContext;
@@ -28,8 +30,10 @@ import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContextException;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.platform.commons.support.AnnotationSupport;
 
 class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> implements BeforeAllCallback,
         AfterAllCallback, BeforeEachCallback, AfterEachCallback {
@@ -41,11 +45,11 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     @Override
     public void beforeAll(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
-        final LoggerContextSource testSource = testClass.getAnnotation(LoggerContextSource.class);
-        if (testSource != null) {
-            final LoggerContextConfig config = new LoggerContextConfig(testSource, context);
-            getTestClassStore(context).put(LoggerContext.class, config);
-        }
+        AnnotationSupport.findAnnotation(testClass, LoggerContextSource.class)
+                .ifPresent(testSource -> {
+                    final LoggerContextConfig config = new LoggerContextConfig(testSource, context);
+                    getTestClassStore(context).put(LoggerContext.class, config);
+                });
     }
 
     @Override
@@ -60,7 +64,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
-        if (testClass.isAnnotationPresent(LoggerContextSource.class)) {
+        if (AnnotationSupport.isAnnotated(testClass, LoggerContextSource.class)) {
             final LoggerContextConfig config = getTestClassStore(context).get(LoggerContext.class, LoggerContextConfig.class);
             if (config == null) {
                 throw new IllegalStateException(
@@ -71,14 +75,14 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
                 config.reconfigure();
             }
         }
-        final LoggerContextSource source = context.getRequiredTestMethod().getAnnotation(LoggerContextSource.class);
-        if (source != null) {
-            final LoggerContextConfig config = new LoggerContextConfig(source, context);
-            if (config.reconfigurationPolicy == ReconfigurationPolicy.BEFORE_EACH) {
-                config.reconfigure();
-            }
-            getTestInstanceStore(context).put(LoggerContext.class, config);
-        }
+        AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), LoggerContextSource.class)
+                .ifPresent(source -> {
+                    final LoggerContextConfig config = new LoggerContextConfig(source, context);
+                    if (config.reconfigurationPolicy == ReconfigurationPolicy.BEFORE_EACH) {
+                        config.reconfigure();
+                    }
+                    getTestInstanceStore(context).put(LoggerContext.class, config);
+                });
     }
 
     @Override
@@ -91,7 +95,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         }
         // reloadable variant
         final Class<?> testClass = context.getRequiredTestClass();
-        if (testClass.isAnnotationPresent(LoggerContextSource.class)) {
+        if (AnnotationSupport.isAnnotated(testClass, LoggerContextSource.class)) {
             final LoggerContextConfig config = getTestClassStore(context).get(LoggerContext.class, LoggerContextConfig.class);
             if (config == null) {
                 throw new IllegalStateException(
@@ -137,10 +141,31 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         private LoggerContextConfig(final LoggerContextSource source, final ExtensionContext extensionContext) {
             final String displayName = extensionContext.getDisplayName();
             final ClassLoader classLoader = extensionContext.getRequiredTestClass().getClassLoader();
-            context = Configurator.initialize(displayName, classLoader, source.value());
+            context = Configurator.initialize(displayName, classLoader, getConfigLocation(source, extensionContext));
             reconfigurationPolicy = source.reconfigure();
             shutdownTimeout = source.timeout();
             unit = source.unit();
+        }
+
+        private static String getConfigLocation(final LoggerContextSource source,
+                final ExtensionContext extensionContext) {
+            final String value = source.value();
+            if (value.isEmpty()) {
+                Class<?> clazz = extensionContext.getRequiredTestClass();
+                while (clazz != null) {
+                    final URL url = clazz.getResource(clazz.getSimpleName() + ".xml");
+                    if (url != null) {
+                        try {
+                            return url.toURI().toString();
+                        } catch (URISyntaxException e) {
+                            throw new ExtensionContextException("An error occurred accessing the configuration.", e);
+                        }
+                    }
+                    clazz = clazz.getSuperclass();
+                }
+                return extensionContext.getRequiredTestClass().getName().replaceAll("[.$]", "/") + ".xml";
+            }
+            return value;
         }
 
         @Override

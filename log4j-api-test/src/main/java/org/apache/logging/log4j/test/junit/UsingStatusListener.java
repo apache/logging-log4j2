@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.test.junit;
 
 import java.lang.annotation.Documented;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -36,9 +35,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Retention(RUNTIME)
 @Target({ TYPE, METHOD })
-@Inherited
 @Documented
 @ExtendWith(ExtensionContextAnchor.class)
+@ExtendWith(TestPropertyResolver.class)
 @ExtendWith(StatusLoggerExtension.class)
 public @interface UsingStatusListener {
 }

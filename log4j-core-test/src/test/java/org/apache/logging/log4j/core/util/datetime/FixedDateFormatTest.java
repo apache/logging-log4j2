@@ -68,9 +68,9 @@ public class FixedDateFormatTest {
 
     @Test
     public void testCreateIfSupported_customTimeZoneIfOptionsArrayWithTimeZoneElement() {
-        final FixedDateFormat fmt = FixedDateFormat.createIfSupported(DEFAULT.getPattern(), "+08:00", "");
+        final FixedDateFormat fmt = FixedDateFormat.createIfSupported(DEFAULT.getPattern(), "GMT+08:00", "");
         assertEquals(DEFAULT.getPattern(), fmt.getFormat());
-        assertEquals(TimeZone.getTimeZone("+08:00"), fmt.getTimeZone());
+        assertEquals(TimeZone.getTimeZone("GMT+08:00"), fmt.getTimeZone());
     }
 
     @Test

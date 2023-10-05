@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.perf.jmh;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.message.ParameterizedMessage;
@@ -184,7 +185,7 @@ public class ParameterizedMessageInliningBenchmark {
                 result[pos++] = curChar;
             }
         }
-        return result.toString();
+        return Arrays.toString(result);
     }
 
     // 33 bytes

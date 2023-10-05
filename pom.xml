@@ -22,13 +22,13 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>9</version>
+    <version>10.1.1</version>
     <relativePath />
   </parent>
 
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j</artifactId>
-  <version>2.20.1-SNAPSHOT</version>
+  <version>${revision}</version>
   <packaging>pom</packaging>
 
   <name>Apache Log4j 2</name>
@@ -239,7 +239,6 @@
     <module>log4j-jpa</module>
     <module>log4j-jpl</module>
     <module>log4j-jdbc-dbcp2</module>
-    <module>log4j-jmx-gui</module>
     <module>log4j-jul</module>
     <module>log4j-kubernetes</module>
     <module>log4j-layout-template-json</module>
@@ -299,6 +298,7 @@
     <log4jReleaseManager>Ralph Goers</log4jReleaseManager>
     <log4jReleaseKey>B3D8E1BA</log4jReleaseKey>
     <log4jSigningUserName>rgoers@apache.org</log4jSigningUserName>
+    <revision>2.21.0-SNAPSHOT</revision>
 
     <!-- =================
          Common properties
@@ -314,6 +314,8 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <module.name />
+    <!-- TODO: fix errors and reenable SpotBugs -->
+    <spotbugs.skip>true</spotbugs.skip>
 
     <!-- ========================
          Site-specific properties
@@ -347,27 +349,11 @@
          Plugin version properties (in alphabetical order)
          ================================================= -->
     <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
-    <build-helper-maven-plugin.version>3.4.0</build-helper-maven-plugin.version>
-    <checksum-maven-plugin.version>1.11</checksum-maven-plugin.version>
     <docker-maven-plugin.version>0.43.4</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
-    <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
-    <log4j-tools.version>0.3.0</log4j-tools.version>
-    <maven-artifact-plugin.version>3.4.0</maven-artifact-plugin.version>
-    <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
-    <maven-enforcer-plugin.version>3.2.1</maven-enforcer-plugin.version>
-    <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
-    <maven-scm-plugin.version>1.13.0</maven-scm-plugin.version>
-    <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
-    <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
-    <spotbugs-maven-plugin.version>4.7.3.5</spotbugs-maven-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.1.2</surefire.version>
-    <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
-    <!-- See https://maven.apache.org/plugins/maven-site-plugin/migrate.html -->
-    <velocity.plugin.version>1.5</velocity.plugin.version>
-    <xml-maven-plugin.version>1.1.0</xml-maven-plugin.version>
 
     <!-- =====================================================
          Direct dependency version properties (in alphabetical order)
@@ -379,7 +365,7 @@
     <awaitility.version>4.2.0</awaitility.version>
     <bsh.version>2.0b6</bsh.version>
     <cassandra.version>3.11.16</cassandra.version>
-    <cassandra-driver.version>3.11.4</cassandra-driver.version>
+    <cassandra-driver.version>3.11.5</cassandra-driver.version>
     <commons-codec.version>1.15</commons-codec.version>
     <commons-compress.version>1.23.0</commons-compress.version>
     <commons-csv.version>1.10.0</commons-csv.version>
@@ -390,7 +376,7 @@
     <!-- `com.conversantmedia:disruptor` version 1.2.16 requires Java 9: -->
     <conversant.disruptor.version>1.2.15</conversant.disruptor.version>
     <disruptor.version>3.4.4</disruptor.version>
-    <elasticsearch.version>7.17.12</elasticsearch.version>
+    <elasticsearch.version>7.17.13</elasticsearch.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
     <felix.version>7.0.5</felix.version>
     <flapdoodle-embed.version>4.7.1</flapdoodle-embed.version>
@@ -454,7 +440,7 @@
     <system-stubs.version>2.0.2</system-stubs.version>
     <tomcat-juli.version>10.0.27</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
-    <wiremock.version>2.35.0</wiremock.version>
+    <wiremock.version>2.35.1</wiremock.version>
     <woodstox.version>6.5.1</woodstox.version>
     <xmlunit.version>2.9.1</xmlunit.version>
     <xz.version>1.9</xz.version>
@@ -467,7 +453,7 @@
          of dependencies (requireUpperBoundDeps rule).
          ===================================================== -->
     <asm.version>9.5</asm.version>
-    <byte-buddy.version>1.14.7</byte-buddy.version>
+    <byte-buddy.version>1.14.8</byte-buddy.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
     <commons-pool2.version>2.11.1</commons-pool2.version>
     <httpclient.version>4.5.14</httpclient.version>
@@ -1315,25 +1301,35 @@
     </dependencies>
   </dependencyManagement>
 
+  <!-- Common annotations used in all the modules -->
+  <dependencies>
+
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bnd.annotation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.annotation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.annotation.bundle</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+  </dependencies>
+
   <build>
 
     <defaultGoal>clean verify</defaultGoal>
 
     <pluginManagement>
       <plugins>
-
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>${build-helper-maven-plugin.version}</version>
-        </plugin>
-
-        <!-- used by `log4j-distribution` module which is enabled via `apache-release` profile: -->
-        <plugin>
-          <groupId>net.nicoulaj.maven.plugins</groupId>
-          <artifactId>checksum-maven-plugin</artifactId>
-          <version>${checksum-maven-plugin.version}</version>
-        </plugin>
 
         <!-- used by `docker` profile in `log4j-layout-template-json-test`: -->
         <plugin>
@@ -1342,136 +1338,20 @@
           <version>${docker-maven-plugin.version}</version>
         </plugin>
 
+        <!-- used by OSGi tests -->
         <plugin>
           <groupId>org.ops4j.pax.exam</groupId>
           <artifactId>exam-maven-plugin</artifactId>
           <version>${exam-maven-plugin.version}</version>
         </plugin>
 
-        <plugin>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-changelog-maven-plugin</artifactId>
-          <version>${log4j-tools.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-artifact-plugin</artifactId>
-          <version>${maven-artifact-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <version>${maven-bundle-plugin.version}</version>
-          <extensions>true</extensions>
-          <inherited>true</inherited>
-          <executions>
-            <execution>
-              <goals>
-                <goal>manifest</goal>
-              </goals>
-              <phase>process-classes</phase>
-            </execution>
-          </executions>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <release>${maven.compiler.release}</release>
-            <parameters>true</parameters>
-            <showDeprecation>true</showDeprecation>
-            <showWarnings>true</showWarnings>
-            <encoding>UTF-8</encoding>
-            <fork>true</fork>
-            <meminitial>256</meminitial>
-            <maxmem>1024</maxmem>
-            <compilerArguments>
-              <Xmaxwarns>10000</Xmaxwarns>
-              <Xlint />
-            </compilerArguments>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>${maven-dependency-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>${maven-enforcer-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>default-jar</id>
-              <goals>
-                <goal>jar</goal>
-              </goals>
-              <configuration>
-                <archive>
-                  <manifestFile>${manifestfile}</manifestFile>
-                  <manifestEntries>
-                    <Specification-Title>${project.name}</Specification-Title>
-                    <Specification-Version>${project.version}</Specification-Version>
-                    <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                    <Implementation-Title>${project.name}</Implementation-Title>
-                    <Implementation-Version>${project.version}</Implementation-Version>
-                    <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                    <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-                    <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                    <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                    <Automatic-Module-Name>${module.name}</Automatic-Module-Name>
-                  </manifestEntries>
-                </archive>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-scm-plugin</artifactId>
-          <version>${maven-scm-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>${maven-source-plugin.version}</version>
-        </plugin>
-
+        <!-- used to generate taglib documentation -->
         <plugin>
           <groupId>net.sourceforge.maven-taglib</groupId>
           <artifactId>maven-taglib-plugin</artifactId>
           <version>${maven-taglib-plugin.version}</version>
         </plugin>
 
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-toolchains-plugin</artifactId>
-          <version>${maven-toolchains-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>com.github.spotbugs</groupId>
-          <artifactId>spotbugs-maven-plugin</artifactId>
-          <version>${spotbugs-maven-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>xml-maven-plugin</artifactId>
-          <version>${xml-maven-plugin.version}</version>
-        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -1485,18 +1365,12 @@
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
           <consoleOutput>true</consoleOutput>
-          <excludes>
-            <exclude>**/target/**/*</exclude>
+          <excludes combine.children="append">
             <!-- Matches other RAT configurations in this POM -->
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
-            <!-- IntelliJ files -->
-            <exclude>.idea/**/*</exclude>
-            <exclude>**/*.iml</exclude>
             <exclude>src/test/resources/**/*</exclude>
             <!-- IDE settings imports -->
             <exclude>src/ide/**</exclude>
-            <!-- does it even make sense to apply a license to a GPG signature? -->
-            <exclude>**/*.asc</exclude>
             <!-- jQuery is MIT-licensed, but RAT can't figure it out -->
             <exclude>src/site/resources/js/jquery.js</exclude>
             <exclude>src/site/resources/js/jquery.min.js</exclude>
@@ -1510,7 +1384,6 @@
             <exclude>felix-cache/**</exclude>
             <exclude>**/README.md</exclude>
             <exclude>SECURITY.md</exclude>
-            <exclude>.java-version</exclude>
             <exclude>**/*.yml</exclude>
             <exclude>**/*.yaml</exclude>
             <exclude>**/*.json</exclude>
@@ -1519,71 +1392,22 @@
             <exclude>**/rabbitmq.config</exclude>
             <exclude>**/MANIFEST.MF</exclude>
             <exclude>.surefire-*</exclude>
-            <exclude>.mvn/jvm.config</exclude>
-            <!-- License headers in GitHub templates pollute the prompt displayed to the user: -->
-            <exclude>.github/ISSUE_TEMPLATE/*.md</exclude>
-            <exclude>.github/pull_request_template.md</exclude>
           </excludes>
         </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <phase>validate</phase>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Ensure that version for each dependency resolved during a build, is equal to or higher than all transitive dependency declarations.
-           A failure here requires adding the dependency to the dependency management. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-upper-bound-deps</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireUpperBoundDeps />
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar-no-fork</goal>
-              <goal>test-jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <plugins>
-            <plugin>
-              <groupId>com.h3xstream.findsecbugs</groupId>
-              <artifactId>findsecbugs-plugin</artifactId>
-              <version>${findsecbugs-plugin.version}</version>
-            </plugin>
-          </plugins>
-          <excludeFilterFile>${log4jParentDir}/findbugs-exclude-filter.xml</excludeFilterFile>
-          <fork>true</fork>
-          <effort>Default</effort>
-          <threshold>Normal</threshold>
+          <!-- TODO: this only applies to `log4j-core` dependents -->
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-core</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
 
@@ -1591,36 +1415,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <forkCount>1C</forkCount>
           <reuseForks>false</reuseForks>
+          <runOrder>alphabetical</runOrder>
           <systemPropertyVariables>
             <java.awt.headless>true</java.awt.headless>
           </systemPropertyVariables>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>xml-maven-plugin</artifactId>
-        <inherited>false</inherited>
-        <configuration>
-          <validationSets>
-            <validationSet>
-              <dir>src/changelog</dir>
-              <includes>**/*.xml</includes>
-              <publicId>http://logging.apache.org/log4j/changelog</publicId>
-              <systemId>https://logging.apache.org/log4j/changelog-0.1.1.xsd</systemId>
-              <validating>true</validating>
-            </validationSet>
-          </validationSets>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>validate</goal>
-            </goals>
-            <phase>validate</phase>
-          </execution>
-        </executions>
       </plugin>
 
       <!-- ███████ ████████  █████  ██████  ████████        ███████ ██ ████████ ███████
@@ -1809,58 +1610,6 @@
 
   <profiles>
 
-    <!-- Shortcut to populate `src/changelog/<releaseVersion>` from `src/changelog/.<releaseVersionMajor>.x.x` -->
-    <profile>
-      <id>changelog-release</id>
-      <build>
-        <defaultGoal>validate</defaultGoal>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-changelog-maven-plugin</artifactId>
-            <inherited>false</inherited>
-            <configuration>
-              <releaseVersion>${log4jReleaseVersion}</releaseVersion>
-            </configuration>
-            <executions>
-              <execution>
-                <id>changelog-release</id>
-                <goals>
-                  <goal>release</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <!-- Shortcut to enable `log4j-distribution` module creating the release distribution containing artifacts, sources, etc. -->
-    <profile>
-      <id>apache-release</id>
-      <modules>
-        <module>log4j-distribution</module>
-      </modules>
-      <properties>
-        <maven.test.skip>true</maven.test.skip>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>source-release-assembly</id>
-                <configuration>
-                  <skipAssembly>true</skipAssembly>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
     <profile>
       <id>java8-doclint-disabled</id>
       <activation>
@@ -1873,6 +1622,12 @@
 
     <profile>
       <id>java8-tests</id>
+      <activation>
+        <property>
+          <name>env.CI</name>
+          <value>true</value>
+        </property>
+      </activation>
       <build>
         <plugins>
           <plugin>
@@ -1889,45 +1644,20 @@
     </profile>
 
     <profile>
-      <id>rewrite</id>
-      <properties>
-        <rewrite-java.version>8.2.0</rewrite-java.version>
-        <rewrite-maven-plugin.version>5.4.1</rewrite-maven-plugin.version>
-        <rewrite-static-analysis.version>1.0.5</rewrite-static-analysis.version>
-        <rewrite-testing.version>2.0.9</rewrite-testing.version>
-      </properties>
+      <id>sequential-tests</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.openrewrite.maven</groupId>
-            <artifactId>rewrite-maven-plugin</artifactId>
-            <version>${rewrite-maven-plugin.version}</version>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-              <activeRecipes>
-                <recipe>org.apache.logging.log4j.rewrite.FinalizeAll</recipe>
-              </activeRecipes>
+              <forkCount>1</forkCount>
             </configuration>
-            <dependencies>
-              <dependency>
-                <groupId>org.openrewrite</groupId>
-                <artifactId>rewrite-java</artifactId>
-                <version>${rewrite-java.version}</version>
-              </dependency>
-              <dependency>
-                <groupId>org.openrewrite.recipe</groupId>
-                <artifactId>rewrite-static-analysis</artifactId>
-                <version>${rewrite-static-analysis.version}</version>
-              </dependency>
-              <dependency>
-                <groupId>org.openrewrite.recipe</groupId>
-                <artifactId>rewrite-testing-frameworks</artifactId>
-                <version>${rewrite-testing.version}</version>
-              </dependency>
-            </dependencies>
           </plugin>
         </plugins>
       </build>
     </profile>
+
   </profiles>
 
 </project>

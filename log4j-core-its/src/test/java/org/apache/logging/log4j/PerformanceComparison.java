@@ -110,7 +110,7 @@ public class PerformanceComparison {
     }
 
     //@Test
-    public void testRawPerformance() throws Exception {
+    private void testRawPerformance() throws Exception {
         final OutputStream os = new FileOutputStream("target/testos.log", true);
         final long result1 = writeToStream(COUNT, os);
         os.close();

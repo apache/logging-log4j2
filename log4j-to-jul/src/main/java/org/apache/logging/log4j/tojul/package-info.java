@@ -20,4 +20,7 @@
  *
  * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */
+@Export
 package org.apache.logging.log4j.tojul;
+
+import org.osgi.annotation.bundle.Export;

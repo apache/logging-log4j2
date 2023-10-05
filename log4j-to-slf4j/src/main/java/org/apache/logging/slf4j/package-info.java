@@ -17,4 +17,7 @@
 /**
  * SLF4J support.
  */
+@Export
 package org.apache.logging.slf4j;
+
+import org.osgi.annotation.bundle.Export;

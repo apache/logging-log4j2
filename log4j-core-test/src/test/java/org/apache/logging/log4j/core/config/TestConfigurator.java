@@ -69,7 +69,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("functional")
 public class TestConfigurator {
 
-    private static final String CONFIG_NAME = "ConfigTest";
+    private static final String CONFIG_NAME = "TestConfigurator";
 
     private static final String FILESEP = System.getProperty("file.separator");
 
@@ -103,7 +103,7 @@ public class TestConfigurator {
 
     @Test
     public void testInitialize_Name_PathName() throws Exception {
-        ctx = Configurator.initialize("Test1", "target/classes/log4j2-config.xml");
+        ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-TestConfigurator.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull(config, "No configuration");
@@ -119,7 +119,7 @@ public class TestConfigurator {
 
     @Test
     public void testInitialize_Name_ClassLoader_URI() throws Exception {
-        ctx = Configurator.initialize("Test1", null, new File("target/classes/log4j2-config.xml").toURI());
+        ctx = Configurator.initialize("Test1", null, new File("target/test-classes/log4j2-TestConfigurator.xml").toURI());
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull(config, "No configuration");
@@ -135,7 +135,7 @@ public class TestConfigurator {
 
     @Test
     public void testInitialize_InputStream_File() throws Exception {
-        final File file = new File("target/classes/log4j2-config.xml");
+        final File file = new File("target/test-classes/log4j2-TestConfigurator.xml");
         final InputStream is = new FileInputStream(file);
         final ConfigurationSource source = new ConfigurationSource(is, file);
         ctx = Configurator.initialize(null, source);
@@ -154,7 +154,7 @@ public class TestConfigurator {
 
     @Test
     public void testInitialize_InputStream_Path() throws Exception {
-        final Path path = Paths.get("target/classes/log4j2-config.xml");
+        final Path path = Paths.get("target/test-classes/log4j2-TestConfigurator.xml");
         final InputStream is = Files.newInputStream(path);
         final ConfigurationSource source = new ConfigurationSource(is, path);
         ctx = Configurator.initialize(null, source);
@@ -173,7 +173,7 @@ public class TestConfigurator {
 
     @Test
     public void testInitialize_NullClassLoader_ConfigurationSourceWithInputStream_NoId() throws Exception {
-        final InputStream is = new FileInputStream("target/classes/log4j2-config.xml");
+        final InputStream is = new FileInputStream("target/test-classes/log4j2-TestConfigurator.xml");
         final ConfigurationSource source =
             new ConfigurationSource(is);
         ctx = Configurator.initialize(null, source);
@@ -192,7 +192,7 @@ public class TestConfigurator {
 
     @Test
     public void testInitialize_Name_LocationName() throws Exception {
-        ctx = Configurator.initialize("Test1", "log4j2-config.xml");
+        ctx = Configurator.initialize("Test1", "log4j2-TestConfigurator.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull(config, "No configuration");
@@ -208,7 +208,7 @@ public class TestConfigurator {
 
     @Test
     public void testFromClassPathProperty() throws Exception {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "classpath:log4j2-config.xml");
+        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "classpath:log4j2-TestConfigurator.xml");
         ctx = Configurator.initialize("Test1", null);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
@@ -225,7 +225,7 @@ public class TestConfigurator {
 
     @Test
     public void testFromClassPathWithClassPathPrefix() throws Exception {
-        ctx = Configurator.initialize("Test1", "classpath:log4j2-config.xml");
+        ctx = Configurator.initialize("Test1", "classpath:log4j2-TestConfigurator.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull(config, "No configuration");
@@ -241,7 +241,7 @@ public class TestConfigurator {
 
     @Test
     public void testFromClassPathWithClassLoaderPrefix() throws Exception {
-        ctx = Configurator.initialize("Test1", "classloader:log4j2-config.xml");
+        ctx = Configurator.initialize("Test1", "classloader:log4j2-TestConfigurator.xml");
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull(config, "No configuration");
@@ -257,7 +257,7 @@ public class TestConfigurator {
 
     @Test
     public void testByName() throws Exception {
-        ctx = Configurator.initialize("-config", null);
+        ctx = Configurator.initialize("-TestConfigurator", null);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull(config, "No configuration");
@@ -273,9 +273,9 @@ public class TestConfigurator {
 
     @Test
     public void testReconfiguration() throws Exception {
-        final File file = new File("target/classes/log4j2-config.xml");
+        final File file = new File("target/test-classes/log4j2-TestConfigurator.xml");
         assertTrue(file.setLastModified(System.currentTimeMillis() - 120000), "setLastModified should have succeeded.");
-        ctx = Configurator.initialize("Test1", "target/classes/log4j2-config.xml");
+        ctx = Configurator.initialize("Test1", "target/test-classes/log4j2-TestConfigurator.xml");
         final Logger logger = LogManager.getLogger("org.apache.test.TestConfigurator");
         Configuration config = ctx.getConfiguration();
         assertNotNull(config, "No configuration");
@@ -311,7 +311,7 @@ public class TestConfigurator {
 
     @Test
     public void testEnvironment() throws Exception {
-        ctx = Configurator.initialize("-config", null);
+        ctx = Configurator.initialize("-TestConfigurator", null);
         LogManager.getLogger("org.apache.test.TestConfigurator");
         final Configuration config = ctx.getConfiguration();
         assertNotNull(config, "No configuration");
@@ -319,11 +319,11 @@ public class TestConfigurator {
         final Map<String, Appender> map = config.getAppenders();
         assertNotNull(map, "Appenders map should not be null.");
         assertThat(map, hasSize(greaterThan(0)));
-        assertThat("No ListAppender named List2", map, hasKey("List2"));
-        final Appender app = map.get("List2");
+        assertThat("No ListAppender named List", map, hasKey("List"));
+        final Appender app = map.get("List");
         final Layout<? extends Serializable> layout = app.getLayout();
-        assertNotNull(layout, "Appender List2 does not have a Layout");
-        assertThat("Appender List2 is not configured with a PatternLayout", layout, instanceOf(PatternLayout.class));
+        assertNotNull(layout, "Appender List does not have a Layout");
+        assertThat("Appender List is not configured with a PatternLayout", layout, instanceOf(PatternLayout.class));
         final String pattern = ((PatternLayout) layout).getConversionPattern();
         assertNotNull(pattern, "No conversion pattern for List2 PatternLayout");
         assertFalse(pattern.startsWith("${env:PATH}"), "Environment variable was not substituted");

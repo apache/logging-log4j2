@@ -19,4 +19,7 @@
  * JUnit helper classes and TestRules.
  * @see org.junit.rules.TestRule
  */
+@Export
 package org.apache.logging.log4j.core.test.junit;
+
+import org.osgi.annotation.bundle.Export;

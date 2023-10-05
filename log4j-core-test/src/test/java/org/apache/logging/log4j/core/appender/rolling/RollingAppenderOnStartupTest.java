@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.File;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,53 +29,42 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- *
- */
+@UsingStatusListener
 public class RollingAppenderOnStartupTest {
 
     private static final String SOURCE = "src/test/resources/__files";
-    private static final String DIR = "target/onStartup";
-    private static final String CONFIG = "log4j-rollOnStartup.xml";
     private static final String FILENAME = "onStartup.log";
     private static final String PREFIX = "This is test message number ";
     private static final String ROLLED = "onStartup-";
 
-    private static LoggerContext loggerContext;
+    @TempLoggingDir
+    private static Path loggingPath;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        if (Files.exists(Paths.get("target/onStartup"))) {
-            try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
-                for (final Path path : directoryStream) {
-                    Files.delete(path);
-                }
-                Files.delete(Paths.get(DIR));
-            }
-        }
-        Files.createDirectory(new File(DIR).toPath());
-        final Path target = Paths.get(DIR, FILENAME);
+    @BeforeAll
+    public static void setup() throws Exception {
+        final Path target = loggingPath.resolve(FILENAME);
         Files.copy(Paths.get(SOURCE, FILENAME), target, StandardCopyOption.COPY_ATTRIBUTES);
         final FileTime newTime = FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS));
         Files.getFileAttributeView(target, BasicFileAttributeView.class).setTimes(newTime, newTime, newTime);
     }
 
     @Test
-    public void performTest() throws Exception {
+    @LoggerContextSource
+    public void performTest(final LoggerContext loggerContext) throws Exception {
         boolean rolled = false;
-        loggerContext = Configurator.initialize("Test", CONFIG);
         final Logger logger = loggerContext.getLogger(RollingAppenderOnStartupTest.class);
         for (int i = 3; i < 10; ++i) {
             logger.debug(PREFIX + i);
         }
-        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(loggingPath)) {
             for (final Path path : directoryStream) {
                 if (path.toFile().getName().startsWith(ROLLED)) {
                     rolled = true;
@@ -88,17 +76,6 @@ public class RollingAppenderOnStartupTest {
             }
         }
         assertTrue("File did not roll", rolled);
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        Configurator.shutdown(loggerContext);
-        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
-            for (final Path path : directoryStream) {
-                Files.delete(path);
-            }
-        }
-        Files.delete(Paths.get(DIR));
     }
 
 }

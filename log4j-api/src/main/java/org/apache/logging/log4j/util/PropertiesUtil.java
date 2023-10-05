@@ -35,6 +35,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
+
 /**
  * <em>Consider this class private.</em>
  * <p>
@@ -48,6 +52,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
  *
  * @see PropertySource
  */
+@ServiceConsumer(value = PropertySource.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
 public final class PropertiesUtil {
 
     private static final String LOG4J_PROPERTIES_FILE_NAME = "log4j2.component.properties";
@@ -483,10 +488,7 @@ public final class PropertiesUtil {
             final Set<String> keys = new HashSet<>();
             sources.stream()
                    .map(PropertySource::getPropertyNames)
-                   .reduce(keys, (left, right) -> {
-                       left.addAll(right);
-                       return left;
-                   });
+                   .forEach(keys::addAll);
             // 2. Fills the property caches. Sources with higher priority values don't override the previous ones.
             keys.stream()
                 .filter(Objects::nonNull)

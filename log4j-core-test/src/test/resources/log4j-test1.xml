@@ -17,7 +17,7 @@
   -->
 <Configuration status="OFF" name="XMLConfigTest">
   <Properties>
-    <Property name="filename">target/test-xml.log</Property>
+    <Property name="filename">${test:logging.path}/test-xml.log</Property>
   </Properties>
   <ThresholdFilter level="debug"/>
 

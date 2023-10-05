@@ -17,4 +17,7 @@
 /**
  * Rolling File Appender and support classes.
  */
+@Export
 package org.apache.logging.log4j.core.appender.rolling;
+
+import org.osgi.annotation.bundle.Export;

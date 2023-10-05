@@ -19,4 +19,7 @@
  *
  * @since 2.4
  */
+@Export
 package org.apache.logging.log4j.core.config.builder.impl;
+
+import org.osgi.annotation.bundle.Export;

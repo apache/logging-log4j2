@@ -6,7 +6,7 @@
         "properties" : {
             "property" : {
                 "name" : "filename",
-                "value": "target/test-json.log"
+                "value": "${test:logging.path}/test-json.log"
             }
         },
         "thresholdFilter" : {

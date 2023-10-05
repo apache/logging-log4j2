@@ -78,6 +78,7 @@ public class ObjectMessageTest {
 
     @Test
     public void testDeserializeNonSerializableParamEqualIfToStringSame() {
+        @SuppressWarnings("EqualsHashCode")
         class NonSerializable {
             @Override
             public boolean equals(final Object other) {

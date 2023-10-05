@@ -21,16 +21,28 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent.Builder;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests for LoggerConfig.
  */
 public class LoggerConfigTest {
+
+    private static final String FQCN = LoggerConfigTest.class.getName();
 
     private static LoggerConfig createForProperties(final Property[] properties) {
         return LoggerConfig.createLogger(true, Level.INFO, "name", "false", new AppenderRef[0], properties,
@@ -108,5 +120,25 @@ public class LoggerConfigTest {
         assertEquals(config1.getExplicitLevel(), Level.ERROR, "Unexpected explicit level");
         assertEquals(config2.getLevel(), Level.ERROR, "Unexpected Level");
         assertNull(config2.getExplicitLevel(),"Unexpected explicit level");
+    }
+
+    @Test
+    public void testSingleFilterInvocation() {
+        final Configuration configuration = new NullConfiguration();
+        final Filter filter = mock(Filter.class);
+        final LoggerConfig config = LoggerConfig.newBuilder()
+                .withLoggerName(FQCN)
+                .withConfig(configuration)
+                .withLevel(Level.INFO)
+                .withtFilter(filter)
+                .build();
+        final Appender appender = mock(Appender.class);
+        when(appender.isStarted()).thenReturn(true);
+        when(appender.getName()).thenReturn("test");
+        config.addAppender(appender, null, null);
+
+        config.log(FQCN, FQCN, null, Level.INFO, new SimpleMessage(), null);
+        verify(appender, times(1)).append(any());
+        verify(filter, times(1)).filter(any());
     }
 }

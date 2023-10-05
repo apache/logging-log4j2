@@ -17,4 +17,7 @@
 /**
  * Log4j 2 helper classes.
  */
+@Export
 package org.apache.logging.log4j.core.util;
+
+import org.osgi.annotation.bundle.Export;

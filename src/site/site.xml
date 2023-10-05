@@ -326,9 +326,9 @@
       <item name="Chainsaw" href="https://logging.apache.org/chainsaw/2.x/index.html"/>
       <item name="Log4Cxx" href="https://logging.apache.org/log4cxx/latest_stable/index.html"/>
       <item name="Log4j Audit" href="https://logging.apache.org/log4j-audit/latest/index.html"/>
-      <item name="Log4j Kotlin" href="https://logging.apache.org/log4j/kotlin/index.html"/>
-      <item name="Log4j Scala" href="https://logging.apache.org/log4j/scala/index.html"/>
-      <item name="Log4j Transformation Tools" href="log4j-transform"/>
+      <item name="Log4j Kotlin" href="https://logging.apache.org/log4j/kotlin"/>
+      <item name="Log4j Scala" href="https://logging.apache.org/log4j/scala"/>
+      <item name="Log4j Transform" href="https://logging.apache.org/log4j/transform"/>
       <item name="Log4Net" href="https://logging.apache.org/log4net/index.html"/>
     </menu>
 

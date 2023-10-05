@@ -17,4 +17,7 @@
 /**
  * This package lets you manage log4j settings using JMX. It is unfortunately not of production quality.
  */
+@Export
 package org.apache.log4j.jmx;
+
+import org.osgi.annotation.bundle.Export;

@@ -20,4 +20,7 @@
  *
  * @since 2.1
  */
+@Export
 package org.apache.logging.log4j.core.config.plugins.validation.validators;
+
+import org.osgi.annotation.bundle.Export;

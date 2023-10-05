@@ -225,7 +225,7 @@ public final class JndiManager extends AbstractManager {
      * @return the named object if it could be located.
      * @throws  NamingException if a naming exception is encountered
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "BanJNDI"})
     public <T> T lookup(final String name) throws NamingException {
         if (context == null) {
             return null;
