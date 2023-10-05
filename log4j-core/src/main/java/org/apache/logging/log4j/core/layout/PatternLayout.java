@@ -154,7 +154,7 @@ public final class PatternLayout extends AbstractStringLayout {
      *
      * @param configuration the current configuration
      * @param replace Allows portions of the resulting String to be replaced.
-     * @param pattern the current patternt
+     * @param pattern the current pattern
      * @param defaultPattern the default pattern
      * @param patternSelector Allows different patterns to be used with the PatternLayout based on some selection criteria.
      * @param alwaysWriteExceptions To always write exceptions even if the pattern contains no exception conversions.
