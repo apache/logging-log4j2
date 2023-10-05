@@ -17,6 +17,15 @@
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 
+  <!-- ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+       ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+       ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+       ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+        ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+       Log4j project modules should use `log4j-parent` as their parents, not this POM!
+       This POM constitutes the BOM to be imported by applications using Log4j project modules. -->
+
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -27,12 +36,12 @@
   </parent>
 
   <groupId>org.apache.logging.log4j</groupId>
-  <artifactId>log4j</artifactId>
+  <artifactId>log4j-bom</artifactId>
   <version>${revision}</version>
   <packaging>pom</packaging>
 
-  <name>Apache Log4j 2</name>
-  <description>Apache Log4j 2</description>
+  <name>Apache Log4j BOM</name>
+  <description>Apache Log4j Bill-of-Materials</description>
   <url>https://logging.apache.org/log4j/2.x/</url>
 
   <inceptionYear>1999</inceptionYear>
@@ -218,16 +227,19 @@
 
   <modules>
 
-    <!-- Unpublished modules first: -->
+    <!-- the parent POM must come first: -->
+    <module>log4j-parent</module>
+
+    <!-- Next unpublished modules in alphabetical order: -->
     <module>log4j-api-java9</module>
     <module>log4j-core-java9</module>
 
-    <!-- Modules in alphabetical order: -->
+    <!-- Last comes the rest of the modules in alphabetical order.
+         Note that modules here must have a corresponding entry in `dependencyManagement > dependencies` block below! -->
     <module>log4j-1.2-api</module>
     <module>log4j-api</module>
     <module>log4j-api-test</module>
     <module>log4j-appserver</module>
-    <module>log4j-bom</module>
     <module>log4j-cassandra</module>
     <module>log4j-core</module>
     <module>log4j-core-its</module>
@@ -291,9 +303,7 @@
 
   <properties>
 
-    <!-- ===========================
-         Release-specific properties
-         =========================== -->
+    <!-- project version -->
     <revision>2.21.0-SNAPSHOT</revision>
 
     <!-- =================
@@ -307,7 +317,7 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <module.name />
-    <!-- TODO: fix errors and reenable SpotBugs -->
+    <!-- TODO: fix errors and re-enable SpotBugs -->
     <spotbugs.skip>true</spotbugs.skip>
 
     <!-- ========================
@@ -318,7 +328,7 @@
          We also don't generate Javadoc HTML for all modules, but only for two modules: `log4j-api` and `log4j-core`. -->
     <javadoc.skip>true</javadoc.skip>
     <!-- Skipping `maven-site-plugin` globally.
-         It is manually enabled only for the parent module below. -->
+         It is manually enabled only for this root module below. -->
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
 
@@ -459,894 +469,227 @@
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-bom</artifactId>
+        <artifactId>log4j-1.2-api</artifactId>
         <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.ow2.asm</groupId>
-        <artifactId>asm-bom</artifactId>
-        <version>${asm.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-bom</artifactId>
-        <version>${groovy.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>com.fasterxml.jackson</groupId>
-        <artifactId>jackson-bom</artifactId>
-        <version>${jackson-bom.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>jakarta.platform</groupId>
-        <artifactId>jakarta.jakartaee-bom</artifactId>
-        <version>${jakartaee-bom.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-bom</artifactId>
-        <version>${jetty.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.junit</groupId>
-        <artifactId>junit-bom</artifactId>
-        <version>${junit-jupiter.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>io.fabric8</groupId>
-        <artifactId>kubernetes-client-bom</artifactId>
-        <version>${kubernetes-client.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-bom</artifactId>
-        <version>${mockito.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-bom</artifactId>
-        <version>${netty.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-framework-bom</artifactId>
-        <version>${spring-framework.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
       </dependency>
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-api-java9</artifactId>
+        <artifactId>log4j-api</artifactId>
         <version>${project.version}</version>
-        <type>zip</type>
       </dependency>
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-core-java9</artifactId>
+        <artifactId>log4j-api-test</artifactId>
         <version>${project.version}</version>
-        <type>zip</type>
       </dependency>
 
       <dependency>
-        <groupId>org.apache.activemq</groupId>
-        <artifactId>activemq-broker</artifactId>
-        <version>${activemq.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-appserver</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.eclipse.angus</groupId>
-        <artifactId>angus-activation</artifactId>
-        <version>${angus-activation.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-cassandra</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>${assertj.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.awaitility</groupId>
-        <artifactId>awaitility</artifactId>
-        <version>${awaitility.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-core-test</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.apache-extras.beanshell</groupId>
-        <artifactId>bsh</artifactId>
-        <version>${bsh.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-couchdb</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.mongodb</groupId>
-        <artifactId>bson</artifactId>
-        <version>${mongodb.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-docker</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>net.bytebuddy</groupId>
-        <artifactId>byte-buddy</artifactId>
-        <version>${byte-buddy.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-flume-ng</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.apache.cassandra</groupId>
-        <artifactId>cassandra-all</artifactId>
-        <version>${cassandra.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-iostreams</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.datastax.cassandra</groupId>
-        <artifactId>cassandra-driver-core</artifactId>
-        <version>${cassandra-driver.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jakarta-smtp</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.apache.cassandra</groupId>
-        <artifactId>cassandra-thrift</artifactId>
-        <version>${cassandra.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jakarta-web</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>commons-codec</groupId>
-        <artifactId>commons-codec</artifactId>
-        <version>${commons-codec.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jcl</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
-      <!-- Used for compressing to formats other than `zip` and `gz`: -->
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-compress</artifactId>
-        <version>${commons-compress.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jmx-gui</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-csv</artifactId>
-        <version>${commons-csv.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jpa</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-dbcp2</artifactId>
-        <version>${commons-dbcp2.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jpl</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>commons-httpclient</groupId>
-        <artifactId>commons-httpclient</artifactId>
-        <version>${commons-httpclient.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-jul</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>${commons-io.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-kubernetes</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>${commons-lang3.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-layout-template-json</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>commons-logging</groupId>
-        <artifactId>commons-logging</artifactId>
-        <version>${commons-logging.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-layout-template-json-test</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-pool2</artifactId>
-        <version>${commons-pool2.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-mongodb3</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>de.flapdoodle.embed</groupId>
-        <artifactId>de.flapdoodle.embed.mongo</artifactId>
-        <version>${flapdoodle-embed.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-mongodb4</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>de.flapdoodle.embed</groupId>
-        <artifactId>de.flapdoodle.embed.process</artifactId>
-        <version>${flapdoodle-embed.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-osgi</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>de.flapdoodle.reverse</groupId>
-        <artifactId>de.flapdoodle.reverse</artifactId>
-        <version>${flapdoodle-reverse.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j2-impl</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.conversantmedia</groupId>
-        <artifactId>disruptor</artifactId>
-        <version>${conversant.disruptor.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>com.lmax</groupId>
-        <artifactId>disruptor</artifactId>
-        <version>${disruptor.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-spring-boot</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.elasticsearch.client</groupId>
-        <artifactId>elasticsearch-rest-high-level-client</artifactId>
-        <version>${elasticsearch.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-spring-cloud-config-client</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.zapodot</groupId>
-        <artifactId>embedded-ldap-junit</artifactId>
-        <version>${embedded-ldap.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-taglib</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.apache.flume.flume-ng-channels</groupId>
-        <artifactId>flume-file-channel</artifactId>
-        <version>${flume.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>servlet-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>servlet-api-2.5</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-to-jul</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.apache.flume</groupId>
-        <artifactId>flume-ng-core</artifactId>
-        <version>${flume.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-to-slf4j</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.apache.flume</groupId>
-        <artifactId>flume-ng-embedded-agent</artifactId>
-        <version>${flume.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.flume</groupId>
-        <artifactId>flume-ng-node</artifactId>
-        <version>${flume.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.flume</groupId>
-        <artifactId>flume-ng-sdk</artifactId>
-        <version>${flume.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <!-- Transitive dependency: setting upper bound of declared versions -->
-      <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>${guava.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.guava</groupId>
-        <!-- https://javadoc.io/doc/com.google.guava/guava-testlib/latest/com/google/common/testing/TestLogHandler.html used in log4j-to-jul tests -->
-        <artifactId>guava-testlib</artifactId>
-        <version>${guava.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-        <version>${h2.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.hadoop</groupId>
-        <artifactId>hadoop-core</artifactId>
-        <version>${hadoop.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>servlet-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest</artifactId>
-        <version>${hamcrest.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-core</artifactId>
-        <version>${hamcrest.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-library</artifactId>
-        <version>${hamcrest.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hdrhistogram</groupId>
-        <artifactId>HdrHistogram</artifactId>
-        <version>${HdrHistogram.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hsqldb</groupId>
-        <artifactId>hsqldb</artifactId>
-        <version>${hsqldb.version}</version>
-        <classifier>jdk8</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>${httpclient.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpcore</artifactId>
-        <version>${httpcore.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>jakarta.activation</groupId>
-        <artifactId>jakarta.activation-api</artifactId>
-        <version>${jakarta-activation.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.angus</groupId>
-        <artifactId>jakarta.mail</artifactId>
-        <version>${angus-mail.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>jakarta.mail</groupId>
-        <artifactId>jakarta.mail-api</artifactId>
-        <version>${jakarta-mail.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.fusesource.jansi</groupId>
-        <artifactId>jansi</artifactId>
-        <version>${jansi.version}</version>
-      </dependency>
-
-      <!-- Used for garbage-free tests: -->
-      <dependency>
-        <groupId>com.google.code.java-allocation-instrumenter</groupId>
-        <artifactId>java-allocation-instrumenter</artifactId>
-        <version>${java-allocation-instrumenter.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.activation</groupId>
-        <artifactId>javax.activation-api</artifactId>
-        <version>${javax-activation.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.inject</groupId>
-        <artifactId>javax.inject</artifactId>
-        <version>${javax-inject.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.jms</groupId>
-        <artifactId>javax.jms-api</artifactId>
-        <version>${javax-jms.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.sun.mail</groupId>
-        <artifactId>javax.mail</artifactId>
-        <version>${javax-mail.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.mail</groupId>
-        <artifactId>javax.mail-api</artifactId>
-        <version>${javax-mail.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.persistence</groupId>
-        <artifactId>javax.persistence-api</artifactId>
-        <version>${javax-persistence.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.servlet.jsp</groupId>
-        <artifactId>javax.servlet.jsp-api</artifactId>
-        <version>${javax-servlet-jsp.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
-        <version>${javax-servlet.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.sun</groupId>
-        <artifactId>jconsole</artifactId>
-        <version>${jconsole.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jctools</groupId>
-        <artifactId>jctools-core</artifactId>
-        <version>${jctools.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.sleepycat</groupId>
-        <artifactId>je</artifactId>
-        <version>${je.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.zeromq</groupId>
-        <artifactId>jeromq</artifactId>
-        <version>${jeromq.version}</version>
-      </dependency>
-
-      <!-- Zeroconf advertiser tests: -->
-      <dependency>
-        <groupId>org.jmdns</groupId>
-        <artifactId>jmdns</artifactId>
-        <version>${jmdns.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.openjdk.jmh</groupId>
-        <artifactId>jmh-core</artifactId>
-        <version>${jmh.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.openjdk.jmh</groupId>
-        <artifactId>jmh-generator-annprocess</artifactId>
-        <version>${jmh.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>net.java.dev.jna</groupId>
-        <artifactId>jna</artifactId>
-        <version>${jna.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>net.javacrumbs.json-unit</groupId>
-        <artifactId>json-unit</artifactId>
-        <version>${json-unit.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.junit-pioneer</groupId>
-        <artifactId>junit-pioneer</artifactId>
-        <version>${junit-pioneer.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.kafka</groupId>
-        <artifactId>kafka-clients</artifactId>
-        <version>${kafka.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.lightcouch</groupId>
-        <artifactId>lightcouch</artifactId>
-        <version>${lightcouch.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>${log4j.version}</version>
-      </dependency>
-
-      <!-- Used for testing `JsonTemplateLayout`: -->
-      <dependency>
-        <groupId>co.elastic.logging</groupId>
-        <artifactId>log4j2-ecs-layout</artifactId>
-        <version>${log4j2-ecs-layout.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${logback.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${logback.version}</version>
-        <type>test-jar</type>
-      </dependency>
-
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-core</artifactId>
-        <version>${logback.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-core</artifactId>
-        <version>${logback.version}</version>
-        <type>test-jar</type>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.maven</groupId>
-        <artifactId>maven-core</artifactId>
-        <version>${maven.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mongodb</groupId>
-        <artifactId>mongodb-driver-core</artifactId>
-        <version>${mongodb.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mongodb</groupId>
-        <artifactId>mongodb-driver-legacy</artifactId>
-        <version>${mongodb.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.mongodb</groupId>
-        <artifactId>mongodb-driver-sync</artifactId>
-        <version>${mongodb.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>org.apache.felix.framework</artifactId>
-        <version>${felix.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>org.eclipse.osgi</artifactId>
-        <version>${org.eclipse.osgi.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.persistence</groupId>
-        <artifactId>org.eclipse.persistence.jpa</artifactId>
-        <version>${org.eclipse.persistence.version}</version>
-        <exclusions>
-          <!-- A copy of `javax.persistence:javax.persistence-api`: -->
-          <exclusion>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>jakarta.persistence</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.osgi</groupId>
-        <artifactId>org.osgi.core</artifactId>
-        <version>${osgi.api.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>oro</groupId>
-        <artifactId>oro</artifactId>
-        <version>${oro.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.ops4j.pax.exam</groupId>
-        <artifactId>pax-exam</artifactId>
-        <version>${pax-exam.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.ops4j.pax.exam</groupId>
-        <artifactId>pax-exam-container-native</artifactId>
-        <version>${pax-exam.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.ops4j.pax.exam</groupId>
-        <artifactId>pax-exam-junit4</artifactId>
-        <version>${pax-exam.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.ops4j.pax.exam</groupId>
-        <artifactId>pax-exam-link-assembly</artifactId>
-        <version>${pax-exam.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.ops4j.pax.exam</groupId>
-        <artifactId>pax-exam-spi</artifactId>
-        <version>${pax-exam.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.codehaus.plexus</groupId>
-        <artifactId>plexus-utils</artifactId>
-        <version>${plexus-utils.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-ext</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot</artifactId>
-        <version>${spring-boot.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-test</artifactId>
-        <version>${spring-boot.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>uk.org.webcompere</groupId>
-        <artifactId>system-stubs-core</artifactId>
-        <version>${system-stubs.version}</version>
-      </dependency>
-
-      <!-- Environment and system properties support for JUnit Jupiter: -->
-      <dependency>
-        <groupId>uk.org.webcompere</groupId>
-        <artifactId>system-stubs-jupiter</artifactId>
-        <version>${system-stubs.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-juli</artifactId>
-        <version>${tomcat-juli.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.velocity</groupId>
-        <artifactId>velocity</artifactId>
-        <version>${velocity.version}</version>
-      </dependency>
-
-      <!-- Used for testing `HttpAppender`: -->
-      <dependency>
-        <groupId>com.github.tomakehurst</groupId>
-        <artifactId>wiremock-jre8</artifactId>
-        <version>${wiremock.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.fasterxml.woodstox</groupId>
-        <artifactId>woodstox-core</artifactId>
-        <version>${woodstox.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.xmlunit</groupId>
-        <artifactId>xmlunit-core</artifactId>
-        <version>${xmlunit.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.xmlunit</groupId>
-        <artifactId>xmlunit-matchers</artifactId>
-        <version>${xmlunit.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.tukaani</groupId>
-        <artifactId>xz</artifactId>
-        <version>${xz.version}</version>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-web</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
     </dependencies>
   </dependencyManagement>
 
-  <!-- Common annotations used in all the modules -->
-  <dependencies>
-
-    <dependency>
-      <groupId>biz.aQute.bnd</groupId>
-      <artifactId>biz.aQute.bnd.annotation</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi.annotation</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.annotation.bundle</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-  </dependencies>
-
   <build>
 
-    <pluginManagement>
-      <plugins>
-
-        <!-- used by `docker` profile in `log4j-layout-template-json-test`: -->
-        <plugin>
-          <groupId>io.fabric8</groupId>
-          <artifactId>docker-maven-plugin</artifactId>
-          <version>${docker-maven-plugin.version}</version>
-        </plugin>
-
-        <!-- used by OSGi tests -->
-        <plugin>
-          <groupId>org.ops4j.pax.exam</groupId>
-          <artifactId>exam-maven-plugin</artifactId>
-          <version>${exam-maven-plugin.version}</version>
-        </plugin>
-
-        <!-- used to generate taglib documentation -->
-        <plugin>
-          <groupId>net.sourceforge.maven-taglib</groupId>
-          <artifactId>maven-taglib-plugin</artifactId>
-          <version>${maven-taglib-plugin.version}</version>
-        </plugin>
-
-      </plugins>
-    </pluginManagement>
-
     <plugins>
+
+      <!-- Enable BOM flattening -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>${flatten-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>flatten-bom</id>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+            <phase>process-resources</phase>
+            <inherited>false</inherited>
+            <configuration>
+              <pomElements>
+                <build>remove</build>
+                <!-- Keep the `parent`!
+                     This is a temporary fix and can be removed with the next `logging-parent` release fixing https://github.com/apache/logging-parent/issues/37 -->
+                <parent>keep</parent>
+              </pomElements>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
       <!-- Apache RAT (Release Audit Tool) check to verify licenses.
            `apache-rat-plugin`: https://creadur.apache.org/rat/apache-rat-plugin/
@@ -1432,6 +775,7 @@
               <goal>timestamp-property</goal>
             </goals>
             <phase>pre-site</phase>
+            <inherited>false</inherited>
             <configuration>
               <name>currentYear</name>
               <pattern>yyyy</pattern>
@@ -1462,6 +806,7 @@
               <goal>javadoc-no-fork</goal>
             </goals>
             <phase>pre-site</phase>
+            <inherited>false</inherited>
           </execution>
         </executions>
       </plugin>
@@ -1498,6 +843,7 @@
               <goal>copy-resources</goal>
             </goals>
             <phase>site</phase>
+            <inherited>false</inherited>
             <configuration>
               <skip>${javadoc.skip}</skip>
               <outputDirectory>${project.basedir}/target/site/javadoc/${project.artifactId}</outputDirectory>
@@ -1522,6 +868,7 @@
               <goal>team</goal>
             </goals>
             <phase>site</phase>
+            <inherited>false</inherited>
           </execution>
         </executions>
       </plugin>
