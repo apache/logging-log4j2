@@ -80,7 +80,7 @@ public final class StackLocator {
         } catch (final Exception | LinkageError e) {
             if (Constants.JAVA_MAJOR_VERSION > 8) {
                 LowLevelLogUtil.log(
-                        "WARNING: Runtime environment does not support multi-release JARs. This will impact location-based features.");
+                        "WARNING: Runtime environment or build system does not support multi-release JARs. This will impact location-based features.");
             } else {
                 LowLevelLogUtil.log(
                         "WARNING: sun.reflect.Reflection.getCallerClass is not supported. This will impact location-based features.");
