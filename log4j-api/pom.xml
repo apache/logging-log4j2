@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.21.0-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
   <artifactId>log4j-api</artifactId>
   <packaging>jar</packaging>
@@ -31,6 +31,23 @@
     <docLabel>API Documentation</docLabel>
     <projectDir>/api</projectDir>
     <javadoc.skip>false</javadoc.skip>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-multi-release>true</bnd-multi-release>
+    <!-- Differs from OSGi bundle name -->
+    <bnd-module-name>org.apache.logging.log4j</bnd-module-name>
+    <bnd-extra-package-options>
+      <!-- This is a Java 9 only package, so BND can not detect it as private -->
+      !org.apache.logging.log4j.util.internal
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Used in StringBuilders through reflection -->
+      java.sql;static=true,
+      <!-- Used in ProcessIdUtil through reflection -->
+      java.management;static=true
+    </bnd-extra-module-options>
   </properties>
   <dependencies>
     <dependency>
@@ -60,35 +77,18 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Private-Package>*.internal</Private-Package>
-            <Export-Package>!*.internal,
-              org.apache.logging.log4j.*</Export-Package>
-            <Import-Package>!*.internal,
-              sun.reflect;resolution:=optional,
-              *</Import-Package>
-            <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
-            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-            <_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-compile</id>
-            <!-- recompile everything for target VM except the module-info.java -->
-            <configuration>
-              <source>1.8</source>
-              <target>1.8</target>
-            </configuration>
-          </execution>
-        </executions>
+        <configuration>
+          <!-- TODO: copy/paste from `logging-parent` to override this module's parent -->
+          <annotationProcessorPaths combine.self="override">
+            <path>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_core</artifactId>
+              <version>${error-prone.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -115,39 +115,6 @@
               <outputDirectory>${project.build.directory}</outputDirectory>
               <overWriteReleases>false</overWriteReleases>
               <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-jar</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration combine.self="override">
-              <archive>
-                <manifestFile>${manifestfile}</manifestFile>
-                <manifestEntries>
-                  <Specification-Title>${project.name}</Specification-Title>
-                  <Specification-Version>${project.version}</Specification-Version>
-                  <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                  <Implementation-Title>${project.name}</Implementation-Title>
-                  <Implementation-Version>${project.version}</Implementation-Version>
-                  <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                  <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-                  <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                  <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                  <Multi-Release>true</Multi-Release>
-                </manifestEntries>
-              </archive>
             </configuration>
           </execution>
         </executions>

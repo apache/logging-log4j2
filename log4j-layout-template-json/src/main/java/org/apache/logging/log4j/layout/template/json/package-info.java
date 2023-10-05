@@ -14,14 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.util.java9;
+@Export
+@Open("org.apache.logging.log4j.core")
+package org.apache.logging.log4j.layout.template.json;
 
-public class ModuleUtil {
-
-    /**
-     * Used by reflection from a Java 8 test class.
-     */
-    public static boolean isOnModulePath() {
-        return ModuleUtil.class.getModule().isNamed();
-    }
-}
+import aQute.bnd.annotation.jpms.Open;
+import org.osgi.annotation.bundle.Export;

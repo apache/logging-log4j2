@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.21.0-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
   <artifactId>log4j-slf4j-impl</artifactId>
   <packaging>jar</packaging>
@@ -33,9 +33,27 @@
     <!-- Do not upgrade the SLF4J version. 1.7.26 broke backward compatibility. Users can update the version if
       they do not require support for SLF4J's EventData -->
     <slf4j.version>1.7.25</slf4j.version>
-    <module.name>org.apache.logging.log4j.slf4j</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-package-options>
+      <!-- Optional dependencies -->
+      org.slf4j.ext;resolution:=optional
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Optional module -->
+      slf4j.ext;substitute="slf4j-ext";static=true;transitive=false,
+      <!-- Version 1.7.25 has not module name, but 1.7.36 does -->
+      org.slf4j;substitute="slf4j-api"
+    </bnd-extra-module-options>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
@@ -104,68 +122,6 @@
   </dependencies>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>org.apache.logging.slf4j,
-              org.slf4j.impl</Export-Package>
-            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-jar</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration combine.self="override">
-              <archive>
-                <manifestFile>${manifestfile}</manifestFile>
-                <manifestEntries>
-                  <Specification-Title>${project.name}</Specification-Title>
-                  <Specification-Version>${project.version}</Specification-Version>
-                  <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                  <Implementation-Title>${project.name}</Implementation-Title>
-                  <Implementation-Version>${project.version}</Implementation-Version>
-                  <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                  <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-                  <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                  <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                  <Automatic-Module-Name>${module.name}</Automatic-Module-Name>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </execution>
-          <execution>
-            <id>default</id>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-            <configuration>
-              <archive>
-                <manifestFile>${manifestfile}</manifestFile>
-                <manifestEntries>
-                  <Specification-Title>${project.name}</Specification-Title>
-                  <Specification-Version>${project.version}</Specification-Version>
-                  <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                  <Implementation-Title>${project.name}</Implementation-Title>
-                  <Implementation-Version>${project.version}</Implementation-Version>
-                  <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                  <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-                  <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                  <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>

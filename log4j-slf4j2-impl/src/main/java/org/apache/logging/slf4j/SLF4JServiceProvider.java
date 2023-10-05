@@ -16,10 +16,13 @@
  */
 package org.apache.logging.slf4j;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.IMarkerFactory;
 import org.slf4j.spi.MDCAdapter;
 
+@ServiceProvider(value = org.slf4j.spi.SLF4JServiceProvider.class, resolution = Resolution.MANDATORY)
 public class SLF4JServiceProvider implements org.slf4j.spi.SLF4JServiceProvider {
 
     public static final String REQUESTED_API_VERSION = "2.0.99";

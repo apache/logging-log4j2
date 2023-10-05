@@ -17,4 +17,7 @@
 /**
  * Log4j 2 Context Selectors.
  */
+@Export
 package org.apache.logging.log4j.core.selector;
+
+import org.osgi.annotation.bundle.Export;

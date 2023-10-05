@@ -20,12 +20,12 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.core.util.WatchEventService;
 import org.apache.logging.log4j.core.util.WatchManager;
 
-/**
- *
- */
+@ServiceProvider(value = WatchEventService.class, resolution = Resolution.OPTIONAL)
 public class WatchEventManager implements WatchEventService {
     private static final ConcurrentMap<UUID, WatchManager> watchManagers = new ConcurrentHashMap<>();
 

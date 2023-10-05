@@ -17,7 +17,11 @@
 package org.apache.logging.log4j.tojul;
 
 import org.apache.logging.log4j.util.ProviderActivator;
+import org.osgi.annotation.bundle.Header;
+import org.osgi.framework.Constants;
 
+@Header(name = Constants.BUNDLE_ACTIVATOR, value = "${@class}")
+@Header(name = Constants.BUNDLE_ACTIVATIONPOLICY, value = Constants.ACTIVATION_LAZY)
 public class Activator extends ProviderActivator {
 
     public Activator() {

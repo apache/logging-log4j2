@@ -17,4 +17,7 @@
 /**
  * Apache Flume Appender. Requires the user specifically include Flume and its dependencies.
  */
+@Export
 package org.apache.logging.log4j.core.appender.routing;
+
+import org.osgi.annotation.bundle.Export;

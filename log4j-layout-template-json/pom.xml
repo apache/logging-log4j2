@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.21.0-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>log4j-layout-template-json</artifactId>
@@ -33,7 +33,16 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Layout for JSON Template Documentation</docLabel>
     <projectDir>/log4j-layout-template-json</projectDir>
-    <module.name>org.apache.logging.log4j.layout.template.json</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.logging.log4j.layout.template.json</bnd-module-name>
+    <bnd-extra-module-options>
+      <!-- Correct module names -->
+      org.jctools.core;substitute="jctools-core"
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
 
   <dependencies>
@@ -50,17 +59,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Bundle-SymbolicName>org.apache.logging.log4j.layout.template.json</Bundle-SymbolicName>
-            <Export-Package>org.apache.logging.log4j.layout.template.json.*</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
       <!-- Disable ITs, which are Docker-dependent, by default. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -74,35 +72,6 @@
               <goal>integration-test</goal>
               <goal>verify</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-jar</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration combine.self="override">
-              <archive>
-                <manifestFile>${manifestfile}</manifestFile>
-                <manifestEntries>
-                  <Specification-Title>${project.name}</Specification-Title>
-                  <Specification-Version>${project.version}</Specification-Version>
-                  <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                  <Implementation-Title>${project.name}</Implementation-Title>
-                  <Implementation-Version>${project.version}</Implementation-Version>
-                  <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                  <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-                  <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                  <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                  <Multi-Release>true</Multi-Release>
-                </manifestEntries>
-              </archive>
-            </configuration>
           </execution>
         </executions>
       </plugin>

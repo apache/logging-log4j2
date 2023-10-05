@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
@@ -51,6 +54,7 @@ import org.apache.logging.log4j.util.StringMap;
  * @see ContextDataInjectorFactory
  * @since 2.7
  */
+@ServiceConsumer(value = ContextDataProvider.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
 public class ThreadContextDataInjector {
 
     private static final Logger LOGGER = StatusLogger.getLogger();

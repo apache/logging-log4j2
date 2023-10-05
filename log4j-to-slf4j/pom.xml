@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.21.0-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
   <artifactId>log4j-to-slf4j</artifactId>
   <packaging>jar</packaging>
@@ -30,8 +30,15 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>SLF4J Documentation</docLabel>
     <projectDir>/log4j-to-slf4j</projectDir>
-    <module.name>org.apache.logging.slf4j</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
     <slf4j.support.bound>3</slf4j.support.bound>
+    <bnd-extra-package-options>
+      <!-- This bridge also support SLF4J 2.x -->
+      org.slf4j.*;version="${range;[==,${slf4j.support.bound})}"
+    </bnd-extra-package-options>
   </properties>
   <dependencies>
     <dependency>
@@ -89,19 +96,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-Activator>org.apache.logging.slf4j.Activator</Bundle-Activator>
-            <Export-Package>org.apache.logging.slf4j</Export-Package>
-            <Import-Package>org.slf4j*;version="${range;[==,${slf4j.support.bound})}",*</Import-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+
 </project>

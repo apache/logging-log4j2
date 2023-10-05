@@ -17,4 +17,7 @@
 /**
  * Log4j 1.x compatibility layer.
  */
+@Export
 package org.apache.log4j;
+
+import org.osgi.annotation.bundle.Export;

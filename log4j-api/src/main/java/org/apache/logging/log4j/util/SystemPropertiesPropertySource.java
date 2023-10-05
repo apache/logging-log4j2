@@ -20,6 +20,9 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Properties;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
+
 /**
  * PropertySource backed by the current system properties. Other than having a
  * higher priority over normal properties, this follows the same rules as
@@ -27,6 +30,7 @@ import java.util.Properties;
  *
  * @since 2.10.0
  */
+@ServiceProvider(value = PropertySource.class, resolution = Resolution.OPTIONAL)
 public class SystemPropertiesPropertySource implements PropertySource {
 
     private static final int DEFAULT_PRIORITY = 0;

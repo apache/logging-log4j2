@@ -18,9 +18,13 @@ package org.apache.logging.log4j.jpl;
 
 import java.lang.System.Logger;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
+
 /**
  * @since 2.14
  */
+@ServiceProvider(value = System.LoggerFinder.class, resolution = Resolution.OPTIONAL)
 public class Log4jSystemLoggerFinder extends System.LoggerFinder {
 
     private final Log4jSystemLoggerAdapter loggerAdapter = new Log4jSystemLoggerAdapter();

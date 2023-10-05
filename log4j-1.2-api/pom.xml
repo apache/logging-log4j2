@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.21.0-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
   <artifactId>log4j-1.2-api</artifactId>
   <packaging>jar</packaging>
@@ -31,6 +31,21 @@
     <docLabel>Log4j 1.2 Documentation</docLabel>
     <projectDir>/log4j12-api</projectDir>
     <module.name>org.apache.log4j</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.log4j</bnd-module-name>
+    <bnd-extra-package-options>
+      <!-- JMX support -->
+      com.sun.jdmk.comm;resolution:=optional,
+      <!-- JMS is optional -->
+      javax.jms;version="[1.1,3)";resolution:=optional,
+      <!-- Log4j Core is optional -->
+      org.apache.logging.log4j.core.*;resolution:=optional
+    </bnd-extra-package-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
+    <!-- we have an `bnd.bnd` file to override the parent's defaults -->
   </properties>
   <dependencies>
     <!-- Used for JMS appenders (needs an implementation of course) -->
@@ -124,24 +139,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>org.apache.log4j.*</Export-Package>
-            <Import-Package>
-              javax.jms;version="[1.1,3)";resolution:=optional,
-              <!-- used by org.apache.log4j.jmx.Agent -->
-              com.sun.jdmk.comm;resolution:=optional,
-              *
-            </Import-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

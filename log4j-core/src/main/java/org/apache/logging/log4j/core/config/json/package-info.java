@@ -17,4 +17,7 @@
 /**
  * Classes and interfaces supporting configuration of Log4j 2 with JSON.
  */
+@Export
 package org.apache.logging.log4j.core.config.json;
+
+import org.osgi.annotation.bundle.Export;

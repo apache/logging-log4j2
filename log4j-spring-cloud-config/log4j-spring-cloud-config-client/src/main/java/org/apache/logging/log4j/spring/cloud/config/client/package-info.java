@@ -14,24 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.util.java9;
+@Export
+package org.apache.logging.log4j.spring.cloud.config.client;
 
-import java.lang.reflect.Method;
-
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-public class ModuleTest {
-
-    @Test
-    public void testOnModulePath() {
-        final boolean onModulePath = (boolean) assertDoesNotThrow(() -> {
-            final Class<?> moduleUtil = Class.forName("org.apache.logging.log4j.util.java9.ModuleUtil");
-            final Method isOnModulePath = moduleUtil.getDeclaredMethod("isOnModulePath");
-            return isOnModulePath.invoke(null);
-        });
-        assertTrue(onModulePath);
-    }
-}
+import org.osgi.annotation.bundle.Export;

@@ -17,4 +17,7 @@
 /**
  * Configuration of Log4j 2.
  */
+@Export
 package org.apache.logging.log4j.core.config;
+
+import org.osgi.annotation.bundle.Export;
