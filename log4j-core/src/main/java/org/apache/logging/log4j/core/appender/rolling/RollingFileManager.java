@@ -520,7 +520,7 @@ public class RollingFileManager extends FileManager {
                     asyncExecutor.execute(new AsyncAction(descriptor.getAsynchronous(), this));
                     releaseRequired = false;
                 }
-                return true;
+                return success;
             }
             return false;
         } finally {

@@ -21,7 +21,10 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.appender.rolling.action.AbstractAction;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.NullConfiguration;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.IOUtils;
 import org.junit.Assert;
@@ -83,5 +86,53 @@ public class RollingFileManagerTest {
                 Assert.assertEquals(testContent, IOUtils.toString(reader));
             }
         }
+    }
+
+    /**
+     * Test that a synchronous action failure does not cause a rollover. Addresses Issue #1445.
+     */
+    @Test
+    public void testSynchronousActionFailure() throws IOException {
+        class FailingSynchronousAction extends AbstractAction {
+            @Override
+            public boolean execute() {
+                return false;
+            }
+        }
+        class FailingSynchronousStrategy implements RolloverStrategy {
+            @Override
+            public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
+                return new RolloverDescriptionImpl(manager.getFileName(), false, new FailingSynchronousAction(), null);
+            }
+        }
+
+        final Configuration configuration = new NullConfiguration();
+
+        // Create the manager.
+        final File file = File.createTempFile("testSynchronousActionFailure", "log");
+        final RollingFileManager manager = RollingFileManager.getFileManager(
+            file.getAbsolutePath(),
+            "testSynchronousActionFailure.log.%d{yyyy-MM-dd}", true, false,
+            OnStartupTriggeringPolicy.createPolicy(1), new FailingSynchronousStrategy(), null,
+            PatternLayout.createDefaultLayout(), 0, true, false, null, null, null, configuration);
+        Assert.assertNotNull(manager);
+        manager.initialize();
+
+        // Get the initialTime of this original log file
+        final long initialTime = manager.getFileTime();
+
+        // Log something to ensure that the existing file size is > 0
+        final String testContent = "Test";
+        manager.writeToDestination(testContent.getBytes(StandardCharsets.US_ASCII), 0, testContent.length());
+
+        // Trigger rollover that will fail
+        manager.rollover();
+
+        // If the rollover fails, then the size should not be reset
+        Assert.assertNotEquals(0, manager.getFileSize());
+
+        // The initialTime should not have changed
+        Assert.assertEquals(initialTime, manager.getFileTime());
+
     }
 }
