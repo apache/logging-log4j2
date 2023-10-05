@@ -27,7 +27,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.Strings;
 
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
@@ -86,6 +85,10 @@ public final class HighlightConverter extends LogEventPatternConverter implement
     private static final Map<String, String> LOGBACK_STYLES = new HashMap<>();
 
     private static final String STYLE_KEY = "STYLE";
+
+    private static final String DISABLE_ANSI_KEY = "DISABLEANSI";
+
+    private static final String NO_CONSOLE_NO_ANSI_KEY = "NOCONSOLENOANSI";
 
     private static final String STYLE_KEY_DEFAULT = "DEFAULT";
 
@@ -146,11 +149,8 @@ public final class HighlightConverter extends LogEventPatternConverter implement
             return DEFAULT_STYLES;
         }
         // Feels like a hack. Should String[] options change to a Map<String,String>?
-        final String string = options[1]
-                .replaceAll(PatternParser.DISABLE_ANSI + "=(true|false)", Strings.EMPTY)
-                .replaceAll(PatternParser.NO_CONSOLE_NO_ANSI + "=(true|false)", Strings.EMPTY);
-        //
-        final Map<String, String> styles = AnsiEscape.createMap(string, new String[] {STYLE_KEY});
+        final Map<String, String> styles = AnsiEscape.createMap(options[1], new String[]{STYLE_KEY, DISABLE_ANSI_KEY,
+                NO_CONSOLE_NO_ANSI_KEY});
         final Map<String, String> levelStyles = new HashMap<>(DEFAULT_STYLES);
         for (final Map.Entry<String, String> entry : styles.entrySet()) {
             final String key = toRootUpperCase(entry.getKey());
@@ -163,7 +163,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
                 } else {
                     levelStyles.putAll(enumMap);
                 }
-            } else {
+            } else if (!DISABLE_ANSI_KEY.equalsIgnoreCase(key) && !NO_CONSOLE_NO_ANSI_KEY.equalsIgnoreCase(key)) {
                 final Level level = Level.toLevel(key, null);
                 if (level == null) {
                     LOGGER.warn("Setting style for yet unknown level name {}", key);
