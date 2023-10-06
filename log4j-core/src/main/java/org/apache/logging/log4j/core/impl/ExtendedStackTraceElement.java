@@ -26,7 +26,7 @@ import org.apache.logging.log4j.util.Strings;
  * Complements a StackTraceElement with:
  * </p>
  * <ul>
- * <li>exact: whether the class was obtained via {@link sun.reflect.Reflection#getCallerClass(int)}</li>
+ * <li>exact: whether the class was obtained via {@code sun.reflect.Reflection#getCallerClass(int)}</li>
  * <li>location: a classpath element or a jar</li>
  * <li>version</li>
  * </ul>

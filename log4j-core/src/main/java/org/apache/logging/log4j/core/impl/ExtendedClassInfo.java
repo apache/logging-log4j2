@@ -33,9 +33,9 @@ public final class ExtendedClassInfo {
     /**
      * Constructs a new instance.
      *
-     * @param exact
-     * @param location
-     * @param version
+     * @param exact Whether the class was obtained via {@code sun.reflect.Reflection#getCallerClass(int)}.
+     * @param location a classpath element or a jar
+     * @param version the string describing a version
      */
     public ExtendedClassInfo(final boolean exact, final String location, final String version) {
         super();

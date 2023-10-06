@@ -368,7 +368,8 @@ public class FastDateParser implements DateParser {
      * given by {@link ParsePosition#getIndex()} has been updated. If the input buffer has been fully
      * parsed, then the index will point to just after the end of the input buffer.
      *
-     * @see org.apache.commons.lang3.time.DateParser#parse(java.lang.String, java.text.ParsePosition)
+     * @see <a href="https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/time/DateParser.html#parse-java.lang.String-java.text.ParsePosition-">
+     *     org.apache.commons.lang3.time.DateParser#parse(String, ParsePosition)</a>
      */
     @Override
     public Date parse(final String source, final ParsePosition pos) {
