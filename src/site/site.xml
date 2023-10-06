@@ -55,7 +55,7 @@
         <item name="Optional Components" href="/maven-artifacts.html#Optional_Components" />
         <item name="Snapshot builds" href="/maven-artifacts.html#Snapshot_builds" />
       </item>
-      <item name="Release Notes" href="/release-notes/index.html"/>
+      <item name="Release Notes" href="/release-notes.html"/>
       <item name="FAQ" href="/faq.html"/>
       <item name="Performance" href="/performance.html" collapse="true">
         <item name="Benchmarks" href="/performance.html#benchmarks" />
