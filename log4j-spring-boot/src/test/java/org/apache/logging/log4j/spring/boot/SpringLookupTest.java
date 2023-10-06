@@ -19,13 +19,10 @@ package org.apache.logging.log4j.spring.boot;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.lookup.Interpolator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.env.MockEnvironment;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
+import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Test SpringLookup.
  */
@@ -42,22 +39,16 @@ public class SpringLookupTest {
         final SpringLookup lookup = new SpringLookup();
         lookup.setLoggerContext(context);
         String result = lookup.lookup("profiles.active");
-        assertNotNull("No active profiles", result);
-        assertEquals("Incorrect active profile", "test", result);
+        assertThat(result).as("Incorrect active profile").isEqualTo("test");
         result = lookup.lookup("profiles.active[0]");
-        assertNotNull("No active profiles", result);
-        assertEquals("Incorrect active profile", "test", result);
+        assertThat(result).as("Incorrect active profile").isEqualTo("test");
         result = lookup.lookup("profiles.default");
-        assertNotNull("No default profiles", result);
-        assertEquals("Incorrect default profiles", "one,two", result);
+        assertThat(result).as("Incorrect default profiles").isEqualTo("one,two");
         result = lookup.lookup("profiles.default[0]");
-        assertNotNull("No default profiles", result);
-        assertEquals("Incorrect default profiles", "one", result);
+        assertThat(result).as("Incorrect default profiles").isEqualTo("one");
         result = lookup.lookup("profiles.default[2]");
-        assertNull("Did not get index out of bounds", result);
         result = lookup.lookup("app.property");
-        assertNotNull("Did not find property", result);
-        assertEquals("Incorrect property value", "test", result);
+        assertThat(result).as("Incorrect property value").isEqualTo("test");
     }
 
     @Test
@@ -71,11 +62,9 @@ public class SpringLookupTest {
         lookup.setConfiguration(context.getConfiguration());
         lookup.setLoggerContext(context);
         String result = lookup.lookup("spring:profiles.active");
-        assertNotNull("No active profiles", result);
-        assertEquals("Incorrect active profile", "test", result);
+        assertThat(result).as("Incorrect active profile").isEqualTo("test");
 
         result = lookup.lookup("spring:app.property");
-        assertNotNull("Did not find property", result);
-        assertEquals("Incorrect property value", "test", result);
+        assertThat(result).as("Incorrect property value").isEqualTo("test");
     }
 }

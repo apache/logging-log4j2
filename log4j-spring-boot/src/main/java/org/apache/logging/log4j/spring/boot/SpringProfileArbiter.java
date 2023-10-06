@@ -108,8 +108,7 @@ public final class SpringProfileArbiter implements Arbiter {
             if (loggerContext != null) {
                 environment = (Environment) loggerContext.getObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY);
                 if (environment == null) {
-                    LOGGER.warn("Cannot create Arbiter, no Spring Environment provided");
-                    return null;
+                    LOGGER.debug("Creating Arbiter without a Spring Environment");
                 }
 
                 return new SpringProfileArbiter(profileNames, environment);

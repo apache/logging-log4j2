@@ -42,7 +42,7 @@ public class Log4j2SpringBootInitTest {
         final ListAppender app = context.getConfiguration().getAppender("Out");
         assertNotNull(app);
         assertEquals(1, app.getMessages().size());
-        assertEquals("Started: log4j-spring-boot", app.getMessages().get(0));
+        assertEquals("prod: Started: log4j-spring-boot", app.getMessages().get(0));
     }
 
     @SpringBootApplication
