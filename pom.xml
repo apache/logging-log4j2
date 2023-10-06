@@ -1675,6 +1675,13 @@
             </goals>
             <phase>pre-site</phase>
           </execution>
+          <execution>
+            <id>generate-package-javadoc</id>
+            <goals>
+              <goal>javadoc</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
         </executions>
       </plugin>
 
