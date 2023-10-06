@@ -15,39 +15,32 @@
     limitations under the License.
 ////
 
-////
-    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
-    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
-    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
-    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
-     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
-
-    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
-
-    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
-    Auto-generation happens during `generate-sources` phase of Maven.
-    Hence, you must always
-
-    1. Find and edit the associated `.release-notes.adoc.ftl`
-    2. Run `./mvnw generate-sources`
-    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
-////
-
 [#release-notes-2-21-0]
 == 2.21.0
 
 Release date:: 2023-10-06
 
-This release primarily contains bug fixes and minor enhancements.
+This release primarily focuses on enhancements to our OSGi and JPMS support and contains several bug fixes.
+It will be the first release built and signed by the CI using the https://keyserver.ubuntu.com/pks/lookup?search=077E8893A6DCC33DD4A4D5B256E73BA9A0B592D0&op=index[ASF Logging Services RM] PGP key.
 
-The Log4j 2.20.1 API, as well as many core components, maintains binary compatibility with previous releases.
+The Log4j 2.21.0 API, as well as the other artifacts, maintains binary compatibility with the previous release.
 
-Apache Log4j 2.20.1 requires a minimum of Java 11 to build and Java 8 to run.
-Log4j 2.12.4 is the last release to support Java 7.
-Log4j 2.3.2 is the last release to support Java 6.
-Java 6 and Java 7 are no longer supported by the Log4j team.
+Apache Log4j 2.21.0 requires Java 8 to run.
+The binaries are fully reproducible using a JDK 11 environment on a UNIX host.
 
 For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+=== OSGi changes
+
+All the published artifacts are OSGi bundles or fragments.
+
+This release introduces a change in the bundle symbolic names to allow them to function as JPMS module name: all hyphens `-` present in the bundle names of previous releases were replaced by dots `.`.
+
+=== JPMS changes
+
+All the published artifacts have been migrated from automatic modules to named JPMS modules. All packages marked as private in the Javadoc are not exported.
+
+The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j-to-jul` and `log4j-to-slf4j`) have been changed to adhere to the same convention as the OSGi bundle names.
 
 
 === Added
