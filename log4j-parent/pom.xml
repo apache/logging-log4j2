@@ -154,6 +154,22 @@
   <dependencyManagement>
     <dependencies>
 
+      <!-- BEGIN: Modules that are not published (and hence missing in the BOM) -->
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-osgi</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-layout-template-json-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- END: Modules that are not published (and hence missing in the BOM) -->
+
       <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-bom</artifactId>
