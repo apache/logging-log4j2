@@ -54,7 +54,15 @@ public abstract class AbstractWriterAppender<M extends WriterManager> extends Ab
      *            The name of the Appender.
      * @param layout
      *            The layout to format the message.
-     * @param properties Optional properties.
+     * @param filter
+     *            The filter to associate with the Appender.
+     * @param ignoreExceptions
+     *            If true, exceptions will be logged and suppressed.
+     *            If false errors will be logged and then passed to the application.
+     * @param immediateFlush
+     *            Underlying writer will be flushed at the end of each append operation.
+     * @param properties
+     *            Optional properties.
      * @param manager
      *            The OutputStreamManager.
      */
