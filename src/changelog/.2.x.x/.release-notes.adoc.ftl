@@ -38,15 +38,7 @@
 
 <#if release.date?has_content>Release date:: ${release.date}</#if>
 
-This release primarily contains bug fixes and minor enhancements.
-
-The Log4j 2.20.1 API, as well as many core components, maintains binary compatibility with previous releases.
-
-Apache Log4j 2.20.1 requires a minimum of Java 11 to build and Java 8 to run.
-Log4j 2.12.4 is the last release to support Java 7.
-Log4j 2.3.2 is the last release to support Java 6.
-Java 6 and Java 7 are no longer supported by the Log4j team.
-
-For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+This is a placeholder introduction to these release notes.
+This will be updated prior to the release.
 
 <#include "../.changelog.adoc.ftl">
