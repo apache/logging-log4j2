@@ -16,54 +16,74 @@
  */
 package org.apache.logging.log4j.spring.boot;
 
-import java.io.File;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Test;
+import org.springframework.core.env.Environment;
 import org.springframework.mock.env.MockEnvironment;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests basic condition processing.
  */
+@UsingStatusListener
 public class SpringProfileTest {
 
-    static final String CONFIG = "target/test-classes/log4j2-springProfile.xml";
-    static LoggerContext loggerContext;
-    static MockEnvironment env;
+    private static final String CONFIG = "log4j2-springProfile.xml";
+    private static final MockEnvironment env = new MockEnvironment();
+    private static final String[] DEV_PROFILES = {"dev", "staging"};
 
-    @BeforeClass
-    public static void before() {
-        loggerContext = (LoggerContext) LogManager.getContext(false);
-        env = new MockEnvironment();
+    private void registerSpringEnvironment(final LoggerContext loggerContext, final Environment env) {
         loggerContext.putObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY, env);
     }
 
+    private void clearSpringEnvironment(final LoggerContext loggerContext) {
+        loggerContext.removeObject(Log4j2SpringBootLoggingSystem.ENVIRONMENT_KEY);
+    }
 
-    @Test
-    public void prodTest() {
-        env.setActiveProfiles("prod");
-        loggerContext.setConfigLocation(new File(CONFIG).toURI());
-        assertNotNull(loggerContext);
+    private void testAppenderOut(final LoggerContext loggerContext, final Class<? extends Appender> clazz, final String patternPrefix) {
         final Appender app = loggerContext.getConfiguration().getAppender("Out");
-        assertNotNull(app);
-        assertTrue(app instanceof ListAppender);
+        assertThat(app).isInstanceOf(clazz);
+        final Layout<?> layout = app.getLayout();
+        assertThat(layout).isInstanceOf(PatternLayout.class);
+        assertThat(((PatternLayout) layout).getConversionPattern()).startsWith(patternPrefix);
     }
 
     @Test
-    public void devTest() {
-        env.setActiveProfiles("dev");
-        loggerContext.setConfigLocation(new File(CONFIG).toURI());
-        assertNotNull(loggerContext);
-        final Appender app = loggerContext.getConfiguration().getAppender("Out");
-        assertNotNull(app);
-        assertTrue(app instanceof ConsoleAppender);
+    @LoggerContextSource(CONFIG)
+    void prodTest(final LoggerContext loggerContext) {
+        testAppenderOut(loggerContext, ListAppender.class, "none:");
+        registerSpringEnvironment(loggerContext, env);
+        try {
+            env.setActiveProfiles("prod");
+            loggerContext.reconfigure();
+            testAppenderOut(loggerContext, ListAppender.class, "prod:");
+        } finally {
+            clearSpringEnvironment(loggerContext);
+        }
+    }
+
+    @Test
+    @LoggerContextSource(CONFIG)
+    void devTest(final LoggerContext loggerContext) {
+        testAppenderOut(loggerContext, ListAppender.class, "none:");
+        registerSpringEnvironment(loggerContext, env);
+        try {
+            for (final String profile : DEV_PROFILES) {
+                env.setActiveProfiles(profile);
+                loggerContext.reconfigure();
+                testAppenderOut(loggerContext, ConsoleAppender.class, "dev:");
+            }
+        } finally {
+            clearSpringEnvironment(loggerContext);
+        }
     }
 }
