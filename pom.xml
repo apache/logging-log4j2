@@ -351,7 +351,6 @@
     <!-- =================================================
          Plugin version properties (in alphabetical order)
          ================================================= -->
-    <asciidoctor-maven-plugin.version>2.2.4</asciidoctor-maven-plugin.version>
     <docker-maven-plugin.version>0.43.4</docker-maven-plugin.version>
     <exam-maven-plugin.version>4.13.5</exam-maven-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
@@ -886,6 +885,21 @@
             <version>${asciidoctor-maven-plugin.version}</version>
           </dependency>
         </dependencies>
+      </plugin>
+
+      <!-- We (sadly) use `maven-site-plugin`, which handles AsciiDoc files.
+           Hence, skip the `asciidoctor-maven-plugin` redundant execution inherited from the parent. -->
+      <plugin>
+        <groupId>org.asciidoctor</groupId>
+        <artifactId>asciidoctor-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>export-asciidoc-to-html</id>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <!-- ███████ ███    ██ ██████         ███████ ██ ████████ ███████
