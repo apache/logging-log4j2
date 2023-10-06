@@ -1676,11 +1676,11 @@
             <phase>pre-site</phase>
           </execution>
           <execution>
-            <id>generate-package-javadoc</id>
+            <id>verify-generate-javadoc</id>
             <goals>
               <goal>javadoc</goal>
             </goals>
-            <phase>package</phase>
+            <phase>verify</phase>
           </execution>
         </executions>
       </plugin>
