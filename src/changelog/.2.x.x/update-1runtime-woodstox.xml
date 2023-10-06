@@ -22,6 +22,6 @@
   <issue id="1591" link="https://github.com/apache/logging-log4j2/issues/1591"/>
   <author id="github:dependabot"/>
   <description format="asciidoc">
-    Runtime dependencies: update Woodstox from version 6.4.0 to version link:https://github.com/FasterXML/woodstox/blob/master/release-notes/VERSION[6.5.1].
+    Update Woodstox to version https://github.com/FasterXML/woodstox/blob/master/release-notes/VERSION[6.5.1]
   </description>
 </entry>

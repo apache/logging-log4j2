@@ -22,6 +22,6 @@
   <issue id="1591" link="https://github.com/apache/logging-log4j2/issues/1591"/>
   <author id="github:dependabot"/>
   <description format="asciidoc">
-    Runtime dependencies: update Apache Cassandra from version 3.11.14 to version link:https://github.com/apache/cassandra/blob/cassandra-3.11/CHANGES.txt[3.11.16].
+    Update Apache Cassandra to version https://github.com/apache/cassandra/blob/cassandra-3.11/CHANGES.txt[3.11.16]
   </description>
 </entry>

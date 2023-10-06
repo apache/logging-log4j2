@@ -22,6 +22,6 @@
   <issue id="1591" link="https://github.com/apache/logging-log4j2/issues/1591"/>
   <author id="github:dependabot"/>
   <description format="asciidoc">
-    Runtime dependencies: update Spring Boot from version 2.7.7 to version link:https://github.com/spring-projects/spring-boot/releases/tag/v2.7.15[2.7.15].
+    Update Spring Boot to version https://github.com/spring-projects/spring-boot/releases/tag/v2.7.15[2.7.15]
   </description>
 </entry>

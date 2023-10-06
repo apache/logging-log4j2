@@ -22,6 +22,6 @@
   <issue id="1591" link="https://github.com/apache/logging-log4j2/issues/1591"/>
   <author id="github:dependabot"/>
   <description format="asciidoc">
-    Runtime dependencies: update Apache Commons Compress from version 1.22 to version link:https://commons.apache.org/proper/commons-compress/changes-report.html#a1.24.0[1.24.0].
+    Update Apache Commons Compress to version https://commons.apache.org/proper/commons-compress/changes-report.html#a1.24.0[1.24.0]
   </description>
 </entry>

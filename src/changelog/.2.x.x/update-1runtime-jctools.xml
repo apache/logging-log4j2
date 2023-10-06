@@ -22,6 +22,6 @@
   <issue id="1591" link="https://github.com/apache/logging-log4j2/issues/1591"/>
   <author id="github:dependabot"/>
   <description format="asciidoc">
-    Runtime dependencies: update JCTools from version 3.3.0 to version link:https://github.com/JCTools/JCTools/blob/master/RELEASE-NOTES.md[4.0.1].
+    Update JCTools to version https://github.com/JCTools/JCTools/blob/master/RELEASE-NOTES.md[4.0.1]
   </description>
 </entry>

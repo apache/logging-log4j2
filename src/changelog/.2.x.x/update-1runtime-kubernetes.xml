@@ -22,6 +22,6 @@
   <issue id="1591" link="https://github.com/apache/logging-log4j2/issues/1591"/>
   <author id="github:dependabot"/>
   <description format="asciidoc">
-    Runtime dependencies: update Kubernetes client from version 5.12.2 to version link:https://github.com/fabric8io/kubernetes-client/releases?q=5.12.4[5.12.4].
+    Update Kubernetes client to version https://github.com/fabric8io/kubernetes-client/releases?q=5.12.4[5.12.4]
   </description>
 </entry>

@@ -22,6 +22,6 @@
   <issue id="1591" link="https://github.com/apache/logging-log4j2/issues/1591"/>
   <author id="github:dependabot"/>
   <description format="asciidoc">
-    Runtime dependencies: update Spring Framework from version 5.3.24 to version link:https://github.com/spring-projects/spring-framework/releases/tag/v5.3.29[5.3.29].
+    Update Spring Framework to version https://github.com/spring-projects/spring-framework/releases/tag/v5.3.29[5.3.29]
   </description>
 </entry>
