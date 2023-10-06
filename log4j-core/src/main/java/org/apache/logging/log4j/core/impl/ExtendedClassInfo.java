@@ -38,7 +38,7 @@ public final class ExtendedClassInfo implements Serializable {
     /**
      * Constructs a new instance.
      *
-     * @param exact Whether the class was obtained via {@link sun.reflect.Reflection#getCallerClass(int)}.
+     * @param exact Whether the class was obtained via {@code sun.reflect.Reflection#getCallerClass(int)}.
      * @param location a classpath element or a jar
      * @param version the string describing a version
      */
