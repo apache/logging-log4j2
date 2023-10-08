@@ -113,7 +113,7 @@ public final class StatusLogger extends AbstractLogger {
      * </p>
      * <ol>
      * <li>If the property {@value Constants#LOG4J2_DEBUG} is {@code "true"}, then use {@link Level#TRACE}, otherwise,</li>
-     * <li>Use {@link Level#WARN}</li>
+     * <li>Use {@link Level#ERROR}</li>
      * </ol>
      * <p>
      * This is now the listener level is set:
@@ -139,7 +139,7 @@ public final class StatusLogger extends AbstractLogger {
             final MessageFactory messageFactory,
             final SimpleLoggerFactory loggerFactory) {
         super(name, messageFactory);
-        final Level loggerLevel = DEBUG_ENABLED ? Level.TRACE : Level.WARN;
+        final Level loggerLevel = DEBUG_ENABLED ? Level.TRACE : Level.ERROR;
         this.logger = loggerFactory.createSimpleLogger("StatusLogger", loggerLevel, messageFactory, System.err);
         this.listenersLevel = Level.toLevel(DEFAULT_STATUS_LEVEL, Level.WARN).intLevel();
     }

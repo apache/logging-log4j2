@@ -471,11 +471,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     protected Level getDefaultStatus() {
         final String statusLevel = PropertiesUtil.getProperties().getStringProperty(
-                Constants.LOG4J_DEFAULT_STATUS_LEVEL, Level.WARN.name());
+                Constants.LOG4J_DEFAULT_STATUS_LEVEL, Level.ERROR.name());
         try {
             return Level.toLevel(statusLevel);
         } catch (final Exception ex) {
-            return Level.WARN;
+            return Level.ERROR;
         }
     }
 
