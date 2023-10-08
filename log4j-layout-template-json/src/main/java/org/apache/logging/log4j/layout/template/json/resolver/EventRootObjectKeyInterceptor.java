@@ -30,7 +30,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  */
 @Namespace(TemplateResolverInterceptor.CATEGORY)
 @Plugin("EventRootObjectKeyInterceptor")
-public final class EventRootObjectKeyInterceptor implements EventResolverInterceptor {
+public class EventRootObjectKeyInterceptor implements EventResolverInterceptor {
 
     private static final EventRootObjectKeyInterceptor INSTANCE =
             new EventRootObjectKeyInterceptor();

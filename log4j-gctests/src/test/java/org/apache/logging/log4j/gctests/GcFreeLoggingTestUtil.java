@@ -50,7 +50,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Utility methods for the GC-free logging tests.
  */
-public class GcFreeLoggingTestUtil {
+public enum GcFreeLoggingTestUtil {
+    ;
 
     public static void executeLogging(final String configurationFile,
                                       final Class<?> testClass) throws Exception {

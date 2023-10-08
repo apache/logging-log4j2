@@ -35,7 +35,7 @@ import org.apache.logging.log4j.jndi.internal.JndiCloser;
  *
  * @since 2.1
  */
-public final class JndiManager extends AbstractManager {
+public class JndiManager extends AbstractManager {
 
     private static final JndiManagerFactory FACTORY = new JndiManagerFactory();
     private static final String JAVA_SCHEME = "java";

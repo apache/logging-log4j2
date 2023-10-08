@@ -1373,68 +1373,6 @@
       <plugins>
 
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>${build-helper-maven-plugin.version}</version>
-        </plugin>
-
-        <!-- used by `log4j-distribution` module which is enabled via `apache-release` profile: -->
-        <plugin>
-          <groupId>net.nicoulaj.maven.plugins</groupId>
-          <artifactId>checksum-maven-plugin</artifactId>
-          <version>${checksum-maven-plugin.version}</version>
-        </plugin>
-
-        <!-- used by `docker` profile in `log4j-layout-template-json-test`: -->
-        <plugin>
-          <groupId>io.fabric8</groupId>
-          <artifactId>docker-maven-plugin</artifactId>
-          <version>${docker-maven-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.ops4j.pax.exam</groupId>
-          <artifactId>exam-maven-plugin</artifactId>
-          <version>${exam-maven-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-changelog-maven-plugin</artifactId>
-          <version>${log4j-tools.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-artifact-plugin</artifactId>
-          <version>${maven-artifact-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>${maven-dependency-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-scm-plugin</artifactId>
-          <version>${maven-scm-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>${maven-source-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>net.sourceforge.maven-taglib</groupId>
-          <artifactId>maven-taglib-plugin</artifactId>
-          <version>${maven-taglib-plugin.version}</version>
-        </plugin>
-
-        <plugin>
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
           <version>${spotbugs-maven-plugin.version}</version>

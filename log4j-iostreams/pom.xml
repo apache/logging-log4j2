@@ -75,4 +75,23 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-baseline-maven-plugin</artifactId>
+        <configuration>
+          <!--
+            ~ This package is documented as internal and was removed
+            ~ from the public OSGi exports.
+            -->
+          <diffpackages>
+            <diffpackage>!org.apache.logging.log4j.io.internal</diffpackage>
+            <diffpackage>*</diffpackage>
+          </diffpackages>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

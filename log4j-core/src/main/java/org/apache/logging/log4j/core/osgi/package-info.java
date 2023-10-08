@@ -19,6 +19,8 @@
  * Collection of OSGi-specific classes for bundles.
  */
 @Export
+@Version("2.20.1")
 package org.apache.logging.log4j.core.osgi;
 
 import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

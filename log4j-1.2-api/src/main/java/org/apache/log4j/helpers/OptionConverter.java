@@ -42,7 +42,7 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 /**
  * A convenience class to convert property values to specific types.
  */
-public final class OptionConverter {
+public class OptionConverter {
 
     private static class CharMap {
         final char key;

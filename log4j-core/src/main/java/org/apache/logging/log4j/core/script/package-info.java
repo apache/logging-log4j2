@@ -14,8 +14,11 @@
  * See the license for the specific language governing permissions and
  * limitations under the license.
  */
+/**
+ * Log4j 2 Script support.
+ */
 @Export
-@Version("1.0.0")
+@Version("2.20.1")
 package org.apache.logging.log4j.core.script;
 
 import org.osgi.annotation.bundle.Export;

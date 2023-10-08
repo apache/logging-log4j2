@@ -41,7 +41,7 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 @Plugin("MessagePatternConverter")
 @ConverterKeys({"m", "msg", "message"})
 @PerformanceSensitive("allocation")
-public abstract class MessagePatternConverter extends LogEventPatternConverter {
+public class MessagePatternConverter extends LogEventPatternConverter {
 
     private static final String LOOKUPS = "lookups";
     private static final String NOLOOKUPS = "nolookups";

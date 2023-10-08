@@ -26,7 +26,7 @@ import org.apache.logging.log4j.plugins.Plugin;
  */
 @Configurable(elementType = Arbiter.ELEMENT_TYPE, printObject = true, deferChildren = true)
 @Plugin
-public final class SystemPropertyArbiter implements Arbiter {
+public class SystemPropertyArbiter implements Arbiter {
 
     private final String propertyName;
     private final String propertyValue;

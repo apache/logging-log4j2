@@ -32,7 +32,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  */
 @Configurable(elementType = BlockingQueueFactory.ELEMENT_TYPE, printObject = true)
 @Plugin("DisruptorBlockingQueue")
-public final class DisruptorBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
+public class DisruptorBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
 
     private final SpinPolicy spinPolicy;
 

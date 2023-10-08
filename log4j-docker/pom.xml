@@ -72,6 +72,22 @@
 
   <build>
     <plugins>
+
+      <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-baseline-maven-plugin</artifactId>
+        <configuration>
+          <!--
+            ~ This packages is only used internally and was removed
+            ~ from the public OSGi exports.
+            -->
+          <diffpackages>
+            <diffpackage>!org.apache.logging.log4j.docker.model</diffpackage>
+            <diffpackage>*</diffpackage>
+          </diffpackages>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

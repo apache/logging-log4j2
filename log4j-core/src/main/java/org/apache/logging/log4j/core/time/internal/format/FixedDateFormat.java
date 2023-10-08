@@ -25,6 +25,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.core.time.Instant;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Custom time formatter that trades flexibility for performance. This formatter only supports the date patterns defined
@@ -34,6 +35,7 @@ import org.apache.logging.log4j.core.time.Instant;
  * /log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/ThreadsafeDateFormatBenchmark.java
  * </p>
  */
+@ProviderType
 public class FixedDateFormat {
 
     /**
@@ -513,6 +515,15 @@ public class FixedDateFormat {
      */
     public String getFormat() {
         return fixedFormat.getPattern();
+    }
+
+    /**
+     * Returns the length of the resulting formatted date and time strings.
+     *
+     * @return the length of the resulting formatted date and time strings
+     */
+    public final int getLength() {
+        return length;
     }
 
     /**

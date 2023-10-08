@@ -34,7 +34,7 @@ import org.jctools.queues.MpscArrayQueue;
  */
 @Configurable(elementType = BlockingQueueFactory.ELEMENT_TYPE, printObject = true)
 @Plugin("JCToolsBlockingQueue")
-public final class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
+public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
 
     private final WaitStrategy waitStrategy;
 

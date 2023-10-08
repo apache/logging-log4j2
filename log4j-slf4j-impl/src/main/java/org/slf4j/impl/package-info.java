@@ -18,6 +18,8 @@
  * Log4j 2.0 SLF4J Binding.
  */
 @Export
+@Version("2.20.1")
 package org.slf4j.impl;
 
 import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

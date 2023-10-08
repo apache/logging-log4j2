@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  *
  * @see #parse(CharSequence)
  */
-public final class Duration implements Comparable<Duration> {
+public class Duration implements Comparable<Duration> {
 
     /**
      * Constant for a duration of zero.

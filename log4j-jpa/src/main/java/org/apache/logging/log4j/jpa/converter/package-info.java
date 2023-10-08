@@ -30,7 +30,9 @@
 //CHECKSTYLE:ON
 @Export
 @Open("org.apache.logging.log4j.core")
+@Version("1.0.0")
 package org.apache.logging.log4j.jpa.converter;
 
 import aQute.bnd.annotation.jpms.Open;
 import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;
