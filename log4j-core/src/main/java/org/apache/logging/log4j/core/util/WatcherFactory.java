@@ -34,7 +34,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Creates Watchers of various types.
  */
-public final class WatcherFactory {
+public class WatcherFactory {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final PluginManager pluginManager = new PluginManager(Watcher.CATEGORY);

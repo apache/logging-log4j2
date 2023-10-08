@@ -27,7 +27,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
  */
 @Plugin(name = "ClassArbiter", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
         printObject = true, deferChildren = true)
-public final class ClassArbiter implements Arbiter {
+public class ClassArbiter implements Arbiter {
 
     private final String className;
 

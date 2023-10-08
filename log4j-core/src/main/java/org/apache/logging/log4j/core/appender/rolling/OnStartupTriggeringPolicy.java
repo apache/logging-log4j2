@@ -30,7 +30,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * Triggers a rollover on every restart, but only if the file size is greater than zero.
  */
 @Plugin(name = "OnStartupTriggeringPolicy", category = Core.CATEGORY_NAME, printObject = true)
-public final class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
+public class OnStartupTriggeringPolicy extends AbstractTriggeringPolicy {
 
     private static final long JVM_START_TIME = initStartTime();
 

@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Requi
  *
  */
 @Plugin(name = "Block", category = "Core", elementType = Appender.ELEMENT_TYPE, printObject = true)
-public final class BlockingAppender extends AbstractAppender {
+public class BlockingAppender extends AbstractAppender {
     public volatile boolean running = true;
 
     private BlockingAppender(final String name) {

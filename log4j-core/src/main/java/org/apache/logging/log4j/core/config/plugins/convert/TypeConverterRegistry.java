@@ -37,7 +37,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * @since 2.1
  */
-public final class TypeConverterRegistry {
+public class TypeConverterRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static volatile TypeConverterRegistry INSTANCE;

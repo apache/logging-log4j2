@@ -45,7 +45,7 @@ import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 /**
  * Registry singleton for PluginType maps partitioned by source type and then by category names.
  */
-public final class PluginRegistry {
+public class PluginRegistry {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 

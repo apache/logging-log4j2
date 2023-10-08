@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.config.plugins.validation.constraints.Valid
  * @since 2.8
  */
 @Plugin(name = "SocketAddress", category = Node.CATEGORY, printObject = true)
-public final class SocketAddress {
+public class SocketAddress {
 
     /**
      * Creates a SocketAddress corresponding to {@code localhost:0}.

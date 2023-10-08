@@ -32,6 +32,8 @@
  * @see <a href="http://logging.apache.org/log4j/2.x/manual/api.html">Log4j 2 API manual</a>
  */
 @Export
+@Version("2.20.1")
 package org.apache.logging.log4j;
 
 import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

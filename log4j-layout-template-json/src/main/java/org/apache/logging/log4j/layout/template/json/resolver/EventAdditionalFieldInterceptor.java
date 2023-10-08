@@ -28,7 +28,7 @@ import org.apache.logging.log4j.layout.template.json.util.JsonReader;
  * additional fields} after event template read.
  */
 @Plugin(name = "EventAdditionalFieldInterceptor", category = TemplateResolverInterceptor.CATEGORY)
-public final class EventAdditionalFieldInterceptor implements EventResolverInterceptor {
+public class EventAdditionalFieldInterceptor implements EventResolverInterceptor {
 
     private static final EventAdditionalFieldInterceptor INSTANCE =
             new EventAdditionalFieldInterceptor();

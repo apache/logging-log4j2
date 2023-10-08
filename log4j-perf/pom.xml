@@ -33,6 +33,7 @@
     <docLabel>Apache Log4J Performance Tests</docLabel>
     <projectDir>/log4j-perf</projectDir>
     <uberjar.name>benchmarks</uberjar.name>
+    <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.test.skip>true</maven.test.skip>
     <module.name>org.apache.logging.log4j.perf</module.name>
     <maven.compiler.release>9</maven.compiler.release>

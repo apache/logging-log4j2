@@ -21,10 +21,12 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
- * A {@link StatusListener}
+ * A {@link StatusListener} that collects messages for further inspection.
  */
+@ProviderType
 public interface ListStatusListener extends StatusListener {
 
     void clear();

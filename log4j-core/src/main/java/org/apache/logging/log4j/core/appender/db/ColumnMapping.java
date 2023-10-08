@@ -43,7 +43,7 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
  * @since 2.8
  */
 @Plugin(name = "ColumnMapping", category = Core.CATEGORY_NAME, printObject = true)
-public final class ColumnMapping {
+public class ColumnMapping {
 
     /**
      * The empty array.

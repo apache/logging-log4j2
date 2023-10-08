@@ -23,6 +23,7 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.time.Instant;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Custom time formatter that trades flexibility for performance. This formatter only supports the date patterns defined
@@ -32,6 +33,7 @@ import org.apache.logging.log4j.core.time.Instant;
  * /log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/ThreadsafeDateFormatBenchmark.java
  * </p>
  */
+@ProviderType
 public class FixedDateFormat {
 
     /**
@@ -515,7 +517,7 @@ public class FixedDateFormat {
      *
      * @return the length of the resulting formatted date and time strings
      */
-    public int getLength() {
+    public final int getLength() {
         return length;
     }
 

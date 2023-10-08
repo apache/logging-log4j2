@@ -20,6 +20,8 @@
  * Providers are able to be loaded at runtime.
  */
 @Export
+@Version("2.20.1")
 package org.apache.logging.log4j.simple;
 
 import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

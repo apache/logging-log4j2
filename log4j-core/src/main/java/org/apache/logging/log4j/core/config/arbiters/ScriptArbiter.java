@@ -36,7 +36,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Plugin(name = "ScriptArbiter", category = Node.CATEGORY, elementType = Arbiter.ELEMENT_TYPE,
         deferChildren = true, printObject = true)
-public final class ScriptArbiter implements Arbiter {
+public class ScriptArbiter implements Arbiter {
 
     private final AbstractScript script;
     private final Configuration configuration;

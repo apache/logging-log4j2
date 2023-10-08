@@ -49,7 +49,7 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
     /**
      * Custom ScriptPatternSelector builder. Use the {@link #newBuilder() builder factory method} to create this.
      */
-    public static final class Builder implements org.apache.logging.log4j.core.util.Builder<ScriptPatternSelector> {
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ScriptPatternSelector> {
 
         @PluginElement("Script")
         private AbstractScript script;
