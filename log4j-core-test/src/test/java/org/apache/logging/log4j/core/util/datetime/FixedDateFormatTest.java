@@ -17,25 +17,38 @@
 package org.apache.logging.log4j.core.util.datetime;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junitpioneer.jupiter.DefaultLocale;
 
 import static org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedFormat.DEFAULT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests {@link FixedDateFormat}.
  */
+@ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class FixedDateFormatTest {
 
     private boolean containsNanos(final FixedFormat fixedFormat) {
@@ -43,21 +56,21 @@ public class FixedDateFormatTest {
         return pattern.endsWith("n") || pattern.matches(".+n+X*") || pattern.matches(".+n+Z*");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorDisallowsNullFormat() {
-        new FixedDateFormat(null, TimeZone.getDefault());
+        assertThrows(NullPointerException.class, () -> new FixedDateFormat(null, TimeZone.getDefault()));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testConstructorDisallowsNullTimeZone() {
-        new FixedDateFormat(FixedFormat.ABSOLUTE, null);
+        assertThrows(NullPointerException.class, () ->new FixedDateFormat(FixedFormat.ABSOLUTE, null));
     }
 
     @Test
     public void testCreateIfSupported_customTimeZoneIfOptionsArrayWithTimeZoneElement() {
-        final FixedDateFormat fmt = FixedDateFormat.createIfSupported(DEFAULT.getPattern(), "+08:00", "");
+        final FixedDateFormat fmt = FixedDateFormat.createIfSupported(DEFAULT.getPattern(), "GMT+08:00", "");
         assertEquals(DEFAULT.getPattern(), fmt.getFormat());
-        assertEquals(TimeZone.getTimeZone("+08:00"), fmt.getTimeZone());
+        assertEquals(TimeZone.getTimeZone("GMT+08:00"), fmt.getTimeZone());
     }
 
     @Test
@@ -89,29 +102,29 @@ public class FixedDateFormatTest {
     @Test
     public void testCreateIfSupported_nonNullIfNameMatches() {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
-            final String[] options = {format.name()};
-            assertNotNull(format.name(), FixedDateFormat.createIfSupported(options));
+            final String[] options = { format.name() };
+            assertNotNull(FixedDateFormat.createIfSupported(options), format.name());
         }
     }
 
     @Test
     public void testCreateIfSupported_nonNullIfPatternMatches() {
         for (final FixedDateFormat.FixedFormat format : FixedDateFormat.FixedFormat.values()) {
-            final String[] options = {format.getPattern()};
-            assertNotNull(format.name(), FixedDateFormat.createIfSupported(options));
+            final String[] options = { format.getPattern() };
+            assertNotNull(FixedDateFormat.createIfSupported(options), format.name());
         }
     }
 
     @Test
     public void testCreateIfSupported_nullIfNameDoesNotMatch() {
         final String[] options = {"DEFAULT3"};
-        assertNull("DEFAULT3", FixedDateFormat.createIfSupported(options));
+        assertNull(FixedDateFormat.createIfSupported(options), "DEFAULT3");
     }
 
     @Test
     public void testCreateIfSupported_nullIfPatternDoesNotMatch() {
         final String[] options = {"y M d H m s"};
-        assertNull("y M d H m s", FixedDateFormat.createIfSupported(options));
+        assertNull(FixedDateFormat.createIfSupported(options), "y M d H m s");
     }
 
     @Test
@@ -168,13 +181,13 @@ public class FixedDateFormatTest {
                 { "2017-03-13 06:00:00,000", "2017-03-13 11:00:00,000" }, //
         };
 
-        final TimeZone tz = TimeZone.getTimeZone("US/Central");
         for (int i = 0; i < 36; i++) {
             final Date date = calendar.getTime();
-            assertEquals("SimpleDateFormat TZ=US Central", expectedDstAndNoDst[i][0], usCentral.format(date));
-            assertEquals("SimpleDateFormat TZ=UTC", expectedDstAndNoDst[i][1], utc.format(date));
-            assertEquals("FixedDateFormat TZ=US Central", expectedDstAndNoDst[i][0], fixedUsCentral.format(date.getTime()));
-            assertEquals("FixedDateFormat TZ=UTC", expectedDstAndNoDst[i][1], fixedUtc.format(date.getTime()));
+            assertEquals(expectedDstAndNoDst[i][0], usCentral.format(date), "SimpleDateFormat TZ=US Central");
+            assertEquals(expectedDstAndNoDst[i][1], utc.format(date), "SimpleDateFormat TZ=UTC");
+            assertEquals(expectedDstAndNoDst[i][0], fixedUsCentral.format(date.getTime()),
+                    "FixedDateFormat TZ=US Central");
+            assertEquals(expectedDstAndNoDst[i][1], fixedUtc.format(date.getTime()), "FixedDateFormat TZ=UTC");
             calendar.add(Calendar.HOUR_OF_DAY, 1);
         }
     }
@@ -233,14 +246,14 @@ public class FixedDateFormatTest {
                 { "2017-11-06 05:00:00,000", "2017-11-06 11:00:00,000" }, //
         };
 
-        final TimeZone tz = TimeZone.getTimeZone("US/Central");
         for (int i = 0; i < 36; i++) {
             final Date date = calendar.getTime();
             //System.out.println(usCentral.format(date) + ", Fixed: " + fixedUsCentral.format(date.getTime()) + ", utc: " + utc.format(date));
-            assertEquals("SimpleDateFormat TZ=US Central", expectedDstAndNoDst[i][0], usCentral.format(date));
-            assertEquals("SimpleDateFormat TZ=UTC", expectedDstAndNoDst[i][1], utc.format(date));
-            assertEquals("FixedDateFormat TZ=US Central", expectedDstAndNoDst[i][0], fixedUsCentral.format(date.getTime()));
-            assertEquals("FixedDateFormat TZ=UTC", expectedDstAndNoDst[i][1], fixedUtc.format(date.getTime()));
+            assertEquals(expectedDstAndNoDst[i][0], usCentral.format(date), "SimpleDateFormat TZ=US Central");
+            assertEquals(expectedDstAndNoDst[i][1], utc.format(date), "SimpleDateFormat TZ=UTC");
+            assertEquals(expectedDstAndNoDst[i][0], fixedUsCentral.format(date.getTime()),
+                    "FixedDateFormat TZ=US Central");
+            assertEquals(expectedDstAndNoDst[i][1], fixedUtc.format(date.getTime()), "FixedDateFormat TZ=US Central");
             calendar.add(Calendar.HOUR_OF_DAY, 1);
         }
     }
@@ -298,7 +311,7 @@ public class FixedDateFormatTest {
             for (long time = start; time < end; time += 12345) {
                 final String actual = customTF.format(time);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "(" + pattern + ")" + "/" + time, expected, actual);
+                assertEquals(expected, actual, format + "(" + pattern + ")" + "/" + time);
             }
         }
     }
@@ -318,7 +331,7 @@ public class FixedDateFormatTest {
             for (long time = end; time > start; time -= 12345) {
                 final String actual = customTF.format(time);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "(" + pattern + ")" + "/" + time, expected, actual);
+                assertEquals(expected, actual, format + "(" + pattern + ")" + "/" + time);
             }
         }
     }
@@ -346,7 +359,7 @@ public class FixedDateFormatTest {
             for (long time = end; time > start; time -= 12345) {
                 final String actual = customTF.format(time);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "(" + pattern + ")" + "/" + time, expected, actual);
+                assertEquals(expected, actual, format + "(" + pattern + ")" + "/" + time);
             }
         }
     }
@@ -370,7 +383,7 @@ public class FixedDateFormatTest {
                 final int length = customTF.format(time, buffer, 23);
                 final String actual = new String(buffer, 23, length);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "(" + pattern + ")" + "/" + time, expected, actual);
+                assertEquals(expected, actual, format + "(" + pattern + ")" + "/" + time);
             }
         }
     }
@@ -392,7 +405,7 @@ public class FixedDateFormatTest {
                 final int length = customTF.format(time, buffer, 23);
                 final String actual = new String(buffer, 23, length);
                 final String expected = simpleDF.format(new Date(time));
-                assertEquals(format + "(" + pattern + ")" + "/" + time, expected, actual);
+                assertEquals(expected, actual, format + "(" + pattern + ")" + "/" + time);
             }
         }
     }
@@ -401,5 +414,21 @@ public class FixedDateFormatTest {
     public void testGetFormatReturnsConstructorFixedFormatPattern() {
         final FixedDateFormat format = new FixedDateFormat(FixedDateFormat.FixedFormat.ABSOLUTE, TimeZone.getDefault());
         assertSame(FixedDateFormat.FixedFormat.ABSOLUTE.getPattern(), format.getFormat());
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.apache.logging.log4j.core.util.datetime.FixedDateFormat$FixedFormat#values")
+    @DefaultLocale(language = "en")
+    public void testFixedFormatLength(FixedFormat format) {
+        LocalDate date = LocalDate.of(2023, 4, 8);
+        LocalTime time = LocalTime.of(19, 5, 14);
+        ZoneId zone = ZoneId.of("Europe/Warsaw");
+        long epochMillis = ZonedDateTime.of(date, time, zone).toInstant().toEpochMilli();
+        MutableInstant instant = new MutableInstant();
+        instant.initFromEpochMilli(epochMillis, 123_456);
+        FixedDateFormat formatter = FixedDateFormat.create(format);
+
+        String formatted = formatter.formatInstant(instant);
+        assertEquals(formatter.getLength(), formatted.length(), formatted);
     }
 }

@@ -24,7 +24,7 @@
   <Loggers>
     <Logger name="TestJavaScriptFilter" level="trace" additivity="false">
       <AppenderRef ref="List">
-        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+        <ScriptFilter onMatch="ACCEPT" onMismatch="DENY">
           <Script name="JavascriptFilter" language="JavaScript"><![CDATA[
             var result = false;
             if (logEvent.getMarker() != null && logEvent.getMarker().isInstanceOf("FLOW")) {
@@ -40,7 +40,7 @@
     </Logger>
     <Logger name="TestGroovyFilter" level="trace" additivity="false">
       <AppenderRef ref="List">
-        <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+        <ScriptFilter onMatch="ACCEPT" onMismatch="DENY">
           <Script name="GroovyFilter" language="groovy"><![CDATA[
             logEvent.marker?.isInstanceOf('FLOW') || logEvent.contextMap.containsKey('UserId')
             ]]>

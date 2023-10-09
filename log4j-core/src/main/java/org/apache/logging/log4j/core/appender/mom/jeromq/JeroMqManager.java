@@ -16,7 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.mom.jeromq;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +29,12 @@ import org.apache.logging.log4j.core.util.Cancellable;
 import org.apache.logging.log4j.core.util.ShutdownCallbackRegistry;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.zeromq.SocketType;
+import org.zeromq.ZContext;
 import org.zeromq.ZMQ;
+import org.zeromq.ZMQ.Socket;
+import org.zeromq.ZMonitor;
+import org.zeromq.ZMonitor.Event;
+import org.zeromq.ZMonitor.ZEvent;
 
 /**
  * Manager for publishing messages via JeroMq.
@@ -47,7 +54,7 @@ public final class JeroMqManager extends AbstractManager {
     public static final String SYS_PROPERTY_IO_THREADS = "log4j.jeromq.ioThreads";
 
     private static final JeroMqManagerFactory FACTORY = new JeroMqManagerFactory();
-    private static final ZMQ.Context CONTEXT;
+    private static final ZContext CONTEXT;
 
     // Retained to avoid garbage collection of the hook
     private static final Cancellable SHUTDOWN_HOOK;
@@ -57,7 +64,7 @@ public final class JeroMqManager extends AbstractManager {
 
         final int ioThreads = PropertiesUtil.getProperties().getIntegerProperty(SYS_PROPERTY_IO_THREADS, 1);
         LOGGER.trace("JeroMqManager creating ZMQ context with ioThreads = {}", ioThreads);
-        CONTEXT = ZMQ.context(ioThreads);
+        CONTEXT = new ZContext(ioThreads);
 
         final boolean enableShutdownHook = PropertiesUtil.getProperties().getBooleanProperty(
             SYS_PROPERTY_ENABLE_SHUTDOWN_HOOK, true);
@@ -69,10 +76,14 @@ public final class JeroMqManager extends AbstractManager {
     }
 
     private final ZMQ.Socket publisher;
+    private final List<String> endpoints;
 
     private JeroMqManager(final String name, final JeroMqConfiguration config) {
         super(null, name);
-        publisher = CONTEXT.socket(SocketType.XPUB);
+        publisher = CONTEXT.createSocket(SocketType.PUB);
+        final ZMonitor monitor = new ZMonitor(CONTEXT, publisher);
+        monitor.add(Event.LISTENING);
+        monitor.start();
         publisher.setAffinity(config.affinity);
         publisher.setBacklog(config.backlog);
         publisher.setDelayAttachOnConnect(config.delayAttachOnConnect);
@@ -95,9 +106,16 @@ public final class JeroMqManager extends AbstractManager {
         publisher.setTCPKeepAliveIdle(config.tcpKeepAliveIdle);
         publisher.setTCPKeepAliveInterval(config.tcpKeepAliveInterval);
         publisher.setXpubVerbose(config.xpubVerbose);
+        final List<String> endpoints = new ArrayList<String>(config.endpoints.size());
         for (final String endpoint : config.endpoints) {
             publisher.bind(endpoint);
+            // Retrieve the standardized list of endpoints,
+            // this also converts port 0 to an ephemeral port.
+            final ZEvent event = monitor.nextEvent();
+            endpoints.add(event.address);
         }
+        this.endpoints = Collections.unmodifiableList(endpoints);
+        monitor.destroy();
         LOGGER.debug("Created JeroMqManager with {}", config);
     }
 
@@ -105,21 +123,19 @@ public final class JeroMqManager extends AbstractManager {
         return publisher.send(data);
     }
 
-    // not public, handy for testing
-    byte[] recv(final int timeoutMs) {
-        final int oldTimeoutMs = publisher.getReceiveTimeOut();
-        try {
-            publisher.setReceiveTimeOut(timeoutMs);
-            return publisher.recv();
-        } finally {
-            publisher.setReceiveTimeOut(oldTimeoutMs);
-        }
-    }
-
     @Override
     protected boolean releaseSub(final long timeout, final TimeUnit timeUnit) {
         publisher.close();
         return true;
+    }
+
+    // not public, handy for testing
+    Socket getSocket() {
+        return publisher;
+    }
+
+    public List<String> getEndpoints() {
+        return endpoints;
     }
 
     public static JeroMqManager getJeroMqManager(final String name, final long affinity, final long backlog,
@@ -140,6 +156,10 @@ public final class JeroMqManager extends AbstractManager {
     }
 
     public static ZMQ.Context getContext() {
+        return CONTEXT.getContext();
+    }
+
+    public static ZContext getZContext() {
         return CONTEXT;
     }
 

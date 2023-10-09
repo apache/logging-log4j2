@@ -26,22 +26,12 @@
       <directory>${project.build.outputDirectory}</directory>
       <outputDirectory>/classes/META-INF/versions/9</outputDirectory>
       <includes>
-        <include>**/*.class</include>
-      </includes>
-      <excludes>
-        <exclude>module-info.class</exclude>
-        <exclude>**/Dummy.class</exclude>
-        <exclude>**/util/Clock.class</exclude>
-        <exclude>**/time/Instant.class</exclude>
-        <exclude>**/time/MutableInstant.class</exclude>
-        <exclude>**/time/PreciseClock.class</exclude>
-      </excludes>
-    </fileSet>
-    <fileSet>
-      <directory>${project.build.outputDirectory}</directory>
-      <outputDirectory>/classes</outputDirectory>
-      <includes>
-        <include>module-info.class</include>
+        <include>org/apache/logging/log4j/core/impl/ExtendedStackTraceElement.class</include>
+        <include>org/apache/logging/log4j/core/jackson/ExtendedStackTraceElementMixIn.class</include>
+        <include>org/apache/logging/log4j/core/jackson/Log4jStackTraceElementDeserializer.class</include>
+        <include>org/apache/logging/log4j/core/jackson/StackTraceElementMixIn.class</include>
+        <include>org/apache/logging/log4j/core/util/internal/UnsafeUtil*.class</include>
+        <include>org/apache/logging/log4j/core/util/SystemClock.class</include>
       </includes>
     </fileSet>
   </fileSets>

@@ -17,4 +17,7 @@
 /**
  * Configuration using Properties files.
  */
+@Export
 package org.apache.logging.log4j.core.config.properties;
+
+import org.osgi.annotation.bundle.Export;

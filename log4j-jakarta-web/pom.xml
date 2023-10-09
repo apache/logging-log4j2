@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.20.1-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>log4j-jakarta-web</artifactId>
@@ -32,7 +32,12 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-jakarta-web</projectDir>
-    <module.name>org.apache.logging.log4j.web</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.logging.log4j.web</bnd-module-name>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
 
   <dependencies>
@@ -81,20 +86,4 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <!-- we require 5.0 minimum -->
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Import-Package>jakarta.servlet;version="[5.0,4)",*</Import-Package>
-            <Export-Package>org.apache.logging.log4j.web</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

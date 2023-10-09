@@ -15,25 +15,28 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration name="ConfigTest" status="ERROR" monitorInterval="5">
+<Configuration name="ConfigTest" status="OFF">
   <Appenders>
-
-    <SpringProfile name="dev | staging">
-      <Console name="Out">
-        <PatternLayout pattern="%m%n"/>
-      </Console>
-    </SpringProfile>
-    <SpringProfile name="prod">
-      <List name="Out">
-        <PatternLayout pattern="%m"/>
-      </List>
-    </SpringProfile>
-
+    <Select>
+      <SpringProfile name="dev | staging">
+        <Console name="Out">
+          <PatternLayout pattern="dev: %m"/>
+        </Console>
+      </SpringProfile>
+      <SpringProfile name="prod">
+        <List name="Out">
+          <PatternLayout pattern="prod: %m"/>
+        </List>
+      </SpringProfile>
+      <DefaultArbiter>
+        <List name="Out">
+          <PatternLayout pattern="none: %m"/>
+        </List>
+      </DefaultArbiter>
+    </Select>
   </Appenders>
   <Loggers>
-    <Logger name="org.apache.logging.log4j.core.springtest" level="trace" additivity="false">
-      <AppenderRef ref="Out"/>
-    </Logger>
+    <Logger name="org.apache.logging.log4j.core.springtest" level="trace"/>
     <Root level="error">
       <AppenderRef ref="Out"/>
     </Root>

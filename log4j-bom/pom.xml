@@ -20,11 +20,11 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>9</version>
+    <version>10.1.1</version>
   </parent>
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-bom</artifactId>
-  <version>2.20.1-SNAPSHOT</version>
+  <version>${revision}</version>
   <packaging>pom</packaging>
   <name>Apache Log4j BOM</name>
   <description>Apache Log4j Bill of Materials</description>
@@ -37,6 +37,9 @@
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <project.build.outputTimestamp>1676697577</project.build.outputTimestamp>
+    <!-- JDK version of the main Maven process (used in ASF parent POM) -->
+    <minimalJavaBuildVersion>[11, )</minimalJavaBuildVersion>
+    <revision>2.21.0-SNAPSHOT</revision>
   </properties>
 
   <dependencyManagement>
@@ -233,11 +236,6 @@
   </dependencyManagement>
   <build>
     <plugins>
-      <!-- RAT report -->
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>

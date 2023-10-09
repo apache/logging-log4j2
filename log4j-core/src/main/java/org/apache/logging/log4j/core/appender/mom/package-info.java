@@ -20,4 +20,7 @@
  *
  * @since 2.1
  */
+@Export
 package org.apache.logging.log4j.core.appender.mom;
+
+import org.osgi.annotation.bundle.Export;

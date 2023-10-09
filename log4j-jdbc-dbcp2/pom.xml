@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.20.1-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>log4j-jdbc-dbcp2</artifactId>
@@ -30,7 +30,16 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j JDBC DBCP 2 Documentation</docLabel>
     <projectDir>/log4j-jdbc-dbcp2</projectDir>
-    <module.name>org.apache.logging.log4j.jdbc.dbcp2</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.logging.log4j.core.appender.db.jdbc</bnd-module-name>
+    <bnd-extra-module-options>
+      <!-- Module names -->
+      org.apache.commons.dbcp2;substitute="commons-dbcp2"
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
 
   <dependencies>
@@ -70,18 +79,4 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>*</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

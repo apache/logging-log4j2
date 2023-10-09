@@ -163,6 +163,7 @@ public class FixedDateFormat {
         private final int millisSeparatorLength;
         private final int secondFractionDigits;
         private final FixedTimeZoneFormat fixedTimeZoneFormat;
+        private final int extraTimeZoneFormatLength;
 
         FixedFormat(final String pattern, final String datePattern, final int escapeCount, final char timeSeparator,
                     final int timeSepLength, final char millisSeparator, final int millisSepLength,
@@ -176,6 +177,12 @@ public class FixedDateFormat {
             this.escapeCount = escapeCount;
             this.secondFractionDigits = secondFractionDigits;
             this.fixedTimeZoneFormat = timeZoneFormat;
+            if (timeZoneFormat != null) {
+                // The difference between the length of the formatted timezone and the length of the format specifier.
+                this.extraTimeZoneFormatLength = timeZoneFormat.length - timeZoneFormat.ordinal() - 1;
+            } else {
+                this.extraTimeZoneFormatLength = 0;
+            }
         }
 
         /**
@@ -249,12 +256,12 @@ public class FixedDateFormat {
         }
 
         /**
-         * Returns the length of the resulting formatted date and time strings.
+         * Returns the length of the resulting formatted date and time strings in the ROOT locale.
          *
          * @return the length of the resulting formatted date and time strings
          */
         public int getLength() {
-            return pattern.length() - escapeCount;
+            return pattern.length() - escapeCount + extraTimeZoneFormatLength;
         }
 
         /**
@@ -501,6 +508,15 @@ public class FixedDateFormat {
      */
     public String getFormat() {
         return fixedFormat.getPattern();
+    }
+
+    /**
+     * Returns the length of the resulting formatted date and time strings.
+     *
+     * @return the length of the resulting formatted date and time strings
+     */
+    public int getLength() {
+        return length;
     }
 
     /**

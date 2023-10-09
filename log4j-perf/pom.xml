@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.20.1-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>log4j-perf</artifactId>
@@ -34,10 +34,10 @@
     <docLabel>Apache Log4J Performance Tests</docLabel>
     <projectDir>/log4j-perf</projectDir>
     <uberjar.name>benchmarks</uberjar.name>
-    <maven.deploy.skip>true</maven.deploy.skip>
-    <maven.install.skip>true</maven.install.skip>
     <maven.test.skip>true</maven.test.skip>
     <module.name>org.apache.logging.log4j.perf</module.name>
+    <maven.compiler.release>9</maven.compiler.release>
+    <surefire.jdkToolchain>[9, )</surefire.jdkToolchain>
   </properties>
 
   <dependencies>
@@ -141,24 +141,7 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>org.apache.logging.log4j.perf.jmh*</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerVersion>9</compilerVersion>
-          <source>9</source>
-          <target>9</target>
-        </configuration>
-      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -208,24 +191,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-toolchains-plugin</artifactId>
-        <configuration>
-          <toolchains>
-            <jdk>
-              <version>[11, )</version>
-            </jdk>
-          </toolchains>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>toolchain</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+
     </plugins>
   </build>
 </project>

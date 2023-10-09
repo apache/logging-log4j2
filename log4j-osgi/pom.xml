@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.20.1-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
   <artifactId>log4j-osgi</artifactId>
   <packaging>jar</packaging>
@@ -31,6 +31,7 @@
     <docLabel>OSGi Documentation</docLabel>
     <projectDir>/osgi</projectDir>
     <module.name>org.apache.logging.log4j.osgi</module.name>
+    <skipTests>true</skipTests>
   </properties>
   <dependencies>
     <dependency>
@@ -140,27 +141,6 @@
               <goal>generate-link-files</goal>
             </goals>
             <phase>generate-test-resources</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>org.apache.logging.log4j.osgi</Bundle-SymbolicName>
-            <Import-Package>*</Import-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>

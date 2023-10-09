@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.20.1-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
   <artifactId>log4j-distribution</artifactId>
   <packaging>pom</packaging>
@@ -195,17 +195,6 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-jdbc-dbcp2</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jmx-gui</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-jmx-gui</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>

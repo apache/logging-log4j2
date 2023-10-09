@@ -891,7 +891,7 @@ public class Log4jLogEvent implements LogEvent {
         result = 31 * result + (contextStack != null ? contextStack.hashCode() : 0);
         result = 31 * result + (int) (threadId ^ (threadId >>> 32));
         result = 31 * result + (threadName != null ? threadName.hashCode() : 0);
-        result = 31 * result + (threadPriority ^ (threadPriority >>> 32));
+        result = 31 * result + threadPriority;
         result = 31 * result + (source != null ? source.hashCode() : 0);
         result = 31 * result + (includeLocation ? 1 : 0);
         result = 31 * result + (endOfBatch ? 1 : 0);

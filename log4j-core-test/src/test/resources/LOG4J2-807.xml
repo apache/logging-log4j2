@@ -24,8 +24,8 @@
     </RandomAccessFile>
   </Appenders>
   <Loggers>
-    <asyncRoot level="debug">
+    <AsyncRoot level="debug">
       <AppenderRef ref="FILE_APPENDER" />
-    </asyncRoot>
+    </AsyncRoot>
   </Loggers>
 </Configuration>

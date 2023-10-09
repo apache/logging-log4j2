@@ -46,7 +46,6 @@
       <item name="Download" href="/download.html"/>
       <item name="Issues" href="https://github.com/apache/logging-log4j2/issues"/>
       <item name="Issues (Read-Only)" href="https://issues.apache.org/jira/projects/LOG4J2/issues/" />
-      <item name="Javadoc" href="/javadoc.html"/>
       <item name="Maven, Ivy, Gradle Artifacts" href="/maven-artifacts.html" collapse="true">
         <item name="Maven" href="/maven-artifacts.html#Using_Log4j_in_your_Apache_Maven_build" />
         <item name="Ivy" href="/maven-artifacts.html#Using_Log4j_in_your_Apache_Ivy_build" />
@@ -56,7 +55,6 @@
         <item name="Optional Components" href="/maven-artifacts.html#Optional_Components" />
         <item name="Snapshot builds" href="/maven-artifacts.html#Snapshot_builds" />
       </item>
-      <item name="Runtime Dependencies" href="/runtime-dependencies.html"/>
       <item name="Release Notes" href="/release-notes/index.html"/>
       <item name="FAQ" href="/faq.html"/>
       <item name="Performance" href="/performance.html" collapse="true">
@@ -72,13 +70,6 @@
       </item>
       <item name="Articles and Tutorials" href="/articles.html"/>
       <item name="Security" href="/security.html"/>
-      <item name="Support" href="/support.html"/>
-      <item name="Thanks" href="/thanks.html"/>
-    </menu>
-
-    <menu name="For Contributors" inherit="top" img="img/glyphicons/pencil.png">
-      <item name="Guidelines" href="/guidelines.html"/>
-      <item name="Style Guide" href="/javastyle.html"/>
     </menu>
 
     <menu name="Manual" inherit="top" img="img/glyphicons/book.png">
@@ -300,21 +291,9 @@
 
     </menu>
 
-    <menu name="Related Projects" inherit="top" img="img/glyphicons/tag.png">
-      <!-- In AB order for simplicity -->
-      <item name="Chainsaw" href="https://logging.apache.org/chainsaw/2.x/index.html"/>
-      <item name="Log4Cxx" href="https://logging.apache.org/log4cxx/latest_stable/index.html"/>
-      <item name="Log4j Audit" href="https://logging.apache.org/log4j-audit/latest/index.html"/>
-      <item name="Log4j Kotlin" href="https://logging.apache.org/log4j/kotlin/index.html"/>
-      <item name="Log4j Scala" href="https://logging.apache.org/log4j/scala/index.html"/>
-      <item name="Log4j Transformation Tools" href="log4j-transform"/>
-      <item name="Log4Net" href="https://logging.apache.org/log4net/index.html"/>
-    </menu>
-
-    <menu name="Legacy Sites" inherit="top" img="img/glyphicons/link.png">
-      <item name="Log4j 1.2 - End of Life" href="https://logging.apache.org/log4j/1.2/"/>
-      <item name="Log4j 2.3.2 - Java 6" href="https://logging.apache.org/log4j/log4j-2.3.2/"/>
-      <item name="Log4j 2.12.4 - Java 7" href="https://logging.apache.org/log4j/log4j-2.12.4/"/>
+    <menu name="For Contributors" inherit="top" img="img/glyphicons/pencil.png">
+      <item name="Guidelines" href="/guidelines.html"/>
+      <item name="Style Guide" href="/javastyle.html"/>
     </menu>
 
     <menu name="Components" inherit="top" img="img/glyphicons/cog.png">
@@ -342,10 +321,31 @@
       <item name="Log4j Spring Cloud Config Client" href="log4j-spring-cloud-config-client.html"/>
     </menu>
 
+    <menu name="Related Projects" inherit="top" img="img/glyphicons/tag.png">
+      <!-- In AB order for simplicity -->
+      <item name="Chainsaw" href="https://logging.apache.org/chainsaw/2.x/index.html"/>
+      <item name="Log4Cxx" href="https://logging.apache.org/log4cxx/latest_stable/index.html"/>
+      <item name="Log4j Audit" href="https://logging.apache.org/log4j-audit/latest/index.html"/>
+      <item name="Log4j Kotlin" href="https://logging.apache.org/log4j/kotlin"/>
+      <item name="Log4j Scala" href="https://logging.apache.org/log4j/scala"/>
+      <item name="Log4j Transform" href="https://logging.apache.org/log4j/transform"/>
+      <item name="Log4Net" href="https://logging.apache.org/log4net/index.html"/>
+    </menu>
+
+    <menu name="Legacy Sites" inherit="top" img="img/glyphicons/link.png">
+      <item name="Log4j 2.12.4 - Java 7" href="https://logging.apache.org/log4j/log4j-2.12.4/"/>
+      <item name="Log4j 2.3.2 - Java 6" href="https://logging.apache.org/log4j/log4j-2.3.2/"/>
+      <item name="Log4j 1.2 - End of Life" href="https://logging.apache.org/log4j/1.2/"/>
+    </menu>
+
     <menu name="Project Information" img="img/glyphicons/info.png">
       <item name="Project Team" href="/team.html" />
       <item name="Project License" href="https://www.apache.org/licenses/LICENSE-2.0" />
       <item name="Source Repository" href="https://github.com/apache/logging-log4j2" />
+      <item name="Runtime Dependencies" href="/runtime-dependencies.html"/>
+      <item name="Javadoc" href="/javadoc.html"/>
+      <item name="Support" href="/support.html"/>
+      <item name="Thanks" href="/thanks.html"/>
     </menu>
 
     <footer><![CDATA[<p align="center">Copyright &copy; ${project.inceptionYear}-${currentYear} <a class="external" href="https://www.apache.org">The Apache Software Foundation</a>. All Rights Reserved.<br>

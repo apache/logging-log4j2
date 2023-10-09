@@ -19,50 +19,27 @@ package org.apache.logging.log4j.mongodb3;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.AvailablePortSystemPropertyTestRule;
-import org.apache.logging.log4j.core.test.RuleChainFactory;
-import org.apache.logging.log4j.core.test.categories.Appenders;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.mongodb3.MongoDb3TestRule.LoggingTarget;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.bson.Document;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.rules.RuleChain;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-@Category(Appenders.MongoDb.class)
+@UsingMongoDb3
+@LoggerContextSource("log4j2-mongodb-capped.xml")
 public class MongoDb3CappedTest {
 
-    private static LoggerContextRule loggerContextTestRule = new LoggerContextRule("log4j2-mongodb-capped.xml");
-
-    private static final AvailablePortSystemPropertyTestRule mongoDbPortTestRule = AvailablePortSystemPropertyTestRule
-            .create(MongoDb3TestConstants.SYS_PROP_NAME_PORT);
-
-    private static final MongoDb3TestRule mongoDbTestRule = new MongoDb3TestRule(mongoDbPortTestRule.getName(),
-            MongoDb3CappedTest.class, LoggingTarget.NULL);
-
-    @ClassRule
-    public static RuleChain ruleChain = RuleChainFactory.create(mongoDbPortTestRule, mongoDbTestRule,
-            loggerContextTestRule);
-
     @Test
-    public void test() {
-        final Logger logger = LogManager.getLogger();
+    public void test(final LoggerContext ctx, final MongoClient mongoClient) {
+        final Logger logger = ctx.getLogger(MongoDb3CappedTest.class);
         logger.info("Hello log");
-        @SuppressWarnings("resource") // Mongo client is managed by the test rule.
-        final MongoClient mongoClient = mongoDbTestRule.getMongoClient();
         final MongoDatabase database = mongoClient.getDatabase(MongoDb3TestConstants.DATABASE_NAME);
-        Assert.assertNotNull(database);
+        Assertions.assertNotNull(database);
         final MongoCollection<Document> collection = database.getCollection(MongoDb3TestConstants.COLLECTION_NAME);
-        Assert.assertNotNull(collection);
+        Assertions.assertNotNull(collection);
         final Document first = collection.find().first();
-        Assert.assertNotNull(first);
-        Assert.assertEquals(first.toJson(), "Hello log", first.getString("message"));
+        Assertions.assertNotNull(first);
+        Assertions.assertEquals("Hello log", first.getString("message"), first.toJson());
     }
 }

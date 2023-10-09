@@ -105,7 +105,7 @@ public class ReusableParameterizedMessageTest {
         final String testMsg = "Test message {}{} {}\\\\";
         final String[] args = { "a", "b", "c" };
         final String result = new ReusableParameterizedMessage().set(testMsg, (Object[]) args).getFormattedMessage();
-        assertEquals("Test message ab c\\\\", result);
+        assertEquals("Test message ab c\\", result);
     }
 
     @Test

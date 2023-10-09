@@ -79,69 +79,67 @@
         </subsection>
         <subsection name="Log4j 2">
           <p>
-          Log4j 1.x has been widely adopted and used in many applications. However,
-          through the years development on it has slowed down. It has become more
-          difficult to maintain due to its need to be compliant with very old versions
-          of Java and became
-          <a href="https://blogs.apache.org/foundation/entry/apache_logging_services_project_announces">End
-            of Life</a> in August 2015.
-          Its alternative, SLF4J/Logback made many needed improvements to the
-          framework. So why bother with Log4j 2? Here are a few of the reasons.
+            Log4j 1.x has been extensively adopted and utilized across various applications.
+            Its final release occurred in 2012, and in August 2015, the announcement was made
+            that Log4j 1.x had reached its <a href="https://news.apache.org/foundation/entry/apache_logging_services_project_announces">End of Life</a>.
+          </p>
+          <p>
+            So, what makes upgrading to Log4j 2 a wise decision? Here are a few compelling reasons.
           </p>
           <ol>
-            <li>Log4j 2 is designed to be usable as an audit logging framework. Both Log4j
+            <li><b>Audit Logging:</b> Log4j 2 is designed to be usable as an audit logging framework. Both Log4j
               1.x and Logback will lose events while reconfiguring. Log4j 2 will not. In
               Logback, exceptions in Appenders are never visible to the application. In
               Log4j 2 Appenders can be configured to allow the exception to percolate
               to the application.</li>
-            <li>Log4j 2 contains next-generation <a href="async.html">Asynchronous Loggers</a> based
+            <li><b>Asynchronous Loggers:</b> Log4j 2 contains next-generation <a href="async.html">Asynchronous Loggers</a> based
               on the <a href="https://lmax-exchange.github.io/disruptor/">LMAX Disruptor library</a>.
               In multithreaded scenarios Asynchronous Loggers have 10 times higher throughput and
               orders of magnitude lower latency than Log4j 1.x and Logback.</li>
-            <li>Log4j 2 is <a href="garbagefree.html">garbage free</a> for
+            <li><b>Garbage Free:</b> Log4j 2 is <a href="garbagefree.html">garbage free</a> for
               stand-alone applications, and low garbage for web applications during steady state logging.
               This reduces pressure on the garbage collector and can give better response time performance.</li>
-            <li>Log4j 2 uses a <a href="plugins.html">Plugin system</a> that makes it extremely easy to
+            <li><b>Plugins:</b> Log4j 2 uses a <a href="plugins.html">Plugin system</a> that makes it extremely easy to
               <a href="extending.html">extend the framework</a> by adding new <a href="appenders.html">Appenders</a>,
               <a href="filters.html">Filters</a>, <a href="layouts.html">Layouts</a>, <a href="lookups.html">Lookups</a>,
               and Pattern Converters without requiring any changes to Log4j.</li>
-            <li>Due to the Plugin system configuration is simpler. Entries in the configuration
+            <li><b>Simple Configuration:</b> Due to the Plugin system configuration is simpler. Entries in the configuration
               do not require a class name to be specified.</li>
-            <li>Support for <a href="customloglevels.html">custom log levels</a>.
+            <li><b>Custom Log Levels:</b> Support for <a href="customloglevels.html">custom log levels</a>.
               Custom log levels can be defined in code or in configuration.</li>
-            <li>Support for <a href="api.html#LambdaSupport">lambda expressions</a>.
+            <li><b>Lambdas:</b> Support for <a href="api.html#LambdaSupport">lambda expressions</a>.
               Client code running on Java 8 can use lambda expressions to lazily construct a log message only if
               the requested log level is enabled. Explicit level checks are not needed, resulting in cleaner code.</li>
-            <li>Support for <a href="messages.html">Message objects</a>. Messages allow support for interesting and
+            <li><b>Messages:</b> Support for <a href="messages.html">Message objects</a>. Messages allow support for interesting and
               complex constructs to be passed through the logging system and be efficiently
               manipulated. Users are free to create their own
               <code><a href="../log4j-api/apidocs/org/apache/logging/log4j/message/Message.html">Message</a></code>
               types and write custom <a href="layouts.html">Layouts</a>, <a href="filters.html">Filters</a> and
               <a href="lookups.html">Lookups</a> to manipulate them.</li>
-            <li>Log4j 1.x supports Filters on Appenders. Logback added TurboFilters to allow
+            <li><b>Filters:</b> Log4j 1.x supports Filters on Appenders. Logback added TurboFilters to allow
               filtering of events before they are processed by a Logger. Log4j 2 supports
               Filters that can be configured to process events before they are handled by
               a Logger, as they are processed by a Logger or on an Appender.</li>
-            <li>Many Logback Appenders do not accept a Layout and will only send data in a
+            <li><b>Appender Layout:</b> Many Logback Appenders do not accept a Layout and will only send data in a
               fixed format. Most Log4j 2 Appenders accept a Layout, allowing the data to
               be transported in any format desired.</li>
-            <li>Layouts in Log4j 1.x and Logback return a String. This resulted in the problems
+            <li><b>Advanced Layouts:</b> Layouts in Log4j 1.x and Logback return a String. This resulted in the problems
               discussed at <a href="https://logback.qos.ch/manual/encoders.html">Logback Encoders</a>.
               Log4j 2 takes the simpler approach that <a href="layouts.html">Layouts</a> always return a byte array. This has
               the advantage that it means they can be used in virtually any Appender, not just
               the ones that write to an OutputStream.</li>
             <!-- and coming up: ByteBuffers, too! -->
-            <li>The <a href="appenders.html#SyslogAppender">Syslog Appender</a> supports both TCP and UDP as well as
+            <li><b>Syslog Support:</b> The <a href="appenders.html#SyslogAppender">Syslog Appender</a> supports both TCP and UDP as well as
               support for the BSD syslog
               and the <a href="https://tools.ietf.org/html/rfc5424">RFC 5424</a> formats.</li>
-            <li>Log4j 2 takes advantage of Java 5 concurrency support and performs locking
+            <li><b>Java Concurrency:</b> Log4j 2 takes advantage of Java 5 concurrency support and performs locking
               at the lowest level possible. Log4j 1.x has known deadlock issues. Many of these
               are fixed in Logback but many Logback classes still require synchronization at
               a fairly high level.</li>
-            <li>It is an Apache Software Foundation project following the community and support
+            <li><b>Community:</b> It is an Apache Software Foundation project following the community and support
               model used by all ASF projects. If you want to contribute or gain the right to
               commit changes just follow the path outlined at
-              <a href="https://jakarta.apache.org/site/contributing.html">Contributing</a>.</li>
+              <a href="https://community.apache.org/contributors/">Contributing</a>.</li>
           </ol>
         </subsection>
       </section>

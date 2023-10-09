@@ -22,6 +22,7 @@
     <properties>
         <title>JMX</title>
 		<author email="remkop@yahoo.com">Remko Popma</author>
+        <author email="vy@apache.org">Volkan Yazıcı</author>
     </properties>
 
     <body>
@@ -90,100 +91,19 @@
       <section name="Log4j Instrumented Components">
         <a name="Log4j_MBeans" />
         <p>The best way to find out which methods and attributes of the various
-      Log4j components are accessible via JMX is to look at the
-      <a href="../log4j-core/apidocs/org/apache/logging/log4j/core/jmx/package-summary.html"
-      >Javadoc</a> or by exploring directly in JConsole.</p>
+        Log4j components are accessible via JMX is to look at the
+        <code>org.apache.logging.log4j.core.jmx</code> package contents in the
+        <code>log4j-core</code> artifact or by exploring directly in JConsole.</p>
       <p>The screenshot below shows the Log4j MBeans in JConsole.</p>
       <p><img src="../images/jmx-jconsole-mbeans.png" alt="JConsole screenshot of the MBeans tab" /></p>
       </section>
       <section name="Client GUI">
         <a name="ClientGUI" />
-        <p>Log4j includes a basic client GUI that can be used to
-        monitor the StatusLogger output and to remotely modify the Log4j
-        configuration. The client GUI can be run as a stand-alone application
-        or as a JConsole plug-in.</p>
-		<subsection name="Running the Client GUI as a JConsole Plug-in">
-		<p>To run the Log4j JMX Client GUI as a JConsole Plug-in,
-		start JConsole with the following command:
-		</p>
-		<p><code>${dollar}JAVA_HOME/bin/jconsole -pluginpath /path/to/log4j-api-${Log4jReleaseVersion}.jar:/path/to/log4j-core-${Log4jReleaseVersion}.jar:/path/to/log4j-jmx-gui-${Log4jReleaseVersion}.jar</code></p>
-		<p>or on Windows:</p>
-		<p><code>%JAVA_HOME%\bin\jconsole -pluginpath \path\to\log4j-api-${Log4jReleaseVersion}.jar;\path\to\log4j-core-${Log4jReleaseVersion}.jar;\path\to\log4j-jmx-gui-${Log4jReleaseVersion}.jar</code></p>
-		<p>If you execute the above command and connect to your application,
-		you will see an extra "Log4j 2" tab in the JConsole window.
-		This tab contains the client GUI, with the StatusLogger selected.
-		The screenshot below shows the StatusLogger panel in JConsole.
-		</p>
-        <p><img src="../images/jmx-jconsole-statuslogger.png" alt="JConsole screenshot of the StatusLogger display" /></p>
-		</subsection>
-		<subsection name="Remotely Editing the Log4j Configuration">
-		<p>The client GUI also contains a simple editor that can be used
-		to remotely change the Log4j configuration.
-		</p><p>
-		The screenshot below shows the configuration edit panel in JConsole.
-		</p>
-        <p><img src="../images/jmx-jconsole-editconfig.png" alt="JConsole screenshot of the configuration file editor" /></p>
-        <p>The configuration edit panel provides two ways to modify
-        the Log4j configuration: specifying a different configuration location
-        URI, or modifying the configuration XML directly in the editor panel.</p>
-        <p>If you specify a different configuration location URI and
-        click the "Reconfigure from Location" button, the specified file
-        or resource must exist and be readable by the application,
-        or an error will occur and the configuration will not change.
-        If an error occurred while processing the contents of the specified resource,
-        Log4j will keep its original configuration, but the editor panel
-        will show the contents of the file you specified. </p>
         <p>
-        The text area showing the contents of the configuration file is
-        editable, and you can directly modify the configuration in this
-        editor panel. Clicking the "Reconfigure with XML below" button will
-        send the configuration text to the remote application where it
-        will be used to reconfigure Log4j on the fly.
-        This will not overwrite any configuration file.
-        Reconfiguring with text from the editor happens in memory only and
-        the text is not permanently stored anywhere.
+          <a href="https://github.com/apache/logging-log4j-jmx-gui">The Apache Log4j JMX GUI</a> is a basic client GUI that can be used to monitor the <code>StatusLogger</code> output and to remotely modify the Log4j configuration.
+          The client GUI can be run as a stand-alone application or as a JConsole plug-in.
         </p>
-		</subsection>
-		<subsection name="Running the Client GUI as a Stand-alone Application">
-      <a name="ClientStandAlone" />
-      <p>To run the Log4j JMX Client GUI as a stand-alone application,
-		run the following command:
-		</p>
-		<p><code>${dollar}JAVA_HOME/bin/java -cp /path/to/log4j-api-${Log4jReleaseVersion}.jar:/path/to/log4j-core-${Log4jReleaseVersion}.jar:/path/to/log4j-jmx-gui-${Log4jReleaseVersion}.jar org.apache.logging.log4j.jmx.gui.ClientGui &lt;options&gt;</code></p>
-		<p>or on Windows:</p>
-		<p><code>%JAVA_HOME%\bin\java -cp \path\to\log4j-api-${Log4jReleaseVersion}.jar;\path\to\log4j-core-${Log4jReleaseVersion}.jar;\path\to\log4j-jmx-gui-${Log4jReleaseVersion}.jar org.apache.logging.log4j.jmx.gui.ClientGui &lt;options&gt;</code></p>
-		<p>Where <code>options</code> are one of the following:</p>
-		<ul>
-		<li><code>&lt;host&gt;:&lt;port&gt;</code></li>
-		<li><code>service:jmx:rmi:///jndi/rmi://&lt;host&gt;:&lt;port&gt;/jmxrmi</code></li>
-		<li><code>service:jmx:rmi://&lt;host&gt;:&lt;port&gt;/jndi/rmi://&lt;host&gt;:&lt;port&gt;/jmxrmi</code></li>
-		</ul>
-		<p>The port number must be the same as the portNum specified when
-		you started the application you want to monitor.
-		</p>
-		<p>For example, if you started your application with these options:</p>
-		<pre>com.sun.management.jmxremote.port=33445
-com.sun.management.jmxremote.authenticate=false
-com.sun.management.jmxremote.ssl=false</pre>
-		<p><b>(Note that this disables <em>all</em> security so this is not recommended
-		for production environments.
-		Oracle's documentation on
-        <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/management/agent.html#gdenl">Remote
-        Monitoring and Management</a> provides details on how to configure
-        JMX more securely with password authentication and SSL.)</b></p>
-		<p>Then you can run the client with this command:</p>
-		<p><code>${dollar}JAVA_HOME/bin/java -cp /path/to/log4j-api-${Log4jReleaseVersion}.jar:/path/to/log4j-core-${Log4jReleaseVersion}.jar:/path/to/log4j-jmx-gui-${Log4jReleaseVersion}.jar org.apache.logging.log4j.jmx.gui.ClientGui localhost:33445</code></p>
-		<p>or on Windows:</p>
-		<p><code>%JAVA_HOME%\bin\java -cp \path\to\log4j-api-${Log4jReleaseVersion}.jar;\path\to\log4j-core-${Log4jReleaseVersion}.jar;\path\to\log4j-jmx-gui-${Log4jReleaseVersion}.jar org.apache.logging.log4j.jmx.gui.ClientGui localhost:33445</code></p>
-		<p>The screenshot below shows the StatusLogger panel of the client
-		GUI when running as a stand-alone application.</p>
-        <p><img src="../images/jmx-standalone-statuslogger.png" alt="JMX GUI screenshot of StatusLogger display" /></p>
-		<p>The screenshot below shows the configuration editor panel of the
-		client GUI when running as a stand-alone application.</p>
-        <p><img src="../images/jmx-standalone-editconfig.png" alt="JMX GUI screenshot of configuration editor" /></p>
-
-		</subsection>
       </section>
-
     </body>
+
 </document>

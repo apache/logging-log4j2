@@ -17,4 +17,7 @@
 /**
  * Log4j integration with Apache Tomcat 8.5 or greater.
  */
+@Export
 package org.apache.logging.log4j.appserver.tomcat;
+
+import org.osgi.annotation.bundle.Export;

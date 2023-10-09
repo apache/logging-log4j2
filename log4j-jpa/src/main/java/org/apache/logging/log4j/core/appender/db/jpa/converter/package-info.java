@@ -28,4 +28,7 @@
  * instead, which require the Jackson Data Processor dependency to also be on your class path.
  */
 //CHECKSTYLE:ON
+@Export
 package org.apache.logging.log4j.core.appender.db.jpa.converter;
+
+import org.osgi.annotation.bundle.Export;

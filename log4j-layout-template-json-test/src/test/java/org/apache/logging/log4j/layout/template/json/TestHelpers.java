@@ -35,10 +35,13 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.layout.template.json.util.JsonReader;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.MapAccessor;
+import org.apache.logging.log4j.util.Constants;
 
 public final class TestHelpers {
 
     public static final Configuration CONFIGURATION = new DefaultConfiguration();
+
+    public static final String JAVA_BASE_PREFIX = Constants.JAVA_MAJOR_VERSION > 8 ? "java.base/" : "";
 
     private static final JsonWriter JSON_WRITER = JsonWriter
             .newBuilder()

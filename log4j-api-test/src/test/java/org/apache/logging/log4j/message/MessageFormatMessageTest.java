@@ -20,17 +20,22 @@ import java.util.Locale;
 
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.apache.logging.log4j.util.Constants;
+import org.assertj.core.presentation.UnicodeRepresentation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ResourceLock(value = Resources.LOCALE, mode = ResourceAccessMode.READ)
 public class MessageFormatMessageTest {
 
-    private static final String SPACE = Constants.JAVA_MAJOR_VERSION < 9 ? " " : "\u00a0";
+    private static final char SPACE = ' ';
+    private static final char NB_SPACE = '\u00a0';
+    private static final char NARROW_NB_SPACE = '\u202f';
 
     private static final int LOOP_CNT = 500;
     String[] array = new String[LOOP_CNT];
@@ -72,8 +77,10 @@ public class MessageFormatMessageTest {
         final String testMsg = "Test message {0,number,currency}";
         final MessageFormatMessage msg = new MessageFormatMessage(Locale.FRANCE, testMsg, 1234567890);
         final String result = msg.getFormattedMessage();
-        final String expected = "Test message 1 234 567 890,00" + SPACE + "€";
-        assertEquals(expected, result);
+        final char separator = Constants.JAVA_MAJOR_VERSION < 9 ? SPACE : NB_SPACE;
+        final char groupingSeparator = Constants.JAVA_MAJOR_VERSION < 17 ? NB_SPACE : NARROW_NB_SPACE;
+        assertThat(result).withRepresentation(UnicodeRepresentation.UNICODE_REPRESENTATION)
+                .isEqualTo("Test message 1%1$c234%1$c567%1$c890,00%2$c€", groupingSeparator, separator);
     }
 
     @Test

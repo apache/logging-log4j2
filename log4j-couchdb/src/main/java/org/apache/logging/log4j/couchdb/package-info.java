@@ -17,4 +17,9 @@
 /**
  * The classes in this package contain the Apache CouchDB provider for the NoSQL Appender.
  */
+@Export
+@Open("org.apache.logging.log4j.core")
 package org.apache.logging.log4j.couchdb;
+
+import aQute.bnd.annotation.jpms.Open;
+import org.osgi.annotation.bundle.Export;

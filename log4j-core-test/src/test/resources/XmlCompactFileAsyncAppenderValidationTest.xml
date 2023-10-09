@@ -18,7 +18,7 @@
 <Configuration status="OFF">
   <Appenders>
     <File name="XmlFile" fileName="target/XmlCompactFileAsyncAppenderValidationTest.log.xml" immediateFlush="false" append="false">
-      <XMLLayout complete="true" compact="true" charset="UTF-8"/>
+      <XmlLayout complete="true" compact="true" charset="UTF-8"/>
     </File>
   </Appenders>
 

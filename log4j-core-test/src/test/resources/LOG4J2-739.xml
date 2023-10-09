@@ -16,16 +16,16 @@
   ~ limitations under the License.
   -->
 <Configuration status="warn">
-    <properties>
-        <property name="name">app</property>
-        <property name="pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %-10.10t | %-20.20C:%-5.5L | %msg%n</property>
-    </properties>
+    <Properties>
+        <Property name="name">app</Property>
+        <Property name="pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %-10.10t | %-20.20C:%-5.5L | %msg%n</Property>
+    </Properties>
      <Appenders>
          <Console name="CONSOLE" target="SYSTEM_OUT">
              <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
          </Console>
         <RollingFile name="RollingFile" fileName="logs/${name}.log" filePattern="logs/$${date:yyyy-MM}/${name}-%d{yyyy-MM-dd}-%i.log.gz">
-            <XMLLayout complete="true" />
+            <XmlLayout complete="true" />
             <Policies>
                 <SizeBasedTriggeringPolicy size="100"/>
             </Policies>
@@ -35,7 +35,7 @@
          <Root level="error">
              <AppenderRef ref="Console" />
         </Root>
-         <logger name="log4j2poc.Log4J2Example" level="TRACE" />
+         <Logger name="log4j2poc.Log4J2Example" level="TRACE" />
          <Root level="ERROR">
              <AppenderRef ref="CONSOLE"/>
              <AppenderRef ref="RollingFile" />

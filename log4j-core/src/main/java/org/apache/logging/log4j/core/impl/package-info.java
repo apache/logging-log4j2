@@ -17,4 +17,7 @@
 /**
  * Log4j 2 private implementation classes.
  */
+@Export
 package org.apache.logging.log4j.core.impl;
+
+import org.osgi.annotation.bundle.Export;

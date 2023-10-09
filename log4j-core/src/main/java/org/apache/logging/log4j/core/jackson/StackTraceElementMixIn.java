@@ -22,7 +22,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
- * Jackson mix-in for {@link StackTraceElement}.
+ * Jackson mix-in used to serialize a {@link StackTraceElement}. Deserialization
+ * is performed by {@link StackTraceElementMixIn}.
  * <p>
  * <em>Consider this class private.</em>
  * </p>
@@ -33,30 +34,30 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 abstract class StackTraceElementMixIn {
     @JsonCreator
     StackTraceElementMixIn(
-            // @formatter:off
-            @JsonProperty("class") final String declaringClass,
-            @JsonProperty("method") final String methodName,
-            @JsonProperty("file") final String fileName,
-            @JsonProperty("line") final int lineNumber)
-            // @formatter:on
+    // @formatter:off
+            @JsonProperty(StackTraceElementConstants.ATTR_CLASS) final String declaringClass,
+            @JsonProperty(StackTraceElementConstants.ATTR_METHOD) final String methodName,
+            @JsonProperty(StackTraceElementConstants.ATTR_FILE) final String fileName,
+            @JsonProperty(StackTraceElementConstants.ATTR_LINE) final int lineNumber)
+    // @formatter:on
     {
         // empty
     }
 
-    @JsonProperty("class")
-    @JacksonXmlProperty(localName = "class", isAttribute = true)
+    @JsonProperty(StackTraceElementConstants.ATTR_CLASS)
+    @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_CLASS, isAttribute = true)
     abstract String getClassName();
 
-    @JsonProperty("file")
-    @JacksonXmlProperty(localName = "file", isAttribute = true)
+    @JsonProperty(StackTraceElementConstants.ATTR_FILE)
+    @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_FILE, isAttribute = true)
     abstract String getFileName();
 
-    @JsonProperty("line")
-    @JacksonXmlProperty(localName = "line", isAttribute = true)
+    @JsonProperty(StackTraceElementConstants.ATTR_LINE)
+    @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_LINE, isAttribute = true)
     abstract int getLineNumber();
 
-    @JsonProperty("method")
-    @JacksonXmlProperty(localName = "method", isAttribute = true)
+    @JsonProperty(StackTraceElementConstants.ATTR_METHOD)
+    @JacksonXmlProperty(localName = StackTraceElementConstants.ATTR_METHOD, isAttribute = true)
     abstract String getMethodName();
 
 }

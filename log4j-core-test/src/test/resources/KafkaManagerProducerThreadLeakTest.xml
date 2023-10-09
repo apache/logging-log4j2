@@ -18,9 +18,9 @@
 <Configuration name="KafkaManagerProducerThreadLeakTest" status="OFF">
   <Appenders>
    <Kafka name="KafkaAppender" topic="kafka-topic">
-      <PatternLayout pattern="[%m]"/>
       <Property name="bootstrap.servers">localhost:9092</Property>
       <Property name="timeout.ms">1000</Property>
+      <PatternLayout pattern="[%m]"/>
     </Kafka>
   </Appenders>
   <Loggers>

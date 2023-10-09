@@ -17,4 +17,9 @@
 /**
  * Log4j integration with Eclipse Jetty.
  */
+@Open
+@Export
 package org.apache.logging.log4j.appserver.jetty;
+
+import aQute.bnd.annotation.jpms.Open;
+import org.osgi.annotation.bundle.Export;

@@ -18,4 +18,7 @@
 /**
  * Public Message Types used for Log4j 2. Users may implement their own Messages.
  */
+@Export
 package org.apache.logging.log4j.message;
+
+import org.osgi.annotation.bundle.Export;

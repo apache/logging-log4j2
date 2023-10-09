@@ -17,4 +17,7 @@
 /**
  * Log4j 2 date formatting classes.
  */
+@Export
 package org.apache.logging.log4j.core.util.datetime;
+
+import org.osgi.annotation.bundle.Export;

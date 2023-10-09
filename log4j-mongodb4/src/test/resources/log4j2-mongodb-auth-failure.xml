@@ -19,7 +19,7 @@
   <Appenders>
     <NoSql name="MongoDbAppender">
       <MongoDb4
-        connection="mongodb://log4jUser:12345678@localhost:${sys:MongoDBTestPort:-27017}/testDb.testCollection" />
+        connection="mongodb://log4jUser:12345678@localhost:${test:MongoDBTestPort:-27017}/testDb.testCollection" />
     </NoSql>
   </Appenders>
   <Loggers>

@@ -27,6 +27,8 @@ import org.apache.logging.log4j.status.StatusListener;
  */
 public interface ListStatusListener extends StatusListener {
 
+    void clear();
+
     Stream<StatusData> getStatusData();
 
     default Stream<StatusData> findStatusData(Level level) {

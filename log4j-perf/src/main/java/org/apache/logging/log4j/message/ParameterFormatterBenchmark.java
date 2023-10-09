@@ -18,6 +18,7 @@ package org.apache.logging.log4j.message;
 
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
@@ -41,145 +42,55 @@ import org.openjdk.jmh.annotations.State;
 //
 @State(Scope.Benchmark)
 public class ParameterFormatterBenchmark {
-    private static final Object[] ARGS = { "arg1", "arg2", "arg3", "arg4", "arg5", "arg6", "arg7", "arg8",
-            "arg9", "arg10",};
+
+    private static final Object[] ARGS = {"arg1", "arg2", "arg3", "arg4", "arg5", "arg6", "arg7", "arg8", "arg9", "arg10"};
 
     @State(Scope.Thread)
     public static class ThreadState {
-        StringBuilder buffer = new StringBuilder(2048);
-        int[] indices = new int[255];
-        char[] copy = new char[4096];
-    }
 
-    @Benchmark
-    @BenchmarkMode(Mode.SampleTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int latency3ParamsV3(final ThreadState state) {
-        state.buffer.setLength(0);
-        final String STR = "p1={}, p2={}, p3={}";
-        final int length = STR.length();
-        STR.getChars(0, length, state.copy, 0);
-        final int count = ParameterFormatter.countArgumentPlaceholders3(state.copy, length, state.indices);
-        ParameterFormatter.formatMessage3(state.buffer, state.copy, length, ARGS, count, state.indices);
-        return state.buffer.length();
-    }
+        private final MessagePatternAnalysis analysis = new MessagePatternAnalysis();
 
-    @Benchmark
-    @BenchmarkMode(Mode.SampleTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int latency5ParamsV3(final ThreadState state) {
-        state.buffer.setLength(0);
-        final String STR = "p1={}, p2={}, p3={}, p4={}, p5={}";
-        final int length = STR.length();
-        STR.getChars(0, length, state.copy, 0);
-        final int count = ParameterFormatter.countArgumentPlaceholders3(state.copy, length, state.indices);
-        ParameterFormatter.formatMessage3(state.buffer, state.copy, length, ARGS, count, state.indices);
-        return state.buffer.length();
-    }
+        private final StringBuilder buffer = new StringBuilder(2048);
 
-    @Benchmark
-    @BenchmarkMode(Mode.SampleTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int latency7ParamsV3(final ThreadState state) {
-        state.buffer.setLength(0);
-        final String STR = "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}";
-        final int length = STR.length();
-        STR.getChars(0, length, state.copy, 0);
-        final int count = ParameterFormatter.countArgumentPlaceholders3(state.copy, length, state.indices);
-        ParameterFormatter.formatMessage3(state.buffer, state.copy, length, ARGS, count, state.indices);
-        return state.buffer.length();
-    }
+        public ThreadState() {
+            analysis.placeholderCharIndices = new int[10];
+        }
 
-    @Benchmark
-    @BenchmarkMode(Mode.SampleTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int latency9ParamsV3(final ThreadState state) {
-        state.buffer.setLength(0);
-        final String STR = "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}";
-        final int length = STR.length();
-        STR.getChars(0, length, state.copy, 0);
-        final int count = ParameterFormatter.countArgumentPlaceholders3(state.copy, length, state.indices);
-        ParameterFormatter.formatMessage3(state.buffer, state.copy, length, ARGS, count, state.indices);
-        return state.buffer.length();
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.SampleTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int latency3ParamsV2(final ThreadState state) {
-        state.buffer.setLength(0);
-        final int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}", state.indices);
-        ParameterFormatter.formatMessage2(state.buffer, "p1={}, p2={}, p3={}", ARGS, count, state.indices);
-        return state.buffer.length();
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.SampleTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int latency5ParamsV2(final ThreadState state) {
-        state.buffer.setLength(0);
-        final int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}, p4={}, p5={}", state.indices);
-        ParameterFormatter.formatMessage2(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}", ARGS, count, state.indices);
-        return state.buffer.length();
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.SampleTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int latency7ParamsV2(final ThreadState state) {
-        state.buffer.setLength(0);
-        final int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", state.indices);
-        ParameterFormatter.formatMessage2(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", ARGS, count, state.indices);
-        return state.buffer.length();
-    }
-
-    @Benchmark
-    @BenchmarkMode(Mode.SampleTime)
-    @OutputTimeUnit(TimeUnit.NANOSECONDS)
-    public int latency9ParamsV2(final ThreadState state) {
-        state.buffer.setLength(0);
-        final int count = ParameterFormatter.countArgumentPlaceholders2("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", state.indices);
-        ParameterFormatter.formatMessage2(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", ARGS, count, state.indices);
-        return state.buffer.length();
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency3Params(final ThreadState state) {
-        state.buffer.setLength(0);
-        final int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}");
-        ParameterFormatter.formatMessage(state.buffer, "p1={}, p2={}, p3={}", ARGS, count);
-        return state.buffer.length();
+        return latencyParams(state, "p1={}, p2={}, p3={}");
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency5Params(final ThreadState state) {
-        state.buffer.setLength(0);
-        final int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}, p4={}, p5={}");
-        ParameterFormatter.formatMessage(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}", ARGS, count);
-        return state.buffer.length();
+        return latencyParams(state, "p1={}, p2={}, p3={}, p4={}, p5={}");
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency7Params(final ThreadState state) {
-        state.buffer.setLength(0);
-        final int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}");
-        ParameterFormatter.formatMessage(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}", ARGS, count);
-        return state.buffer.length();
+        return latencyParams(state, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}");
     }
 
     @Benchmark
     @BenchmarkMode(Mode.SampleTime)
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public int latency9Params(final ThreadState state) {
+        return latencyParams(state, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}");
+    }
+
+    private static int latencyParams(final ThreadState state, final String pattern) {
         state.buffer.setLength(0);
-        final int count = ParameterFormatter.countArgumentPlaceholders("p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}");
-        ParameterFormatter.formatMessage(state.buffer, "p1={}, p2={}, p3={}, p4={}, p5={}, p6={}, p7={}, p8={}, p9={}", ARGS, count);
+        ParameterFormatter.analyzePattern(pattern, -1, state.analysis);
+        ParameterFormatter.formatMessage(state.buffer, pattern, ARGS, state.analysis.placeholderCount, state.analysis);
         return state.buffer.length();
     }
+
 }

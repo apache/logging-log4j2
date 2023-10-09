@@ -17,38 +17,42 @@
 package org.apache.logging.log4j.core.async;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@Category(AsyncLoggers.class)
+@Tag("AsyncLoggers")
+@SetTestProperty(key = Constants.LOG4J_CONTEXT_SELECTOR, value = "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector")
+@UsingStatusListener
 public class AsyncLoggersWithAsyncAppenderTest {
 
-    @ClassRule
-    public static LoggerContextRule context = new LoggerContextRule("AsyncLoggersWithAsyncAppenderTest.xml",
-        AsyncLoggerContextSelector.class);
-
     @Test
-    public void testLoggingWorks() throws Exception {
-        final Logger logger = LogManager.getLogger();
+    @LoggerContextSource
+    public void testLoggingWorks(final LoggerContext ctx) throws Exception {
+        final Logger logger = ctx.getLogger(AsyncLoggersWithAsyncAppenderTest.class);
         logger.error("This {} a test", "is");
         logger.warn("Hello {}!", "world");
-        Thread.sleep(100);
-        final List<String> list = context.getListAppender("List").getMessages();
-        assertNotNull("No events generated", list);
-        assertEquals("Incorrect number of events ", 2, list.size());
+        final Appender appender = ctx.getConfiguration().getAppender("List");
+        assertThat(appender).isInstanceOf(ListAppender.class);
+        final ListAppender listAppender = (ListAppender) appender;
+        final List<String> list = ((ListAppender) appender).getMessages(2, 1, TimeUnit.SECONDS);
+        assertThat(list).as("Log events").hasSize(2);
         String msg = list.get(0);
         String expected = getClass().getName() + " This {} a test - [is] - This is a test";
-        assertEquals(expected, msg);
+        assertThat(msg).isEqualTo(expected);
         msg = list.get(1);
         expected = getClass().getName() + " Hello {}! - [world] - Hello world!";
-        assertEquals(expected, msg);
+        assertThat(msg).isEqualTo(expected);
     }
 }

@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.20.1-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>log4j-spring-cloud-config</artifactId>
@@ -56,6 +56,15 @@
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
         <version>${junit-jupiter.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Overrides dependencies from `spring-boot-dependencies` and `spring-cloud-dependencies` -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-framework-bom</artifactId>
+        <version>${spring-framework.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

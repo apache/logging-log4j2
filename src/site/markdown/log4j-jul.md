@@ -67,18 +67,17 @@ the `Logger` being logged to is using.
 
 ### Default Level Conversions
 
-Java Level | Log4j Level
----------- | -----------
-[`OFF`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#OFF) | `OFF`
-[`SEVERE`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#SEVERE) | `ERROR`
-[`WARNING`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#WARNING) | `WARN`
-[`INFO`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#INFO) | `INFO`
-[`CONFIG`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#CONFIG) | `CONFIG`
-[`FINE`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINE) | `DEBUG`
-[`FINER`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINER) | `TRACE`
-[`FINEST`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINEST) | `FINEST`
-[`ALL`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#ALL) | `ALL`
-
+| Java Level                                                                                 | Log4j Level |
+|--------------------------------------------------------------------------------------------|-------------|
+| [`OFF`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#OFF)         | `OFF`       |
+| [`SEVERE`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#SEVERE)   | `ERROR`     |
+| [`WARNING`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#WARNING) | `WARN`      |
+| [`INFO`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#INFO)       | `INFO`      |
+| [`CONFIG`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#CONFIG)   | `CONFIG`    |
+| [`FINE`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINE)       | `DEBUG`     |
+| [`FINER`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINER)     | `TRACE`     |
+| [`FINEST`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#FINEST)   | `FINEST`    |
+| [`ALL`](http://docs.oracle.com/javase/6/docs/api/java/util/logging/Level.html#ALL)         | `ALL`       |
 
 # Log4j JDK Logging Bridge Handler
 

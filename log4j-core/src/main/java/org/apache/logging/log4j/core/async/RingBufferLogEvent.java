@@ -31,8 +31,15 @@ import org.apache.logging.log4j.core.impl.MementoMessage;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.core.util.*;
-import org.apache.logging.log4j.message.*;
+import org.apache.logging.log4j.core.util.Clock;
+import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.core.util.NanoClock;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ParameterConsumer;
+import org.apache.logging.log4j.message.ParameterVisitable;
+import org.apache.logging.log4j.message.ReusableMessage;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.TimestampMessage;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
@@ -337,7 +344,6 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         return this.thrownProxy;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public ReadOnlyStringMap getContextData() {
         return contextData;
@@ -347,7 +353,6 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         this.contextData = contextData;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Map<String, String> getContextMap() {
         return contextData.toMap();
@@ -445,7 +450,9 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      * @return a new immutable copy of the data in this {@code RingBufferLogEvent}
      */
     public LogEvent createMemento() {
-        return new Log4jLogEvent.Builder(this).build();
+        final Log4jLogEvent.Builder builder = new Log4jLogEvent.Builder();
+        initializeBuilder(builder);
+        return builder.build();
 
     }
 
@@ -454,6 +461,15 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
      * @param builder the builder whose fields to populate
      */
     public void initializeBuilder(final Log4jLogEvent.Builder builder) {
+        // If the data is not frozen, make a copy of it.
+        final StringMap oldContextData = this.contextData;
+        final StringMap contextData;
+        if (oldContextData != null && !oldContextData.isFrozen()) {
+            contextData = ContextDataFactory.createContextData();
+            contextData.putAll(oldContextData);
+        } else {
+            contextData = oldContextData;
+        }
         builder.setContextData(contextData) //
                 .setContextStack(contextStack) //
                 .setEndOfBatch(endOfBatch) //

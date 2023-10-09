@@ -24,4 +24,7 @@
  *     <li>Syslog network log event support</li>
  * </ul>
  */
+@Export
 package org.apache.logging.log4j.core.net;
+
+import org.osgi.annotation.bundle.Export;

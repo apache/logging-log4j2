@@ -29,8 +29,8 @@
     </List>
     <Rewrite name="Rewrite">
       <MapRewritePolicy>
-        <KeyValuePair key="Key1" Value="Apache"/>
-        <KeyValuePair key="Key3" Value="Log4j"/>
+        <KeyValuePair key="Key1" value="Apache"/>
+        <KeyValuePair key="Key3" value="Log4j"/>
       </MapRewritePolicy>
       <AppenderRef ref="List"/>
     </Rewrite>
@@ -43,11 +43,11 @@
     </Rewrite>
     <Rewrite name="Rewrite3">
       <MapFilter>
-        <KeyValuePair key="Key1" Value="Value1"/>
+        <KeyValuePair key="Key1" value="Value1"/>
       </MapFilter>
       <MapRewritePolicy>
-        <KeyValuePair key="Key1" Value="Apache"/>
-        <KeyValuePair key="Key3" Value="Log4j"/>
+        <KeyValuePair key="Key1" value="Apache"/>
+        <KeyValuePair key="Key3" value="Log4j"/>
       </MapRewritePolicy>
       <AppenderRef ref="List"/>
     </Rewrite>

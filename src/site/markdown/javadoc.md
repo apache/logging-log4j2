@@ -20,7 +20,7 @@
 
 The table below contains links to the Javadoc API Documentation for the components you are most likely to use directly in code.
 
-Component | Description
---------- | -----------
-[API](javadoc/log4j-api/index.html) | The interface that applications should use and code against.
-[Implementation](javadoc/log4j-core/index.html) | The standard implementation, also called the Log4j 2 Core, that contains Appenders, Filters, and more.
+| Component                                       | Description                                                                                            |
+|-------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| [API](javadoc/log4j-api/index.html)             | The interface that applications should use and code against.                                           |
+| [Implementation](javadoc/log4j-core/index.html) | The standard implementation, also called the Log4j 2 Core, that contains Appenders, Filters, and more. |

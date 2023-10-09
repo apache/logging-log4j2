@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.spi.LoggingEvent;
 
+import static org.awaitility.Awaitility.waitAtMost;
+
 /**
  * Used to test Log4j 1 support.
  */
@@ -74,10 +76,7 @@ public class ListAppender extends AppenderSkeleton {
      * what we have so far.
      */
     public List<String> getMessages(final int minSize, final long timeout, final TimeUnit timeUnit) throws InterruptedException {
-        final long endMillis = System.currentTimeMillis() + timeUnit.toMillis(timeout);
-        while (messages.size() < minSize && System.currentTimeMillis() < endMillis) {
-            Thread.sleep(100);
-        }
+        waitAtMost(timeout, timeUnit).until(() -> messages.size() >= minSize);
         return getMessages();
     }
 

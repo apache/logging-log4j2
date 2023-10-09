@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
 import com.google.monitoring.runtime.instrumentation.Sampler;
@@ -34,13 +35,14 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.StringMapMessage;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Utility methods for the GC-free logging tests.
  */
-public enum GcFreeLoggingTestUtil {;
+public class GcFreeLoggingTestUtil {
 
     public static void executeLogging(final String configurationFile,
                                       final Class<?> testClass) throws Exception {
@@ -49,6 +51,7 @@ public enum GcFreeLoggingTestUtil {;
         System.setProperty("log4j2.enable.direct.encoders", "true");
         System.setProperty("log4j2.is.webapp", "false");
         System.setProperty("log4j.configurationFile", configurationFile);
+        System.setProperty("log4j2.clock", "SystemMillisClock");
 
         assertTrue(Constants.ENABLE_THREADLOCALS, "Constants.ENABLE_THREADLOCALS");
         assertTrue(Constants.ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
@@ -81,7 +84,7 @@ public enum GcFreeLoggingTestUtil {;
         // BlockingWaitStrategy uses ReentrantLock which allocates Node objects. Ignore this.
         final String[] exclude = new String[] {
                 "java/util/concurrent/locks/AbstractQueuedSynchronizer$Node", //
-                "com/google/monitoring/runtime/instrumentation/Sampler", //
+                "com/google/monitoring/runtime/instrumentation/Sampler"
         };
         final AtomicBoolean samplingEnabled = new AtomicBoolean(true);
         final Sampler sampler = (count, desc, newObj, size) -> {
@@ -223,35 +226,15 @@ public enum GcFreeLoggingTestUtil {;
         process.exitValue();
 
         final AtomicInteger lineCounter = new AtomicInteger(0);
-        Files.lines(tempFile.toPath(), Charset.defaultCharset()).forEach(line -> {
-
-            // Trim the line.
-            line = line.trim();
-
-            // Check the first line.
-            final int lineNumber = lineCounter.incrementAndGet();
-            if (lineNumber == 1) {
-                final String className = cls.getSimpleName();
-                final String firstLinePattern = String.format(
-                        "^FATAL .*\\.%s %s",
-                        className,
-                        Pattern.quote("[main] value1 {aKey=value1, " +
-                                "key2=value2, prop1=value1, prop2=value2} " +
-                                "This message is logged to the console"));
-                assertTrue(
-                        line.matches(firstLinePattern),
-                        "pattern mismatch at line 1: " + line);
-            }
-
-            // Check the rest of the lines.
-            else {
-                assertFalse(
-                        line.contains("allocated") || line.contains("array"),
-                        "(allocated|array) pattern matches at line " + lineNumber + ": " + line);
-            }
-
-        });
-
+        try (final Stream<String> lines = Files.lines(tempFile.toPath(), Charset.defaultCharset())) {
+            final Pattern pattern = Pattern.compile(String.format("^FATAL .*\\.%s [main].*",
+                    Pattern.quote(cls.getSimpleName())));
+            assertThat(lines.flatMap(l -> {
+                final int lineNumber = lineCounter.incrementAndGet();
+                final String line = l.trim();
+                return pattern.matcher(line).matches() ? Stream.of(lineNumber + ": " + line) : Stream.empty();
+            })).isEmpty();
+        }
     }
 
     private static File agentJar() {

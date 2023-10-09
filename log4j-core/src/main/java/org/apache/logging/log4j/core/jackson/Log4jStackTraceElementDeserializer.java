@@ -27,7 +27,8 @@ import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import org.apache.logging.log4j.core.util.Integers;
 
 /**
- * Copy and edit the Jackson (Apache License 2.0) class to use Log4j attribute names. Does not work as of Jackson 2.3.2.
+ * Used by Jackson to deserialize a {@link StackTraceElement}. Serialization is
+ * performed by {@link StackTraceElementMixIn}.
  * <p>
  * <em>Consider this class private.</em>
  * </p>
@@ -53,27 +54,38 @@ public final class Log4jStackTraceElementDeserializer extends StdScalarDeseriali
 
             while ((t = jp.nextValue()) != JsonToken.END_OBJECT) {
                 final String propName = jp.getCurrentName();
-                if ("class".equals(propName)) {
-                    className = jp.getText();
-                } else if ("file".equals(propName)) {
-                    fileName = jp.getText();
-                } else if ("line".equals(propName)) {
-                    if (t.isNumeric()) {
-                        lineNumber = jp.getIntValue();
-                    } else {
-                        // An XML number always comes in a string since there is no syntax help as with JSON.
-                        try {
-                            lineNumber = Integers.parseInt(jp.getText());
-                        } catch (final NumberFormatException e) {
-                            throw JsonMappingException.from(jp, "Non-numeric token (" + t + ") for property 'line'", e);
-                        }
+                switch (propName) {
+                    case StackTraceElementConstants.ATTR_CLASS: {
+                        className = jp.getText();
+                        break;
                     }
-                } else if ("method".equals(propName)) {
-                    methodName = jp.getText();
-                } else if ("nativeMethod".equals(propName)) {
-                    // no setter, not passed via constructor: ignore
-                } else {
-                    this.handleUnknownProperty(jp, ctxt, this._valueClass, propName);
+                    case StackTraceElementConstants.ATTR_FILE: {
+                        fileName = jp.getText();
+                        break;
+                    }
+                    case StackTraceElementConstants.ATTR_LINE: {
+                        if (t.isNumeric()) {
+                            lineNumber = jp.getIntValue();
+                        } else {
+                            // An XML number always comes in a string since there is no syntax help as with JSON.
+                            try {
+                                lineNumber = Integers.parseInt(jp.getText());
+                            } catch (final NumberFormatException e) {
+                                throw JsonMappingException.from(jp, "Non-numeric token (" + t + ") for property 'line'", e);
+                            }
+                        }
+                        break;
+                    }
+                    case StackTraceElementConstants.ATTR_METHOD: {
+                        methodName = jp.getText();
+                        break;
+                    }
+                    case "nativeMethod": {
+                        // no setter, not passed via constructor: ignore
+                    }
+                    default: {
+                        this.handleUnknownProperty(jp, ctxt, this._valueClass, propName);
+                    }
                 }
             }
             return new StackTraceElement(className, methodName, fileName, lineNumber);

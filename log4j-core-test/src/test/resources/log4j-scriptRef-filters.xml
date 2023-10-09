@@ -28,14 +28,14 @@
 <Loggers>
   <Logger name="TestJavaScriptFilter" level="trace" additivity="false">
     <AppenderRef ref="List">
-      <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+      <ScriptFilter onMatch="ACCEPT" onMismatch="DENY">
         <ScriptRef ref="filter.js" />
       </ScriptFilter>
     </AppenderRef>
   </Logger>
   <Logger name="TestGroovyFilter" level="trace" additivity="false">
     <AppenderRef ref="List">
-      <ScriptFilter onMatch="ACCEPT" onMisMatch="DENY">
+      <ScriptFilter onMatch="ACCEPT" onMismatch="DENY">
         <ScriptRef ref="filter.groovy" />
       </ScriptFilter>
     </AppenderRef>

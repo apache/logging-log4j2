@@ -37,7 +37,7 @@
 
     <Logger name="org.apache.logging.log4j.test3" level="trace" additivity="false">
       <AppenderRef ref="LIST1" level="trace">
-          <MarkerFilter marker="TEST" onmatch="deny" onmismatch="accept"/>
+          <MarkerFilter marker="TEST" onMatch="deny" onMismatch="accept"/>
       </AppenderRef>
     </Logger>>
 

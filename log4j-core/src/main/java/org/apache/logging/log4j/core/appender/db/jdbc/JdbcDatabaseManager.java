@@ -66,11 +66,11 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     /**
      * Encapsulates data that {@link JdbcDatabaseManagerFactory} uses to create managers.
      */
-    private static final class FactoryData extends AbstractDatabaseManager.AbstractFactoryData {
+    static final class FactoryData extends AbstractDatabaseManager.AbstractFactoryData {
         private final ConnectionSource connectionSource;
         private final String tableName;
         private final ColumnConfig[] columnConfigs;
-        private final ColumnMapping[] columnMappings;
+        final ColumnMapping[] columnMappings;
         private final boolean immediateFail;
         private final boolean retry;
         private final long reconnectIntervalMillis;
@@ -468,7 +468,8 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     // NOTE: prepared statements are prepared in this order: column mappings, then column configs
     private final List<ColumnConfig> columnConfigs;
     private final String sqlStatement;
-    private final FactoryData factoryData;
+    // Used in tests
+    final FactoryData factoryData;
     private volatile Connection connection;
     private volatile PreparedStatement statement;
     private volatile Reconnector reconnector;

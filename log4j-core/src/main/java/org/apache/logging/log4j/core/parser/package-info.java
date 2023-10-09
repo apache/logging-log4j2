@@ -17,4 +17,7 @@
 /**
  * Parsers for the output of various layouts.
  */
+@Export
 package org.apache.logging.log4j.core.parser;
+
+import org.osgi.annotation.bundle.Export;

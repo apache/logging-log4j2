@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.20.1-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>log4j-appserver</artifactId>
@@ -34,7 +34,26 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-appserver</projectDir>
-    <module.name>org.apache.logging.log4j.appserver</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-package-options>
+      <!--
+        ~ The Tomcat Log interface hasn't changed in a long time. Since 8.x ServiceLoader is used.
+        -->
+      org.apache.juli.logging;version="[8.0,12)";resolution:=optional,
+      <!--
+        ~ Jetty's AbstractLogger is available since version 7.6.
+        ~ Jetty 10.x uses SLF4J.
+        -->
+      org.eclipse.jetty.util.log;version="[7.6,10)";resolution:=optional
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Non-transitive -->
+      org.apache.tomcat.juli;transitive=false,
+      org.eclipse.jetty.util;transitive=false
+    </bnd-extra-module-options>
   </properties>
 
   <dependencies>
@@ -53,22 +72,5 @@
       <artifactId>log4j-api</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <!-- we compile against 3.0, but require 2.5 minimum -->
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Import-Package>javax.servlet;version="[2.5,4)",*</Import-Package>
-            <Export-Package>org.apache.logging.log4j.web</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

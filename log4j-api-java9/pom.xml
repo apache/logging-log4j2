@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.20.1-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
   <artifactId>log4j-api-java9</artifactId>
   <packaging>pom</packaging>
@@ -31,6 +31,7 @@
     <docLabel>API Documentation</docLabel>
     <projectDir>/api</projectDir>
     <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.compiler.release>9</maven.compiler.release>
   </properties>
   <dependencies>
     <dependency>
@@ -65,11 +66,19 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <proc>none</proc>
+          <!-- TODO: copy/paste from `logging-parent` to override this module's parent -->
+          <annotationProcessorPaths combine.self="override">
+            <path>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_core</artifactId>
+              <version>${error-prone.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
         <executions>
           <execution>
@@ -77,15 +86,7 @@
             <goals>
               <goal>compile</goal>
             </goals>
-            <phase>compile</phase>
-            <configuration>
-              <jdkToolchain>
-                <version>[9, )</version>
-              </jdkToolchain>
-              <release>9</release>
-            </configuration>
           </execution>
-          <!-- We explicitly compile tests using Java 8 to work around SUREFIRE-2073 -->
           <execution>
             <id>default-test-compile</id>
             <goals>
@@ -93,46 +94,47 @@
             </goals>
             <phase>test-compile</phase>
           </execution>
-          <!-- Of course the 'module-info.java' needs Java 9 -->
-          <execution>
-            <id>test-compile-module</id>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-            <phase>test-compile</phase>
-            <configuration>
-              <jdkToolchain>
-                <version>[9, )</version>
-              </jdkToolchain>
-              <release>9</release>
-              <compileSourceRoots>
-                <compileSourceRoot>${project.basedir}/src/test/java9</compileSourceRoot>
-              </compileSourceRoots>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <systemPropertyVariables>
-            <java.awt.headless>true</java.awt.headless>
-          </systemPropertyVariables>
-          <jdkToolchain>
-            <version>[9, )</version>
-          </jdkToolchain>
-        </configuration>
         <executions>
           <execution>
             <id>test</id>
             <goals>
               <goal>test</goal>
             </goals>
-            <phase>test</phase>
           </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>java8-tests</id>
+      <activation>
+        <property>
+          <name>env.CI</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration combine.self="override">
+              <reuseForks>false</reuseForks>
+              <systemPropertyVariables>
+                <java.awt.headless>true</java.awt.headless>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

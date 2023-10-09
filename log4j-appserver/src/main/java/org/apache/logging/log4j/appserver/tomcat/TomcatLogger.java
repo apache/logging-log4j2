@@ -20,6 +20,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.juli.logging.Log;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -41,6 +43,7 @@ import org.apache.logging.log4j.spi.LoggerContext;
  *
  * @since 2.10.0
  */
+@ServiceProvider(value = Log.class, resolution = Resolution.OPTIONAL)
 public class TomcatLogger implements Log {
 
     private static final long serialVersionUID = 1L;

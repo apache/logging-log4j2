@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.20.1-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
   <artifactId>log4j-api-test</artifactId>
   <packaging>jar</packaging>
@@ -30,6 +30,32 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>API Documentation</docLabel>
     <projectDir>/api</projectDir>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.logging.log4j.test</bnd-module-name>
+    <bnd-extra-package-options>
+      <!-- Both JUnit 4 and JUnit 5 are not required -->
+      org.junit.*;resolution:=optional,
+      org.hamcrest.*;resolution:=optional,
+      org.junitpioneer.*;resolution:=optional,
+      org.apache.maven.*;resolution:=optional,
+      org.codehaus.plexus.util.*;resolution:=optional,
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Non-transitive static modules -->
+      junit;transitive=false,
+      org.hamcrest;transitive=false,
+      org.junit.jupiter.api;transitive=false,
+      org.junitpioneer;transitive=false,
+      <!-- Filebased module names: MUST be static -->
+      maven.core;substitute="maven-core";transitive=false;static=true,
+      maven.model;substitute="maven-model";transitive=false;static=true,
+      maven.model.builder;substitute="maven-model-builder";transitive=false;static=true,
+      plexus.utils;substitute="plexus-utils";transitive=false;static=true
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
   <dependencies>
     <dependency>
@@ -52,6 +78,11 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.junit-pioneer</groupId>
@@ -80,11 +111,6 @@
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-migrationsupport</artifactId>
       <scope>test</scope>
     </dependency>
@@ -106,72 +132,15 @@
   </dependencies>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.api</Fragment-Host>
-            <Export-Package>org.apache.logging.log4j.*</Export-Package>
-            <Import-Package />
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-compile</id>
-            <!-- recompile everything for target VM except the module-info.java -->
-            <configuration>
-              <source>1.8</source>
-              <target>1.8</target>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-jar</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration combine.self="override">
-              <archive>
-                <manifestFile>${manifestfile}</manifestFile>
-                <manifestEntries>
-                  <Specification-Title>${project.name}</Specification-Title>
-                  <Specification-Version>${project.version}</Specification-Version>
-                  <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                  <Implementation-Title>${project.name}</Implementation-Title>
-                  <Implementation-Version>${project.version}</Implementation-Version>
-                  <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                  <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-                  <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                  <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                  <Multi-Release>true</Multi-Release>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <excludedGroups>performance,smoke</excludedGroups>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 </project>

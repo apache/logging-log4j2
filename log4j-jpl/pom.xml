@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>2.20.1-SNAPSHOT</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>log4j-jpl</artifactId>
@@ -30,8 +30,7 @@
   <properties>
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <module.name>org.apache.logging.log4j.jpl</module.name>
-    <!-- Do not upgrade until https://issues.apache.org/jira/browse/SUREFIRE-2073 is fixed -->
-    <surefire.version>2.13</surefire.version>
+    <maven.compiler.release>11</maven.compiler.release>
   </properties>
 
   <dependencies>
@@ -66,104 +65,26 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>org.apache.logging.log4j.jpl</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>11</source>
-          <target>11</target>
-          <release>11</release>
-          <proc>none</proc>
-          <!-- disable errorprone -->
-          <compilerId>javac</compilerId>
-        </configuration>
-        <executions>
-          <execution>
-            <id>default-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>compile</phase>
-          </execution>
-          <execution>
-            <id>default-testCompile</id>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-            <phase>test-compile</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes combine.self="override" />
-        </configuration>
-        <executions>
-          <execution>
-            <id>test</id>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <phase>test</phase>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-toolchains-plugin</artifactId>
-        <configuration>
-          <toolchains>
-            <jdk>
-              <version>[11, )</version>
-            </jdk>
-          </toolchains>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>toolchain</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
   <profiles>
     <profile>
-      <id>java11-module</id>
+      <id>java8-tests</id>
       <activation>
-        <jdk>[11,)</jdk>
+        <property>
+          <name>env.CI</name>
+          <value>true</value>
+        </property>
       </activation>
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <!-- Disable forked VM as 2.21 yields https://issues.apache.org/jira/browse/SUREFIRE-720 -->
-            <configuration combine.self="override" />
-            <executions>
-              <execution>
-                <id>test</id>
-                <goals>
-                  <goal>test</goal>
-                </goals>
-                <phase>test</phase>
-              </execution>
-            </executions>
+            <configuration combine.self="override">
+              <reuseForks>false</reuseForks>
+              <systemPropertyVariables>
+                <java.awt.headless>true</java.awt.headless>
+              </systemPropertyVariables>
+            </configuration>
           </plugin>
         </plugins>
       </build>

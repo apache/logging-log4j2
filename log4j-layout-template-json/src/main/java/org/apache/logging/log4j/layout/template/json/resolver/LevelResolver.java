@@ -140,8 +140,14 @@ public final class LevelResolver implements EventResolver {
                             contextJsonWriter.writeString(name);
                         })));
         return (final LogEvent logEvent, final JsonWriter jsonWriter) -> {
-            final String resolution = resolutionByLevel.get(logEvent.getLevel());
-            jsonWriter.writeRawString(resolution);
+            final Level level = logEvent.getLevel();
+            final String resolution = resolutionByLevel.get(level);
+            if (resolution != null) {
+                jsonWriter.writeRawString(resolution);
+            } else {
+                final String levelName = level.name();
+                jsonWriter.writeString(levelName);
+            }
         };
     }
 

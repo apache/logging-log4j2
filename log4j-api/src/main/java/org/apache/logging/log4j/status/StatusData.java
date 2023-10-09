@@ -25,7 +25,7 @@ import java.util.Date;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.Message;
 
-import static org.apache.logging.log4j.util.Chars.*;
+import static org.apache.logging.log4j.util.Chars.SPACE;
 
 /**
  * The Status data.
@@ -141,5 +141,13 @@ public class StatusData implements Serializable {
             sb.append(baos.toString());
         }
         return sb.toString();
+    }
+
+    /**
+     * Used in tests
+     */
+    @Override
+    public String toString() {
+        return getMessage().getFormattedMessage();
     }
 }

@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.junit.jupiter.api.Test;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.CONFIGURATION;
+import static org.apache.logging.log4j.layout.template.json.TestHelpers.JAVA_BASE_PREFIX;
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.usingSerializedLogEventAccessor;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -88,7 +89,7 @@ class GcpLayoutTest {
                         .contains(logEvent.getMessage().getFormattedMessage())
                         .contains(exception.getLocalizedMessage())
                         .contains("at org.apache.logging.log4j.layout.template.json")
-                        .contains("at java.lang.reflect.Method")
+                        .contains("at " + JAVA_BASE_PREFIX + "java.lang.reflect.Method")
                         .contains("at org.junit.platform.engine");
             }
 
@@ -158,7 +159,7 @@ class GcpLayoutTest {
                         new String[]{"_exception", "stackTrace"}))
                         .contains(exception.getLocalizedMessage())
                         .contains("at org.apache.logging.log4j.layout.template.json")
-                        .contains("at java.lang.reflect.Method")
+                        .contains("at " + JAVA_BASE_PREFIX + "java.lang.reflect.Method")
                         .contains("at org.junit.platform.engine");
 
             } else {

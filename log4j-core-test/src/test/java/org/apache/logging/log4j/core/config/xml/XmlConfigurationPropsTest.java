@@ -16,80 +16,74 @@
  */
 package org.apache.logging.log4j.core.config.xml;
 
-import org.apache.logging.log4j.core.LoggerContext;
+import java.util.stream.StreamSupport;
+
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.status.StatusConsoleListener;
+import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.junit.jupiter.api.AfterAll;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.apache.logging.log4j.test.junit.UsingTestProperties;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
+import static org.assertj.core.api.Assertions.assertThat;
 
+@UsingTestProperties
 public class XmlConfigurationPropsTest {
 
-    private static final String CONFIG = "log4j-props.xml";
-    private static final String CONFIG1 = "log4j-props1.xml";
+    private static final String CONFIG_NAME = "XmlConfigurationPropsTest";
+    private static final String CONFIG1 = "org/apache/logging/log4j/core/config/xml/XmlConfigurationPropsTest1.xml";
+    private static final String CONFIG1_NAME = "XmlConfigurationPropsTest1";
 
-    @AfterAll
-    public static void cleanupClass() {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.reconfigure();
-        StatusLogger.getLogger().reset();
+    private static StatusConsoleListener findStatusConsoleListener() {
+        final Iterable<StatusListener> listeners = StatusLogger.getLogger().getListeners();
+        return StreamSupport.stream(listeners.spliterator(), false)
+                .filter(StatusConsoleListener.class::isInstance)
+                .map(StatusConsoleListener.class::cast)
+                .findAny()
+                .orElseThrow(() -> new AssertionFailedError("Missing console status listener."));
+    }
+
+    private void testConfiguration(final Configuration config,
+                                   final String expectedConfigName,
+                                   final Level expectedStatusLevel,
+                                   final Level expectedRootLevel) {
+        assertThat(config).isInstanceOf(XmlConfiguration.class)
+                .extracting(Configuration::getName)
+                .isEqualTo(expectedConfigName);
+        assertThat(config.getRootLogger().getExplicitLevel()).isEqualTo(expectedRootLevel);
+        assertThat(findStatusConsoleListener().getStatusLevel()).isEqualTo(expectedStatusLevel);
     }
 
     @Test
-    public void testNoProps() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.reconfigure();
-        final Configuration config = ctx.getConfiguration();
-        assertThat(config, instanceOf(XmlConfiguration.class));
+    @LoggerContextSource
+    public void testNoProps(final Configuration config) {
+        testConfiguration(config, CONFIG_NAME, Level.ERROR, null);
     }
 
     @Test
-    public void testDefaultStatus() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG1);
-        System.setProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL, "WARN");
-        try {
-            final LoggerContext ctx = LoggerContext.getContext();
-            ctx.reconfigure();
-            final Configuration config = ctx.getConfiguration();
-            assertThat(config, instanceOf(XmlConfiguration.class));
-        } finally {
-            System.clearProperty(Constants.LOG4J_DEFAULT_STATUS_LEVEL);
-        }
+    @SetTestProperty(key = Constants.LOG4J_DEFAULT_STATUS_LEVEL, value = "WARN")
+    @LoggerContextSource(value = CONFIG1)
+    public void testDefaultStatus(final Configuration config) {
+        testConfiguration(config, CONFIG1_NAME, Level.WARN, null);
     }
 
     @Test
-    public void testWithConfigProp() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        System.setProperty("log4j.level", "warn");
-        try {
-            final LoggerContext ctx = LoggerContext.getContext();
-            ctx.reconfigure();
-            final Configuration config = ctx.getConfiguration();
-            assertThat(config, instanceOf(XmlConfiguration.class));
-        } finally {
-            System.clearProperty("log4j.level");
-        }
+    @SetTestProperty(key = "status.level", value = "INFO")
+    @LoggerContextSource
+    public void testWithConfigProp(final Configuration config) {
+        testConfiguration(config, CONFIG_NAME, Level.INFO, null);
     }
 
     @Test
-    public void testWithProps() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
-        System.setProperty("log4j.level", "warn");
-        System.setProperty("log.level", "warn");
-        try {
-            final LoggerContext ctx = LoggerContext.getContext();
-            ctx.reconfigure();
-            final Configuration config = ctx.getConfiguration();
-            assertThat(config, instanceOf(XmlConfiguration.class));
-        } finally {
-            System.clearProperty("log4j.level");
-            System.clearProperty("log.level");
-        }
+    @SetTestProperty(key = "status.level", value = "INFO")
+    @SetTestProperty(key = "root.level", value = "DEBUG")
+    @LoggerContextSource
+    public void testWithProps(final Configuration config) {
+        testConfiguration(config, CONFIG_NAME, Level.INFO, Level.DEBUG);
     }
 }

@@ -16,11 +16,14 @@
  */
 package org.apache.logging.slf4j;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.spi.Provider;
 
 /**
  * Bind the Log4j API to SLF4J.
  */
+@ServiceProvider(value = Provider.class, resolution = Resolution.OPTIONAL)
 public class SLF4JProvider extends Provider {
     public SLF4JProvider() {
         super(15, "2.6.0", SLF4JLoggerContextFactory.class, MDCContextMap.class);

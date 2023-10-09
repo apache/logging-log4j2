@@ -20,4 +20,7 @@
  *
  * @since 2.4
  */
+@Export
 package org.apache.logging.log4j.core.appender.mom.kafka;
+
+import org.osgi.annotation.bundle.Export;
