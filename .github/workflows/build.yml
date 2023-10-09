@@ -48,23 +48,19 @@ jobs:
     needs: build
     if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x'
     uses: apache/logging-parent/.github/workflows/deploy-snapshot-reusable.yaml@main
-    with:
-      java-version: |
-        8
-        11
     # Secrets for deployments
     secrets:
       NEXUS_USER: ${{ secrets.NEXUS_USER }}
       NEXUS_PW: ${{ secrets.NEXUS_PW }}
+    with:
+      java-version: |
+        8
+        11
 
   deploy-release:
     needs: build
     if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/')
     uses: apache/logging-parent/.github/workflows/deploy-release-reusable.yaml@main
-    with:
-      java-version: |
-        8
-        11
     # Secrets for deployments
     secrets:
       GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
@@ -76,6 +72,9 @@ jobs:
     permissions:
       contents: write
     with:
+      java-version: |
+        8
+        11
       project-id: log4j2
       distribution-attachment-filepath-pattern: |-
         '^.*/target/log4j-(1\\.2-api|api(-test)?|appserver|cassandra|core(-test)?|couchdb|docker|flume-ng|iostreams|jakarta-(smtp|web)|jcl|jdbc-dbcp2|jpa|jpl|jul|kubernetes|layout-template-json|mongodb[34]|slf4j2?-impl|spring-(boot|cloud-config-client)|taglib|to-(jul|slf4j)|web)-'${PROJECT_VERSION}'(-sources)?\\.jar$'
