@@ -19,7 +19,6 @@ package org.apache.logging.log4j.core.util.datetime;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +37,9 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.status.StatusLogger;
 
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
@@ -79,7 +79,6 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
  * @see FastDatePrinter
  */
 public class FastDateParser implements DateParser, Serializable {
-
     /**
      * Required for serialization support.
      *
@@ -102,7 +101,7 @@ public class FastDateParser implements DateParser, Serializable {
     // comparator used to sort regex alternatives
     // alternatives should be ordered longer first, and shorter last. ('february' before 'feb')
     // all entries must be lowercase by locale.
-    private static final Comparator<String> LONGER_FIRST_LOWERCASE = (left, right) -> right.compareTo(left);
+    private static final Comparator<String> LONGER_FIRST_LOWERCASE = Comparator.reverseOrder();
 
     /**
      * <p>Constructs a new FastDateParser.</p>
@@ -552,7 +551,7 @@ public class FastDateParser implements DateParser, Serializable {
 
     /**
      * Obtain a Strategy given a field from a SimpleDateFormat pattern
-     * @param formatField A sub-sequence of the SimpleDateFormat pattern
+     * @param f A sub-sequence of the SimpleDateFormat pattern
      * @param definingCalendar The calendar to obtain the short and long values
      * @return The Strategy that will handle parsing for the field
      */
@@ -720,7 +719,7 @@ public class FastDateParser implements DateParser, Serializable {
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
             final Integer iVal = lKeyValues.get(value.toLowerCase(locale));
-            cal.set(field, iVal.intValue());
+            cal.set(field, iVal);
         }
     }
 
@@ -813,11 +812,9 @@ public class FastDateParser implements DateParser, Serializable {
      * A strategy that handles a timezone field in the parsing pattern
      */
     static class TimeZoneStrategy extends PatternStrategy {
-        private static final String RFC_822_TIME_ZONE = "[+-]\\d{4}";
-        private static final String GMT_OPTION= "GMT[+-]\\d{1,2}:\\d{2}";
-
+        static final Logger LOGGER = StatusLogger.getLogger();
         private final Locale locale;
-        private final Map<String, TzInfo> tzNames= new HashMap<>();
+        private volatile Map<String, TzInfo> tzNames;
 
         private static class TzInfo {
             TimeZone zone;
@@ -830,61 +827,42 @@ public class FastDateParser implements DateParser, Serializable {
         }
 
         /**
-         * Index of zone id
-         */
-        private static final int ID = 0;
-
-        /**
          * Construct a Strategy that parses a TimeZone
          * @param locale The Locale
          */
         TimeZoneStrategy(final Locale locale) {
             this.locale = locale;
+            createPattern("([A-Za-z0-9/\\s\\+\\-]+)");
+        }
 
-            final StringBuilder sb = new StringBuilder();
-            sb.append("((?iu)" + RFC_822_TIME_ZONE + "|" + GMT_OPTION );
+        private TzInfo getTzName(Locale locale, String value) {
+            if (tzNames == null) {
+                synchronized (this) {
+                    if (tzNames == null) {
+                        LOGGER.warn("Date pattern uses literal timezone '" + value + "'. Use of GMT or RFC 822 offsets is preferred.");
 
-            final Set<String> sorted = new TreeSet<>(LONGER_FIRST_LOWERCASE);
+                        String[] tzIds = TimeZone.getAvailableIDs();
+                        Map<String, TzInfo> map = new HashMap<>(tzIds.length * 4);
+                        for (final String tzId : tzIds) {
+                            if (tzId.equalsIgnoreCase("GMT")) {
+                                continue;
+                            }
+                            final TimeZone tz = TimeZone.getTimeZone(tzId);
+                            final TzInfo standard = new TzInfo(tz, false);
+                            final TzInfo dst = new TzInfo(tz, true);
 
-            final String[][] zones = DateFormatSymbols.getInstance(locale).getZoneStrings();
-            for (final String[] zoneNames : zones) {
-                // offset 0 is the time zone ID and is not localized
-                final String tzId = zoneNames[ID];
-                if (tzId.equalsIgnoreCase("GMT")) {
-                    continue;
-                }
-                final TimeZone tz = TimeZone.getTimeZone(tzId);
-                // offset 1 is long standard name
-                // offset 2 is short standard name
-                final TzInfo standard = new TzInfo(tz, false);
-                TzInfo tzInfo = standard;
-                for (int i = 1; i < zoneNames.length; ++i) {
-                    switch (i) {
-                    case 3: // offset 3 is long daylight savings (or summertime) name
-                            // offset 4 is the short summertime name
-                        tzInfo = new TzInfo(tz, true);
-                        break;
-                    case 5: // offset 5 starts additional names, probably standard time
-                        tzInfo = standard;
-                        break;
-                    }
-                    if (zoneNames[i] != null) {
-                        final String key = zoneNames[i].toLowerCase(locale);
-                        // ignore the data associated with duplicates supplied in
-                        // the additional names
-                        if (sorted.add(key)) {
-                            tzNames.put(key, tzInfo);
+                            for (boolean daylight : new Boolean[]{false, true}) {
+                                for (int style : new Integer[]{TimeZone.SHORT, TimeZone.LONG}) {
+                                    String name = tz.getDisplayName(daylight, style, locale).toLowerCase(locale);
+                                    map.putIfAbsent(name, daylight ? dst : standard);
+                                }
+                            }
                         }
+                        tzNames = map;
                     }
                 }
             }
-            // order the regex alternatives with longer strings first, greedy
-            // match will ensure longest string will be consumed
-            for (final String zoneName : sorted) {
-                simpleQuote(sb.append('|'), zoneName);
-            }
-            sb.append(")");
-            createPattern(sb);
+            return tzNames.get(value.toLowerCase(locale));
         }
 
         /**
@@ -899,7 +877,7 @@ public class FastDateParser implements DateParser, Serializable {
                 final TimeZone tz = TimeZone.getTimeZone(toRootUpperCase(value));
                 cal.setTimeZone(tz);
             } else {
-                final TzInfo tzInfo = tzNames.get(value.toLowerCase(locale));
+                final TzInfo tzInfo = getTzName(locale, value);
                 cal.set(Calendar.DST_OFFSET, tzInfo.dstOffset);
                 cal.set(Calendar.ZONE_OFFSET, tzInfo.zone.getRawOffset());
             }
