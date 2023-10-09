@@ -36,7 +36,7 @@ jobs:
     needs: build
     uses: apache/logging-parent/.github/workflows/merge-dependabot-reusable.yaml@main
     permissions:
-      contents: write                                     # to push changelog commits
-      pull-requests: write                                # to close the PR
+      contents: write                                             # to push changelog commits
+      pull-requests: write                                        # to close the PR
     secrets:
-      GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}       # to sign commits
+      GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}       # to sign commits
