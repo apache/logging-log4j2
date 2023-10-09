@@ -18,7 +18,7 @@
 [#release-notes-2-21-0]
 == 2.21.0
 
-Release date:: 2023-10-06
+Release date:: 2023-10-09
 
 This release primarily focuses on enhancements to our OSGi and JPMS support and contains several bug fixes.
 It will be the first release built and signed by the CI using the https://keyserver.ubuntu.com/pks/lookup?search=077E8893A6DCC33DD4A4D5B256E73BA9A0B592D0&op=index[ASF Logging Services Release Manager GPG key], which is shared in https://www.apache.org/dist/logging/KEYS[KEYS].
@@ -110,6 +110,7 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 * Implemented `LocationAware` for `JsonTemplateLayout`, since this was causing location not being passed to underlying appenders (https://github.com/apache/logging-log4j2/issues/1692[1692])
 * Added support for `long` values in MongoDb 4 appender to configure `collectionSize` (https://github.com/apache/logging-log4j2/issues/1747[1747])
 * Only shutdown Log4j after last `Log4jServletContextListener` is executed. (https://github.com/apache/logging-log4j2/issues/1782[1782])
+* Allow using Spring Arbiter without a Spring environment. (https://github.com/apache/logging-log4j2/issues/1783[1783])
 * Fixed context data loss if `<AsyncLogger>` components are used with an all async logger context (https://github.com/apache/logging-log4j2/issues/1786[1786])
 * Fixed `JsonTemplateLayout` NPE thrown on custom log levels (https://github.com/apache/logging-log4j2/issues/1805[1805])
 * Improved `Log4j-config.xsd` schema (https://issues.apache.org/jira/browse/LOG4J2-170[LOG4J2-170])
