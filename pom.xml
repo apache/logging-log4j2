@@ -877,6 +877,7 @@
               <goal>run</goal>
             </goals>
             <phase>generate-sources</phase>
+            <inherited>false</inherited>
             <configuration>
               <target>
                 <copy file="${project.basedir}/src/site/_release-notes.adoc" overwrite="true" tofile="${project.build.directory}/generated-sources/site/asciidoc/release-notes.adoc" />
@@ -889,7 +890,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <inherited>false</inherited>
         <executions>
           <execution>
             <id>team-list</id>
