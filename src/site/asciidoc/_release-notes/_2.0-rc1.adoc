@@ -1,0 +1,120 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-0-rc1]
+== 2.0-rc1
+
+Release date:: 2014-02-16
+
+
+=== Added
+
+* Configure FileAppender buffer size. (https://issues.apache.org/jira/browse/LOG4J2-401[LOG4J2-401])
+* Configure RandomAccessFileAppender buffer size. (https://issues.apache.org/jira/browse/LOG4J2-402[LOG4J2-402])
+* Format log event time as UNIX time (seconds or milliseconds). (https://issues.apache.org/jira/browse/LOG4J2-415[LOG4J2-415])
+* Create a lookup for resource bundle substitution. (https://issues.apache.org/jira/browse/LOG4J2-420[LOG4J2-420])
+* (JMX) Added MBeans for instrumenting AsyncAppenders and AsyncLogger RingBuffers, exposing queue size, remaining capacity and other attributes. (https://issues.apache.org/jira/browse/LOG4J2-423[LOG4J2-423])
+* Added option to toggle Thread name caching in AsyncLogger. (https://issues.apache.org/jira/browse/LOG4J2-467[LOG4J2-467])
+* ThreadContext now uses plain ThreadLocal by default, unless system property isThreadContextMapInheritable has value "true". (https://issues.apache.org/jira/browse/LOG4J2-479[LOG4J2-479])
+* Add Stream interface to Loggers. (https://issues.apache.org/jira/browse/LOG4J2-481[LOG4J2-481])
+* Documentation fix: The attribute of Route to refer to an appender is "ref" not "AppenderRef". (https://issues.apache.org/jira/browse/LOG4J2-482[LOG4J2-482])
+* (JMX) JMX Client GUI should dynamically update when LoggerContext MBeans are registered/unregistered in MBean server. (https://issues.apache.org/jira/browse/LOG4J2-530[LOG4J2-530])
+
+=== Changed
+
+* PatternLayout option to not output ANSI escape codes if no Console is available. (https://issues.apache.org/jira/browse/LOG4J2-413[LOG4J2-413])
+* Add support for custom logging levels. (https://issues.apache.org/jira/browse/LOG4J2-41[LOG4J2-41])
+* Update Flume Appender to use Flume 1.4.0. (https://issues.apache.org/jira/browse/LOG4J2-453[LOG4J2-453])
+* Update EasyMock to version 3.2. (https://issues.apache.org/jira/browse/LOG4J2-490[LOG4J2-490])
+* Space Level numbers by 100 instead of 1. (https://issues.apache.org/jira/browse/LOG4J2-507[LOG4J2-507])
+* Rename package org.apache.logging.log4j.core.appender.rolling.helper to org.apache.logging.log4j.core.appender.rolling.action. (https://issues.apache.org/jira/browse/LOG4J2-528[LOG4J2-528])
+* Resource leak in Flume appender when it cannot create a BerkeleyDB db. (https://issues.apache.org/jira/browse/LOG4J2-532[LOG4J2-532])
+* Renamed the org.apache.logging.log4j.core.appender.db.nosql.couch package to org.apache.logging.log4j.core.appender.db.nosql.couchdb.
+
+=== Removed
+
+* Removed the DataSourceConnectionSource and the <DriverManager> plugin for the JDBC Appender. It is not safe to use. Please use the DataSource or factory connection sources backed by a connection pool.
+
+=== Fixed
+
+* Resolved memory leak by releasing reference to ThreadLocal when AsyncLogger is stopped. (https://issues.apache.org/jira/browse/LOG4J2-323[LOG4J2-323])
+* Changed the Servlet 3.0 auto-initializer to add the filter by class to get around a WebLogic bug. (https://issues.apache.org/jira/browse/LOG4J2-344[LOG4J2-344])
+* (OSGi) logging.log4j-1.2-api doesn't export the log4j API 1.2. Dependent bundles can not be resolved. (https://issues.apache.org/jira/browse/LOG4J2-345[LOG4J2-345])
+* Changed the Servlet 3.0 auto-initializer so that it does nothing in a Servlet 2.5 or older application. This ensures behavioral consistency across containers. This includes additional fixes to abort initialization if a duplicate filter already exists and to check the actual Servlet EFFECTIVE version. (https://issues.apache.org/jira/browse/LOG4J2-359[LOG4J2-359])
+* (OSGi) Fix NPE during shutdown. (https://issues.apache.org/jira/browse/LOG4J2-377[LOG4J2-377])
+* Fixed issue that prevented Log4J from working in Google App Engine. (https://issues.apache.org/jira/browse/LOG4J2-379[LOG4J2-379])
+* Fixed issues with time-based file rollover (monthly, weekly, hourly and every minute). (https://issues.apache.org/jira/browse/LOG4J2-385[LOG4J2-385])
+* Stop AsyncLoggerConfig Disruptor thread(s), then AsyncAppender thread(s) first before stopping other appenders. (https://issues.apache.org/jira/browse/LOG4J2-392[LOG4J2-392])
+* Configure properties and setup Interpolator before processing rest of configuration. (https://issues.apache.org/jira/browse/LOG4J2-398[LOG4J2-398])
+* @EnterpriseNumber" was missing in the ID of structured data when RFC5424Layout is used (https://issues.apache.org/jira/browse/LOG4J2-404[LOG4J2-404])
+* Configuration was being processed twice at startup. (https://issues.apache.org/jira/browse/LOG4J2-405[LOG4J2-405])
+* (JMX) Unregister all log4j JMX MBeans when the LoggerContext is stopped to allow web application classes to be GC-ed on undeploy. (https://issues.apache.org/jira/browse/LOG4J2-406[LOG4J2-406])
+* Fixed inability to recover from lost database connection in database appenders by connecting (borrowing from pool) on new write internal or on flush. (https://issues.apache.org/jira/browse/LOG4J2-407[LOG4J2-407])
+* Fixed error in documentation code example in manual/eventlogging.html (https://issues.apache.org/jira/browse/LOG4J2-408[LOG4J2-408])
+* Created a utility to properly escape backslashes before creating URIs, and changed URI creation to use the utility instead of instantiating URI directly. (https://issues.apache.org/jira/browse/LOG4J2-409[LOG4J2-409])
+* Fix Event Level / LoggerConfig Level table at the architecture documentation page. (https://issues.apache.org/jira/browse/LOG4J2-417[LOG4J2-417])
+* Resolved memory leak by populating AsyncLoggerConfigHelper ring buffer via EventTranslatorTwoArg, eliminating the need for a ThreadLocal. (https://issues.apache.org/jira/browse/LOG4J2-425[LOG4J2-425])
+* Use the formatted Message in RFC5424Layout for non-StructuredDataMessages. (https://issues.apache.org/jira/browse/LOG4J2-430[LOG4J2-430])
+* Ensured the JDBCAppender commits transactions after a single write or a flush of multiple writes. (https://issues.apache.org/jira/browse/LOG4J2-438[LOG4J2-438])
+* Fixed problem with JDBC and JPA appender connectivity in WebSphere by connecting (borrowing from pool) on new write internal or on flush. (https://issues.apache.org/jira/browse/LOG4J2-442[LOG4J2-442])
+* (JMX) Fixed issue where log4j2 LoggerContext did not show up in JMX GUI or JConsole. (https://issues.apache.org/jira/browse/LOG4J2-443[LOG4J2-443])
+* ResolverUtil cannot find packages in file URLs which include the '+' character. (https://issues.apache.org/jira/browse/LOG4J2-445[LOG4J2-445])
+* XMLLayout does not include marker name. (https://issues.apache.org/jira/browse/LOG4J2-447[LOG4J2-447])
+* Fixed typo in documentation: system property should be log4j2.loggerContextFactory (https://issues.apache.org/jira/browse/LOG4J2-451[LOG4J2-451])
+* Added a ServletContext attribute that, when set to "true", disables Log4j's auto-initialization in Servlet 3.0+ web applications. (https://issues.apache.org/jira/browse/LOG4J2-452[LOG4J2-452])
+* TimeBasedTriggeringPolicy should use event time millis. (https://issues.apache.org/jira/browse/LOG4J2-454[LOG4J2-454])
+* RingBufferLogEvent should return Message timestamp for TimestampMessage messages. (https://issues.apache.org/jira/browse/LOG4J2-455[LOG4J2-455])
+* Fixed failure of JDBC and JPA appender to properly release database connections by connecting (borrowing from pool) on new write internal or on flush. (https://issues.apache.org/jira/browse/LOG4J2-457[LOG4J2-457])
+* Set external context when constructing the LoggerContext. (https://issues.apache.org/jira/browse/LOG4J2-459[LOG4J2-459])
+* Fix LogEvent to never return null Level, fixes LevelPatternConverter.format may throw NPE. (https://issues.apache.org/jira/browse/LOG4J2-462[LOG4J2-462])
+* Fixed documentation for MyApp example application in the Automatic Configuration section (https://issues.apache.org/jira/browse/LOG4J2-463[LOG4J2-463])
+* Support arrays as sub-elements of a JSON configuration. (https://issues.apache.org/jira/browse/LOG4J2-464[LOG4J2-464])
+* Fix LogEvent to never return null Level, fixes ThresholdFilter throws NPE. (https://issues.apache.org/jira/browse/LOG4J2-465[LOG4J2-465])
+* Cannot load log4j2 config file if path contains plus '+' characters. (https://issues.apache.org/jira/browse/LOG4J2-466[LOG4J2-466])
+* hostName property was not being set until after the first configuration element. (https://issues.apache.org/jira/browse/LOG4J2-470[LOG4J2-470])
+* Fixed issue where toString methods that perform logging could deadlock AsyncLogger. (https://issues.apache.org/jira/browse/LOG4J2-471[LOG4J2-471])
+* BaseConfiguration class does not properly implement Configuration interface. (https://issues.apache.org/jira/browse/LOG4J2-472[LOG4J2-472])
+* Changed the MongoDBConnection to add a MongoDB encoding hook instead of a decoding hook. (https://issues.apache.org/jira/browse/LOG4J2-475[LOG4J2-475])
+* NPE in ClassLoaderContextSelector. (https://issues.apache.org/jira/browse/LOG4J2-477[LOG4J2-477])
+* The message and ndc fields are not JavaScript escaped in JSONLayout. (https://issues.apache.org/jira/browse/LOG4J2-478[LOG4J2-478])
+* Fixed issue where toString methods that perform logging could deadlock AsyncAppender. (https://issues.apache.org/jira/browse/LOG4J2-485[LOG4J2-485])
+* Fixed the JPAAppender's overuse of transactions by connecting (borrowing from pool) on new write internal or on flush. (https://issues.apache.org/jira/browse/LOG4J2-489[LOG4J2-489])
+* (JMX) Fixed MalformedObjectNameException if context name contains '=' or newline characters. (https://issues.apache.org/jira/browse/LOG4J2-492[LOG4J2-492])
+* (JMX - ObjectNames changed!) Unloading one web application unloads JMX MBeans for all web applications. (https://issues.apache.org/jira/browse/LOG4J2-500[LOG4J2-500])
+* Stop AsyncLoggerConfig Disruptor thread(s), then AsyncAppender thread(s) first before stopping other appenders. (https://issues.apache.org/jira/browse/LOG4J2-511[LOG4J2-511])
+* Exposed Log4j web support interface and methods and the LoggerContext through ServletContext attributes so that threads not affected by filters (such as asynchronous threads) can utilize the LoggerContext. Also updated the Log4j filter so that it supports async. (https://issues.apache.org/jira/browse/LOG4J2-512[LOG4J2-512])
+* Switch in log4j-1.2-api Category.getEffectiveLevel has no cases for FATAL, OFF. (https://issues.apache.org/jira/browse/LOG4J2-517[LOG4J2-517])
+* LocalizedMessage serialization is broken. (https://issues.apache.org/jira/browse/LOG4J2-523[LOG4J2-523])
+* Fixed bugs where rolled log files were overwritten by RollingFile appender with composite time and size based policies. (https://issues.apache.org/jira/browse/LOG4J2-531[LOG4J2-531])

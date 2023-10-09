@@ -1,0 +1,85 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-4-1]
+== 2.4.1
+
+Release date:: 2015-10-08
+
+This is the ninth GA release.
+It contains several bugfixes and new features.
+Log4j 2 requires a minimum of Java 7.
+
+Apache Log4j 2.4.1 requires a minimum of Java 7 to build and run.
+Log4j 2.4 and greater requires Java 7, version 2.3 required Java 6.
+
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Add possibility to set shutdown timeout on AsyncAppender. (https://issues.apache.org/jira/browse/LOG4J2-1020[LOG4J2-1020])
+* Allow PatternLayout to select a pattern to use based on some selection criteria. (https://issues.apache.org/jira/browse/LOG4J2-1129[LOG4J2-1129])
+* Add %equals to PatternLayout to test and replace patterns with strings. (https://issues.apache.org/jira/browse/LOG4J2-1145[LOG4J2-1145])
+* Add %notEmpty to PatternLayout to avoid output of patterns where all variables are empty. (https://issues.apache.org/jira/browse/LOG4J2-1146[LOG4J2-1146])
+* Add %equalsIgnoreCase to PatternLayout to test and replace patterns with strings. (https://issues.apache.org/jira/browse/LOG4J2-1147[LOG4J2-1147])
+
+=== Changed
+
+* Update MongoDB driver from 2.13.3 to 3.0.4. (https://issues.apache.org/jira/browse/LOG4J2-1040[LOG4J2-1040])
+* Reuse StringBuilder to improve performance for String-based layouts: CSV, GELF, HTML, RFC524, Syslog. (https://issues.apache.org/jira/browse/LOG4J2-1128[LOG4J2-1128])
+* Update mongo-java-driver from 2.13.2 to 2.13.3. (https://issues.apache.org/jira/browse/LOG4J2-1131[LOG4J2-1131])
+* Do not use Jackson deprecated methods. (https://issues.apache.org/jira/browse/LOG4J2-1138[LOG4J2-1138])
+* Update Jackson from 2.6.1 to 2.6.2. (https://issues.apache.org/jira/browse/LOG4J2-1139[LOG4J2-1139])
+* Update kafka-clients from 0.8.2.1 to 0.8.2.2. (https://issues.apache.org/jira/browse/LOG4J2-1150[LOG4J2-1150])
+* Performance improvement: backport Java 8 fast ISO-8859-1 String to byte[] encoder to AbstractStringLayout. (https://issues.apache.org/jira/browse/LOG4J2-1151[LOG4J2-1151])
+* Performance improvement when converting Strings to byte[] arrays. (https://issues.apache.org/jira/browse/LOG4J2-935[LOG4J2-935])
+
+=== Fixed
+
+* Fixed Log4jLookup. (https://issues.apache.org/jira/browse/LOG4J2-1050[LOG4J2-1050])
+* Web site corrections and updates. (https://issues.apache.org/jira/browse/LOG4J2-1126[LOG4J2-1126])
+* log4j2.xml cannot be parsed on Oracle Weblogic 12c. (https://issues.apache.org/jira/browse/LOG4J2-1127[LOG4J2-1127])
+* Do not use MongoDB driver 2.13.3 deprecated methods. (https://issues.apache.org/jira/browse/LOG4J2-1132[LOG4J2-1132])
+* Compression on rollover was broken: log file was renamed to .zip but not compressed. (https://issues.apache.org/jira/browse/LOG4J2-1135[LOG4J2-1135])
+* Fixed bug where headers were not being written to first file with RollingFileAppender. (https://issues.apache.org/jira/browse/LOG4J2-1140[LOG4J2-1140])
+* Fix potential memory leak in web applications by using a straight ThreadLocal field instead of subclassing ThreadLocal. (https://issues.apache.org/jira/browse/LOG4J2-1142[LOG4J2-1142])
+* Add %markerSimpleName in pattern layout should evaluate to marker name (not toString()). (https://issues.apache.org/jira/browse/LOG4J2-1144[LOG4J2-1144])
+* Fixed bug where PatternLayout predefined date pattern with time zone always renders default date format. (https://issues.apache.org/jira/browse/LOG4J2-1149[LOG4J2-1149])
+* Fixed NullPointerException when only root logger is defined (and no named loggers) in configuration properties file. (https://issues.apache.org/jira/browse/LOG4J2-1153[LOG4J2-1153])

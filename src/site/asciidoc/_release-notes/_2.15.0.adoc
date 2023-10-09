@@ -1,0 +1,162 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-15-0]
+== 2.15.0
+
+Release date:: 2021-12-06
+
+This release contains a number of bug fixes and minor enhancements which are listed below.
+
+The Log4j team has been made aware of a security vulnerability, CVE-2021-44228, that has been addressed in Log4j 2.15.0.
+
+Log4j's JNDI support has not restricted what names could be resolved.
+Some protocols are unsafe or can allow remote code execution.
+Log4j now limits the protocols by default to only java, ldap, and ldaps and limits the ldap protocols to only accessing Java primitive objects by default served on the local host.
+
+One vector that allowed exposure to this vulnerability was Log4j's allowance of Lookups to appear in log messages.
+As of Log4j 2.15.0 this feature is now disabled by default.
+While an option has been provided to enable Lookups in this fashion, users are strongly discouraged from enabling it.
+
+Users who cannot upgrade to 2.15.0 can mitigate the exposure by:
+
+. Users of Log4j 2.10 or greater may add `-Dlog4j.formatMsgNoLookups=true` as a command line option or add `log4j.formatMsgNoLookups=true` to a `log4j2.component.properties` file on the classpath to prevent lookups in log event messages.
+. Users since Log4j 2.7 may specify `%\{nolookups}` in the `PatternLayout` configuration to prevent lookups in log event messages.
+. Remove the `JndiLookup` and `JndiManager` classes from the `log4j-core` JAR.
+Removal of the `JndiManager` will cause the `JndiContextSelector` and `JMSAppender` to no longer function.
+
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+`log4j-slf4j-impl` should be used with SLF4J 1.7.x and earlier and `log4j-slf4j18-impl` should be used with SLF4J 1.8.x and later.
+SLF4J-2.0.0 alpha releases are not fully supported.
+See https://issues.apache.org/jira/browse/LOG4J2-2975[LOG4J2-2975] and https://jira.qos.ch/browse/SLF4J-511[SLF4J-511].
+
+Some of the new features in Log4j 2.15.0 include:
+
+* Support for Arbiters, which are conditionals that can enable sections of the logging configuration for inclusion or exclusion.
+In particular, `SpringProfile`, `SystemProperty`, Script, and Class Arbiters have been provided that use the Spring profile, System property, the result of a script, or the presence of a class respectively to determine whether a section of configuration should be included.
+* Support for Jakarta EE 9.
+This is functionally equivalent to Log4j's `log4j-web` module but uses the Jakarta project.
+* Various performance improvements.
+
+Key changes to note:
+
+* Prior to this release Log4j would automatically resolve Lookups contained in the message or its parameters in the Pattern Layout.
+This behavior is no longer the default and must be enabled by specifying `%msg\{lookup}`.
+* The JNDI Lookup has been restricted to only support the java, ldap, and ldaps protocols by default.
+LDAP also no longer supports classes that implement the `Referenceable` interface and restricts the Serializable classes to the Java primitive classes by default and requires an allow list to be specified to access remote LDAP servers.
+
+The Log4j 2.15.0 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Apache Log4j 2.15.0 requires a minimum of Java 8 to build and run.
+Log4j 2.12.1 is the last release to support Java 7.
+Java 7 is no longer supported by the Log4j team.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Add support for US-style date patterns and micro/nano seconds to FixedDateTime. (https://issues.apache.org/jira/browse/LOG4J2-2885[LOG4J2-2885])
+* Add BasicAsyncLoggerContextSelector equivalent to AsyncLoggerContextSelector for applications with a single LoggerContext. This selector avoids classloader lookup overhead incurred by the existing AsyncLoggerContextSelector. (https://issues.apache.org/jira/browse/LOG4J2-2940[LOG4J2-2940])
+* Context selectors are aware of their dependence upon the callers ClassLoader, allowing basic context selectors to avoid the unnecessary overhead of walking the stack to determine the caller's ClassLoader. (https://issues.apache.org/jira/browse/LOG4J2-2940[LOG4J2-2940])
+* Add support for Jakarta EE 9 (Tomcat 10 / Jetty 11) (https://issues.apache.org/jira/browse/LOG4J2-2978[LOG4J2-2978])
+* Add plugin support to JsonTemplateLayout. (https://issues.apache.org/jira/browse/LOG4J2-3004[LOG4J2-3004])
+* Allow a PatternSelector to be specified on GelfLayout. (https://issues.apache.org/jira/browse/LOG4J2-3041[LOG4J2-3041])
+* Add RepeatPatternConverter. (https://issues.apache.org/jira/browse/LOG4J2-3044[LOG4J2-3044])
+* Add improved MapMessage support to GelfLayout. (https://issues.apache.org/jira/browse/LOG4J2-3048[LOG4J2-3048])
+* Allow MapMessage and ThreadContext attributes to be prefixed. (https://issues.apache.org/jira/browse/LOG4J2-3049[LOG4J2-3049])
+* Allow AdditionalFields to be ignored if their value is null or a zero-length String. (https://issues.apache.org/jira/browse/LOG4J2-3050[LOG4J2-3050])
+* Add CaseConverterResolver to JsonTemplateLayout. (https://issues.apache.org/jira/browse/LOG4J2-3051[LOG4J2-3051])
+* Refactor MD5 usage for sharing sensitive information. (https://issues.apache.org/jira/browse/LOG4J2-3056[LOG4J2-3056])
+* Add Arbiters and SpringProfile plugin. (https://issues.apache.org/jira/browse/LOG4J2-3064[LOG4J2-3064])
+* Add CounterResolver to JsonTemplateLayout. (https://issues.apache.org/jira/browse/LOG4J2-3067[LOG4J2-3067])
+* Add replacement parameter to ReadOnlyStringMapResolver. (https://issues.apache.org/jira/browse/LOG4J2-3074[LOG4J2-3074])
+* Add JsonTemplateLayout for Google Cloud Platform structured logging layout. (https://issues.apache.org/jira/browse/LOG4J2-3116[LOG4J2-3116])
+* Add missing slf4j-api singleton accessors to log4j-slf4j-impl (1.7) StaticMarkerBinder and StaticMDCBinder. This doesn't impact behavior or correctness, but avoids throwing and catching NoSuchMethodErrors when slf4j is initialized and avoids linkage linting warnings. (https://issues.apache.org/jira/browse/LOG4J2-3133[LOG4J2-3133])
+* Avoid ThreadLocal overhead in RandomAccessFileAppender, RollingRandomAccessFileManager, and MemoryMappedFileManager due to the unused setEndOfBatch and isEndOfBatch methods. The methods on LogEvent are preferred. (https://issues.apache.org/jira/browse/LOG4J2-3141[LOG4J2-3141])
+* Prefer string.getBytes(Charset) over string.getBytes(String) based on performance improvements in modern Java releases. (https://issues.apache.org/jira/browse/LOG4J2-3144[LOG4J2-3144])
+* Make CRLF/HTML encoding run in O(n) worst-case time, rather than O(n^2). (https://issues.apache.org/jira/browse/LOG4J2-3170[LOG4J2-3170])
+* Improve PatternLayout performance by reducing unnecessary indirection and branching. (https://issues.apache.org/jira/browse/LOG4J2-3171[LOG4J2-3171])
+* Improve NameAbbreviator worst-case performance. (https://issues.apache.org/jira/browse/LOG4J2-3189[LOG4J2-3189])
+* Allow fractional attributes for size attribute of SizeBasedTriggeringPolicy. (https://issues.apache.org/jira/browse/LOG4J2-3194[LOG4J2-3194])
+* Pattern layout no longer enables lookups within message text by default for cleaner API boundaries and reduced formatting overhead. The old 'log4j2.formatMsgNoLookups' which enabled this behavior has been removed as well as the 'nolookups' message pattern converter option. The old behavior can be enabled on a per-pattern basis using '%m{lookups}'. (https://issues.apache.org/jira/browse/LOG4J2-3198[LOG4J2-3198])
+
+=== Changed
+
+* Handle interrupted exceptions that occur during rollover. (https://issues.apache.org/jira/browse/LOG4J2-1798[LOG4J2-1798])
+* Provide support for overriding the Tomcat Log class in Tomcat 8.5+. (https://issues.apache.org/jira/browse/LOG4J2-2025[LOG4J2-2025])
+* Minor documentation corrections regarding log levels. (https://issues.apache.org/jira/browse/LOG4J2-2540[LOG4J2-2540])
+* Minor documentation corrections in the configuration section. (https://issues.apache.org/jira/browse/LOG4J2-2541[LOG4J2-2541])
+* Correct documentation for SyslogAppender when using TLS. (https://issues.apache.org/jira/browse/LOG4J2-2553[LOG4J2-2553])
+* Log4j 1.x properties were not being substituted. (https://issues.apache.org/jira/browse/LOG4J2-2951[LOG4J2-2951])
+* Fix Log Event Level vs Logger Config Level table. (https://issues.apache.org/jira/browse/LOG4J2-3166[LOG4J2-3166])
+* Update Spring framework to 5.3.13, Spring Boot to 2.5.7, and Spring Cloud to 2020.0.4.
+* Updated dependencies. - com.fasterxml.jackson.core:jackson-annotations ................. 2.12.2 -> 2.12.4 - com.fasterxml.jackson.core:jackson-core ........................ 2.12.2 -> 2.12.4 - com.fasterxml.jackson.core:jackson-databind .................... 2.12.2 -> 2.12.4 - com.fasterxml.jackson.dataformat:jackson-dataformat-xml ........ 2.12.2 -> 2.12.4 - com.fasterxml.jackson.dataformat:jackson-dataformat-yaml ....... 2.12.2 -> 2.12.4 - com.fasterxml.jackson.module:jackson-module-jaxb-annotations ... 2.12.2 -> 2.12.4 - com.fasterxml.woodstox:woodstox-core ........................... 6.2.4 -> 6.2.6 - commons-io:commons-io .......................................... 2.8.0 -> 2.11.0 - net.javacrumbs.json-unit:json-unit ............................. 2.24.0 -> 2.25.0 - net.javacrumbs.json-unit:json-unit ............................. 2.25.0 -> 2.27.0 - org.apache.activemq:activemq-broker ............................ 5.16.1 -> 5.16.2 - org.apache.activemq:activemq-broker ............................ 5.16.2 -> 5.16.3 - org.apache.commons:commons-compress ............................ 1.20 -> 1.21 - org.apache.commons:commons-csv ................................. 1.8 -> 1.9.0 - org.apache.commons:commons-dbcp2 ............................... 2.8.0 -> 2.9.0 - org.apache.commons:commons-pool2 ............................... 2.9.0 -> 2.11.1 - org.apache.maven.plugins:maven-failsafe-plugin ................. 2.22.2 -> 3.0.0-M5 - org.apache.maven.plugins:maven-surefire-plugin ................. 2.22.2 -> 3.0.0-M5 - org.apache.rat:apache-rat-plugin ............................... 0.12 -> 0.13 - org.assertj:assertj-core ....................................... 3.19.0 -> 3.20.2 - org.codehaus.groovy:groovy-dateutil ............................ 3.0.7 -> 3.0.8 - org.codehaus.groovy:groovy-jsr223 .............................. 3.0.7 -> 3.0.8 - org.codehaus.plexus:plexus-utils ............................... 3.3.0 -> 3.4.0 - org.eclipse.persistence:javax.persistence ...................... 2.1.1 -> 2.2.1 - org.eclipse.persistence:org.eclipse.persistence.jpa ............ 2.6.5 -> 2.6.9 - org.eclipse.persistence:org.eclipse.persistence.jpa ............ 2.7.8 -> 2.7.9 - org.fusesource.jansi ........................................... 2.3.2 -> 2.3.4 - org.fusesource.jansi:jansi ..................................... 2.3.1 -> 2.3.2 - org.hsqldb:hsqldb .............................................. 2.5.1 -> 2.5.2 - org.junit.jupiter:junit-jupiter-engine ......................... 5.7.1 -> 5.7.2 - org.junit.jupiter:junit-jupiter-migrationsupport ............... 5.7.1 -> 5.7.2 - org.junit.jupiter:junit-jupiter-params ......................... 5.7.1 -> 5.7.2 - org.junit.vintage:junit-vintage-engine ......................... 5.7.1 -> 5.7.2 - org.liquibase:liquibase-core ................................... 3.5.3 -> 3.5.5 - org.mockito:mockito-core ....................................... 3.8.0 -> 3.11.2 - org.mockito:mockito-junit-jupiter .............................. 3.8.0 -> 3.11.2 - org.springframework:spring-aop ................................. 5.3.3 -> 5.3.9 - org.springframework:spring-beans ............................... 5.3.3 -> 5.3.9 - org.springframework:spring-context ............................. 5.3.3 -> 5.3.9 - org.springframework:spring-context-support ..................... 5.3.3 -> 5.3.9 - org.springframework:spring-core ................................ 5.3.3 -> 5.3.9 - org.springframework:spring-expression .......................... 5.3.3 -> 5.3.9 - org.springframework:spring-oxm ................................. 5.3.3 -> 5.3.9 - org.springframework:spring-test ................................ 5.3.3 -> 5.3.9 - org.springframework:spring-web ................................. 5.3.3 -> 5.3.9 - org.springframework:spring-webmvc .............................. 5.3.3 -> 5.3.9 - org.tukaani:xz ................................................. 1.8 -> 1.9
+
+=== Fixed
+
+* LoggerContext skips resolving localhost when hostName is configured. (https://issues.apache.org/jira/browse/LOG4J2-2808[LOG4J2-2808])
+* Handle Disruptor event translation exceptions. (https://issues.apache.org/jira/browse/LOG4J2-2816[LOG4J2-2816])
+* SocketAppender should propagate failures when reconnection fails. (https://issues.apache.org/jira/browse/LOG4J2-2829[LOG4J2-2829])
+* Slf4j implementations walk the stack at most once rather than twice to determine the caller's class loader. (https://issues.apache.org/jira/browse/LOG4J2-2940[LOG4J2-2940])
+* Fixed a deadlock between the AsyncLoggerContextSelector and java.util.logging.LogManager by updating Disruptor to 3.4.4. (https://issues.apache.org/jira/browse/LOG4J2-2965[LOG4J2-2965])
+* BasicContextSelector hasContext and shutdown take the default context into account (https://issues.apache.org/jira/browse/LOG4J2-3054[LOG4J2-3054])
+* Fix thread-safety issues in DefaultErrorHandler. (https://issues.apache.org/jira/browse/LOG4J2-3060[LOG4J2-3060])
+* Ensure EncodingPatternConverter#handlesThrowable is implemented. (https://issues.apache.org/jira/browse/LOG4J2-3070[LOG4J2-3070])
+* Fix formatting of nanoseconds in JsonTemplateLayout. (https://issues.apache.org/jira/browse/LOG4J2-3075[LOG4J2-3075])
+* Use SimpleMessage in Log4j 1 Category whenever possible. (https://issues.apache.org/jira/browse/LOG4J2-3080[LOG4J2-3080])
+* log4j-slf4j-impl and log4j-slf4j18-impl correctly detect the calling class using both LoggerFactory.getLogger methods as well as LoggerFactory.getILoggerFactory().getLogger. (https://issues.apache.org/jira/browse/LOG4J2-3083[LOG4J2-3083])
+* Fix race in JsonTemplateLayout where a timestamp could end up unquoted. (https://issues.apache.org/jira/browse/LOG4J2-3087[LOG4J2-3087])
+* Fix sporadic JsonTemplateLayoutNullEventDelimiterTest failures on Windows. (https://issues.apache.org/jira/browse/LOG4J2-3089[LOG4J2-3089])
+* Fix JsonWriter memory leaks due to retained excessive buffer growth. (https://issues.apache.org/jira/browse/LOG4J2-3092[LOG4J2-3092])
+* Category.setLevel should accept null value. (https://issues.apache.org/jira/browse/LOG4J2-3095[LOG4J2-3095])
+* Fix a regression in 2.14.1 which allowed the AsyncAppender background thread to keep the JVM alive because the daemon flag was not set. (https://issues.apache.org/jira/browse/LOG4J2-3102[LOG4J2-3102])
+* Fix race condition which can result in ConcurrentModificationException on context.stop. (https://issues.apache.org/jira/browse/LOG4J2-3103[LOG4J2-3103])
+* SmtpManager.createManagerName ignores port. (https://issues.apache.org/jira/browse/LOG4J2-3107[LOG4J2-3107])
+* Fix the number of {}-placeholders in the string literal argument does not match the number of other arguments to the logging call. (https://issues.apache.org/jira/browse/LOG4J2-3110[LOG4J2-3110])
+* Enable immediate flush on RollingFileAppender when buffered i/o is not enabled. (https://issues.apache.org/jira/browse/LOG4J2-3114[LOG4J2-3114])
+* log4j2 config modified at run-time may trigger incomplete MBean re-initialization due to InstanceAlreadyExistsException. (https://issues.apache.org/jira/browse/LOG4J2-3121[LOG4J2-3121])
+* log4j-1.2-api implements LogEventAdapter.getTimestamp() based on the original event timestamp instead of returning zero. (https://issues.apache.org/jira/browse/LOG4J2-3142[LOG4J2-3142])
+* RandomAccessFile appender uses the correct default buffer size of 256 kB rather than the default appender buffer size of 8 kB. (https://issues.apache.org/jira/browse/LOG4J2-3150[LOG4J2-3150])
+* DatePatternConverter performance is not impacted by microsecond-precision clocks when such precision isn't required. (https://issues.apache.org/jira/browse/LOG4J2-3153[LOG4J2-3153])
+* Fixed an unlikely race condition in Log4jMarker.getParents() volatile access. (https://issues.apache.org/jira/browse/LOG4J2-3159[LOG4J2-3159])
+* Fix documentation on how to toggle log4j2.debug system property. (https://issues.apache.org/jira/browse/LOG4J2-3160[LOG4J2-3160])
+* Fix bug when file names contain regex characters. (https://issues.apache.org/jira/browse/LOG4J2-3168[LOG4J2-3168])
+* Buffer immutable log events in the SmtpManager. (https://issues.apache.org/jira/browse/LOG4J2-3172[LOG4J2-3172])
+* Wrong subject on mail when it depends on the LogEvent (https://issues.apache.org/jira/browse/LOG4J2-3174[LOG4J2-3174])
+* Avoid KafkaManager override when topics differ. (https://issues.apache.org/jira/browse/LOG4J2-3175[LOG4J2-3175])
+* Avoid using MutableInstant of the event as a cache key in JsonTemplateLayout. (https://issues.apache.org/jira/browse/LOG4J2-3183[LOG4J2-3183])
+* Fix thread-safety issues in DefaultErrorHandler. (https://issues.apache.org/jira/browse/LOG4J2-3185[LOG4J2-3185])
+* Limit the protocols JNDI can use by default. Limit the servers and classes that can be accessed via LDAP. (https://issues.apache.org/jira/browse/LOG4J2-3201[LOG4J2-3201])

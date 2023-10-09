@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>10.1.1</version>
+    <version>10.2.0-SNAPSHOT</version>
     <relativePath />
   </parent>
 
@@ -801,6 +801,27 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
+          <!-- Copy `src/site/_release-notes` to `src/site/asciidoc/_release-notes`.
+               This is necessary since `logging-parent` version `<=10.1.1` exports changelogs to `src/site/_release-notes`.
+               Though `maven-site-plugin` expects them to be at `src/site/asciidoc/_release-notes`.
+               We could have simply solved the problem using symbolic links.
+               Though they are not supported by Java's `ZipEntry`, and hence, breaking the `distribution` profile while creating `src.zip`. -->
+          <execution>
+            <id>copy-exported-release-notes</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <inherited>false</inherited>
+            <configuration>
+              <outputDirectory>${project.build.directory}/generated-sources/site/asciidoc/_release-notes</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src/site/_release-notes</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
           <!-- Copy `src/site` to `target/generated-sources/site` -->
           <execution>
             <id>copy-site</id>
@@ -815,6 +836,8 @@
                 <resource>
                   <directory>${project.basedir}/src/site</directory>
                   <excludes>
+                    <exclude>/_release-notes/*</exclude>
+                    <exclude>/_release-notes.adoc</exclude>
                     <exclude>/resources/glyphicons-halflings-2-1.zip</exclude>
                     <exclude>/resources/logo/**/*</exclude>
                   </excludes>
@@ -838,6 +861,26 @@
                   <directory>${project.build.directory}/site/apidocs</directory>
                 </resource>
               </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- copy `src/site/_release-notes.adoc` to `target/site/asciidoc/release-notes.adoc` -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-release-notes-adoc</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <target>
+                <copy file="${project.basedir}/src/site/_release-notes.adoc" overwrite="true" tofile="${project.build.directory}/generated-sources/site/asciidoc/release-notes.adoc" />
+              </target>
             </configuration>
           </execution>
         </executions>

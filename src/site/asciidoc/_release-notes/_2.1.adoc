@@ -1,0 +1,115 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-1]
+== 2.1
+
+Release date:: 2014-10-19
+
+This is the fourth GA release which contains several bugfixes and new features.
+There are two new Maven artifacts in this release: `log4j-jul` and `log4j-iostreams`.
+Both components are API-based with optional Core features.
+
+Apache Log4j 2.1 requires a minimum of Java 6 to build and run.
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Implement a GELF layout. (https://issues.apache.org/jira/browse/LOG4J2-428[LOG4J2-428])
+* Added Memory-Mapped File Appender. (https://issues.apache.org/jira/browse/LOG4J2-431[LOG4J2-431])
+* Add the Log4j IOStreams component. (https://issues.apache.org/jira/browse/LOG4J2-547[LOG4J2-547])
+* Supported filtering on custom log levels in configuration. (https://issues.apache.org/jira/browse/LOG4J2-589[LOG4J2-589])
+* Add java.util.logging implementation based on log4j-api. See log4j-jul documentation for more details. (https://issues.apache.org/jira/browse/LOG4J2-608[LOG4J2-608])
+* Add lookup for application main arguments. (https://issues.apache.org/jira/browse/LOG4J2-771[LOG4J2-771])
+* Add lookup for JVM arguments. (https://issues.apache.org/jira/browse/LOG4J2-787[LOG4J2-787])
+* Add support for custom SLF4J Markers in log4j-slf4j-impl module. (https://issues.apache.org/jira/browse/LOG4J2-793[LOG4J2-793])
+* Move reflection utility class to API's private utility classes. (https://issues.apache.org/jira/browse/LOG4J2-809[LOG4J2-809])
+* Documentation: added section on XInclude to user manual Configuration page. (https://issues.apache.org/jira/browse/LOG4J2-816[LOG4J2-816])
+* Add simple validation constraint annotations for the Plugin system. (https://issues.apache.org/jira/browse/LOG4J2-825[LOG4J2-825])
+* Support use of TypeConverter classes through the standard Plugin system. (https://issues.apache.org/jira/browse/LOG4J2-827[LOG4J2-827])
+* Documentation: added Runtime Dependencies link to left nav-bar on site. (https://issues.apache.org/jira/browse/LOG4J2-833[LOG4J2-833])
+* Add a Java lookup to provide nicely formatted runtime version information. (https://issues.apache.org/jira/browse/LOG4J2-848[LOG4J2-848])
+* Documentation: add sections on the JUL Adapter, IO Streams and NoSQL Appenders to the Maven and Ivy page. (https://issues.apache.org/jira/browse/LOG4J2-856[LOG4J2-856])
+* Add ShutdownCallbackRegistry interface for customizable shutdown callback handling. This is particularly useful for application servers that wish to integrate with Log4j 2. (https://issues.apache.org/jira/browse/LOG4J2-868[LOG4J2-868])
+
+=== Changed
+
+* Incomplete documentation for JSONLayout. (https://issues.apache.org/jira/browse/LOG4J2-766[LOG4J2-766])
+* Update Spring Framework to 3.2.11.RELEASE from 3.2.8.RELEASE. (https://issues.apache.org/jira/browse/LOG4J2-780[LOG4J2-780])
+* Update Jackson to 2.4.2 from 2.4.1 (for XML and JSON processing). (https://issues.apache.org/jira/browse/LOG4J2-790[LOG4J2-790])
+* All life cycle implementations should be serializable. This is still work in progress. (https://issues.apache.org/jira/browse/LOG4J2-800[LOG4J2-800])
+* org.apache.logging.log4j.core.Logger should be serializable. This is still work in progress. (https://issues.apache.org/jira/browse/LOG4J2-801[LOG4J2-801])
+* Update javax.mail to 1.5.2 from 1.5.0. (https://issues.apache.org/jira/browse/LOG4J2-810[LOG4J2-810])
+* Unify the two JMS appenders into a single appender. Configurations written for 2.0 will still work in 2.1+. (https://issues.apache.org/jira/browse/LOG4J2-815[LOG4J2-815])
+* Update org.eclipse.persistence.jpa to 2.5.2 from 2.5.1. (https://issues.apache.org/jira/browse/LOG4J2-822[LOG4J2-822])
+* Documentation: updated FAQ "which jars" diagrams for JUL bridge and 2.1 version. (https://issues.apache.org/jira/browse/LOG4J2-831[LOG4J2-831])
+* Update JMH to 1.1 from 0.7.2. (https://issues.apache.org/jira/browse/LOG4J2-844[LOG4J2-844])
+* Add 2.1.0 to compatible versions in Log4j API ProviderUtil and update Log4jAPIVersion to 2.1.0 in core META-INF/log4j-provider.properties. (https://issues.apache.org/jira/browse/LOG4J2-845[LOG4J2-845])
+* FlumeAppender: maxDelay not in seconds, but milliseconds. Add time scale to some settings, for example maxDelayMillis instead of maxDelay. The old names are aliased for compatibility. (https://issues.apache.org/jira/browse/LOG4J2-867[LOG4J2-867])
+
+=== Fixed
+
+* FlumePersistentManager now handles LockConflictExceptions in Berkeley Db when sending a batch. (https://issues.apache.org/jira/browse/LOG4J2-391[LOG4J2-391])
+* Fix OSGi Import-Package problem with the JMS API. (https://issues.apache.org/jira/browse/LOG4J2-663[LOG4J2-663])
+* Some typo fixes and enhancements for the site. (https://issues.apache.org/jira/browse/LOG4J2-676[LOG4J2-676])
+* Documentation: fixed minor issues with Log4j2 website/documentation. (https://issues.apache.org/jira/browse/LOG4J2-678[LOG4J2-678])
+* Avoid ConverterKey plugin clashes by using a more predictable plugin loading infrastructure. Plugins have been segmented into three parts: class path, user-specified packages, and OSGi bundles. (https://issues.apache.org/jira/browse/LOG4J2-745[LOG4J2-745])
+* Reduced CachedClock thread contention. (https://issues.apache.org/jira/browse/LOG4J2-753[LOG4J2-753])
+* Remove invalid Oracle Maven repository. (https://issues.apache.org/jira/browse/LOG4J2-782[LOG4J2-782])
+* PatternLayout should use platform character encoding by default, not UTF-8. (https://issues.apache.org/jira/browse/LOG4J2-783[LOG4J2-783])
+* Documentation: fixed capitalization inconsistency in user manual example config. (https://issues.apache.org/jira/browse/LOG4J2-785[LOG4J2-785])
+* Fixed issue where log4j-to-slf4j did not work correctly with SLF4J Simple Logger. (https://issues.apache.org/jira/browse/LOG4J2-796[LOG4J2-796])
+* Documentation: clarified why log4j-core is a compile-time dependency in Maven and Ivy page. (https://issues.apache.org/jira/browse/LOG4J2-797[LOG4J2-797])
+* Fixed plugin scanning redundancy causing massive slowdowns in certain environments. (https://issues.apache.org/jira/browse/LOG4J2-798[LOG4J2-798])
+* Prevent NPE when configuration with AsyncLogger/AsyncRoot is reloaded. (https://issues.apache.org/jira/browse/LOG4J2-807[LOG4J2-807])
+* SimpleLogger throws ArrayIndexOutOfBoundsException for an empty array. (https://issues.apache.org/jira/browse/LOG4J2-811[LOG4J2-811])
+* MarkerManager Log4jMarker.hasParents() returns opposite of correct result. (https://issues.apache.org/jira/browse/LOG4J2-813[LOG4J2-813])
+* Fixed memory leak in Tomcat 6 caused by clock background threads unintentionally started by Tomcat after web application stop. (https://issues.apache.org/jira/browse/LOG4J2-819[LOG4J2-819])
+* Fixed issue in RollingFile filePattern: backslashes are path separators, not escape characters. (https://issues.apache.org/jira/browse/LOG4J2-829[LOG4J2-829])
+* Respect external interrupt signal to allow application shutdown after joining AsyncAppender thread. (https://issues.apache.org/jira/browse/LOG4J2-830[LOG4J2-830])
+* ThrowableProxy fails if a class in logged stack trace throws java.lang.Error from initializer (https://issues.apache.org/jira/browse/LOG4J2-832[LOG4J2-832])
+* Migrate JdbcH2AppenderTest JUnit performance test to log4j-perf. (https://issues.apache.org/jira/browse/LOG4J2-840[LOG4J2-840])
+* Migrate JdbcHyperSqlAppenderTest JUnit performance test to log4j-perf. (https://issues.apache.org/jira/browse/LOG4J2-841[LOG4J2-841])
+* Migrate JpaH2AppenderTest JUnit performance test to log4j-perf. (https://issues.apache.org/jira/browse/LOG4J2-842[LOG4J2-842])
+* Migrate JpaHyperSqlAppenderTest JUnit performance test to log4j-perf. (https://issues.apache.org/jira/browse/LOG4J2-843[LOG4J2-843])
+* Documentation: fix broken links on Appenders manual page. (https://issues.apache.org/jira/browse/LOG4J2-855[LOG4J2-855])
+* Documentation: fix broken links on left navigation Extending Log4j Configuration sub-menu. (https://issues.apache.org/jira/browse/LOG4J2-861[LOG4J2-861])
+* Fixed classloader issue that prevented Log4j from finding the implementation when used in a custom Ant task. (https://issues.apache.org/jira/browse/LOG4J2-862[LOG4J2-862])
+* Documentation: fixed missing closing parenthesis in code example. (https://issues.apache.org/jira/browse/LOG4J2-866[LOG4J2-866])

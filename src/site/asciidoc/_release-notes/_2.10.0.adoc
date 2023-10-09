@@ -1,0 +1,159 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-10-0]
+== 2.10.0
+
+Release date:: 2017-11-18
+
+This release contains new features, bugfixes and minor enhancements.
+Some of the new features include support for the Java 9 module system, support for the new SLF4j 1.8 binding mechanism, simplification of the Log4j property naming scheme, and native support of Jetty's logger.
+Log4j API is now a fully compliant Java 9 module while the other Log4j jars are Java 9 named automatic modules.
+
+This release supports both SLF4J 1.7.x and SLF4J 1.8.x.
+Because SLF4J 1.7.x requires implementations to include classes in the `org.slf4j.impl` package `log4j-sl4j-impl` cannot be used as a Java 9 module.
+Support for SLF4J 1.7.x will be removed in a future release.
+
+As of Log4j 2.9.0, the Log4j API was modified to use `java.util.ServiceLoader` to locate Log4j implementations, although the former binding mechanism is still supported.
+The Log4j API JAR is now a multi-release JAR to provide implementations of Java 9 specific classes.
+Multi-release JARs are not supported by the OSGi specification so OSGi modules will not be able to take advantage of these implementations but will not lose functionality as they will fall back to the implementations used in Java 7 and 8.
+More details on the new features and fixes are itemized below.
+Note that some tools are not compatible with multi-release JARs and may fail trying to process class files in the `META-INF/versions/9` folder.
+Those errors should be reported to the tool vendor.
+
+During testing of the release it was found that one unit test fails when run on Windows.
+When building from source either use `mvn clean install -DskipTests` on Windows or run the build on a different operating system.
+The unit test failure is a problem in the test, not in Log4j.
+As always, pre-built distributions can be downloaded from http://www.apache.org/dist/logging/log4j/[] or the binaries JARs may be obtained from the Maven central repository.
+
+Note that subsequent to the 2.9.0 release, for security reasons, `SerializedLayout` is deprecated and no longer used as default in the Socket and JMS appenders.
+`SerializedLayout` can still be used as before, but has to be specified explicitly.
+To retain old behaviour, you have to change configuration like:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500"/>
+</Appenders>
+----
+
+into:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500">
+    <SerializedLayout/>
+  </Socket>
+</Appenders>
+----
+
+We do, however, discourage the use of `SerializedLayout` and recommend `JsonLayout` as a replacement:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500">
+    <JsonLayout properties="true"/>
+  </Socket>
+</Appenders>
+----
+
+Note that subsequent to the 2.9.0 release, for security reasons, Log4j does not process DTD in XML files.
+If you used DTD for including snippets, you have to use XInclude or Composite Configuration instead.
+
+The Log4j 2.10.0 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.10.0 requires a minimum of Java 7 to build and run.
+Log4j 2.3 was the last release that supported Java 6.
+
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Allow filtering of line breaks in layout pattern. (https://issues.apache.org/jira/browse/LOG4J2-1203[LOG4J2-1203])
+* Simplify log4j system property naming scheme. (https://issues.apache.org/jira/browse/LOG4J2-1431[LOG4J2-1431])
+* Add fields with fixed values to JSON/XML/YAML layouts. (https://issues.apache.org/jira/browse/LOG4J2-1694[LOG4J2-1694])
+* Add global configuration environment SPI. (https://issues.apache.org/jira/browse/LOG4J2-1809[LOG4J2-1809])
+* Provide ways to configure SSL that avoid plain-text passwords in the log4j configuration. The configuration may now specify a system environment variable that holds the password, or the path to a file that holds the password. (https://issues.apache.org/jira/browse/LOG4J2-2054[LOG4J2-2054])
+* Modularize Log4j-api and make most other log4j jars automatic modules. (https://issues.apache.org/jira/browse/LOG4J2-2056[LOG4J2-2056])
+* Add possibility of sending the key of a message to Kafka using KafkaAppender. (https://issues.apache.org/jira/browse/LOG4J2-2062[LOG4J2-2062])
+* Add org.apache.logging.log4j.core.config.composite.CompositeConfiguration#toString(). (https://issues.apache.org/jira/browse/LOG4J2-2071[LOG4J2-2071])
+* Add a noop AppenderSkeleton for applications still using Log4j 1.x. (https://issues.apache.org/jira/browse/LOG4J2-2098[LOG4J2-2098])
+* XML encoding for PatternLayout. (https://issues.apache.org/jira/browse/LOG4J2-2103[LOG4J2-2103])
+* Add property to disable message pattern converter lookups. (https://issues.apache.org/jira/browse/LOG4J2-2109[LOG4J2-2109])
+* MapMessage should use deep toString for values. (https://issues.apache.org/jira/browse/LOG4J2-2112[LOG4J2-2112])
+* Provide a native Log4j 2 implementation of Eclipse Jetty's org.eclipse.jetty.util.log.Logger. (https://issues.apache.org/jira/browse/LOG4J2-2114[LOG4J2-2114])
+* Properly escape newlines and other control characters in JSON. (https://issues.apache.org/jira/browse/LOG4J2-2120[LOG4J2-2120])
+
+=== Changed
+
+* Update classes in org.apache.logging.log4j.core.net.ssl in APIs from String to a PasswordProvider producing char[] for passwords. (https://issues.apache.org/jira/browse/LOG4J2-1896[LOG4J2-1896])
+* Provide support for overriding the Tomcat Log class in Tomcat 8.5+. (https://issues.apache.org/jira/browse/LOG4J2-2025[LOG4J2-2025])
+* Disable thread name caching by default when running on Java 8u102 or later. (https://issues.apache.org/jira/browse/LOG4J2-2052[LOG4J2-2052])
+* Support new SLF4J binding mechanism introduced in SLF4J 1.8. (https://issues.apache.org/jira/browse/LOG4J2-2057[LOG4J2-2057])
+* Split up log4j-nosql into one module per appender. (https://issues.apache.org/jira/browse/LOG4J2-2076[LOG4J2-2076])
+* Update from Jackson 2.9.1 to 2.9.2. (https://issues.apache.org/jira/browse/LOG4J2-2077[LOG4J2-2077])
+* Update LMAX disruptor from 3.3.6 to 3.3.7. (https://issues.apache.org/jira/browse/LOG4J2-2078[LOG4J2-2078])
+* Update Apache Commons Compress from 1.14 to 1.15. (https://issues.apache.org/jira/browse/LOG4J2-2081[LOG4J2-2081])
+* Upgrade picocli to 2.0.3 from 0.9.8. (https://issues.apache.org/jira/browse/LOG4J2-2088[LOG4J2-2088])
+* [TagLib] Update servlet-api provided dependency from 2.5 to 3.0.1. (https://issues.apache.org/jira/browse/LOG4J2-2089[LOG4J2-2089])
+* Update Apache Kafka kafka-clients from 0.11.0.1 to 1.0.0. (https://issues.apache.org/jira/browse/LOG4J2-2096[LOG4J2-2096])
+* Jackson dependencies for 2.9.2 incorrectly bring in jackson-annotations 2.9.0 instead of 2.9.2. (https://issues.apache.org/jira/browse/LOG4J2-2117[LOG4J2-2117])
+
+=== Fixed
+
+* Nested pattern layout options broken. (https://issues.apache.org/jira/browse/LOG4J2-1216[LOG4J2-1216])
+* Until this change, messages appeared out of order in log file any time when the async logging queue was full. With this change, messages are only logged out of order to prevent deadlock when Log4j2 detects recursive logging while the queue is full. (https://issues.apache.org/jira/browse/LOG4J2-2031[LOG4J2-2031])
+* CompositeConfiguration supports Reconfiguration. PR #115. (https://issues.apache.org/jira/browse/LOG4J2-2036[LOG4J2-2036])
+* Exception java.nio.charset.UnsupportedCharsetException: cp65001 in 2.9.0. (https://issues.apache.org/jira/browse/LOG4J2-2053[LOG4J2-2053])
+* If Log4j is used as the Tomcat logging implementation startup might fail if an application also uses Log4j. (https://issues.apache.org/jira/browse/LOG4J2-2055[LOG4J2-2055])
+* AbstractDatabaseManager should make a copy of LogEvents before holding references to them: AsyncLogger log events are mutable. (https://issues.apache.org/jira/browse/LOG4J2-2060[LOG4J2-2060])
+* Log4j1XmlLayout does not provide the entire stack trace, it is missing the caused by information. (https://issues.apache.org/jira/browse/LOG4J2-2070[LOG4J2-2070])
+* Log4j-config.xsd should make AppenderRef optional for each Logger element. (https://issues.apache.org/jira/browse/LOG4J2-2073[LOG4J2-2073])
+* The console appender should say why it cannot load JAnsi. (https://issues.apache.org/jira/browse/LOG4J2-2074[LOG4J2-2074])
+* Wrong Apache Commons CSV version referenced in the Javadoc of CsvParameterLayout. (https://issues.apache.org/jira/browse/LOG4J2-2085[LOG4J2-2085])
+* Jansi now needs to be enabled explicitly (by setting system property `log4j.skipJansi` to `false`). To avoid causing problems for web applications, Log4j will no longer automatically try to load Jansi without explicit configuration. (https://issues.apache.org/jira/browse/LOG4J2-2087[LOG4J2-2087])
+* Log4j respects the configured "log4j2.is.webapp" property (https://issues.apache.org/jira/browse/LOG4J2-2091[LOG4J2-2091])
+* LevelMixIn class for Jackson is coded incorrectly (https://issues.apache.org/jira/browse/LOG4J2-2100[LOG4J2-2100])
+* Non-string value in MapMessage caused ClassCastException. (https://issues.apache.org/jira/browse/LOG4J2-2101[LOG4J2-2101])
+* MapMessage JSON encoding will escape keys and values. (https://issues.apache.org/jira/browse/LOG4J2-2102[LOG4J2-2102])
+* MapMessage supports both StringBuilderFormattable and MultiFormatMessage. (https://issues.apache.org/jira/browse/LOG4J2-2107[LOG4J2-2107])
+* XML Schema for DynamicFilterThreshold does not accept multiple KeyValuePairs. (https://issues.apache.org/jira/browse/LOG4J2-2289[LOG4J2-2289])

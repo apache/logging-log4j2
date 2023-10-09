@@ -1,0 +1,152 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-11-1]
+== 2.11.1
+
+Release date:: 2018-07-22
+
+This release contains new features, bugfixes and minor enhancements.
+
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+`log4j-slf4j-impl` should be used with SLF4J 1.7.x and earlier and `log4j-slf4j18-impl` should be used with SLF4J 1.8.x and later.
+
+As of Log4j 2.9.0, the Log4j API was modified to use `java.util.ServiceLoader` to locate Log4j implementations, although the former binding mechanism is still supported.
+The Log4j API JAR is now a multi-release JAR to provide implementations of Java 9 specific classes.
+Multi-release JARs are not supported by the OSGi specification so OSGi modules will not be able to take advantage of these implementations but will not lose functionality as they will fall back to the implementations used in Java 7 and 8.
+More details on the new features and fixes are itemized below.
+Note that some tools are not compatible with multi-release JARs and may fail trying to process class files in the `META-INF/versions/9` folder.
+Those errors should be reported to the tool vendor.
+
+Note that subsequent to the 2.9.0 release, for security reasons, `SerializedLayout` is deprecated and no longer used as default in the Socket and JMS appenders.
+`SerializedLayout` can still be used as before, but has to be specified explicitly.
+To retain old behaviour, you have to change configuration like:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500"/>
+</Appenders>
+----
+
+into:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500">
+    <SerializedLayout/>
+  </Socket>
+</Appenders>
+----
+
+We do, however, discourage the use of `SerializedLayout` and recommend `JsonLayout` as a replacement:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500">
+    <JsonLayout properties="true"/>
+  </Socket>
+</Appenders>
+----
+
+Note that subsequent to the 2.9.0 release, for security reasons, Log4j does not process DTD in XML files.
+If you used DTD for including snippets, you have to use XInclude or Composite Configuration instead.
+
+The Log4j 2.11.1 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.11.1 requires a minimum of Java 7 to build and run.
+Log4j 2.3 was the last release that supported Java 6.
+
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Changed
+
+* Allow composite configuration for context parameter. (https://issues.apache.org/jira/browse/LOG4J2-1721[LOG4J2-1721])
+* Status logger should show the Log4j name and version when initializing itself. (https://issues.apache.org/jira/browse/LOG4J2-2302[LOG4J2-2302])
+* Log4j2 2.8.2 JMX unregister NullPointerException. (https://issues.apache.org/jira/browse/LOG4J2-2304[LOG4J2-2304])
+* Update Jackson from 2.9.4 to 2.9.5. (https://issues.apache.org/jira/browse/LOG4J2-2311[LOG4J2-2311])
+* Update LMAX Disruptor from 3.3.7 to 3.4.2. (https://issues.apache.org/jira/browse/LOG4J2-2313[LOG4J2-2313])
+* Update JAnsi from 1.17 to 1.17.1. (https://issues.apache.org/jira/browse/LOG4J2-2328[LOG4J2-2328])
+* Added AbstractLogEvent.getMutableInstant to allow the MutableInstant instance to be modified by classes extending AbstractLogEvent. (https://issues.apache.org/jira/browse/LOG4J2-2351[LOG4J2-2351])
+* Update Jackson from 2.9.5 to 2.9.6. (https://issues.apache.org/jira/browse/LOG4J2-2357[LOG4J2-2357])
+* Update Kafka client from 1.0.0 to 1.1.0. (https://issues.apache.org/jira/browse/LOG4J2-2358[LOG4J2-2358])
+* Update Kafka client from 1.1.0 to 1.1.1. (https://issues.apache.org/jira/browse/LOG4J2-2384[LOG4J2-2384])
+* Update Groovy from 2.4.13 to 2.5.1. (https://issues.apache.org/jira/browse/LOG4J2-2385[LOG4J2-2385])
+* Update optional Apache Commons DBCP from 2.2.0 to 2.4.0. (https://issues.apache.org/jira/browse/LOG4J2-2386[LOG4J2-2386])
+* Log4j 2.0 ERROR "Could not search jar" with JBoss EAP 6.2. (https://issues.apache.org/jira/browse/LOG4J2-548[LOG4J2-548])
+
+=== Fixed
+
+* Curly braces in parameters are not treated as placeholders. (https://issues.apache.org/jira/browse/LOG4J2-2032[LOG4J2-2032])
+* Improve plugin error message when elements are missing. (https://issues.apache.org/jira/browse/LOG4J2-2268[LOG4J2-2268])
+* MutableLogEvent references to other objects are cleared after each use. Fix a memory leak causing references to parameters to be held after synchronous logging with thread locals enabled. (https://issues.apache.org/jira/browse/LOG4J2-2269[LOG4J2-2269])
+* ParserConfigurationException when using Log4j with oracle.xml.jaxp.JXDocumentBuilderFactory. (https://issues.apache.org/jira/browse/LOG4J2-2283[LOG4J2-2283])
+* PoolingDriverConnectionSource does not take into account properties, user name, and password. (https://issues.apache.org/jira/browse/LOG4J2-2300[LOG4J2-2300])
+* Mixed async loggers no longer forget parameter values, providing some appenders with an array of nulls. (https://issues.apache.org/jira/browse/LOG4J2-2301[LOG4J2-2301])
+* Make java.util.ServiceLoader properly work in OSGi by using the Service Loader Mediator Specification. (https://issues.apache.org/jira/browse/LOG4J2-2305[LOG4J2-2305])
+* Split the SLF4J binding into 2 implementations - one for SLF4J 1.7.x and one for SLF4J 1.8+. (https://issues.apache.org/jira/browse/LOG4J2-2305[LOG4J2-2305])
+* MutableLogEvent and RingBufferLogEvent message mementos retain the original format string. (https://issues.apache.org/jira/browse/LOG4J2-2307[LOG4J2-2307])
+* Jackson layouts used with AsyncLoggerContextSelector output the expected format rather than only a JSON string of the message text. (https://issues.apache.org/jira/browse/LOG4J2-2312[LOG4J2-2312])
+* If root LoggerConfig does not have a Level return ERROR. (https://issues.apache.org/jira/browse/LOG4J2-2316[LOG4J2-2316])
+* MutableLogEvent.getNonNullImmutableMessage and Log4jLogEvent.makeMessageImmutable retain format and parameters. (https://issues.apache.org/jira/browse/LOG4J2-2317[LOG4J2-2317])
+* Messages are no longer mutated when the asynchronous queue is full. A warning is logged to the status logger instead. (https://issues.apache.org/jira/browse/LOG4J2-2318[LOG4J2-2318])
+* Fix NPE in AbstractLogger when another exception is thrown, masking the root cause. (https://issues.apache.org/jira/browse/LOG4J2-2320[LOG4J2-2320])
+* AsyncLogger uses the correct level when unspecified. This provides parity between AsyncLogger and Logger. (https://issues.apache.org/jira/browse/LOG4J2-2321[LOG4J2-2321])
+* Custom ContextSelector implementations which select an AsyncLoggerContext disable LoggerConfig.includeLocation by default for parity with AsyncLoggerContextSelector. (https://issues.apache.org/jira/browse/LOG4J2-2322[LOG4J2-2322])
+* RollingFileManager debug logging avoids string concatenation and errant braces in favor of parameterized logging. (https://issues.apache.org/jira/browse/LOG4J2-2331[LOG4J2-2331])
+* Handle errors thrown in default disruptor ExceptionHandler implementations to avoid killing background threads. (https://issues.apache.org/jira/browse/LOG4J2-2333[LOG4J2-2333])
+* Add API org.apache.logging.log4j.core.appender.AsyncAppender.getQueueSize(). (https://issues.apache.org/jira/browse/LOG4J2-2334[LOG4J2-2334])
+* Remove duplicate hyphen from the AsyncLoggerConfig background thread name. (https://issues.apache.org/jira/browse/LOG4J2-2336[LOG4J2-2336])
+* The OSGi Activator specified an incorrect version. (https://issues.apache.org/jira/browse/LOG4J2-2343[LOG4J2-2343])
+* Update Apache Commons Compress from 1.16.1 to 1.17. (https://issues.apache.org/jira/browse/LOG4J2-2347[LOG4J2-2347])
+* RingBufferLogEvent memento messages provide the expected format string, and no longer attempt to substitute parameters into curly braces in parameter toString values. Both RingBufferLogEvent and MutableLogEvent memento implementations memoize results to avoid rebuilding formatted string values. (https://issues.apache.org/jira/browse/LOG4J2-2352[LOG4J2-2352])
+* PropertiesUtil ignores non-string system properties. Fixes a NoClassDefFoundError initializing StatusLogger caused by an NPE while initializing the static PropertiesUtil field. (https://issues.apache.org/jira/browse/LOG4J2-2355[LOG4J2-2355])
+* Fixed a memory leak in which ReusableObjectMessage would hold a reference to the most recently logged object. (https://issues.apache.org/jira/browse/LOG4J2-2362[LOG4J2-2362])
+* Fixed a memory leak in which ReusableParameterizedMessage would hold a reference to the most recently logged throwable and provided varargs array. (https://issues.apache.org/jira/browse/LOG4J2-2364[LOG4J2-2364])
+* Nested logging doesn't clobber AbstractStringLayout cached StringBuilders (https://issues.apache.org/jira/browse/LOG4J2-2368[LOG4J2-2368])
+* StringBuilders.escapeJson implementation runs in linear time. Escaping large JSON strings in EncodingPatternConverter and MapMessage will perform significantly better. (https://issues.apache.org/jira/browse/LOG4J2-2373[LOG4J2-2373])
+* StringBuilders.escapeXml implementation runs in linear time. Escaping large XML strings in EncodingPatternConverter and MapMessage will perform significantly better. (https://issues.apache.org/jira/browse/LOG4J2-2376[LOG4J2-2376])
+* NullPointerException in org.apache.logging.log4j.util.LoaderUtil.getClassLoaders() when using Bootstrap class loader. (https://issues.apache.org/jira/browse/LOG4J2-2377[LOG4J2-2377])
+* Update Mongodb 3 driver from 3.6.3 to 3.8.0. (https://issues.apache.org/jira/browse/LOG4J2-2382[LOG4J2-2382])
+* Thread indefinitely blocked when logging a message in an interrupted thread. (https://issues.apache.org/jira/browse/LOG4J2-2388[LOG4J2-2388])
+* ThrowableProxy was saving and retrieving cache entries using different keys. (https://issues.apache.org/jira/browse/LOG4J2-2389[LOG4J2-2389])
+* Fix broken links in log4j web documentation. (https://issues.apache.org/jira/browse/LOG4J2-2390[LOG4J2-2390])

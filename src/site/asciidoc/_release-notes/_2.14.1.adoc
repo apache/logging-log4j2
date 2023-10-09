@@ -1,0 +1,124 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-14-1]
+== 2.14.1
+
+Release date:: 2021-03-06
+
+This release contains a number of bug fixes and minor enhancements which are
+listed below.
+
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+`log4j-slf4j-impl` should be used with SLF4J 1.7.x and earlier and `log4j-slf4j18-impl` should be used with SLF4J 1.8.x and later.
+
+The Log4j 2.14.1 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.14.1 requires a minimum of Java 8 to build and run.
+Log4j 2.12.1 is the last release to support Java 7.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Enrich "map" resolver by unifying its backend with "mdc" resolver. (https://issues.apache.org/jira/browse/LOG4J2-2962[LOG4J2-2962])
+* Support stack trace truncation in JsonTemplateLayout. (https://issues.apache.org/jira/browse/LOG4J2-2993[LOG4J2-2993])
+* Replace JsonTemplateLayout resolver configurations table in docs with sections. (https://issues.apache.org/jira/browse/LOG4J2-2999[LOG4J2-2999])
+
+=== Changed
+
+* Allow reconfiguration when Log4j 1 configuration files are updated. (https://issues.apache.org/jira/browse/LOG4J2-2893[LOG4J2-2893])
+* Add Rollover Listener to aid in unit test validation. (https://issues.apache.org/jira/browse/LOG4J2-2923[LOG4J2-2923])
+* Replace outdated PatternLayout.createLayout() calls in docs with createDefaultLayout(). (https://issues.apache.org/jira/browse/LOG4J2-2977[LOG4J2-2977])
+* Update JSON Unit 2.21.0 -> 2.22.0.
+* Update JaCoCo 0.8.3 -> 0.8.6.
+* Update Mockito 3.6.0 -> 3.7.0.
+* Update MongoDB 3 plugin: org.mongodb:mongodb-driver 3.12.6 -> 3.12.7.
+* Update MongoDB 4 plugin: org.mongodb:* 4.1.0 -> 4.1.1.
+* Update Spring dependencies to 5.3.2, Spring Boot to 2.3.6, and Spring Cloud to Hoxton.SR9
+* Update Woodstox 5.0.3 -> 6.2.3 to match Jackson 2.12.1.
+* Update XML Unit 2.8.0 -> 2.8.2.
+* Update com.fasterxml.jackson.*:* 2.11.2 - 2.11.3.
+* Update commons-codec:commons-codec 1.14 -> 1.15.
+* Update commons-io:commons-io 2.7 -> 2.8.0.
+* Update de.flapdoodle.embed:de.flapdoodle.embed.mongo 2.2.0 -> 3.0.0.
+* Update junit:junit 4.13 -> 4.13.1.
+* Update mongodb4.version 4.1.1 -> 4.2.0.
+* Update net.javacrumbs.json-unit:json-unit 1.31.1 -> 2.22.0.
+* Update net.javacrumbs.json-unit:json-unit 2.22.0 -> 2.23.0.
+* Update org.apache.activemq:* 5.16.0 -> 5.16.1.
+* Update org.apache.commons:commons-dbcp2 2.4.0 -> 2.8.0.
+* Update org.apache.commons:commons-lang3 3.10 -> 3.11.
+* Update org.apache.commons:commons-pool2 2.8.1 -> 2.9.0.
+* Update org.assertj:assertj-core 3.14.0 -> 3.18.1.
+* Update org.assertj:assertj-core 3.18.1 -> 3.19.0.
+* Update org.awaitility:awaitility 4.0.2 -> 4.0.3.
+* Update org.codehaus.groovy:* 3.0.5 -> 3.0.6.
+* Update org.codehaus.plexus:plexus-utils 3.2.0 -> 3.3.0.
+* Update org.eclipse.tycho:org.eclipse.osgi 3.12.1.v20170821-1548 -> 3.13.0.v20180226-1711.
+* Update org.fusesource.jansi:jansi 1.17.1 -> 2.0.1.
+* Update org.fusesource.jansi:jansi 1.18 -> 2.2.0.
+* Update org.fusesource.jansi:jansi 1.18 -> 2.3.1.
+* Update org.mockito:mockito-* 3.7.0 -> 3.7.7.
+* Update org.springframework:* 5.2.8.RELEASE -> 5.3.1.
+* Update org.springframework:* 5.3.2 -> 5.3.3.
+* Update org.xmlunit:* 2.7.0 -> 2.8.0.
+* - com.fasterxml.jackson.core:jackson-annotations ................. 2.12.1 -> 2.12.2 - com.fasterxml.jackson.core:jackson-core ........................ 2.12.1 -> 2.12.2 - com.fasterxml.jackson.core:jackson-databind .................... 2.12.1 -> 2.12.2 - com.fasterxml.jackson.dataformat:jackson-dataformat-xml ........ 2.12.1 -> 2.12.2 - com.fasterxml.jackson.dataformat:jackson-dataformat-yaml ....... 2.12.1 -> 2.12.2 - com.fasterxml.jackson.module:jackson-module-jaxb-annotations ... 2.12.1 -> 2.12.2 - org.apache.commons:commons-lang3 ............................... 3.11 -> 3.12.0 - org.junit.jupiter:junit-jupiter-engine ......................... 5.7.0 -> 5.7.1 - org.junit.jupiter:junit-jupiter-migrationsupport ............... 5.7.0 -> 5.7.1 - org.junit.jupiter:junit-jupiter-params ......................... 5.7.0 -> 5.7.1 - org.junit.vintage:junit-vintage-engine ......................... 5.7.0 -> 5.7.1 - org.mockito:mockito-core ....................................... 3.7.7 -> 3.8.0 - org.mockito:mockito-junit-jupiter .............................. 3.7.7 -> 3.8.0 - org.mongodb:bson ............................................... 4.2.0 -> 4.2.2 - org.mongodb:mongodb-driver-sync ................................ 4.2.0 -> 4.2.2
+
+=== Fixed
+
+* Allow auto-shutdown of log4j in log4j-web to be turned off and provide a ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j. Register the listener at the top of web.xml to ensure the shutdown happens last. (https://issues.apache.org/jira/browse/LOG4J2-1606[LOG4J2-1606])
+* Allow auto-shutdown of log4j in log4j-web to be turned off and provide a ServletContextListener "Log4jShutdownOnContextDestroyedListener" to stop log4j. Register the listener at the top of web.xml to ensure the shutdown happens last. (https://issues.apache.org/jira/browse/LOG4J2-2624[LOG4J2-2624])
+* Avoid redundant Kafka producer instantiation causing thread leaks. (https://issues.apache.org/jira/browse/LOG4J2-2916[LOG4J2-2916])
+* Document that LogBuilder default methods do nothing. (https://issues.apache.org/jira/browse/LOG4J2-2947[LOG4J2-2947])
+* Replace HashSet with IdentityHashMap in ParameterFormatter to detect cycles. (https://issues.apache.org/jira/browse/LOG4J2-2948[LOG4J2-2948])
+* Fix reading of JsonTemplateLayout event additional fields from config. (https://issues.apache.org/jira/browse/LOG4J2-2961[LOG4J2-2961])
+* Merge packages from several Configurations in Composite Configuration. (https://issues.apache.org/jira/browse/LOG4J2-2964[LOG4J2-2964])
+* Fix JsonTemplateLayout index based parameter resolution when messages contain too few parameters. (https://issues.apache.org/jira/browse/LOG4J2-2967[LOG4J2-2967])
+* Refactor AsyncAppender and AppenderControl for handling of Throwables. (https://issues.apache.org/jira/browse/LOG4J2-2972[LOG4J2-2972])
+* Rename EventTemplateAdditionalField#type (conflicting with properties file parser) to "format". (https://issues.apache.org/jira/browse/LOG4J2-2973[LOG4J2-2973])
+* Log4j would fail to initialize in Java 8 with log4j-spring-boot. (https://issues.apache.org/jira/browse/LOG4J2-2974[LOG4J2-2974])
+* JdbcAppender composes an incorrect INSERT statement without a ColumnMapping element. (https://issues.apache.org/jira/browse/LOG4J2-2976[LOG4J2-2976])
+* OnStartupTriggeringPolicy would fail to cause the file to roll over with DirectWriteTriggeringPolicy unless minSize was set to 0. (https://issues.apache.org/jira/browse/LOG4J2-2981[LOG4J2-2981])
+* Add eventTemplateRootObjectKey parameter to JsonTemplateLayout. (https://issues.apache.org/jira/browse/LOG4J2-2985[LOG4J2-2985])
+* Reduce garbage by using putAll when copying the ThreadContext for SLF4J. (https://issues.apache.org/jira/browse/LOG4J2-2990[LOG4J2-2990])
+* Fix truncation of excessive strings ending with a high surrogate in JsonWriter. (https://issues.apache.org/jira/browse/LOG4J2-2998[LOG4J2-2998])
+* Directly create a thread instead of using the common ForkJoin pool when initializing ThreadContextDataInjector" (https://issues.apache.org/jira/browse/LOG4J2-3006[LOG4J2-3006])
+* Log4j1ConfigurationConverter on Windows produces " " at end of every line. (https://issues.apache.org/jira/browse/LOG4J2-3014[LOG4J2-3014])
+* OutputStreamManager.flushBuffer always resets the buffer, previously the buffer was not reset after an exception. (https://issues.apache.org/jira/browse/LOG4J2-3028[LOG4J2-3028])
+* Add log method with no parameters - i.e. it has an empty message. (https://issues.apache.org/jira/browse/LOG4J2-3033[LOG4J2-3033])
+* Attempting to call getExtendedStackTraceAsString() after deserializing JSON LogEvent results in a NPE. (https://issues.apache.org/jira/browse/LOG4J2-3131[LOG4J2-3131])
+* NoGcLayout allocates empty bytes arrays for its header and footer. (https://issues.apache.org/jira/browse/LOG4J2-3131[LOG4J2-3131])

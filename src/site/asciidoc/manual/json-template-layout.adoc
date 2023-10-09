@@ -17,7 +17,7 @@
 = JSON Template Layout
 Volkan Yazıcı <vy@apache.org>
 
-include::_constants.adoc[]
+include::../_constants.adoc[]
 
 `JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON
 generating layout. It encodes ``LogEvent``s according to the structure described

@@ -1,0 +1,97 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-13-0]
+== 2.13.0
+
+Release date:: 2019-12-11
+
+This release contains bugfixes and minor enhancements.
+Some of the new features in this release are:
+
+* Log4j 2 now requires Java 8 or higher to build and run.
+* Experimental support for Log4j 1 configuration files.
+See Log4j 2 Compatiblity with Log4j 1.
+* The Logger API has been enhanced to support a builder pattern.
+This can dramatically improve the overhead of capturing location information.
+See Log Builder.
+* Better integration with Spring Boot by providing access to Spring variables in Log4j 2 configuration files and allowing Log4j 2 system properties to be defined in the Spring configuration.
+See Logging in the Cloud.
+* Support for accessing Kubernetes information via a Log4j 2 Lookup.
+* The Gelf Layout now allows the message to be formatted using a `PatternLayout` pattern.
+Logging in the Cloud provides an example of this, as well as the use of the Spring and Kubernetes Lookups.
+
+Due to a break in compatibility in the SLF4J binding, Log4j now ships with two versions of the SLF4J to Log4j adapters.
+`log4j-slf4j-impl` should be used with SLF4J 1.7.x and earlier and `log4j-slf4j18-impl` should be used with SLF4J 1.8.x and later.
+
+Note that the XML, JSON and YAML formats changed in the 2.11.0 release: they no longer have the `timeMillis` attribute and instead have an `Instant` element with `epochSecond` and `nanoOfSecond` attributes.
+
+The Log4j 2.13.0 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.13.0 requires a minimum of Java 8 to build and run.
+Log4j 2.3 was the last release that supported Java 6 and Log4j 2.11.2 is the last release to support Java 7.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Add builder pattern to Logger interface. (https://issues.apache.org/jira/browse/LOG4J2-2639[LOG4J2-2639])
+* Allow Spring Boot application properties to be accessed in the Log4j 2 configuration. Add lower and upper case Lookups. (https://issues.apache.org/jira/browse/LOG4J2-2710[LOG4J2-2710])
+* Add the ability to lookup Kubernetes attributes in the Log4j configuration. Allow Log4j properties to be retrieved from the Spring environment if it is available. (https://issues.apache.org/jira/browse/LOG4J2-2716[LOG4J2-2716])
+* Add a Level Pattern Selector. (https://issues.apache.org/jira/browse/LOG4J2-2731[LOG4J2-2731])
+* Add ThreadContext.putIfNotNull method. (https://issues.apache.org/jira/browse/LOG4J2-2732[LOG4J2-2732])
+* Add experimental support for Log4j 1 configuration files. (https://issues.apache.org/jira/browse/LOG4J2-63[LOG4J2-63])
+
+=== Changed
+
+* Update Jackson to 2.9.10. (https://issues.apache.org/jira/browse/LOG4J2-2701[LOG4J2-2701])
+* Allow message portion of GELF layout to be formatted using a PatternLayout. Allow ThreadContext attributes to be explicitly included or excluded in the GelfLayout. (https://issues.apache.org/jira/browse/LOG4J2-2709[LOG4J2-2709])
+
+=== Fixed
+
+* Prevent recursive calls to java.util.LogManager.getLogger(). (https://issues.apache.org/jira/browse/LOG4J2-2058[LOG4J2-2058])
+* Wrong java version check in ThreadNameCachingStrategy. (https://issues.apache.org/jira/browse/LOG4J2-2635[LOG4J2-2635])
+* Validation blocks definition of script in properties configuration. (https://issues.apache.org/jira/browse/LOG4J2-2647[LOG4J2-2647])
+* Add automatic module names where missing. (https://issues.apache.org/jira/browse/LOG4J2-2672[LOG4J2-2672])
+* OutputStreamAppender.Builder ignores setFilter(). (https://issues.apache.org/jira/browse/LOG4J2-2673[LOG4J2-2673])
+* Use a less confusing name for the CompositeConfiguration source. (https://issues.apache.org/jira/browse/LOG4J2-2674[LOG4J2-2674])
+* Set result of rename action to true if file was copied. (https://issues.apache.org/jira/browse/LOG4J2-2680[LOG4J2-2680])
+* @PluginValue does not support attribute names besides "value". (https://issues.apache.org/jira/browse/LOG4J2-2693[LOG4J2-2693])
+* ArrayIndexOutOfBoundsException could occur with MAC address longer than 6 bytes. (https://issues.apache.org/jira/browse/LOG4J2-2707[LOG4J2-2707])
+* The rolling file appenders would fail to compress the file after rollover if the file name matched the file pattern. (https://issues.apache.org/jira/browse/LOG4J2-2712[LOG4J2-2712])
+* LOG4J2-2725 - Added try/finally around event.execute() for RingBufferLogEventHandler to clear memory correctly in case of exception/error (https://issues.apache.org/jira/browse/LOG4J2-2725[LOG4J2-2725])
+* Prevent a memory leak when async loggers throw errors. (https://issues.apache.org/jira/browse/LOG4J2-2725[LOG4J2-2725])
+* Add setKey method to Kafka Appender Builder. (https://issues.apache.org/jira/browse/LOG4J2-2727[LOG4J2-2727])

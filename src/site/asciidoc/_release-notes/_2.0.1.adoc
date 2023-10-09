@@ -1,0 +1,80 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-0-1]
+== 2.0.1
+
+Release date:: 2014-07-29
+
+This is the first patch release of Log4j 2.0 which contains numerous bug fixes.
+
+Apache Log4j 2.0.1 requires a minimum of Java 6 to build and run.
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* Added documentation for Custom Levels and Custom Loggers. (https://issues.apache.org/jira/browse/LOG4J2-710[LOG4J2-710])
+* Added WebLoggerContextUtils class to log4j-web for helper methods useful for asynchronous servlets. (https://issues.apache.org/jira/browse/LOG4J2-725[LOG4J2-725])
+
+=== Changed
+
+* Update to LMAX Disruptor 3.3.0 from 3.2.1. (https://issues.apache.org/jira/browse/LOG4J2-732[LOG4J2-732])
+* Update to latest Jackson jars from the 2.4.1.X line. (https://issues.apache.org/jira/browse/LOG4J2-733[LOG4J2-733])
+
+=== Fixed
+
+* Fixed ClassLoader issues in loading Log4j providers in an OSGi environment. (https://issues.apache.org/jira/browse/LOG4J2-373[LOG4J2-373])
+* Fixed AbstractDatabaseManager to close connection on writeInternal error. (https://issues.apache.org/jira/browse/LOG4J2-657[LOG4J2-657])
+* DatePatternConverter ISO8601_PATTERN now conforms to ISO8601. (https://issues.apache.org/jira/browse/LOG4J2-670[LOG4J2-670])
+* Android: Could not find class 'javax.naming.InitialContext', referenced from method org.apache.logging.log4j.core.lookup.JndiLookup.lookup. (https://issues.apache.org/jira/browse/LOG4J2-703[LOG4J2-703])
+* Improved error message if configuration file not found. (https://issues.apache.org/jira/browse/LOG4J2-704[LOG4J2-704])
+* Android: java.lang.VerifyError: org/apache/logging/log4j/core/util/Closer (https://issues.apache.org/jira/browse/LOG4J2-713[LOG4J2-713])
+* Automatically disable log4j JMX when detecting we are running on Android. (https://issues.apache.org/jira/browse/LOG4J2-716[LOG4J2-716])
+* Correctly handle NetworkOnMainThreadException thrown on Android during Log4j2 initialization. (https://issues.apache.org/jira/browse/LOG4J2-719[LOG4J2-719])
+* Updated documentation regarding extensions to LoggerContextFactory and Log4j 2 providers. (https://issues.apache.org/jira/browse/LOG4J2-731[LOG4J2-731])
+* Fixed log4j-bom so that it won't interfere with spring-bom and others. (https://issues.apache.org/jira/browse/LOG4J2-735[LOG4J2-735])
+* Fixed log4j-bom so that it won't specify a default scope on any third party dependencies. (https://issues.apache.org/jira/browse/LOG4J2-736[LOG4J2-736])
+* RollingFileManager deadlock if async action thread fails to start. (https://issues.apache.org/jira/browse/LOG4J2-738[LOG4J2-738])
+* Fixed typo in webapp manual regarding sample web.xml file. (https://issues.apache.org/jira/browse/LOG4J2-740[LOG4J2-740])
+* Reinstate the package configuration attribute for discovering custom plugins. (https://issues.apache.org/jira/browse/LOG4J2-741[LOG4J2-741])
+* XInclude not working with relative path. (https://issues.apache.org/jira/browse/LOG4J2-742[LOG4J2-742])
+* Avoid unnecessary Clock calls when TimestampMessage is logged. (https://issues.apache.org/jira/browse/LOG4J2-744[LOG4J2-744])
+* Retain the default date pattern after fixing the ISO8601 pattern. (https://issues.apache.org/jira/browse/LOG4J2-749[LOG4J2-749])
+* Webapp configuration page has incorrect class name. (https://issues.apache.org/jira/browse/LOG4J2-750[LOG4J2-750])

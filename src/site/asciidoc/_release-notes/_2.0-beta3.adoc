@@ -1,0 +1,68 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-0-beta3]
+== 2.0-beta3
+
+Release date:: 2012-11-11
+
+
+=== Added
+
+* Added PropertiesRewritePolicy and ability to define properties on a Logger. (https://issues.apache.org/jira/browse/LOG4J2-28[LOG4J2-28])
+* Added ability to configure from an InputSource. (https://issues.apache.org/jira/browse/LOG4J2-55[LOG4J2-55])
+
+=== Changed
+
+* Created combined jar to combine API and Core contents for users who only want the Log4j implementation.
+* Add ability to customize the names of the Levels in the LevelPatternConverter. (https://issues.apache.org/jira/browse/LOG4J2-105[LOG4J2-105])
+* Added font and fontSize parameters to HTMLLayout. Replace newlines in message with br tag. (https://issues.apache.org/jira/browse/LOG4J2-29[LOG4J2-29])
+* Add ThreadContext.push(String format, Object... args) (https://issues.apache.org/jira/browse/LOG4J2-85[LOG4J2-85])
+* Build pdf of user's guide. (https://issues.apache.org/jira/browse/LOG4J2-87[LOG4J2-87])
+
+=== Fixed
+
+* Avoid NPE when duplicate LoggerContextFactorys are present. Allow factories to specify a weight to allow real implementations to outrank test implementations. Provide a simple default LoggerContextFactory.
+* A NullPointerException would occur if no format value was passed to the SyslogAppender. (https://issues.apache.org/jira/browse/LOG4J2-101[LOG4J2-101])
+* The Facility value was being improperly calculated. (https://issues.apache.org/jira/browse/LOG4J2-102[LOG4J2-102])
+* The LogEvent was wrapping a ThrowableProxy with another ThrowableProxy when deserializing. (https://issues.apache.org/jira/browse/LOG4J2-103[LOG4J2-103])
+* Convert LogManager binding to use "regular" java properties instead of XML properties to work around a bug in Oracle's xmlparserv2 jar. (https://issues.apache.org/jira/browse/LOG4J2-104[LOG4J2-104])
+* PatternParser was not properly handling adjacent nested options (https://issues.apache.org/jira/browse/LOG4J2-107[LOG4J2-107])
+* Fix NullPointerException in ClassLoaderContextSelector when no class is returned from the SecurityManager. (https://issues.apache.org/jira/browse/LOG4J2-108[LOG4J2-108])
+* Interpolator was not stripping Lookup key separator when trying to locate the default value for a variable. (https://issues.apache.org/jira/browse/LOG4J2-94[LOG4J2-94])
+* Add support for loading plugins inside the OSGi bundle. (https://issues.apache.org/jira/browse/LOG4J2-95[LOG4J2-95])
+* Added several missing classes and methods for Log4j 1.x compatibility. (https://issues.apache.org/jira/browse/LOG4J2-97[LOG4J2-97])
+* MapRewritePolicy had an extra call to putAll that caused updates to behave like adds. (https://issues.apache.org/jira/browse/LOG4J2-99[LOG4J2-99])
+* Log4j 1.2 Category.forcedLog was wrapping the message with an ObjectMessage even if the parameter was an ObjectMessage.

@@ -1,0 +1,50 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-0-alpha1]
+== 2.0-alpha1
+
+Release date:: 2012-07-29
+
+
+=== Added
+
+* Added ability to filter on the AppenderRef by adding either a level or a filter. (https://issues.apache.org/jira/browse/LOG4J2-60[LOG4J2-60])
+
+=== Fixed
+
+* Make sure all application facing log methods use their own FQCN. This patch resolves a unit test failure for the %C pattern when using the Category logger. (https://issues.apache.org/jira/browse/LOG4J2-50[LOG4J2-50])
+* Remove LoggerContext support for custom logger factories. All Loggers returned by LoggerContext should be compatible and of the same type. (https://issues.apache.org/jira/browse/LOG4J2-51[LOG4J2-51])
+* Level.toLevel would throw an IllegalArgumentException instead of returning the default value. (https://issues.apache.org/jira/browse/LOG4J2-56[LOG4J2-56])

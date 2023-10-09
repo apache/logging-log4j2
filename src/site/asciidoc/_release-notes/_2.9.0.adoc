@@ -1,0 +1,195 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE DOESN'T HAVE A `.ftl` SUFFIX, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Version-specific release notes (`7.8.0.adoc`, etc.) are generated from `src/changelog/*/.release-notes.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Find and edit the associated `.release-notes.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.release-notes.adoc.ftl` and the generated `7.8.0.adoc`
+////
+
+[#release-notes-2-9-0]
+== 2.9.0
+
+Release date:: 2017-08-26
+
+This release contains the first support of Java 9 as well as bugfixes and minor enhancements.
+The Log4j API was modified to use `java.util.ServiceLoader` to locate Log4j implementations, although the former binding mechanism is still supported.
+The Log4j JAR is now a multi-release JAR to provide implementations of the Java 9 specific classes.
+Multi-release JARs are not supported by the OSGi specification so OSGi modules will not be able to take advantage of these implementations but will not lose functionality as they will fall back to the implementations used in Java 7 and 8.
+More details on the new features and fixes are itemized below.
+
+Note that subsequent to the 2.9.0 release, for security reasons, `SerializedLayout` is deprecated and no longer used as default in the Socket and JMS appenders.
+`SerializedLayout` can still be used as before, but has to be specified explicitly.
+To retain old behaviour, you have to change configuration like:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500"/>
+</Appenders>
+----
+
+into:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500">
+    <SerializedLayout/>
+  </Socket>
+</Appenders>
+----
+
+We do, however, discourage the use of `SerializedLayout` and recommend `JsonLayout` as a replacement:
+
+[source,xml]
+----
+<Appenders>
+  <Socket name="socket" host="localhost" port="9500">
+    <JsonLayout properties="true"/>
+  </Socket>
+</Appenders>
+----
+
+Note that subsequent to the 2.9.0 release, for security reasons, Log4j does not process DTD in XML files.
+If you used DTD for including snippets, you have to use XInclude or Composite Configuration instead.
+
+The Log4j 2.9.0 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Log4j 2.9.0 requires a minimum of Java 7 to build and run.
+Log4j 2.3 was the last release that supported Java 6.
+
+Basic compatibility with Log4j 1.x is provided through the `log4j-1.2-api` component, however it does
+not implement some of the very implementation specific classes and methods.
+The package names and Maven `groupId` have been changed to `org.apache.logging.log4j` to avoid any conflicts with Log4j 1.x.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+
+=== Added
+
+* The JMS Appender should use a JMS MapMessage for a Log4j MapMessage. (https://issues.apache.org/jira/browse/LOG4J2-1294[LOG4J2-1294])
+* Add support for Java 9 StackWalker. (https://issues.apache.org/jira/browse/LOG4J2-1359[LOG4J2-1359])
+* Generic HTTP appender. (https://issues.apache.org/jira/browse/LOG4J2-1442[LOG4J2-1442])
+* Configurable Log File Permissions with PosixFilePermission. (https://issues.apache.org/jira/browse/LOG4J2-1699[LOG4J2-1699])
+* Temporary compress directory during rollover (#88). (https://issues.apache.org/jira/browse/LOG4J2-1766[LOG4J2-1766])
+* Log4j2 will now print all internal logging to the console if system property `log4j2.debug` is defined with any value (or no value). (https://issues.apache.org/jira/browse/LOG4J2-1813[LOG4J2-1813])
+* Added wrapper classes CustomLoggerGenerator and ExtendedLoggerGenerator to avoid class name with a dollar ($) character which has special meaning in many *nix command line environments. (https://issues.apache.org/jira/browse/LOG4J2-1814[LOG4J2-1814])
+* Support null byte delimiter in GelfLayout. (https://issues.apache.org/jira/browse/LOG4J2-1854[LOG4J2-1854])
+* Add an optional random delay in TimeBasedTriggeringPolicy (https://issues.apache.org/jira/browse/LOG4J2-1855[LOG4J2-1855])
+* Shortcut to add Property and KeyValuePair component in ConfigurationBuilder. (https://issues.apache.org/jira/browse/LOG4J2-1860[LOG4J2-1860])
+* Support capped collections for MongoDb appender. (https://issues.apache.org/jira/browse/LOG4J2-1864[LOG4J2-1864])
+* Added methods ::writeBytes(ByteBuffer) and ::writeBytes(byte[], int, int) to ByteBufferDestination interface and use these methods in TextEncoderHelper where possible to prepare for future enhancements to reduce lock contention. (https://issues.apache.org/jira/browse/LOG4J2-1874[LOG4J2-1874])
+* Warn when a configuration file for an inactive ConfigurationFactory is found. (https://issues.apache.org/jira/browse/LOG4J2-1880[LOG4J2-1880])
+* Added process ID (pid) pattern converter. (https://issues.apache.org/jira/browse/LOG4J2-1884[LOG4J2-1884])
+* Add forEach() methods to org.apache.logging.log4j.message.MapMessage. (https://issues.apache.org/jira/browse/LOG4J2-1930[LOG4J2-1930])
+* Add containsKey() methods to org.apache.logging.log4j.message.MapMessage. (https://issues.apache.org/jira/browse/LOG4J2-1932[LOG4J2-1932])
+* JMS Appender does not know how to recover from a broken connection. (https://issues.apache.org/jira/browse/LOG4J2-1934[LOG4J2-1934])
+* Add with(String, primitive) methods to org.apache.logging.log4j.message.MapMessage. (https://issues.apache.org/jira/browse/LOG4J2-1935[LOG4J2-1935])
+* Generate source jas for all test jars. (https://issues.apache.org/jira/browse/LOG4J2-1945[LOG4J2-1945])
+* JMS Appender should be able to connect to a broker (later) even it is not present at configuration time. (https://issues.apache.org/jira/browse/LOG4J2-1955[LOG4J2-1955])
+* JsonLayout, XmlLayout and YamlLayout support 0-byte termination of log events. (https://issues.apache.org/jira/browse/LOG4J2-1981[LOG4J2-1981])
+* Public API for parsing the output from JsonLayout/XmlLayout/YamlLayout into a LogEvent. (https://issues.apache.org/jira/browse/LOG4J2-1986[LOG4J2-1986])
+* Support printing multiple StructuredData elements in RFC5424Layout. (https://issues.apache.org/jira/browse/LOG4J2-2008[LOG4J2-2008])
+
+=== Changed
+
+* Allow for bufferSize=0 in SMTP appender. (https://issues.apache.org/jira/browse/LOG4J2-1071[LOG4J2-1071])
+* Async Loggers no longer use deprecated LMAX Disruptor APIs. (Disruptor-3.3.3 or higher is now required.) (https://issues.apache.org/jira/browse/LOG4J2-1261[LOG4J2-1261])
+* Add more detail to WARN "Ignoring log event" messages printed to the console after log4j was shut down. (https://issues.apache.org/jira/browse/LOG4J2-1801[LOG4J2-1801])
+* Move server components from log4j-core to new log4-server module. (https://issues.apache.org/jira/browse/LOG4J2-1851[LOG4J2-1851])
+* Update ZeroMQ's JeroMQ from 0.3.6 to 0.4.0. (https://issues.apache.org/jira/browse/LOG4J2-1868[LOG4J2-1868])
+* Update Kafka client from 0.10.1.1 to 0.10.2.0 (https://issues.apache.org/jira/browse/LOG4J2-1869[LOG4J2-1869])
+* Update JavaMail from 1.5.5 to 1.5.6. (https://issues.apache.org/jira/browse/LOG4J2-1872[LOG4J2-1872])
+* Missing documentation for Max index limit in DefaultRolloverStrategy. (https://issues.apache.org/jira/browse/LOG4J2-1877[LOG4J2-1877])
+* Update JAnsi from 1.14 to 1.15. (https://issues.apache.org/jira/browse/LOG4J2-1879[LOG4J2-1879])
+* Add missing getters to classes in package org.apache.logging.log4j.core.net.ssl. (https://issues.apache.org/jira/browse/LOG4J2-1899[LOG4J2-1899])
+* Update JAnsi from 1.15 to 1.16. (https://issues.apache.org/jira/browse/LOG4J2-1900[LOG4J2-1900])
+* Improved error message when misconfigured with multiple incompatible appenders targeting same file. (https://issues.apache.org/jira/browse/LOG4J2-1908[LOG4J2-1908])
+* Support using java.util.ServiceLoader to locate Log4j 2 API providers. (https://issues.apache.org/jira/browse/LOG4J2-1917[LOG4J2-1917])
+* Facilitate log4j use in Android applications: remove dependency on RMI and Management APIs from log4j-api. (https://issues.apache.org/jira/browse/LOG4J2-1926[LOG4J2-1926])
+* Add support for DirectWriteRolloverStrategy to RollingRandomAccessFileAppender. (https://issues.apache.org/jira/browse/LOG4J2-1928[LOG4J2-1928])
+* Update Jackson from 2.8.7 to 2.8.9. (https://issues.apache.org/jira/browse/LOG4J2-1938[LOG4J2-1938])
+* Fix docker build with jdk9 requirements (#84). (https://issues.apache.org/jira/browse/LOG4J2-1950[LOG4J2-1950])
+* Configurations with multiple root loggers now fail loudly. (https://issues.apache.org/jira/browse/LOG4J2-1954[LOG4J2-1954])
+* JMS Appender broker password should be a char[], not a String. (https://issues.apache.org/jira/browse/LOG4J2-1956[LOG4J2-1956])
+* Deprecate SerializedLayout and remove it as default. (https://issues.apache.org/jira/browse/LOG4J2-1958[LOG4J2-1958])
+* Disable DTD processing in XML configuration files. (https://issues.apache.org/jira/browse/LOG4J2-1959[LOG4J2-1959])
+* Update ZeroMQ's JeroMQ from 0.4.0 to 0.4.1. (https://issues.apache.org/jira/browse/LOG4J2-1960[LOG4J2-1960])
+* Update Kafka client from 0.10.2.0 to 0.11.0.0 (https://issues.apache.org/jira/browse/LOG4J2-1962[LOG4J2-1962])
+* Include separator option of PatternLayout in manual (and other updates). (https://issues.apache.org/jira/browse/LOG4J2-1966[LOG4J2-1966])
+* Update HdrHistogram from 2.1.8 to 2.1.9. (https://issues.apache.org/jira/browse/LOG4J2-1970[LOG4J2-1970])
+* Update ZeroMQ's JeroMQ from 0.4.1 to 0.4.2. (https://issues.apache.org/jira/browse/LOG4J2-1974[LOG4J2-1974])
+* Update javax.persistence from 2.1.0 to 2.1.1. (https://issues.apache.org/jira/browse/LOG4J2-1975[LOG4J2-1975])
+* Update org.osgi.core from 4.3.1 to 6.0.0. (https://issues.apache.org/jira/browse/LOG4J2-1976[LOG4J2-1976])
+* Allow maxLength of StructuredData to be specified by the user. (https://issues.apache.org/jira/browse/LOG4J2-1984[LOG4J2-1984])
+* Refactor SimpleMessage to be concise and clear (#100) (https://issues.apache.org/jira/browse/LOG4J2-1991[LOG4J2-1991])
+* Replace JCommander command line parser with picocli to let users run Log4j2 utility applications without requiring an external dependency. (https://issues.apache.org/jira/browse/LOG4J2-2011[LOG4J2-2011])
+* Allow KeyStoreConfiguration and TrustStoreConfiguration to find files as resources. (https://issues.apache.org/jira/browse/LOG4J2-2015[LOG4J2-2015])
+* Update Jackson from 2.8.9 to 2.9.0. (https://issues.apache.org/jira/browse/LOG4J2-2017[LOG4J2-2017])
+* Remove default layout from KafkaAppender. (https://issues.apache.org/jira/browse/LOG4J2-2020[LOG4J2-2020])
+* RFC5424Layout now prints the process id. (https://issues.apache.org/jira/browse/LOG4J2-2022[LOG4J2-2022])
+* Use a class' canonical name instead of name to create its logger name. (https://issues.apache.org/jira/browse/LOG4J2-2023[LOG4J2-2023])
+* Update SLF4J from 1.7.24 to 1.7.25.
+
+=== Fixed
+
+* SocketAppender will lose several events after re-connection to server. (https://issues.apache.org/jira/browse/LOG4J2-1311[LOG4J2-1311])
+* Prevent NullPointerException when a file name is specified with the DirectWriteRolloverStrategy. (https://issues.apache.org/jira/browse/LOG4J2-1833[LOG4J2-1833])
+* Ensure the ThreadLocal StringBuilder in ParameterizedMessage won't hold excessively much memory after logging a long message. (https://issues.apache.org/jira/browse/LOG4J2-1858[LOG4J2-1858])
+* Fix configuration documentation. (https://issues.apache.org/jira/browse/LOG4J2-1867[LOG4J2-1867])
+* More reliable checking for runtime dependencies. (https://issues.apache.org/jira/browse/LOG4J2-1876[LOG4J2-1876])
+* Fix documentation about default additivity value for loggers. (https://issues.apache.org/jira/browse/LOG4J2-1885[LOG4J2-1885])
+* Log4j throws a java.nio.charset.UnsupportedCharsetException: cp65001. (https://issues.apache.org/jira/browse/LOG4J2-1888[LOG4J2-1888])
+* Improve the documentation of the DynamicThresholdFilter. (https://issues.apache.org/jira/browse/LOG4J2-1911[LOG4J2-1911])
+* CompositeConfiguration logs warning "Unable to determine URI for configuration." However, the reconfiguration is completed. (https://issues.apache.org/jira/browse/LOG4J2-1912[LOG4J2-1912])
+* ScriptEngineManager is not available in Android and causes a NoClassDefFoundError. (https://issues.apache.org/jira/browse/LOG4J2-1920[LOG4J2-1920])
+* EOFException with FormattedMessage. (https://issues.apache.org/jira/browse/LOG4J2-1929[LOG4J2-1929])
+* The eventPrefix attribute was being ignored in the RFC5424Layout. (https://issues.apache.org/jira/browse/LOG4J2-1943[LOG4J2-1943])
+* Trim levels read from properties file to remove trailing spaces. (https://issues.apache.org/jira/browse/LOG4J2-1948[LOG4J2-1948])
+* JndiManager is not released when the JmsAppender builder catches an exception trying to build itself. (https://issues.apache.org/jira/browse/LOG4J2-1953[LOG4J2-1953])
+* Reconfigure breaks DirectWriteRolloverStrategy. (https://issues.apache.org/jira/browse/LOG4J2-1961[LOG4J2-1961])
+* Dynamic reconfiguration does not work for filePattern of RollingFile. (https://issues.apache.org/jira/browse/LOG4J2-1964[LOG4J2-1964])
+* ClassCastException: org.eclipse.osgi.internal.loader.SystemBundleLoader$1 cannot be cast to java.lang.ClassLoader. (https://issues.apache.org/jira/browse/LOG4J2-1971[LOG4J2-1971])
+* Register log4j-core as an OSGi service. Skip tests for LOG4J2-1766 on macOS. Use group "staff" for LOG4J2-1699 test on macOS. (https://issues.apache.org/jira/browse/LOG4J2-1971[LOG4J2-1971])
+* Consider the StringBuilder's capacity instead of content length when trimming. (https://issues.apache.org/jira/browse/LOG4J2-1977[LOG4J2-1977])
+* Log4j-config.xsd only allows one AppenderRef element for each Logger element. (https://issues.apache.org/jira/browse/LOG4J2-1982[LOG4J2-1982])
+* Fix default buffer size to match documentation (from 8102 to 8192 a.k.a. 8KB.) (https://issues.apache.org/jira/browse/LOG4J2-1985[LOG4J2-1985])
+* Log4J JUL Bridge and RMI Security Manager causes access denied ("java.util.logging.LoggingPermission" "control") (https://issues.apache.org/jira/browse/LOG4J2-1987[LOG4J2-1987])
+* Clarify Javadoc for AbstractTriggeringPolicy. (https://issues.apache.org/jira/browse/LOG4J2-1989[LOG4J2-1989])
+* ConcurrentModificationException logging a parameter of type Map. (https://issues.apache.org/jira/browse/LOG4J2-1990[LOG4J2-1990])
+* Fix compiler warnings in LoggerConfigTest. (https://issues.apache.org/jira/browse/LOG4J2-1993[LOG4J2-1993])
+* TcpSocketServer does not close accepted Sockets. (https://issues.apache.org/jira/browse/LOG4J2-1994[LOG4J2-1994])
+* HighlightConverter converts all unrecognized levels to DEBUG. (https://issues.apache.org/jira/browse/LOG4J2-1999[LOG4J2-1999])
+* StyleConverter.newInstance argument validation is incorrect. (https://issues.apache.org/jira/browse/LOG4J2-2001[LOG4J2-2001])
+* No compression when using a separate drive in Linux. (https://issues.apache.org/jira/browse/LOG4J2-2012[LOG4J2-2012])
+* SslSocketManager does not apply SSLContext on TCP reconnect. (https://issues.apache.org/jira/browse/LOG4J2-2013[LOG4J2-2013])
+* Mark FileRenameAction as successful when using alternative ways to move files. (https://issues.apache.org/jira/browse/LOG4J2-2016[LOG4J2-2016])
+* Fix incorrect documentation for LoggerNameLevelRewritePolicy. (https://issues.apache.org/jira/browse/LOG4J2-2018[LOG4J2-2018])
+* Parameter of mdcId in SyslogAppender has no default value. (https://issues.apache.org/jira/browse/LOG4J2-922[LOG4J2-922])
