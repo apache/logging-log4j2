@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.io.file.PathUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.core.appender.db.jdbc.AbstractConnectionSource;
@@ -67,10 +68,12 @@ public class JdbcH2TestHelper {
         }
     }
 
+    @SuppressFBWarnings(value = "DMI_EMPTY_DB_PASSWORD")
     public static Connection getConnectionInMemory() throws SQLException {
         return DriverManager.getConnection(CONNECTION_STRING_IN_MEMORY, USER_NAME, PASSWORD);
     }
 
+    @SuppressFBWarnings(value = "DMI_EMPTY_DB_PASSWORD")
     public static Connection getConnectionTempDir() throws SQLException {
         return DriverManager.getConnection(CONNECTION_STRING_TEMP_DIR, USER_NAME, PASSWORD);
     }

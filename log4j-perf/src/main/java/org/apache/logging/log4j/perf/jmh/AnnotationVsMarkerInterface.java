@@ -18,7 +18,6 @@ package org.apache.logging.log4j.perf.jmh;
 
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringMap;
@@ -58,7 +57,7 @@ public class AnnotationVsMarkerInterface {
     @BenchmarkMode({Mode.Throughput, Mode.AverageTime, Mode.SampleTime, Mode.SingleShotTime})
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public Object annotationMissing() {
-        return map.getClass().isAnnotationPresent(PerformanceSensitive.class);
+        return map.getClass().isAnnotationPresent(State.class);
     }
 
     @Benchmark

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import org.apache.log4j.helpers.QuietWriter;
@@ -242,12 +243,8 @@ public class WriterAppender extends AppenderSkeleton {
         if (enc != null) {
             try {
                 retval = new OutputStreamWriter(os, enc);
-            } catch (IOException e) {
-                if (e instanceof InterruptedIOException) {
-                    Thread.currentThread().interrupt();
-                }
-                LOGGER.warn("Error initializing output writer.");
-                LOGGER.warn("Unsupported encoding?");
+            } catch (final UnsupportedEncodingException e) {
+                LOGGER.warn("Error initializing output writer: encoding {} is not supported.", enc, e);
             }
         }
         if (retval == null) {

@@ -314,8 +314,7 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <module.name />
-    <!-- TODO: fix errors and reenable SpotBugs -->
-    <spotbugs.skip>true</spotbugs.skip>
+    <spotbugs.maxRank>9</spotbugs.maxRank>
 
     <!-- ========================
          Site-specific properties
@@ -1307,6 +1306,12 @@
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd.annotation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.spotbugs</groupId>
+      <artifactId>spotbugs-annotations</artifactId>
       <scope>provided</scope>
     </dependency>
 

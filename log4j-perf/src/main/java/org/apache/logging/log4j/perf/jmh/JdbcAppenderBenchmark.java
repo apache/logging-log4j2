@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -185,6 +186,7 @@ public class JdbcAppenderBenchmark {
     /**
      * Referred from log4j2-jdbc-appender.xml.
      */
+    @SuppressFBWarnings("DMI_EMPTY_DB_PASSWORD")
     public static Connection getConnectionH2() throws Exception {
         Class.forName("org.h2.Driver");
         return DriverManager.getConnection("jdbc:h2:mem:Log4j", "sa", "");
@@ -193,6 +195,7 @@ public class JdbcAppenderBenchmark {
     /**
      * Referred from log4j2-jdbc-appender.xml.
      */
+    @SuppressFBWarnings("DMI_EMPTY_DB_PASSWORD")
     public static Connection getConnectionHSQLDB() throws Exception {
         Class.forName("org.hsqldb.jdbcDriver");
         return DriverManager.getConnection("jdbc:hsqldb:mem:Log4j", "sa", "");

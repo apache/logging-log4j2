@@ -90,7 +90,7 @@ public class ThreadsafeDateFormatBenchmark {
         }
     }
 
-    private class FormatterSimple {
+    private static class FormatterSimple {
         private final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
         private long timestamp;
         private String formatted;
@@ -108,7 +108,7 @@ public class ThreadsafeDateFormatBenchmark {
         }
     }
 
-    private class FormatterFixedReuseBuffer {
+    private static class FormatterFixedReuseBuffer {
         private final FixedDateFormat customFormat = FixedDateFormat.createIfSupported("HH:mm:ss.SSS");
         private long timestamp;
         private String formatted;

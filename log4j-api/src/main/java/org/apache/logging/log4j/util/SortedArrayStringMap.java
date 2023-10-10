@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -545,6 +546,8 @@ public class SortedArrayStringMap implements IndexedStringMap {
         }
     }
 
+    @SuppressFBWarnings(value = "OBJECT_DESERIALIZATION", justification = "Object deserialization uses either Java 9 " +
+            "native filter or our custom filter to limit the kinds of classes deserialized.")
     private static Object unmarshall(final byte[] data, final ObjectInputStream inputStream)
             throws IOException, ClassNotFoundException {
         final ByteArrayInputStream bin = new ByteArrayInputStream(data);

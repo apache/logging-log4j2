@@ -24,7 +24,7 @@ import org.apache.logging.log4j.message.Message;
  * Reusable Message..
  */
 public class NoGcMessage implements Message {
-    class InternalState {
+    static class InternalState {
         private final Object[] params = new Object[10];
         private int paramCount;
         private final StringBuilder buffer = new StringBuilder(2048);
