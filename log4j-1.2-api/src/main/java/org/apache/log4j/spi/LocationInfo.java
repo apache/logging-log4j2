@@ -18,6 +18,7 @@ package org.apache.log4j.spi;
 
 import java.io.Serializable;
 import java.util.Objects;
+import org.apache.logging.log4j.core.util.Integers;
 
 /**
  * The internal representation of caller location information.
@@ -101,35 +102,40 @@ public class LocationInfo implements Serializable {
                 prevClass = thisClass;
             }
         }
-        this.stackTraceElement = new StackTraceElement(declaringClass, methodName, file, Integer.parseInt(line));
-        this.fullInfo = stackTraceElement.toString();
+        if (declaringClass != null && methodName != null) {
+            this.stackTraceElement = new StackTraceElement(declaringClass, methodName, file, Integers.parseInt(line));
+            this.fullInfo = stackTraceElement.toString();
+        } else {
+            this.stackTraceElement = null;
+            this.fullInfo = null;
+        }
     }
 
     /**
      * Gets the fully qualified class name of the caller making the logging request.
      */
     public String getClassName() {
-        return stackTraceElement.getClassName();
+        return stackTraceElement != null ? stackTraceElement.getClassName() : NA;
     }
 
     /**
      * Gets the file name of the caller.
      */
     public String getFileName() {
-        return stackTraceElement.getFileName();
+        return stackTraceElement != null ? stackTraceElement.getFileName() : NA;
     }
 
     /**
      * Gets the line number of the caller.
      */
     public String getLineNumber() {
-        return Integer.toString(stackTraceElement.getLineNumber());
+        return stackTraceElement != null ? Integer.toString(stackTraceElement.getLineNumber()) : NA;
     }
 
     /**
      * Gets the method name of the caller.
      */
     public String getMethodName() {
-        return stackTraceElement.getMethodName();
+        return stackTraceElement != null ? stackTraceElement.getMethodName() : NA;
     }
 }
