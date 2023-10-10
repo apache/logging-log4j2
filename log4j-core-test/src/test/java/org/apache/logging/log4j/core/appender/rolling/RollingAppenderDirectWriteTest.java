@@ -17,78 +17,61 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Test;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-/**
- *
- */
+import static org.assertj.core.api.Assertions.assertThat;
+
+@UsingStatusListener
 public class RollingAppenderDirectWriteTest {
 
-    private static final String CONFIG = "log4j-rolling-direct.xml";
+    private final Pattern FILE_PATTERN = Pattern.compile("test-\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d+\\.log(\\.gz)?");
+    private final Pattern LINE_PATTERN = Pattern.compile("This is test message number \\d+\\.");
 
-    private static final String DIR = "target/rolling-direct";
-
-    public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
-
-    private Logger logger;
-
-    @Before
-    public void setUp() throws Exception {
-        this.logger = loggerContextRule.getLogger(RollingAppenderDirectWriteTest.class.getName());
-    }
+    @TempLoggingDir
+    private Path loggingPath;
 
     @Test
-    public void testAppender() throws Exception {
+    @LoggerContextSource
+    public void testAppender(final LoggerContext ctx) throws Exception {
+        final Logger logger = ctx.getLogger(getClass());
         final int count = 100;
         for (int i=0; i < count; ++i) {
-            logger.debug("This is test message number " + i);
+            logger.debug("This is test message number {}.", i);
         }
-        Thread.sleep(50);
-        final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);
-        final File[] files = dir.listFiles();
-        assertNotNull(files);
-        assertThat(files, hasItemInArray(that(hasName(that(endsWith(".gz"))))));
+        ctx.stop(500, TimeUnit.MILLISECONDS);
         int found = 0;
-        for (final File file: files) {
-            final String actual = file.getName();
-            BufferedReader reader;
-            if (file.getName().endsWith(".gz")) {
-                reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file))));
-            } else {
-                reader = new BufferedReader(new FileReader(file));
+        try (final DirectoryStream<Path> stream = Files.newDirectoryStream(loggingPath)) {
+            for (final Path file: stream) {
+                final String fileName = file.getFileName().toString();
+                assertThat(fileName).matches(FILE_PATTERN);
+                try (final InputStream is = Files.newInputStream(file);
+                     final InputStream uncompressed = fileName.endsWith(".gz") ? new GZIPInputStream(is) : is;
+                     final BufferedReader reader = new BufferedReader(new InputStreamReader(uncompressed, UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        assertThat(line).matches(LINE_PATTERN);
+                        ++found;
+                    }
+                }
             }
-            String line;
-            while ((line = reader.readLine()) != null) {
-                assertNotNull("No log event in file " + actual, line);
-                final String[] parts = line.split((" "));
-                final String expected = "test1-" + parts[0];
-                assertTrue("Incorrect file name. Expected file prefix: " + expected + " Actual: " + actual,
-                    actual.startsWith(expected));
-                ++found;
-            }
-            reader.close();
         }
-        assertEquals("Incorrect number of events read. Expected " + count + ", Actual " + found, count, found);
+
+        assertThat(found).as("Number of events.").isEqualTo(count);
     }
 }
