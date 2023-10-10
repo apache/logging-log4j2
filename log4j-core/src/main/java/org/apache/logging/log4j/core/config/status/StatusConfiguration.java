@@ -124,6 +124,7 @@ public class StatusConfiguration {
 
     /**
      * Specifies the logging level by name to use for filtering StatusLogger messages.
+     * Defaults to {@link Level#ERROR} for invalid level name.
      *
      * @param status name of logger level to filter below.
      * @return {@code this}
