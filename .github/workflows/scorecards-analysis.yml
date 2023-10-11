@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-name: "Scorecards supply-chain security"
+name: Scorecards
 
 on:
   branch_protection_rule:
@@ -45,7 +45,6 @@ jobs:
         uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608   # 4.1.0
         with:
           persist-credentials: false
-          fetch-depth: 32
 
       - name: "Run analysis"
         uses: ossf/scorecard-action@08b4669551908b1024bb425080c797723083c031    # 2.2.0
