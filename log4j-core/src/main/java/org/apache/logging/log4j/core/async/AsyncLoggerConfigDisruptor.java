@@ -20,11 +20,11 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import com.lmax.disruptor.EventFactory;
+import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.EventTranslatorTwoArg;
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.Sequence;
-import com.lmax.disruptor.SequenceReportingEventHandler;
 import com.lmax.disruptor.TimeoutException;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
@@ -94,7 +94,7 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     /**
      * EventHandler performs the work in a separate thread.
      */
-    private static class Log4jEventWrapperHandler implements SequenceReportingEventHandler<Log4jEventWrapper> {
+    private static class Log4jEventWrapperHandler implements EventHandler<Log4jEventWrapper> {
         private static final int NOTIFY_PROGRESS_THRESHOLD = 50;
         private Sequence sequenceCallback;
         private int counter;
