@@ -31,12 +31,15 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import static org.assertj.core.api.Assertions.assertThat;
 /**
  * LOG4J2-1766.
  */
 @UsingStatusListener
+@DisabledOnOs(value = OS.MAC, disabledReason = "FileWatcher is not fast enough on macOS for this test")
 public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
 
     private final String PATTERN = "test-\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d+\\.log\\.gz";
