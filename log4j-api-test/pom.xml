@@ -36,6 +36,7 @@
       -->
     <bnd-module-name>org.apache.logging.log4j.test</bnd-module-name>
     <bnd-extra-package-options>
+      org.apache.commons.lang3.*;resolution:=optional,
       <!-- Both JUnit 4 and JUnit 5 are not required -->
       org.junit.*;resolution:=optional,
       org.hamcrest.*;resolution:=optional,
@@ -55,7 +56,6 @@
       maven.model.builder;substitute="maven-model-builder";transitive=false;static=true,
       plexus.utils;substitute="plexus-utils";transitive=false;static=true
     </bnd-extra-module-options>
-    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
   <dependencies>
     <dependency>

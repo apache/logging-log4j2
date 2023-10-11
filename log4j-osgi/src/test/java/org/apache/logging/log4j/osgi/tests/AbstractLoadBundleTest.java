@@ -71,11 +71,11 @@ public abstract class AbstractLoadBundleTest {
     }
 
     private Bundle get12ApiBundle() throws BundleException {
-        return installBundle("org.apache.logging.log4j.1.2-api");
+        return installBundle("org.apache.logging.log4j.1.2.api");
     }
 
     private Bundle getApiTestsBundle() throws BundleException {
-        return installBundle("org.apache.logging.log4j.api-test");
+        return installBundle("org.apache.logging.log4j.api.test");
     }
 
     protected abstract FrameworkFactory getFactory();
@@ -261,21 +261,21 @@ public abstract class AbstractLoadBundleTest {
         final Class<?> osgiServiceLocator = api.loadClass("org.apache.logging.log4j.util.OsgiServiceLocator");
         assertTrue("OsgiServiceLocator is active", (boolean) osgiServiceLocator.getMethod("isAvailable").invoke(null));
 
-        api.start();
         core.start();
-        assertEquals("api-tests is not in RESOLVED state", Bundle.RESOLVED, apiTests.getState());
+        apiTests.start();
+        assertEquals("api-tests is not in ACTIVE state", Bundle.ACTIVE, apiTests.getState());
 
-        final Class<?> osgiServiceLocatorTest = api.loadClass("org.apache.logging.log4j.test.util.OsgiServiceLocatorTest");
+        final Class<?> osgiServiceLocatorTest = apiTests.loadClass("org.apache.logging.log4j.test.util.OsgiServiceLocatorTest");
 
         final Method loadProviders = osgiServiceLocatorTest.getDeclaredMethod("loadProviders");
         final Object obj = loadProviders.invoke(null);
         assertTrue(obj instanceof Stream);
         @SuppressWarnings("unchecked")
-        final
-                List<Object> services = ((Stream<Object>) obj).collect(Collectors.toList());
+        final List<Object> services = ((Stream<Object>) obj).collect(Collectors.toList());
         assertEquals(1, services.size());
         assertEquals("org.apache.logging.log4j.core.impl.Log4jProvider", services.get(0).getClass().getName());
 
+        apiTests.stop();
         core.stop();
         api.stop();
         assertEquals("api-tests is not in ACTIVE state", Bundle.RESOLVED, apiTests.getState());

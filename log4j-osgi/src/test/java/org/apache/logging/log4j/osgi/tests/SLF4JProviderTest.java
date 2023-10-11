@@ -51,7 +51,7 @@ public class SLF4JProviderTest {
     public Option[] config() {
         return options(
                 linkBundle("org.apache.logging.log4j.api"),
-                linkBundle("org.apache.logging.log4j.to-slf4j"),
+                linkBundle("org.apache.logging.log4j.to.slf4j"),
                 linkBundle("slf4j.api"),
                 linkBundle("ch.qos.logback.classic"),
                 linkBundle("ch.qos.logback.core"),
@@ -61,7 +61,7 @@ public class SLF4JProviderTest {
     @Test(timeout = 10_000L)
     public void testSlf4jFactoryResolves() {
         final Optional<Bundle> slf4jBundle = Stream.of(context.getBundles())
-                .filter(b -> "org.apache.logging.log4j.to-slf4j".equals(b.getSymbolicName()))
+                .filter(b -> "org.apache.logging.log4j.to.slf4j".equals(b.getSymbolicName()))
                 .findAny();
         assertTrue(slf4jBundle.isPresent());
         final LoggerContextFactory factory = LogManager.getFactory();
