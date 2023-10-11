@@ -85,6 +85,7 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 
 * Added validation to rolling file manager path conditions (https://github.com/apache/logging-log4j2/issues/1231[1231])
 * Adapted the OSGi metadata of `log4j-to-slf4j` to work with SLF4J 1 and 2. To achieve that used a version range of `[1.7,3)` for the imported SLF4J packages. (https://github.com/apache/logging-log4j2/issues/1232[1232])
+* Fixed Javadoc failures (https://github.com/apache/logging-log4j2/issues/1275[1275], https://github.com/apache/logging-log4j2/pull/1753[1753])
 * Removed locale-dependent `toLowerCase/toUpperCase` calls (https://github.com/apache/logging-log4j2/pull/1281[1281])
 * Redirected old `/<module>/apidocs` URLs (broken in 2.20.0) to `/javadoc/<module>` (https://github.com/apache/logging-log4j2/pull/1284[1284])
 * Added environment variable arbiter (https://github.com/apache/logging-log4j2/issues/1312[1312])
