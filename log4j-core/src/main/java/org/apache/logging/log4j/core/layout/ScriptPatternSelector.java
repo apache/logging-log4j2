@@ -264,12 +264,12 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
     /**
      * Deprecated, use {@link #newBuilder()} instead.
      *
-     * @param script
-     * @param properties
-     * @param defaultPattern
-     * @param alwaysWriteExceptions
-     * @param noConsoleNoAnsi
-     * @param configuration
+     * @param script the script
+     * @param properties the PatternMatch configuration items
+     * @param defaultPattern the default pattern
+     * @param alwaysWriteExceptions To always write exceptions even if the pattern contains no exception conversions.
+     * @param noConsoleNoAnsi Do not output ANSI escape codes if System.console() is null.
+     * @param configuration the configuration
      * @return a new ScriptPatternSelector
      * @deprecated Use {@link #newBuilder()} instead.
      */

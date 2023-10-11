@@ -108,7 +108,7 @@ public final class Constants {
     /**
      * Initial StringBuilder size used in RingBuffer LogEvents to store the contents of reusable Messages.
      * <p>
-     * The default value is {@value}, users can override with system property "log4j.initialReusableMsgSize".
+     * The default value is 128, users can override with system property "log4j.initialReusableMsgSize".
      * </p>
      * @since 2.6
      */
@@ -118,7 +118,7 @@ public final class Constants {
      * Maximum size of the StringBuilders used in RingBuffer LogEvents to store the contents of reusable Messages.
      * After a large message has been delivered to the appenders, the StringBuilder is trimmed to this size.
      * <p>
-     * The default value is {@value}, which allows the StringBuilder to resize three times from its initial size.
+     * The default value is 518, which allows the StringBuilder to resize three times from its initial size.
      * Users can override with system property "log4j.maxReusableMsgSize".
      * </p>
      * @since 2.6
@@ -128,7 +128,7 @@ public final class Constants {
     /**
      * Size of CharBuffers used by text encoders.
      * <p>
-     * The default value is {@value}, users can override with system property "log4j.encoder.charBufferSize".
+     * The default value is 2048, users can override with system property "log4j.encoder.charBufferSize".
      * </p>
      * @since 2.6
      */
@@ -137,7 +137,7 @@ public final class Constants {
     /**
      * Default size of ByteBuffers used to encode LogEvents without allocating temporary objects.
      * <p>
-     * The default value is {@value}, users can override with system property "log4j.encoder.byteBufferSize".
+     * The default value is 8192, users can override with system property "log4j.encoder.byteBufferSize".
      * </p>
      * @see org.apache.logging.log4j.core.layout.ByteBufferDestination
      * @since 2.6

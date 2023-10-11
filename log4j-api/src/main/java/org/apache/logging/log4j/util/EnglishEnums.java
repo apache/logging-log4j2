@@ -26,7 +26,7 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
  * Helps convert English Strings to English Enum values.
  * </p>
  * <p>
- * Enum name arguments are converted internally to upper case with the {@linkplain Locale#ENGLISH ENGLISH} locale to
+ * Enum name arguments are converted internally to upper case with the {@linkplain java.util.Locale#ENGLISH ENGLISH} locale to
  * avoid problems on the Turkish locale. Do not use with Turkish enum values.
  * </p>
  */
@@ -38,7 +38,7 @@ public final class EnglishEnums {
     /**
      * Returns the Result for the given string.
      * <p>
-     * The {@code name} is converted internally to upper case with the {@linkplain Locale#ENGLISH ENGLISH} locale to
+     * The {@code name} is converted internally to upper case with the {@linkplain java.util.Locale#ENGLISH ENGLISH} locale to
      * avoid problems on the Turkish locale. Do not use with Turkish enum values.
      * </p>
      *
@@ -54,7 +54,7 @@ public final class EnglishEnums {
     /**
      * Returns an enum value for the given string.
      * <p>
-     * The {@code name} is converted internally to upper case with the {@linkplain Locale#ENGLISH ENGLISH} locale to
+     * The {@code name} is converted internally to upper case with the {@linkplain java.util.Locale#ENGLISH ENGLISH} locale to
      * avoid problems on the Turkish locale. Do not use with Turkish enum values.
      * </p>
      *

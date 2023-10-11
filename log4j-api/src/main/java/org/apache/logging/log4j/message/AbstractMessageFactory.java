@@ -24,7 +24,9 @@ import java.io.Serializable;
  * <p>
  * This class is immutable.
  * </p>
- * <h4>Note to implementors</h4>
+ * <p>
+ * <strong>Note to implementors:</strong>
+ * </p>
  * <p>
  * Subclasses can implement the {@link MessageFactory2} methods when they can most effectively build {@link Message}
  * instances. If a subclass does not implement {@link MessageFactory2} methods, these calls are routed through

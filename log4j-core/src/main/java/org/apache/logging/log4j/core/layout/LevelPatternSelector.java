@@ -196,11 +196,11 @@ public class LevelPatternSelector implements PatternSelector, LocationAware {
 
     /**
      * Deprecated, use {@link #newBuilder()} instead.
-     * @param properties
-     * @param defaultPattern
-     * @param alwaysWriteExceptions
-     * @param noConsoleNoAnsi
-     * @param configuration
+     * @param properties PatternMatch configuration items
+     * @param defaultPattern the default pattern
+     * @param alwaysWriteExceptions To always write exceptions even if the pattern contains no exception conversions.
+     * @param noConsoleNoAnsi Do not output ANSI escape codes if System.console() is null.
+     * @param configuration the current configuration
      * @return a new MarkerPatternSelector.
      * @deprecated Use {@link #newBuilder()} instead.
      */

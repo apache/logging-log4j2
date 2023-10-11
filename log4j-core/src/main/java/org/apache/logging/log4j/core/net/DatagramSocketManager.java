@@ -36,13 +36,13 @@ public class DatagramSocketManager extends AbstractSocketManager {
 
     /**
      * The Constructor.
-     * @param name The unique name of the connection.
-     * @param os The OutputStream.
-     * @param inetAddress
-     * @param host The host to connect to.
-     * @param port The port on the host.
-     * @param layout The layout
-     * @param bufferSize The buffer size
+     * @param name the unique name of the connection
+     * @param os the OutputStream
+     * @param inetAddress the Internet Protocol (IP) address
+     * @param host the host to connect to
+     * @param port the port on the host
+     * @param layout the layout
+     * @param bufferSize the buffer size
      */
     protected DatagramSocketManager(final String name, final OutputStream os, final InetAddress inetAddress, final String host,
                 final int port, final Layout<? extends Serializable> layout, final int bufferSize) {

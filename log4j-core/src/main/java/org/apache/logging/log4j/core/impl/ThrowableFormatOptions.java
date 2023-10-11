@@ -89,14 +89,14 @@ public final class ThrowableFormatOptions {
      * Constructs the options for printing stack trace.
      *
      * @param lines
-     *            The number of lines.
+     *            the number of lines
      * @param separator
-     *            The stack trace separator.
+     *            the stack trace separator
      * @param ignorePackages
-     *            The packages to filter.
+     *            the packages to filter
      * @param textRenderer
-     *            The ANSI renderer
-     * @param suffix
+     *            the ANSI renderer
+     * @param suffix Append this to the end of each stack frame.
      */
     protected ThrowableFormatOptions(final int lines, final String separator, final List<String> ignorePackages,
             final TextRenderer textRenderer, final String suffix) {

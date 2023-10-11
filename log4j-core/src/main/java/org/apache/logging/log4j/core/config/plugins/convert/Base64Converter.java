@@ -25,7 +25,7 @@ import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
- * @Since 2.9
+ * @since 2.9
  */
 public class Base64Converter {
 

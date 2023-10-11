@@ -20,8 +20,9 @@ import org.apache.logging.log4j.util.EnglishEnums;
 
 /**
  *  The facility codes used by the Syslog system.
- *
+ * <p>
  * <table>
+ *     <caption>Facility and corresponding numerical codes</caption>
  *     <tr>
  *         <th>Numerical Code</th>
  *         <th>Facility</th>
@@ -123,6 +124,7 @@ import org.apache.logging.log4j.util.EnglishEnums;
  *         <td>local use 7 (local7)</td>
  *     </tr>
  * </table>
+ * </p>
  */
 public enum Facility {
 

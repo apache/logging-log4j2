@@ -37,8 +37,8 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
     /**
      * Private constructor.
      *
-     * @param config
-     * @param options options, may be null.
+     * @param config the Configuration or {@code null}
+     * @param options Options, may be null.
      */
     private RootThrowablePatternConverter(final Configuration config, final String[] options) {
         super("RootThrowable", "throwable", options, config);
@@ -47,7 +47,7 @@ public final class RootThrowablePatternConverter extends ThrowablePatternConvert
     /**
      * Gets an instance of the class.
      *
-     * @param config
+     * @param config The Configuration or {@code null}.
      * @param options pattern options, may be null.  If first element is "short",
      *                only the first line of the throwable will be formatted.
      * @return instance of class.

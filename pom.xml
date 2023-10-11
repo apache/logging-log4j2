@@ -326,6 +326,7 @@
     <!-- `maven-javadoc-plugin` is only used to generate Javadoc HTML used in the website.
          We don't deploy any Javadoc JARs.
          We also don't generate Javadoc HTML for all modules, but only for two modules: `log4j-api` and `log4j-core`. -->
+    <javadoc.doclint>all,-missing,-html</javadoc.doclint>
     <javadoc.skip>true</javadoc.skip>
     <!-- Skipping `maven-site-plugin` globally.
          It is manually enabled only for this root module below. -->
@@ -966,7 +967,7 @@
         <jdk>[1.8,)</jdk>
       </activation>
       <properties>
-        <javadoc.opts>-Xdoclint:none</javadoc.opts>
+        <doclint>${javadoc.doclint}</doclint>
       </properties>
     </profile>
 

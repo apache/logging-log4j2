@@ -132,8 +132,8 @@ public final class FileUtils {
     /**
      * Creates the parent directories for the given File.
      *
-     * @param file
-     * @throws IOException
+     * @param file For which parent directory is to be created.
+     * @throws IOException Thrown if the directory could not be created.
      */
     public static void makeParentDirs(final File file) throws IOException {
         final File parent = Objects.requireNonNull(file, "file").getCanonicalFile().getParentFile();

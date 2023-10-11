@@ -67,10 +67,10 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
 
     /**
      * Constructor.
-     * @param name Name of converter.
-     * @param style CSS style for output.
+     * @param name name of converter
+     * @param style CSS style for output
      * @param options options, may be null.
-     * @param config
+     * @param config the Configuration or {@code null}
      */
     protected ThrowablePatternConverter(final String name, final String style, final String[] options, final Configuration config) {
         super(name, style);
@@ -114,7 +114,7 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
     /**
      * Gets an instance of the class.
      *
-     * @param config
+     * @param config The Configuration or {@code null}.
      * @param options pattern options, may be null.  If first element is "short",
      *                only the first line of the throwable will be formatted.
      * @return instance of class.
