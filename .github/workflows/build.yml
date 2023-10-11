@@ -76,7 +76,7 @@ jobs:
       java-version: |
         8
         11
-      project-id: log4j2
+      project-id: log4j
       distribution-attachment-filepath-pattern: |-
         '^.*/target/log4j-(1\\.2-api|api(-test)?|appserver|cassandra|core(-test)?|couchdb|docker|flume-ng|iostreams|jakarta-(smtp|web)|jcl|jdbc-dbcp2|jpa|jpl|jul|kubernetes|layout-template-json|mongodb[34]|slf4j2?-impl|spring-(boot|cloud-config-client)|taglib|to-(jul|slf4j)|web)-'${PROJECT_VERSION}'\\.jar$'
       distribution-attachment-count: 30
