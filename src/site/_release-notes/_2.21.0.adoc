@@ -51,6 +51,7 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 
 === Changed
 
+* Open `FileExtension` methods to allow their usage in custom ``RolloverStrategy``s (https://github.com/apache/logging-log4j2/issues/1365[1365], https://github.com/apache/logging-log4j2/pull/1683[1683])
 * Bumped the minimum Java version required for the build to JDK 11. Runtime requirements remain unchanged. (https://github.com/apache/logging-log4j2/issues/1369[1369])
 * Set the default `minLevel` and `maxLevel` of `LevelRangeFilter` to `OFF` and `ALL`, respectively (https://github.com/apache/logging-log4j2/pull/1503[1503])
 * Removed additional `isFiltered` checks in `AsyncLoggerConfig` (https://github.com/apache/logging-log4j2/pull/1550[1550])
