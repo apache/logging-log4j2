@@ -74,7 +74,8 @@ jobs:
         run: |
           ./mvnw \
           --show-version --batch-mode --errors --no-transfer-progress \
-          -DskipTests -P!java8-tests
+          -DskipTests -P!java8-tests \
+          clean verify
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@2cb752a87e96af96708ab57187ab6372ee1973ab    # 2.22.0
