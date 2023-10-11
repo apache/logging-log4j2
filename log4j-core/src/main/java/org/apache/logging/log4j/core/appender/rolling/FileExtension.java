@@ -111,7 +111,7 @@ public enum FileExtension {
         return s.endsWith(this.extension);
     }
 
-    public int length() {
+    int length() {
         return extension.length();
     }
 
