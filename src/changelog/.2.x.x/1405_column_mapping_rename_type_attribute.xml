@@ -22,6 +22,6 @@
   <issue id="1405" link="https://github.com/apache/logging-log4j2/issues/1405"/>
   <author id="github:ppkarwasz"/>
   <description format="asciidoc">
-    Add `columnType` as alias for the column mapping `type` attribute.
+    Added `columnType` as alias for the column mapping `type` attribute
   </description>
 </entry>

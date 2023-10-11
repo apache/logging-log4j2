@@ -21,6 +21,8 @@
  * @since 2.1
  */
 @Export
+@Version("2.20.1")
 package org.apache.logging.log4j.core.config.plugins.validation;
 
 import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

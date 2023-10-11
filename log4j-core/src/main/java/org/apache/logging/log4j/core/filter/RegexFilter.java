@@ -119,8 +119,8 @@ public final class RegexFilter extends AbstractFilter {
      * @param mismatch
      *        The action to perform when a mismatch occurs.
      * @return The RegexFilter.
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
+     * @throws IllegalAccessException  When there is no access to the definition of the specified member.
+     * @throws IllegalArgumentException When passed an illegal or inappropriate argument.
      */
     // TODO Consider refactoring to use AbstractFilter.AbstractFilterBuilder
     @PluginFactory

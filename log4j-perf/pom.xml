@@ -21,6 +21,7 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
 
   <artifactId>log4j-perf</artifactId>
@@ -29,11 +30,10 @@
   <description>The Apache Log4j development-time performance tests</description>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Apache Log4J Performance Tests</docLabel>
     <projectDir>/log4j-perf</projectDir>
     <uberjar.name>benchmarks</uberjar.name>
+    <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.test.skip>true</maven.test.skip>
     <module.name>org.apache.logging.log4j.perf</module.name>
     <maven.compiler.release>9</maven.compiler.release>

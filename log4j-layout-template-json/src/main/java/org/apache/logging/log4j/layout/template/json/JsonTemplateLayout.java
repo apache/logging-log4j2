@@ -61,7 +61,7 @@ import org.apache.logging.log4j.util.Strings;
 @Plugin(name = "JsonTemplateLayout",
         category = Node.CATEGORY,
         elementType = Layout.ELEMENT_TYPE)
-public final class JsonTemplateLayout implements StringLayout, LocationAware {
+public class JsonTemplateLayout implements StringLayout, LocationAware {
 
     private static final Map<String, String> CONTENT_FORMAT =
             Collections.singletonMap("version", "1");

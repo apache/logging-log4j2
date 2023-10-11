@@ -184,9 +184,9 @@ public abstract class AbstractLayout<T extends Serializable> implements Layout<T
      * Subclasses can override this method to provide a garbage-free implementation. For text-based layouts,
      * {@code AbstractStringLayout} provides various convenience methods to help with this:
      * </p>
-     * <pre>@Plugin(name = "MyLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
+     * <pre> &#64;Plugin(name = "MyLayout", category = Node.CATEGORY, elementType = Layout.ELEMENT_TYPE, printObject = true)
      * public final class MyLayout extends AbstractStringLayout {
-     *     @Override
+     *     &#64;Override
      *     public void encode(LogEvent event, ByteBufferDestination destination) {
      *         StringBuilder text = getStringBuilder();
      *         convertLogEventToText(event, text);

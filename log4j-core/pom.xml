@@ -21,13 +21,13 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
   <artifactId>log4j-core</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j Core</name>
   <description>The Apache Log4j Implementation</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
     <javadoc.skip>false</javadoc.skip>
@@ -214,6 +214,26 @@
   </dependencies>
   <build>
     <plugins>
+
+      <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-baseline-maven-plugin</artifactId>
+        <configuration>
+          <!--
+            ~ These packages are documented as internal and were removed
+            ~ from the public OSGi exports.
+            -->
+          <diffpackages>
+            <diffpackage>!org.apache.logging.log4j.core.layout.internal</diffpackage>
+            <diffpackage>!org.apache.logging.log4j.core.message</diffpackage>
+            <diffpackage>!org.apache.logging.log4j.core.time.internal</diffpackage>
+            <diffpackage>!org.apache.logging.log4j.core.tools.picocli</diffpackage>
+            <diffpackage>!org.apache.logging.log4j.core.util.internal</diffpackage>
+            <diffpackage>*</diffpackage>
+          </diffpackages>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -232,6 +252,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -268,6 +289,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -297,6 +319,7 @@
           </execution>
         </executions>
       </plugin>
+
     </plugins>
   </build>
 </project>

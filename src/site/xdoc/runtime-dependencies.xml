@@ -285,7 +285,11 @@
         <tr>
           <td>Bzip2, Deflate, Pack200, and XZ compression on rollover</td>
           <td><a href="https://commons.apache.org/proper/commons-compress/">Apache Commons Compress</a>.
-            In addition, XZ requires <a href="https://tukaani.org/xz/java.html">XZ for Java</a>.
+            In addition:
+            <ul>
+              <li>XZ requires <a href="https://tukaani.org/xz/java.html">xz-java</a></li>
+              <li>ZStandard requires <a href="https://github.com/luben/zstd-jni">zstd-jni</a></li>
+            </ul>
           </td>
         </tr>
         <tr>
@@ -420,13 +424,6 @@
       <p>
         The Log4j <a href="log4j-iostreams/index.html">IO Streams</a> module has no external dependencies.
         This only requires the Log4j API.
-      </p>
-
-      <a name="log4j-api-scala" />
-      <h4>log4j-api-scala</h4>
-      <p>
-        The Log4j <a href="manual/scala-api.html">Scala API</a> requires Scala runtime library and reflection in
-        addition to the Log4j API.
       </p>
 
       <a name="log4j-jakarta-smtp" />

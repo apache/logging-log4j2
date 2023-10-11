@@ -22,5 +22,5 @@
   <issue id="1391" link="https://github.com/apache/logging-log4j2/issues/1391"/>
   <author name="Andrew Zakordonets" id="azakordonets"/>
   <author id="vy"/>
-  <description format="asciidoc">Fix NPE in `PluginElementVisitor`</description>
+  <description format="asciidoc">Fixed NPE in `PluginElementVisitor`</description>
 </entry>

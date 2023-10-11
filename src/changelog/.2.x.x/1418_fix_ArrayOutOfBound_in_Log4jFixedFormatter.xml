@@ -21,5 +21,5 @@
        type="fixed">
   <issue id="1418" link="https://github.com/apache/logging-log4j2/pull/1418"/>
   <author id="pkarwasz"/>
-  <description format="asciidoc">Fix buffer size in `Log4jFixedFormatter` date time formatter.</description>
+  <description format="asciidoc">Fixed buffer size in `Log4jFixedFormatter` date time formatter</description>
 </entry>

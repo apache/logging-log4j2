@@ -21,6 +21,8 @@
  * @author <a href="http://www.vorburger.ch">Michael Vorburger.ch</a> for Google
  */
 @Export
+@Version("2.20.1")
 package org.apache.logging.log4j.tojul;
 
 import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

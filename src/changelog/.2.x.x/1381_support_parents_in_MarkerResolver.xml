@@ -22,5 +22,5 @@
   <issue id="1381" link="https://github.com/apache/logging-log4j2/pull/1381"/>
   <author name="Eric Herot"/>
   <author id="vy"/>
-  <description format="asciidoc">Add marker parent support to `JsonTemplateLayout`</description>
+  <description format="asciidoc">Added marker parent support to `JsonTemplateLayout`</description>
 </entry>

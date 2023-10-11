@@ -158,7 +158,7 @@ public final class StringMatchFilter extends AbstractFilter {
 
         /**
          * Sets the logging level to use.
-         * @param level the logging level to use.
+         * @param text the logging level to use
          * @return this
          */
         public StringMatchFilter.Builder setMatchString(final String text) {

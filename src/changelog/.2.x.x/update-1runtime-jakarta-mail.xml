@@ -22,6 +22,6 @@
   <issue id="1591" link="https://github.com/apache/logging-log4j2/issues/1591"/>
   <author id="github:dependabot"/>
   <description format="asciidoc">
-    Runtime dependencies: update Jakarta Mail API from version 2.1.1 to version link:https://jakarta.ee/specifications/mail/2.1/changelog/[2.1.2].
+    Update Jakarta Mail API to version https://jakarta.ee/specifications/mail/2.1/changelog/[2.1.2]
   </description>
 </entry>

@@ -59,7 +59,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 @Plugin(name = "MutableThreadContextMapFilter", category = Node.CATEGORY, elementType = Filter.ELEMENT_TYPE, printObject = true)
 @PluginAliases("MutableContextMapFilter")
 @PerformanceSensitive("allocation")
-public final class MutableThreadContextMapFilter extends AbstractFilter {
+public class MutableThreadContextMapFilter extends AbstractFilter {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

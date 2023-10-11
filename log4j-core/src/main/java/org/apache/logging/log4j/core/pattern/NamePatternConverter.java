@@ -51,7 +51,6 @@ public abstract class NamePatternConverter extends LogEventPatternConverter {
      *
      * @param original string containing name.
      * @param destination the StringBuilder to write to
-     * @return The abbreviated name.
      */
     protected final void abbreviate(final String original, final StringBuilder destination) {
         abbreviator.abbreviate(original, destination);

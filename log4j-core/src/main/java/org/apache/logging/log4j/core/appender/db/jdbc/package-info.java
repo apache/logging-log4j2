@@ -19,6 +19,8 @@
  * a JDBC driver on your classpath for the database you wish to log to.
  */
 @Export
+@Version("2.20.1")
 package org.apache.logging.log4j.core.appender.db.jdbc;
 
 import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

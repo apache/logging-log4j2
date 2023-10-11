@@ -21,13 +21,13 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
   <artifactId>log4j-iostreams</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j Streaming Interface</name>
   <description>The Apache Log4j streams to log event converters</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Streaming Documentation</docLabel>
     <projectDir>/log4j-iostreams</projectDir>
   </properties>
@@ -74,5 +74,24 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-baseline-maven-plugin</artifactId>
+        <configuration>
+          <!--
+            ~ This package is documented as internal and was removed
+            ~ from the public OSGi exports.
+            -->
+          <diffpackages>
+            <diffpackage>!org.apache.logging.log4j.io.internal</diffpackage>
+            <diffpackage>*</diffpackage>
+          </diffpackages>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

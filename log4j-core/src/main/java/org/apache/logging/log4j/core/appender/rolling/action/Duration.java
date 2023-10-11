@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  *
  * @see #parse(CharSequence)
  */
-public final class Duration implements Serializable, Comparable<Duration> {
+public class Duration implements Serializable, Comparable<Duration> {
     private static final long serialVersionUID = -3756810052716342061L;
 
     /**

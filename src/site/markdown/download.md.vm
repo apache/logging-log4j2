@@ -18,6 +18,8 @@
 #set($h1='#')
 #set($h2='##')
 #set($h3='###')
+#set($Log4jReleaseVersionJava7 = '2.12.4')
+#set($Log4jReleaseVersionJava6 = '2.3.2')
 
 $h1 Download Apache Log4j™ 2
 
@@ -58,8 +60,6 @@ than from a mirror. Then verify the signatures using
 
     gpg --import KEYS
     gpg --verify apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc
-
-Apache Log4j ${Log4jReleaseVersion} is signed by ${Log4jReleaseManager} (${Log4jReleaseKey})
 
 Alternatively, you can verify the SHA512 signature on the files. A Unix program called sha or sha512sum is included
 in many Unix distributions.

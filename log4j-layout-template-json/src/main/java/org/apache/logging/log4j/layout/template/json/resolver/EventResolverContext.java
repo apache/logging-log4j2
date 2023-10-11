@@ -150,7 +150,7 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         return new Builder();
     }
 
-    public static final class Builder {
+    public static class Builder {
 
         private Configuration configuration;
 

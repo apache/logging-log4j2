@@ -152,14 +152,14 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Deprecated, use {@link #newSerializerBuilder()} instead.
      *
-     * @param configuration
-     * @param replace
-     * @param pattern
-     * @param defaultPattern
-     * @param patternSelector
-     * @param alwaysWriteExceptions
-     * @param noConsoleNoAnsi
-     * @return a new Serializer.
+     * @param configuration the current configuration
+     * @param replace Allows portions of the resulting String to be replaced.
+     * @param pattern the current pattern
+     * @param defaultPattern the default pattern
+     * @param patternSelector Allows different patterns to be used with the PatternLayout based on some selection criteria.
+     * @param alwaysWriteExceptions To always write exceptions even if the pattern contains no exception conversions.
+     * @param noConsoleNoAnsi Do not output ANSI escape codes if System.console() is null.
+     * @return a new Serializer
      * @deprecated Use {@link #newSerializerBuilder()} instead.
      */
     @Deprecated
@@ -623,7 +623,7 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Custom PatternLayout builder. Use the {@link PatternLayout#newBuilder() builder factory method} to create this.
      */
-    public static final class Builder implements org.apache.logging.log4j.core.util.Builder<PatternLayout> {
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<PatternLayout> {
 
         @PluginBuilderAttribute
         private String pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;

@@ -117,7 +117,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
     /**
      * Unadvertise the previously advertised entity.
      *
-     * @param serviceInfo
+     * @param serviceInfo instance of {@code javax.jmdns.ServiceInfo}
      */
     @Override
     public void unadvertise(final Object serviceInfo) {

@@ -23,5 +23,5 @@
   <author id="github:harryssuperman"/>
   <!-- Committer -->
   <author id="github:ppkarwasz"/>
-  <description format="asciidoc">Fix runtime dependencies documentation.</description>
+  <description format="asciidoc">Fixed runtime dependencies documentation</description>
 </entry>

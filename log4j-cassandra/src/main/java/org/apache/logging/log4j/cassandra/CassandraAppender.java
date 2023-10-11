@@ -38,7 +38,7 @@ import org.apache.logging.log4j.core.util.Clock;
  * @see ColumnMapping
  */
 @Plugin(name = "Cassandra", category = Core.CATEGORY_NAME, elementType = CassandraAppender.ELEMENT_TYPE, printObject = true)
-public final class CassandraAppender extends AbstractDatabaseAppender<CassandraManager> {
+public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager> {
 
     private CassandraAppender(final String name, final Filter filter, final boolean ignoreExceptions,
                               final Property[] properties, final CassandraManager manager) {

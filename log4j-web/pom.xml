@@ -21,6 +21,7 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
 
   <artifactId>log4j-web</artifactId>
@@ -29,7 +30,6 @@
   <description>The Apache Log4j support for web servlet containers</description>
 
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-web</projectDir>
 
@@ -89,5 +89,28 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <!--
+            ~ Modules that contain `log4j-core` plugins, must be compiled with:
+            ~
+            ~   org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor
+            -->
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-core</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

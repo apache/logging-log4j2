@@ -278,33 +278,6 @@ a Reader be wiretapped by a Logger. To use IO Streams, add the following.
 
 #dependencies(['log4j-iostreams'])
 
-$h3 Scala API
-
-A convenient Scala wrapper for the Logger API. SBT users can add the following to their
-`build.sbt`:
-
-#sbtVersion(['log4j-api-scala'], '11.0')
-
-Maven, Ivy, and Gradle users need to add the Scala version to the artifact name.
-
-Scala 2.12 users can use the following:
-
-#mavenVersion(['log4j-api-scala_2.12'], '11.0')
-#ivyVersion(['log4j-api-scala_2.12'], '11.0')
-#gradleVersion(['log4j-api-scala_2.12'], '11.0')
-
-Scala 2.11 users can use the following:
-
-#mavenVersion(['log4j-api-scala_2.11'], '11.0')
-#ivyVersion(['log4j-api-scala_2.11'], '11.0')
-#gradleVersion(['log4j-api-scala_2.11'], '11.0')
-
-Scala 2.10 users can use the following:
-
-#mavenVersion(['log4j-api-scala_2.10'], '11.0')
-#ivyVersion(['log4j-api-scala_2.10'], '11.0')
-#gradleVersion(['log4j-api-scala_2.10'], '11.0')
-
 $h2 Snapshot builds
 
 You can access the latest development snapshot by using the Maven repository

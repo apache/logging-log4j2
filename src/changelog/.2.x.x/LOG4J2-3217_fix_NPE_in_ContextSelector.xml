@@ -23,5 +23,5 @@
   <issue id="1538" link="https://github.com/apache/logging-log4j2/pull/1538"/>
   <author id="pbodnar" name="Petr Bodnár"/>
   <author id="vy"/>
-  <description format="asciidoc">Fix NPE in `ContextSelector`</description>
+  <description format="asciidoc">Fixed NPE in `ContextSelector`</description>
 </entry>

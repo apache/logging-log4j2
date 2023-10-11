@@ -21,13 +21,13 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
   <artifactId>log4j-api-test</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j API Tests</name>
   <description>The Apache Log4j API Test</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>API Documentation</docLabel>
     <projectDir>/api</projectDir>
 

@@ -22,6 +22,6 @@
   <issue id="1783" link="https://github.com/apache/logging-log4j2/issues/1783"/>
   <author id="github:ppkarwasz"/>
   <description format="asciidoc">
-    Allow using Spring Arbiter without a Spring environment.
+    Allowed using Spring Arbiter without a Spring environment
   </description>
 </entry>

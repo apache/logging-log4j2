@@ -49,7 +49,7 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
     /**
      * Custom ScriptPatternSelector builder. Use the {@link #newBuilder() builder factory method} to create this.
      */
-    public static final class Builder implements org.apache.logging.log4j.core.util.Builder<ScriptPatternSelector> {
+    public static class Builder implements org.apache.logging.log4j.core.util.Builder<ScriptPatternSelector> {
 
         @PluginElement("Script")
         private AbstractScript script;
@@ -264,12 +264,12 @@ public class ScriptPatternSelector implements PatternSelector, LocationAware {
     /**
      * Deprecated, use {@link #newBuilder()} instead.
      *
-     * @param script
-     * @param properties
-     * @param defaultPattern
-     * @param alwaysWriteExceptions
-     * @param noConsoleNoAnsi
-     * @param configuration
+     * @param script the script
+     * @param properties the PatternMatch configuration items
+     * @param defaultPattern the default pattern
+     * @param alwaysWriteExceptions To always write exceptions even if the pattern contains no exception conversions.
+     * @param noConsoleNoAnsi Do not output ANSI escape codes if System.console() is null.
+     * @param configuration the configuration
      * @return a new ScriptPatternSelector
      * @deprecated Use {@link #newBuilder()} instead.
      */

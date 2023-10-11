@@ -17,14 +17,14 @@
   -->
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://logging.apache.org/log4j/changelog"
-       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.0.xsd"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
        type="fixed">
   <issue id="1367" link="https://github.com/apache/logging-log4j2/issues/1367"/>
   <author id="github:N1k145" name="Niklas Kellner"/>
   <!-- Committer -->
   <author name="github:ppkarwasz"/>
   <description format="asciidoc">
-    Adapt the OSGi metadata of `log4j-api`, `log4j-core`, `log4j-slf4j-impl` and `log4j-slf4j2-impl` to activate the bundle when it is accessed.
+    Adapted the OSGi metadata of `log4j-api`, `log4j-core`, `log4j-slf4j-impl` and `log4j-slf4j2-impl` to activate the bundle when it is accessed.
     To achieve that set the `Bundle-ActivationPolicy` to `lazy` for the log4j bundles.
   </description>
 </entry>

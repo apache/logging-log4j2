@@ -22,6 +22,6 @@
   <issue id="1591" link="https://github.com/apache/logging-log4j2/issues/1591"/>
   <author id="github:dependabot"/>
   <description format="asciidoc">
-    Runtime dependencies: update Apache Kafka from version 1.1.1 to version link:https://archive.apache.org/dist/kafka/3.4.0/RELEASE_NOTES.html[3.4.0].
+    Update Apache Kafka to version https://archive.apache.org/dist/kafka/3.4.0/RELEASE_NOTES.html[3.4.0]
   </description>
 </entry>

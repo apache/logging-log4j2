@@ -23,6 +23,7 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
 
   <artifactId>log4j-appserver</artifactId>
@@ -31,7 +32,6 @@
   <description>Provide Log4j as the logging implementation for application servers</description>
 
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-appserver</projectDir>
 
@@ -72,5 +72,4 @@
       <artifactId>log4j-api</artifactId>
     </dependency>
   </dependencies>
-
 </project>

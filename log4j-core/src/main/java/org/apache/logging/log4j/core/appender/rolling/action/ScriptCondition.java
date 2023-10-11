@@ -36,7 +36,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * A condition of the {@link DeleteAction} where a user-provided script selects the files to delete from a provided
- * list. The specified script may be a {@link Script}, a {@link ScriptFile} or a {@link ScriptRef}.
+ * list. The specified script may be a {@link org.apache.logging.log4j.core.script.Script}, a {@link ScriptFile} or a {@link ScriptRef}.
  *
  * @see #createCondition(AbstractScript, Configuration)
  */
@@ -61,9 +61,9 @@ public class ScriptCondition {
     /**
      * Executes the script
      *
-     * @param baseDir
-     * @param candidates
-     * @return
+     * @param basePath base directory for files to delete
+     * @param candidates a list of paths, that can be deleted by the script
+     * @return a list of paths selected to delete by the script execution
      */
     @SuppressWarnings("unchecked")
     public List<PathWithAttributes> selectFilesToDelete(final Path basePath, final List<PathWithAttributes> candidates) {
@@ -81,15 +81,15 @@ public class ScriptCondition {
     /**
      * Creates the ScriptCondition.
      *
-     * @param script The script to run. This may be a {@link Script}, a {@link ScriptFile} or a {@link ScriptRef}. The
+     * @param script The script to run. This may be a {@link org.apache.logging.log4j.core.script.Script}, a {@link ScriptFile} or a {@link ScriptRef}. The
      *            script must return a {@code List<PathWithAttributes>}. When the script is executed, it is provided the
      *            following bindings:
      *            <ul>
      *            <li>basePath - the directory from where the {@link DeleteAction Delete} action started scanning for
      *            files to delete. Can be used to relativize the paths in the pathList.</li>
-     *            <li>pathList - a {@code java.util.List} containing {@link PathWithAttribute} objects. (The script is
+     *            <li>pathList - a {@code java.util.List} containing {@link org.apache.logging.log4j.core.appender.rolling.action.PathWithAttributes} objects. (The script is
      *            free to modify and return this list.)</li>
-     *            <li>substitutor - a {@link StrSubstitutor} that can be used to look up variables embedded in the base
+     *            <li>substitutor - a {@link org.apache.logging.log4j.core.lookup.StrSubstitutor} that can be used to look up variables embedded in the base
      *            dir or other properties
      *            <li>statusLogger - the {@link StatusLogger} that can be used to log events during script execution
      *            <li>any properties declared in the configuration</li>

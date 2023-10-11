@@ -20,7 +20,7 @@ package org.apache.logging.log4j.core.config.plugins.convert;
  * Converts Strings to hex. This is used in place of java.xml.bind.DataTypeConverter which is not available by
  * default in Java 9.
  *
- * @Since 2.9
+ * @since 2.9
  */
 public class HexConverter {
 

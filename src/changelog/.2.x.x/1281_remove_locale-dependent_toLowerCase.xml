@@ -23,5 +23,5 @@
   <author id="github:aawad6" name="Ammar Awad"/>
   <!-- Committer -->
   <author id="github:ppkarwasz"/>
-  <description format="asciidoc">Remove locale-dependent `toLowerCase/toUpperCase` calls.</description>
+  <description format="asciidoc">Removed locale-dependent `toLowerCase/toUpperCase` calls</description>
 </entry>

@@ -1,0 +1,2012 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+= JSON Template Layout
+Volkan Yazıcı <vy@apache.org>
+
+include::../_constants.adoc[]
+
+`JsonTemplateLayout` is a customizable, efficient, and garbage-free JSON
+generating layout. It encodes ``LogEvent``s according to the structure described
+by the JSON template provided. In a nutshell, it shines with its
+
+* Customizable JSON structure (see `eventTemplate[Uri]` and
+  `stackTraceElementTemplate[Uri]` xref:layout-config[layout configuration] parameters)
+
+* Customizable timestamp formatting (see xref:event-template-resolver-timestamp[]
+  event template resolver)
+
+* Feature rich exception formatting (see xref:event-template-resolver-exception[]
+  and xref:event-template-resolver-exceptionRootCause[] event template resolvers)
+
+* xref:extending[Extensible plugin support]
+
+* Customizable object xref:recycling-strategy[recycling strategy]
+
+[#usage]
+== Usage
+
+Adding `log4j-layout-template-json` artifact to your list of dependencies is
+enough to enable access to `JsonTemplateLayout` in your Log4j configuration:
+
+[source,xml,subs="+attributes"]
+----
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-layout-template-json</artifactId>
+    <version>{project-version}</version>
+</dependency>
+----
+
+For instance, given the following JSON template modelling
+https://www.elastic.co/guide/en/ecs/current/ecs-reference.html[the Elastic Common Schema (ECS) specification]
+(accessible via `classpath:EcsLayout.json`)
+
+[source,json]
+----
+{
+  "@timestamp": {
+    "$resolver": "timestamp",
+    "pattern": {
+      "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+      "timeZone": "UTC"
+    }
+  },
+  "ecs.version": "1.2.0",
+  "log.level": {
+    "$resolver": "level",
+    "field": "name"
+  },
+  "message": {
+    "$resolver": "message",
+    "stringified": true
+  },
+  "process.thread.name": {
+    "$resolver": "thread",
+    "field": "name"
+  },
+  "log.logger": {
+    "$resolver": "logger",
+    "field": "name"
+  },
+  "labels": {
+    "$resolver": "mdc",
+    "flatten": true,
+    "stringified": true
+  },
+  "tags": {
+    "$resolver": "ndc"
+  },
+  "error.type": {
+    "$resolver": "exception",
+    "field": "className"
+  },
+  "error.message": {
+    "$resolver": "exception",
+    "field": "message"
+  },
+  "error.stack_trace": {
+    "$resolver": "exception",
+    "field": "stackTrace",
+    "stackTrace": {
+      "stringified": true
+    }
+  }
+}
+----
+
+in combination with the below `log4j2.xml` configuration:
+
+[source,xml]
+----
+<JsonTemplateLayout eventTemplateUri="classpath:EcsLayout.json"/>
+----
+
+or with the below `log4j2.properties` configuration:
+
+[source,ini]
+----
+appender.console.layout.type = JsonTemplateLayout
+appender.console.layout.eventTemplateUri = classpath:EcsLayout.json
+----
+
+`JsonTemplateLayout` generates JSON as follows:
+
+[source,json]
+----
+{
+  "@timestamp": "2017-05-25T19:56:23.370Z",
+  "ecs.version": "1.2.0",
+  "log.level": "ERROR",
+  "message": "Hello, error!",
+  "process.thread.name": "main",
+  "log.logger": "org.apache.logging.log4j.JsonTemplateLayoutDemo",
+  "error.type": "java.lang.RuntimeException",
+  "error.message": "test",
+  "error.stack_trace": "java.lang.RuntimeException: test\n\tat org.apache.logging.log4j.JsonTemplateLayoutDemo.main(JsonTemplateLayoutDemo.java:11)\n"
+}
+----
+
+[#layout-config]
+== Layout Configuration
+
+`JsonTemplateLayout` is configured with the following parameters:
+
+.`JsonTemplateLayout` parameters
+[cols="1m,1m,4"]
+|===
+| Parameter Name
+| Type
+| Description
+
+| charset
+| Charset
+| `Charset` used for `String` encoding
+
+| locationInfoEnabled
+| boolean
+| toggles access to the `LogEvent` source; file name, line number, etc.
+  (defaults to `false` set by `log4j.layout.jsonTemplate.locationInfoEnabled`
+  property)
+
+| stackTraceEnabled
+| boolean
+| toggles access to the stack traces (defaults to `true` set by
+  `log4j.layout.jsonTemplate.stackTraceEnabled` property)
+
+| eventTemplate
+| String
+| inline JSON template for rendering ``LogEvent``s (has priority over
+  `eventTemplateUri`, defaults to `null` set by
+  `log4j.layout.jsonTemplate.eventTemplate` property)
+
+| eventTemplateUri
+| String
+| URI pointing to the JSON template for rendering ``LogEvent``s (defaults to
+  `classpath:EcsLayout.json` set by `log4j.layout.jsonTemplate.eventTemplateUri`
+  property)
+
+| eventTemplateRootObjectKey
+| String
+| if present, the event template is put into a JSON object composed of a single
+  member with the provided key (defaults to `null` set by
+  `log4j.layout.jsonTemplate.eventTemplateRootObjectKey`
+  property)
+
+| eventTemplateAdditionalField
+| EventTemplateAdditionalField[]
+| additional key-value pairs appended to the root of the event template
+
+| stackTraceElementTemplate
+| String
+| inline JSON template for rendering ``StackTraceElement``s (has priority over
+  `stackTraceElementTemplateUri`, defaults to `null` set by
+  `log4j.layout.jsonTemplate.stackTraceElementTemplate` property)
+
+| stackTraceElementTemplateUri
+| String
+| URI pointing to the JSON template for rendering ``StackTraceElement``s
+  (defaults to `classpath:StackTraceElementLayout.json` set by
+  `log4j.layout.jsonTemplate.stackTraceElementTemplateUri` property)
+
+| eventDelimiter
+| String
+| delimiter used for separating rendered ``LogEvent``s (defaults to
+  `System.lineSeparator()` set by `log4j.layout.jsonTemplate.eventDelimiter`
+  property)
+
+| nullEventDelimiterEnabled
+| boolean
+| append `\0` (`null`) character to the end of every `eventDelimiter`
+  separating rendered ``LogEvent``s (defaults to `false` set by
+  `log4j.layout.jsonTemplate.nullEventDelimiterEnabled` property)
+
+| maxStringLength
+| int
+| truncate string values longer than the specified limit (defaults to 16384 set
+  by `log4j.layout.jsonTemplate.maxStringLength` property)
+
+| truncatedStringSuffix
+| String
+| suffix to append to strings truncated due to exceeding `maxStringLength`
+  (defaults to `…` set by `log4j.layout.jsonTemplate.truncatedStringSuffix`
+  property)
+
+| recyclerFactory
+| RecyclerFactory
+| recycling strategy that can either be `dummy`, `threadLocal`, or `queue`
+  (set by `log4j.layout.jsonTemplate.recyclerFactory` property)
+|===
+
+[#additional-event-template-fields]
+=== Additional event template fields
+
+Additional event template fields are a convenient short-cut to add custom fields
+to a template or override the existing ones. Following configuration overrides
+the `host` field of the `GelfLayout.json` template and adds two new custom
+fields:
+
+.XML configuration with additional fields
+[source,xml]
+----
+<JsonTemplateLayout eventTemplateUri="classpath:GelfLayout.json">
+  <EventTemplateAdditionalField key="host" value="www.apache.org"/>
+  <EventTemplateAdditionalField key="_serviceName" value="auth-service"/>
+  <EventTemplateAdditionalField key="_containerId" value="6ede3f0ca7d9"/>
+</JsonTemplateLayout>
+----
+
+The default `format` for the added new fields are `String`.
+One can also provide JSON-formatted additional fields:
+
+.XML-formatted configuration with JSON-formatted additional fields
+[source,xml]
+----
+<JsonTemplateLayout eventTemplateUri="classpath:GelfLayout.json">
+  <EventTemplateAdditionalField
+       key="marker"
+       format="JSON"
+       value='{"$resolver": "marker", "field": "name"}'/>
+  <EventTemplateAdditionalField
+       key="aNumber"
+       format="JSON"
+       value="1"/>
+  <EventTemplateAdditionalField
+       key="aList"
+       format="JSON"
+       value='[1, 2, "three"]'/>
+</JsonTemplateLayout>
+----
+
+Additional event template fields can very well be introduced using properties-,
+YAML-, and JSON-formatted configurations:
+
+.Properties-formatted configuration with JSON-formatted additional fields
+[source,properties]
+----
+appender.console.layout.type = JsonTemplateLayout
+appender.console.layout.eventTemplateUri = classpath:GelfLayout.json
+appender.console.layout.eventTemplateAdditionalField[0].type = EventTemplateAdditionalField
+appender.console.layout.eventTemplateAdditionalField[0].key = marker
+appender.console.layout.eventTemplateAdditionalField[0].value = {"$resolver": "marker", "field": "name"}
+appender.console.layout.eventTemplateAdditionalField[0].format = JSON
+appender.console.layout.eventTemplateAdditionalField[1].type = EventTemplateAdditionalField
+appender.console.layout.eventTemplateAdditionalField[1].key = aNumber
+appender.console.layout.eventTemplateAdditionalField[1].value = 1
+appender.console.layout.eventTemplateAdditionalField[1].format = JSON
+appender.console.layout.eventTemplateAdditionalField[2].type = EventTemplateAdditionalField
+appender.console.layout.eventTemplateAdditionalField[2].key = aList
+appender.console.layout.eventTemplateAdditionalField[2].value = [1, 2, "three"]
+appender.console.layout.eventTemplateAdditionalField[2].format = JSON
+----
+
+.YAML-formatted configuration with JSON-formatted additional fields
+[source,yaml]
+----
+JsonTemplateLayout:
+  eventTemplateAdditionalField:
+    - key: "marker"
+      value: '{"$resolver": "marker", "field": "name"}'
+      format: "JSON"
+    - key: "aNumber"
+      value: "1"
+      format: "JSON"
+    - key: "aList"
+      value: '[1, 2, "three"]'
+      format: "JSON"
+----
+
+.JSON-formatted configuration with JSON-formatted additional fields
+[source,json]
+----
+{
+  "JsonTemplateLayout": {
+    "eventTemplateAdditionalField": [
+      {
+        "key": "marker",
+        "value": "{\"$resolver\": \"marker\", \"field\": \"name\"}",
+        "format": "JSON"
+      },
+      {
+        "key": "aNumber",
+        "value": "1",
+        "format": "JSON"
+      },
+      {
+        "key": "aList",
+        "value": "[1, 2, \"three\"]",
+        "format": "JSON"
+      }
+    ]
+  }
+}
+----
+
+[#recycling-strategy]
+=== Recycling strategy
+
+`RecyclerFactory` plays a crucial role for determining the memory footprint of
+the layout. Template resolvers employ it to create recyclers for objects that
+they can reuse. The behavior of each `RecyclerFactory` and when one should
+prefer one over another is explained below:
+
+* `dummy` performs no recycling, hence each recycling attempt will result in a
+new instance. This will obviously create a load on the garbage-collector. It
+is a good choice for applications with low and medium log rate.
+
+* `threadLocal` performs the best, since every instance is stored in
+``ThreadLocal``s and accessed without any synchronization cost. Though this
+might not be a desirable option for applications running with hundreds of
+threads or more, e.g., a web servlet.
+
+* `queue` is the best of both worlds. It allows recycling of objects up to a
+certain number (`capacity`). When this limit is exceeded due to excessive
+concurrent load (e.g., `capacity` is 50 but there are 51 threads concurrently
+trying to log), it starts allocating. `queue` is a good strategy where
+`threadLocal` is not desirable.
++
+`queue` also accepts optional `supplier` (of type `java.util.Queue`, defaults to
+  `org.jctools.queues.MpmcArrayQueue.new` if JCTools is in the classpath;
+otherwise `java.util.concurrent.ArrayBlockingQueue.new`) and `capacity` (of
+type `int`, defaults to `max(8,2*cpuCount+1)`) parameters:
++
+.Example configurations of `queue` recycling strategy
+[source]
+----
+queue:supplier=org.jctools.queues.MpmcArrayQueue.new
+queue:capacity=10
+queue:supplier=java.util.concurrent.ArrayBlockingQueue.new,capacity=50
+----
+
+The default `RecyclerFactory` is `threadLocal`, if
+`log4j2.enable.threadlocals=true`; otherwise, `queue`.
+
+See <<extending-recycler>> for details on how to introduce custom
+`RecyclerFactory` implementations.
+
+[#template-config]
+== Template Configuration
+
+Templates are configured by means of the following `JsonTemplateLayout`
+parameters:
+
+- `eventTemplate[Uri]` (for serializing ``LogEvent``s)
+- `stackTraceElementTemplate[Uri]` (for serializing ``StackStraceElement``s)
+- `eventTemplateAdditionalField` (for extending the used event template)
+
+[#event-templates]
+=== Event Templates
+
+`eventTemplate[Uri]` describes the JSON structure `JsonTemplateLayout` uses to
+serialize ``LogEvent``s. The default configuration (accessible by
+`log4j.layout.jsonTemplate.eventTemplate[Uri]` property) is set to
+`classpath:EcsLayout.json` provided by the `log4j-layout-template-json`
+artifact, which contains the following predefined event templates:
+
+- https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/EcsLayout.json[`EcsLayout.json`]
+  described by https://www.elastic.co/guide/en/ecs/current/ecs-reference.html[the Elastic Common Schema (ECS) specification]
+
+- https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/LogstashJsonEventLayoutV1.json[`LogstashJsonEventLayoutV1.json`]
+  described in https://github.com/logstash/log4j-jsonevent-layout[Logstash
+  `json_event` pattern for log4j]
+
+- https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/GelfLayout.json[`GelfLayout.json`]
+  described by https://docs.graylog.org/en/3.1/pages/gelf.html#gelf-payload-specification[the
+  Graylog Extended Log Format (GELF) payload specification] with additional
+  `_thread` and `_logger` fields. (Here it is advised to override the obligatory
+  `host` field with a user provided constant via
+  xref:additional-event-template-fields[additional event template fields]
+  to avoid `hostName` property lookup at runtime, which incurs an extra cost.)
+
+- https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/GcpLayout.json[`GcpLayout.json`]
+  described by https://cloud.google.com/logging/docs/structured-logging[Google
+  Cloud Platform structured logging] with additional
+  `_thread`, `_logger` and `_exception` fields. The exception trace, if any,
+  is written to the `_exception` field as well as the `message` field –
+  the former is useful for explicitly searching/analyzing structured exception
+  information, while the latter is Google's expected place for the exception,
+  and integrates with https://cloud.google.com/error-reporting[Google Error Reporting].
+
+- https://github.com/apache/logging-log4j2/tree/main/log4j-layout-template-json/src/main/resources/JsonLayout.json[`JsonLayout.json`]
+  providing the exact JSON structure generated by link:layouts.html#JSONLayout[`JsonLayout`]
+  with the exception of `thrown` field. (`JsonLayout` serializes the `Throwable`
+  as is via Jackson `ObjectMapper`, whereas `JsonLayout.json` template of
+  `JsonTemplateLayout` employs the `StackTraceElementLayout.json` template
+  for stack traces to generate a document-store-friendly flat structure.)
+
+[#event-template-resolvers]
+==== Event Template Resolvers
+
+Event template resolvers consume a `LogEvent` and render a certain property of
+it at the point of the JSON where they are declared. For instance, `marker`
+resolver renders the marker of the event, `level` resolver renders the level,
+and so on. An event template resolver is denoted with a special object
+containing a`$resolver` key:
+
+.Example event template demonstrating the usage of `level` resolver
+[source,json]
+----
+{
+  "version": "1.0",
+  "level": {
+    "$resolver": "level",
+    "field": "name"
+  }
+}
+----
+
+Here `version` field will be rendered as is, while `level` field will be
+populated by the `level` resolver. That is, this template will generate JSON
+similar to the following:
+
+.Example JSON generated from the demonstrated event template
+[source,json]
+----
+{
+  "version": "1.0",
+  "level": "INFO"
+}
+----
+
+The complete list of available event template resolvers are provided below in
+detail.
+
+[#event-template-resolver-counter]
+===== `counter`
+
+[source]
+----
+config      = [ start ] , [ overflowing ] , [ stringified ]
+start       = "start" -> number
+overflowing = "overflowing" -> boolean
+stringified = "stringified" -> boolean
+----
+
+Resolves a number from an internal counter.
+
+Unless provided, `start` and `overflowing` are respectively set to zero and
+`true` by default.
+
+When `stringified` is enabled, which is set to `false by default, the resolved
+number will be converted to a string.
+
+[WARNING]
+====
+When `overflowing` is set to `true`, the internal counter is created using a
+`long`, which is subject to overflow while incrementing, though garbage-free.
+Otherwise, a `BigInteger` is used, which does not overflow, but incurs
+allocation costs.
+====
+
+====== Examples
+
+Resolves a sequence of numbers starting from 0. Once `Long.MAX_VALUE` is
+reached, counter overflows to `Long.MIN_VALUE`.
+
+[source,json]
+----
+{
+  "$resolver": "counter"
+}
+----
+
+Resolves a sequence of numbers starting from 1000. Once `Long.MAX_VALUE` is
+reached, counter overflows to `Long.MIN_VALUE`.
+
+[source,json]
+----
+{
+  "$resolver": "counter",
+  "start": 1000
+}
+----
+
+Resolves a sequence of numbers starting from 0 and keeps on doing as long as
+JVM heap allows.
+
+[source,json]
+----
+{
+  "$resolver": "counter",
+  "overflowing": false
+}
+----
+
+[#event-template-resolver-caseConverter]
+===== `caseConverter`
+
+[source]
+----
+config                = case , input , [ locale ] , [ errorHandlingStrategy ]
+input                 = JSON
+case                  = "case" -> ( "upper" | "lower" )
+locale                = "locale" -> (
+                            language                                   |
+                          ( language , "_" , country )                 |
+                          ( language , "_" , country , "_" , variant )
+                        )
+errorHandlingStrategy = "errorHandlingStrategy" -> (
+                          "fail"    |
+                          "pass"    |
+                          "replace"
+                        )
+replacement           = "replacement" -> JSON
+----
+
+Converts the case of string values.
+
+`input` can be any available template value;  e.g., a JSON literal, a lookup
+string, an object pointing to another resolver.
+
+Unless provided, `locale` points to the one returned by
+`JsonTemplateLayoutDefaults.getLocale()`, which is configured by
+`log4j.layout.jsonTemplate.locale` system property and by default set to the
+default system locale.
+
+`errorHandlingStrategy` determines the behavior when either the input doesn't
+resolve to a string value or case conversion throws an exception:
+
+* `fail` propagates the failure
+* `pass` causes the resolved value to be passed as is
+* `replace` suppresses the failure and replaces it with the `replacement`,
+which is set to `null` by default
+
+`errorHandlingStrategy` is set to `replace` by default.
+
+Most of the time JSON logs are persisted to a storage solution (e.g.,
+Elasticsearch) that keeps a statically-typed index on fields. Hence, if a field
+is always expected to be of type string, using non-string ``replacement``s or
+`pass` in `errorHandlingStrategy` might result in type incompatibility issues at
+the storage level.
+
+[WARNING]
+====
+Unless the input value is ``pass``ed intact or ``replace``d, case conversion is
+not garbage-free.
+====
+
+====== Examples
+
+Convert the resolved log level strings to upper-case:
+
+[source,json]
+----
+{
+  "$resolver": "caseConverter",
+  "case": "upper",
+  "input": {
+    "$resolver": "level",
+    "field": "name"
+  }
+}
+----
+
+Convert the resolved `USER` environment variable to lower-case using `nl_NL`
+locale:
+
+[source,json]
+----
+{
+  "$resolver": "caseConverter",
+  "case": "lower",
+  "locale": "nl_NL",
+  "input": "${env:USER}"
+}
+----
+
+Convert the resolved `sessionId` thread context data (MDC) to lower-case:
+
+[source,json]
+----
+{
+  "$resolver": "caseConverter",
+  "case": "lower",
+  "input": {
+    "$resolver": "mdc",
+    "key": "sessionId"
+  }
+}
+----
+
+Above, if `sessionId` MDC resolves to a, say, number, case conversion will fail.
+Since `errorHandlingStrategy` is set to `replace` and replacement is set to
+`null` by default, the resolved value will be `null`. One can suppress this
+behavior  and let the resolved `sessionId` number be left as is:
+
+[source,json]
+----
+{
+  "$resolver": "caseConverter",
+  "case": "lower",
+  "input": {
+    "$resolver": "mdc",
+    "key": "sessionId"
+  },
+  "errorHandlingStrategy": "pass"
+}
+----
+
+or replace it with a custom string:
+
+[source,json]
+----
+{
+  "$resolver": "caseConverter",
+  "case": "lower",
+  "input": {
+    "$resolver": "mdc",
+    "key": "sessionId"
+  },
+  "errorHandlingStrategy": "replace",
+  "replacement": "unknown"
+}
+----
+
+[#event-template-resolver-endOfBatch]
+===== `endOfBatch`
+
+[source,json]
+----
+{
+  "$resolver": "endOfBatch"
+}
+----
+
+Resolves `logEvent.isEndOfBatch()` boolean flag.
+
+[#event-template-resolver-exception]
+===== `exception`
+
+[source]
+----
+config              = field , [ stringified ] , [ stackTrace ]
+field               = "field" -> ( "className" | "message" | "stackTrace" )
+
+stackTrace          = "stackTrace" -> (
+                        [ stringified ]
+                      , [ elementTemplate ]
+                      )
+
+stringified         = "stringified" -> ( boolean | truncation )
+truncation          = "truncation" -> (
+                        [ suffix ]
+                      , [ pointMatcherStrings ]
+                      , [ pointMatcherRegexes ]
+                      )
+suffix              = "suffix" -> string
+pointMatcherStrings = "pointMatcherStrings" -> string[]
+pointMatcherRegexes = "pointMatcherRegexes" -> string[]
+
+elementTemplate     = "elementTemplate" -> object
+----
+
+Resolves fields of the `Throwable` returned by `logEvent.getThrown()`.
+
+`stringified` is set to `false` by default. `stringified` at the root level is
+*deprecated* in favor of `stackTrace.stringified`, which has precedence if both
+are provided.
+
+`pointMatcherStrings` and `pointMatcherRegexes` enable the truncation of
+stringified stack traces after the given matching point. If both parameters are
+provided, `pointMatcherStrings` will be checked first.
+
+If a stringified stack trace truncation takes place, it will be indicated with a
+`suffix`, which by default is set to the configured `truncatedStringSuffix` in
+the layout, unless explicitly provided. Every truncation suffix is prefixed with
+a newline.
+
+Stringified stack trace truncation operates in `Caused by:` and `Suppressed:`
+label blocks. That is, matchers are executed against each label in isolation.
+
+`elementTemplate` is an object describing the template to be used while
+resolving the `StackTraceElement` array. If `stringified` is set to `true`,
+`elementTemplate` will be discarded. By default, `elementTemplate` is set to
+`null` and rather populated from the layout configuration. That is, the stack
+trace element template can also be provided using
+`stackTraceElementTemplate[Uri]` layout configuration parameters. The template
+to be employed is determined in the following order:
+
+. `elementTemplate` provided in the resolver configuration
+
+. `stackTraceElementTemplate` parameter from layout configuration
+(the default is populated from `log4j.layout.jsonTemplate.stackTraceElementTemplate`
+system property)
+
+. `stackTraceElementTemplateUri` parameter from layout configuration
+(the default is populated from `log4j.layout.jsonTemplate.stackTraceElementTemplateUri`
+system property)
+
+See <<stack-trace-element-templates>>
+for the list of available resolvers in a stack trace element template.
+
+Note that this resolver is toggled by
+`log4j.layout.jsonTemplate.stackTraceEnabled` property.
+
+[WARNING]
+====
+Since `Throwable#getStackTrace()` clones the original `StackTraceElement[]`,
+access to (and hence rendering of) stack traces are not garbage-free.
+
+Each `pointMatcherRegexes` item triggers a `Pattern#matcher()` call, which is
+not garbage-free either.
+====
+
+====== Examples
+
+Resolve `logEvent.getThrown().getClass().getCanonicalName()`:
+
+[source,json]
+----
+{
+  "$resolver": "exception",
+  "field": "className"
+}
+----
+
+Resolve the stack trace into a list of `StackTraceElement` objects:
+
+[source,json]
+----
+{
+  "$resolver": "exception",
+  "field": "stackTrace"
+}
+----
+
+Resolve the stack trace into a string field:
+
+[source,json]
+----
+{
+  "$resolver": "exception",
+  "field": "stackTrace",
+  "stackTrace": {
+    "stringified": true
+  }
+}
+----
+
+Resolve the stack trace into a string field such that the content will be
+truncated after the given point matcher:
+
+[source,json]
+----
+{
+  "$resolver": "exception",
+  "field": "stackTrace",
+  "stackTrace": {
+    "stringified": {
+      "truncation": {
+        "suffix": "... [truncated]",
+        "pointMatcherStrings": ["at javax.servlet.http.HttpServlet.service"]
+      }
+    }
+  }
+}
+----
+
+Resolve the stack trace into an object described by the provided stack trace
+element template:
+
+[source,json]
+----
+{
+  "$resolver": "exception",
+  "field": "stackTrace",
+  "stackTrace": {
+    "elementTemplate": {
+      "class": {
+       "$resolver": "stackTraceElement",
+       "field": "className"
+      },
+      "method": {
+       "$resolver": "stackTraceElement",
+       "field": "methodName"
+      },
+      "file": {
+       "$resolver": "stackTraceElement",
+       "field": "fileName"
+      },
+      "line": {
+       "$resolver": "stackTraceElement",
+       "field": "lineNumber"
+      }
+    }
+  }
+}
+----
+
+See <<stack-trace-element-templates>> for further details on resolvers available
+for ``StackTraceElement`` templates.
+
+[#event-template-resolver-exceptionRootCause]
+===== `exceptionRootCause`
+
+Resolves the fields of the innermost `Throwable` returned by
+`logEvent.getThrown()`. Its syntax and garbage-footprint are identical to the
+xref:event-template-resolver-exception[] resolver.
+
+[#event-template-resolver-level]
+===== `level`
+
+[source]
+----
+config         = field , [ severity ]
+field          = "field" -> ( "name" | "severity" )
+severity       = severity-field
+severity-field = "field" -> ( "keyword" | "code" )
+----
+
+Resolves the fields of the `logEvent.getLevel()`.
+
+====== Examples
+
+Resolve the level name:
+
+[source,json]
+----
+{
+  "$resolver": "level",
+  "field": "name"
+}
+----
+
+Resolve the https://en.wikipedia.org/wiki/Syslog#Severity_levels[Syslog severity]
+keyword:
+
+[source,json]
+----
+{
+  "$resolver": "level",
+  "field": "severity",
+  "severity": {
+    "field": "keyword"
+  }
+}
+----
+
+Resolve the https://en.wikipedia.org/wiki/Syslog#Severity_levels[Syslog severity]
+code:
+
+[source,json]
+----
+{
+  "$resolver": "level",
+  "field": "severity",
+  "severity": {
+    "field": "code"
+  }
+}
+----
+
+[#event-template-resolver-logger]
+===== `logger`
+
+[source]
+----
+config = "field" -> ( "name" | "fqcn" )
+----
+
+Resolves `logEvent.getLoggerFqcn()` and `logEvent.getLoggerName()`.
+
+====== Examples
+
+Resolve the logger name:
+
+[source,json]
+----
+{
+  "$resolver": "logger",
+  "field": "name"
+}
+----
+
+Resolve the logger's fully qualified class name:
+
+[source,json]
+----
+{
+  "$resolver": "logger",
+  "field": "fqcn"
+}
+----
+
+[#event-template-resolver-main]
+===== `main`
+
+[source]
+----
+config = ( index | key )
+index  = "index" -> number
+key    = "key" -> string
+----
+
+Performs link:lookups.html#AppMainArgsLookup[Main Argument Lookup] for the
+given `index` or `key`.
+
+====== Examples
+
+Resolve the 1st `main()` method argument:
+
+[source,json]
+----
+{
+  "$resolver": "main",
+  "index": 0
+}
+----
+
+Resolve the argument coming right after `--userId`:
+
+[source,json]
+----
+{
+  "$resolver": "main",
+  "key": "--userId"
+}
+----
+
+[#event-template-resolver-map]
+===== `map`
+
+Resolves ``MapMessage``s. See link:#map-resolver-template[Map Resolver Template]
+for details.
+
+[#event-template-resolver-marker]
+===== `marker`
+
+[source]
+----
+config = "field" -> ( "name" | "parents" )
+----
+
+Resolves `logEvent.getMarker()`.
+
+====== Examples
+
+Resolve the marker name:
+
+[source,json]
+----
+{
+  "$resolver": "marker",
+  "field": "name"
+}
+----
+
+Resolve the names of the marker's parents:
+
+[source,json]
+----
+{
+  "$resolver": "marker",
+  "field": "parents"
+}
+----
+
+[#event-template-resolver-mdc]
+===== `mdc`
+
+Resolves Mapped Diagnostic Context (MDC), aka. Thread Context Data. See
+link:#map-resolver-template[Map Resolver Template] for details.
+
+[WARNING]
+====
+`log4j2.garbagefreeThreadContextMap` flag needs to be turned on to iterate
+the map without allocations.
+====
+
+[#event-template-resolver-message]
+===== `message`
+
+[source]
+----
+config      = [ stringified ] , [ fallbackKey ]
+stringified = "stringified" -> boolean
+fallbackKey = "fallbackKey" -> string
+----
+
+Resolves `logEvent.getMessage()`.
+
+[WARNING]
+====
+For simple string messages, the resolution is performed without allocations.
+For ``ObjectMessage``s and ``MultiformatMessage``s, it depends.
+====
+
+====== Examples
+
+Resolve the message into a string:
+
+[source,json]
+----
+{
+  "$resolver": "message",
+  "stringified": true
+}
+----
+
+Resolve the message such that if it is an `ObjectMessage` or a
+`MultiformatMessage` with JSON support, its type (string, list, object, etc.)
+will be retained:
+
+[source,json]
+----
+{
+  "$resolver": "message"
+}
+----
+
+Given the above configuration, a `SimpleMessage` will generate a `"sample log
+message"`, whereas a `MapMessage` will generate a `{"action": "login",
+"sessionId": "87asd97a"}`. Certain indexed log storage systems (e.g.,
+https://www.elastic.co/elasticsearch/[Elasticsearch]) will not allow both values
+to coexist due to type mismatch: one is a `string` while the other is an `object`.
+Here one can use a `fallbackKey` to work around the problem:
+
+[source,json]
+----
+{
+  "$resolver": "message",
+  "fallbackKey": "formattedMessage"
+}
+----
+
+Using this configuration, a `SimpleMessage` will generate a
+`{"formattedMessage": "sample log message"}` and a `MapMessage` will generate a
+`{"action": "login", "sessionId": "87asd97a"}`. Note that both emitted JSONs are
+of type `object` and have no type-conflicting fields.
+
+[#event-template-resolver-messageParameter]
+===== `messageParameter`
+
+[source]
+----
+config      = [ stringified ] , [ index ]
+stringified = "stringified" -> boolean
+index       = "index" -> number
+----
+
+Resolves `logEvent.getMessage().getParameters()`.
+
+[WARNING]
+====
+Regarding garbage footprint, `stringified` flag translates to
+`String.valueOf(value)`, hence mind not-`String`-typed values. Further,
+`logEvent.getMessage()` is expected to implement `ParameterVisitable` interface,
+which is the case if `log4j2.enableThreadLocals` property set to true.
+====
+
+====== Examples
+
+Resolve the message parameters into an array:
+
+[source,json]
+----
+{
+  "$resolver": "messageParameter"
+}
+----
+
+Resolve the string representation of all message parameters into an array:
+
+[source,json]
+----
+{
+  "$resolver": "messageParameter",
+  "stringified": true
+}
+----
+
+Resolve the first message parameter:
+
+[source,json]
+----
+{
+  "$resolver": "messageParameter",
+  "index": 0
+}
+----
+
+Resolve the string representation of the first message parameter:
+
+[source,json]
+----
+{
+  "$resolver": "messageParameter",
+  "index": 0,
+  "stringified": true
+}
+----
+
+[#event-template-resolver-ndc]
+===== `ndc`
+
+[source]
+----
+config  = [ pattern ]
+pattern = "pattern" -> string
+----
+
+Resolves the Nested Diagnostic Context (NDC), aka. Thread Context Stack,
+`String[]` returned by `logEvent.getContextStack()`.
+
+====== Examples
+
+Resolve all NDC values into a list:
+
+[source,json]
+----
+{
+  "$resolver": "ndc"
+}
+----
+
+Resolve all NDC values matching with the `pattern` regex:
+
+[source,json]
+----
+{
+  "$resolver": "ndc",
+  "pattern": "user(Role|Rank):\\w+"
+}
+----
+
+[#event-template-resolver-pattern]
+===== `pattern`
+
+[source]
+----
+config            = pattern , [ stackTraceEnabled ]
+pattern           = "pattern" -> string
+stackTraceEnabled = "stackTraceEnabled" -> boolean
+----
+
+Resolver delegating to link:layouts.html#PatternLayout[`PatternLayout`].
+
+The default value of `stackTraceEnabled` is inherited from the parent
+`JsonTemplateLayout`.
+
+====== Examples
+
+Resolve the string produced by `%p %c{1.} [%t] %X{userId} %X %m%ex` pattern:
+
+[source,json]
+----
+{
+  "$resolver": "pattern",
+  "pattern": "%p %c{1.} [%t] %X{userId} %X %m%ex"
+}
+----
+
+[#event-template-resolver-source]
+===== `source`
+
+[source]
+----
+config = "field" -> (
+           "className"  |
+           "fileName"   |
+           "methodName" |
+           "lineNumber" )
+----
+
+Resolves the fields of the `StackTraceElement` returned by
+`logEvent.getSource()`.
+
+Note that this resolver is toggled by
+`log4j.layout.jsonTemplate.locationInfoEnabled` property.
+
+====== Examples
+
+Resolve the line number:
+
+[source,json]
+----
+{
+  "$resolver": "source",
+  "field": "lineNumber"
+}
+----
+
+[#event-template-resolver-thread]
+===== `thread`
+
+[source]
+----
+config = "field" -> ( "name" | "id" | "priority" )
+----
+
+Resolves `logEvent.getThreadId()`, `logEvent.getThreadName()`,
+`logEvent.getThreadPriority()`.
+
+====== Examples
+
+Resolve the thread name:
+
+[source,json]
+----
+{
+  "$resolver": "thread",
+  "field": "name"
+}
+----
+
+[#event-template-resolver-timestamp]
+===== `timestamp`
+
+[source]
+----
+config        = [ patternConfig | epochConfig ]
+
+patternConfig = "pattern" -> ( [ format ] , [ timeZone ] , [ locale ] )
+format        = "format" -> string
+timeZone      = "timeZone" -> string
+locale        = "locale" -> (
+                   language                                   |
+                 ( language , "_" , country )                 |
+                 ( language , "_" , country , "_" , variant )
+                )
+
+epochConfig   = "epoch" -> ( unit , [ rounded ] )
+unit          = "unit" -> (
+                   "nanos"         |
+                   "millis"        |
+                   "secs"          |
+                   "millis.nanos"  |
+                   "secs.nanos"    |
+                )
+rounded       = "rounded" -> boolean
+----
+
+Resolves `logEvent.getInstant()` in various forms.
+
+====== Examples
+
+.`timestamp` template resolver examples
+[cols="5,2m"]
+|===
+| Configuration
+| Output
+
+a|
+[source,json]
+----
+{
+  "$resolver": "timestamp"
+}
+----
+| 2020-02-07T13:38:47.098+02:00
+
+a|
+[source,json]
+----
+{
+  "$resolver": "timestamp",
+  "pattern": {
+    "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+    "timeZone": "UTC",
+    "locale": "en_US"
+  }
+}
+----
+| 2020-02-07T13:38:47.098Z
+
+a|
+[source,json]
+----
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "secs"
+  }
+}
+----
+| 1581082727.982123456
+
+a|
+[source,json]
+----
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "secs",
+    "rounded": true
+  }
+}
+----
+| 1581082727
+
+a|
+[source,json]
+----
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "secs.nanos"
+  }
+}
+----
+| 982123456
+
+a|
+[source,json]
+----
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "millis"
+  }
+}
+----
+| 1581082727982.123456
+
+a|
+[source,json]
+----
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "millis",
+    "rounded": true
+  }
+}
+----
+| 1581082727982
+
+a|
+[source,json]
+----
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "millis.nanos"
+  }
+}
+----
+| 123456
+
+a|
+[source,json]
+----
+{
+  "$resolver": "timestamp",
+  "epoch": {
+    "unit": "nanos"
+  }
+}
+----
+| 1581082727982123456
+|===
+
+[#map-resolver-template]
+==== Map Resolver Template
+
+`ReadOnlyStringMap` is Log4j's `Map<String, Object>` equivalent with
+garbage-free accessors and heavily employed throughout the code base. It is the
+data structure backing both Mapped Diagnostic Context (MDC), aka. Thread Context
+Data and `MapMessage` implementations. Hence template resolvers for both of
+these are provided by a single backend: `ReadOnlyStringMapResolver`. Put another
+way, both `mdc` and `map` resolvers support identical configuration, behaviour,
+and garbage footprint, which are detailed below.
+
+[source]
+----
+config        = singleAccess | multiAccess
+
+singleAccess  = key , [ stringified ]
+key           = "key" -> string
+stringified   = "stringified" -> boolean
+
+multiAccess   = [ pattern ] , [ replacement ] , [ flatten ] , [ stringified ]
+pattern       = "pattern" -> string
+replacement   = "replacement" -> string
+flatten       = "flatten" -> ( boolean | flattenConfig )
+flattenConfig = [ flattenPrefix ]
+flattenPrefix = "prefix" -> string
+----
+
+`singleAccess` resolves a single field, whilst `multiAccess` resolves a
+multitude of fields. If `flatten` is provided, `multiAccess` merges the fields
+with the parent, otherwise creates a new JSON object containing the values.
+
+Enabling `stringified` flag converts each value to its string representation.
+
+Regex provided in the `pattern` is used to match against the keys. If provided,
+`replacement` will be used to replace the matched keys. These two are
+effectively equivalent to `Pattern.compile(pattern).matcher(key).matches()` and
+`Pattern.compile(pattern).matcher(key).replaceAll(replacement)` calls.
+
+[WARNING]
+====
+Regarding garbage footprint, `stringified` flag translates to
+`String.valueOf(value)`, hence mind not-`String`-typed values.
+
+`pattern` and `replacement` incur pattern matcher allocation costs.
+
+Writing certain non-primitive values (e.g., `BigDecimal`, `Set`, etc.) to JSON
+generates garbage, though most (e.g., `int`, `long`, `String`, `List`,
+`boolean[]`, etc.) don't.
+====
+
+`"$resolver"` is left out in the following examples, since it is to be
+defined by the actual resolver, e.g., `map`, `mdc`.
+
+Resolve the value of the field keyed with `user:role`:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "key": "user:role"
+}
+----
+
+Resolve the string representation of the `user:rank` field value:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "key": "user:rank",
+  "stringified": true
+}
+----
+
+Resolve all fields into an object:
+
+[source,json]
+----
+{
+  "$resolver": "…"
+}
+----
+
+Resolve all fields into an object such that values are converted to string:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "stringified": true
+}
+----
+
+Resolve all fields whose keys match with the `user:(role|rank)` regex into an
+object:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "pattern": "user:(role|rank)"
+}
+----
+
+Resolve all fields whose keys match with the `user:(role|rank)` regex into an
+object after removing the `user:` prefix in the key:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "pattern": "user:(role|rank)",
+  "replacement": "$1"
+}
+----
+
+Merge all fields whose keys are matching with the `user:(role|rank)` regex into
+the parent:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "flatten": true,
+  "pattern": "user:(role|rank)"
+}
+----
+
+After converting the corresponding field values to string, merge all fields to
+parent such that keys are prefixed with `_`:
+
+[source,json]
+----
+{
+  "$resolver": "…",
+  "stringified": true,
+  "flatten": {
+    "prefix": "_"
+  }
+}
+----
+
+[#stack-trace-element-templates]
+=== Stack Trace Element Templates
+
+xref:event-template-resolver-exception[] and
+xref:event-template-resolver-exceptionRootCause[] event template resolvers can
+serialize an exception stack trace (i.e., `StackTraceElement[]` returned by
+`Throwable#getStackTrace()`) into a JSON array. While doing so, JSON templating
+infrastructure is used again.
+
+`stackTraceElement[Uri]` describes the JSON structure `JsonTemplateLayout` uses
+to format ``StackTraceElement``s. The default configuration (accessible by
+`log4j.layout.jsonTemplate.stackTraceElementTemplate[Uri]` property) is set to
+`classpath:StackTraceElementLayout.json` provided by the
+`log4j-layout-template-json` artifact:
+
+[source,json]
+----
+{
+  "class": {
+    "$resolver": "stackTraceElement",
+    "field": "className"
+  },
+  "method": {
+    "$resolver": "stackTraceElement",
+    "field": "methodName"
+  },
+  "file": {
+    "$resolver": "stackTraceElement",
+    "field": "fileName"
+  },
+  "line": {
+    "$resolver": "stackTraceElement",
+    "field": "lineNumber"
+  }
+}
+----
+
+The allowed template configuration syntax is as follows:
+
+[source]
+----
+config = "field" -> (
+           "className"  |
+           "fileName"   |
+           "methodName" |
+           "lineNumber" )
+----
+
+All above accesses to `StackTraceElement` is garbage-free.
+
+[#extending]
+== Extending
+
+`JsonTemplateLayout` relies on Log4j link:plugins.html[plugin system] to build
+up the features it provides. This enables feature customization a breeze for
+users. As of this moment, following features are implemented by means of
+plugins:
+
+* Event template resolvers (e.g., `exception`, `message`, `level` event template resolvers)
+* Event template interceptors (e.g., injection of `eventTemplateAdditionalField`)
+* Recycler factories
+
+Following sections cover these in detail.
+
+[#extending-plugins]
+=== Plugin Preliminaries
+
+Log4j plugin system is the de facto extension mechanism embraced by various
+Log4j components, including `JsonTemplateLayout`. Plugins make it possible
+for extensible components _receive_ feature implementations without any explicit
+links in between. It is analogous to a
+https://en.wikipedia.org/wiki/Dependency_injection[dependency injection]
+framework, but curated for Log4j-specific needs.
+
+In a nutshell, you annotate your classes with `@Plugin` and their (`static`)
+creator methods with `@PluginFactory`. Last, you inform the Log4j plugin system
+to discover these custom classes. This can be done either using `packages`
+declared in your Log4j configuration or by various other ways described in
+link:plugins.html[plugin system documentation].
+
+[#extending-event-resolvers]
+=== Extending Event Resolvers
+
+All available xref:event-template-resolvers[event template resolvers] are simple
+plugins employed by `JsonTemplateLayout`. To add new ones, one just needs to
+create their own `EventResolver` and instruct its injection via a
+`@Plugin`-annotated `EventResolverFactory` class.
+
+For demonstration purposes, below we will create a `randomNumber` event resolver.
+Let's start with the actual resolver:
+
+[source,java]
+.Custom random number event resolver
+----
+package com.acme.logging.log4j.layout.template.json;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolver;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+
+/**
+ * Resolves a random floating point number.
+ *
+ * <h3>Configuration</h3>
+ *
+ * <pre>
+ * config = ( [ range ] )
+ * range  = number[]
+ * </pre>
+ *
+ * {@code range} is a number array with two elements, where the first number
+ * denotes the start (inclusive) and the second denotes the end (exclusive).
+ * {@code range} is optional and by default set to {@code [0, 1]}.
+ *
+ * <h3>Examples</h3>
+ *
+ * Resolve a random number between 0 and 1:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "randomNumber"
+ * }
+ * </pre>
+ *
+ * Resolve a random number between -0.123 and 0.123:
+ *
+ * <pre>
+ * {
+ *   "$resolver": "randomNumber",
+ *   "range": [-0.123, 0.123]
+ * }
+ * </pre>
+ */
+public final class RandomNumberResolver implements EventResolver {
+
+    private final double loIncLimit;
+
+    private final double hiExcLimit;
+
+    RandomNumberResolver(final TemplateResolverConfig config) {
+        final List<Number> rangeArray = config.getList("range", Number.class);
+        if (rangeArray == null) {
+            this.loIncLimit = 0D;
+            this.hiExcLimit = 1D;
+        } else if (rangeArray.size() != 2) {
+            throw new IllegalArgumentException(
+                    "range array must be of size two: " + config);
+        } else {
+            this.loIncLimit = rangeArray.get(0).doubleValue();
+            this.hiExcLimit = rangeArray.get(1).doubleValue();
+            if (loIncLimit > hiExcLimit) {
+                throw new IllegalArgumentException("invalid range: " + config);
+            }
+        }
+    }
+
+    static String getName() {
+        return "randomNumber";
+    }
+
+    @Override
+    public void resolve(
+            final LogEvent value,
+            final JsonWriter jsonWriter) {
+        final double randomNumber =
+                loIncLimit + (hiExcLimit - loIncLimit) * Math.random();
+        jsonWriter.writeNumber(randomNumber);
+    }
+
+}
+----
+
+Next create a `EventResolverFactory` class to register `RandomNumberResolver`
+into the Log4j plugin system.
+
+[source,java]
+.Resolver factory class to register `RandomNumberResolver` into the Log4j plugin system
+----
+package com.acme.logging.log4j.layout.template.json;
+
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.PluginFactory;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverFactory;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolver;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverConfig;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverFactory;
+
+/**
+ * {@link RandomNumberResolver} factory.
+ */
+@Plugin(name = "RandomNumberResolverFactory", category = TemplateResolverFactory.CATEGORY)
+public final class RandomNumberResolverFactory implements EventResolverFactory {
+
+    private static final RandomNumberResolverFactory INSTANCE =
+            new RandomNumberResolverFactory();
+
+    private RandomNumberResolverFactory() {}
+
+    @PluginFactory
+    public static RandomNumberResolverFactory getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public String getName() {
+        return RandomNumberResolver.getName();
+    }
+
+    @Override
+    public RandomNumberResolver create(
+            final EventResolverContext context,
+            final TemplateResolverConfig config) {
+        return new RandomNumberResolver(config);
+    }
+
+}
+----
+
+Almost complete. Last, we need to inform the Log4j plugin system to discover
+these custom classes:
+
+[source,xml]
+.Log4j configuration employing custom `randomNumber` resolver
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration packages="com.acme.logging.log4j.layout.template.json">
+  <!-- ... -->
+  <JsonTemplateLayout>
+    <EventTemplateAdditionalField
+        key="id"
+        format="JSON"
+        value='{"$resolver": "randomNumber", "range": [0, 1000000]}'/>
+  </JsonTemplateLayout>
+  <!-- ... -->
+</Configuration>
+----
+
+All available event template resolvers are located in
+`org.apache.logging.log4j.layout.template.json.resolver` package. It is a fairly
+rich resource for inspiration while implementing new resolvers.
+
+[#extending-template-resolver]
+=== Intercepting the Template Resolver Compiler
+
+`JsonTemplateLayout` allows interception of the template resolver compilation,
+which is the process converting a template into a Java function performing the
+JSON serialization. This interception mechanism is internally used to implement
+`eventTemplateRootObjectKey` and `eventTemplateAdditionalField` features. In a
+nutshell, one needs to create a `@Plugin`-annotated class extending from
+`EventResolverInterceptor` interface.
+
+To see the interception in action, check out the `EventRootObjectKeyInterceptor`
+class which is responsible for implementing the `eventTemplateRootObjectKey`
+feature:
+
+[source,java]
+.Event interceptor to add `eventTemplateRootObjectKey`, if present
+----
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverContext;
+import org.apache.logging.log4j.layout.template.json.resolver.EventResolverInterceptor;
+import org.apache.logging.log4j.layout.template.json.resolver.TemplateResolverInterceptor;
+
+/**
+ * Interceptor to add a root object key to the event template.
+ */
+@Plugin(name = "EventRootObjectKeyInterceptor", category = TemplateResolverInterceptor.CATEGORY)
+public class EventRootObjectKeyInterceptor implements EventResolverInterceptor {
+
+    private static final EventRootObjectKeyInterceptor INSTANCE =
+            new EventRootObjectKeyInterceptor();
+
+    private EventRootObjectKeyInterceptor() {}
+
+    @PluginFactory
+    public static EventRootObjectKeyInterceptor getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public Object processTemplateBeforeResolverInjection(
+            final EventResolverContext context,
+            final Object node) {
+        String eventTemplateRootObjectKey = context.getEventTemplateRootObjectKey();
+        return eventTemplateRootObjectKey != null
+                ? Collections.singletonMap(eventTemplateRootObjectKey, node)
+                : node;
+    }
+
+}
+----
+
+Here, `processTemplateBeforeResolverInjection()` method checks if the user has
+provided an `eventTemplateRootObjectKey`. If so, it wraps the root `node` with a
+new object; otherwise, returns the `node` as is. Note that `node` refers to the
+root Java object of the event template read by `JsonReader`.
+
+[#extending-recycler]
+=== Extending Recycler Factories
+
+`recyclerFactory` input `String` read from the layout configuration is converted
+to a `RecyclerFactory` using the default `RecyclerFactoryConverter` extending
+from `TypeConverter<RecyclerFactory>`. If one wants to change this behavior,
+they simply need to add their own `TypeConverter<RecyclerFactory>` implementing
+`Comparable<TypeConverter<?>>` to prioritize their custom converter.
+
+[source,java]
+.Custom `TypeConverter` for `RecyclerFactory`
+----
+package com.acme.logging.log4j.layout.template.json;
+
+import org.apache.logging.log4j.core.config.plugins.Plugin;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverter;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
+
+@Plugin(name = "AcmeRecyclerFactoryConverter", category = TypeConverters.CATEGORY)
+public final class AcmeRecyclerFactoryConverter
+        implements TypeConverter<RecyclerFactory>, Comparable<TypeConverter<?>> {
+
+    @Override
+    public RecyclerFactory convert(final String recyclerFactorySpec) {
+        return AcmeRecyclerFactory.ofSpec(recyclerFactorySpec);
+    }
+
+    @Override
+    public int compareTo(final TypeConverter<?> ignored) {
+        return -1;
+    }
+
+}
+----
+
+Here note that `compareTo()` always returns -1 to rank it higher compared to
+other matching converters.
+
+[#features]
+== Features
+
+Below is a feature comparison matrix between `JsonTemplateLayout` and
+alternatives.
+
+.Feature comparison matrix
+[cols="3,1,1,1,1"]
+|===
+| Feature
+| `JsonTemplateLayout`
+| link:layouts.html#JSONLayout[`JsonLayout`]
+| link:layouts.html#GELFLayout[`GelfLayout`]
+| https://github.com/elastic/java-ecs-logging/tree/master/log4j2-ecs-layout[`EcsLayout`]
+
+| Java version
+| 8
+| 8
+| 8
+| 6
+
+| Dependencies
+| None
+| Jackson
+| None
+| None
+
+| Schema customization?
+| ✓
+| ✕
+| ✕
+| ✕
+
+| Timestamp customization?
+| ✓
+| ✕
+| ✕
+| ✕
+
+| (Almost) garbage-free?
+| ✓
+| ✕
+| ✓
+| ✓
+
+| Custom typed `Message` serialization?
+| ✓
+| ✕
+| ✕
+| ?footnote:[Only for ``ObjectMessage``s and if Jackson is in the classpath.]
+
+| Custom typed `MDC` value serialization?
+| ✓
+| ✕
+| ✕
+| ✕
+
+| Rendering stack traces as array?
+| ✓
+| ✓
+| ✕
+| ✓
+
+| Stack trace truncation?
+| ✓
+| ✕
+| ✕
+| ✕
+
+| JSON pretty print?
+| ✕
+| ✓
+| ✕
+| ✕
+
+| Additional string fields?
+| ✓
+| ✓
+| ✓
+| ✓
+
+| Additional JSON fields?
+| ✓
+| ✕
+| ✕
+| ✕
+
+| Custom resolvers?
+| ✓
+| ✕
+| ✕
+| ✕
+|===
+
+[#faq]
+== F.A.Q.
+
+[#faq-lookups]
+=== Are lookups supported in templates?
+
+Yes, link:lookups.html[lookups] (e.g., `${java:version}`,
+`${env:USER}`, `${date:MM-dd-yyyy}`) are supported in string
+literals of templates. Though note that they are not garbage-free.
+
+=== Are recursive collections supported?
+
+No. Consider a `Message` containing a recursive value as follows:
+
+[source,java]
+----
+Object[] recursiveCollection = new Object[1];
+recursiveCollection[0] = recursiveCollection;
+----
+
+While the exact exception might vary, you will most like get a
+`StackOverflowError` for trying to render `recursiveCollection` into a
+`String`. Note that this is also the default behaviour for other Java standard
+library methods, e.g., `Arrays.toString()`. Hence mind self references while
+logging.
+
+[#faq-garbage-free]
+=== Is `JsonTemplateLayout` garbage-free?
+
+Yes, if the garbage-free layout behaviour toggling properties
+`log4j2.enableDirectEncoders` and `log4j2.garbagefreeThreadContextMap` are
+enabled. Take into account the following caveats:
+
+* The configured link:#recycling-strategy[recycling strategy] might not be
+  garbage-free.
+
+* Since `Throwable#getStackTrace()` clones the original `StackTraceElement[]`,
+  access to (and hence rendering of) stack traces are not garbage-free.
+
+* Serialization of ``MapMessage``s and ``ObjectMessage``s are mostly
+  garbage-free except for certain types (e.g., `BigDecimal`, `BigInteger`,
+  ``Collection``s, except `List`).
+
+* link:lookups.html[Lookups] (that is, `${...}` variables) are not garbage-free.
+
+Don't forget to check out xref:event-template-resolvers[the notes on garbage footprint of resolvers]
+you employ in templates.

@@ -1,0 +1,90 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+////
+    ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+    ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+    ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+    ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+     ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+    IF THIS FILE IS CALLED `index.adoc`, IT IS AUTO-GENERATED, DO NOT EDIT IT!
+
+    Release notes `index.adoc` is generated from `src/changelog/.index.adoc.ftl`.
+    Auto-generation happens during `generate-sources` phase of Maven.
+    Hence, you must always
+
+    1. Edit `.index.adoc.ftl`
+    2. Run `./mvnw generate-sources`
+    3. Commit both `.index.adoc.ftl` and the generated `.index.adoc`
+////
+
+[#release-notes]
+= Release Notes
+
+include::_release-notes/_2.21.0.adoc[]
+include::_release-notes/_2.20.0.adoc[]
+include::_release-notes/_2.19.0.adoc[]
+include::_release-notes/_2.18.0.adoc[]
+include::_release-notes/_2.17.2.adoc[]
+include::_release-notes/_2.17.1.adoc[]
+include::_release-notes/_2.17.0.adoc[]
+include::_release-notes/_2.16.0.adoc[]
+include::_release-notes/_2.15.0.adoc[]
+include::_release-notes/_2.14.1.adoc[]
+include::_release-notes/_2.14.0.adoc[]
+include::_release-notes/_2.13.3.adoc[]
+include::_release-notes/_2.13.2.adoc[]
+include::_release-notes/_2.13.1.adoc[]
+include::_release-notes/_2.13.0.adoc[]
+include::_release-notes/_2.12.1.adoc[]
+include::_release-notes/_2.12.0.adoc[]
+include::_release-notes/_2.11.2.adoc[]
+include::_release-notes/_2.11.1.adoc[]
+include::_release-notes/_2.11.0.adoc[]
+include::_release-notes/_2.10.0.adoc[]
+include::_release-notes/_2.9.1.adoc[]
+include::_release-notes/_2.9.0.adoc[]
+include::_release-notes/_2.8.2.adoc[]
+include::_release-notes/_2.8.1.adoc[]
+include::_release-notes/_2.8.adoc[]
+include::_release-notes/_2.7.adoc[]
+include::_release-notes/_2.6.2.adoc[]
+include::_release-notes/_2.6.1.adoc[]
+include::_release-notes/_2.6.adoc[]
+include::_release-notes/_2.5.adoc[]
+include::_release-notes/_2.4.1.adoc[]
+include::_release-notes/_2.4.adoc[]
+include::_release-notes/_2.3.adoc[]
+include::_release-notes/_2.2.adoc[]
+include::_release-notes/_2.1.adoc[]
+include::_release-notes/_2.0.2.adoc[]
+include::_release-notes/_2.0.1.adoc[]
+include::_release-notes/_2.0.adoc[]
+include::_release-notes/_2.0-rc2.adoc[]
+include::_release-notes/_2.0-rc1.adoc[]
+include::_release-notes/_2.0-beta9.adoc[]
+include::_release-notes/_2.0-beta8.adoc[]
+include::_release-notes/_2.0-beta7.adoc[]
+include::_release-notes/_2.0-beta6.adoc[]
+include::_release-notes/_2.0-beta5.adoc[]
+include::_release-notes/_2.0-beta4.adoc[]
+include::_release-notes/_2.0-beta3.adoc[]
+include::_release-notes/_2.0-beta2.adoc[]
+include::_release-notes/_2.0-beta1.adoc[]
+include::_release-notes/_2.0-alpha2.adoc[]
+include::_release-notes/_2.0-alpha1.adoc[]

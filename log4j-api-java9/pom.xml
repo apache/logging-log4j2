@@ -21,13 +21,13 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
   <artifactId>log4j-api-java9</artifactId>
   <packaging>pom</packaging>
   <name>Apache Log4j API Java 9 support</name>
   <description>The Apache Log4j API (Java 9)</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>API Documentation</docLabel>
     <projectDir>/api</projectDir>
     <maven.deploy.skip>true</maven.deploy.skip>
@@ -70,16 +70,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <!-- TODO: copy/paste from `logging-parent` to override this module's parent -->
-          <annotationProcessorPaths combine.self="override">
-            <path>
-              <groupId>com.google.errorprone</groupId>
-              <artifactId>error_prone_core</artifactId>
-              <version>${error-prone.version}</version>
-            </path>
-          </annotationProcessorPaths>
-        </configuration>
         <executions>
           <execution>
             <id>default-compile</id>

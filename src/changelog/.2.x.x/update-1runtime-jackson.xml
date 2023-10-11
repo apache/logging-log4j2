@@ -22,6 +22,6 @@
   <issue id="1591" link="https://github.com/apache/logging-log4j2/issues/1591"/>
   <author id="github:dependabot"/>
   <description format="asciidoc">
-    Runtime dependencies: update Jackson from version 2.14.1 to version link:https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.15.2[2.15.2].
+    Update Jackson to version https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.15.2[2.15.2]
   </description>
 </entry>

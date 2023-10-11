@@ -31,14 +31,14 @@ public interface PurgePolicy {
 
     /**
      * @param key routed appender key
-     * @param event
+     * @param event Provides contextual information about a logged message.
      */
     void update(String key, LogEvent event);
 
     /**
      * Initializes with routing appender
      *
-     * @param routingAppender
+     * @param routingAppender the routed appender for purging
      */
     void initialize(RoutingAppender routingAppender);
 

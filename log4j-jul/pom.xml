@@ -21,6 +21,7 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
 
   <artifactId>log4j-jul</artifactId>
@@ -28,8 +29,6 @@
   <description>The Apache Log4j implementation of java.util.logging</description>
 
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-
     <!--
       ~ OSGi and JPMS options
       -->

@@ -43,7 +43,7 @@ public abstract class MockSyslogServer extends Thread {
 
     public abstract int getLocalPort();
 
-    public abstract void shutdown();
+    public void shutdown() {}
 
     public int getNumberOfReceivedMessages() {
         return messageList.size();

@@ -32,9 +32,7 @@ import org.apache.logging.log4j.core.config.Property;
 
 /**
  * An abstract Appender for writing events to a database of some type, be it relational or NoSQL. All database appenders
- * should inherit from this base appender. Three implementations are currently provided:
- * {@link org.apache.logging.log4j.core.appender.db.jdbc JDBC}, {@link org.apache.logging.log4j.core.appender.db.jpa
- * JPA}, and {@link org.apache.logging.log4j.core.appender.nosql NoSQL}.
+ * should inherit from this base appender.
  *
  * @param <T> Specifies which type of {@link AbstractDatabaseManager} this Appender requires.
  */

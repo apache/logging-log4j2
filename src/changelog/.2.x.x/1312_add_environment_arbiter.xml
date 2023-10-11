@@ -17,13 +17,13 @@
   -->
 <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns="http://logging.apache.org/log4j/changelog"
-       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.0.xsd"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
        type="fixed">
   <issue id="1312" link="https://github.com/apache/logging-log4j2/issues/1312"/>
   <author id="github:MouettE-SC" name="Charles Leclerc"/>
   <!-- Committer -->
   <author id="github:ppkarwasz"/>
   <description format="asciidoc">
-    Add environment variable arbiter.
+    Added environment variable arbiter
   </description>
 </entry>

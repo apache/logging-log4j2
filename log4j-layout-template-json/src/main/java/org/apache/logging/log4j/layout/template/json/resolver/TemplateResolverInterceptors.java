@@ -29,7 +29,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Utility class for {@link TemplateResolverInterceptor}.
  */
-public final class TemplateResolverInterceptors {
+public class TemplateResolverInterceptors {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 

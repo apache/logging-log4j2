@@ -21,13 +21,13 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
   <artifactId>log4j-slf4j-impl</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j SLF4J Binding</name>
   <description>The Apache Log4j SLF4J API binding to Log4j 2 Core</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>SLF4J Documentation</docLabel>
     <projectDir>/slf4j-impl</projectDir>
     <!-- Do not upgrade the SLF4J version. 1.7.26 broke backward compatibility. Users can update the version if
@@ -122,6 +122,7 @@
   </dependencies>
   <build>
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -158,6 +159,7 @@
           </execution>
         </executions>
       </plugin>
+
     </plugins>
   </build>
 </project>

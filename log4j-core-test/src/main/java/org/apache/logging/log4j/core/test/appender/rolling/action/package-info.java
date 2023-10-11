@@ -15,6 +15,8 @@
  * limitations under the license.
  */
 @Export
+@Version("2.20.1")
 package org.apache.logging.log4j.core.test.appender.rolling.action;
 
 import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

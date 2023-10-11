@@ -21,6 +21,7 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
 
   <artifactId>log4j-jpl</artifactId>
@@ -28,7 +29,6 @@
   <description>The Apache Log4j implementation of java.lang.System.LoggerFinder</description>
 
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <module.name>org.apache.logging.log4j.jpl</module.name>
     <maven.compiler.release>11</maven.compiler.release>
   </properties>

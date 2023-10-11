@@ -23,6 +23,7 @@
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
 
   <artifactId>log4j-spring-cloud-config</artifactId>
@@ -35,7 +36,6 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
     <spring-cloud.version>2021.0.8</spring-cloud.version>
   </properties>
 

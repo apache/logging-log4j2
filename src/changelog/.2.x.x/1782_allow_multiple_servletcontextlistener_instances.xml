@@ -23,6 +23,6 @@
   <author name="Christian Seewald" id="github:cseewald"/>
   <author id="github:ppkarwasz"/>
   <description format="asciidoc">
-    Only shutdown Log4j after last `Log4jServletContextListener` is executed.
+    Only shutdown Log4j after last `Log4jServletContextListener` is executed
   </description>
 </entry>

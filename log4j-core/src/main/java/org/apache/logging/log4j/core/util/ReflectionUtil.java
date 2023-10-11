@@ -179,7 +179,7 @@ public final class ReflectionUtil {
      * @throws IllegalArgumentException if the given class is abstract, an interface, an array class, a primitive type,
      *                                  or void
      * @throws IllegalStateException    if access is denied to the constructor, or there are no default constructors
-     * @throws InternalException        wrapper of the underlying exception if checked
+     * @throws InternalError        wrapper of the underlying exception if checked
      */
     public static <T> T instantiate(final Class<T> clazz) {
         Objects.requireNonNull(clazz, "No class provided");
