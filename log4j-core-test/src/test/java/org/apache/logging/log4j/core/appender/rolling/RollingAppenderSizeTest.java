@@ -59,7 +59,8 @@ public class RollingAppenderSizeTest {
             "bz2",
             "deflate",
             "pack200",
-            "xz");
+            "xz",
+            "zst");
 
     static Stream<Arguments> parameters() {
         return FILE_EXTENSIONS.stream().flatMap(fileExtension -> {
