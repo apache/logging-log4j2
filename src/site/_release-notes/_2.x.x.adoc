@@ -1,0 +1,133 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= 2.x.x
+
+This release primarily contains bug fixes and minor enhancements.
+
+The Log4j 2.20.1 API, as well as many core components, maintains binary compatibility with previous releases.
+
+Apache Log4j 2.20.1 requires a minimum of Java 11 to build and Java 8 to run.
+Log4j 2.12.4 is the last release to support Java 7.
+Log4j 2.3.2 is the last release to support Java 6.
+Java 6 and Java 7 are no longer supported by the Log4j team.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+== Changes
+
+=== Added
+
+* Add marker parent support to `JsonTemplateLayout` (for https://github.com/apache/logging-log4j2/pull/1381[1381] by Eric Herot, Volkan Yazıcı)
+
+=== Changed
+
+* Open `FileExtension` methods to allow their usage in custom ``RolloverStrategy``s (for https://github.com/apache/logging-log4j2/issues/1365[1365], https://github.com/apache/logging-log4j2/pull/1683[1683] by `github:Karthi1711`, `github:vy`)
+* Bump the minimum Java version required for the build to JDK 11. Runtime requirements remain unchanged. (for https://github.com/apache/logging-log4j2/issues/1369[1369] by `github:ppkarwasz`)
+* Set the default `minLevel` and `maxLevel` of `LevelRangeFilter` to `OFF` and `ALL`, respectively (for https://github.com/apache/logging-log4j2/pull/1503[1503] by Volkan Yazıcı)
+* Removes additional `isFiltered` checks in `AsyncLoggerConfig`. (for https://github.com/apache/logging-log4j2/pull/1550[1550] by `github:ppkarwasz`)
+* Log a status error event instead of an NPE in `OsgiServiceLocator.loadServices(Class, Lookup, boolean)` when a bundle has no valid `BundleContext` for a service type (for by Gary Gregory)
+* Runtime dependencies: update Eclipse Angus Activation from version 2.0.0 to version link:https://github.com/eclipse-ee4j/angus-activation/releases/tag/2.0.1[2.0.1]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update Eclipse Angus Mail from version 2.0.1 to version link:https://github.com/eclipse-ee4j/angus-mail/releases/tag/2.0.2[2.0.2]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: `com.datastax.cassandra:cassandra-driver-core` to version 3.11.5. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update Apache Cassandra from version 3.11.14 to version link:https://github.com/apache/cassandra/blob/cassandra-3.11/CHANGES.txt[3.11.16]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update Apache Commons Compress from version 1.22 to version link:https://commons.apache.org/proper/commons-compress/changes-report.html#a1.24.0[1.24.0]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update Apache Commons CSV from version 1.9.0 to version link:https://commons.apache.org/proper/commons-csv/changes-report.html#a1.10.0[1.10.0]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update Jackson from version 2.14.1 to version link:https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.15.2[2.15.2]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update Jakarta Activation API from version 2.1.1 to version link:https://jakarta.ee/specifications/activation/2.1/changelog/[2.1.2]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update Jakarta Mail API from version 2.1.1 to version link:https://jakarta.ee/specifications/mail/2.1/changelog/[2.1.2]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update JCTools from version 3.3.0 to version link:https://github.com/JCTools/JCTools/blob/master/RELEASE-NOTES.md[4.0.1]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update Apache Kafka from version 1.1.1 to version link:https://archive.apache.org/dist/kafka/3.4.0/RELEASE_NOTES.html[3.4.0]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update Kubernetes client from version 5.12.2 to version link:https://github.com/fabric8io/kubernetes-client/releases?q=5.12.4[5.12.4]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update `org.mongodb:mongodb-driver-core` to version 4.10.2. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update `io.netty:netty-bom` to version 4.1.97. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update Spring Boot from version 2.7.7 to version link:https://github.com/spring-projects/spring-boot/releases/tag/v2.7.15[2.7.15]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update Spring Framework from version 5.3.24 to version link:https://github.com/spring-projects/spring-framework/releases/tag/v5.3.29[5.3.29]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update Tomcat JULI from version 10.0.23 to version 10.0.27. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update Woodstox from version 6.4.0 to version link:https://github.com/FasterXML/woodstox/blob/master/release-notes/VERSION[6.5.1]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Build dependencies: update `maven-asciidoctor-plugin` from version 2.2.2 to link:https://github.com/asciidoctor/asciidoctor-maven-plugin/releases/tag/asciidoctor-maven-plugin-2.2.4[2.2.4]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Build dependencies: update `build-helper-maven-plugin` from version 3.3.0 to link:https://github.com/mojohaus/build-helper-maven-plugin/releases/tag/3.4.0[3.4.0]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Build dependencies: update `maven-dependency-plugin` from version 3.3.0 to link:https://blogsarchive.apache.org/maven/entry/apache-maven-dependency-plugin-version4[3.5.0]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Build dependencies: update `docker-maven-plugin` from version 0.40.2 to link:https://github.com/fabric8io/docker-maven-plugin/releases/tag/v0.43.2[0.43.2]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Build dependencies: update `log4j-changelog` from version 0.2.0 to link:https://github.com/apache/logging-log4j-tools/releases/tag/rel%2F0.3.0[0.3.0]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Build dependencies: update `maven-scm-plugin` from version 1.12.2 to 1.13.0. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Build dependencies: update `spotbugs-maven-plugin` from version 4.7.2.1 to link:https://github.com/spotbugs/spotbugs-maven-plugin/releases/tag/spotbugs-maven-plugin-4.7.3.5[4.7.3.5]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Build dependencies: update `maven-surefire-plugin` from version 3.0.0-M7 to link:https://github.com/apache/maven-surefire/releases/tag/surefire-3.1.2[3.1.2]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by Ralph Goers)
+* Build dependencies: update `xml-maven-plugin` from version 1.0.2 to link:https://github.com/mojohaus/xml-maven-plugin/releases/tag/1.1.0[1.1.0]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update Apache ActiveMQ from version 5.17.3 to version 5.17.4. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update Allocation Instrumenter from version 3.3.0 to version link:https://github.com/google/allocation-instrumenter/releases/tag/java-allocation-instrumenter-3.3.3[3.3.3]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update AssertJ from version 3.23.1 to version 3.24.2. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Runtime dependencies: update `org.apache.commons:commons-lang3` to version 3.13.0. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update Elasticsearch HLRC from version 7.17.8 to version link:https://www.elastic.co/guide/en/elasticsearch/reference/7.17/release-notes-7.17.13.html[7.17.13]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update Groovy from version 3.0.14 to version link:https://groovy-lang.org/changelogs/changelog-3.0.19.html[3.0.19]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update Guava from version 31.1 to version link:https://github.com/google/guava/releases/tag/v32.1.2[32.1.2]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update H2 from version 2.1.214 to version link:http://www.h2database.com/html/changelog.html[2.2.222]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies (**security**): update HyperSQL DB from version 2.5.2 to version link:https://hsqldb.org/doc/2.0/changelist_2_0.txt[2.7.2]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update Jetty from version 9.4.50 to version link:https://github.com/eclipse/jetty.project/releases?q=9.4.52[9.4.52]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update JMH from version 1.36 to version 1.37. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update link:https://github.com/lukas-krecan/JsonUnit[JsonUnit] from version 2.36.0 to version 2.38.0. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update JUnit from version 5.9.1 to version link:https://junit.org/junit5/docs/5.10.0/release-notes/[5.10.0]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update Logback from version 1.2.11 to version link:https://logback.qos.ch/news.html#1.2.12[1.2.12]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update Apache Maven from version 3.8.6 to version link:https://maven.apache.org/docs/3.9.0/release-notes.html[3.9.0]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update WebCompere System Stubs from version 2.0.1 to version link:https://github.com/webcompere/system-stubs/releases/tag/system-stubs-parent-2.0.2[2.0.2]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update `com.github.tomakehurst:wiremock-jre8` to version 2.35.1. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+* Test dependencies: update XMLUnit from version 2.9.0 to version link:https://github.com/xmlunit/xmlunit/releases/tag/v2.9.1[2.9.1]. (for https://github.com/apache/logging-log4j2/issues/1591[1591] by `github:dependabot`)
+
+=== Removed
+
+* Moved `log4j-jmx-gui` to https://github.com/apache/logging-log4j-jmx-gui/actions[its own repository] along with its own release cycle (for by Volkan Yazıcı)
+
+=== Fixed
+
+* Add validation to rolling file manager path conditions. (for https://github.com/apache/logging-log4j2/issues/1231[1231] by Łukasz Spyra, `github:ppkarwasz`)
+* Adapt the OSGi metadata of `log4j-to-slf4j` to work with SLF4J 1 and 2. To achieve that use a version range of `[1.7,3)` for the imported SLF4J packages. (for https://github.com/apache/logging-log4j2/issues/1232[1232] by `hanneswell`, Hannes Wellmann)
+* Remove locale-dependent `toLowerCase/toUpperCase` calls. (for https://github.com/apache/logging-log4j2/pull/1281[1281] by Ammar Awad, `github:ppkarwasz`)
+* Redirect old `/<module>/apidocs` URLs (broken in 2.20.0) to `/javadoc/<module>` (for https://github.com/apache/logging-log4j2/pull/1284[1284] by Volkan Yazıcı, Alexander Brandes)
+* Add environment variable arbiter. (for https://github.com/apache/logging-log4j2/issues/1312[1312] by Charles Leclerc, `github:ppkarwasz`)
+* Fixed logging of java.sql.Date objects by appending it before Log4J tries to call java.util.Date.toInstant() on it. (for https://github.com/apache/logging-log4j2/pull/1366[1366] by Lucas Souza)
+* Adapt the OSGi metadata of `log4j-api`, `log4j-core`, `log4j-slf4j-impl` and `log4j-slf4j2-impl` to activate the bundle when it is accessed. To achieve that set the `Bundle-ActivationPolicy` to `lazy` for the log4j bundles. (for https://github.com/apache/logging-log4j2/issues/1367[1367] by Niklas Kellner, github:ppkarwasz)
+* Avoid using released objects in `StackTraceStringResolver` of JSON Template Layout (for https://github.com/apache/logging-log4j2/pull/1380[1380] by Volkan Yazıcı)
+* Added missing setter for `connectionStringSource` in `MongoDb4Provider` builder (for https://github.com/apache/logging-log4j2/issues/1389[1389] by Ihor Dziuba, Volkan Yazıcı)
+* Fix NPE in `PluginElementVisitor` (for https://github.com/apache/logging-log4j2/issues/1391[1391] by Andrew Zakordonets, Volkan Yazıcı)
+* Add `columnType` as alias for the column mapping `type` attribute. (for https://github.com/apache/logging-log4j2/issues/1405[1405] by `github:ppkarwasz`)
+* Restored `Log4jMarker` visibility in SLF4J adapters (for https://github.com/apache/logging-log4j2/issues/1414[1414] by `github:ppkarwasz`, `github:vy`)
+* Fix buffer size in `Log4jFixedFormatter` date time formatter. (for https://github.com/apache/logging-log4j2/pull/1418[1418] by Piotr P. Karwasz)
+* Fixed `RollingFileManager` to propagate failed synchronous actions correctly. (for https://github.com/apache/logging-log4j2/issues/1445[1445] by Timothy Pfeifer)
+* Replaced the usage of `System.out` in `StackLocator` for warnings with `System.err` (for https://github.com/apache/logging-log4j2/issues/1484[1484] by Henning Blohm, `github:vy`)
+* Fix concurrent date-time formatting issue in `PatternLayout` (for https://github.com/apache/logging-log4j2/issues/1485[1485] by Stephan Markwalder, Volkan Yazıcı)
+* Fix runtime dependencies documentation. (for https://github.com/apache/logging-log4j2/pull/1530[1530] by `github:harryssuperman`, `github:ppkarwasz`)
+* Allow to override fqcn in `Log4jEventBuilder` by implementing `CallerBoundaryAware`. (for https://github.com/apache/logging-log4j2/pull/1533[1533] by Ohad Shai, github:pkarwasz)
+* Add a warning in case of incorrect syntax of highlighting style (without =). e.g. %highlight{%5level}{LOGBACK} should be %highlight{%5level}{STYLE=LOGBACK} (for https://github.com/apache/logging-log4j2/issues/1545[1545] by `aawad6`, Ammar Awad)
+* Migrate MongoDB tests to JUnit 5 and Flapdoodle Embedded MongoDB 4. (for https://github.com/apache/logging-log4j2/issues/1589[1589] by `github:ppkarwasz`)
+* Rewrote message parameter formatter with improved escape handling (for https://github.com/apache/logging-log4j2/issues/1626[1626] by `hucsmn`, Volkan Yazıcı)
+* Improve formatting and serialization of `StackTraceElement` on JDK 9+. (for https://github.com/apache/logging-log4j2/issues/1640[1640] by `github:rgoers`, `github:ppkarwasz`)
+* Fix `MemoryMappedFileAppender` buffer unmapping on JRE 9+. (for https://github.com/apache/logging-log4j2/issues/1646[1646] by `github:ppkarwasz`)
+* Fixed rollover strategy in the Log4j 1.x compatibility layer. (for https://github.com/apache/logging-log4j2/issues/1650[1650] by Krzysztof Krasoń, `github:ppkarwasz`)
+* Remove incorrect mention of `base64` lookup and improve the rest of the lookup manual (for https://github.com/apache/logging-log4j2/issues/1681[1681], https://issues.apache.org/jira/browse/LOG4J2-3504[LOG4J2-3504] by Yakov Shafranovich, `github:vy`)
+* `JsonTemplateLayout` was missing to implement `LocationAware` and this was causing location not being passed to underlying appenders (for https://github.com/apache/logging-log4j2/issues/1692[1692] by Jalyn Xing, `github:vy`)
+* The MongoDb4 appender now supports long values to configure `collectionSize` (for https://github.com/apache/logging-log4j2/issues/1747[1747] by Gary Gregory, Jordi Font)
+* Only shutdown Log4j after last `Log4jServletContextListener` is executed. (for https://github.com/apache/logging-log4j2/issues/1782[1782] by Christian Seewald, `github:ppkarwasz`)
+* Allow using Spring Arbiter without a Spring environment. (for https://github.com/apache/logging-log4j2/issues/1783[1783] by `github:ppkarwasz`)
+* Fixes context data loss if `<AsyncLogger>` components are used with an all async logger context. (for https://github.com/apache/logging-log4j2/issues/1786[1786] by `github:ppkarwasz`)
+* Fixed `JsonTemplateLayout` NPE thrown on custom log levels (for https://github.com/apache/logging-log4j2/issues/1805[1805] by `srangara123`, Volkan Yazıcı)
+* Improve `Log4j-config.xsd` schema. (for https://issues.apache.org/jira/browse/LOG4J2-170[LOG4J2-170] by `github:ppkarwasz`)
+* Fix NPE in `ContextSelector` (for https://issues.apache.org/jira/browse/LOG4J2-3217[LOG4J2-3217], https://github.com/apache/logging-log4j2/pull/1538[1538] by Petr Bodnár, Volkan Yazıcı)
+* When ``ThreadLocal``s are disabled, avoid allocating them in `AbstractLogger` causing memory leaks due to retained reference to class loaders in web applications (for https://issues.apache.org/jira/browse/LOG4J2-3657[LOG4J2-3657] by Marat Kamalov, Volkan Yazıcı)
+* Fix `%notEmpty` directive of `PatternLayout` for empty MDC/NDC inputs (for https://issues.apache.org/jira/browse/LOG4J2-3660[LOG4J2-3660] by Volkan Yazıcı)
+* Fix file descriptor leak on Tomcat. (for https://issues.apache.org/jira/browse/LOG4J2-3663[LOG4J2-3663] by Radek Kraus, Piotr P. Karwasz)
+* Ensure `FileOutputStream` is closed in `CommonsCompressAction.execute()` (for by `mernst`, Volkan Yazıcı)
+* Test dependencies: update Flapdoodle Embedded MongoDB from version 3.5.1 to version 4.7.1. (for https://github.com/apache/logging-log4j2/issues/1589[1589] by `github:ppkarwasz`)
