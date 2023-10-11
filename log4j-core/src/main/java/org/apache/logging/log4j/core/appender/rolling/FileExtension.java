@@ -30,21 +30,21 @@ import org.apache.logging.log4j.core.appender.rolling.action.ZipCompressAction;
 public enum FileExtension {
     ZIP(".zip") {
         @Override
-        Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+        public Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                                     final int compressionLevel) {
             return new ZipCompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
         }
     },
     GZ(".gz") {
         @Override
-        Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+        public Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                                     final int compressionLevel) {
             return new GzCompressAction(source(renameTo), target(compressedName), deleteSource, compressionLevel);
         }
     },
     BZIP2(".bz2") {
         @Override
-        Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+        public Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                                     final int compressionLevel) {
             // One of "gz", "bzip2", "xz", "pack200", or "deflate".
             return new CommonsCompressAction("bzip2", source(renameTo), target(compressedName), deleteSource);
@@ -52,7 +52,7 @@ public enum FileExtension {
     },
     DEFLATE(".deflate") {
         @Override
-        Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+        public Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                                     final int compressionLevel) {
             // One of "gz", "bzip2", "xz", "pack200", or "deflate".
             return new CommonsCompressAction("deflate", source(renameTo), target(compressedName), deleteSource);
@@ -60,7 +60,7 @@ public enum FileExtension {
     },
     PACK200(".pack200") {
         @Override
-        Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+        public Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                                     final int compressionLevel) {
             // One of "gz", "bzip2", "xz", "pack200", or "deflate".
             return new CommonsCompressAction("pack200", source(renameTo), target(compressedName), deleteSource);
@@ -68,7 +68,7 @@ public enum FileExtension {
     },
     XZ(".xz") {
         @Override
-        Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
+        public Action createCompressAction(final String renameTo, final String compressedName, final boolean deleteSource,
                                     final int compressionLevel) {
             // One of "gz", "bzip2", "xz", "pack200", or "deflate".
             return new CommonsCompressAction("xz", source(renameTo), target(compressedName), deleteSource);
@@ -95,7 +95,7 @@ public enum FileExtension {
 
     private final String extension;
 
-    private FileExtension(final String extension) {
+    FileExtension(final String extension) {
         Objects.requireNonNull(extension, "extension");
         this.extension = extension;
     }
