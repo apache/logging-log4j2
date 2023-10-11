@@ -98,7 +98,7 @@
     <jctools.version>4.0.1</jctools.version>
     <je.version>18.3.12</je.version>
     <jeromq.version>0.5.3</jeromq.version>
-    <jetty.version>9.4.52.v20230823</jetty.version>
+    <jetty.version>9.4.53.v20231009</jetty.version>
     <jmdns.version>3.5.8</jmdns.version>
     <jmh.version>1.37</jmh.version>
     <json-unit.version>2.38.0</json-unit.version>
