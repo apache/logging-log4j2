@@ -15,14 +15,13 @@
 # limitations under the License.
 #
 
-name: "CodeQL"
+name: codeql-analysis
 
 on:
   push:
-    branches: [ 2.x ]
+    branches: [ "2.x", "main" ]
   pull_request:
-    # The branches below must be a subset of the branches provided in `on.push.branches`
-    branches: [ 2.x ]
+    branches: [ "2.x", "main" ]
   schedule:
     - cron: '32 12 * * 5'
 
@@ -31,51 +30,13 @@ permissions: read-all
 jobs:
 
   analyze:
-    name: Analyze
-    runs-on: ubuntu-latest
+    uses: apache/logging-parent/.github/workflows/codeql-analysis-reusable.yaml@main
+    with:
+      java-version: |
+        11
+        8
+    # Permissions required to publish Security Alerts
     permissions:
       actions: read
       contents: read
       security-events: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'java' ]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
-        # Learn more about CodeQL language support at https://git.io/codeql-language-support
-
-    steps:
-
-      - name: Checkout repository
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608   # 4.1.0
-
-      # Initializes the CodeQL tools for scanning.
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@2cb752a87e96af96708ab57187ab6372ee1973ab    # 2.22.0
-        with:
-          languages: ${{ matrix.language }}
-          # If you wish to specify custom queries, you can do so here or in a config file.
-          # By default, queries listed here will override any specified in a config file.
-          # Prefix the list here with "+" to use these queries and those in the config file.
-          # queries: ./path/to/local/query, your-org/your-repo/queries@main
-
-      # JDK 11 is used for the build.
-      - name: Setup JDK
-        uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0   # 3.13.0
-        with:
-          distribution: temurin
-          java-version: 11
-          cache: maven
-
-      - name: Build with Maven
-        timeout-minutes: 60
-        shell: bash
-        run: |
-          ./mvnw \
-          --show-version --batch-mode --errors --no-transfer-progress \
-          -DskipTests -P!java8-tests \
-          clean verify
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@2cb752a87e96af96708ab57187ab6372ee1973ab    # 2.22.0
