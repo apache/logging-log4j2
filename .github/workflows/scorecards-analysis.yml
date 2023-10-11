@@ -22,7 +22,7 @@ on:
   schedule:
     - cron: "30 1 * * 6"    # Weekly on Saturdays
   push:
-    branches: [ "2.x", "main" ]
+    branches: [ "2.x" ]
 
 permissions: read-all
 
