@@ -50,7 +50,7 @@ public abstract class AbstractLoadBundleTest extends AbstractOsgiTest {
     }
 
     private Bundle get12ApiBundle() throws BundleException {
-        return installBundle("org.apache.logging.log4j.1.2-api");
+        return installBundle("org.apache.logging.log4j.1.2.api");
     }
 
     private void log(final Bundle dummy) throws ReflectiveOperationException {

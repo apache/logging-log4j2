@@ -51,7 +51,7 @@ public class JULProviderTest {
     public Option[] config() {
         return options(
                 linkBundle("org.apache.logging.log4j.api"),
-                linkBundle("org.apache.logging.log4j.to-jul"),
+                linkBundle("org.apache.logging.log4j.to.jul"),
                 // required by Pax Exam's logging
                 linkBundle("slf4j.api"),
                 linkBundle("ch.qos.logback.classic"),
@@ -62,7 +62,7 @@ public class JULProviderTest {
     @Test(timeout = 10_000L)
     public void testJulFactoryResolves() {
         final Optional<Bundle> julBundle = Stream.of(context.getBundles())
-                .filter(b -> "org.apache.logging.log4j.to-jul".equals(b.getSymbolicName()))
+                .filter(b -> "org.apache.logging.log4j.to.jul".equals(b.getSymbolicName()))
                 .findAny();
         assertTrue(julBundle.isPresent());
         final LoggerContextFactory factory = LogManager.getFactory();
