@@ -794,7 +794,6 @@
               All Rights Reserved.<br/>
               Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo, and the Apache Log4j logo are trademarks of The Apache Software Foundation.
             </p>]]></bottom>
-              <failOnError>false</failOnError>
             </configuration>
           </execution>
         </executions>

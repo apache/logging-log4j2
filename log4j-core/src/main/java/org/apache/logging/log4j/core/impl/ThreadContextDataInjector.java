@@ -102,7 +102,7 @@ public class ThreadContextDataInjector {
          * specified reusable StringMap.
          *
          * @param props list of configuration properties, may be {@code null}
-         * @param contextData a {@code StringMap} instance from the log event
+         * @param ignore a {@code StringMap} instance from the log event
          * @return a {@code StringMap} combining configuration properties with thread context data
          */
         @Override

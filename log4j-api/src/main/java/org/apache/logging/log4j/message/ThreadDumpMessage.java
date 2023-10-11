@@ -166,7 +166,6 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
      * <p>
      * Implementations of this class are loaded via the standard java Service Provider interface.
      * </p>
-     * @see /log4j-core/src/main/resources/META-INF/services/org.apache.logging.log4j.message.ThreadDumpMessage$ThreadInfoFactory
      */
     public static interface ThreadInfoFactory {
         Map<ThreadInformation, StackTraceElement[]> createThreadInfo();
