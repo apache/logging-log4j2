@@ -774,17 +774,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration combine.self="override">
-          <!-- `notimestamp` avoids `diff` noise and is required for reproducible builds: https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
-          <notimestamp>true</notimestamp>
-          <skip>${javadoc.skip}</skip>
-          <bottom><![CDATA[<p align="center">
-              Copyright &copy; {inceptionYear}-{currentYear} {organizationName}.
-              All Rights Reserved.<br/>
-              Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo, and the Apache Log4j logo are trademarks of The Apache Software Foundation.
-            </p>]]></bottom>
-          <failOnError>false</failOnError>
-        </configuration>
         <executions>
           <execution>
             <id>generate-site-javadoc</id>
@@ -792,7 +781,20 @@
               <goal>javadoc-no-fork</goal>
             </goals>
             <phase>pre-site</phase>
-            <inherited>false</inherited>
+            <!-- This execution must be inherited and enabled by modules publishing javadocs: `-api` and `-core`.
+                 Such modules enable this execution via `javadoc.skip` property.
+                 Hence, don't insert a `<inherited>false</inherited>`, please! -->
+            <configuration combine.self="override">
+              <!-- `notimestamp` avoids `diff` noise and is required for reproducible builds: https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
+              <notimestamp>true</notimestamp>
+              <skip>${javadoc.skip}</skip>
+              <bottom><![CDATA[<p align="center">
+              Copyright &copy; {inceptionYear}-{currentYear} {organizationName}.
+              All Rights Reserved.<br/>
+              Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, the Apache Logging project logo, and the Apache Log4j logo are trademarks of The Apache Software Foundation.
+            </p>]]></bottom>
+              <failOnError>false</failOnError>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -852,10 +854,12 @@
               <goal>copy-resources</goal>
             </goals>
             <phase>site</phase>
-            <inherited>false</inherited>
+            <!-- This execution must be inherited and enabled by modules publishing javadocs: `-api` and `-core`.
+                 Such modules enable this execution via `javadoc.skip` property.
+                 Hence, don't insert a `<inherited>false</inherited>`, please! -->
             <configuration>
               <skip>${javadoc.skip}</skip>
-              <outputDirectory>${project.basedir}/target/site/javadoc/${project.artifactId}</outputDirectory>
+              <outputDirectory>${maven.multiModuleProjectDirectory}/target/site/javadoc/${project.artifactId}</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.build.directory}/site/apidocs</directory>
