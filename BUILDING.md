@@ -35,6 +35,7 @@ To speed up the build, you can skip verification:
 ```sh
 ./mvnw -DskipTests package
 ```
+
 If you want to install generated artifacts to your local Maven repository, replace above `verify` and/or `package` goals with `install`.
 
 <a name="dns"></a>
