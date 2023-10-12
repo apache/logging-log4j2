@@ -254,6 +254,7 @@
             use the log event timestamp converted to that type (e.g., use <code>java.util.Date</code> to fill a
             <code>timestamp</code> column type in Cassandra).
           </p>
+
           <table>
             <caption align="top">CassandraAppender Parameters</caption>
             <tr>
