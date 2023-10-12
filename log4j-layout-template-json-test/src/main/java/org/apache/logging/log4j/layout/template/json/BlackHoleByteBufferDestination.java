@@ -35,6 +35,7 @@ class BlackHoleByteBufferDestination implements ByteBufferDestination {
     }
 
     @Override
+    @SuppressWarnings("ReferenceEquality")
     public ByteBuffer drain(final ByteBuffer byteBuffer) {
         byteBuffer.flip();
         if (this.byteBuffer != byteBuffer) {
