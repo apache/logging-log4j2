@@ -81,8 +81,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.elasticsearch.client</groupId>
-      <artifactId>elasticsearch-rest-high-level-client</artifactId>
+      <groupId>co.elastic.clients</groupId>
+      <artifactId>elasticsearch-java</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -181,6 +181,13 @@
         <activeByDefault>false</activeByDefault>
       </activation>
 
+      <properties>
+        <elastic.version>8.10.2</elastic.version>
+        <!-- `docker run elasticsearch:<TAG>` exists with code 137 due to insufficient memory.
+             We limit the used JVM memory to avoid this OOM failure. -->
+        <elastic.java-opts>-Xms750m -Xmx750m</elastic.java-opts>
+      </properties>
+
       <build>
         <plugins>
 
@@ -198,6 +205,8 @@
                   <run>
                     <env>
                       <discovery.type>single-node</discovery.type>
+                      <xpack.security.enabled>false</xpack.security.enabled>
+                      <ES_JAVA_OPTS>${elastic.java-opts}</ES_JAVA_OPTS>
                     </env>
                     <ports>
                       <port>9200:9200</port>
@@ -229,6 +238,9 @@
                       <name>log4j-layout-template-json-network</name>
                       <alias>logstash</alias>
                     </network>
+                    <env>
+                      <LS_JAVA_OPTS>${elastic.java-opts}</LS_JAVA_OPTS>
+                    </env>
                     <ports>
                       <port>12222:12222</port>
                       <port>12345:12345</port>
