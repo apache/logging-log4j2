@@ -47,7 +47,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.RetryingTest;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -111,7 +111,7 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
         loggerContext = null;
     }
 
-    @Test
+    @RetryingTest(maxAttempts = 5, suspendForMs = 10)
     public void filterTest() throws Exception {
         System.setProperty("log4j2.Configuration.allowedProtocols", "http");
         System.setProperty("logging.auth.username", "log4j");

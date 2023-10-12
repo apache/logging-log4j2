@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.RetryingTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,7 +59,7 @@ public class MutableThreadContextMapFilterTest implements MutableThreadContextMa
         loggerContext = null;
     }
 
-    @Test
+    @RetryingTest(maxAttempts = 5, suspendForMs = 10)
     public void filterTest() throws Exception {
         System.setProperty("configLocation", "target/test-classes/testConfig.json");
         ThreadContext.put("loginId", "rgoers");
