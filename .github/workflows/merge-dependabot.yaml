@@ -31,6 +31,10 @@ jobs:
   build:
     if: github.repository == 'apache/logging-log4j2' && github.event_name == 'pull_request_target' && github.actor == 'dependabot[bot]'
     uses: apache/logging-parent/.github/workflows/build-reusable.yaml@main
+    with:
+      java-version: |
+        8
+        11
 
   merge-dependabot:
     needs: build
