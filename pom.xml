@@ -260,7 +260,7 @@
     <module>log4j-layout-template-json-test</module>
     <module>log4j-mongodb3</module>
     <module>log4j-mongodb4</module>
-    <module>log4j-osgi</module>
+    <module>log4j-osgi-test</module>
     <module>log4j-perf</module>
     <module>log4j-slf4j-impl</module>
     <module>log4j-slf4j2-impl</module>

@@ -23,9 +23,9 @@
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
-  <artifactId>log4j-osgi</artifactId>
+  <artifactId>log4j-osgi-test</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Log4j OSGi</name>
+  <name>Apache Log4j OSGi tests</name>
   <description>The Apache Log4j OSGi tests</description>
   <properties>
     <docLabel>OSGi Documentation</docLabel>

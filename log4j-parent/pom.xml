@@ -174,7 +174,7 @@
 
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-osgi</artifactId>
+        <artifactId>log4j-osgi-test</artifactId>
         <version>${project.version}</version>
       </dependency>
 
