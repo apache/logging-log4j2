@@ -27,97 +27,105 @@
   </parent>
 
   <artifactId>log4j-layout-template-json-test</artifactId>
-  <name>Apache Log4j Layout for JSON template Tests</name>
-  <description>Apache Log4j Layout for JSON template test.</description>
+  <name>Apache Log4j JSON Template Layout tests</name>
 
   <properties>
+
     <docLabel>Log4j Layout for JSON Template Documentation</docLabel>
     <projectDir>/log4j-layout-template-json</projectDir>
+    <maven.deploy.skip>true</maven.deploy.skip>
 
     <!--
       ~ OSGi and JPMS options
       -->
     <bnd-module-name>org.apache.logging.log4j.layout.template.json.test</bnd-module-name>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
+
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-layout-template-json</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.jctools</groupId>
       <artifactId>jctools-core</artifactId>
-      <optional>true</optional>
+      <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-1.2-api</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core-test</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.elasticsearch.client</groupId>
       <artifactId>elasticsearch-rest-high-level-client</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>com.google.code.java-allocation-instrumenter</groupId>
       <artifactId>java-allocation-instrumenter</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>co.elastic.logging</groupId>
       <artifactId>log4j2-ecs-layout</artifactId>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <build>
     <plugins>
+
+      <!-- Modules that contain `log4j-core` plugins, must be compiled with: `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <!--
-            ~ Modules that contain `log4j-core` plugins, must be compiled with:
-            ~
-            ~   org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor
-            -->
           <annotationProcessorPaths combine.children="append">
             <path>
               <groupId>org.apache.logging.log4j</groupId>
@@ -127,6 +135,7 @@
           </annotationProcessorPaths>
         </configuration>
       </plugin>
+
       <!-- Disable ITs, which are Docker-dependent, by default. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -143,6 +152,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -158,17 +168,22 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 
   <profiles>
     <profile>
+
       <id>docker</id>
+
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
+
       <build>
         <plugins>
+
           <plugin>
             <groupId>io.fabric8</groupId>
             <artifactId>docker-maven-plugin</artifactId>
@@ -299,6 +314,7 @@
               </execution>
             </executions>
           </plugin>
+
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
@@ -316,8 +332,11 @@
               </execution>
             </executions>
           </plugin>
+
         </plugins>
       </build>
+
     </profile>
   </profiles>
+
 </project>

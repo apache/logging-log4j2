@@ -27,12 +27,16 @@
   </parent>
 
   <artifactId>log4j-layout-template-json</artifactId>
-  <name>Apache Log4j Layout for JSON template</name>
-  <description>Apache Log4j Layout for JSON template.</description>
+  <name>Apache Log4j JSON Template Layout</name>
+  <description>Apache Log4j Layout for producing JSON output that is structured according to a user-provided template.</description>
 
   <properties>
+
     <docLabel>Log4j Layout for JSON Template Documentation</docLabel>
     <projectDir>/log4j-layout-template-json</projectDir>
+    <!-- Using `maven.test.skip` instead of `skipTests`, since there are no tests.
+         That is, there is nothing to compile. -->
+    <maven.test.skip>true</maven.test.skip>
 
     <!--
       ~ OSGi and JPMS options
@@ -43,45 +47,44 @@
       org.jctools.core;substitute="jctools-core"
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
+
   </properties>
 
   <dependencies>
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.jctools</groupId>
       <artifactId>jctools-core</artifactId>
       <optional>true</optional>
     </dependency>
+
   </dependencies>
 
   <build>
     <plugins>
+
       <plugin>
         <groupId>biz.aQute.bnd</groupId>
         <artifactId>bnd-baseline-maven-plugin</artifactId>
         <configuration>
-          <!--
-            ~ This package has only an internal function and was removed
-            ~ from the public OSGi exports.
-            -->
           <diffpackages>
+            <!-- `org.apache.logging.log4j.layout.template.json.util` package has only an internal function and was removed from the public OSGi exports. -->
             <diffpackage>!org.apache.logging.log4j.layout.template.json.util</diffpackage>
             <diffpackage>*</diffpackage>
           </diffpackages>
         </configuration>
       </plugin>
+
+      <!-- Modules that contain `log4j-core` plugins, must be compiled with: `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <!--
-            ~ Modules that contain `log4j-core` plugins, must be compiled with:
-            ~
-            ~   org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor
-            -->
           <annotationProcessorPaths combine.children="append">
             <path>
               <groupId>org.apache.logging.log4j</groupId>
@@ -91,198 +94,8 @@
           </annotationProcessorPaths>
         </configuration>
       </plugin>
-      <!-- Disable ITs, which are Docker-dependent, by default. -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <!-- Enforcing a non-UTF-8 encoding to check that the layout
-               indeed handles everything in UTF-8 without implicitly
-               relying on the system defaults. -->
-          <argLine>-Dfile.encoding=US-ASCII</argLine>
-          <systemPropertyVariables>
-            <!-- Enable JUnit 5 parallel execution. -->
-            <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
-            <junit.jupiter.execution.parallel.mode.default>concurrent</junit.jupiter.execution.parallel.mode.default>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
+
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>docker</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>io.fabric8</groupId>
-            <artifactId>docker-maven-plugin</artifactId>
-            <configuration>
-              <verbose>all</verbose>
-              <startParallel>true</startParallel>
-              <autoCreateCustomNetworks>true</autoCreateCustomNetworks>
-              <images>
-                <image>
-                  <alias>elasticsearch</alias>
-                  <name>elasticsearch:${elastic.version}</name>
-                  <run>
-                    <env>
-                      <discovery.type>single-node</discovery.type>
-                    </env>
-                    <ports>
-                      <port>9200:9200</port>
-                    </ports>
-                    <network>
-                      <mode>custom</mode>
-                      <name>log4j-layout-template-json-network</name>
-                      <alias>elasticsearch</alias>
-                    </network>
-                    <log>
-                      <prefix>[ES]</prefix>
-                      <color>cyan</color>
-                    </log>
-                    <wait>
-                      <log>recovered \[0\] indices into cluster_state</log>
-                      <time>60000</time>
-                    </wait>
-                  </run>
-                </image>
-                <image>
-                  <alias>logstash</alias>
-                  <name>logstash:${elastic.version}</name>
-                  <run>
-                    <dependsOn>
-                      <container>elasticsearch</container>
-                    </dependsOn>
-                    <network>
-                      <mode>custom</mode>
-                      <name>log4j-layout-template-json-network</name>
-                      <alias>logstash</alias>
-                    </network>
-                    <ports>
-                      <port>12222:12222</port>
-                      <port>12345:12345</port>
-                    </ports>
-                    <log>
-                      <prefix>[LS]</prefix>
-                      <color>green</color>
-                    </log>
-                    <entrypoint>
-                      <exec>
-                        <arg>logstash</arg>
-                        <arg>--pipeline.batch.size</arg>
-                        <arg>1</arg>
-                        <arg>-e</arg>
-                        <arg>input {
-                            gelf {
-                              host =&gt; "logstash"
-                              use_tcp =&gt; true
-                              use_udp =&gt; false
-                              port =&gt; 12222
-                              type =&gt; "gelf"
-                            }
-                            tcp {
-                              port =&gt; 12345
-                              codec =&gt; json
-                              type =&gt; "tcp"
-                            }
-                          }
-
-                          filter {
-                            if [type] == "gelf" {
-                              # These are GELF/Syslog logging levels as defined in RFC 3164.
-                              # Map the integer level to its human readable format.
-                              translate {
-                                field =&gt; "[level]"
-                                destination =&gt; "[levelName]"
-                                dictionary =&gt; {
-                                  "0" =&gt; "EMERG"
-                                  "1" =&gt; "ALERT"
-                                  "2" =&gt; "CRITICAL"
-                                  "3" =&gt; "ERROR"
-                                  "4" =&gt; "WARN"
-                                  "5" =&gt; "NOTICE"
-                                  "6" =&gt; "INFO"
-                                  "7" =&gt; "DEBUG"
-                                }
-                              }
-                            }
-                          }
-
-                          output {
-                            # (Un)comment for debugging purposes
-                            # stdout { codec =&gt; rubydebug }
-                            elasticsearch {
-                              hosts =&gt; ["http://elasticsearch:9200"]
-                              index =&gt; "log4j"
-                            }
-                          }</arg>
-                      </exec>
-                    </entrypoint>
-                    <wait>
-                      <log>Successfully started Logstash API endpoint</log>
-                      <time>60000</time>
-                    </wait>
-                  </run>
-                </image>
-              </images>
-            </configuration>
-            <executions>
-              <execution>
-                <id>start</id>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-                <phase>pre-integration-test</phase>
-              </execution>
-              <execution>
-                <id>stop</id>
-                <goals>
-                  <goal>stop</goal>
-                </goals>
-                <phase>post-integration-test</phase>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <configuration>
-              <includes>
-                <include>**/*IT.java</include>
-              </includes>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
 </project>
