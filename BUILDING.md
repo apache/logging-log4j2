@@ -28,8 +28,10 @@ You can build and verify the sources as follows:
 ```sh
 ./mvnw verify
 ```
+
 `verify` goal runs validation and test steps next to building (i.e., compiling) the sources.
 To speed up the build, you can skip verification:
+
 ```sh
 ./mvnw -DskipTests package
 ```
