@@ -155,7 +155,6 @@
           <p>
             A typical AsyncAppender configuration might look like:
           </p>
-
             <pre class="prettyprint linenums"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="warn" name="MyApp">
   <Appenders>
