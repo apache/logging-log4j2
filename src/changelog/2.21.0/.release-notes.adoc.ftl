@@ -15,10 +15,10 @@
     limitations under the License.
 ////
 
-[#release-notes-2-x-x]
-== 2.x.x
+[#release-notes-${release.version?replace("[^a-zA-Z0-9]", "-", "r")}]
+== ${release.version}
 
-
+<#if release.date?has_content>Release date:: ${release.date}</#if>
 
 This release primarily focuses on enhancements to our OSGi and JPMS support and contains several bug fixes.
 It will be the first release built and signed by the CI using the https://keyserver.ubuntu.com/pks/lookup?search=077E8893A6DCC33DD4A4D5B256E73BA9A0B592D0&op=index[ASF Logging Services Release Manager GPG key], which is shared in https://www.apache.org/dist/logging/KEYS[KEYS].
@@ -43,3 +43,4 @@ All packages marked as private in the Javadoc are not exported.
 
 The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j-to-jul` and `log4j-to-slf4j`) have been changed to adhere to the same convention as the OSGi bundle names.
 
+<#include "../.changelog.adoc.ftl">

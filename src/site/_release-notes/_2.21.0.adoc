@@ -1,0 +1,124 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+[#release-notes-2-21-0]
+== 2.21.0
+
+Release date:: 2023-10-12
+
+This release primarily focuses on enhancements to our OSGi and JPMS support and contains several bug fixes.
+It will be the first release built and signed by the CI using the https://keyserver.ubuntu.com/pks/lookup?search=077E8893A6DCC33DD4A4D5B256E73BA9A0B592D0&op=index[ASF Logging Services Release Manager GPG key], which is shared in https://www.apache.org/dist/logging/KEYS[KEYS].
+
+The Log4j 2.21.0 API, as well as the other artifacts, maintains binary compatibility with the previous release.
+
+Apache Log4j 2.21.0 requires Java 8 to run.
+The build requires JDK 11 and generates reproducible binaries.
+
+For complete information on Apache Log4j 2, including instructions on how to submit bug reports, patches, get support, or suggestions for improvement, see http://logging.apache.org/log4j/2.x/[the Apache Log4j 2 website].
+
+=== OSGi changes
+
+All the published artifacts are OSGi bundles or fragments.
+
+This release introduces a change in the bundle symbolic names to allow them to function as JPMS module name: all hyphens `-` present in the bundle names of previous releases were replaced by dots `.`.
+
+=== JPMS changes
+
+All the published artifacts have been migrated from automatic modules to named JPMS modules.
+All packages marked as private in the Javadoc are not exported.
+
+The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j-to-jul` and `log4j-to-slf4j`) have been changed to adhere to the same convention as the OSGi bundle names.
+
+
+=== Added
+
+* Added marker parent support to `JsonTemplateLayout` (https://github.com/apache/logging-log4j2/pull/1381[1381])
+* Added https://facebook.github.io/zstd/[ZStandard compression] support (https://github.com/apache/logging-log4j2/issues/1508[1508], https://github.com/apache/logging-log4j2/pull/1514[1514])
+* Added a warning for incorrect syntax of highlighting styles (https://github.com/apache/logging-log4j2/issues/1545[1545], https://github.com/apache/logging-log4j2/pull/1637[1637])
+
+=== Changed
+
+* Open `FileExtension` methods to allow their usage in custom ``RolloverStrategy``s (https://github.com/apache/logging-log4j2/issues/1365[1365], https://github.com/apache/logging-log4j2/pull/1683[1683])
+* Bumped the minimum Java version required for the build to JDK 11. Runtime requirements remain unchanged. (https://github.com/apache/logging-log4j2/issues/1369[1369])
+* Set the default `minLevel` and `maxLevel` of `LevelRangeFilter` to `OFF` and `ALL`, respectively (https://github.com/apache/logging-log4j2/pull/1503[1503])
+* Removed additional `isFiltered` checks in `AsyncLoggerConfig` (https://github.com/apache/logging-log4j2/pull/1550[1550])
+* Use Java version-specific warnings in `StackLocator` (https://github.com/apache/logging-log4j2/pull/1760[1760])
+* Started logging a status error event instead of an NPE in `OsgiServiceLocator.loadServices(Class, Lookup, boolean)` when a bundle has no valid `BundleContext` for a service type
+* Implemented a CI-based release process
+* Update Eclipse Angus Activation to version https://github.com/eclipse-ee4j/angus-activation/releases/tag/2.0.1[2.0.1] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Eclipse Angus Mail to version https://github.com/eclipse-ee4j/angus-mail/releases/tag/2.0.2[2.0.2] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update `com.datastax.cassandra:cassandra-driver-core` to version 3.11.5 (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Apache Cassandra to version https://github.com/apache/cassandra/blob/cassandra-3.11/CHANGES.txt[3.11.16] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Apache Commons Compress to version https://commons.apache.org/proper/commons-compress/changes-report.html#a1.24.0[1.24.0] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Apache Commons CSV to version https://commons.apache.org/proper/commons-csv/changes-report.html#a1.10.0[1.10.0] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Jackson to version https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.15.2[2.15.2] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Jakarta Activation API to version https://jakarta.ee/specifications/activation/2.1/changelog/[2.1.2] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Jakarta Mail API to version https://jakarta.ee/specifications/mail/2.1/changelog/[2.1.2] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update JCTools to version https://github.com/JCTools/JCTools/blob/master/RELEASE-NOTES.md[4.0.1] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Apache Kafka to version https://archive.apache.org/dist/kafka/3.4.0/RELEASE_NOTES.html[3.4.0] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Kubernetes client to version https://github.com/fabric8io/kubernetes-client/releases?q=5.12.4[5.12.4] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update `org.mongodb:mongodb-driver-core` to version 4.10.2 (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update `io.netty:netty-bom` to version 4.1.97 (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Spring Boot to version https://github.com/spring-projects/spring-boot/releases/tag/v2.7.15[2.7.15] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Spring Framework to version https://github.com/spring-projects/spring-framework/releases/tag/v5.3.29[5.3.29] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Tomcat JULI to version 10.0.27 (https://github.com/apache/logging-log4j2/issues/1591[1591])
+* Update Woodstox to version https://github.com/FasterXML/woodstox/blob/master/release-notes/VERSION[6.5.1] (https://github.com/apache/logging-log4j2/issues/1591[1591])
+
+=== Removed
+
+* Moved `log4j-jmx-gui` to https://github.com/apache/logging-log4j-jmx-gui/actions[its own repository] along with its own release cycle
+
+=== Fixed
+
+* Added validation to rolling file manager path conditions (https://github.com/apache/logging-log4j2/issues/1231[1231])
+* Adapted the OSGi metadata of `log4j-to-slf4j` to work with SLF4J 1 and 2. To achieve that used a version range of `[1.7,3)` for the imported SLF4J packages. (https://github.com/apache/logging-log4j2/issues/1232[1232])
+* Fixed Javadoc failures (https://github.com/apache/logging-log4j2/issues/1275[1275], https://github.com/apache/logging-log4j2/pull/1753[1753])
+* Removed locale-dependent `toLowerCase/toUpperCase` calls (https://github.com/apache/logging-log4j2/pull/1281[1281])
+* Redirected old `/<module>/apidocs` URLs (broken in 2.20.0) to `/javadoc/<module>` (https://github.com/apache/logging-log4j2/pull/1284[1284])
+* Added environment variable arbiter (https://github.com/apache/logging-log4j2/issues/1312[1312])
+* Fixed logging of `java.sql.Date` objects by appending it before Log4J tries to call `java.util.Date.toInstant()` on it (https://github.com/apache/logging-log4j2/pull/1366[1366])
+* Adapted the OSGi metadata of `log4j-api`, `log4j-core`, `log4j-slf4j-impl` and `log4j-slf4j2-impl` to activate the bundle when it is accessed. To achieve that set the `Bundle-ActivationPolicy` to `lazy` for the log4j bundles. (https://github.com/apache/logging-log4j2/issues/1367[1367])
+* Avoided using released objects in `StackTraceStringResolver` of `JsonTemplateLayout` (https://github.com/apache/logging-log4j2/pull/1380[1380])
+* Added missing setter for `connectionStringSource` in `MongoDb4Provider` builder (https://github.com/apache/logging-log4j2/issues/1389[1389])
+* Fixed NPE in `PluginElementVisitor` (https://github.com/apache/logging-log4j2/issues/1391[1391])
+* Added `columnType` as alias for the column mapping `type` attribute (https://github.com/apache/logging-log4j2/issues/1405[1405])
+* Restored `Log4jMarker` visibility in SLF4J adapters (https://github.com/apache/logging-log4j2/issues/1414[1414])
+* Fixed buffer size in `Log4jFixedFormatter` date time formatter (https://github.com/apache/logging-log4j2/pull/1418[1418])
+* Fixed the propagation of synchronous action failures in `RollingFileManager` and `FileRenameAction` (https://github.com/apache/logging-log4j2/issues/1445[1445], https://github.com/apache/logging-log4j2/pull/1549[1549])
+* Fixed `RollingFileManager` to propagate failed synchronous actions correctly (https://github.com/apache/logging-log4j2/issues/1445[1445])
+* Replaced the usage of `System.out` in `StackLocator` for warnings with `System.err` (https://github.com/apache/logging-log4j2/issues/1484[1484])
+* Fixed concurrent date-time formatting issue in `PatternLayout` (https://github.com/apache/logging-log4j2/issues/1485[1485])
+* Fixed runtime dependencies documentation (https://github.com/apache/logging-log4j2/pull/1530[1530])
+* Allowed to override FQCN in `Log4jEventBuilder` by implementing `CallerBoundaryAware` (https://github.com/apache/logging-log4j2/pull/1533[1533])
+* Migrated MongoDB tests to JUnit 5 and Flapdoodle Embedded MongoDB 4 (https://github.com/apache/logging-log4j2/issues/1589[1589])
+* Rewrote message parameter formatter with improved escape handling (https://github.com/apache/logging-log4j2/issues/1626[1626])
+* Improved formatting and serialization of `StackTraceElement` on JDK 9+ (https://github.com/apache/logging-log4j2/issues/1640[1640])
+* Fixed `MemoryMappedFileAppender` buffer unmapping on JRE 9+ (https://github.com/apache/logging-log4j2/issues/1646[1646])
+* Fixed rollover strategy in the Log4j 1.x compatibility layer (https://github.com/apache/logging-log4j2/issues/1650[1650])
+* Removed incorrect mention of `base64` lookup and improve the rest of the lookup manual (https://github.com/apache/logging-log4j2/issues/1681[1681], https://issues.apache.org/jira/browse/LOG4J2-3504[LOG4J2-3504])
+* Implemented `LocationAware` for `JsonTemplateLayout`, since this was causing location not being passed to underlying appenders (https://github.com/apache/logging-log4j2/issues/1692[1692])
+* Added support for `long` values in MongoDb 4 appender to configure `collectionSize` (https://github.com/apache/logging-log4j2/issues/1747[1747])
+* Only shutdown Log4j after last `Log4jServletContextListener` is executed (https://github.com/apache/logging-log4j2/issues/1782[1782])
+* Allowed using Spring Arbiter without a Spring environment (https://github.com/apache/logging-log4j2/issues/1783[1783])
+* Fixed context data loss if `<AsyncLogger>` components are used with an all async logger context (https://github.com/apache/logging-log4j2/issues/1786[1786])
+* Fixed `JsonTemplateLayout` NPE thrown on custom log levels (https://github.com/apache/logging-log4j2/issues/1805[1805])
+* Improved `Log4j-config.xsd` schema (https://issues.apache.org/jira/browse/LOG4J2-170[LOG4J2-170])
+* Fixed NPE in `ContextSelector` (https://issues.apache.org/jira/browse/LOG4J2-3217[LOG4J2-3217], https://github.com/apache/logging-log4j2/pull/1538[1538])
+* Avoided allocating ``ThreadLocal``s in `AbstractLogger` when they are disabled, since this was causing memory leaks due to retained reference to class loaders in web applications (https://issues.apache.org/jira/browse/LOG4J2-3657[LOG4J2-3657])
+* Fixed `%notEmpty` directive of `PatternLayout` for empty MDC/NDC inputs (https://issues.apache.org/jira/browse/LOG4J2-3660[LOG4J2-3660])
+* Fixed file descriptor leak on Tomcat (https://issues.apache.org/jira/browse/LOG4J2-3663[LOG4J2-3663])
+* Ensured `FileOutputStream` is closed in `CommonsCompressAction.execute()`
