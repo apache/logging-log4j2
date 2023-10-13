@@ -29,8 +29,9 @@
         dependencies.
       </p>
       <p>
-        As of version 2.10.0 the Log4j API is a Java module (with a module-info.java). Many of the other
-        jars are automatic modules. The characteristics of the modules are:
+        As of version 2.10.0 the Log4j API is a named Java module (with a module-info.java).
+        Since version 2.21.0 all the remaining artifacts are named modules.
+        The characteristics of the modules are:
 
         <table>
           <tr>
@@ -83,95 +84,93 @@
           <tr>
             <td>log4j-appserver</td>
             <td>org.apache.logging.log4j.appserver</td>
-            <td>Automatic Module</td>
+            <td>Named Module</td>
           </tr>
           <tr>
             <td>log4j-cassandra</td>
             <td>org.apache.logging.log4j.cassandra</td>
-            <td>Automatic Module</td>
+            <td>Named Module</td>
           </tr>
           <tr>
             <td>log4j-core</td>
             <td>org.apache.logging.log4j.core</td>
-            <td>Automatic Module</td>
+            <td>Named Module. Most of its dependencies are optional.</td>
           </tr>
           <tr>
             <td>log4j-couchdb</td>
             <td>org.apache.logging.log4j.couchdb</td>
-            <td>Automatic Module</td>
+            <td>Named Module</td>
           </tr>
           <tr>
             <td>log4j-docker</td>
             <td>org.apache.logging.log4j.docker</td>
-            <td>Automatic Module</td>
+            <td>Named Module</td>
           </tr>
           <tr>
             <td>log4j-1.2-api</td>
             <td>org.apache.log4j</td>
-            <td>Automatic Module</td>
+            <td>Named Module</td>
           </tr>
 
           <tr>
             <td>log4j-flume-ng</td>
             <td>org.apache.logging.log4j.flume</td>
-            <td>Automatic Module</td>
+            <td>Named Module</td>
           </tr>
           <tr>
             <td>log4j-iostreams</td>
             <td>org.apache.logging.log4j.iostreams</td>
-            <td>Automatic Module</td>
+            <td>Named Module</td>
           </tr>
           <tr>
             <td>log4j-jakarta-smtp</td>
             <td>org.apache.logging.log4j.smtp</td>
-            <td>Automatic Module</td>
+            <td>Named Module</td>
           </tr>
           <tr>
             <td>log4j-jakarta-web</td>
             <td>org.apache.logging.log4j.web</td>
-            <td>Automatic Module</td>
+            <td>Named Module. Uses the same name as <code>log4j-web</code> since it is its Jakarta EE 9 equivalent.</td>
           </tr>
           <tr>
             <td>log4j-jcl</td>
             <td>org.apache.logging.log4j.jcl</td>
-            <td>Automatic Module</td>
+            <td>Named Module</td>
           </tr>
           <tr>
             <td>log4j-jul</td>
             <td>org.apache.logging.log4j.jul</td>
-            <td>Automatic Module</td>
+            <td>Named Module</td>
           </tr>
           <tr>
             <td>log4j-mongodb</td>
             <td>org.apache.logging.log4j.mongodb</td>
-            <td>Automatic Module</td>
-          </tr>
-
-          <tr>
-            <td>log4j-osgi</td>
-            <td>org.apache.logging.log4j.osgi</td>
-            <td>Automatic Module. Unclear how OSGi will support Java modules.</td>
+            <td>Named Module</td>
           </tr>
           <tr>
             <td>log4j-slf4j-impl</td>
             <td>org.apache.logging.log4j.slf4j.impl</td>
-            <td>Automatic Module. May require renaming should SLF4J ever require all implementations to have the same
-              module name.</td>
+            <td>Named Module</td>
+          </tr>
+          <tr>
+            <td>log4j-slf4j2-impl</td>
+            <td>org.apache.logging.log4j.slf4j2.impl</td>
+            <td>Named Module</td>
             </tr>
           <tr>
             <td>log4j-taglib</td>
             <td>org.apache.logging.log4j.taglib</td>
-            <td>Automatic Module</td>
+            <td>Named Module</td>
           </tr>
           <tr>
             <td>log4j-to-slf4j</td>
-            <td>org.apache.logging.log4j.slf4j</td>
-            <td>Automatic Module</td>
+            <td>org.apache.logging.log4j.to.slf4j</td>
+            <td>Named Module</td>
           </tr>
           <tr>
             <td>log4j-web</td>
             <td>org.apache.logging.log4j.web</td>
-            <td>Automatic Module</td>
+            <td>Named Module. Uses the same name as <code>log4j-jakarta-web</code> since it is its Java EE 8 equivalent.</td>
           </tr>
         </table>
       </p>
