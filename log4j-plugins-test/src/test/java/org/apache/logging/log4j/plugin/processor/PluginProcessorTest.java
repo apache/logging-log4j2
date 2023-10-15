@@ -28,8 +28,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.junitpioneer.jupiter.Issue;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(JUnit4.class)
 public class PluginProcessorTest {
@@ -95,5 +100,11 @@ public class PluginProcessorTest {
         assertEquals(p.value().toLowerCase(), nested.getKey());
         assertEquals(FakePlugin.Nested.class.getName(), nested.getPluginEntry().getClassName());
         assertEquals(p.value(), nested.getName());
+    }
+
+    @Test
+    @Issue("https://github.com/apache/logging-log4j2/issues/1520")
+    public void testReproducibleOutputOrder() {
+        assertThat(pluginService.getEntries()).isSorted();
     }
 }

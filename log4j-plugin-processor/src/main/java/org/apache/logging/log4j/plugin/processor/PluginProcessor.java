@@ -20,6 +20,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,10 +38,8 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementVisitor;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
 import javax.lang.model.util.SimpleElementVisitor8;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
@@ -59,7 +58,11 @@ import org.apache.logging.log4j.util.Strings;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * Annotation processor for pre-scanning Log4j 2 plugins.
+ * Annotation processor for pre-scanning Log4j plugins. This generates implementation classes extending
+ * {@link org.apache.logging.log4j.plugins.model.PluginService} with a list of {@link PluginEntry} instances
+ * discovered from plugin annotations. By default, this will use the most specific package name it can derive
+ * from where the annotated plugins are located in a subpackage {@code plugins}. The output base package name
+ * can be overridden via the {@code pluginPackage} annotation processor option.
  */
 @SupportedAnnotationTypes({"org.apache.logging.log4j.plugins.*", "org.apache.logging.log4j.core.config.plugins.*"})
 public class PluginProcessor extends AbstractProcessor {
@@ -90,13 +93,17 @@ public class PluginProcessor extends AbstractProcessor {
                 return false;
             }
             messager.printMessage(Kind.NOTE, "Retrieved " + elements.size() + " Plugin elements");
-            final List<PluginEntryMirror> list = new ArrayList<>();
+            final List<PluginEntry> list = new ArrayList<>();
             packageName = collectPlugins(packageName, elements, list);
+            messager.printMessage(Kind.NOTE, "Writing plugin metadata using base package " + packageName);
+            Collections.sort(list);
             writeClassFile(packageName, list);
             writeServiceFile(packageName);
             messager.printMessage(Kind.NOTE, "Annotations processed");
         } catch (final Exception ex) {
-            error(ex.getMessage());
+            var writer = new StringWriter();
+            ex.printStackTrace(new PrintWriter(writer));
+            error(writer.toString());
         }
         return false;
     }
@@ -105,29 +112,27 @@ public class PluginProcessor extends AbstractProcessor {
         processingEnv.getMessager().printMessage(Kind.ERROR, message);
     }
 
-    private String collectPlugins(String packageName, final Iterable<? extends Element> elements, List<PluginEntryMirror> list) {
+    private String collectPlugins(String packageName, final Iterable<? extends Element> elements, final List<PluginEntry> list) {
         final boolean calculatePackage = packageName == null;
-        final Elements elementUtils = processingEnv.getElementUtils();
-        final ElementVisitor<PluginEntryMirror, Plugin> pluginVisitor = new PluginElementVisitor(elementUtils);
-        final ElementVisitor<Collection<PluginEntryMirror>, Plugin> pluginAliasesVisitor = new PluginAliasesElementVisitor(
-                elementUtils);
+        final var pluginVisitor = new PluginElementVisitor();
+        final var pluginAliasesVisitor = new PluginAliasesElementVisitor();
         for (final Element element : elements) {
             final Plugin plugin = element.getAnnotation(Plugin.class);
             if (plugin == null) {
                 continue;
             }
-            final PluginEntryMirror entry = element.accept(pluginVisitor, plugin);
+            final var entry = element.accept(pluginVisitor, plugin);
             list.add(entry);
             if (calculatePackage) {
-                packageName = calculatePackage(elementUtils, element, packageName);
+                packageName = calculatePackage(element, packageName);
             }
             list.addAll(element.accept(pluginAliasesVisitor, plugin));
         }
         return packageName;
     }
 
-    private String calculatePackage(Elements elements, Element element, String packageName) {
-        final Name name = elements.getPackageOf(element).getQualifiedName();
+    private String calculatePackage(Element element, String packageName) {
+        final Name name = processingEnv.getElementUtils().getPackageOf(element).getQualifiedName();
         if (name == null) {
             return null;
         }
@@ -153,7 +158,7 @@ public class PluginProcessor extends AbstractProcessor {
         }
     }
 
-    private void writeClassFile(final String pkg, final List<PluginEntryMirror> list) {
+    private void writeClassFile(final String pkg, final List<PluginEntry> list) {
         final String fqcn = createFqcn(pkg);
         try (final PrintWriter writer = createSourceFile(fqcn)) {
             writer.println("package " + pkg + ".plugins;");
@@ -166,8 +171,7 @@ public class PluginProcessor extends AbstractProcessor {
             writer.println("  private static final PluginEntry[] ENTRIES = new PluginEntry[] {");
             final int max = list.size() - 1;
             for (int i = 0; i < list.size(); ++i) {
-                final PluginEntryMirror mirror = list.get(i);
-                final PluginEntry entry = mirror.entry;
+                final PluginEntry entry = list.get(i);
                 writer.println("    PluginEntry.builder()");
                 writer.println(String.format("      .setKey(\"%s\")", entry.getKey()));
                 writer.println(String.format("      .setClassName(\"%s\")", entry.getClassName()));
@@ -205,16 +209,6 @@ public class PluginProcessor extends AbstractProcessor {
         return packageName + ".plugins.Log4jPlugins";
     }
 
-    private static final class PluginEntryMirror {
-        private final TypeElement element;
-        private final PluginEntry entry;
-
-        private PluginEntryMirror(final TypeElement element, final PluginEntry entry) {
-            this.element = element;
-            this.entry = entry;
-        }
-    }
-
     private static String getNamespace(final TypeElement e) {
         return Optional.ofNullable(e.getAnnotation(Namespace.class)).map(Namespace::value).orElseGet(
                 () -> e.getAnnotationMirrors().stream().flatMap(
@@ -226,19 +220,25 @@ public class PluginProcessor extends AbstractProcessor {
                         .orElse(Plugin.EMPTY));
     }
 
+    private static PluginEntry configureNamespace(final TypeElement e, final PluginEntry.Builder builder) {
+        final Configurable configurable = e.getAnnotation(Configurable.class);
+        if (configurable != null) {
+            builder.setNamespace(Node.CORE_NAMESPACE)
+                    .setElementType(configurable.elementType().isEmpty() ? builder.getName() : configurable.elementType())
+                    .setDeferChildren(configurable.deferChildren())
+                    .setPrintable(configurable.printObject());
+        } else {
+            builder.setNamespace(getNamespace(e));
+        }
+        return builder.get();
+    }
+
     /**
      * ElementVisitor to scan the Plugin annotation.
      */
-    private static final class PluginElementVisitor extends SimpleElementVisitor8<PluginEntryMirror, Plugin> {
-
-        private final Elements elements;
-
-        private PluginElementVisitor(final Elements elements) {
-            this.elements = elements;
-        }
-
+    private final class PluginElementVisitor extends SimpleElementVisitor8<PluginEntry, Plugin> {
         @Override
-        public PluginEntryMirror visitType(final TypeElement e, final Plugin plugin) {
+        public PluginEntry visitType(final TypeElement e, final Plugin plugin) {
             Objects.requireNonNull(plugin, "Plugin annotation is null.");
             String name = plugin.value();
             if (name.isEmpty()) {
@@ -247,17 +247,8 @@ public class PluginProcessor extends AbstractProcessor {
             final PluginEntry.Builder builder = PluginEntry.builder()
                     .setKey(name.toLowerCase(Locale.ROOT))
                     .setName(name)
-                    .setClassName(elements.getBinaryName(e).toString());
-            final Configurable configurable = e.getAnnotation(Configurable.class);
-            if (configurable != null) {
-                builder.setNamespace(Node.CORE_NAMESPACE)
-                        .setElementType(configurable.elementType().isEmpty() ? name : configurable.elementType())
-                        .setDeferChildren(configurable.deferChildren())
-                        .setPrintable(configurable.printObject());
-            } else {
-                builder.setNamespace(getNamespace(e));
-            }
-            return new PluginEntryMirror(e, builder.get());
+                    .setClassName(processingEnv.getElementUtils().getBinaryName(e).toString());
+            return configureNamespace(e, builder);
         }
     }
 
@@ -278,17 +269,14 @@ public class PluginProcessor extends AbstractProcessor {
     /**
      * ElementVisitor to scan the PluginAliases annotation.
      */
-    private static final class PluginAliasesElementVisitor extends SimpleElementVisitor8<Collection<PluginEntryMirror>, Plugin> {
+    private final class PluginAliasesElementVisitor extends SimpleElementVisitor8<Collection<PluginEntry>, Plugin> {
 
-        private final Elements elements;
-
-        private PluginAliasesElementVisitor(final Elements elements) {
-            super(Collections.emptyList());
-            this.elements = elements;
+        private PluginAliasesElementVisitor() {
+            super(List.of());
         }
 
         @Override
-        public Collection<PluginEntryMirror> visitType(final TypeElement e, final Plugin plugin) {
+        public Collection<PluginEntry> visitType(final TypeElement e, final Plugin plugin) {
             final PluginAliases aliases = e.getAnnotation(PluginAliases.class);
             if (aliases == null) {
                 return DEFAULT_VALUE;
@@ -299,20 +287,12 @@ public class PluginProcessor extends AbstractProcessor {
             }
             final PluginEntry.Builder builder = PluginEntry.builder()
                     .setName(name)
-                    .setClassName(elements.getBinaryName(e).toString());
-            final Configurable configurable = e.getAnnotation(Configurable.class);
-            if (configurable != null) {
-                builder.setNamespace(Node.CORE_NAMESPACE)
-                        .setElementType(configurable.elementType().isEmpty() ? name : configurable.elementType())
-                        .setDeferChildren(configurable.deferChildren())
-                        .setPrintable(configurable.printObject());
-            } else {
-                builder.setNamespace(getNamespace(e));
-            }
-            final Collection<PluginEntryMirror> entries = new ArrayList<>(aliases.value().length);
+                    .setClassName(processingEnv.getElementUtils().getBinaryName(e).toString());
+            configureNamespace(e, builder);
+            final Collection<PluginEntry> entries = new ArrayList<>(aliases.value().length);
             for (final String alias : aliases.value()) {
                 final PluginEntry entry = builder.setKey(alias.toLowerCase(Locale.ROOT)).get();
-                entries.add(new PluginEntryMirror(e, entry));
+                entries.add(entry);
             }
             return entries;
         }

@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.plugins.model;
 
+import java.util.Locale;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.apache.logging.log4j.util.Strings;
@@ -23,7 +25,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Descriptor for {@link org.apache.logging.log4j.plugins.Plugin} metadata.
  */
-public final class PluginEntry {
+public final class PluginEntry implements Comparable<PluginEntry> {
     private final String key;
     private final String className;
     private final String name;
@@ -32,14 +34,15 @@ public final class PluginEntry {
     private final boolean deferChildren;
     private final String namespace;
 
-    private PluginEntry(final Builder builder) {
-        key = builder.getKey();
-        className = builder.getClassName();
-        name = builder.getName();
-        elementType = builder.getElementType();
-        printable = builder.isPrintable();
-        deferChildren = builder.isDeferChildren();
-        namespace = builder.getNamespace();
+    private PluginEntry(final String key, final String className, final String name, final String elementType,
+                        final boolean printable, final boolean deferChildren, final String namespace) {
+        this.key = key;
+        this.className = className;
+        this.name = name;
+        this.elementType = elementType;
+        this.printable = printable;
+        this.deferChildren = deferChildren;
+        this.namespace = namespace;
     }
 
     public String getKey() {
@@ -72,8 +75,24 @@ public final class PluginEntry {
 
     @Override
     public String toString() {
-        return "PluginEntry [key=" + key + ", className=" + className + ", name=" + name + ", printable=" + printable
-                + ", defer=" + deferChildren + ", namespace=" + namespace + "]";
+        return "PluginEntry{" +
+                "key='" + key + '\'' +
+                ", className='" + className + '\'' +
+                ", name='" + name + '\'' +
+                ", elementType='" + elementType + '\'' +
+                ", printable=" + printable +
+                ", deferChildren=" + deferChildren +
+                ", namespace='" + namespace + '\'' +
+                '}';
+    }
+
+    @Override
+    public int compareTo(final PluginEntry o) {
+        final int namespaceComparison = namespace.compareToIgnoreCase(o.namespace);
+        if (namespaceComparison != 0) {
+            return namespaceComparison;
+        }
+        return name.compareToIgnoreCase(o.name);
     }
 
     public static Builder builder() {
@@ -90,6 +109,12 @@ public final class PluginEntry {
         private String namespace = Strings.EMPTY;
 
         public String getKey() {
+            if (key == null) {
+                var name = this.name;
+                if (name != null) {
+                    key = name.toLowerCase(Locale.ROOT);
+                }
+            }
             return key;
         }
 
@@ -117,6 +142,9 @@ public final class PluginEntry {
         }
 
         public String getElementType() {
+            if (elementType == null) {
+                elementType = Strings.EMPTY;
+            }
             return elementType;
         }
 
@@ -144,6 +172,9 @@ public final class PluginEntry {
         }
 
         public String getNamespace() {
+            if (namespace == null) {
+                namespace = Strings.EMPTY;
+            }
             return namespace;
         }
 
@@ -154,7 +185,27 @@ public final class PluginEntry {
 
         @Override
         public PluginEntry get() {
-            return new PluginEntry(this);
+            final var key = Objects.requireNonNull(getKey(), () -> "key is null from " + this);
+            final var className = Objects.requireNonNull(getClassName(), () -> "className is null from " + this);
+            final var name = Objects.requireNonNull(getName(), () -> "name is null from " + this);
+            final var elementType = getElementType();
+            final var printable = isPrintable();
+            final var deferChildren = isDeferChildren();
+            final var namespace = getNamespace();
+            return new PluginEntry(key, className, name, elementType, printable, deferChildren, namespace);
+        }
+
+        @Override
+        public String toString() {
+            return "PluginEntry.Builder{" +
+                    "key='" + key + '\'' +
+                    ", className='" + className + '\'' +
+                    ", name='" + name + '\'' +
+                    ", elementType='" + elementType + '\'' +
+                    ", printable=" + printable +
+                    ", deferChildren=" + deferChildren +
+                    ", namespace='" + namespace + '\'' +
+                    '}';
         }
     }
 }

@@ -25,12 +25,14 @@ import java.util.Objects;
 import org.apache.logging.log4j.plugins.model.PluginCache;
 import org.apache.logging.log4j.plugins.model.PluginEntry;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.Issue;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PluginCacheTest {
 
     @Test
+    @Issue("https://issues.apache.org/jira/browse/LOG4J2-2735")
     public void testOutputIsReproducibleWhenInputOrderingChanges() throws IOException {
         final PluginCache cacheA = new PluginCache();
         createCategory(cacheA, "one", Arrays.asList("bravo", "alpha", "charlie"));
@@ -52,6 +54,7 @@ public class PluginCacheTest {
         for (String entryName: entryNames) {
             final PluginEntry entry = PluginEntry.builder()
                     .setKey(entryName)
+                    .setName(entryName)
                     .setClassName("com.example.Plugin")
                     .setNamespace(categoryName)
                     .get();
