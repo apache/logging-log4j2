@@ -35,7 +35,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.mutable.KeyValuePairConfig;
@@ -53,6 +52,7 @@ import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Filter based on a value in the Thread Context Map (MDC).
@@ -247,8 +247,9 @@ public final class MutableThreadContextMapFilter extends AbstractFilter {
                 return new MutableThreadContextMapFilter(new NoOpFilter(), null, 0,
                         null, getOnMatch(), getOnMismatch(), configuration);
             }
+            final PropertyEnvironment props = PropertiesUtil.getProperties();
             final AuthorizationProvider authorizationProvider =
-                    ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
+                    AuthorizationProvider.getAuthorizationProvider(props);
             Filter filter;
             if (pollInterval <= 0) {
                 final ConfigResult result = getConfig(source, authorizationProvider);

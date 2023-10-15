@@ -43,6 +43,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Represents the source for the logging configuration.
@@ -328,7 +329,8 @@ public class ConfigurationSource {
             final URLConnection urlConnection = url.openConnection();
             // A "jar:" URL file remains open after the stream is closed, so do not cache it.
             urlConnection.setUseCaches(false);
-            final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
+            final PropertyEnvironment props = PropertiesUtil.getProperties();
+            final AuthorizationProvider provider = AuthorizationProvider.getAuthorizationProvider(props);
             provider.addAuthorization(urlConnection);
             if (url.getProtocol().equals(HTTPS)) {
                 final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();

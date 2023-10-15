@@ -36,6 +36,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  *
@@ -79,7 +80,8 @@ public class HttpWatcher extends AbstractWatcher {
         }
         try {
             url = source.getURI().toURL();
-            authorizationProvider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
+            final PropertyEnvironment props = PropertiesUtil.getProperties();
+            authorizationProvider = AuthorizationProvider.getAuthorizationProvider(props);
         } catch (final MalformedURLException ex) {
             throw new IllegalArgumentException("Invalid URL for HttpWatcher " + source.getURI(), ex);
         }

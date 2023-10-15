@@ -22,15 +22,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.util.AuthorizationProvider;
-import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.PropertyKey;
 
 /**
@@ -103,27 +100,6 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      * The name of the classpath URI scheme, synonymous with the classloader URI scheme.
      */
     private static final String CLASS_PATH_SCHEME = "classpath";
-
-    public static AuthorizationProvider authorizationProvider(final PropertyEnvironment props) {
-        final String authClass = props.getStringProperty(Log4jPropertyKey.CONFIG_AUTH_PROVIDER);
-        AuthorizationProvider provider = null;
-        if (authClass != null) {
-            try {
-                final Object obj = LoaderUtil.newInstanceOf(authClass);
-                if (obj instanceof AuthorizationProvider) {
-                    provider = (AuthorizationProvider) obj;
-                } else {
-                    LOGGER.warn("{} is not an AuthorizationProvider, using default", obj.getClass().getName());
-                }
-            } catch (final Exception ex) {
-                LOGGER.warn("Unable to create {}, using default: {}", authClass, ex.getMessage());
-            }
-        }
-        if (provider == null) {
-            provider = new BasicAuthorizationProvider(props);
-        }
-        return provider;
-    }
 
     protected abstract String[] getSupportedTypes();
 

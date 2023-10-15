@@ -27,7 +27,6 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
@@ -116,7 +115,8 @@ public class UrlConnectionFactory {
     public static URLConnection createConnection(final URL url) throws IOException {
         URLConnection urlConnection = null;
         if (url.getProtocol().equals(HTTPS) || url.getProtocol().equals(HTTP)) {
-            final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
+            final PropertyEnvironment props = PropertiesUtil.getProperties();
+            final AuthorizationProvider provider = AuthorizationProvider.getAuthorizationProvider(props);
             urlConnection = createConnection(url, 0, SslConfigurationFactory.getSslConfiguration(), provider);
         } else {
             urlConnection = url.openConnection();

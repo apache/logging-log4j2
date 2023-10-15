@@ -36,7 +36,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
@@ -47,6 +46,7 @@ import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.springframework.boot.logging.LogFile;
 import org.springframework.boot.logging.LoggingInitializationContext;
 import org.springframework.boot.logging.LoggingSystem;
@@ -227,7 +227,8 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     }
 
     private ConfigurationSource getConfigurationSource(final URL url) throws IOException, URISyntaxException {
-        final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
+        final PropertyEnvironment props = PropertiesUtil.getProperties();
+        final AuthorizationProvider provider = AuthorizationProvider.getAuthorizationProvider(props);
         final SslConfiguration sslConfiguration = url.getProtocol().equals(HTTPS)
                 ? SslConfigurationFactory.getSslConfiguration() : null;
         final URLConnection urlConnection = UrlConnectionFactory.createConnection(url, 0, sslConfiguration,
