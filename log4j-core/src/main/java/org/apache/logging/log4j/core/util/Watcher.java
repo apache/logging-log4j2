@@ -20,9 +20,6 @@ import java.util.List;
 
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
-import org.apache.logging.log4j.plugins.Namespace;
-import org.apache.logging.log4j.plugins.di.Key;
-import org.apache.logging.log4j.plugins.model.PluginNamespace;
 
 /**
  * Watches for changes in a Source and performs an action when it is modified.
@@ -32,7 +29,6 @@ import org.apache.logging.log4j.plugins.model.PluginNamespace;
 public interface Watcher {
 
     String CATEGORY = "Watcher";
-    Key<PluginNamespace> PLUGIN_CATEGORY_KEY = new @Namespace(CATEGORY) Key<>() {};
     String ELEMENT_TYPE = "watcher";
 
     /**
