@@ -17,8 +17,7 @@
 package org.apache.logging.log4j.jul.test;
 
 //note: NO import of Logger, Level, LogManager to prevent conflicts JUL/log4j
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -27,6 +26,8 @@ import java.util.Map.Entry;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationChangeEvent;
+import org.apache.logging.log4j.core.config.ConfigurationChangeListener;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -416,7 +417,7 @@ public class Log4jBridgeHandlerTest {
             // Note: the (internal) log4j.core.Logger has a setLevel() but this should not be used.
             final CfgListener listener = new CfgListener();
             cfg.addListener(listener);    // => onChange() is never called: not on start, not on setLevel
-            context.addPropertyChangeListener(listener);
+            context.addConfigurationChangeListener(listener);
 
             System.out.println("sysout:  static init. END");
         } // if
@@ -440,7 +441,7 @@ public class Log4jBridgeHandlerTest {
     }
 
 
-    private static class CfgListener implements ConfigurationListener, PropertyChangeListener {
+    private static class CfgListener implements ConfigurationListener, ConfigurationChangeListener {
         public CfgListener() {
             System.out.println("sysout:  CfgListener created: " + this);
         }
@@ -452,8 +453,8 @@ public class Log4jBridgeHandlerTest {
         }
 
         @Override
-        public void propertyChange(final PropertyChangeEvent evt) {    // from PropertyChangeListener
-            System.out.println("sysout:  CfgListener.PropChLi-propertyChange(): " + evt);
+        public void onChange(final ConfigurationChangeEvent event) {   // from ConfigurationChangeListener
+            System.out.println("sysout:  CfgListener.PropChLi-onChange(): " + event);
         }
     }
 

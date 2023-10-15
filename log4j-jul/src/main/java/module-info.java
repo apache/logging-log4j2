@@ -21,6 +21,5 @@ module org.apache.logging.log4j.jul {
 
     requires org.apache.logging.log4j;
     requires org.apache.logging.log4j.core;
-    requires java.desktop;
     requires java.logging;
 }

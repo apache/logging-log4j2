@@ -60,10 +60,7 @@ public class LoggerUpdateTest {
 
     @Test
     public void testUpdateLoggersPropertyListeners(final LoggerContext context) throws Exception {
-        context.addPropertyChangeListener(evt -> {
-            assertEquals(LoggerContext.PROPERTY_CONFIG, evt.getPropertyName());
-            assertSame(context, evt.getSource());
-        });
+        context.addConfigurationChangeListener(event -> assertSame(context, event.getLoggerContext()));
         context.updateLoggers();
     }
 }

@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -27,6 +25,8 @@ import java.util.concurrent.CountDownLatch;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.config.ConfigurationChangeEvent;
+import org.apache.logging.log4j.core.config.ConfigurationChangeListener;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.plugins.Named;
@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  *
  */
-public class RollingAppenderCronTest extends AbstractRollingListenerTest implements PropertyChangeListener {
+public class RollingAppenderCronTest extends AbstractRollingListenerTest implements ConfigurationChangeListener {
 
     private static final String CONFIG = "log4j-rolling-cron.xml";
     private static final String DIR = "target/rolling-cron";
@@ -64,7 +64,7 @@ public class RollingAppenderCronTest extends AbstractRollingListenerTest impleme
         assertThat(dir).isDirectoryContaining("glob:**.gz");
 
         final Path src = Path.of("target", "test-classes", "log4j-rolling-cron2.xml");
-        context.addPropertyChangeListener(this);
+        context.addConfigurationChangeListener(this);
         try (final OutputStream os = Files.newOutputStream(Path.of("target", "test-classes", "log4j-rolling-cron.xml"))) {
             Files.copy(src, os);
         }
@@ -90,7 +90,7 @@ public class RollingAppenderCronTest extends AbstractRollingListenerTest impleme
     }
 
     @Override
-    public void propertyChange(final PropertyChangeEvent evt) {
+    public void onChange(final ConfigurationChangeEvent event) {
         reconfigured.countDown();
     }
 }

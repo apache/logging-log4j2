@@ -76,7 +76,6 @@ module org.apache.logging.log4j.core {
     requires transitive org.apache.logging.log4j;
     requires transitive org.apache.logging.log4j.plugins;
     // Optional Dependencies
-    requires static java.desktop;
     requires static java.management;
     requires static java.sql;
     requires static java.rmi;

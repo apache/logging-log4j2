@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.jmx;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,6 +41,8 @@ import javax.management.ObjectName;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationChangeEvent;
+import org.apache.logging.log4j.core.config.ConfigurationChangeListener;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -52,7 +52,7 @@ import org.apache.logging.log4j.util.Strings;
  * Implementation of the {@code LoggerContextAdminMBean} interface.
  */
 public class LoggerContextAdmin extends NotificationBroadcasterSupport implements LoggerContextAdminMBean,
-        PropertyChangeListener {
+        ConfigurationChangeListener {
     private static final int PAGE = 4 * 1024;
     private static final int TEXT_BUFFER = 64 * 1024;
     private static final int BUFFER_SIZE = 2048;
@@ -79,7 +79,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
         } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
-        loggerContext.addPropertyChangeListener(this);
+        loggerContext.addConfigurationChangeListener(this);
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
@@ -137,10 +137,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     }
 
     @Override
-    public void propertyChange(final PropertyChangeEvent evt) {
-        if (!LoggerContext.PROPERTY_CONFIG.equals(evt.getPropertyName())) {
-            return;
-        }
+    public void onChange(final ConfigurationChangeEvent event) {
         final Notification notif = new Notification(NOTIF_TYPE_RECONFIGURED, getObjectName(), nextSeqNo(), now(), null);
         sendNotification(notif);
     }

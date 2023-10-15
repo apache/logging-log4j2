@@ -17,8 +17,6 @@
 package org.apache.logging.log4j.jul;
 
 //note: NO import of Logger, Level, LogManager to prevent conflicts JUL/log4j
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,6 +25,8 @@ import java.util.logging.LogRecord;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationChangeEvent;
+import org.apache.logging.log4j.core.config.ConfigurationChangeListener;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.spi.ExtendedLogger;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -84,7 +84,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  *
  * @since 2.15.0
  */
-public class Log4jBridgeHandler extends java.util.logging.Handler implements PropertyChangeListener {
+public class Log4jBridgeHandler extends java.util.logging.Handler implements ConfigurationChangeListener {
     private static final org.apache.logging.log4j.Logger SLOGGER = StatusLogger.getLogger();
 
     // the caller of the logging is java.util.logging.Logger (for location info)
@@ -159,7 +159,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Pro
             @SuppressWarnings("resource")
             final    // no need to close the AutoCloseable ctx here
                 LoggerContext context = LoggerContext.getContext(false);
-            context.addPropertyChangeListener(this);
+            context.addConfigurationChangeListener(this);
             propagateLogLevels(context.getConfiguration());
             // note: java.util.logging.LogManager.addPropertyChangeListener() could also
             // be set here, but a call of JUL.readConfiguration() will be done on purpose
@@ -174,7 +174,7 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Pro
     public void close() {
         // cleanup and remove listener and JUL logger references
         julLoggerRefs = null;
-        LoggerContext.getContext(false).removePropertyChangeListener(this);
+        LoggerContext.getContext(false).removeConfigurationChangeListener(this);
         if (doDebugOutput) {
             System.out.println("sysout:  Log4jBridgeHandler close(): " + this);
         }
@@ -236,14 +236,11 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Pro
 
 
     @Override
-    // impl. for PropertyChangeListener
-    public void propertyChange(final PropertyChangeEvent evt) {
-        SLOGGER.debug("Log4jBridgeHandler.propertyChange(): {}", evt);
-        if (LoggerContext.PROPERTY_CONFIG.equals(evt.getPropertyName())  &&  evt.getNewValue() instanceof Configuration) {
-            propagateLogLevels((Configuration) evt.getNewValue());
-        }
+    // impl. for ConfigurationChangeListener
+    public void onChange(final ConfigurationChangeEvent event) {
+        SLOGGER.debug("Log4jBridgeHandler.onChange(): {}", event);
+        propagateLogLevels(event.getNewConfiguration());
     }
-
 
     /** Save "hard" references to configured JUL loggers. (is lazy init.) */
     private Set<java.util.logging.Logger> julLoggerRefs;

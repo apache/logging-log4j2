@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
 import java.util.Collection;
@@ -33,6 +31,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationChangeEvent;
+import org.apache.logging.log4j.core.config.ConfigurationChangeListener;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -73,16 +73,12 @@ public class LoggerContext extends AbstractLifeCycle
         implements org.apache.logging.log4j.spi.LoggerContext, AutoCloseable, Terminable, ConfigurationListener,
         LoggerContextShutdownEnabled {
 
-    /**
-     * Property name of the property change event fired if the configuration is changed.
-     */
-    public static final String PROPERTY_CONFIG = "config";
     public static final Key<LoggerContext> KEY = Key.forClass(LoggerContext.class);
 
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
     private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
-    private final CopyOnWriteArrayList<PropertyChangeListener> propertyChangeListeners = new CopyOnWriteArrayList<>();
+    private final List<ConfigurationChangeListener> configurationChangeListeners = new CopyOnWriteArrayList<>();
     private final Lazy<List<LoggerContextShutdownAware>> listeners = Lazy.relaxed(CopyOnWriteArrayList::new);
     private final ConfigurableInstanceFactory instanceFactory;
     private PropertiesUtil properties;
@@ -711,7 +707,8 @@ public class LoggerContext extends AbstractLifeCycle
                 prev.stop();
             }
 
-            firePropertyChangeEvent(new PropertyChangeEvent(this, PROPERTY_CONFIG, prev, config));
+            final var event = new ConfigurationChangeEvent(this, prev, config);
+            configurationChangeListeners.forEach(listener -> listener.onChange(event));
 
             try {
                 Server.reregisterMBeansAfterReconfigure();
@@ -726,18 +723,12 @@ public class LoggerContext extends AbstractLifeCycle
         }
     }
 
-    private void firePropertyChangeEvent(final PropertyChangeEvent event) {
-        for (final PropertyChangeListener listener : propertyChangeListeners) {
-            listener.propertyChange(event);
-        }
+    public void addConfigurationChangeListener(final ConfigurationChangeListener listener) {
+        configurationChangeListeners.add(Objects.requireNonNull(listener, "listener"));
     }
 
-    public void addPropertyChangeListener(final PropertyChangeListener listener) {
-        propertyChangeListeners.add(Objects.requireNonNull(listener, "listener"));
-    }
-
-    public void removePropertyChangeListener(final PropertyChangeListener listener) {
-        propertyChangeListeners.remove(listener);
+    public void removeConfigurationChangeListener(final ConfigurationChangeListener listener) {
+        configurationChangeListeners.remove(listener);
     }
 
     /**
@@ -833,7 +824,8 @@ public class LoggerContext extends AbstractLifeCycle
         for (final Logger logger : loggerRegistry.getLoggers()) {
             logger.updateConfiguration(config);
         }
-        firePropertyChangeEvent(new PropertyChangeEvent(this, PROPERTY_CONFIG, old, config));
+        final var event = new ConfigurationChangeEvent(this, old, config);
+        configurationChangeListeners.forEach(listener -> listener.onChange(event));
     }
 
     /**
