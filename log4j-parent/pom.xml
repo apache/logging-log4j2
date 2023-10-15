@@ -33,6 +33,21 @@
   <description>Apache Log4j Parent</description>
 
   <properties>
+    <!-- ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+         ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+         ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+         ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+          ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+
+         Dependency and plugin version properties might have many implications beyond their simple appearance!
+         Walk through the following checklist before making a change in these properties!
+
+         1. Follow the `<artifactId>.version` naming convention
+         2. Make sure properties are sorted in alphabetical order
+         3. Check parent POMs for any associations.
+            For instance, Maven Surefire Plugin version property is such an exception.
+            It is named as `surefire.version` rather than `maven-surefire-plugin.version`, since `surefire.version` is already employed by `apache.org:apache` parent POM.
+         4. Think of consequences when users _import_ this POM along with, e.g., `spring-boot-dependencies` BOM -->
 
     <!-- =================================================
          Plugin version properties (in alphabetical order)
