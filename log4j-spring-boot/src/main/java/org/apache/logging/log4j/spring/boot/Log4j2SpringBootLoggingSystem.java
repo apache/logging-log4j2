@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
@@ -230,9 +229,9 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
         final PropertyEnvironment props = PropertiesUtil.getProperties();
         final AuthorizationProvider provider = AuthorizationProvider.getAuthorizationProvider(props);
         final SslConfiguration sslConfiguration = url.getProtocol().equals(HTTPS)
-                ? SslConfigurationFactory.getSslConfiguration() : null;
+                ? SslConfigurationFactory.getSslConfiguration(props) : null;
         final URLConnection urlConnection = UrlConnectionFactory.createConnection(url, 0, sslConfiguration,
-                provider);
+                provider, props);
 
         final File file = FileUtils.fileFromUri(url.toURI());
         try {
@@ -248,7 +247,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     }
 
     private LoggerContext getLoggerContext() {
-        return (LoggerContext) LogManager.getContext(false);
+        return LoggerContext.getContext(false);
     }
 
     @Order(PRECEDENCE)

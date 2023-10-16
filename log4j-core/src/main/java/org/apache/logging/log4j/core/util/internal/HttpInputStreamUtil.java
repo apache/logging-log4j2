@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.util.internal;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -25,9 +24,10 @@ import java.net.HttpURLConnection;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
-import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Utility method for reading data from an HTTP InputStream.
@@ -39,15 +39,16 @@ public final class HttpInputStreamUtil {
     private static final int NOT_AUTHORIZED = 401;
     private static final int NOT_FOUND = 404;
     private static final int OK = 200;
-    private static final int BUF_SIZE = 1024;
 
     public static Result getInputStream(final LastModifiedSource source,
-            final AuthorizationProvider authorizationProvider) {
+                                        final PropertyEnvironment props,
+                                        final AuthorizationProvider authorizationProvider,
+                                        final SslConfiguration sslConfiguration) {
         final Result result = new Result();
         try {
             final long lastModified = source.getLastModified();
             final HttpURLConnection connection = UrlConnectionFactory.createConnection(source.getURI().toURL(),
-                    lastModified, SslConfigurationFactory.getSslConfiguration(), authorizationProvider);
+                    lastModified, sslConfiguration, authorizationProvider, props);
             connection.connect();
             try {
                 final int code = connection.getResponseCode();
@@ -68,12 +69,12 @@ public final class HttpInputStreamUtil {
                             LOGGER.debug("Content was modified for {}. previous lastModified: {}, new lastModified: {}",
                                     source.toString(), lastModified, connection.getLastModified());
                             result.status = Status.SUCCESS;
-                            result.inputStream = new ByteArrayInputStream(readStream(is));
+                            result.inputStream = new ByteArrayInputStream(is.readAllBytes());
                             return result;
                         } catch (final IOException e) {
                             try (final InputStream es = connection.getErrorStream()) {
                                 LOGGER.info("Error accessing configuration at {}: {}", source.toString(),
-                                        readStream(es));
+                                        es.readAllBytes());
                             } catch (final IOException ioe) {
                                 LOGGER.error("Error accessing configuration at {}: {}", source.toString(),
                                         e.getMessage());
@@ -100,16 +101,6 @@ public final class HttpInputStreamUtil {
             LOGGER.warn("Error accessing {}: {}", source.toString(), e.getMessage());
             throw new ConfigurationException("Unable to access " + source.toString(), e);
         }
-    }
-
-    public static byte[] readStream(final InputStream is) throws IOException {
-        final ByteArrayOutputStream result = new ByteArrayOutputStream();
-        final byte[] buffer = new byte[BUF_SIZE];
-        int length;
-        while ((length = is.read(buffer)) != -1) {
-            result.write(buffer, 0, length);
-        }
-        return result.toByteArray();
     }
 
     public static class Result {

@@ -43,13 +43,13 @@ public class SslConfigurationFactoryTest {
         final Properties props = new Properties();
         final PropertiesUtil util = new PropertiesUtil(props);
         // No keystore and truststore -> no SslConfiguration
-        SslConfiguration sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
+        SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(util);
         assertNull(sslConfiguration);
         // Only keystore
         props.clear();
         addKeystoreConfiguration(props);
         util.reload();
-        sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
+        sslConfiguration = SslConfigurationFactory.getSslConfiguration(util);
         assertNotNull(sslConfiguration);
         assertNotNull(sslConfiguration.getKeyStoreConfig());
         assertNull(sslConfiguration.getTrustStoreConfig());
@@ -57,7 +57,7 @@ public class SslConfigurationFactoryTest {
         props.clear();
         addTruststoreConfiguration(props);
         util.reload();
-        sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
+        sslConfiguration = SslConfigurationFactory.getSslConfiguration(util);
         assertNotNull(sslConfiguration);
         assertNull(sslConfiguration.getKeyStoreConfig());
         assertNotNull(sslConfiguration.getTrustStoreConfig());
@@ -66,7 +66,7 @@ public class SslConfigurationFactoryTest {
         addKeystoreConfiguration(props);
         addTruststoreConfiguration(props);
         util.reload();
-        sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
+        sslConfiguration = SslConfigurationFactory.getSslConfiguration(util);
         assertNotNull(sslConfiguration);
         assertNotNull(sslConfiguration.getKeyStoreConfig());
         assertNotNull(sslConfiguration.getTrustStoreConfig());

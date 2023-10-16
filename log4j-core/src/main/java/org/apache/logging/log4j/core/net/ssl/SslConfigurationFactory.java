@@ -19,8 +19,6 @@ package org.apache.logging.log4j.core.net.ssl;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
@@ -30,12 +28,7 @@ public class SslConfigurationFactory {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    private static final Lazy<SslConfiguration> SSL_CONFIGURATION = Lazy.lazy(() -> {
-        final PropertyEnvironment props = PropertiesUtil.getProperties();
-        return createSslConfiguration(props);
-    });
-
-    static SslConfiguration createSslConfiguration(final PropertyEnvironment props) {
+    public static SslConfiguration getSslConfiguration(final PropertyEnvironment props) {
         KeyStoreConfiguration keyStoreConfiguration = null;
         TrustStoreConfiguration trustStoreConfiguration = null;
         String location = props.getStringProperty(Log4jPropertyKey.TRANSPORT_SECURITY_TRUST_STORE_LOCATION);
@@ -82,7 +75,4 @@ public class SslConfigurationFactory {
         return null;
     }
 
-    public static SslConfiguration getSslConfiguration() {
-        return SSL_CONFIGURATION.value();
-    }
 }

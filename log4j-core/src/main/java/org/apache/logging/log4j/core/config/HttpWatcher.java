@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.config;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -35,7 +36,6 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
@@ -48,8 +48,9 @@ public class HttpWatcher extends AbstractWatcher {
 
     private final Logger LOGGER = StatusLogger.getLogger();
 
+    private final PropertyEnvironment properties;
     private final SslConfiguration sslConfiguration;
-    private AuthorizationProvider authorizationProvider;
+    private final AuthorizationProvider authorizationProvider;
     private URL url;
     private volatile long lastModifiedMillis;
     private static final String HTTP = "http";
@@ -58,7 +59,9 @@ public class HttpWatcher extends AbstractWatcher {
     public HttpWatcher(final Configuration configuration, final Reconfigurable reconfigurable,
             final List<ConfigurationListener> configurationListeners, final long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
-        sslConfiguration = SslConfigurationFactory.getSslConfiguration();
+        properties = configuration.getContextProperties();
+        sslConfiguration = SslConfigurationFactory.getSslConfiguration(properties);
+        authorizationProvider = AuthorizationProvider.getAuthorizationProvider(properties);
         this.lastModifiedMillis = lastModifiedMillis;
     }
 
@@ -80,8 +83,6 @@ public class HttpWatcher extends AbstractWatcher {
         }
         try {
             url = source.getURI().toURL();
-            final PropertyEnvironment props = PropertiesUtil.getProperties();
-            authorizationProvider = AuthorizationProvider.getAuthorizationProvider(props);
         } catch (final MalformedURLException ex) {
             throw new IllegalArgumentException("Invalid URL for HttpWatcher " + source.getURI(), ex);
         }
@@ -101,7 +102,8 @@ public class HttpWatcher extends AbstractWatcher {
     private boolean refreshConfiguration() {
         try {
             final LastModifiedSource source = new LastModifiedSource(url.toURI(), lastModifiedMillis);
-            final HttpInputStreamUtil.Result result = HttpInputStreamUtil.getInputStream(source, authorizationProvider);
+            final HttpInputStreamUtil.Result result = HttpInputStreamUtil.getInputStream(
+                    source, properties, authorizationProvider, sslConfiguration);
             switch (result.getStatus()) {
                 case NOT_MODIFIED: {
                     LOGGER.debug("Configuration Not Modified");
@@ -110,8 +112,11 @@ public class HttpWatcher extends AbstractWatcher {
                 case SUCCESS: {
                     final ConfigurationSource configSource = getConfiguration().getConfigurationSource();
                     try {
-                        configSource.setData(HttpInputStreamUtil.readStream(result.getInputStream()));
-                        configSource.setModifiedMillis(source.getLastModified());
+                        final InputStream is = result.getInputStream();
+                        configSource.setData(is.readAllBytes());
+                        final long lastModified = source.getLastModified();
+                        configSource.setModifiedMillis(lastModified);
+                        lastModifiedMillis = lastModified;
                         LOGGER.debug("Content was modified for {}", url.toString());
                         return true;
                     } catch (final IOException e) {

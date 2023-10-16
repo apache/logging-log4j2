@@ -37,6 +37,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.ConfigurationSourceTest;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -73,7 +74,6 @@ public class UrlConnectionFactoryTest {
     private static Server server;
     private static final Base64.Decoder decoder = Base64.getDecoder();
     private static int port;
-    private static final int BUF_SIZE = 1024;
 
     @BeforeAll
     public static void startServer() throws Exception {
@@ -134,7 +134,7 @@ public class UrlConnectionFactoryTest {
 
     private int verifyNotModified(final URI uri, final long lastModifiedMillis) throws Exception {
         final HttpURLConnection urlConnection = UrlConnectionFactory.createConnection(uri.toURL(),
-                lastModifiedMillis, null, null);
+                lastModifiedMillis, null, null, PropertiesUtil.getProperties());
         urlConnection.connect();
 
         try {

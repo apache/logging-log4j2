@@ -58,9 +58,10 @@ public class UrlConnectionFactory {
     public static final String ALLOWED_PROTOCOLS = "log4j2.Configuration.allowedProtocols";
 
     public static <T extends URLConnection> T createConnection(final URL url, final long lastModifiedMillis,
-            final SslConfiguration sslConfiguration, final AuthorizationProvider authorizationProvider)
+                                                               final SslConfiguration sslConfiguration,
+                                                               final AuthorizationProvider authorizationProvider,
+                                                               final PropertyEnvironment props)
         throws IOException {
-        final PropertyEnvironment props = PropertiesUtil.getProperties();
         final List<String> allowed = Arrays.asList(Strings.splitList(toRootLowerCase(props
                 .getStringProperty(ALLOWED_PROTOCOLS, DEFAULT_ALLOWED_PROTOCOLS))));
         if (allowed.size() == 1 && NO_PROTOCOLS.equals(allowed.get(0))) {
@@ -73,7 +74,7 @@ public class UrlConnectionFactory {
         if (!allowed.contains(protocol)) {
             throw new ProtocolException("Protocol " + protocol + " has not been enabled as an allowed protocol");
         }
-        URLConnection urlConnection;
+        final URLConnection urlConnection;
         if (url.getProtocol().equals(HTTP) || url.getProtocol().equals(HTTPS)) {
             final HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             if (authorizationProvider != null) {
@@ -113,11 +114,12 @@ public class UrlConnectionFactory {
     }
 
     public static URLConnection createConnection(final URL url) throws IOException {
-        URLConnection urlConnection = null;
+        final URLConnection urlConnection;
         if (url.getProtocol().equals(HTTPS) || url.getProtocol().equals(HTTP)) {
             final PropertyEnvironment props = PropertiesUtil.getProperties();
             final AuthorizationProvider provider = AuthorizationProvider.getAuthorizationProvider(props);
-            urlConnection = createConnection(url, 0, SslConfigurationFactory.getSslConfiguration(), provider);
+            final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(props);
+            urlConnection = createConnection(url, 0, sslConfiguration, provider, props);
         } else {
             urlConnection = url.openConnection();
             if (urlConnection instanceof JarURLConnection) {

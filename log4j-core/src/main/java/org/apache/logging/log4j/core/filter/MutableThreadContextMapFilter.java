@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
@@ -38,7 +39,8 @@ import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.mutable.KeyValuePairConfig;
-import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
+import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
+import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.internal.HttpInputStreamUtil;
@@ -51,7 +53,6 @@ import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
@@ -72,6 +73,7 @@ public final class MutableThreadContextMapFilter extends AbstractFilter {
     private final ConfigurationScheduler scheduler;
     private final LastModifiedSource source;
     private final AuthorizationProvider authorizationProvider;
+    private final Configuration configuration;
     private final List<FilterConfigUpdateListener> listeners = new ArrayList<>();
     private ScheduledFuture<?> future = null;
 
@@ -84,6 +86,7 @@ public final class MutableThreadContextMapFilter extends AbstractFilter {
         this.source = source;
         this.scheduler = configuration.getScheduler();
         this.authorizationProvider = authorizationProvider;
+        this.configuration = configuration;
     }
 
     @Override
@@ -199,7 +202,7 @@ public final class MutableThreadContextMapFilter extends AbstractFilter {
     }
 
     public static class Builder extends AbstractFilterBuilder<Builder>
-            implements org.apache.logging.log4j.core.util.Builder<MutableThreadContextMapFilter> {
+            implements org.apache.logging.log4j.plugins.util.Builder<MutableThreadContextMapFilter> {
         @PluginAttribute
         private String configLocation;
 
@@ -247,16 +250,22 @@ public final class MutableThreadContextMapFilter extends AbstractFilter {
                 return new MutableThreadContextMapFilter(new NoOpFilter(), null, 0,
                         null, getOnMatch(), getOnMismatch(), configuration);
             }
-            final PropertyEnvironment props = PropertiesUtil.getProperties();
+            final PropertyEnvironment props = configuration.getContextProperties();
             final AuthorizationProvider authorizationProvider =
                     AuthorizationProvider.getAuthorizationProvider(props);
+            final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(props);
             Filter filter;
             if (pollInterval <= 0) {
-                final ConfigResult result = getConfig(source, authorizationProvider);
+                final ConfigResult result = getConfig(source, authorizationProvider, props, sslConfiguration);
                 if (result.status == Status.SUCCESS) {
                     if (result.pairs.length > 0) {
-                        filter = ThreadContextMapFilter.createFilter(result.pairs, "or",
-                                getOnMatch(), getOnMismatch());
+                        filter = ThreadContextMapFilter.newBuilder()
+                                .setPairs(result.pairs)
+                                .setOperator("or")
+                                .setOnMatch(getOnMatch())
+                                .setOnMismatch(getOnMismatch())
+                                .setContextDataInjector(configuration.getComponent(ContextDataInjector.KEY))
+                                .get();
                     } else {
                         filter = new NoOpFilter();
                     }
@@ -282,14 +291,16 @@ public final class MutableThreadContextMapFilter extends AbstractFilter {
 
         @Override
         public void run() {
-            final ConfigResult result = getConfig(source, authorizationProvider);
+            final PropertyEnvironment properties = configuration.getContextProperties();
+            final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(properties);
+            final ConfigResult result = getConfig(source, authorizationProvider, properties, sslConfiguration);
             if (result.status == Status.SUCCESS) {
                 filter = ThreadContextMapFilter.newBuilder()
                         .setPairs(result.pairs)
                         .setOperator("or")
                         .setOnMatch(getOnMatch())
                         .setOnMismatch(getOnMismatch())
-                        .setContextDataInjector(ContextDataInjectorFactory.createInjector())
+                        .setContextDataInjector(configuration.getComponent(ContextDataInjector.KEY))
                         .get();
                 LOGGER.info("Filter configuration was updated: {}", filter.toString());
                 for (FilterConfigUpdateListener listener : listeners) {
@@ -327,7 +338,9 @@ public final class MutableThreadContextMapFilter extends AbstractFilter {
     }
 
     private static ConfigResult getConfig(final LastModifiedSource source,
-            final AuthorizationProvider authorizationProvider) {
+                                          final AuthorizationProvider authorizationProvider,
+                                          final PropertyEnvironment props,
+                                          final SslConfiguration sslConfiguration) {
         final File inputFile = source.getFile();
         InputStream inputStream = null;
         HttpInputStreamUtil.Result result = null;
@@ -347,7 +360,7 @@ public final class MutableThreadContextMapFilter extends AbstractFilter {
             }
         } else if (source.getURI() != null) {
             try {
-                result = HttpInputStreamUtil.getInputStream(source, authorizationProvider);
+                result = HttpInputStreamUtil.getInputStream(source, props, authorizationProvider, sslConfiguration);
                 inputStream = result.getInputStream();
             } catch (ConfigurationException ex) {
                 result = new HttpInputStreamUtil.Result(Status.ERROR);

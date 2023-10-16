@@ -333,7 +333,7 @@ public class ConfigurationSource {
             final AuthorizationProvider provider = AuthorizationProvider.getAuthorizationProvider(props);
             provider.addAuthorization(urlConnection);
             if (url.getProtocol().equals(HTTPS)) {
-                final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
+                final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(props);
                 if (sslConfiguration != null) {
                     ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
                     if (!sslConfiguration.isVerifyHostName()) {
