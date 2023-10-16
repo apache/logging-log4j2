@@ -35,7 +35,6 @@ import java.util.Objects;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.util.ReflectionUtil;
 
 //Lines too long...
@@ -365,7 +364,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             }
 
             final boolean writeHeader = !data.append || !file.exists();
-            final OutputStream os = NullOutputStream.getInstance();
+            final OutputStream os = OutputStream.nullOutputStream();
             RandomAccessFile raf = null;
             try {
                 FileUtils.makeParentDirs(file);

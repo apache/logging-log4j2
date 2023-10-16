@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
  * Extends OutputStreamManager but instead of using a buffered output stream,
@@ -208,7 +207,7 @@ public class RandomAccessFileManager extends OutputStreamManager {
             }
 
             final boolean writeHeader = !data.append || !file.exists();
-            final OutputStream os = NullOutputStream.getInstance();
+            final OutputStream os = OutputStream.nullOutputStream();
             final RandomAccessFile raf;
             try {
                 FileUtils.makeParentDirs(file);

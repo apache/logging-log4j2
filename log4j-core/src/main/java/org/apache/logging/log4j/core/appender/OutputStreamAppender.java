@@ -24,7 +24,6 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
-import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
@@ -152,7 +151,7 @@ public final class OutputStreamAppender extends AbstractOutputStreamAppender<Out
 
     private static OutputStreamManager getManager(final OutputStream target, final boolean follow,
             final Layout layout) {
-        final OutputStream os = target == null ? NullOutputStream.getInstance() : new CloseShieldOutputStream(target);
+        final OutputStream os = target == null ? OutputStream.nullOutputStream() : new CloseShieldOutputStream(target);
         final OutputStream targetRef = target == null ? os : target;
         final String managerName = targetRef.getClass().getName() + "@" + Integer.toHexString(targetRef.hashCode())
                 + '.' + follow;

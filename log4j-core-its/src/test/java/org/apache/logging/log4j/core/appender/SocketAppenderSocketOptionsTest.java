@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 
 import org.apache.logging.log4j.core.appender.SocketAppenderTest.TcpSocketTestServer;
@@ -26,14 +27,15 @@ import org.apache.logging.log4j.core.net.SocketOptions;
 import org.apache.logging.log4j.core.net.TcpSocketManager;
 import org.apache.logging.log4j.core.test.junit.AllocatePorts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.plugins.Named;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @AllocatePorts("SocketAppenderSocketOptionsTest.port")
 public class SocketAppenderSocketOptionsTest {
@@ -63,9 +65,10 @@ public class SocketAppenderSocketOptionsTest {
                 .isNotNull()
                 .isInstanceOf(TcpSocketManager.class);
         final TcpSocketManager manager = (TcpSocketManager) abstractSocketManager;
+        final Class<? extends OutputStream> nullOutputStreamType = OutputStream.nullOutputStream().getClass();
         assertThat(manager.getOutputStream())
                 .isNotNull()
-                .isInstanceOf(NullOutputStream.class);
+                .isInstanceOf(nullOutputStreamType);
         final SocketOptions socketOptions = manager.getSocketOptions();
         assertNotNull(socketOptions);
         final Socket socket = manager.getSocket();

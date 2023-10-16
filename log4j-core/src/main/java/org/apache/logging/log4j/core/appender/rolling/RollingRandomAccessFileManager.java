@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.appender.ConfigurationFactoryData;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
  * Extends RollingFileManager but instead of using a buffered output stream, this class uses a {@code ByteBuffer} and a
@@ -256,7 +255,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final boolean writeHeader = !data.append || file == null || !file.exists();
 
             final RollingRandomAccessFileManager rrm = new RollingRandomAccessFileManager(data.getLoggerContext(), raf, name, data.pattern,
-                    NullOutputStream.getInstance(), data.append, data.immediateFlush, data.bufferSize, size, initialTime, data.policy,
+                    OutputStream.nullOutputStream(), data.append, data.immediateFlush, data.bufferSize, size, initialTime, data.policy,
                     data.strategy, data.advertiseURI, data.layout, data.filePermissions, data.fileOwner, data.fileGroup, writeHeader);
             if (rrm.isAttributeViewEnabled()) {
                 rrm.defineAttributeView(file.toPath());

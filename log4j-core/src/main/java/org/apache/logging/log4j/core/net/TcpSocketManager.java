@@ -35,7 +35,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThread;
-import org.apache.logging.log4j.core.util.NullOutputStream;
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -425,7 +425,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 return createManager(name, os, socket, inetAddress, data);
             } catch (final IOException ex) {
                 LOGGER.error("TcpSocketManager ({}) caught exception and will continue:", name, ex);
-                os = NullOutputStream.getInstance();
+                os = OutputStream.nullOutputStream();
             }
             if (data.reconnectDelayMillis == 0) {
                 Closer.closeSilently(socket);
@@ -434,11 +434,10 @@ public class TcpSocketManager extends AbstractSocketManager {
             return createManager(name, os, null, inetAddress, data);
         }
 
-        @SuppressWarnings("unchecked")
         M createManager(final String name, final OutputStream os, final Socket socket, final InetAddress inetAddress, final T data) {
-            return (M) new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
+            return Cast.cast(new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
                     data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout,
-                    data.bufferSize, data.socketOptions);
+                    data.bufferSize, data.socketOptions));
         }
 
         Socket createSocket(final T data) throws IOException {

@@ -33,7 +33,6 @@ import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
-import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;
@@ -101,7 +100,8 @@ public class SecureSocketAppenderSocketOptionsTest {
         final TcpSocketManager manager = (TcpSocketManager) appender.getManager();
         Assert.assertNotNull(manager);
         final OutputStream outputStream = manager.getOutputStream();
-        Assert.assertFalse(outputStream instanceof NullOutputStream);
+        final OutputStream nullOutputStream = OutputStream.nullOutputStream();
+        Assert.assertFalse(outputStream.getClass() == nullOutputStream.getClass());
         final SocketOptions socketOptions = manager.getSocketOptions();
         Assert.assertNotNull(socketOptions);
         final Socket socket = manager.getSocket();
