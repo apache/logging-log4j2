@@ -34,9 +34,11 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.time.NanoClock;
+import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Interface that must be implemented to create a configuration.
@@ -100,7 +102,21 @@ public interface Configuration extends Filterable {
 
     void removeLogger(final String name);
 
+    /**
+     * Returns the configuration properties. These will initially include entries for {@code contextName}
+     * with the {@linkplain org.apache.logging.log4j.spi.LoggerContext#getName() context name} and
+     * {@code hostName} with the {@linkplain NetUtils#getLocalHostname() local host name}. Additional
+     * properties may be defined by plugins.
+     */
     Map<String, String> getProperties();
+
+    /**
+     * Returns the {@linkplain org.apache.logging.log4j.spi.LoggerContext#getProperties() context properties}
+     * associated with the logger context for this configuration.
+     *
+     * @return the context properties
+     */
+    PropertyEnvironment getContextProperties();
 
     /**
      * Returns the root Logger.
@@ -225,7 +241,7 @@ public interface Configuration extends Filterable {
     void setNanoClock(NanoClock nanoClock);
 
     /**
-     * Gets the logger context.
+     * Gets the logger context. This may be {@code null} if the context has already been stopped and garbage collected.
      *
      * @return the logger context.
      */

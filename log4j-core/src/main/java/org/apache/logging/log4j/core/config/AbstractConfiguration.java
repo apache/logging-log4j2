@@ -159,7 +159,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     private AsyncLoggerConfigDisruptor asyncLoggerConfigDisruptor;
     private AsyncWaitStrategyFactory asyncWaitStrategyFactory;
     private final WeakReference<LoggerContext> loggerContext;
-    private PropertyEnvironment contextProperties;
+    private final PropertyEnvironment contextProperties;
     private final Lock configLock = new ReentrantLock();
 
     /**
@@ -201,6 +201,11 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     @Override
     public Map<String, String> getProperties() {
         return properties;
+    }
+
+    @Override
+    public PropertyEnvironment getContextProperties() {
+        return contextProperties;
     }
 
     @Override
