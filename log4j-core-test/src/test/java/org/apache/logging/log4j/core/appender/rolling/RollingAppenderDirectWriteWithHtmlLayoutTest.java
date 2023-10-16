@@ -16,10 +16,9 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,10 +27,8 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.util.IOUtils;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +37,10 @@ import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.startsWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for LOG4J2-2760
@@ -98,15 +98,13 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
             for (File file : files) {
                 if (!file.getName().startsWith(prefix))
                     continue;
-                try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                    final String data = IOUtils.toString(reader).trim();
-                    // check that every file starts with the header
-                    assertThat("header in file " + file, data, Matchers.startsWith("<!DOCTYPE"));
-                    assertThat("footer in file " + file, data, endsWith("</html>"));
-                    final Matcher matcher = eventMatcher.matcher(data);
-                    while (matcher.find()) {
-                        foundEvents++;
-                    }
+                final String data = Files.readString(file.toPath());
+                // check that every file starts with the header
+                assertThat("header in file " + file, data, startsWith("<!DOCTYPE"));
+                assertThat("footer in file " + file, data, endsWith("</html>"));
+                final Matcher matcher = eventMatcher.matcher(data);
+                while (matcher.find()) {
+                    foundEvents++;
                 }
             }
             assertEquals(count, foundEvents, "Incorrect number of events read.");

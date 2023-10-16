@@ -16,14 +16,15 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.RollingFileAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.util.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -79,9 +80,8 @@ public class RollingFileManagerTest {
                 Assert.assertEquals(file.getAbsolutePath(), manager.getFileName());
                 manager.writeToDestination(testContent.getBytes(StandardCharsets.US_ASCII), 0, testContent.length());
             }
-            try (final Reader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.US_ASCII)) {
-                Assert.assertEquals(testContent, IOUtils.toString(reader));
-            }
+            final String actualContents = Files.readString(file.toPath(), StandardCharsets.US_ASCII);
+            Assert.assertEquals(testContent, actualContents);
         }
     }
 }

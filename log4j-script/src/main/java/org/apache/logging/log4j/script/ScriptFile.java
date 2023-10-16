@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -28,7 +29,6 @@ import java.nio.file.Paths;
 
 import org.apache.logging.log4j.core.util.ExtensionLanguageMapping;
 import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.IOUtils;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -96,7 +96,9 @@ public class ScriptFile extends AbstractScript {
         final String scriptText;
         try (final Reader reader = new InputStreamReader(
                 file != null ? new FileInputStream(file) : uri.toURL().openStream(), actualCharset)) {
-            scriptText = IOUtils.toString(reader);
+            final StringWriter writer = new StringWriter();
+            reader.transferTo(writer);
+            scriptText = writer.toString();
         } catch (final IOException e) {
             LOGGER.error("{}: language={}, path={}, actualCharset={}", e.getClass().getSimpleName(),
                     language, filePathOrUri, actualCharset);

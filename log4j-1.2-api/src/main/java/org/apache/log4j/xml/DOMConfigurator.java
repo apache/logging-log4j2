@@ -17,10 +17,11 @@
 package org.apache.log4j.xml;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -40,7 +41,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
-import org.apache.logging.log4j.core.util.IOUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -74,7 +74,7 @@ public class DOMConfigurator {
         final Path path = Paths.get(fileName);
         try (final InputStream inputStream = Files.newInputStream(path)) {
             final ConfigurationSource source = new ConfigurationSource(inputStream, path);
-            final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
+            final LoggerContext context = LoggerContext.getContext(false);
             Configuration configuration;
             configuration = new XmlConfigurationFactory().getConfiguration(context, source);
             LogManager.getRootLogger().removeAllAppenders();
@@ -112,7 +112,7 @@ public class DOMConfigurator {
     }
 
     private void doConfigure(final ConfigurationSource source) {
-        final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
+        final LoggerContext context = LoggerContext.getContext(false);
         Configuration configuration;
         configuration = new XmlConfigurationFactory().getConfiguration(context, source);
         Configurator.reconfigure(configuration);
@@ -131,9 +131,11 @@ public class DOMConfigurator {
 
     public void doConfigure(final Reader reader, final LoggerRepository repository) throws FactoryConfigurationError {
         try {
-            final StringWriter sw = new StringWriter();
-            IOUtils.copy(reader, sw);
-            doConfigure(new ConfigurationSource(new ByteArrayInputStream(sw.toString().getBytes(StandardCharsets.UTF_8))));
+            final ByteArrayOutputStream out = new ByteArrayOutputStream();
+            final OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
+            reader.transferTo(writer);
+            final ByteArrayInputStream inputStream = new ByteArrayInputStream(out.toByteArray());
+            doConfigure(new ConfigurationSource(inputStream));
         } catch (final IOException e) {
             throw new FactoryConfigurationError(e);
         }

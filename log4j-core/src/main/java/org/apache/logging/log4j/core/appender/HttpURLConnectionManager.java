@@ -35,7 +35,6 @@ import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.util.IOUtils;
 
 public class HttpURLConnectionManager extends HttpManager {
 
@@ -108,11 +107,8 @@ public class HttpURLConnectionManager extends HttpManager {
             os.write(msg);
         }
 
-        final byte[] buffer = new byte[1024];
         try (final InputStream is = urlConnection.getInputStream()) {
-            while (IOUtils.EOF != is.read(buffer)) {
-                // empty
-            }
+            is.readAllBytes();
         } catch (final IOException e) {
             final StringBuilder errorMessage = new StringBuilder();
             try (final InputStream es = urlConnection.getErrorStream()) {
@@ -122,10 +118,7 @@ public class HttpURLConnectionManager extends HttpManager {
                 }
                 if (es != null) {
                     errorMessage.append(" - ");
-                    int n;
-                    while (IOUtils.EOF != (n = es.read(buffer))) {
-                        errorMessage.append(new String(buffer, 0, n, CHARSET));
-                    }
+                    errorMessage.append(new String(es.readAllBytes(), CHARSET));
                 }
             }
             if (urlConnection.getResponseCode() > -1) {
