@@ -157,7 +157,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
         filterLock.lock();
         try {
             final var currentFilter = this.filter;
-            if (currentFilter == filter || currentFilter.equals(filter)) {
+            if (currentFilter == filter || filter.equals(currentFilter)) {
                 this.filter = null;
             } else if (currentFilter instanceof CompositeFilter) {
                 CompositeFilter composite = (CompositeFilter) currentFilter;
