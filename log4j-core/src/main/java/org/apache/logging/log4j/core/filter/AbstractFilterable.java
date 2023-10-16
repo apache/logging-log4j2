@@ -22,7 +22,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -204,7 +203,7 @@ public abstract class AbstractFilterable extends AbstractLifeCycle implements Fi
         }
         boolean stopped = true;
         if (filter != null) {
-            stopped = ((LifeCycle) filter).stop(timeout, timeUnit);
+            stopped = filter.stop(timeout, timeUnit);
         }
         if (changeLifeCycleState) {
             this.setStopped();
