@@ -124,6 +124,17 @@
             </path>
           </annotationProcessorPaths>
         </configuration>
+        <executions>
+          <execution>
+            <id>default-testCompile</id>
+            <configuration>
+              <compilerArgs combine.children="append">
+                <!-- Disable automatic package discovery, which overwrites `log4j-layout-template-json` plugins. -->
+                <arg>-ApluginPackage=org.apache.logging.log4j.layout.template.json.test</arg>
+              </compilerArgs>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <!-- Disable ITs, which are Docker-dependent, by default. -->
       <plugin>

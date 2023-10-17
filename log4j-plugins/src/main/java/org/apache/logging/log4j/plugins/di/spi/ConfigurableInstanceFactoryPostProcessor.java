@@ -21,6 +21,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.util.OrderedComparator;
@@ -32,6 +34,7 @@ import org.apache.logging.log4j.util.ServiceRegistry;
  * {@link Ordered} annotation on the class for overriding the order it will be invoked.
  */
 @FunctionalInterface
+@ServiceConsumer(value = ConfigurableInstanceFactoryPostProcessor.class, resolution = Resolution.OPTIONAL)
 public interface ConfigurableInstanceFactoryPostProcessor {
 
     /**

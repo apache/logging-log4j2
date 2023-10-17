@@ -30,7 +30,14 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j JDBC Documentation</docLabel>
     <projectDir>/log4j-jdbc</projectDir>
-    <module.name>org.apache.logging.log4j.jdbc</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-package-options>
+      <!-- `log4j-jndi` is optional -->
+      org.apache.logging.log4j.jndi;resolution:=optional
+    </bnd-extra-package-options>
   </properties>
 
   <dependencies>
@@ -114,6 +121,7 @@
 
   <build>
     <plugins>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -127,6 +135,20 @@
           </annotationProcessorPaths>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-testJar</id>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 </project>

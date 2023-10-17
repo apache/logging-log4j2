@@ -32,6 +32,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
@@ -58,6 +60,7 @@ import static org.apache.logging.log4j.spi.LoggingSystemProperty.*;
  *
  * @since 3.0.0
  */
+@ServiceConsumer(value = Provider.class, resolution = Resolution.OPTIONAL)
 public class LoggingSystem {
     /**
      * Resource name for a Log4j 2 provider properties file.

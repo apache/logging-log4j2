@@ -18,13 +18,17 @@ package org.apache.logging.log4j.core.config.plugins.util;
 
 import java.util.List;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.plugins.Ordered;
+import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolversPostProcessor;
 
 /**
  * Post-processor that adds support for legacy plugin annotations from Log4j2.
  */
 @Ordered(110)
+@ServiceProvider(value = ConfigurableInstanceFactoryPostProcessor.class, resolution = Resolution.OPTIONAL)
 public class LegacyAnnotationFactoryResolversPostProcessor extends FactoryResolversPostProcessor {
     public LegacyAnnotationFactoryResolversPostProcessor() {
         super(List.of(

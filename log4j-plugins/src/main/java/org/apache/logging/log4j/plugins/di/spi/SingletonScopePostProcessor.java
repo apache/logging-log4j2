@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.plugins.di.spi;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
@@ -24,6 +26,7 @@ import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
  * Post-processor that adds support for the {@link Singleton} scope.
  */
 @Ordered(Ordered.FIRST)
+@ServiceProvider(value = ConfigurableInstanceFactoryPostProcessor.class, resolution = Resolution.OPTIONAL)
 public class SingletonScopePostProcessor implements ConfigurableInstanceFactoryPostProcessor {
     @Override
     public void postProcessFactory(final ConfigurableInstanceFactory factory) {

@@ -18,8 +18,11 @@ package org.apache.logging.log4j.plugins.di.resolver;
 
 import java.util.List;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Ordered;
+import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolversPostProcessor;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
@@ -60,6 +63,7 @@ import org.apache.logging.log4j.plugins.model.PluginType;
  * @see PluginValueFactoryResolver
  */
 @Ordered(100)
+@ServiceProvider(value = ConfigurableInstanceFactoryPostProcessor.class, resolution = Resolution.OPTIONAL)
 public class PluginAnnotationFactoryResolversPostProcessor extends FactoryResolversPostProcessor {
     public PluginAnnotationFactoryResolversPostProcessor() {
         super(List.of(

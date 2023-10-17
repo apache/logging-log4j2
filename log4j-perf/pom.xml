@@ -171,7 +171,8 @@
             <goals>
               <goal>shade</goal>
             </goals>
-            <phase>package</phase>
+            <!-- Ensures that it runs after `bnd-maven-plugin` -->
+            <phase>pre-integration-test</phase>
             <configuration>
               <createDependencyReducedPom>false</createDependencyReducedPom>
               <minimizeJar>false</minimizeJar>

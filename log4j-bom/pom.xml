@@ -34,6 +34,8 @@
   </scm>
 
   <properties>
+    <!-- JDK version of the main Maven process (used in ASF parent POM) -->
+    <minimalJavaBuildVersion>[11,12)</minimalJavaBuildVersion>
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <!-- reproducible build setting -->

@@ -18,7 +18,10 @@ package org.apache.logging.log4j.plugins.di.resolver;
 
 import java.util.List;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.plugins.Ordered;
+import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolversPostProcessor;
 
 /**
@@ -26,6 +29,7 @@ import org.apache.logging.log4j.plugins.di.spi.FactoryResolversPostProcessor;
  * {@link java.util.function.Supplier} parameterized types.
  */
 @Ordered(1000)
+@ServiceProvider(value = ConfigurableInstanceFactoryPostProcessor.class, resolution = Resolution.OPTIONAL)
 public class GenericFactoryResolversPostProcessor extends FactoryResolversPostProcessor {
     public GenericFactoryResolversPostProcessor() {
         super(List.of(new OptionalFactoryResolver<>(), new SupplierFactoryResolver<>()));
