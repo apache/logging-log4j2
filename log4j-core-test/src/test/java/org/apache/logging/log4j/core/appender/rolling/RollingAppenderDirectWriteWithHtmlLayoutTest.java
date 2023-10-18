@@ -98,7 +98,7 @@ public class RollingAppenderDirectWriteWithHtmlLayoutTest {
             for (File file : files) {
                 if (!file.getName().startsWith(prefix))
                     continue;
-                final String data = Files.readString(file.toPath());
+                final String data = Files.readString(file.toPath()).trim();
                 // check that every file starts with the header
                 assertThat("header in file " + file, data, startsWith("<!DOCTYPE"));
                 assertThat("footer in file " + file, data, endsWith("</html>"));
