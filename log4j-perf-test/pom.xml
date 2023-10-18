@@ -24,7 +24,7 @@
     <relativePath>../log4j-parent</relativePath>
   </parent>
 
-  <artifactId>log4j-perf</artifactId>
+  <artifactId>log4j-perf-test</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4J Performance Tests</name>
   <description>The Apache Log4j development-time performance tests</description>
