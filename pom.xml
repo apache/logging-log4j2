@@ -31,7 +31,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>10.1.1</version>
+    <version>10.2.0-SNAPSHOT</version>
     <relativePath />
   </parent>
 
@@ -304,7 +304,7 @@
   <properties>
 
     <!-- project version -->
-    <revision>2.21.0</revision>
+    <revision>2.22.0-SNAPSHOT</revision>
 
     <!-- =================
          Common properties
