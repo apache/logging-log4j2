@@ -29,12 +29,11 @@ If you have questions like:
 * _"My layout is not working as expected; what should I do?"_
 * _"How can I migrate from Log4j 1 with this custom configuration?"_
 
-We urge you to first check our link:/faq.html[FAQ] to see if it has already been answered.
+We urge you to first check our link:faq.html[FAQ] to see if it has already been answered.
 If not, you can ask your questions on one of our official user support channels:
 
 * https://github.com/apache/logging-log4j2/discussions[GitHub Discussions] (**experimental**)
-* `log4j-user@logging.apache.org` mailing list (public | mailto:log4j-user-subscribe@logging.apache.org[subscribe] | mailto:log4j-user-unsubscribe@logging.apache.org[unsubscribe] | mailto:log4j-user@logging.apache.org[post] | https://lists.apache.org/list.html?log4j-user%40logging.apache.org[archive])
-
+* `log4j-user@logging.apache.org` mailing list (public | mailto:log4j-user-subscribe@logging.apache.org[subscribe] | mailto:log4j-user-unsubscribe@logging.apache.org[unsubscribe] | mailto:log4j-user@logging.apache.org[post] | https://lists.apache.org/list.html?log4j-user&#64;logging.apache.org[archive])
 
 [WARNING]
 ====
@@ -69,7 +68,7 @@ If you have questions or feedback like:
 
 then please contact us using the following mailing lists:
 
-`dev@logging.apache.org` (public | mailto:dev-subscribe@logging.apache.org[subscribe] | mailto:dev-unsubscribe@logging.apache.org[unsubscribe] | mailto:dev@logging.apache.org[post] | https://lists.apache.org/list.html?dev%40logging.apache.org[archive])::
+`dev@logging.apache.org` (public | mailto:dev-subscribe@logging.apache.org[subscribe] | mailto:dev-unsubscribe@logging.apache.org[unsubscribe] | mailto:dev@logging.apache.org[post] | https://lists.apache.org/list.html?dev&#64;logging.apache.org[archive])::
 For _development_ discussions
 (Please prefix subjects with `[log4j]` when starting a new thread!)
 
