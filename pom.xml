@@ -1409,7 +1409,7 @@
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
           <consoleOutput>true</consoleOutput>
-          <excludes>
+          <excludes combine.children="append">
             <exclude>**/target/**/*</exclude>
             <!-- Matches other RAT configurations in this POM -->
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
