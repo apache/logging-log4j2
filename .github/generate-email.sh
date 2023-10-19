@@ -41,14 +41,15 @@ PROJECT_VERSION="$2"
 COMMIT_ID="$3"
 
 # Check release notes file
-RELEASE_NOTES_FILE="$SCRIPT_DIR/../target/generated-sources/site/asciidoc/release-notes/$PROJECT_VERSION.adoc"
+RELEASE_NOTES_FILE="$SCRIPT_DIR/../src/site/_release-notes/_$PROJECT_VERSION.adoc"
 [ -f "$RELEASE_NOTES_FILE" ] || {
     stderr "Couldn't find release notes file: $RELEASE_NOTES_FILE"
     exit 1
 }
 
 dump_release_notes() {
-    awk "f{print} /^Release date::/{f=1}" "$RELEASE_NOTES_FILE"
+    awk "f{print} /^Release date::/{f=1}" "$RELEASE_NOTES_FILE" \
+        | sed -r 's!'$PROJECT_REPO'/(issues|pull)/[0-9]+\[([0-9]+)\]!#\2!g'
 }
 
 case $1 in
@@ -77,7 +78,7 @@ net negative vote count. All votes are welcome and we encourage
 everyone to test the release, but only the Logging Services PMC
 votes are officially counted.
 
-=== Release Notes
+== Release Notes
 EOF
     dump_release_notes
     ;;
@@ -96,7 +97,7 @@ website[1].
 
 [1] $PROJECT_SITE
 
-=== Release Notes
+== Release Notes
 EOF
     dump_release_notes
     ;;

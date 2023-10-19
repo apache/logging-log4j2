@@ -41,15 +41,18 @@ jobs:
     uses: apache/logging-parent/.github/workflows/build-reusable.yaml@main
     with:
       java-version: 11
+      site-enabled: true
 
   deploy-snapshot:
     needs: build
-    if: github.repository == 'apache/logging-log4j2' && github.ref_name == '2.x'
+    if: github.repository == 'apache/logging-log4j2' && github.ref_name == 'main'
     uses: apache/logging-parent/.github/workflows/deploy-snapshot-reusable.yaml@main
     # Secrets for deployments
     secrets:
       NEXUS_USER: ${{ secrets.NEXUS_USER }}
       NEXUS_PW: ${{ secrets.NEXUS_PW }}
+    with:
+      java-version: 11
 
   deploy-release:
     needs: build
@@ -57,17 +60,18 @@ jobs:
     uses: apache/logging-parent/.github/workflows/deploy-release-reusable.yaml@main
     # Secrets for deployments
     secrets:
-      GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+      GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
       LOGGING_STAGE_DEPLOYER_USER: ${{ secrets.LOGGING_STAGE_DEPLOYER_USER }}
       LOGGING_STAGE_DEPLOYER_PW: ${{ secrets.LOGGING_STAGE_DEPLOYER_PW }}
-      SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-      SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+      SVN_USERNAME: ${{ secrets.LOGGING_SVN_DEV_USERNAME }}
+      SVN_PASSWORD: ${{ secrets.LOGGING_SVN_DEV_PASSWORD }}
     # Write permissions to allow the Maven `revision` property update, changelog release, etc.
     permissions:
       contents: write
     with:
-      project-id: log4j2
+      java-version: 11
+      project-id: log4j
       distribution-attachment-filepath-pattern: |-
-        '^.*/target/log4j-(1\.2-api|api(-test)?|appserver|cassandra|core(-test)?|couchdb|docker|flume-ng|iostreams|jakarta-(smtp|web)|jcl|jdbc-dbcp2|jpa|jpl|jul|kubernetes|layout-template-json|mongodb[34]|log4j-slf4j2?-impl|log4j-spring-(boot|cloud-config-client)|taglib|to-(jul|slf4j)|web)'${PROJECT_VERSION}'(-sources)?\.jar$'
-      distribution-attachment-count: 1
+        '^.*/target/log4j-(1\\.2-api|api(-test)?|appserver|cassandra|core(-test)?|couchdb|docker|flume-ng|iostreams|jakarta-(smtp|web)|jcl|jdbc-dbcp2|jpa|jpl|jul|kubernetes|layout-template-json|mongodb[34]|slf4j2?-impl|spring-(boot|cloud-config-client)|taglib|to-(jul|slf4j)|web)-'${PROJECT_VERSION}'\\.jar$'
+      distribution-attachment-count: 30
       site-enabled: true
