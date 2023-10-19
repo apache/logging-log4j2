@@ -78,7 +78,7 @@ updates:
       versions: ["[3.0.0,)"]
     # LMAX Disruptor requires Java 11
     - dependency-name: "com.lmax:disruptor"
-      version: ["[4.0.0,)"]
+      versions: ["[4.0.0,)"]
 
 - package-ecosystem: github-actions
   directory: "/"
