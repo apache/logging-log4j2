@@ -1535,7 +1535,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <forkCount>1C</forkCount>
+          <forkCount>1</forkCount>
           <reuseForks>false</reuseForks>
           <runOrder>alphabetical</runOrder>
           <systemPropertyVariables>
@@ -1832,14 +1832,14 @@
     </profile>
 
     <profile>
-      <id>sequential-tests</id>
+      <id>parallel-tests</id>
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-              <forkCount>1</forkCount>
+              <forkCount>1C</forkCount>
             </configuration>
           </plugin>
         </plugins>
