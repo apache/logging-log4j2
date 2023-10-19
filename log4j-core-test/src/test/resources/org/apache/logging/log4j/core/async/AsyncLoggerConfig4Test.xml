@@ -18,13 +18,9 @@
 <Configuration status="off">
   <Appenders>
     <RandomAccessFile name="File"
-          fileName="target/AsyncLoggerConfigTest4.log"
-          bufferedIO="false"
-          immediateFlush="true"
+          fileName="${test:logging.path}/AsyncLoggerConfigTest4.log"
           append="false">
-      <PatternLayout>
-        <Pattern>%d %p %c{1.} [%t] %testformat %testparameters %m %ex%n</Pattern>
-      </PatternLayout>
+      <PatternLayout pattern="%testformat %testparameters %m%n"/>
     </RandomAccessFile>
   </Appenders>
   <Loggers>
