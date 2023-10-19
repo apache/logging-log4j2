@@ -1373,6 +1373,18 @@
       <plugins>
 
         <plugin>
+          <groupId>biz.aQute.bnd</groupId>
+          <artifactId>bnd-baseline-maven-plugin</artifactId>
+          <version>${bnd-maven-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.ops4j.pax.exam</groupId>
+          <artifactId>exam-maven-plugin</artifactId>
+          <version>${exam-maven-plugin.version}</version>
+        </plugin>
+
+        <plugin>
           <groupId>com.github.spotbugs</groupId>
           <artifactId>spotbugs-maven-plugin</artifactId>
           <version>${spotbugs-maven-plugin.version}</version>
@@ -1383,6 +1395,7 @@
           <artifactId>xml-maven-plugin</artifactId>
           <version>${xml-maven-plugin.version}</version>
         </plugin>
+
       </plugins>
     </pluginManagement>
 
