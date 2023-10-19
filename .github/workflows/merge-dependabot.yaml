@@ -39,8 +39,8 @@ jobs:
   merge-dependabot:
     needs: build
     uses: apache/logging-parent/.github/workflows/merge-dependabot-reusable.yaml@main
-    java-version: |
-      11
+    with:
+      java-version: 11
     permissions:
       contents: write                                             # to push changelog commits
       pull-requests: write                                        # to close the PR
