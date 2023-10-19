@@ -1,0 +1,46 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= 2.0-beta6 (2013-05-05)
+
+== Changes
+
+=== Changed
+
+* Documentation updates to clarify use and impact of location in pattern layouts. (for https://issues.apache.org/jira/browse/LOG4J2-225[LOG4J2-225] by Remko Popma)
+* Improved error reporting when misconfigured. (for https://issues.apache.org/jira/browse/LOG4J2-230[LOG4J2-230] by Remko Popma, Wojciech Zaręba)
+* Moved JMX Client GUI classes into separate jmx-gui submodule. (for https://issues.apache.org/jira/browse/LOG4J2-237[LOG4J2-237] by Remko Popma)
+* Moved Clock interface to package org.apache.logging.log4j.core.helpers. (for by Remko Popma)
+* Removed CheckStyle false positives for NewlineAtEndOfFile and whitespace following '*' at end of line in javadoc. (for by Remko Popma)
+* Renamed AsynchAppender to AsyncAppender. Plugin name became Async (was Asynch). (for by Remko Popma)
+
+=== Fixed
+
+* Use OSGi version format in Fragment-Host (for https://issues.apache.org/jira/browse/LOG4J2-159[LOG4J2-159] by Ralph Goers)
+* Add support for interpolating Environment variables when processing the configuration. (for https://issues.apache.org/jira/browse/LOG4J2-192[LOG4J2-192] by Ralph Goers)
+* Renamed Plugin annotation attribute from "type" to "category". (for https://issues.apache.org/jira/browse/LOG4J2-201[LOG4J2-201] by Ralph Goers)
+* Various small documentation fixes. (for https://issues.apache.org/jira/browse/LOG4J2-215[LOG4J2-215] by Remko Popma)
+* Ensure PluginManager streams are always closed. (for https://issues.apache.org/jira/browse/LOG4J2-217[LOG4J2-217] by Remko Popma, Fabien Sanglard)
+* Fix: install default root logger if not configured (this is unchanged), but make sure to include configured named loggers. Clarified documentation. (for https://issues.apache.org/jira/browse/LOG4J2-219[LOG4J2-219] by Remko Popma, Peter DePasquale)
+* Remove hundreds of compiler warnings. (for https://issues.apache.org/jira/browse/LOG4J2-221[LOG4J2-221] by Ralph Goers, Nick Williams)
+* Disruptor will now shut down during Tomcat shutdown. (for https://issues.apache.org/jira/browse/LOG4J2-222[LOG4J2-222] by Ralph Goers, Steven Yang)
+* Fix LoggerContext start and stop to eliminate IllegalStateException and NoClassDefFound errors. (for https://issues.apache.org/jira/browse/LOG4J2-223[LOG4J2-223] by Ralph Goers)
+* The FlumeAppender failed to start if the Flume RPCClient could not connect to any Flume agents. (for https://issues.apache.org/jira/browse/LOG4J2-224[LOG4J2-224] by Ralph Goers)
+* Logger.getParent() was not returning the correct Logger. (for https://issues.apache.org/jira/browse/LOG4J2-231[LOG4J2-231] by Ralph Goers)
+* Fixed link to log4j-user mailing list. (for https://issues.apache.org/jira/browse/LOG4J2-233[LOG4J2-233] by Remko Popma)
+* RegexFilter threw a NullPointerException when used as a context-wide filter. (for https://issues.apache.org/jira/browse/LOG4J2-234[LOG4J2-234] by Ralph Goers)
+* Removed dependency on tools jar from core module, made jconsole dependency optional. (for https://issues.apache.org/jira/browse/LOG4J2-235[LOG4J2-235] by Remko Popma, Sebastian Oerding)
