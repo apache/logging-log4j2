@@ -524,20 +524,6 @@
 
     <plugins>
 
-      <plugin>
-        <groupId>biz.aQute.bnd</groupId>
-        <artifactId>bnd-baseline-maven-plugin</artifactId>
-        <version>${bnd-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>baseline</id>
-            <goals>
-              <goal>baseline</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Enable BOM flattening -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
