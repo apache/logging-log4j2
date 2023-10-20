@@ -17,7 +17,8 @@
 package org.apache.logging.log4j.test.junit;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -131,15 +132,16 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
             final Logger logger = new SimpleLogger("StatusLoggerExtension",
                     ParameterizedNoReferenceMessageFactory.INSTANCE,
                     System.err,
-                    Level.ALL,
-                    new SimpleDateFormat("HH:mm:ss.SSS"),
-                    true);
+                    Level.ALL, null,
+                    false);
             logger.error("Test {} failed.\nDumping status data:", context.getDisplayName());
             statusListener.getStatusData().forEach(data -> {
                 logger.atLevel(data.getLevel())
                         .withThrowable(data.getThrowable())
                         .withLocation(data.getStackTraceElement())
-                        .log(data.getMessage());
+                        .log("{} {}",
+                                DateTimeFormatter.ISO_LOCAL_TIME.format(Instant.ofEpochMilli(data.getTimestamp())),
+                                data.getMessage());
             });
         }
     }
