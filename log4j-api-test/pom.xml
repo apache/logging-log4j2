@@ -43,6 +43,7 @@
       org.junitpioneer.*;resolution:=optional,
       org.apache.maven.*;resolution:=optional,
       org.codehaus.plexus.util.*;resolution:=optional,
+      org.mockito.*;resolution:=optional
     </bnd-extra-package-options>
     <bnd-extra-module-options>
       <!-- Non-transitive static modules -->
@@ -57,12 +58,16 @@
       plexus.utils;substitute="plexus-utils";transitive=false;static=true
     </bnd-extra-module-options>
   </properties>
+  <!--
+    ~ The dependency list has been checked with:
+    ~
+    ~ ./mvnw dependency:analyze -pl log4j-api-test
+    ~
+    ~ False positives:
+    ~   org.junit.platform:junit-platform-engine
+    ~     It is used in StackLocatorUtilTest through a Class.forName
+    -->
   <dependencies>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
@@ -70,6 +75,10 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -80,17 +89,24 @@
       <artifactId>junit-jupiter-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <groupId>org.junit-pioneer</groupId>
       <artifactId>junit-pioneer</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-commons</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
@@ -111,7 +127,7 @@
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-migrationsupport</artifactId>
+      <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -120,8 +136,24 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-inline</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Used by ServiceLoaderUtilTest -->
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>uk.org.webcompere</groupId>
+      <artifactId>system-stubs-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
