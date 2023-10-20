@@ -15,10 +15,10 @@
     limitations under the License.
 ////
 
-[#release-notes-2-x-x]
-== 2.x.x
+[#release-notes-${release.version?replace("[^a-zA-Z0-9]", "-", "r")}]
+== ${release.version}
 
-
+<#if release.date?has_content>Release date:: ${release.date}</#if>
 
 This release primarily focuses on enhancements to our OSGi and JPMS support and contains several bug fixes.
 It will be the first release built and signed by the CI using the https://keyserver.ubuntu.com/pks/lookup?search=077E8893A6DCC33DD4A4D5B256E73BA9A0B592D0&op=index[ASF Logging Services Release Manager GPG key], which is shared in https://www.apache.org/dist/logging/KEYS[KEYS].
@@ -43,20 +43,4 @@ All packages marked as private in the Javadoc are not exported.
 
 The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j-to-jul` and `log4j-to-slf4j`) have been changed to adhere to the same convention as the OSGi bundle names.
 
-
-=== Changed
-
-* Fix `NotSerializableException` when `Logger` is serialized with a `ReusableMessageFactory`. (https://github.com/apache/logging-log4j2/issues/1884[1884])
-* Update `actions/checkout` to version `4.1.1` (https://github.com/apache/logging-log4j2/pull/1868[1868])
-* Update `co.elastic.clients:elasticsearch-java` to version `8.10.4` (https://github.com/apache/logging-log4j2/pull/1881[1881])
-* Update `com.fasterxml.jackson:jackson-bom` to version `2.15.3` (https://github.com/apache/logging-log4j2/pull/1894[1894])
-* Update `com.google.guava:guava` to version `32.1.3-jre` (https://github.com/apache/logging-log4j2/pull/1875[1875])
-* Update `com.h2database:h2` to version `2.2.224` (https://github.com/apache/logging-log4j2/pull/1880[1880])
-* Update `github/codeql-action` to version `2.22.4` (https://github.com/apache/logging-log4j2/pull/1886[1886])
-* Update `io.netty:netty-bom` to version `4.1.100.Final` (https://github.com/apache/logging-log4j2/pull/1857[1857])
-* Update `net.bytebuddy:byte-buddy` to version `1.14.9` (https://github.com/apache/logging-log4j2/pull/1891[1891])
-* Update `org.mongodb:bson` to version `4.11.0` (https://github.com/apache/logging-log4j2/pull/1893[1893])
-* Update `org.springframework.boot:spring-boot` to version `2.7.17` (https://github.com/apache/logging-log4j2/pull/1874[1874])
-* Update `org.zeromq:jeromq` to version `0.5.4` (https://github.com/apache/logging-log4j2/pull/1878[1878])
-* Update `uk.org.webcompere:system-stubs-core` to version `2.0.3` (https://github.com/apache/logging-log4j2/pull/1892[1892])
-* Update Spring Framework from version 5.3.29 to 5.3.30;
+<#include "../.changelog.adoc.ftl">
