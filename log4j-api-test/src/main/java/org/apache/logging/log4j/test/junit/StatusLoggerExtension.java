@@ -17,6 +17,8 @@
 package org.apache.logging.log4j.test.junit;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -132,9 +134,9 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
                     Level.ALL,
                     false,
                     false,
-                    true,
                     false,
-                    "HH:mm:ss.SSS",
+                    false,
+                    null,
                     ParameterizedNoReferenceMessageFactory.INSTANCE,
                     PropertiesUtil.getProperties(),
                     System.err);
@@ -143,7 +145,9 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
                 logger.atLevel(data.getLevel())
                         .withThrowable(data.getThrowable())
                         .withLocation(data.getStackTraceElement())
-                        .log(data.getMessage());
+                        .log("{} {}",
+                                DateTimeFormatter.ISO_LOCAL_TIME.format(Instant.ofEpochMilli(data.getTimestamp())),
+                                data.getMessage());
             });
         }
     }
