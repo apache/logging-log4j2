@@ -319,7 +319,7 @@
     <module.name />
     <!-- TODO: fix errors and re-enable SpotBugs -->
     <spotbugs.skip>true</spotbugs.skip>
-    <project.build.outputTimestamp>2023-10-23T20:13:28+02:00</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2023-10-23T19:03:40Z</project.build.outputTimestamp>
 
     <!-- ========================
          Site-specific properties
