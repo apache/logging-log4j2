@@ -18,6 +18,7 @@
 **/*.iml
 /.metadata/
 /.mvn/wrapper/maven-wrapper.jar
+.flattened-pom.xml
 .project
 .settings
 .surefire-*
