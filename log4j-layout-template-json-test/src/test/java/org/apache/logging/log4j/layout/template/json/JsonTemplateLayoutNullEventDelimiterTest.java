@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.logging.log4j.Level;
@@ -48,6 +48,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @UsingStatusListener
 @UsingTestProperties
 class JsonTemplateLayoutNullEventDelimiterTest {
+
+    private static final int TIMEOUT_MS = 10_000;
 
     private static Logger LOGGER = StatusLogger.getLogger();
 
@@ -95,8 +97,7 @@ class JsonTemplateLayoutNullEventDelimiterTest {
         try {
             Awaitility
                     .await()
-                    .atMost(Duration.ofSeconds(10))
-                    .pollDelay(Duration.ofSeconds(1))
+                    .atMost(TIMEOUT_MS, TimeUnit.MILLISECONDS)
                     .until(() -> server.getTotalReadByteCount() >= expectedBytes.length);
         } catch (final ConditionTimeoutException e) {
             LOGGER.info("Timeout reached while waiting for {} bytes.", expectedBytes.length);
@@ -121,10 +122,10 @@ class JsonTemplateLayoutNullEventDelimiterTest {
             this.serverSocket = new ServerSocket(port);
             this.outputStream = new ByteArrayOutputStream();
             serverSocket.setReuseAddress(true);
-            serverSocket.setSoTimeout(5_000);
+            serverSocket.setSoTimeout(TIMEOUT_MS);
             setDaemon(true);
             start();
-            LOGGER.info("TcpServer started on port {}.", port);
+            LOGGER.info("TcpServer started on port {}.", serverSocket.getLocalPort());
         }
 
         @Override
