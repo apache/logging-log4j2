@@ -17,6 +17,6 @@
   -->
 <release xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://logging.apache.org/log4j/changelog"
-         xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.1.xsd"
+         xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
          date="2021-12-06"
          version="2.15.0"/>
