@@ -19,7 +19,7 @@
   <Appenders>
     <Socket name="Socket"
             host="localhost"
-            port="${sys:serverPort}"
+            port="${test:serverPort}"
             protocol="TCP"
             ignoreExceptions="false"
             reconnectionDelay="100"
