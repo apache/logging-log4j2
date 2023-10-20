@@ -60,3 +60,7 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 * Update `org.zeromq:jeromq` to version `0.5.4` (https://github.com/apache/logging-log4j2/pull/1878[1878])
 * Update `uk.org.webcompere:system-stubs-core` to version `2.0.3` (https://github.com/apache/logging-log4j2/pull/1892[1892])
 * Update Spring Framework from version 5.3.29 to 5.3.30;
+
+=== Fixed
+
+* Fixes the Apache Commons Logging (JCL) bridge: `log4j-jcl`. (https://github.com/apache/logging-log4j2/issues/1865[1865])
