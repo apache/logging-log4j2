@@ -973,6 +973,43 @@
         </executions>
       </plugin>
 
+      <!--
+        ~ Some external logging bridges can interfere with our tests, giving false negatives.
+        -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ban-logging-dependencies</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes>
+                    <!-- JCL replacements -->
+                    <exclude>org.slf4j:jcl-over-slf4j</exclude>
+                    <exclude>org.springframework:spring-jcl</exclude>
+                    <!-- Log4j 1.x replacements -->
+                    <exclude>org.slf4j:log4j-over-slf4j</exclude>
+                    <exclude>ch.qos.reload4j:reload4j</exclude>
+                    <!-- Bridges to Log4j 1.x -->
+                    <exclude>org.slf4j:slf4j-log4j12</exclude>
+                    <exclude>org.slf4j:slf4j-reload4j</exclude>
+                    <!-- PAX Logging just to be safe -->
+                    <exclude>org.ops4j.pax.logging:*</exclude>
+                    <!-- Logback -->
+                    <exclude>ch.qos.logback:*</exclude>
+                  </excludes>
+                </bannedDependencies>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>

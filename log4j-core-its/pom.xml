@@ -29,7 +29,8 @@
   <name>Apache Log4j Core Integration Tests</name>
   <description>Integration Tests for the Apache Log4j Implementation</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
+    <docLabel>Core Documentation</docLabel>
+    <projectDir>/core</projectDir>
     <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
@@ -155,6 +156,29 @@
   </dependencies>
   <build>
     <plugins>
+
+      <!--
+        ~ Unban Logback.
+        -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ban-logging-dependencies</id>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <includes>
+                    <include>ch.qos.logback:*:*:*:test</include>
+                  </includes>
+                </bannedDependencies>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
@@ -171,6 +195,7 @@
           <groups>org.apache.logging.log4j.core.test.categories.PerformanceTests</groups>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 </project>

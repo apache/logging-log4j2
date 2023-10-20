@@ -227,17 +227,6 @@
       <artifactId>log4j2-logstash-layout</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Logback performance tests -->
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- Mocking framework for use with JUnit -->
     <dependency>
       <groupId>org.mockito</groupId>
