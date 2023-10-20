@@ -551,14 +551,6 @@
             </goals>
             <phase>process-resources</phase>
             <inherited>false</inherited>
-            <configuration>
-              <pomElements>
-                <build>remove</build>
-                <!-- Keep the `parent`!
-                     This is a temporary fix and can be removed with the next `logging-parent` release fixing https://github.com/apache/logging-parent/issues/37 -->
-                <parent>keep</parent>
-              </pomElements>
-            </configuration>
           </execution>
         </executions>
       </plugin>
