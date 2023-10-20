@@ -46,6 +46,7 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 
 === Changed
 
+* Update `co.elastic.clients:elasticsearch-java` to version `8.10.4` (https://github.com/apache/logging-log4j2/pull/1881[1881])
 * Update `com.google.guava:guava` to version `32.1.3-jre` (https://github.com/apache/logging-log4j2/pull/1875[1875])
 * Update `com.h2database:h2` to version `2.2.224` (https://github.com/apache/logging-log4j2/pull/1880[1880])
 * Update `io.netty:netty-bom` to version `4.1.100.Final` (https://github.com/apache/logging-log4j2/pull/1857[1857])
