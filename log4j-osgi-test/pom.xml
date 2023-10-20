@@ -87,6 +87,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
       <scope>test</scope>
@@ -124,6 +129,28 @@
   </dependencies>
   <build>
     <plugins>
+
+      <!--
+        ~ Unban Logback.
+        -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ban-logging-dependencies</id>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <includes>
+                    <include>ch.qos.logback:*:*:*:test</include>
+                  </includes>
+                </bannedDependencies>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
       <plugin>
         <groupId>org.ops4j.pax.exam</groupId>
