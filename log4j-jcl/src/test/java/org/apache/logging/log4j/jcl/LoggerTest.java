@@ -20,28 +20,27 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- *
- */
-public class LoggerTest {
-
-    private static final String CONFIG = "log4j-test1.xml";
-
-    @ClassRule
-    public static final LoggerContextRule context = new LoggerContextRule(CONFIG);
+@UsingStatusListener
+@SetTestProperty(key ="log4j2.configurationFile", value="org/apache/logging/log4j/jcl/LoggerTest.xml")
+class LoggerTest {
 
     @Test
-    public void testLog() {
+    void testFactory() {
+        final LogFactory factory = LogFactory.getFactory();
+        assertThat(factory).isInstanceOf(LogFactoryImpl.class);
+    }
+
+    @Test
+    void testLog() {
         final Log logger = LogFactory.getLog("LoggerTest");
         logger.debug("Test message");
         verify("List", "o.a.l.l.j.LoggerTest Test message MDC{}" + Strings.LINE_SEPARATOR);
@@ -54,11 +53,12 @@ public class LoggerTest {
     }
 
     private void verify(final String name, final String expected) {
-        final ListAppender listApp = context.getListAppender(name);
+        final LoggerContext context = LoggerContext.getContext(false);
+        final ListAppender listApp = context.getConfiguration().getAppender(name);
         final List<String> events = listApp.getMessages();
-        assertThat(events, hasSize(1));
-        final String actual = events.get(0);
-        assertThat(actual, equalTo(expected));
+        assertThat(events)
+                .hasSize(1)
+                .containsExactly(expected);
         listApp.clear();
     }
 

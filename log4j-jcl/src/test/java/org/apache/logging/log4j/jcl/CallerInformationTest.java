@@ -20,38 +20,38 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
+@UsingStatusListener
+@SetTestProperty(key ="log4j2.configurationFile", value="org/apache/logging/log4j/jcl/CallerInformationTest.xml")
 public class CallerInformationTest {
-
-    // config from log4j-core test-jar
-    private static final String CONFIG = "log4j2-calling-class.xml";
-
-    @ClassRule
-    public static final LoggerContextRule ctx = new LoggerContextRule(CONFIG);
 
     @Test
     public void testClassLogger() throws Exception {
-        final ListAppender app = ctx.getListAppender("Class").clear();
+        final LoggerContext ctx = LoggerContext.getContext(false);
+        final ListAppender app = ctx.getConfiguration().getAppender("Class");
+        app.clear();
         final Log logger = LogFactory.getLog("ClassLogger");
         logger.info("Ignored message contents.");
         logger.warn("Verifying the caller class is still correct.");
         logger.error("Hopefully nobody breaks me!");
         final List<String> messages = app.getMessages();
-        assertEquals("Incorrect number of messages.", 3, messages.size());
-        for (final String message : messages) {
-            assertEquals("Incorrect caller class name.", this.getClass().getName(), message);
-        }
+        assertThat(messages)
+                .hasSize(3)
+                .allMatch(c -> getClass().getName().equals(c));
     }
 
     @Test
     public void testMethodLogger() throws Exception {
-        final ListAppender app = ctx.getListAppender("Method").clear();
+        final LoggerContext ctx = LoggerContext.getContext(false);
+        final ListAppender app = ctx.getConfiguration().getAppender("Method");
+        app.clear();
         final Log logger = LogFactory.getLog("MethodLogger");
         logger.info("More messages.");
         logger.warn("CATASTROPHE INCOMING!");
@@ -59,9 +59,8 @@ public class CallerInformationTest {
         logger.warn("brains~~~");
         logger.info("Itchy. Tasty.");
         final List<String> messages = app.getMessages();
-        assertEquals("Incorrect number of messages.", 5, messages.size());
-        for (final String message : messages) {
-            assertEquals("Incorrect caller method name.", "testMethodLogger", message);
-        }
+        assertThat(messages)
+                .hasSize(5)
+                .allMatch("testMethodLogger"::equals);
     }
 }

@@ -1,0 +1,12 @@
+org.apache.logging.log4j.jcl.LogFactoryImpl
+###
+#  ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████  ██
+#  ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██       ██
+#  ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ ██
+#  ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██
+#   ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  ██
+#
+# Apache Commons Logging 1.2 does **not** use the `ServiceLoader` class.
+# It reads the first line of this file and expects it to be a FQCN.
+#
+# cf. https://github.com/apache/logging-log4j2/issues/1865
