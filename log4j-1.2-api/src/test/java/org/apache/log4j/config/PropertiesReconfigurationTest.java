@@ -35,27 +35,20 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.FileAppender;
 import org.apache.logging.log4j.core.appender.FileManager;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test reconfiguring with an XML configuration.
  */
 public class PropertiesReconfigurationTest {
-
-    private class TestListener implements ConfigurationListener {
-
-        @Override
-        public synchronized void onChange(final Reconfigurable reconfigurable) {
-            toggle.countDown();
-        }
-
-    }
 
     private static final String CONFIG_CUSTOM_APPENDERS_1 = "target/test-classes/log4j1-appenders-custom-1.properties";
     private static final String CONFIG_CUSTOM_APPENDERS_2 = "target/test-classes/log4j1-appenders-custom-2.properties";
@@ -202,8 +195,7 @@ public class PropertiesReconfigurationTest {
             final Logger logger = LogManager.getLogger("test");
             logger.info("Hello");
             final Configuration original = context.getConfiguration();
-            final TestListener listener = new TestListener();
-            original.addListener(listener);
+            original.addListener(ignored -> toggle.countDown());
             file.setLastModified(System.currentTimeMillis());
             try {
                 if (!toggle.await(3, TimeUnit.SECONDS)) {

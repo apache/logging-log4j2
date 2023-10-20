@@ -26,8 +26,9 @@ import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 @LoggerContextSource("log4j-test2.xml")
@@ -44,7 +45,7 @@ public class LoggerUpdateTest {
         final org.apache.logging.log4j.Logger logger = context.getLogger("com.apache.test");
         logger.traceEntry();
         List<LogEvent> events = app.getEvents();
-        assertEquals(1, events.size(), "Incorrect number of events. Expected 1, actual " + events.size());
+        assertThat(events).hasSize(1);
         app.clear();
         final Configuration config = context.getConfiguration();
         final LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
@@ -55,12 +56,14 @@ public class LoggerUpdateTest {
         context.updateLoggers();  // This causes all Loggers to refetch information from their LoggerConfig.
         logger.traceEntry();
         events = app.getEvents();
-        assertEquals(0, events.size(), "Incorrect number of events. Expected 0, actual " + events.size());
+        assertThat(events).isEmpty();
     }
 
     @Test
+    @Timeout(3)
     public void testUpdateLoggersPropertyListeners(final LoggerContext context) throws Exception {
-        context.addConfigurationChangeListener(event -> assertSame(context, event.getLoggerContext()));
+        final Configuration config = context.getConfiguration();
+        context.addConfigurationStartedListener(configuration -> assertSame(config, configuration));
         context.updateLoggers();
     }
 }

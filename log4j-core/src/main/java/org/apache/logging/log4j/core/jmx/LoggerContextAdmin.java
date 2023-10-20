@@ -41,8 +41,6 @@ import javax.management.ObjectName;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationChangeEvent;
-import org.apache.logging.log4j.core.config.ConfigurationChangeListener;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -51,8 +49,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Implementation of the {@code LoggerContextAdminMBean} interface.
  */
-public class LoggerContextAdmin extends NotificationBroadcasterSupport implements LoggerContextAdminMBean,
-        ConfigurationChangeListener {
+public class LoggerContextAdmin extends NotificationBroadcasterSupport implements LoggerContextAdminMBean {
     private static final int PAGE = 4 * 1024;
     private static final int TEXT_BUFFER = 64 * 1024;
     private static final int BUFFER_SIZE = 2048;
@@ -66,7 +63,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
      * Constructs a new {@code LoggerContextAdmin} with the {@code Executor} to be used for sending {@code Notification}
      * s asynchronously to listeners.
      *
-     * @param executor used to send notifications asynchronously
+     * @param executor      used to send notifications asynchronously
      * @param loggerContext the instrumented object
      */
     public LoggerContextAdmin(final LoggerContext loggerContext, final Executor executor) {
@@ -79,14 +76,19 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
         } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
-        loggerContext.addConfigurationChangeListener(this);
+        loggerContext.addConfigurationStartedListener(ignored -> sendReconfiguredNotification());
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
-        final String[] notifTypes = new String[] { NOTIF_TYPE_RECONFIGURED };
+        final String[] notifTypes = new String[]{NOTIF_TYPE_RECONFIGURED};
         final String name = Notification.class.getName();
         final String description = "Configuration reconfigured";
         return new MBeanNotificationInfo(notifTypes, name, description);
+    }
+
+    private void sendReconfiguredNotification() {
+        final var notification = new Notification(NOTIF_TYPE_RECONFIGURED, objectName, sequenceNo.getAndIncrement());
+        sendNotification(notification);
     }
 
     @Override
@@ -137,12 +139,6 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     }
 
     @Override
-    public void onChange(final ConfigurationChangeEvent event) {
-        final Notification notif = new Notification(NOTIF_TYPE_RECONFIGURED, getObjectName(), nextSeqNo(), now(), null);
-        sendNotification(notif);
-    }
-
-    @Override
     public String getConfigText() throws IOException {
         return getConfigText(StandardCharsets.UTF_8.name());
     }
@@ -163,7 +159,8 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
 
     /**
      * Returns the contents of the specified input stream as a String.
-     * @param in stream to read from
+     *
+     * @param in      stream to read from
      * @param charset MUST not be null
      * @return stream contents
      * @throws IOException if a problem occurred reading from the stream.
@@ -234,11 +231,4 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
         return objectName;
     }
 
-    private long nextSeqNo() {
-        return sequenceNo.getAndIncrement();
-    }
-
-    private long now() {
-        return System.currentTimeMillis();
-    }
 }

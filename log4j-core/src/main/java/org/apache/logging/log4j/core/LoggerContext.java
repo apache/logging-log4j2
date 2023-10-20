@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -27,14 +28,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationChangeEvent;
-import org.apache.logging.log4j.core.config.ConfigurationChangeListener;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.LoggerContextAwarePostProcessor;
@@ -70,7 +69,7 @@ import static org.apache.logging.log4j.core.util.ShutdownCallbackRegistry.SHUTDO
  * filters, etc and will be atomically updated whenever a reconfigure occurs.
  */
 public class LoggerContext extends AbstractLifeCycle
-        implements org.apache.logging.log4j.spi.LoggerContext, AutoCloseable, Terminable, ConfigurationListener,
+        implements org.apache.logging.log4j.spi.LoggerContext, AutoCloseable, Terminable, Consumer<Reconfigurable>,
         LoggerContextShutdownEnabled {
 
     public static final Key<LoggerContext> KEY = Key.forClass(LoggerContext.class);
@@ -78,7 +77,8 @@ public class LoggerContext extends AbstractLifeCycle
     private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
 
     private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
-    private final List<ConfigurationChangeListener> configurationChangeListeners = new CopyOnWriteArrayList<>();
+    private final List<Consumer<Configuration>> configurationStartedListeners = new ArrayList<>();
+    private final List<Consumer<Configuration>> configurationStoppedListeners = new ArrayList<>();
     private final Lazy<List<LoggerContextShutdownAware>> listeners = Lazy.relaxed(CopyOnWriteArrayList::new);
     private final ConfigurableInstanceFactory instanceFactory;
     private PropertiesUtil properties;
@@ -705,10 +705,8 @@ public class LoggerContext extends AbstractLifeCycle
             if (prev != null) {
                 prev.removeListener(this);
                 prev.stop();
+                notifyConfigurationStopped(prev);
             }
-
-            final var event = new ConfigurationChangeEvent(this, prev, config);
-            configurationChangeListeners.forEach(listener -> listener.onChange(event));
 
             try {
                 Server.reregisterMBeansAfterReconfigure();
@@ -723,12 +721,62 @@ public class LoggerContext extends AbstractLifeCycle
         }
     }
 
-    public void addConfigurationChangeListener(final ConfigurationChangeListener listener) {
-        configurationChangeListeners.add(Objects.requireNonNull(listener, "listener"));
+    public void addConfigurationStartedListener(final Consumer<Configuration> listener) {
+        configLock.lock();
+        try {
+            configurationStartedListeners.add(listener);
+        } finally {
+            configLock.unlock();
+        }
     }
 
-    public void removeConfigurationChangeListener(final ConfigurationChangeListener listener) {
-        configurationChangeListeners.remove(listener);
+    public void removeConfigurationStartedListener(final Consumer<Configuration> listener) {
+        configLock.lock();
+        try {
+            configurationStartedListeners.remove(listener);
+        } finally {
+            configLock.unlock();
+        }
+    }
+
+    private void notifyConfigurationStarted(final Configuration configuration) {
+        for (final Consumer<Configuration> listener : configurationStartedListeners) {
+            try {
+                listener.accept(configuration);
+            } catch (final Throwable t) {
+                LOGGER.error("Caught exception while notifying listener {} of configuration start {}",
+                        listener, configuration, t);
+            }
+        }
+    }
+
+    public void addConfigurationStoppedListener(final Consumer<Configuration> listener) {
+        configLock.lock();
+        try {
+            configurationStoppedListeners.add(listener);
+        } finally {
+            configLock.unlock();
+        }
+    }
+
+    public void removeConfigurationStoppedListener(final Consumer<Configuration> listener) {
+        configLock.lock();
+        try {
+            configurationStoppedListeners.remove(listener);
+        } finally {
+            configLock.unlock();
+        }
+    }
+
+    private void notifyConfigurationStopped(final Configuration configuration) {
+        for (final Consumer<Configuration> listener : configurationStoppedListeners) {
+            try {
+                listener.accept(configuration);
+            } catch (final Throwable t) {
+                LOGGER.error("Caught exception while notifying listener {} of configuration stop {}",
+                        listener, configuration, t);
+            }
+        }
     }
 
     /**
@@ -820,12 +868,10 @@ public class LoggerContext extends AbstractLifeCycle
      * @param config The Configuration.
      */
     public void updateLoggers(final Configuration config) {
-        final Configuration old = this.configuration;
         for (final Logger logger : loggerRegistry.getLoggers()) {
             logger.updateConfiguration(config);
         }
-        final var event = new ConfigurationChangeEvent(this, old, config);
-        configurationChangeListeners.forEach(listener -> listener.onChange(event));
+        notifyConfigurationStarted(config);
     }
 
     /**
@@ -834,12 +880,12 @@ public class LoggerContext extends AbstractLifeCycle
      * @param reconfigurable The Configuration that can be reconfigured.
      */
     @Override
-    public void onChange(final Reconfigurable reconfigurable) {
+    public void accept(final Reconfigurable reconfigurable) {
         configLock.lock();
         try {
             final long startMillis = System.currentTimeMillis();
             LOGGER.debug("Reconfiguration started for context {} ({})", contextName, this);
-            initApiModule();
+            ThreadContext.init();
             final Configuration newConfig = reconfigurable.reconfigure();
             if (newConfig != null) {
                 setConfiguration(newConfig);
@@ -857,10 +903,6 @@ public class LoggerContext extends AbstractLifeCycle
     @Override
     public String toString() {
         return "LoggerContext[" + contextName + "]";
-    }
-
-    private void initApiModule() {
-        ThreadContext.init();
     }
 
     // LOG4J2-151: changed visibility from private to protected

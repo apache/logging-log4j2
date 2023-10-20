@@ -17,8 +17,8 @@
 package org.apache.logging.log4j.core.util;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 
 /**
@@ -35,7 +35,7 @@ public interface Watcher {
      * Returns the list of listeners for this configuration.
      * @return The list of listeners.
      */
-    List<ConfigurationListener> getListeners();
+    List<Consumer<Reconfigurable>> getListeners();
 
     /**
      * Called when the configuration has been modified.
@@ -73,5 +73,5 @@ public interface Watcher {
      * @param lastModifiedMillis The time the resource was last modified in milliseconds.
      * @return A new Watcher.
      */
-    Watcher newWatcher(Reconfigurable reconfigurable, List<ConfigurationListener> listeners, long lastModifiedMillis);
+    Watcher newWatcher(Reconfigurable reconfigurable, List<Consumer<Reconfigurable>> listeners, long lastModifiedMillis);
 }

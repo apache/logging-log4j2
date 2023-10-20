@@ -21,5 +21,8 @@ package org.apache.logging.log4j.core.config;
  */
 public interface Reconfigurable {
 
+    /**
+     * Parses the underlying configuration source into a new initialized configuration.
+     */
     Configuration reconfigure();
 }

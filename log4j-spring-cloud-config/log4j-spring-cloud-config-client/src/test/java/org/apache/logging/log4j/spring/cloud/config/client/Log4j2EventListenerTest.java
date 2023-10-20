@@ -20,8 +20,8 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
-import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.util.Source;
@@ -75,7 +75,7 @@ public class Log4j2EventListenerTest {
         }
 
         @Override
-        public List<ConfigurationListener> getListeners() {
+        public List<Consumer<Reconfigurable>> getListeners() {
             return null;
         }
 
@@ -106,7 +106,7 @@ public class Log4j2EventListenerTest {
         }
 
         @Override
-        public Watcher newWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners, final long lastModifiedMillis) {
+        public Watcher newWatcher(final Reconfigurable reconfigurable, final List<Consumer<Reconfigurable>> listeners, final long lastModifiedMillis) {
             return this;
         }
     }
