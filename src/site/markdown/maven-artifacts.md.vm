@@ -123,15 +123,14 @@ To build with [SBT](http://www.scala-sbt.org/), add the dependencies listed belo
 
 #sbt(['log4j-api', 'log4j-core'])
 
-$h2 Bill of Material
+$h2 Maven Bill of Materials (BOM)
 
-To keep your Log4j module versions in sync with each other, a
-<abbr id="Bill of Material">BOM</abbr>
-pom.xml file is provided for your convenience. To use this with
-[Maven](https://maven.apache.org/), add the dependency listed below to your
-`pom.xml`
-file. When you specify the version identifier in this section, you don't have to specify the version in your
-`<dependencies/>` section.
+To keep your Log4j module versions aligned, a [Maven Bill of Materials (BOM) POM](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#bill-of-materials-bom-poms) is provided for your convenience.
+
+To use this with Maven, add the dependency listed below to your `pom.xml` file.
+Note that the `<dependencyManagement>` nesting and the `<scope>import</scope>` instruction.
+This will *import* all modules bundled with the associated Log4j release to your `dependencyManagement`.
+As a result, you don't have to specify versions of the imported modules (`log4j-api`, `log4j-core`, etc.) while adding them using `<dependency>` elements.
 
 `pom.xml`
 
@@ -187,6 +186,11 @@ dependencies {
   // etc.
 }
 ```
+
+$h2 CycloneDX Software Bill of Materials (SBOM)
+
+Starting with version `2.22.0`, Log4j distributes [CyclenoDX Software Bill of Materials (SBOM)](https://cyclonedx.org/capabilities/sbom/) along with each deployed artifact.
+This is streamlined by `logging-parent`, see https://logging.apache.org/logging-parent/latest/#cyclonedx-sbom[its website] for details.
 
 $h2 Optional Components
 
