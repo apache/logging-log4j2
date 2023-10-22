@@ -37,7 +37,7 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
      */
     public static final ReusableMessageFactory INSTANCE = new ReusableMessageFactory();
 
-    private static final long serialVersionUID = -8970940216592525651L;
+    private static final long serialVersionUID = 1L;
     private final ThreadLocal<ReusableParameterizedMessage> threadLocalParameterized = new ThreadLocal<>();
     private final ThreadLocal<ReusableSimpleMessage> threadLocalSimpleMessage = new ThreadLocal<>();
     private final ThreadLocal<ReusableObjectMessage> threadLocalObjectMessage = new ThreadLocal<>();
@@ -195,5 +195,17 @@ public final class ReusableMessageFactory implements MessageFactory2, Serializab
         final ReusableObjectMessage result = getObject();
         result.set(message);
         return result;
+    }
+
+    private Object writeReplace() {
+        return new SerializationProxy();
+    }
+
+    private static class SerializationProxy implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private Object readResolve() {
+            return INSTANCE;
+        }
     }
 }

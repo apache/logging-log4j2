@@ -16,6 +16,11 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
@@ -129,4 +134,15 @@ public class ReusableMessageFactoryTest {
         ReusableMessageFactory.release(message2.get());
     }
 
+    @Test
+    void canSerializeRoundTrip() throws IOException {
+        final ReusableMessageFactory factory = new ReusableMessageFactory();
+        final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (final ObjectOutputStream out = new ObjectOutputStream(bytes)) {
+            out.writeObject(factory);
+        }
+        try (final ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
+            assertDoesNotThrow(in::readObject);
+        }
+    }
 }
