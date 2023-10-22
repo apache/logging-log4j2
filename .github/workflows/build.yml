@@ -20,133 +20,58 @@ name: build
 on:
   push:
     branches:
-      - main
+      - "main"
+      - "release/*"
+    paths-ignore:
+      - "**.adoc"
+      - "**.md"
+      - "**.txt"
   pull_request:
-
-env:
-  # Maven JVM arguments
-  MAVEN_OPTS: -XX:InitialRAMPercentage=50.0
-  # Common Maven arguments since Maven 3.9.0
-  MAVEN_ARGS: --show-version --batch-mode --errors --no-transfer-progress
+    paths-ignore:
+      - "**.adoc"
+      - "**.md"
+      - "**.txt"
 
 permissions: read-all
 
 jobs:
 
   build:
+    if: github.actor != 'dependabot[bot]'
+    uses: apache/logging-parent/.github/workflows/build-reusable.yaml@main
+    with:
+      java-version: 11
+      site-enabled: true
 
-    runs-on: ${{ matrix.os }}
-    # Based on: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-
-    steps:
-
-      - name: Checkout repository
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744   # 3.2.0
-        with:
-          fetch-depth: 32
-
-      - name: Setup JDK 11
-        uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2   # 3.9.0
-        with:
-          distribution: temurin
-          java-version: 11
-          cache: maven
-
-      # We could have used `verify`, but `clean install` is required for the following:
-      # 1. The build reproducibility report
-      #    For details, see: https://maven.apache.org/guides/mini/guide-reproducible-builds.html#how-to-test-my-maven-build-reproducibility
-      # 2. `javadoc:javadoc-no-fork`, which is attached to the `site` goal
-      - name: Build
-        timeout-minutes: 60
-        shell: bash
-        run: ./mvnw clean install
-
-      # `clean verify artifact:compare` is required to generate the build reproducibility report.
-      # For details, see: https://maven.apache.org/guides/mini/guide-reproducible-builds.html#how-to-test-my-maven-build-reproducibility
-      - name: Report build reproducibility
-        id: report-reproducible
-        timeout-minutes: 10
-        shell: bash
-        run: |
-          ./mvnw \
-          -DskipTests=true \
-          clean package artifact:compare
-
-      - name: Upload reproducibility failure context artifacts
-        if: failure()
-        uses: actions/upload-artifact@v3   # 3.1.2
-        with:
-          name: reproducibility-failure-context-${{matrix.os}}
-          path: |
-            **/target/*.buildcompare
-            **/target/*.jar
-            **/target/reference/*.jar
-
-      - name: Build site
-        timeout-minutes: 10
-        shell: bash
-        run: ./mvnw site
-
-  merge:
-
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.actor == 'dependabot[bot]'
+  deploy-snapshot:
     needs: build
+    if: github.repository == 'apache/logging-log4j2' && github.ref_name == 'main'
+    uses: apache/logging-parent/.github/workflows/deploy-snapshot-reusable.yaml@main
+    # Secrets for deployments
+    secrets:
+      NEXUS_USER: ${{ secrets.NEXUS_USER }}
+      NEXUS_PW: ${{ secrets.NEXUS_PW }}
+    with:
+      java-version: 11
+
+  deploy-release:
+    needs: build
+    if: github.repository == 'apache/logging-log4j2' && startsWith(github.ref_name, 'release/')
+    uses: apache/logging-parent/.github/workflows/deploy-release-reusable.yaml@main
+    # Secrets for deployments
+    secrets:
+      GPG_SECRET_KEY: ${{ secrets.LOGGING_GPG_SECRET_KEY }}
+      LOGGING_STAGE_DEPLOYER_USER: ${{ secrets.LOGGING_STAGE_DEPLOYER_USER }}
+      LOGGING_STAGE_DEPLOYER_PW: ${{ secrets.LOGGING_STAGE_DEPLOYER_PW }}
+      SVN_USERNAME: ${{ secrets.LOGGING_SVN_DEV_USERNAME }}
+      SVN_PASSWORD: ${{ secrets.LOGGING_SVN_DEV_PASSWORD }}
+    # Write permissions to allow the Maven `revision` property update, changelog release, etc.
     permissions:
       contents: write
-      pull-requests: write
-
-    steps:
-      - name: "[dependabot] Auto-merge the PR"
-        run: gh pr merge --auto --squash "$PR_URL"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  deploy:
-
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.repository == 'apache/logging-log4j2' && github.ref == 'refs/heads/main'
-
-    steps:
-
-      - name: Checkout repository
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744   # 3.2.0
-        with:
-          fetch-depth: 32
-
-      - name: Setup JDK 11
-        uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2   # 3.9.0
-        with:
-          distribution: temurin
-          java-version: 11
-          cache: maven
-
-      - name: Inspect project version
-        run: |
-          echo ::set-output name=version::$(./mvnw \
-            -q -Dexec.executable=echo \
-            -Dexec.args='${project.version}' --non-recursive exec:exec)
-        id: get_version
-
-      - name: Deploy artifacts
-        # Do not deploy release versions
-        if: ${{ endsWith(steps.get_version.outputs.version, '-SNAPSHOT') }}
-        timeout-minutes: 15
-        shell: bash
-        # `package install:install deploy:deploy` goal is needed to deploy without configuring the plugin in the POM.
-        # For details, see: https://maven.apache.org/plugins/maven-gpg-plugin/examples/deploy-signed-artifacts.html
-        run: |
-          ./mvnw \
-            --settings .github/workflows/maven-settings.xml \
-            -Dgpg.skip=true \
-            -DskipTests=true \
-            package install:install deploy:deploy
-        env:
-          NEXUS_USER: ${{ secrets.NEXUS_USER }}
-          NEXUS_PW: ${{ secrets.NEXUS_PW }}
+    with:
+      java-version: 11
+      project-id: log4j
+      distribution-attachment-filepath-pattern: |-
+        '^.*/target/log4j-(1\\.2-api|api(-test)?|appserver|cassandra|core(-test)?|couchdb|docker|flume-ng|iostreams|jakarta-(smtp|web)|jcl|jdbc-dbcp2|jpa|jpl|jul|kubernetes|layout-template-json|mongodb[34]|slf4j2?-impl|spring-(boot|cloud-config-client)|taglib|to-(jul|slf4j)|web)-'${PROJECT_VERSION}'\\.jar$'
+      distribution-attachment-count: 30
+      site-enabled: true

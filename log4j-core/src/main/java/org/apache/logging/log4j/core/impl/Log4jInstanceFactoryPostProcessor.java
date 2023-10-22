@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.core.time.ClockFactory;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
@@ -26,6 +28,7 @@ import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostPr
  * used in Log4j.
  */
 @Ordered(Ordered.LAST - 1000)
+@ServiceProvider(value = ConfigurableInstanceFactoryPostProcessor.class, resolution = Resolution.OPTIONAL)
 public class Log4jInstanceFactoryPostProcessor implements ConfigurableInstanceFactoryPostProcessor {
     @Override
     public void postProcessFactory(final ConfigurableInstanceFactory factory) {

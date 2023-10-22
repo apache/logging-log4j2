@@ -30,7 +30,16 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Cassandra Documentation</docLabel>
     <projectDir>/log4j-cassandra</projectDir>
-    <module.name>org.apache.logging.log4j.cassandra</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- Standardize name -->
+      cassandra.driver.core;substitute="cassandra-driver-core"
+    </bnd-extra-module-options>
+
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
     <!-- cassandra-all breaks with a newer version -->
     <!-- at least this version has one CVE less than the one suggested by Cassandra -->
@@ -55,11 +64,23 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api-test</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core-test</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -107,13 +128,16 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>*</Export-Package>
-          </instructions>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
       <plugin>

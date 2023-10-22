@@ -33,6 +33,7 @@ import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
+import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
@@ -46,6 +47,8 @@ import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Namespace;
@@ -65,6 +68,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * can be overridden via the {@code pluginPackage} annotation processor option.
  */
 @SupportedAnnotationTypes({"org.apache.logging.log4j.plugins.*", "org.apache.logging.log4j.core.config.plugins.*"})
+@ServiceProvider(value = Processor.class, resolution = Resolution.OPTIONAL)
 public class PluginProcessor extends AbstractProcessor {
 
     // TODO: this could be made more abstract to allow for compile-time and run-time plugin processing
@@ -163,9 +167,12 @@ public class PluginProcessor extends AbstractProcessor {
         try (final PrintWriter writer = createSourceFile(fqcn)) {
             writer.println("package " + pkg + ".plugins;");
             writer.println("");
+            writer.println("import aQute.bnd.annotation.Resolution;");
+            writer.println("import aQute.bnd.annotation.spi.ServiceProvider;");
             writer.println("import org.apache.logging.log4j.plugins.model.PluginEntry;");
             writer.println("import org.apache.logging.log4j.plugins.model.PluginService;");
             writer.println("");
+            writer.println("@ServiceProvider(value = PluginService.class, resolution = Resolution.OPTIONAL)");
             writer.println("public class Log4jPlugins extends PluginService {");
             writer.println("");
             writer.println("  private static final PluginEntry[] ENTRIES = new PluginEntry[] {");

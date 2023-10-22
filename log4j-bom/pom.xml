@@ -20,8 +20,7 @@
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>9</version>
-    <relativePath />
+    <version>10.1.1</version>
   </parent>
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-bom</artifactId>
@@ -35,11 +34,12 @@
   </scm>
 
   <properties>
-    <!-- reproducible build setting -->
-    <project.build.outputTimestamp>1687047772</project.build.outputTimestamp>
+    <!-- JDK version of the main Maven process (used in ASF parent POM) -->
+    <minimalJavaBuildVersion>[11,12)</minimalJavaBuildVersion>
     <maven.site.skip>true</maven.site.skip>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
-    <project.build.outputTimestamp>0</project.build.outputTimestamp>
+    <!-- reproducible build setting -->
+    <project.build.outputTimestamp>1687047772</project.build.outputTimestamp>
   </properties>
 
   <dependencyManagement>

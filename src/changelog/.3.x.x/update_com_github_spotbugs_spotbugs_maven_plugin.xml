@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
+       type="changed">
+  <issue id="1879" link="https://github.com/apache/logging-log4j2/pull/1879"/>
+  <author id="github:dependabot"/>
+  <description format="asciidoc">Update `com.github.spotbugs:spotbugs-maven-plugin` to version `4.7.3.6`</description>
+</entry>

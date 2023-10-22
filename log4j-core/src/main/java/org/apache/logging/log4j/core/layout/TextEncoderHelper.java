@@ -28,7 +28,7 @@ import java.nio.charset.CoderResult;
  *
  * @since 2.6
  */
-public final class TextEncoderHelper {
+public class TextEncoderHelper {
 
     private TextEncoderHelper() {
     }

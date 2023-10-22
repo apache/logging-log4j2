@@ -18,6 +18,8 @@ package org.apache.logging.log4j.core.impl;
 
 import java.util.Map;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.util.StringMap;
@@ -25,6 +27,7 @@ import org.apache.logging.log4j.util.StringMap;
 /**
  * ContextDataProvider for ThreadContext data.
  */
+@ServiceProvider(value = ContextDataProvider.class, resolution = Resolution.OPTIONAL)
 public class ThreadContextDataProvider implements ContextDataProvider {
 
     @Override

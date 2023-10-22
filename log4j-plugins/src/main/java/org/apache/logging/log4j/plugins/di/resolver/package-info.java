@@ -24,6 +24,10 @@
  * registered} via a {@link org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor
  * ConfigurableInstanceFactoryPostProcessor} service.
  */
+@Export
+@Version("1.0.0")
 package org.apache.logging.log4j.plugins.di.resolver;
 
 import org.apache.logging.log4j.plugins.di.spi.FactoryResolver;
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

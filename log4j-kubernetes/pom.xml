@@ -30,7 +30,16 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Kubernetes Library Documentation</docLabel>
     <projectDir>/kubernetes</projectDir>
-    <module.name>org.apache.logging.log4j.kubernetes</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- Standardize names -->
+      kubernetes.client;substitute="kubernetes-client",
+      kubernetes.model.core;substitute="kubernetes-model-core
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
   <dependencies>
     <dependency>
@@ -62,17 +71,20 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <forkCount>1</forkCount>
-          <reuseForks>true</reuseForks>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
     </plugins>

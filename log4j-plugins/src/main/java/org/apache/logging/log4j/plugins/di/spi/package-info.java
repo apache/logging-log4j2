@@ -18,4 +18,9 @@
 /**
  * Provides various SPI classes for the DI system.
  */
+@Export
+@Version("1.0.0")
 package org.apache.logging.log4j.plugins.di.spi;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

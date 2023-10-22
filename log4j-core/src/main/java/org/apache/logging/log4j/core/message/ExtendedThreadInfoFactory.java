@@ -23,13 +23,16 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.message.ThreadDumpMessage;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
+import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
 import org.apache.logging.log4j.message.ThreadInformation;
 
 /**
  * Factory to create extended thread information.
  */
-public class ExtendedThreadInfoFactory implements ThreadDumpMessage.ThreadInfoFactory {
+@ServiceProvider(value = ThreadInfoFactory.class, resolution = Resolution.OPTIONAL)
+public class ExtendedThreadInfoFactory implements ThreadInfoFactory {
     public ExtendedThreadInfoFactory() {
         final Method[] methods = ThreadInfo.class.getMethods();
         boolean basic = true;

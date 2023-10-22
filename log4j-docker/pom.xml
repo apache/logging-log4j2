@@ -30,9 +30,16 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Docker Library Documentation</docLabel>
     <projectDir>/docker</projectDir>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <module.name>org.apache.logging.log4j.docker</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- Non detected module names -->
+      com.fasterxml.jackson.core;substitute="jackson-core",
+      com.fasterxml.jackson.databind;substitute="jackson-databind"
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
   <dependencies>
     <dependency>
@@ -62,17 +69,36 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
+
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-baseline-maven-plugin</artifactId>
         <configuration>
-          <forkCount>1</forkCount>
-          <reuseForks>false</reuseForks>
+          <!--
+            ~ This packages is only used internally and was removed
+            ~ from the public OSGi exports.
+            -->
+          <diffpackages>
+            <diffpackage>!org.apache.logging.log4j.docker.model</diffpackage>
+            <diffpackage>*</diffpackage>
+          </diffpackages>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
     </plugins>

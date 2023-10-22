@@ -26,11 +26,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
-import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  *
@@ -177,10 +178,10 @@ public class MapMessageTest {
     public void testJsonFormatterMaxDepthConformance() {
         final int depth = MapMessageJsonFormatter.MAX_DEPTH - 2;
         final String expectedJson = String
-        .format("{'key':%s1%s}",
-        Strings.repeat("[", depth),
-        Strings.repeat("]", depth))
-        .replace('\'', '"');
+                .format("{'key':%s1%s}",
+                        StringUtils.repeat("[", depth),
+                        StringUtils.repeat("]", depth))
+                .replace('\'', '"');
         final String actualJson = testJsonFormatterMaxDepth(depth);
         assertEquals(expectedJson, actualJson);
     }

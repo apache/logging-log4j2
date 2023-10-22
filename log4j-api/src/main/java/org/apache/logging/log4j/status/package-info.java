@@ -18,4 +18,9 @@
 /** Status API for Log4j 2. Should not be used by typical applications performing logging but may be
  * used by applications reporting on the status of the logging system
  */
+@Export
+@Version("2.20.1")
 package org.apache.logging.log4j.status;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

@@ -41,7 +41,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  */
 @Configurable(printObject = true)
 @Plugin("Ssl")
-public final class SslConfiguration {
+public class SslConfiguration {
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private final KeyStoreConfiguration keyStoreConfig;
     private final TrustStoreConfiguration trustStoreConfig;

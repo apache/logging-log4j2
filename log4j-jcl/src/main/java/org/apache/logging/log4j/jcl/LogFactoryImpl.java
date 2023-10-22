@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogConfigurationException;
 import org.apache.commons.logging.LogFactory;
@@ -30,6 +32,7 @@ import org.apache.logging.log4j.util.Strings;
  * Log4j binding for Commons Logging.
  * {@inheritDoc}
  */
+@ServiceProvider(value = LogFactory.class, resolution = Resolution.OPTIONAL)
 public class LogFactoryImpl extends LogFactory {
 
     private final LoggerAdapter<Log> adapter = new LogAdapter();

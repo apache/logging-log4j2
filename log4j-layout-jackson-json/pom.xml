@@ -30,7 +30,17 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Layout for Jackson JSON Documentation</docLabel>
     <projectDir>/log4j-layout-json</projectDir>
-    <module.name>org.apache.logging.log4j.jackson.json</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- BND 6.x does not recognize multi-release JARs. Remove when 7.x is published -->
+      com.fasterxml.jackson.core;substitute="jackson-core",
+      com.fasterxml.jackson.databind;substitute="jackson-databind",
+      <!-- The module name of `log4j-layout-jackson` is not recognized in some Maven runs -->
+      org.apache.logging.log4j.jackson;substitute="log4j-layout-jackson"
+    </bnd-extra-module-options>
   </properties>
 
   <dependencies>
@@ -78,13 +88,16 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>*</Export-Package>
-          </instructions>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
     </plugins>

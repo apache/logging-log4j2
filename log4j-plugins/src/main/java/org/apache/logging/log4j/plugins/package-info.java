@@ -25,4 +25,9 @@
  * @see org.apache.logging.log4j.plugins.PluginFactory
  * @see org.apache.logging.log4j.plugins.Inject
  */
+@Export
+@Version("1.0.0")
 package org.apache.logging.log4j.plugins;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

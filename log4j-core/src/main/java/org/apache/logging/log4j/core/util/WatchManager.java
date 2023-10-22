@@ -30,6 +30,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
@@ -46,6 +49,7 @@ import org.apache.logging.log4j.util.ServiceRegistry;
  * @see ConfigurationScheduler
  */
 @Singleton
+@ServiceConsumer(value = WatchEventService.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
 public class WatchManager extends AbstractLifeCycle {
 
     private static final class ConfigurationMonitor {

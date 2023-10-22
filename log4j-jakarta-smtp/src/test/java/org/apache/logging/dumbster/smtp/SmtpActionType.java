@@ -19,7 +19,7 @@ package org.apache.logging.dumbster.smtp;
 /**
  * Represents an SMTP action or command.
  */
-public final class SmtpActionType {
+public class SmtpActionType {
     /**
      * Internal value for the action type.
      */

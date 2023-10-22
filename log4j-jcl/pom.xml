@@ -30,7 +30,10 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>JCL Bridge Documentation</docLabel>
     <projectDir>/jcl-bridge</projectDir>
-    <module.name>org.apache.logging.log4j.jcl</module.name>
+    <bnd-extra-module-options>
+      <!-- Use module name returned by `jar -d` -->
+      commons.logging;substitute="commons-logging"
+    </bnd-extra-module-options>
   </properties>
   <dependencies>
     <dependency>
@@ -67,19 +70,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>org.apache.logging.log4j.jcl</Export-Package>
-            <Require-Capability>osgi.extender;filter:="(osgi.extender=osgi.serviceloader.registrar)";resolution:=optional</Require-Capability>
-            <Provide-Capability>osgi.serviceloader;osgi.serviceloader=org.apache.commons.logging.LogFactory</Provide-Capability>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+
 </project>

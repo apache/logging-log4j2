@@ -30,7 +30,15 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>MongoDB 3 Documentation</docLabel>
     <projectDir>/log4j-mongodb3</projectDir>
-    <module.name>org.apache.logging.log4j.mongodb3</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- Correct module names -->
+      mongodb.driver.legacy;substitute="mongodb-driver-legacy"
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 
     <!-- Override of the parent POM version -->
     <mongodb.version>3.12.11</mongodb.version>
@@ -117,13 +125,16 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>*</Export-Package>
-          </instructions>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
       <plugin>

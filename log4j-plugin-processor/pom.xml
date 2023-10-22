@@ -51,47 +51,9 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-plugins</artifactId>
     </dependency>
-    <!-- TEST DEPENDENCIES -->
-    <!-- Pull in useful test classes from API -->
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>org.apache.logging.log4j.plugins</Bundle-SymbolicName>
-            <!-- TODO: exclude internal classes from export -->
-            <Export-Package>org.apache.logging.log4j.plugins.*</Export-Package>
-            <Import-Package>org.apache.logging.log4j,
-              org.apache.logging.log4j.status,
-              org.apache.logging.log4j.util,
-              org.osgi.framework.*</Import-Package>
-            <Bundle-Activator>org.apache.logging.log4j.plugins.osgi.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <executions>
@@ -109,38 +71,6 @@
                   <version>${errorprone.version}</version>
                 </path>
               </annotationProcessorPaths>
-              <compileSourceRoots>
-                <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
-                <!--compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>-->
-              </compileSourceRoots>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-jar</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration combine.self="override">
-              <archive>
-                <manifestFile>${manifestfile}</manifestFile>
-                <manifestEntries>
-                  <Specification-Title>${project.name}</Specification-Title>
-                  <Specification-Version>${project.version}</Specification-Version>
-                  <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                  <Implementation-Title>${project.name}</Implementation-Title>
-                  <Implementation-Version>${project.version}</Implementation-Version>
-                  <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                  <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-                  <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                  <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                </manifestEntries>
-              </archive>
             </configuration>
           </execution>
         </executions>

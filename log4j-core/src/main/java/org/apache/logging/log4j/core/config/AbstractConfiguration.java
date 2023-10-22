@@ -37,6 +37,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Core;
@@ -93,6 +95,7 @@ import org.apache.logging.log4j.util.ServiceRegistry;
 /**
  * The base Configuration. Many configuration implementations will extend this class.
  */
+@ServiceConsumer(value = ScriptManagerFactory.class, resolution = Resolution.OPTIONAL)
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
 
     /**

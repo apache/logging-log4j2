@@ -30,7 +30,15 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j Layout for Jackson Documentation</docLabel>
     <projectDir>/log4j-layout-jackson</projectDir>
-    <module.name>org.apache.logging.log4j.jackson</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- BND 6.x does not recognize multi-release JARs. Remove when 7.x is published -->
+      com.fasterxml.jackson.core;substitute="jackson-core",
+      com.fasterxml.jackson.databind;substitute="jackson-databind"
+    </bnd-extra-module-options>
   </properties>
 
   <dependencies>
@@ -63,69 +71,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>*</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-jar</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration>
-              <archive>
-                <manifestFile>${manifestfile}</manifestFile>
-                <manifestEntries>
-                  <Specification-Title>${project.name}</Specification-Title>
-                  <Specification-Version>${project.version}</Specification-Version>
-                  <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                  <Implementation-Title>${project.name}</Implementation-Title>
-                  <Implementation-Version>${project.version}</Implementation-Version>
-                  <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                  <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-                  <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                  <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </execution>
-          <execution>
-            <id>default</id>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-            <configuration>
-              <archive>
-                <manifestFile>${manifestfile}</manifestFile>
-                <manifestEntries>
-                  <Specification-Title>${project.name}</Specification-Title>
-                  <Specification-Version>${project.version}</Specification-Version>
-                  <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                  <Implementation-Title>${project.name}</Implementation-Title>
-                  <Implementation-Version>${project.version}</Implementation-Version>
-                  <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                  <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-                  <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                  <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

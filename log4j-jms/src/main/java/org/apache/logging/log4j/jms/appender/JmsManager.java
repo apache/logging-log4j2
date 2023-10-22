@@ -48,7 +48,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * involving a configured ConnectionFactory and Destination.
  * </p>
  */
-public final class JmsManager extends AbstractManager {
+public class JmsManager extends AbstractManager {
 
     public static class JmsManagerConfiguration {
         private final Properties jndiProperties;

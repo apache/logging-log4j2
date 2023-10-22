@@ -41,7 +41,7 @@ import org.zeromq.ZMonitor.ZEvent;
  *
  * @since 2.6
  */
-public final class JeroMqManager extends AbstractManager {
+public class JeroMqManager extends AbstractManager {
 
     /**
      * System property to enable shutdown hook.

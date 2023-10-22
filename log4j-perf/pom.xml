@@ -34,6 +34,7 @@
     <docLabel>Apache Log4J Performance Tests</docLabel>
     <projectDir>/log4j-perf</projectDir>
     <uberjar.name>benchmarks</uberjar.name>
+    <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <module.name>org.apache.logging.log4j.perf</module.name>
   </properties>
@@ -151,15 +152,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>org.apache.logging.log4j.perf.jmh*</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -180,7 +172,8 @@
             <goals>
               <goal>shade</goal>
             </goals>
-            <phase>package</phase>
+            <!-- Ensures that it runs after `bnd-maven-plugin` -->
+            <phase>pre-integration-test</phase>
             <configuration>
               <createDependencyReducedPom>false</createDependencyReducedPom>
               <minimizeJar>false</minimizeJar>

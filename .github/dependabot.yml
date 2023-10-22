@@ -62,10 +62,10 @@ updates:
       versions: ["[2.32.0,)"]
     # `com.conversantmedia:disruptor` 1.2.16 requires Java 9
     - dependency-name: "com.conversantmedia:disruptor"
-      versions: ["1.2.16,)"]
+      versions: ["[1.2.16,)"]
     # Keep Jakarta EE at version 9.0
     - dependency-name: "jakarta.platform:*"
-      versions: ["10.0.0,)"]
+      versions: ["[10.0.0,)"]
     # OpenRewrite is quite noisy. Let us skip patch and minor updates:
     - dependency-name: "org.openrewrite:*"
       update-types: ["version-update:semver-minor", "version-update:semver-patch"]
@@ -75,7 +75,13 @@ updates:
       update-types: ["version-update:semver-minor", "version-update:semver-patch"]
     # Json Unit 3.x requires Java 17
     - dependency-name: "net.javacrumbs.json-unit:*"
-      versions: ["3.0.0,)"]
+      versions: ["[3.0.0,)"]
+    # LMAX Disruptor requires Java 11
+    - dependency-name: "com.lmax:disruptor"
+      versions: ["[4.0.0,)"]
+    # WebCompere System Stubs requires Java 11
+    - dependency-name: "uk.org.webcompere:*"
+      versions: ["2.1.0,)"]
 
 - package-ecosystem: github-actions
   directory: "/"
@@ -117,7 +123,7 @@ updates:
       versions: ["[6.0.0,)"]
     # Keep Jakarta EE at version 9.0
     - dependency-name: "jakarta.platform:*"
-      versions: ["10.0.0,)"]
+      versions: ["[10.0.0,)"]
     # OpenRewrite is quite noisy. Let us skip patch and minor updates:
     - dependency-name: "org.openrewrite:*"
       update-types: ["version-update:semver-minor", "version-update:semver-patch"]
@@ -127,7 +133,7 @@ updates:
       update-types: ["version-update:semver-minor", "version-update:semver-patch"]
     # Json Unit 3.x requires Java 17
     - dependency-name: "net.javacrumbs.json-unit:*"
-      versions: ["3.0.0,)"]
+      versions: ["[3.0.0,)"]
 
 - package-ecosystem: github-actions
   directory: "/"

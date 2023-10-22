@@ -1,0 +1,54 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= 2.0-beta7 (2013-06-01)
+
+== Changes
+
+=== Added
+
+* Break up core into multiple osgi jars. (for https://issues.apache.org/jira/browse/LOG4J2-10[LOG4J2-10] by Ralph Goers, Timothy Ward)
+* New JDBC, JPA, and NoSQL database Appenders. (for https://issues.apache.org/jira/browse/LOG4J2-229[LOG4J2-229] by Gary Gregory, Nick Williams)
+* Provide configuration information (location, content type, content if possible) via a registered Advertiser. (for https://issues.apache.org/jira/browse/LOG4J2-251[LOG4J2-251] by Scott Deboy)
+
+=== Changed
+
+* Improve ThreadContext performance with copy-on-write map and stack. (for https://issues.apache.org/jira/browse/LOG4J2-154[LOG4J2-154] by Remko Popma)
+* Allow custom LogEventFactories. (for https://issues.apache.org/jira/browse/LOG4J2-243[LOG4J2-243] by Ralph Goers)
+* Allow context parameters in Log4jContextListener to include properties. (for https://issues.apache.org/jira/browse/LOG4J2-249[LOG4J2-249] by Ralph Goers)
+* Add support for interceptors in the embedded Flume Appender. (for https://issues.apache.org/jira/browse/LOG4J2-262[LOG4J2-262] by Ralph Goers, Edward Sargisson)
+* Method name changes in interface org.apache.logging.log4j.spi.ThreadContextMap: getContext() to getCopy(), get() to getImmutableMapOrNull(). (for by Remko Popma)
+
+=== Fixed
+
+* Remove LoggerContext when LoggerContext is stopped. (for https://issues.apache.org/jira/browse/LOG4J2-223[LOG4J2-223] by Ralph Goers)
+* UDP now sends one event per packet. (for https://issues.apache.org/jira/browse/LOG4J2-228[LOG4J2-228] by Ralph Goers)
+* StringFormattedMessage and MessageFormatMessage now will accept a Throwable as their last argument and pass it on. (for https://issues.apache.org/jira/browse/LOG4J2-242[LOG4J2-242] by Ralph Goers)
+* Rewrite Appender was ignoring filters on referenced appenders. (for https://issues.apache.org/jira/browse/LOG4J2-244[LOG4J2-244] by Ralph Goers)
+* Avoid EmptyStack exception if getCallerClass and SecurityManager are not available. (for https://issues.apache.org/jira/browse/LOG4J2-245[LOG4J2-245] by Ralph Goers)
+* Data buffer is reset in finally clause. (for https://issues.apache.org/jira/browse/LOG4J2-246[LOG4J2-246] by Ralph Goers)
+* SocketServer.isActive should be volatile because it is accessed from different threads. (for https://issues.apache.org/jira/browse/LOG4J2-247[LOG4J2-247] by Gary Gregory)
+* Mark OutputStream in OutputStreamManager as volatile. Mark header and footer as final. (for https://issues.apache.org/jira/browse/LOG4J2-254[LOG4J2-254] by Ralph Goers)
+* Multi-byte character strings are now assumed to be in the platform default encoding, not UTF-8. (for https://issues.apache.org/jira/browse/LOG4J2-255[LOG4J2-255] by Remko Popma)
+* XML layout ignores charset for the XML processing instruction's encoding attribute. (for https://issues.apache.org/jira/browse/LOG4J2-257[LOG4J2-257] by Gary Gregory)
+* HTML layout does not output meta element for charset. (for https://issues.apache.org/jira/browse/LOG4J2-258[LOG4J2-258] by Gary Gregory)
+* HTML layout does not specify charset in content type. (for https://issues.apache.org/jira/browse/LOG4J2-259[LOG4J2-259] by Gary Gregory)
+* XML layout does not specify charset in content type. (for https://issues.apache.org/jira/browse/LOG4J2-260[LOG4J2-260] by Gary Gregory)
+* Add missing "not" to error message. (for https://issues.apache.org/jira/browse/LOG4J2-261[LOG4J2-261] by Ralph Goers, Edward Sargisson)
+* Do not allow a charset on RFC5424Layout - use UTF-8. (for https://issues.apache.org/jira/browse/LOG4J2-263[LOG4J2-263] by Ralph Goers)
+* Add guid to FlumeEvent headers for non-Map Messages. (for https://issues.apache.org/jira/browse/LOG4J2-268[LOG4J2-268] by Ralph Goers)
+* Use transaction when batch size is 1. (for https://issues.apache.org/jira/browse/LOG4J2-269[LOG4J2-269] by Ralph Goers)

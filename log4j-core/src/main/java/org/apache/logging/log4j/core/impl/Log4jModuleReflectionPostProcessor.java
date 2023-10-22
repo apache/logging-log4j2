@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.impl;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.spi.ConfigurableInstanceFactoryPostProcessor;
@@ -26,6 +28,7 @@ import org.apache.logging.log4j.plugins.di.spi.ReflectionAgent;
  * This makes it so that plugins that require an open module can open themselves to a common module.
  */
 @Ordered(Ordered.FIRST + 100)
+@ServiceProvider(value = ConfigurableInstanceFactoryPostProcessor.class, resolution = Resolution.OPTIONAL)
 public class Log4jModuleReflectionPostProcessor implements ConfigurableInstanceFactoryPostProcessor {
     @Override
     public void postProcessFactory(final ConfigurableInstanceFactory factory) {

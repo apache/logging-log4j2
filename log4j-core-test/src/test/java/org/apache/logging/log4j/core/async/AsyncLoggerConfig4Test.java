@@ -19,32 +19,36 @@ package org.apache.logging.log4j.core.async;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
-@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "AsyncLoggerConfigTest4.xml")
+@UsingStatusListener
 public class AsyncLoggerConfig4Test {
 
-    @Test
-    public void testParameters() throws Exception {
-        final File file = new File("target", "AsyncLoggerConfigTest4.log");
-        assertTrue(!file.exists() || file.delete(), "Deleted old file before test");
+    @TempLoggingDir
+    private static Path loggingPath;
 
-        final Logger log = LogManager.getLogger("com.foo.Bar");
+    @Test
+    @LoggerContextSource
+    public void testParameters(final LoggerContext ctx) throws Exception {
+        final File file = loggingPath.resolve("AsyncLoggerConfigTest4.log").toFile();
+
+        final Logger log = ctx.getLogger("com.foo.Bar");
         log.info("Additive logging: {} for the price of {}!", 2, 1);
-        CoreLoggerContexts.stopLoggerContext(file); // stop async thread
+        ctx.stop(500, TimeUnit.MILLISECONDS);
 
         final BufferedReader reader = new BufferedReader(new FileReader(file));
         final String line1 = reader.readLine();
@@ -56,13 +60,13 @@ public class AsyncLoggerConfig4Test {
         file.delete();
 
         assertThat(line1,
-                containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
+                equalTo("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
         assertThat(line2,
-                containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
+                equalTo("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
         assertThat(line3,
-                containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
+                equalTo("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
         assertThat(line4,
-                containsString("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
-        assertNull(line5, "Expected only two lines to be logged");
+                equalTo("Additive logging: {} for the price of {}! [2,1] Additive logging: 2 for the price of 1!"));
+        assertNull(line5, "Expected only four lines to be logged");
     }
 }

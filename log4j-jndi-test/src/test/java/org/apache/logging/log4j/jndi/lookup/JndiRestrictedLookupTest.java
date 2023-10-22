@@ -58,6 +58,7 @@ public class JndiRestrictedLookupTest {
     }
 
     @Test
+    @SuppressWarnings("BanJNDI")
     public void testBadUriLookup() throws Exception {
         final int port = embeddedLdapRule.embeddedServerPort();
         final Context context = embeddedLdapRule.context();
@@ -71,6 +72,7 @@ public class JndiRestrictedLookupTest {
     }
 
     @Test
+    @SuppressWarnings("BanJNDI")
     public void testReferenceLookup() throws Exception {
         final int port = embeddedLdapRule.embeddedServerPort();
         final Context context = embeddedLdapRule.context();
@@ -83,6 +85,7 @@ public class JndiRestrictedLookupTest {
     }
 
     @Test
+    @SuppressWarnings("BanJNDI")
     public void testSerializableLookup() throws Exception {
         final int port = embeddedLdapRule.embeddedServerPort();
         final Context context = embeddedLdapRule.context();
@@ -95,6 +98,7 @@ public class JndiRestrictedLookupTest {
     }
 
     @Test
+    @SuppressWarnings("BanJNDI")
     public void testBadSerializableLookup() throws Exception {
         final int port = embeddedLdapRule.embeddedServerPort();
         final Context context = embeddedLdapRule.context();

@@ -20,4 +20,11 @@
  * @see <a href="https://logging.apache.org/log4j/2.x/manual/appenders.html#CassandraAppender">Cassandra Appender manual</a>
  * @since 2.8
  */
+@Export
+@Open("org.apache.logging.log4j.core")
+@Version("2.20.1")
 package org.apache.logging.log4j.cassandra;
+
+import aQute.bnd.annotation.jpms.Open;
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

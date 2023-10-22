@@ -30,7 +30,16 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j JPA Documentation</docLabel>
     <projectDir>/log4j-jpa</projectDir>
-    <module.name>org.apache.logging.log4j.jpa</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- Non detected module names -->
+      com.fasterxml.jackson.core;substitute="jackson-core",
+      com.fasterxml.jackson.databind;substitute="jackson-databind"
+    </bnd-extra-module-options>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
 
   <dependencies>
@@ -97,20 +106,16 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>*</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
     </plugins>

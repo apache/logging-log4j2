@@ -30,7 +30,14 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j SMTP Appender Documentation</docLabel>
     <projectDir>/log4j-smtp</projectDir>
-    <module.name>org.apache.logging.log4j.smtp</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-module-options>
+      <!-- Filebased module names must be `static` -->
+      javax.mail.api;substitute="javax.mail-api";static=true;transitive=false
+    </bnd-extra-module-options>
   </properties>
 
   <dependencies>
@@ -94,13 +101,16 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Export-Package>*</Export-Package>
-          </instructions>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
     </plugins>

@@ -27,12 +27,14 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.LoggingSystem;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.osgi.annotation.bundle.Header;
 import org.osgi.framework.AdaptPermission;
 import org.osgi.framework.AdminPermission;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
+import org.osgi.framework.Constants;
 import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.framework.wiring.BundleWiring;
 
@@ -44,6 +46,8 @@ import org.osgi.framework.wiring.BundleWiring;
  * public use and is only useful in an OSGi framework environment.
  */
 @InternalApi
+@Header(name = Constants.BUNDLE_ACTIVATOR, value = "${@class}")
+@Header(name = Constants.BUNDLE_ACTIVATIONPOLICY, value = Constants.ACTIVATION_LAZY)
 public class Activator implements BundleActivator, SynchronousBundleListener {
 
     private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();

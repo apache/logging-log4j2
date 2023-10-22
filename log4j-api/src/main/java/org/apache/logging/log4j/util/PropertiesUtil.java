@@ -39,8 +39,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.internal.CopyOnWriteNavigableSet;
-
 
 /**
  * <em>Consider this class private.</em>
@@ -56,6 +58,7 @@ import org.apache.logging.log4j.internal.CopyOnWriteNavigableSet;
  * @see PropertySource
  */
 @InternalApi
+@ServiceConsumer(value = PropertySource.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
 public class PropertiesUtil implements PropertyEnvironment {
 
     private static final String LOG4J_NAMESPACE = "component";

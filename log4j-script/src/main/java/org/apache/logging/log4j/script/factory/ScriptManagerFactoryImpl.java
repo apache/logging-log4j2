@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.script.factory;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.script.ScriptManager;
@@ -29,6 +31,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 /**
  * Creates a ScriptManager.
  */
+@ServiceProvider(value = ScriptManagerFactory.class, resolution = Resolution.OPTIONAL)
 public class ScriptManagerFactoryImpl implements ScriptManagerFactory {
     private static final Logger LOGGER = StatusLogger.getLogger();
 

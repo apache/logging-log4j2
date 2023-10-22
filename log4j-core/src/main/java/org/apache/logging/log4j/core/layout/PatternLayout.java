@@ -538,7 +538,7 @@ public final class PatternLayout extends AbstractStringLayout {
     /**
      * Custom PatternLayout builder. Use the {@link PatternLayout#newBuilder() builder factory method} to create this.
      */
-    public static final class Builder implements org.apache.logging.log4j.plugins.util.Builder<PatternLayout> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<PatternLayout> {
 
         @PluginBuilderAttribute
         private String pattern = PatternLayout.DEFAULT_CONVERSION_PATTERN;

@@ -30,7 +30,12 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Flume Documentation</docLabel>
     <projectDir>/flume-ng</projectDir>
-    <module.name>org.apache.logging.log4j.flume</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.logging.log4j.flume</bnd-module-name>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
   <dependencies>
     <dependency>
@@ -110,41 +115,22 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Bundle-SymbolicName>org.apache.logging.log4j.flume</Bundle-SymbolicName>
-            <Export-Package>org.apache.logging.log4j.flume.appender</Export-Package>
-          </instructions>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!--
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>-Xms256m -Xmx1024m -XX:MaxPermSize=512m</argLine>
-          <forkCount>1</forkCount>
-          <reuseForks>true</reuseForks>
-        </configuration>
-      </plugin>
-      -->
     </plugins>
   </build>
 </project>

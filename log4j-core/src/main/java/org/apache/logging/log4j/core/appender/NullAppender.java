@@ -30,7 +30,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  */
 @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
 @Plugin(NullAppender.PLUGIN_NAME)
-public final class NullAppender extends AbstractAppender {
+public class NullAppender extends AbstractAppender {
 
     public static final String PLUGIN_NAME = "Null";
 

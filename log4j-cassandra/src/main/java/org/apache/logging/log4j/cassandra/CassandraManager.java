@@ -40,7 +40,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Manager for a Cassandra appender instance.
  */
-public final class CassandraManager extends AbstractDatabaseManager {
+public class CassandraManager extends AbstractDatabaseManager {
 
     private static final int DEFAULT_PORT = 9042;
 

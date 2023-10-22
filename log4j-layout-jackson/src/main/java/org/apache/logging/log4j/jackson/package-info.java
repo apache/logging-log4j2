@@ -18,4 +18,9 @@
  * Classes and interfaces for serializing and deserializing Log4j 2 log events to XML and JSON using the Jackson
  * library.
  */
+@Export
+@Version("1.0.0")
 package org.apache.logging.log4j.jackson;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

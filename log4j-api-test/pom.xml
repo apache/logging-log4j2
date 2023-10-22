@@ -30,15 +30,43 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>API Documentation</docLabel>
     <projectDir>/api</projectDir>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.logging.log4j.test</bnd-module-name>
+    <bnd-extra-package-options>
+      org.apache.commons.lang3.*;resolution:=optional,
+      <!-- Both JUnit 4 and JUnit 5 are not required -->
+      org.junit.*;resolution:=optional,
+      org.hamcrest.*;resolution:=optional,
+      org.junitpioneer.*;resolution:=optional,
+      org.apache.maven.*;resolution:=optional,
+      org.codehaus.plexus.util.*;resolution:=optional,
+      org.mockito.*;resolution:=optional
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Non-transitive static modules -->
+      junit;transitive=false,
+      org.hamcrest;transitive=false,
+      org.junit.jupiter.api;transitive=false,
+      org.junitpioneer;transitive=false,
+      <!-- Filebased module names: MUST be static -->
+      maven.core;substitute="maven-core";transitive=false;static=true,
+      maven.model;substitute="maven-model";transitive=false;static=true,
+      maven.model.builder;substitute="maven-model-builder";transitive=false;static=true,
+      plexus.utils;substitute="plexus-utils";transitive=false;static=true
+    </bnd-extra-module-options>
   </properties>
+  <!--
+    ~ The dependency list has been checked with:
+    ~
+    ~ ./mvnw dependency:analyze -pl log4j-api-test
+    -->
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -48,16 +76,6 @@
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest</artifactId>
     </dependency>
-    <!-- Required for JSON support -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-    </dependency>
-    <!-- Required for JSON support -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -65,14 +83,6 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-params</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit-pioneer</groupId>
@@ -91,6 +101,38 @@
       <artifactId>opentest4j</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Required for JSON support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- Required for JSON support -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>uk.org.webcompere</groupId>
       <artifactId>system-stubs-core</artifactId>
       <scope>test</scope>
@@ -103,146 +145,23 @@
   </dependencies>
   <build>
     <plugins>
-      <!-- We add the module descriptor to the source path -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${project.basedir}/src/main/module</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>org.apache.logging.log4j.*</Export-Package>
-            <Import-Package>sun.reflect;resolution:=optional,
-              *</Import-Package>
-            <Bundle-Activator>org.apache.logging.log4j.util.Activator</Bundle-Activator>
-            <_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
-          </instructions>
-        </configuration>
-      </plugin>
-      <!-- We delete the module descriptor to prevent compiling tests as a module -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>remove-module-info</id>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-            <phase>process-classes</phase>
-            <configuration>
-              <excludeDefaultDirectories>true</excludeDefaultDirectories>
-              <filesets>
-                <fileset>
-                  <directory>${project.build.outputDirectory}</directory>
-                  <includes>
-                    <include>module-info.class</include>
-                  </includes>
-                </fileset>
-              </filesets>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <annotationProcessorPaths>
-            <path>
-              <groupId>com.google.errorprone</groupId>
-              <artifactId>error_prone_core</artifactId>
-              <version>${errorprone.version}</version>
-            </path>
-          </annotationProcessorPaths>
-        </configuration>
-        <executions>
-          <execution>
-            <id>compile-module-info</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>prepare-package</phase>
-            <configuration>
-              <compileSourceRoots>
-                <compileSourceRoot>${project.basedir}/src/main/module</compileSourceRoot>
-              </compileSourceRoots>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
-          <!-- Our test classes use the same package names as the `log4j-api` module -->
           <useModulePath>false</useModulePath>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <forkCount>1</forkCount>
-          <redirectTestOutputToFile>true</redirectTestOutputToFile>
-          <reuseForks>true</reuseForks>
-          <runOrder>random</runOrder>
-          <systemPropertyVariables>
-            <junit.jupiter.execution.parallel.config.strategy>dynamic</junit.jupiter.execution.parallel.config.strategy>
-            <junit.jupiter.execution.parallel.config.dynamic.factor>1</junit.jupiter.execution.parallel.config.dynamic.factor>
-            <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
-            <junit.jupiter.execution.parallel.mode.default>same_thread</junit.jupiter.execution.parallel.mode.default>
-            <junit.jupiter.execution.parallel.mode.classes.default>concurrent</junit.jupiter.execution.parallel.mode.classes.default>
-            <!-- Enables the `ExtensionContextAnchor` on each test -->
-            <junit.jupiter.extensions.autodetection.enabled>true</junit.jupiter.extensions.autodetection.enabled>
-            <junit.jupiter.testclass.order.default>org.junit.jupiter.api.ClassOrderer$Random</junit.jupiter.testclass.order.default>
-          </systemPropertyVariables>
           <useModulePath>false</useModulePath>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
-  <profiles>
-    <profile>
-      <id>parallel-tests</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <properties>
-                <configurationParameters>
-                  <!-- LOG4J2-2921: use parallel test execution by default -->
-                  junit.jupiter.execution.parallel.enabled = true
-                  junit.jupiter.execution.parallel.mode.default = concurrent
-                </configurationParameters>
-              </properties>
-              <runOrder>balanced</runOrder>
-              <forkCount>1C</forkCount>
-              <reuseForks>true</reuseForks>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>

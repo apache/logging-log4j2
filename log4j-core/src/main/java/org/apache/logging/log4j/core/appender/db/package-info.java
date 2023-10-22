@@ -18,4 +18,9 @@
  * The classes in this package and sub packages provide appenders for various types of databases and methods for
  * accessing databases.
  */
+@Export
+@Version("2.21.0")
 package org.apache.logging.log4j.core.appender.db;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

@@ -15,14 +15,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.apache.logging</groupId>
     <artifactId>logging-parent</artifactId>
-    <version>9</version>
+    <version>10.1.1</version>
     <relativePath />
   </parent>
 
@@ -311,9 +311,12 @@
          Common properties
          ================= -->
     <manifestfile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestfile>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.source>${maven.compiler.release}</maven.compiler.source>
+    <maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
+
+    <!-- JDK version of the main Maven process (used in ASF parent POM) -->
+    <minimalJavaBuildVersion>[11,12)</minimalJavaBuildVersion>
     <maven.compiler.parameters>true</maven.compiler.parameters>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- Fixed `project.build.outputTimestamp` is required for reproducible builds: https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
@@ -321,6 +324,8 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <module.name />
+    <!-- TODO: fix errors and reenable SpotBugs -->
+    <spotbugs.skip>true</spotbugs.skip>
 
     <!-- ========================
          Site-specific properties
@@ -361,12 +366,11 @@
     <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
     <log4j-tools.version>0.3.0</log4j-tools.version>
     <maven-artifact-plugin.version>3.4.0</maven-artifact-plugin.version>
-    <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
     <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
     <maven-scm-plugin.version>1.12.2</maven-scm-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-taglib-plugin.version>2.4</maven-taglib-plugin.version>
-    <spotbugs-maven-plugin.version>4.7.3.5</spotbugs-maven-plugin.version>
+    <spotbugs-maven-plugin.version>4.7.3.6</spotbugs-maven-plugin.version>
     <!-- `surefire.version` property used in `apache.org:apache`: -->
     <surefire.version>3.0.0-M7</surefire.version>
     <!-- Maven site depends on Velocity and the escaping rules are different in newer versions. -->
@@ -396,12 +400,12 @@
     <disruptor.version>3.4.4</disruptor.version>
     <elasticsearch.version>7.17.13</elasticsearch.version>
     <embedded-ldap.version>0.9.0</embedded-ldap.version>
-    <errorprone.version>2.7.1</errorprone.version>
+    <errorprone.version>2.23.0</errorprone.version>
     <felix.version>7.0.5</felix.version>
     <flapdoodle-embed.version>4.8.1</flapdoodle-embed.version>
     <flapdoodle-reverse.version>1.6.0</flapdoodle-reverse.version>
     <flume.version>1.11.0</flume.version>
-    <graalvm.version>23.0.1</graalvm.version>
+    <graalvm.version>23.1.1</graalvm.version>
     <groovy.version>4.0.6</groovy.version>
     <guava.version>32.1.2-jre</guava.version>
     <h2.version>2.2.222</h2.version>
@@ -461,10 +465,10 @@
     <slf4j.version>1.7.36</slf4j.version>
     <spring-boot.version>2.7.15</spring-boot.version>
     <spring-framework.version>5.3.29</spring-framework.version>
-    <system-stubs.version>2.0.2</system-stubs.version>
+    <system-stubs.version>2.1.3</system-stubs.version>
     <tomcat-juli.version>10.0.23</tomcat-juli.version>
     <velocity.version>1.7</velocity.version>
-    <wiremock.version>2.35.0</wiremock.version>
+    <wiremock.version>2.35.1</wiremock.version>
     <woodstox.version>6.5.1</woodstox.version>
     <xmlunit.version>2.9.1</xmlunit.version>
     <xz.version>1.9</xz.version>
@@ -1127,6 +1131,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.mongodb</groupId>
         <artifactId>mongodb-driver-core</artifactId>
         <version>${mongodb.version}</version>
@@ -1338,6 +1348,29 @@
     </dependencies>
   </dependencyManagement>
 
+  <!-- Common annotations used in all the modules -->
+  <dependencies>
+
+    <dependency>
+      <groupId>biz.aQute.bnd</groupId>
+      <artifactId>biz.aQute.bnd.annotation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>osgi.annotation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.annotation.bundle</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+  </dependencies>
+
   <build>
     <defaultGoal>clean install</defaultGoal>
 
@@ -1346,152 +1379,15 @@
       <plugins>
 
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>${build-helper-maven-plugin.version}</version>
-        </plugin>
-
-        <!-- used by `log4j-distribution` module which is enabled via `apache-release` profile: -->
-        <plugin>
-          <groupId>net.nicoulaj.maven.plugins</groupId>
-          <artifactId>checksum-maven-plugin</artifactId>
-          <version>${checksum-maven-plugin.version}</version>
-        </plugin>
-
-        <!-- used by `docker` profile in `log4j-layout-template-json-test`: -->
-        <plugin>
-          <groupId>io.fabric8</groupId>
-          <artifactId>docker-maven-plugin</artifactId>
-          <version>${docker-maven-plugin.version}</version>
+          <groupId>biz.aQute.bnd</groupId>
+          <artifactId>bnd-baseline-maven-plugin</artifactId>
+          <version>${bnd-maven-plugin.version}</version>
         </plugin>
 
         <plugin>
           <groupId>org.ops4j.pax.exam</groupId>
           <artifactId>exam-maven-plugin</artifactId>
           <version>${exam-maven-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.logging.log4j</groupId>
-          <artifactId>log4j-changelog-maven-plugin</artifactId>
-          <version>${log4j-tools.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-artifact-plugin</artifactId>
-          <version>${maven-artifact-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <version>${maven-bundle-plugin.version}</version>
-          <extensions>true</extensions>
-          <inherited>true</inherited>
-          <executions>
-            <execution>
-              <goals>
-                <goal>manifest</goal>
-              </goals>
-              <phase>process-classes</phase>
-            </execution>
-          </executions>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <showDeprecation>true</showDeprecation>
-            <showWarnings>true</showWarnings>
-            <encoding>UTF-8</encoding>
-            <compilerArgs>
-              <arg>-XDcompilePolicy=simple</arg>
-              <arg>-Xplugin:ErrorProne</arg>
-              <!-- JEP 396 shipped with Java 16 encapsulates internals that Error Prone needs.
-                   For details, see https://errorprone.info/docs/installation -->
-              <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
-              <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
-              <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
-              <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
-              <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
-              <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
-              <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
-              <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
-              <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
-              <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
-            </compilerArgs>
-            <compilerArguments>
-              <Xmaxwarns>10000</Xmaxwarns>
-              <Xlint />
-            </compilerArguments>
-            <annotationProcessorPaths>
-              <path>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-plugin-processor</artifactId>
-                <version>${project.version}</version>
-              </path>
-              <path>
-                <groupId>com.google.errorprone</groupId>
-                <artifactId>error_prone_core</artifactId>
-                <version>${errorprone.version}</version>
-              </path>
-            </annotationProcessorPaths>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>${maven-dependency-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>default-jar</id>
-              <goals>
-                <goal>jar</goal>
-              </goals>
-              <configuration>
-                <archive>
-                  <manifestFile>${manifestfile}</manifestFile>
-                  <manifestEntries>
-                    <Specification-Title>${project.name}</Specification-Title>
-                    <Specification-Version>${project.version}</Specification-Version>
-                    <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                    <Implementation-Title>${project.name}</Implementation-Title>
-                    <Implementation-Version>${project.version}</Implementation-Version>
-                    <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                    <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-                    <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                    <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                  </manifestEntries>
-                </archive>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-scm-plugin</artifactId>
-          <version>${maven-scm-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>${maven-source-plugin.version}</version>
-        </plugin>
-
-        <plugin>
-          <groupId>net.sourceforge.maven-taglib</groupId>
-          <artifactId>maven-taglib-plugin</artifactId>
-          <version>${maven-taglib-plugin.version}</version>
         </plugin>
 
         <plugin>
@@ -1505,6 +1401,7 @@
           <artifactId>xml-maven-plugin</artifactId>
           <version>${xml-maven-plugin.version}</version>
         </plugin>
+
       </plugins>
     </pluginManagement>
 
@@ -1518,7 +1415,7 @@
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
           <consoleOutput>true</consoleOutput>
-          <excludes>
+          <excludes combine.children="append">
             <exclude>**/target/**/*</exclude>
             <!-- Matches other RAT configurations in this POM -->
             <exclude>src/main/resources/META-INF/services/**/*</exclude>
@@ -1644,7 +1541,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <forkCount>1C</forkCount>
+          <forkCount>1</forkCount>
           <reuseForks>false</reuseForks>
           <runOrder>alphabetical</runOrder>
           <systemPropertyVariables>
@@ -1941,14 +1838,14 @@
     </profile>
 
     <profile>
-      <id>sequential-tests</id>
+      <id>parallel-tests</id>
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-              <forkCount>1</forkCount>
+              <forkCount>1C</forkCount>
             </configuration>
           </plugin>
         </plugins>

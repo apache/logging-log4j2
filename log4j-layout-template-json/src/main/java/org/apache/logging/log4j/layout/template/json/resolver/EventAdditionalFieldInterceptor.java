@@ -30,7 +30,7 @@ import org.apache.logging.log4j.util.JsonReader;
  */
 @Namespace(TemplateResolverInterceptor.CATEGORY)
 @Plugin("EventAdditionalFieldInterceptor")
-public final class EventAdditionalFieldInterceptor implements EventResolverInterceptor {
+public class EventAdditionalFieldInterceptor implements EventResolverInterceptor {
 
     private static final EventAdditionalFieldInterceptor INSTANCE =
             new EventAdditionalFieldInterceptor();

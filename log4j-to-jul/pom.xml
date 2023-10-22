@@ -31,7 +31,6 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Log4j to JUL Documentation</docLabel>
     <projectDir>/log4j-to-jul</projectDir>
-    <module.name>org.apache.logging.tojul</module.name>
   </properties>
   <dependencies>
     <dependency>
@@ -59,17 +58,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>org.apache.logging.log4j.tojul</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+
 </project>

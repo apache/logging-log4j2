@@ -47,7 +47,7 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
  */
 @Configurable(printObject = true)
 @Plugin
-public final class ColumnMapping {
+public class ColumnMapping {
 
     /**
      * Builder for {@link ColumnMapping}.
