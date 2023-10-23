@@ -21,7 +21,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 /**
  * Handles messages that contain a format String. This converts each message into a {@link MessageFormatMessage},
@@ -29,9 +28,6 @@ import java.util.regex.Pattern;
  * conforms to {@link MessageFormat}, {@link String#format(String, Object...)}, or anything else respectively.
  */
 public class FormattedMessage implements Message {
-
-    private static final String FORMAT_SPECIFIER = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";
-    private static final Pattern MSG_PATTERN = Pattern.compile(FORMAT_SPECIFIER);
 
     private final String messagePattern;
     private final Object[] argArray;
@@ -168,7 +164,27 @@ public class FormattedMessage implements Message {
         return formattedMessage;
     }
 
+    /**
+     * Gets the message implementation to which formatting is delegated.
+     *
+     * <ul>
+     *     <li>if {@code msgPattern} contains {@link MessageFormat} format specifiers a {@link MessageFormatMessage}
+     * is returned,</li>
+     *     <li>if {@code msgPattern} contains {@code {}} placeholders a {@link ParameterizedMessage} is returned,</li>
+     *     <li>if {@code msgPattern} contains {@link Format} specifiers a {@link StringFormattedMessage} is returned
+     *    .</li>
+     * </ul>
+     * <p>
+     *     Mixing specifiers from multiple types is not supported.
+     * </p>
+     *
+     * @param msgPattern The message pattern.
+     * @param args       The parameters.
+     * @param aThrowable The throwable
+     * @return The message that performs formatting.
+     */
     protected Message getMessage(final String msgPattern, final Object[] args, final Throwable aThrowable) {
+        // Check for valid `{ ArgumentIndex [, FormatType [, FormatStyle]] }` format specifiers
         try {
             final MessageFormat format = new MessageFormat(msgPattern);
             final Format[] formats = format.getFormats();
@@ -178,14 +194,13 @@ public class FormattedMessage implements Message {
         } catch (final Exception ignored) {
             // Obviously, the message is not a proper pattern for MessageFormat.
         }
-        try {
-            if (MSG_PATTERN.matcher(msgPattern).find()) {
-                return new StringFormattedMessage(locale, msgPattern, args);
-            }
-        } catch (final Exception ignored) {
-            // Also not properly formatted.
+        // Check for non-escaped `{}` format specifiers
+        // This case also includes patterns without any `java.util.Formatter` specifiers
+        if (ParameterFormatter.analyzePattern(msgPattern, 1).placeholderCount > 0 || msgPattern.indexOf('%') == -1) {
+            return new ParameterizedMessage(msgPattern, args, aThrowable);
         }
-        return new ParameterizedMessage(msgPattern, args, aThrowable);
+        // Interpret as `java.util.Formatter` format
+        return new StringFormattedMessage(locale, msgPattern, args);
     }
 
     /**
