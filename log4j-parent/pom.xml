@@ -93,7 +93,7 @@
     <hamcrest.version>2.2</hamcrest.version>
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
     <hsqldb.version>2.7.2</hsqldb.version>
-    <jackson-bom.version>2.15.2</jackson-bom.version>
+    <jackson-bom.version>2.15.3</jackson-bom.version>
     <!-- Override the version in Jakarta EE 9 BOM: -->
     <jakarta-activation.version>2.1.2</jakarta-activation.version>
     <jakarta-mail.version>2.1.2</jakarta-mail.version>
