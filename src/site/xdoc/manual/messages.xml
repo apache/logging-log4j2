@@ -168,12 +168,31 @@ public class MyApp {
       <h4>FormattedMessage</h4>
         <a name="FormattedMessage"/>
         <p>
-          The message pattern passed to a
-          <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/FormattedMessage.html">FormattedMessage</a>
-          is first checked to see if it is a valid java.text.MessageFormat pattern. If it is, a MessageFormatMessage is
-          used to format it. If not it is next checked to see if it contains any tokens that are valid format
-          specifiers for String.format(). If so, a StringFormattedMessage is used to format it. Finally, if the
-          pattern doesn't match either of those then a ParameterizedMessage is used to format it.
+          <a class="javadoc" href="../log4j-api/apidocs/org/apache/logging/log4j/message/FormattedMessage">FormattedMessage</a>
+          is a message that supports multiple pattern formatters:
+          <ul>
+            <li>
+              if the pattern is a valid
+              <a class="javadoc" href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/text/MessageFormat.html">java.text.MessageFormat</a>
+              pattern, then
+              <a class="javadoc" href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/MessageFormatMessage.html">MessageFormatMessage</a>
+              is used to format it,
+            </li>
+            <li>
+              if the pattern contains valid unescaped <code>{}</code> specifiers, then
+              <a class="javadoc" href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/ParameterizedMessage">ParameterizedMessage</a>
+              is used to format it,
+            </li>
+            <li>
+              if the pattern is a valid
+              <a class="javadoc" href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Formatter.html">java.uti.Formatter</a>
+              pattern, then
+              <a class="javadoc" href="https://logging.apache.org/log4j/2.x/javadoc/log4j-api/org/apache/logging/log4j/message/StringFormattedMessage">StringFormattedMessage</a>
+              is used to format it.
+            </li>
+          </ul>
+          Mixing specifiers from multiple formatters is not supported.
+          A pattern without any specifiers will use any of the above formatters.
         </p>
       <h4>LocalizedMessage</h4>
         <a name="LocalizedMessage"/>
