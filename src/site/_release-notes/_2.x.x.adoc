@@ -55,6 +55,7 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 * Update `github/codeql-action` to version `2.22.4` (https://github.com/apache/logging-log4j2/pull/1886[1886])
 * Update `io.netty:netty-bom` to version `4.1.100.Final` (https://github.com/apache/logging-log4j2/pull/1857[1857])
 * Update `net.bytebuddy:byte-buddy` to version `1.14.9` (https://github.com/apache/logging-log4j2/pull/1891[1891])
+* Update `org.eclipse.persistence:org.eclipse.persistence.jpa` to version `2.7.13` (https://github.com/apache/logging-log4j2/pull/1900[1900])
 * Update `org.mongodb:bson` to version `4.11.0` (https://github.com/apache/logging-log4j2/pull/1893[1893])
 * Update `org.ow2.asm:asm-bom` to version `9.6` (https://github.com/apache/logging-log4j2/pull/1898[1898])
 * Update `org.springframework.boot:spring-boot` to version `2.7.17` (https://github.com/apache/logging-log4j2/pull/1874[1874])
