@@ -19,7 +19,5 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
-  <author id="ggregory"/>
-  <author name="LF-Lin"/>
   <description format="asciidoc">Fix minor typo #792.</description>
 </entry>

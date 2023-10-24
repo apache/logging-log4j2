@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-2880" link="https://issues.apache.org/jira/browse/LOG4J2-2880"/>
-  <author id="rgoers"/>
   <description format="asciidoc">Create StackWalker benchmark. Revert back to StackWalker.walk based on benchmark results.</description>
 </entry>

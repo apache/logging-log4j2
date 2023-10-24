@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="LOG4J2-2076" link="https://issues.apache.org/jira/browse/LOG4J2-2076"/>
-  <author id="mikes"/>
   <description format="asciidoc">Split up log4j-nosql into one module per appender.</description>
 </entry>

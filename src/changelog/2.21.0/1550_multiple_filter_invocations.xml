@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="1550" link="https://github.com/apache/logging-log4j2/pull/1550"/>
-  <author id="github:ppkarwasz"/>
   <description format="asciidoc">Removed additional `isFiltered` checks in `AsyncLoggerConfig`</description>
 </entry>

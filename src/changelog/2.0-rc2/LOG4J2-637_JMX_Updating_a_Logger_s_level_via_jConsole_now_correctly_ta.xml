@@ -20,8 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-637" link="https://issues.apache.org/jira/browse/LOG4J2-637"/>
-  <author id="rpopma"/>
-  <author name="Mansoor Sajjad"/>
-  <author name="Jon Wilmoth"/>
   <description format="asciidoc">JMX: Updating a Logger's level via jConsole now correctly takes effect.</description>
 </entry>

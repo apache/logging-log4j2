@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="added">
   <issue id="LOG4J2-2187" link="https://issues.apache.org/jira/browse/LOG4J2-2187"/>
-  <author id="ggregory"/>
   <description format="asciidoc">Add a hook for a Connection Source for a JDBC Appender to release its resources.</description>
 </entry>

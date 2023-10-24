@@ -19,8 +19,6 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
-  <author id="mernst"/>
-  <author id="vy"/>
   <description format="asciidoc">
     Ensured `FileOutputStream` is closed in `CommonsCompressAction.execute()`
   </description>

@@ -19,6 +19,5 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
-  <author id="ggregory"/>
   <description format="asciidoc">Log4j 1.2 bridge class OptionConverter is missing selectAndConfigure() methods.</description>
 </entry>

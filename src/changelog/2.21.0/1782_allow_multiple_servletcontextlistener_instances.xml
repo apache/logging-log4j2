@@ -20,8 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.0.xsd"
        type="fixed">
   <issue id="1782" link="https://github.com/apache/logging-log4j2/issues/1782"/>
-  <author name="Christian Seewald" id="github:cseewald"/>
-  <author id="github:ppkarwasz"/>
   <description format="asciidoc">
     Only shutdown Log4j after last `Log4jServletContextListener` is executed
   </description>

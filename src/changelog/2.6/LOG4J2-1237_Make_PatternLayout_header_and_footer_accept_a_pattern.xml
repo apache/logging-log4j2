@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="added">
   <issue id="LOG4J2-1237" link="https://issues.apache.org/jira/browse/LOG4J2-1237"/>
-  <author id="ggregory"/>
-  <author name="Mike Calmus"/>
   <description format="asciidoc">Make PatternLayout header and footer accept a pattern.</description>
 </entry>

@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-1800" link="https://issues.apache.org/jira/browse/LOG4J2-1800"/>
-  <author id="mikes"/>
-  <author name="Vincent Tieleman"/>
   <description format="asciidoc">Report errors when sending to Kafka when using syncSend=false.</description>
 </entry>

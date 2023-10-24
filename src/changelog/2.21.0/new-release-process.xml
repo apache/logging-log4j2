@@ -19,7 +19,5 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
-  <author name="github:pkarwasz"/>
-  <author name="github:vy"/>
   <description format="asciidoc">Implemented a CI-based release process</description>
 </entry>

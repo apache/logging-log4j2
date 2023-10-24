@@ -20,9 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="1533" link="https://github.com/apache/logging-log4j2/pull/1533"/>
-  <author id="github:oshai" name="Ohad Shai"/>
-  <!-- Committer -->
-  <author name="github:pkarwasz"/>
   <description format="asciidoc">
     Allowed to override FQCN in `Log4jEventBuilder` by implementing `CallerBoundaryAware`
   </description>

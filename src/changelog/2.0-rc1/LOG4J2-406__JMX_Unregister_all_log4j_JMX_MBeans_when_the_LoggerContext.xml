@@ -20,8 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-406" link="https://issues.apache.org/jira/browse/LOG4J2-406"/>
-  <author id="rpopma"/>
-  <author name="Kerrigan Joseph"/>
   <description format="asciidoc">(JMX) Unregister all log4j JMX MBeans when the LoggerContext is stopped
         to allow web application classes to be GC-ed on undeploy.</description>
 </entry>

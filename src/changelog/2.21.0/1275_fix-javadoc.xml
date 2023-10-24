@@ -21,7 +21,5 @@
        type="fixed">
   <issue id="1275" link="https://github.com/apache/logging-log4j2/issues/1275"/>
   <issue id="1753" link="https://github.com/apache/logging-log4j2/pull/1753"/>
-  <author id="github:lukaszspyra" name="Łukasz Spyra"/>
-  <author id="github:vy"/>
   <description format="asciidoc">Fixed Javadoc failures</description>
 </entry>

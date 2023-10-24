@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-1769" link="https://issues.apache.org/jira/browse/LOG4J2-1769"/>
-  <author id="rpopma"/>
-  <author name="Brandon Goodin"/>
   <description format="asciidoc">Fixed concurrency issue affecting all layouts except PatternLayout and GelfLayout, which caused scrambled output and exceptions when logging synchronously from multiple threads.</description>
 </entry>

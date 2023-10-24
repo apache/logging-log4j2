@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="added">
   <issue id="LOG4J2-1838" link="https://issues.apache.org/jira/browse/LOG4J2-1838"/>
-  <author id="mattsicker"/>
-  <author name="Zilong Song"/>
   <description format="asciidoc">Add support for appending common suffix to each line of extended and root throwable stack trace.</description>
 </entry>

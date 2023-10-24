@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="1418" link="https://github.com/apache/logging-log4j2/pull/1418"/>
-  <author id="pkarwasz"/>
   <description format="asciidoc">Fixed buffer size in `Log4jFixedFormatter` date time formatter</description>
 </entry>

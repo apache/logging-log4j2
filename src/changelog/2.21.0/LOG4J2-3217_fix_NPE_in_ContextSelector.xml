@@ -21,7 +21,5 @@
        type="fixed">
   <issue id="LOG4J2-3217" link="https://issues.apache.org/jira/browse/LOG4J2-3217"/>
   <issue id="1538" link="https://github.com/apache/logging-log4j2/pull/1538"/>
-  <author id="pbodnar" name="Petr Bodnár"/>
-  <author id="vy"/>
   <description format="asciidoc">Fixed NPE in `ContextSelector`</description>
 </entry>

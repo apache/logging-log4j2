@@ -20,7 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-2031" link="https://issues.apache.org/jira/browse/LOG4J2-2031"/>
-  <author id="rpopma"/>
   <description format="asciidoc">Until this change, messages appeared out of order in log file any time when the async logging queue was full.
         With this change, messages are only logged out of order to prevent deadlock when Log4j2 detects recursive
         logging while the queue is full.</description>

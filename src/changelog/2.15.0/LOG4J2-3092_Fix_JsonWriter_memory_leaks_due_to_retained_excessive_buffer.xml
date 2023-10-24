@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-3092" link="https://issues.apache.org/jira/browse/LOG4J2-3092"/>
-  <author id="vy"/>
-  <author name="xmh51"/>
   <description format="asciidoc">Fix JsonWriter memory leaks due to retained excessive buffer growth.</description>
 </entry>

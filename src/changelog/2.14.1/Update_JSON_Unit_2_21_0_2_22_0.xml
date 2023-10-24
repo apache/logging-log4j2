@@ -19,6 +19,5 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
-  <author id="ggregory"/>
   <description format="asciidoc">Update JSON Unit 2.21.0 -&gt; 2.22.0.</description>
 </entry>

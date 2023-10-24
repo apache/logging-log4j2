@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-2832" link="https://issues.apache.org/jira/browse/LOG4J2-2832"/>
-  <author id="rgoers"/>
-  <author name="Benjamin Asbach"/>
   <description format="asciidoc">Correct class name printed in error message in RollingFileAppender.</description>
 </entry>

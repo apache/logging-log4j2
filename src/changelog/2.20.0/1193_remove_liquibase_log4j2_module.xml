@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="1193" link="https://github.com/apache/logging-log4j2/pull/1193"/>
-  <author name="StevenMassaro"/>
   <description format="asciidoc">Remove liquibase-log4j2 maven module</description>
 </entry>

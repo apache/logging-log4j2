@@ -19,7 +19,6 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
-  <author id="ggregory"/>
   <description format="asciidoc">- com.fasterxml.jackson.core:jackson-annotations ................. 2.12.1 -&gt; 2.12.2
         - com.fasterxml.jackson.core:jackson-core ........................ 2.12.1 -&gt; 2.12.2
         - com.fasterxml.jackson.core:jackson-databind .................... 2.12.1 -&gt; 2.12.2

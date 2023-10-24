@@ -20,7 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="added">
   <issue id="LOG4J2-595" link="https://issues.apache.org/jira/browse/LOG4J2-595"/>
-  <author id="mattsicker"/>
   <description format="asciidoc">Introduce Java annotation processor as the new plugin pre-caching mechanism. This is available in log4j-core.
         All custom plugins created before this should be re-built against the current log4j-core.</description>
 </entry>

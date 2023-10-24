@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-855" link="https://issues.apache.org/jira/browse/LOG4J2-855"/>
-  <author id="rpopma"/>
   <description format="asciidoc">Documentation: fix broken links on Appenders manual page.</description>
 </entry>

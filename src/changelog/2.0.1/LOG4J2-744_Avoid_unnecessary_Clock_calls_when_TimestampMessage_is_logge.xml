@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-744" link="https://issues.apache.org/jira/browse/LOG4J2-744"/>
-  <author id="rpopma"/>
-  <author name="Scott Harrington"/>
   <description format="asciidoc">Avoid unnecessary Clock calls when TimestampMessage is logged.</description>
 </entry>

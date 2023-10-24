@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-1226" link="https://issues.apache.org/jira/browse/LOG4J2-1226"/>
-  <author id="rpopma"/>
   <description format="asciidoc">Improve LogEvent serialization to handle non-serializable Messages and deserializing when required classes are missing.</description>
 </entry>

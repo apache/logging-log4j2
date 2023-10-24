@@ -20,8 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="1640" link="https://github.com/apache/logging-log4j2/issues/1640"/>
-  <author id="github:rgoers"/>
-  <author id="github:ppkarwasz"/>
   <description format="asciidoc">
     Improved formatting and serialization of `StackTraceElement` on JDK 9+
   </description>

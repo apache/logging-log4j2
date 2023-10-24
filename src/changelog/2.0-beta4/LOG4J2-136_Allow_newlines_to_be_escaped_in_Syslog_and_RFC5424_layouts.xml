@@ -20,8 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="LOG4J2-136" link="https://issues.apache.org/jira/browse/LOG4J2-136"/>
-  <author id="rgoers"/>
-  <author name="Scott Severtson"/>
   <description format="asciidoc">Allow newlines to be escaped in Syslog and RFC5424 layouts. Allow Throwables to be included in
         the output from RFC5424Layout.</description>
 </entry>

@@ -20,7 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="1786" link="https://github.com/apache/logging-log4j2/issues/1786"/>
-  <author id="github:ppkarwasz"/>
   <description format="asciidoc">
     Fixed context data loss if `&lt;AsyncLogger&gt;` components are used with an all async logger context
   </description>

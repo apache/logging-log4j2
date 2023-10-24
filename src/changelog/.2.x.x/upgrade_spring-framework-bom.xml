@@ -19,7 +19,6 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.0.xsd"
        type="changed">
-  <author id="github:ppkarwasz"/>
   <description format="asciidoc">
     Update Spring Framework from version 5.3.29 to 5.3.30;
   </description>

@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="LOG4J2-2385" link="https://issues.apache.org/jira/browse/LOG4J2-2385"/>
-  <author id="ggregory"/>
   <description format="asciidoc">Update Groovy from 2.4.13 to 2.5.1.</description>
 </entry>

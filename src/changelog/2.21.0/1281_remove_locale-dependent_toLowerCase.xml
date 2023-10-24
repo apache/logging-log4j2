@@ -20,8 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="1281" link="https://github.com/apache/logging-log4j2/pull/1281"/>
-  <author id="github:aawad6" name="Ammar Awad"/>
-  <!-- Committer -->
-  <author id="github:ppkarwasz"/>
   <description format="asciidoc">Removed locale-dependent `toLowerCase/toUpperCase` calls</description>
 </entry>

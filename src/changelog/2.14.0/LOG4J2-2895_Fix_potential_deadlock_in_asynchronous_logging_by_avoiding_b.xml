@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-2895" link="https://issues.apache.org/jira/browse/LOG4J2-2895"/>
-  <author id="ckozak"/>
   <description format="asciidoc">Fix potential deadlock in asynchronous logging by avoiding blocking for queue space on Log4jThreads</description>
 </entry>

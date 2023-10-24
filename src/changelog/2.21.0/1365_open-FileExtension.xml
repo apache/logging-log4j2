@@ -21,7 +21,5 @@
        type="changed">
   <issue id="1365" link="https://github.com/apache/logging-log4j2/issues/1365"/>
   <issue id="1683" link="https://github.com/apache/logging-log4j2/pull/1683"/>
-  <author id="github:Karthi1711"/>
-  <author id="github:vy"/>
   <description format="asciidoc">Open `FileExtension` methods to allow their usage in custom ``RolloverStrategy``s</description>
 </entry>

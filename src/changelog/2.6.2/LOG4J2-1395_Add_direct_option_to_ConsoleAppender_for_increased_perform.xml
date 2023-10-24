@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="added">
   <issue id="LOG4J2-1395" link="https://issues.apache.org/jira/browse/LOG4J2-1395"/>
-  <author id="mikes"/>
   <description format="asciidoc">Add "direct" option to ConsoleAppender for increased performance.</description>
 </entry>

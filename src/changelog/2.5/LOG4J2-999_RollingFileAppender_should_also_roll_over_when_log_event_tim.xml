@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-999" link="https://issues.apache.org/jira/browse/LOG4J2-999"/>
-  <author id="rpopma"/>
-  <author name="Joan Balagueró"/>
   <description format="asciidoc">RollingFileAppender should also roll over when log event time is equal to rollover time, not only when later.</description>
 </entry>

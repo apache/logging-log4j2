@@ -20,9 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-908" link="https://issues.apache.org/jira/browse/LOG4J2-908"/>
-  <author id="ggregory"/>
-  <author name="Konstantinos Liakos"/>
-  <author name="Patrick Flaherty"/>
-  <author name="Robin Coe"/>
   <description format="asciidoc">JSONLayout doesn't add a comma between log events.</description>
 </entry>

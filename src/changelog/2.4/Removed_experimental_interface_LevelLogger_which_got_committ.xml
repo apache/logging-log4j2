@@ -19,6 +19,5 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="removed">
-  <author id="rpopma"/>
   <description format="asciidoc">Removed experimental interface LevelLogger which got committed to master by mistake.</description>
 </entry>

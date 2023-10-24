@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-1158" link="https://issues.apache.org/jira/browse/LOG4J2-1158"/>
-  <author id="ggregory"/>
-  <author name="Michael Fortin"/>
   <description format="asciidoc">Log4J JUL adapter is using MessageFormat on String passed by java.util.function.Supplier&lt;String&gt;.</description>
 </entry>

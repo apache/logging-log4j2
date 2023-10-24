@@ -4,6 +4,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="1892" link="https://github.com/apache/logging-log4j2/pull/1892"/>
-  <author id="github:dependabot"/>
   <description format="asciidoc">Update `uk.org.webcompere:system-stubs-core` to version `2.0.3`</description>
 </entry>

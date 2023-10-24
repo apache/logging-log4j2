@@ -4,6 +4,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="1881" link="https://github.com/apache/logging-log4j2/pull/1881"/>
-  <author id="github:dependabot"/>
   <description format="asciidoc">Update `co.elastic.clients:elasticsearch-java` to version `8.10.4`</description>
 </entry>

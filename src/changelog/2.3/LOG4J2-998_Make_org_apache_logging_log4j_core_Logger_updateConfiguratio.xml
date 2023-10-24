@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="LOG4J2-998" link="https://issues.apache.org/jira/browse/LOG4J2-998"/>
-  <author id="ggregory"/>
-  <author name="Mariano Gonzalez"/>
   <description format="asciidoc">Make org.apache.logging.log4j.core.Logger#updateConfiguration protected.</description>
 </entry>

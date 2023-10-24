@@ -20,8 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="LOG4J2-3601" link="https://issues.apache.org/jira/browse/LOG4J2-3601"/>
-  <author id="afs" name="Andy Seaborne"/>
-  <author id="pkarwasz"/>
   <description format="asciidoc">
     Add Log4j2 Core as default runtime dependency of the SLF4J2-to-Log4j2 API bridge.
   </description>

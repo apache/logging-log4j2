@@ -20,7 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="added">
   <issue id="LOG4J2-3198" link="https://issues.apache.org/jira/browse/LOG4J2-3198"/>
-  <author id="ckozak"/>
   <description format="asciidoc">Pattern layout no longer enables lookups within message text by default for cleaner API boundaries and reduced
         formatting overhead. The old 'log4j2.formatMsgNoLookups' which enabled this behavior has been removed as well
         as the 'nolookups' message pattern converter option. The old behavior can be enabled on a per-pattern basis

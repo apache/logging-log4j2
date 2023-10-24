@@ -19,7 +19,6 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
-  <author id="nickwilliams"/>
   <description format="asciidoc">Changed the (relatively new) PatternLayout configuration attribute "suppressExceptions" to
         "alwaysWriteExceptions" to more correctly indicate what it does. As such, the meaning of this attribute has
         reversed (previous "true"s should become "false"s, and vice versa). Since this was an undocumented attribute up

@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-2013" link="https://issues.apache.org/jira/browse/LOG4J2-2013"/>
-  <author id="ggregory"/>
-  <author name="Taylor Patton"/>
   <description format="asciidoc">SslSocketManager does not apply SSLContext on TCP reconnect.</description>
 </entry>

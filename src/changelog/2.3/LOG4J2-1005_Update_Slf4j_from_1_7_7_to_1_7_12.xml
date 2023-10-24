@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="LOG4J2-1005" link="https://issues.apache.org/jira/browse/LOG4J2-1005"/>
-  <author id="ggregory"/>
   <description format="asciidoc">Update Slf4j from 1.7.7 to 1.7.12.</description>
 </entry>

@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="added">
   <issue id="LOG4J2-1471" link="https://issues.apache.org/jira/browse/LOG4J2-1471"/>
-  <author id="ggregory"/>
   <description format="asciidoc">[PatternLayout] Add an ANSI option to %xThrowable.</description>
 </entry>

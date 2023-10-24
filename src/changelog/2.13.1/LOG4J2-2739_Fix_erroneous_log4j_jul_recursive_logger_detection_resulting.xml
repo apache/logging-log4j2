@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-2739" link="https://issues.apache.org/jira/browse/LOG4J2-2739"/>
-  <author id="ckozak"/>
   <description format="asciidoc">Fix erroneous log4j-jul recursive logger detection resulting in some no-op JUL loggers and 'WARN Recursive call to getLogger' being reported by the status logger.</description>
 </entry>

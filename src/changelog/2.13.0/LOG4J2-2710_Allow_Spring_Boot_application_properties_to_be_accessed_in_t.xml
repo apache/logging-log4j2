@@ -20,7 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="added">
   <issue id="LOG4J2-2710" link="https://issues.apache.org/jira/browse/LOG4J2-2710"/>
-  <author id="rgoers"/>
   <description format="asciidoc">Allow Spring Boot application properties to be accessed in the Log4j 2 configuration. Add
         lower and upper case Lookups.</description>
 </entry>

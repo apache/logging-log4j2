@@ -19,6 +19,5 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="removed">
-  <author id="vy"/>
   <description format="asciidoc">Moved `log4j-jmx-gui` to https://github.com/apache/logging-log4j-jmx-gui/actions[its own repository] along with its own release cycle</description>
 </entry>

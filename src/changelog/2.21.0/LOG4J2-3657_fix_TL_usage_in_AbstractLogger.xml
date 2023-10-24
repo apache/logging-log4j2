@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-3657" link="https://issues.apache.org/jira/browse/LOG4J2-3657"/>
-  <author name="Marat Kamalov"/>
-  <author id="vy"/>
   <description format="asciidoc">Avoided allocating ``ThreadLocal``s in `AbstractLogger` when they are disabled, since this was causing memory leaks due to retained reference to class loaders in web applications</description>
 </entry>

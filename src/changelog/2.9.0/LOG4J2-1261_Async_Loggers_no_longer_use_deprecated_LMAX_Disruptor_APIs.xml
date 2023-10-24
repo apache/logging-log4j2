@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="LOG4J2-1261" link="https://issues.apache.org/jira/browse/LOG4J2-1261"/>
-  <author id="rpopma"/>
   <description format="asciidoc">Async Loggers no longer use deprecated LMAX Disruptor APIs. (Disruptor-3.3.3 or higher is now required.)</description>
 </entry>

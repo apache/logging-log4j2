@@ -20,7 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="1783" link="https://github.com/apache/logging-log4j2/issues/1783"/>
-  <author id="github:ppkarwasz"/>
   <description format="asciidoc">
     Allowed using Spring Arbiter without a Spring environment
   </description>

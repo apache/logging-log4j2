@@ -21,7 +21,5 @@
        type="added">
   <issue id="1508" link="https://github.com/apache/logging-log4j2/issues/1508"/>
   <issue id="1514" link="https://github.com/apache/logging-log4j2/pull/1514"/>
-  <author id="github:anuragagarwal561994" name="Anurag Agarwal"/>
-  <author id="github:vy"/>
   <description format="asciidoc">Added https://facebook.github.io/zstd/[ZStandard compression] support</description>
 </entry>

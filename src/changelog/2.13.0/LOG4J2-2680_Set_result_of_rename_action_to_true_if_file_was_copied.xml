@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-2680" link="https://issues.apache.org/jira/browse/LOG4J2-2680"/>
-  <author id="rgoers"/>
-  <author name="Guillermo Xavier Hurtado Garcia"/>
   <description format="asciidoc">Set result of rename action to true if file was copied.</description>
 </entry>

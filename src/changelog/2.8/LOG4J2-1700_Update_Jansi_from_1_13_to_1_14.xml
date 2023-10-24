@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="LOG4J2-1700" link="https://issues.apache.org/jira/browse/LOG4J2-1700"/>
-  <author id="ggregory"/>
   <description format="asciidoc">Update Jansi from 1.13 to 1.14.</description>
 </entry>

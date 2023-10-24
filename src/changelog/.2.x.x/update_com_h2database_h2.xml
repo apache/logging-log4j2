@@ -4,6 +4,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="1880" link="https://github.com/apache/logging-log4j2/pull/1880"/>
-  <author id="github:dependabot"/>
   <description format="asciidoc">Update `com.h2database:h2` to version `2.2.224`</description>
 </entry>

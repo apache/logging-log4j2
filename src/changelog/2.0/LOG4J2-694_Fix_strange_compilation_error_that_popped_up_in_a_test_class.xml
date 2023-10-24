@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-694" link="https://issues.apache.org/jira/browse/LOG4J2-694"/>
-  <author id="mattsicker"/>
   <description format="asciidoc">Fix strange compilation error that popped up in a test class.</description>
 </entry>

@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-1689" link="https://issues.apache.org/jira/browse/LOG4J2-1689"/>
-  <author id="mikes"/>
   <description format="asciidoc">Add CleanableThreadContextMap interface supporting method removeAll(Iterable&lt;String&gt;).</description>
 </entry>

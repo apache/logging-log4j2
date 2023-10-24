@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="LOG4J2-2951" link="https://issues.apache.org/jira/browse/LOG4J2-2951"/>
-  <author id="rgoers"/>
   <description format="asciidoc">Log4j 1.x properties were not being substituted.</description>
 </entry>

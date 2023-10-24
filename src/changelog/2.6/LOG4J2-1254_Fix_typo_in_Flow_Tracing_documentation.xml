@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-1254" link="https://issues.apache.org/jira/browse/LOG4J2-1254"/>
-  <author id="rpopma"/>
-  <author name="Josh Trow"/>
   <description format="asciidoc">Fix typo in Flow Tracing documentation.</description>
 </entry>

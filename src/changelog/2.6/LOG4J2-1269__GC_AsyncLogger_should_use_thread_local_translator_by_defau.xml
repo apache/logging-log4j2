@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-1269" link="https://issues.apache.org/jira/browse/LOG4J2-1269"/>
-  <author id="rpopma"/>
   <description format="asciidoc">(GC) AsyncLogger should use thread-local translator by default.</description>
 </entry>

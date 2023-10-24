@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-1664" link="https://issues.apache.org/jira/browse/LOG4J2-1664"/>
-  <author id="ggregory"/>
-  <author name="Ludovic HOCHET"/>
   <description format="asciidoc">Improve OSGi unit tests.</description>
 </entry>

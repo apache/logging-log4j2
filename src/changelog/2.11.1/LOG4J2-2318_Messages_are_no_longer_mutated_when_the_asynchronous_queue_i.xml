@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-2318" link="https://issues.apache.org/jira/browse/LOG4J2-2318"/>
-  <author id="ckozak"/>
   <description format="asciidoc">Messages are no longer mutated when the asynchronous queue is full. A warning is logged to the status logger instead.</description>
 </entry>

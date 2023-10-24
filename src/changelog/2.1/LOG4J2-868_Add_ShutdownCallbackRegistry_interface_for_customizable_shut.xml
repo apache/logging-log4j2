@@ -20,7 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="added">
   <issue id="LOG4J2-868" link="https://issues.apache.org/jira/browse/LOG4J2-868"/>
-  <author id="mattsicker"/>
   <description format="asciidoc">Add ShutdownCallbackRegistry interface for customizable shutdown callback handling. This is particularly
         useful for application servers that wish to integrate with Log4j 2.</description>
 </entry>

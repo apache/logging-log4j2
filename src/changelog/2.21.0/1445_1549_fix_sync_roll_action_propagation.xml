@@ -21,8 +21,5 @@
        type="fixed">
   <issue id="1445" link="https://github.com/apache/logging-log4j2/issues/1445"/>
   <issue id="1549" link="https://github.com/apache/logging-log4j2/pull/1549"/>
-  <author id="github:thisdudeiknew"/>
-  <author id="github:ppkarwasz"/>
-  <author id="github:vy"/>
   <description format="asciidoc">Fixed the propagation of synchronous action failures in `RollingFileManager` and `FileRenameAction`</description>
 </entry>

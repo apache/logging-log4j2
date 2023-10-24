@@ -19,7 +19,5 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
-  <author id="ggregory"/>
-  <author name="Gary Gregory"/>
   <description format="asciidoc">Log4j 1.2 bridge creates a SocketAppender instead of a SyslogAppender.</description>
 </entry>

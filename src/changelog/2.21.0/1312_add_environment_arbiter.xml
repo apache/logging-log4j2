@@ -20,9 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="1312" link="https://github.com/apache/logging-log4j2/issues/1312"/>
-  <author id="github:MouettE-SC" name="Charles Leclerc"/>
-  <!-- Committer -->
-  <author id="github:ppkarwasz"/>
   <description format="asciidoc">
     Added environment variable arbiter
   </description>

@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="1484" link="https://github.com/apache/logging-log4j2/issues/1484"/>
-  <author id="github:hblohm" name="Henning Blohm"/>
-  <author id="github:vy"/>
   <description format="asciidoc">Replaced the usage of `System.out` in `StackLocator` for warnings with `System.err`</description>
 </entry>

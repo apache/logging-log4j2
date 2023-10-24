@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-72" link="https://issues.apache.org/jira/browse/LOG4J2-72"/>
-  <author id="rgoers"/>
   <description format="asciidoc">NullPointerException in RollingFileManager when filePattern does not cause the file to be compressed.</description>
 </entry>

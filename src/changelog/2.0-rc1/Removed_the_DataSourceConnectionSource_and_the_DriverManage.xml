@@ -19,7 +19,6 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="removed">
-  <author id="nickwilliams"/>
   <description format="asciidoc">Removed the DataSourceConnectionSource and the &lt;DriverManager&gt; plugin for the JDBC Appender. It is not
         safe to use. Please use the DataSource or factory connection sources backed by a connection pool.</description>
 </entry>

@@ -20,7 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-139" link="https://issues.apache.org/jira/browse/LOG4J2-139"/>
-  <author id="rgoers"/>
   <description format="asciidoc">Fix null pointer exception in SocketAppender if no protocol is specified. The protocol will default
         to TCP for the SocketAppender and UDP for the SyslogAppender.</description>
 </entry>

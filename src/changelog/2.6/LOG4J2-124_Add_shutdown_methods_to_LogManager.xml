@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="added">
   <issue id="LOG4J2-124" link="https://issues.apache.org/jira/browse/LOG4J2-124"/>
-  <author id="rgoers"/>
   <description format="asciidoc">Add shutdown methods to LogManager.</description>
 </entry>

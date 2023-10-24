@@ -19,7 +19,6 @@
        xmlns="http://logging.apache.org/log4j/changelog"
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
-  <author id="grobmeier"/>
   <description format="asciidoc">Renamed the org.apache.logging.log4j.core.appender.db.nosql.couch package to
         org.apache.logging.log4j.core.appender.db.nosql.couchdb.</description>
 </entry>

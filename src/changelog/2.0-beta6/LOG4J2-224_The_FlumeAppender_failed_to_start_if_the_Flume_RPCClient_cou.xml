@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-224" link="https://issues.apache.org/jira/browse/LOG4J2-224"/>
-  <author id="rgoers"/>
   <description format="asciidoc">The FlumeAppender failed to start if the Flume RPCClient could not connect to any Flume agents.</description>
 </entry>

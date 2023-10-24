@@ -20,7 +20,6 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="1445" link="https://github.com/apache/logging-log4j2/issues/1445"/>
-  <author id="thisdudeiknew" name="Timothy Pfeifer"/>
   <description format="asciidoc">
     Fixed `RollingFileManager` to propagate failed synchronous actions correctly
   </description>

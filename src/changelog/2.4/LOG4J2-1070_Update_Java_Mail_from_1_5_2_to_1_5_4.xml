@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="LOG4J2-1070" link="https://issues.apache.org/jira/browse/LOG4J2-1070"/>
-  <author id="ggregory"/>
   <description format="asciidoc">Update Java Mail from 1.5.2 to 1.5.4.</description>
 </entry>

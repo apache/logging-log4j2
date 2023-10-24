@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="changed">
   <issue id="LOG4J2-2351" link="https://issues.apache.org/jira/browse/LOG4J2-2351"/>
-  <author id="ckozak"/>
   <description format="asciidoc">Added AbstractLogEvent.getMutableInstant to allow the MutableInstant instance to be modified by classes extending AbstractLogEvent.</description>
 </entry>

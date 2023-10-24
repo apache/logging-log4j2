@@ -20,7 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-1042" link="https://issues.apache.org/jira/browse/LOG4J2-1042"/>
-  <author id="ggregory"/>
-  <author name="Guillaume Turri"/>
   <description format="asciidoc">Socket and Syslog appenders don't take timeout into account at startup.</description>
 </entry>

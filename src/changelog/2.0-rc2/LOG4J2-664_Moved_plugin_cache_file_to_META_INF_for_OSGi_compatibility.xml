@@ -20,6 +20,5 @@
        xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
        type="fixed">
   <issue id="LOG4J2-664" link="https://issues.apache.org/jira/browse/LOG4J2-664"/>
-  <author id="mattsicker"/>
   <description format="asciidoc">Moved plugin cache file to META-INF for OSGi compatibility.</description>
 </entry>
