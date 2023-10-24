@@ -37,7 +37,7 @@
 
   <groupId>org.apache.logging.log4j</groupId>
   <artifactId>log4j-bom</artifactId>
-  <version>${revision}</version>
+  <version>3.0.0-alpha1</version>
   <packaging>pom</packaging>
 
   <name>Apache Log4j BOM</name>
