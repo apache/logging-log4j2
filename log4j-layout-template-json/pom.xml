@@ -68,18 +68,6 @@
   <build>
     <plugins>
 
-      <plugin>
-        <groupId>biz.aQute.bnd</groupId>
-        <artifactId>bnd-baseline-maven-plugin</artifactId>
-        <configuration>
-          <diffpackages>
-            <!-- `org.apache.logging.log4j.layout.template.json.util` package has only an internal function and was removed from the public OSGi exports. -->
-            <diffpackage>!org.apache.logging.log4j.layout.template.json.util</diffpackage>
-            <diffpackage>*</diffpackage>
-          </diffpackages>
-        </configuration>
-      </plugin>
-
       <!-- Modules that contain `log4j-core` plugins, must be compiled with: `org.apache.logging.log4j.core.config.plugins.processor.PluginProcessor` -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

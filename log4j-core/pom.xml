@@ -216,25 +216,6 @@
     <plugins>
 
       <plugin>
-        <groupId>biz.aQute.bnd</groupId>
-        <artifactId>bnd-baseline-maven-plugin</artifactId>
-        <configuration>
-          <!--
-            ~ These packages are documented as internal and were removed
-            ~ from the public OSGi exports.
-            -->
-          <diffpackages>
-            <diffpackage>!org.apache.logging.log4j.core.layout.internal</diffpackage>
-            <diffpackage>!org.apache.logging.log4j.core.message</diffpackage>
-            <diffpackage>!org.apache.logging.log4j.core.time.internal</diffpackage>
-            <diffpackage>!org.apache.logging.log4j.core.tools.picocli</diffpackage>
-            <diffpackage>!org.apache.logging.log4j.core.util.internal</diffpackage>
-            <diffpackage>*</diffpackage>
-          </diffpackages>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
