@@ -17,27 +17,11 @@
 package org.apache.logging.log4j.util.internal;
 
 import java.io.ObjectInputFilter;
-import java.util.Arrays;
-import java.util.List;
+
+import static org.apache.logging.log4j.util.internal.SerializationUtil.REQUIRED_JAVA_CLASSES;
+import static org.apache.logging.log4j.util.internal.SerializationUtil.REQUIRED_JAVA_PACKAGES;
 
 public class DefaultObjectInputFilter implements ObjectInputFilter {
-
-
-    private static final List<String> REQUIRED_JAVA_CLASSES = Arrays.asList(
-            "java.math.BigDecimal",
-            "java.math.BigInteger",
-            // for Message delegate
-            "java.rmi.MarshalledObject",
-            "[B"
-    );
-
-    private static final List<String> REQUIRED_JAVA_PACKAGES = Arrays.asList(
-            "java.lang.",
-            "java.time",
-            "java.util.",
-            "org.apache.logging.log4j.",
-            "[Lorg.apache.logging.log4j."
-    );
 
     private final ObjectInputFilter delegate;
 
@@ -81,6 +65,9 @@ public class DefaultObjectInputFilter implements ObjectInputFilter {
             if (isAllowedByDefault(name) || isRequiredPackage(name)) {
                 return Status.ALLOWED;
             }
+        } else {
+            // Object already deserialized
+            return Status.ALLOWED;
         }
         return Status.REJECTED;
     }

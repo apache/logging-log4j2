@@ -18,10 +18,15 @@ package org.apache.logging.log4j.message;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.test.junit.Mutable;
+import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -160,5 +165,19 @@ public class ReusableParameterizedMessageTest {
         final List<Object> actual = new LinkedList<>();
         msg.forEachParameter((parameter, parameterIndex, state) -> actual.add(parameter), null);
         assertEquals(expected, actual);
+    }
+
+    static Stream<Object> testSerializable() {
+        return Stream.of("World", new Object(), null);
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testSerializable(final Object arg) {
+        final ReusableParameterizedMessage expected = new ReusableParameterizedMessage();
+        expected.set("Hello {}!", arg);
+        final Message actual = SerialUtil.deserialize(SerialUtil.serialize(expected));
+        assertThat(actual).isInstanceOf(ParameterizedMessage.class);
+        assertThat(actual.getFormattedMessage()).isEqualTo(expected.getFormattedMessage());
     }
 }

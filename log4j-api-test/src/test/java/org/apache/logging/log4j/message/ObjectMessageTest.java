@@ -16,13 +16,16 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.test.junit.Mutable;
 import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -69,32 +72,6 @@ public class ObjectMessageTest {
     }
 
     @Test
-    public void testSerializeWithSerializableParam() {
-        final BigDecimal big = BigDecimal.valueOf(123.456);
-        final ObjectMessage msg = new ObjectMessage(big);
-        final ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
-        assertEquals(msg, other);
-    }
-
-    @Test
-    public void testDeserializeNonSerializableParamEqualIfToStringSame() {
-        @SuppressWarnings("EqualsHashCode")
-        class NonSerializable {
-            @Override
-            public boolean equals(final Object other) {
-                return other instanceof NonSerializable; // a very lenient equals()
-            }
-        }
-        final NonSerializable nonSerializable = new NonSerializable();
-        assertFalse(nonSerializable instanceof Serializable);
-        final ObjectMessage msg = new ObjectMessage(nonSerializable);
-        final ObjectMessage other = SerialUtil.deserialize(SerialUtil.serialize(msg));
-
-        assertEquals(msg, other);
-        assertEquals(other, msg);
-    }
-
-    @Test
     public void formatTo_usesCachedMessageString() throws Exception {
         final StringBuilder charSequence = new StringBuilder("initial value");
         final ObjectMessage message = new ObjectMessage(charSequence);
@@ -106,5 +83,25 @@ public class ObjectMessageTest {
         final StringBuilder result = new StringBuilder();
         message.formatTo(result);
         assertEquals("initial value", result.toString());
+    }
+
+    static Stream<Object> testSerializable() {
+        @SuppressWarnings("EqualsHashCode")
+        class NonSerializable {
+            @Override
+            public boolean equals(final Object other) {
+                return other instanceof NonSerializable; // a very lenient equals()
+            }
+        }
+        return Stream.of("World", new NonSerializable(), new BigDecimal("123.456"), null);
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testSerializable(final Object arg) {
+        final Message expected = new ObjectMessage(arg);
+        final Message actual = SerialUtil.deserialize(SerialUtil.serialize(expected));
+        assertThat(actual).isInstanceOf(ObjectMessage.class);
+        assertThat(actual).isEqualTo(expected);
     }
 }

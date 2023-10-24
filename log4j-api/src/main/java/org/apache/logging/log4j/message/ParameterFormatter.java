@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -152,7 +153,9 @@ final class ParameterFormatter {
     /**
      * @see #analyzePattern(String, int, MessagePatternAnalysis)
      */
-    static final class MessagePatternAnalysis {
+    static final class MessagePatternAnalysis implements Serializable {
+
+        private static final long serialVersionUID = -5974082575968329887L;
 
         /**
          * The size of the {@link #placeholderCharIndices} buffer to be allocated if it is found to be null.

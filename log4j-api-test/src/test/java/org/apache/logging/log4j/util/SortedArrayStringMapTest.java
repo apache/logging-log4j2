@@ -129,7 +129,7 @@ public class SortedArrayStringMapTest {
         }
         final String classpath = createClassPath(SortedArrayStringMap.class, DeserializerHelper.class);
         final Process process = new ProcessBuilder("java", "-cp", classpath,
-                DeserializerHelper.class.getName(), file.getPath()).start();
+                DeserializerHelper.class.getName(), file.getPath(), "org.junit.runner.Result").start();
         final BufferedReader in = new BufferedReader(new InputStreamReader(process.getErrorStream()));
         final int exitValue = process.waitFor();
 

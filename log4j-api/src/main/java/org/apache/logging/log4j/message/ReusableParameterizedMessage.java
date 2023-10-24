@@ -347,4 +347,7 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         }
     }
 
+    private Object writeReplace() {
+        return memento();
+    }
 }

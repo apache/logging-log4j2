@@ -21,11 +21,11 @@ import java.io.InputStream;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+
+import static org.apache.logging.log4j.util.internal.SerializationUtil.REQUIRED_JAVA_CLASSES;
+import static org.apache.logging.log4j.util.internal.SerializationUtil.REQUIRED_JAVA_PACKAGES;
 
 /**
  * Extends {@link ObjectInputStream} to only allow some built-in Log4j classes and caller-specified classes to be
@@ -34,26 +34,6 @@ import java.util.Set;
  * @since 2.8.2
  */
 public class FilteredObjectInputStream extends ObjectInputStream {
-
-    private static final Set<String> REQUIRED_JAVA_CLASSES = new HashSet<>(Arrays.asList(
-    // @formatter:off
-            "java.math.BigDecimal",
-            "java.math.BigInteger",
-            // for Message delegate
-            "java.rmi.MarshalledObject",
-            "[B"
-    // @formatter:on
-    ));
-
-    private static final Set<String> REQUIRED_JAVA_PACKAGES = new HashSet<>(Arrays.asList(
-    // @formatter:off
-            "java.lang.",
-            "java.time.",
-            "java.util.",
-            "org.apache.logging.log4j.",
-            "[Lorg.apache.logging.log4j."
-    // @formatter:on
-    ));
 
     private final Collection<String> allowedExtraClasses;
 

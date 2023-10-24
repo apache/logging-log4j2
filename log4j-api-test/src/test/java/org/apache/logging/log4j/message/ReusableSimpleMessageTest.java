@@ -16,9 +16,15 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.util.stream.Stream;
+
+import org.apache.logging.log4j.test.junit.SerialUtil;
 import org.apache.logging.log4j.util.Constants;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -121,5 +127,19 @@ public class ReusableSimpleMessageTest {
         msg.set("xyz");
         msg.formatTo(sb);
         assertEquals("xyz", sb.toString());
+    }
+
+    static Stream<CharSequence> testSerializable() {
+        return SimpleMessageTest.testSerializable();
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testSerializable(final CharSequence arg) {
+        final ReusableSimpleMessage expected = new ReusableSimpleMessage();
+        expected.set(arg);
+        final Message actual = SerialUtil.deserialize(SerialUtil.serialize(expected));
+        assertThat(actual).isInstanceOf(SimpleMessage.class);
+        assertThat(actual.getFormattedMessage()).isEqualTo(expected.getFormattedMessage());
     }
 }

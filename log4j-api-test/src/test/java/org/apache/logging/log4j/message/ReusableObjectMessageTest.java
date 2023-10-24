@@ -16,8 +16,14 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Test;
+import java.util.stream.Stream;
 
+import org.apache.logging.log4j.test.junit.SerialUtil;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -118,5 +124,19 @@ public class ReusableObjectMessageTest {
         msg.set("xyz");
         msg.formatTo(sb);
         assertEquals("xyz", sb.toString());
+    }
+
+    static Stream<Object> testSerializable() {
+        return ObjectMessageTest.testSerializable();
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testSerializable(final Object arg) {
+        final ReusableObjectMessage expected = new ReusableObjectMessage();
+        expected.set(arg);
+        final Message actual = SerialUtil.deserialize(SerialUtil.serialize(expected));
+        assertThat(actual).isInstanceOf(ObjectMessage.class);
+        assertThat(actual.getFormattedMessage()).isEqualTo(expected.getFormattedMessage());
     }
 }

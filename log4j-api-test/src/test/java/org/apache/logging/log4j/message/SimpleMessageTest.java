@@ -16,8 +16,14 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.junit.jupiter.api.Test;
+import java.util.stream.Stream;
 
+import org.apache.logging.log4j.test.junit.SerialUtil;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -37,4 +43,46 @@ public class SimpleMessageTest {
         message.formatTo(result);
         assertEquals("initial value", result.toString());
     }
+
+    static Stream<CharSequence> testSerializable() {
+        class NonSerializable implements CharSequence {
+
+            private final CharSequence value;
+
+            public NonSerializable(final CharSequence value) {
+                this.value = value;
+            }
+
+            @Override
+            public int length() {
+                return value.length();
+            }
+
+            @Override
+            public char charAt(int index) {
+                return value.charAt(index);
+            }
+
+            @Override
+            public String toString() {
+                return value.toString();
+            }
+
+            @Override
+            public CharSequence subSequence(int start, int end) {
+                return value.subSequence(start, end);
+            }
+        }
+        return Stream.of("World", new NonSerializable("World2") , null);
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testSerializable(final CharSequence arg) {
+        final Message expected = new SimpleMessage(arg);
+        final Message actual = SerialUtil.deserialize(SerialUtil.serialize(expected));
+        assertThat(actual).isInstanceOf(SimpleMessage.class);
+        assertThat(actual.getFormattedMessage()).isEqualTo(expected.getFormattedMessage());
+    }
+
 }

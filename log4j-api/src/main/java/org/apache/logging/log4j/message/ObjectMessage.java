@@ -23,13 +23,14 @@ import java.io.Serializable;
 
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 /**
  * Handles messages that contain an Object.
  */
 public class ObjectMessage implements Message, StringBuilderFormattable {
 
-    private static final long serialVersionUID = -5903272448334166185L;
+    private static final long serialVersionUID = -5732356316298601755L;
 
     private transient Object obj;
     private transient String objectString;
@@ -125,16 +126,14 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
 
     private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
-        if (obj instanceof Serializable) {
-            out.writeObject(obj);
-        } else {
-            out.writeObject(String.valueOf(obj));
-        }
+        SerializationUtil.writeWrappedObject(obj instanceof Serializable ? (Serializable) obj : String.valueOf(obj),
+                out);
     }
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        SerializationUtil.assertFiltered(in);
         in.defaultReadObject();
-        obj = in.readObject();
+        obj = SerializationUtil.readWrappedObject(in);
     }
 
     /**

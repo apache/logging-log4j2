@@ -16,9 +16,15 @@
  */
 package org.apache.logging.log4j.message;
 
-import org.apache.logging.log4j.test.junit.Mutable;
-import org.junit.jupiter.api.Test;
+import java.util.stream.Stream;
 
+import org.apache.logging.log4j.test.junit.Mutable;
+import org.apache.logging.log4j.test.junit.SerialUtil;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -141,5 +147,18 @@ public class ParameterizedMessageTest {
         param.set("000");
         final String after = msg.getFormattedMessage();
         assertEquals("Test message XYZ", after, "Should not change after rendered once");
+    }
+
+    static Stream<Object> testSerializable() {
+        return Stream.of("World", new Object(), null);
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testSerializable(final Object arg) {
+        final Message expected = new ParameterizedMessage("Hello {}!", arg);
+        final Message actual = SerialUtil.deserialize(SerialUtil.serialize(expected));
+        assertThat(actual).isInstanceOf(ParameterizedMessage.class);
+        assertThat(actual.getFormattedMessage()).isEqualTo(expected.getFormattedMessage());
     }
 }

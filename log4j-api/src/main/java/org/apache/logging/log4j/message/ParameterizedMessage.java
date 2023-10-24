@@ -16,6 +16,10 @@
  */
 package org.apache.logging.log4j.message;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -23,6 +27,7 @@ import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysi
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.internal.SerializationUtil;
 
 import static org.apache.logging.log4j.message.ParameterFormatter.analyzePattern;
 
@@ -84,9 +89,9 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     private final String pattern;
 
-    private final transient Object[] args;
+    private transient Object[] args;
 
-    private final transient Throwable throwable;
+    private transient final Throwable throwable;
 
     private final MessagePatternAnalysis patternAnalysis;
 
@@ -354,4 +359,22 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
                 Arrays.toString(args) + ", throwable=" + throwable + ']';
     }
 
+    private void writeObject(final ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeInt(args.length);
+        for (int i = 0; i < args.length; i++) {
+            SerializationUtil.writeWrappedObject(args[i] instanceof Serializable ? (Serializable) args[i] :
+                    String.valueOf(args[i]), out);
+        }
+    }
+
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        SerializationUtil.assertFiltered(in);
+        in.defaultReadObject();
+        final int length = in.readInt();
+        args = new Object[length];
+        for (int i = 0; i < args.length; i++) {
+            args[i] = SerializationUtil.readWrappedObject(in);
+        }
+    }
 }

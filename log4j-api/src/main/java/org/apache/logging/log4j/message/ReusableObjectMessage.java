@@ -135,4 +135,8 @@ public class ReusableObjectMessage implements ReusableMessage, ParameterVisitabl
     public void clear() {
         obj = null;
     }
+
+    private Object writeReplace() {
+        return memento();
+    }
 }

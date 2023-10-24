@@ -22,6 +22,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.FilteredObjectInputStream;
+
 /**
  * Utility class to facilitate serializing and deserializing objects.
  */
@@ -56,7 +59,12 @@ public class SerialUtil {
     public static <T> T deserialize(final byte[] data) {
         try {
             final ByteArrayInputStream bas = new ByteArrayInputStream(data);
-            final ObjectInputStream ois = new ObjectInputStream(bas);
+            final ObjectInputStream ois;
+            if (Constants.JAVA_MAJOR_VERSION == 8) {
+                ois = new FilteredObjectInputStream(bas);
+            } else {
+                ois = new ObjectInputStream(bas);
+            }
             return (T) ois.readObject();
         } catch (final Exception ex) {
             throw new IllegalStateException("Could not deserialize", ex);

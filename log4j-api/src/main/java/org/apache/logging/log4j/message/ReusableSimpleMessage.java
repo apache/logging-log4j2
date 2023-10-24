@@ -110,4 +110,8 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence, Par
     public void clear() {
         charSequence = null;
     }
+
+    private Object writeReplace() {
+        return memento();
+    }
 }
