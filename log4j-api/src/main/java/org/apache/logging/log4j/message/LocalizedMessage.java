@@ -22,7 +22,6 @@ import java.io.ObjectOutputStream;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -80,8 +79,8 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this.locale = locale;
     }
 
-    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key,
-            final Object[] arguments) {
+    public LocalizedMessage(
+            final ResourceBundle bundle, final Locale locale, final String key, final Object[] arguments) {
         this.key = key;
         this.argArray = arguments;
         this.throwable = null;
@@ -137,13 +136,13 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this(bundle, (Locale) null, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final String baseName, final Locale locale, final String key, final Object arg1,
-            final Object arg2) {
+    public LocalizedMessage(
+            final String baseName, final Locale locale, final String key, final Object arg1, final Object arg2) {
         this(baseName, locale, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object arg1,
-            final Object arg2) {
+    public LocalizedMessage(
+            final ResourceBundle bundle, final Locale locale, final String key, final Object arg1, final Object arg2) {
         this(bundle, locale, key, new Object[] {arg1, arg2});
     }
 
@@ -225,8 +224,8 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
      *            based on all or part of the package name. If false the key is expected to be the exact bundle id.
      * @return The ResourceBundle.
      */
-    protected ResourceBundle getResourceBundle(final String rbBaseName, final Locale resourceBundleLocale,
-            final boolean loop) {
+    protected ResourceBundle getResourceBundle(
+            final String rbBaseName, final Locale resourceBundleLocale, final boolean loop) {
         ResourceBundle rb = null;
 
         if (rbBaseName == null) {

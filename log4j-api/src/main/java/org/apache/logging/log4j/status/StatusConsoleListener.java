@@ -19,7 +19,6 @@ package org.apache.logging.log4j.status;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Objects;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
@@ -62,19 +61,12 @@ public class StatusConsoleListener implements StatusListener {
         this(level, stream, SimpleLoggerFactory.getInstance());
     }
 
-    StatusConsoleListener(
-            final Level level,
-            final PrintStream stream,
-            final SimpleLoggerFactory loggerFactory) {
+    StatusConsoleListener(final Level level, final PrintStream stream, final SimpleLoggerFactory loggerFactory) {
         this.level = Objects.requireNonNull(level, "level");
         this.stream = Objects.requireNonNull(stream, "stream");
-        this.logger = Objects
-                .requireNonNull(loggerFactory, "loggerFactory")
+        this.logger = Objects.requireNonNull(loggerFactory, "loggerFactory")
                 .createSimpleLogger(
-                        "StatusConsoleListener",
-                        level,
-                        ParameterizedNoReferenceMessageFactory.INSTANCE,
-                        stream);
+                        "StatusConsoleListener", level, ParameterizedNoReferenceMessageFactory.INSTANCE, stream);
     }
 
     /**
@@ -103,7 +95,8 @@ public class StatusConsoleListener implements StatusListener {
         final boolean filtered = filtered(data);
         if (!filtered) {
             logger
-                    // Logging using _only_ the following 4 fields set by `StatusLogger#logMessage()`:
+                    // Logging using _only_ the following 4 fields set by
+                    // `StatusLogger#logMessage()`:
                     .atLevel(data.getLevel())
                     .withThrowable(data.getThrowable())
                     .withLocation(data.getStackTraceElement())
@@ -139,5 +132,4 @@ public class StatusConsoleListener implements StatusListener {
             this.stream.close();
         }
     }
-
 }

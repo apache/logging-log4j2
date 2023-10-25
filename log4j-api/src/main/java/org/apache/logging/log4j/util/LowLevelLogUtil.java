@@ -73,6 +73,5 @@ final class LowLevelLogUtil {
         LowLevelLogUtil.writer = new PrintWriter(Objects.requireNonNull(writer), true);
     }
 
-    private LowLevelLogUtil() {
-    }
+    private LowLevelLogUtil() {}
 }

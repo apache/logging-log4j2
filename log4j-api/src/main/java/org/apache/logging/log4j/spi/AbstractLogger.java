@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.spi;
 
 import java.io.Serializable;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.LoggingException;
@@ -49,7 +48,8 @@ import org.apache.logging.log4j.util.Supplier;
 public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLogger, Serializable {
     // Implementation note: many methods in this class are tuned for performance. MODIFY WITH CARE!
     // Specifically, try to keep the hot methods to 35 bytecodes or less:
-    // this is within the MaxInlineSize threshold on Java 7 and Java 8 Hotspot and makes these methods
+    // this is within the MaxInlineSize threshold on Java 7 and Java 8 Hotspot and makes these
+    // methods
     // candidates for immediate inlining instead of waiting until they are designated "hot enough".
 
     /**
@@ -75,19 +75,20 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     /**
      * Marker for throwing exceptions.
      */
-    public static final Marker THROWING_MARKER = MarkerManager.getMarker("THROWING").setParents(EXCEPTION_MARKER);
+    public static final Marker THROWING_MARKER =
+            MarkerManager.getMarker("THROWING").setParents(EXCEPTION_MARKER);
 
     /**
      * Marker for catching exceptions.
      */
-    public static final Marker CATCHING_MARKER = MarkerManager.getMarker("CATCHING").setParents(EXCEPTION_MARKER);
+    public static final Marker CATCHING_MARKER =
+            MarkerManager.getMarker("CATCHING").setParents(EXCEPTION_MARKER);
 
     /**
      * The default MessageFactory class.
      */
-    public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS =
-            createClassForProperty("log4j2.messageFactory", ReusableMessageFactory.class,
-                    ParameterizedMessageFactory.class);
+    public static final Class<? extends MessageFactory> DEFAULT_MESSAGE_FACTORY_CLASS = createClassForProperty(
+            "log4j2.messageFactory", ReusableMessageFactory.class, ParameterizedMessageFactory.class);
 
     /**
      * The default FlowMessageFactory class.
@@ -150,17 +151,22 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         final String name = logger.getName();
         final MessageFactory loggerMessageFactory = logger.getMessageFactory();
         if (messageFactory != null && !loggerMessageFactory.equals(messageFactory)) {
-            StatusLogger.getLogger().warn(
-                    "The Logger {} was created with the message factory {} and is now requested with the "
-                            + "message factory {}, which may create log events with unexpected formatting.", name,
-                    loggerMessageFactory, messageFactory);
+            StatusLogger.getLogger()
+                    .warn(
+                            "The Logger {} was created with the message factory {} and is now requested with the "
+                                    + "message factory {}, which may create log events with unexpected formatting.",
+                            name,
+                            loggerMessageFactory,
+                            messageFactory);
         } else if (messageFactory == null && !loggerMessageFactory.getClass().equals(DEFAULT_MESSAGE_FACTORY_CLASS)) {
-            StatusLogger
-                    .getLogger()
-                    .warn("The Logger {} was created with the message factory {} and is now requested with a null "
-                            + "message factory (defaults to {}), which may create log events with unexpected "
-                            + "formatting.",
-                            name, loggerMessageFactory, DEFAULT_MESSAGE_FACTORY_CLASS.getName());
+            StatusLogger.getLogger()
+                    .warn(
+                            "The Logger {} was created with the message factory {} and is now requested with a null "
+                                    + "message factory (defaults to {}), which may create log events with unexpected "
+                                    + "formatting.",
+                            name,
+                            loggerMessageFactory,
+                            DEFAULT_MESSAGE_FACTORY_CLASS.getName());
         }
     }
 
@@ -193,11 +199,13 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         return messageFactory.newMessage(CATCHING);
     }
 
-    private static Class<? extends MessageFactory> createClassForProperty(final String property,
+    private static Class<? extends MessageFactory> createClassForProperty(
+            final String property,
             final Class<ReusableMessageFactory> reusableParameterizedMessageFactoryClass,
             final Class<ParameterizedMessageFactory> parameterizedMessageFactoryClass) {
         try {
-            final String fallback = Constants.ENABLE_THREADLOCALS ? reusableParameterizedMessageFactoryClass.getName()
+            final String fallback = Constants.ENABLE_THREADLOCALS
+                    ? reusableParameterizedMessageFactoryClass.getName()
                     : parameterizedMessageFactoryClass.getName();
             final String clsName = PropertiesUtil.getProperties().getStringProperty(property, fallback);
             return LoaderUtil.loadClass(clsName).asSubclass(MessageFactory.class);
@@ -206,10 +214,11 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         }
     }
 
-    private static Class<? extends FlowMessageFactory> createFlowClassForProperty(final String property,
-            final Class<DefaultFlowMessageFactory> defaultFlowMessageFactoryClass) {
+    private static Class<? extends FlowMessageFactory> createFlowClassForProperty(
+            final String property, final Class<DefaultFlowMessageFactory> defaultFlowMessageFactoryClass) {
         try {
-            final String clsName = PropertiesUtil.getProperties().getStringProperty(property, defaultFlowMessageFactoryClass.getName());
+            final String clsName = PropertiesUtil.getProperties()
+                    .getStringProperty(property, defaultFlowMessageFactoryClass.getName());
             return LoaderUtil.loadClass(clsName).asSubclass(FlowMessageFactory.class);
         } catch (final Throwable throwable) {
             return defaultFlowMessageFactoryClass;
@@ -396,48 +405,100 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+    public void debug(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
             final Object p3) {
         logIfEnabled(FQCN, Level.DEBUG, marker, message, p0, p1, p2, p3);
     }
 
     @Override
-    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4) {
+    public void debug(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4) {
         logIfEnabled(FQCN, Level.DEBUG, marker, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5) {
+    public void debug(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, Level.DEBUG, marker, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
+    public void debug(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
             final Object p6) {
         logIfEnabled(FQCN, Level.DEBUG, marker, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7) {
+    public void debug(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         logIfEnabled(FQCN, Level.DEBUG, marker, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8) {
+    public void debug(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, Level.DEBUG, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void debug(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8, final Object p9) {
+    public void debug(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, Level.DEBUG, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -462,41 +523,78 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void debug(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4) {
+    public void debug(
+            final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
         logIfEnabled(FQCN, Level.DEBUG, null, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void debug(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public void debug(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, Level.DEBUG, null, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void debug(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public void debug(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         logIfEnabled(FQCN, Level.DEBUG, null, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void debug(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
+    public void debug(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
             final Object p7) {
         logIfEnabled(FQCN, Level.DEBUG, null, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void debug(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8) {
+    public void debug(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, Level.DEBUG, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void debug(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8, final Object p9) {
+    public void debug(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, Level.DEBUG, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -510,8 +608,12 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     protected EntryMessage enter(final String fqcn, final String format, final Supplier<?>... paramSuppliers) {
         EntryMessage entryMsg = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER,
-                    entryMsg = flowMessageFactory.newEntryMessage(format, LambdaUtil.getAll(paramSuppliers)), null);
+            logMessageSafely(
+                    fqcn,
+                    Level.TRACE,
+                    ENTRY_MARKER,
+                    entryMsg = flowMessageFactory.newEntryMessage(format, LambdaUtil.getAll(paramSuppliers)),
+                    null);
         }
         return entryMsg;
     }
@@ -542,7 +644,12 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     protected EntryMessage enter(final String fqcn, final String format, final Object... params) {
         EntryMessage entryMsg = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, entryMsg = flowMessageFactory.newEntryMessage(format, params), null);
+            logMessageSafely(
+                    fqcn,
+                    Level.TRACE,
+                    ENTRY_MARKER,
+                    entryMsg = flowMessageFactory.newEntryMessage(format, params),
+                    null);
         }
         return entryMsg;
     }
@@ -557,8 +664,12 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     protected EntryMessage enter(final String fqcn, final MessageSupplier messageSupplier) {
         EntryMessage message = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, message = flowMessageFactory.newEntryMessage(
-                    messageSupplier.get()), null);
+            logMessageSafely(
+                    fqcn,
+                    Level.TRACE,
+                    ENTRY_MARKER,
+                    message = flowMessageFactory.newEntryMessage(messageSupplier.get()),
+                    null);
         }
         return message;
     }
@@ -575,8 +686,8 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     protected EntryMessage enter(final String fqcn, final Message message) {
         EntryMessage flowMessage = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
-            logMessageSafely(fqcn, Level.TRACE, ENTRY_MARKER, flowMessage = flowMessageFactory.newEntryMessage(message),
-                    null);
+            logMessageSafely(
+                    fqcn, Level.TRACE, ENTRY_MARKER, flowMessage = flowMessageFactory.newEntryMessage(message), null);
         }
         return flowMessage;
     }
@@ -781,48 +892,100 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+    public void error(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
             final Object p3) {
         logIfEnabled(FQCN, Level.ERROR, marker, message, p0, p1, p2, p3);
     }
 
     @Override
-    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4) {
+    public void error(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4) {
         logIfEnabled(FQCN, Level.ERROR, marker, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5) {
+    public void error(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, Level.ERROR, marker, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
+    public void error(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
             final Object p6) {
         logIfEnabled(FQCN, Level.ERROR, marker, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7) {
+    public void error(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         logIfEnabled(FQCN, Level.ERROR, marker, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8) {
+    public void error(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, Level.ERROR, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void error(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8, final Object p9) {
+    public void error(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, Level.ERROR, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -847,38 +1010,78 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void error(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4) {
+    public void error(
+            final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
         logIfEnabled(FQCN, Level.ERROR, null, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void error(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public void error(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, Level.ERROR, null, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void error(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public void error(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         logIfEnabled(FQCN, Level.ERROR, null, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void error(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7) {
+    public void error(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         logIfEnabled(FQCN, Level.ERROR, null, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void error(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+    public void error(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, Level.ERROR, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void error(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+    public void error(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, Level.ERROR, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -1084,46 +1287,100 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+    public void fatal(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
             final Object p3) {
         logIfEnabled(FQCN, Level.FATAL, marker, message, p0, p1, p2, p3);
     }
 
     @Override
-    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4) {
+    public void fatal(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4) {
         logIfEnabled(FQCN, Level.FATAL, marker, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5) {
+    public void fatal(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, Level.FATAL, marker, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5, final Object p6) {
+    public void fatal(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         logIfEnabled(FQCN, Level.FATAL, marker, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5, final Object p6, final Object p7) {
+    public void fatal(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         logIfEnabled(FQCN, Level.FATAL, marker, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8) {
+    public void fatal(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, Level.FATAL, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void fatal(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8, final Object p9) {
+    public void fatal(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, Level.FATAL, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -1148,39 +1405,78 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void fatal(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4) {
+    public void fatal(
+            final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
         logIfEnabled(FQCN, Level.FATAL, null, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void fatal(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public void fatal(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, Level.FATAL, null, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void fatal(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public void fatal(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         logIfEnabled(FQCN, Level.FATAL, null, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void fatal(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7) {
+    public void fatal(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         logIfEnabled(FQCN, Level.FATAL, null, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void fatal(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+    public void fatal(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, Level.FATAL, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void fatal(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8, final Object p9) {
+    public void fatal(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, Level.FATAL, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -1356,46 +1652,100 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+    public void info(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
             final Object p3) {
         logIfEnabled(FQCN, Level.INFO, marker, message, p0, p1, p2, p3);
     }
 
     @Override
-    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4) {
+    public void info(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4) {
         logIfEnabled(FQCN, Level.INFO, marker, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5) {
+    public void info(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, Level.INFO, marker, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5, final Object p6) {
+    public void info(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         logIfEnabled(FQCN, Level.INFO, marker, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5, final Object p6, final Object p7) {
+    public void info(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         logIfEnabled(FQCN, Level.INFO, marker, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8) {
+    public void info(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, Level.INFO, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void info(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8, final Object p9) {
+    public void info(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, Level.INFO, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -1420,41 +1770,78 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void info(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4) {
+    public void info(
+            final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
         logIfEnabled(FQCN, Level.INFO, null, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void info(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public void info(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, Level.INFO, null, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void info(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public void info(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         logIfEnabled(FQCN, Level.INFO, null, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void info(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
+    public void info(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
             final Object p7) {
         logIfEnabled(FQCN, Level.INFO, null, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void info(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8) {
+    public void info(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, Level.INFO, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void info(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8, final Object p9) {
+    public void info(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, Level.INFO, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -1643,7 +2030,8 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void log(final Level level, final Marker marker, final Supplier<?> messageSupplier, final Throwable throwable) {
+    public void log(
+            final Level level, final Marker marker, final Supplier<?> messageSupplier, final Throwable throwable) {
         logIfEnabled(FQCN, level, marker, messageSupplier, throwable);
     }
 
@@ -1658,7 +2046,8 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void log(final Level level, final Marker marker, final MessageSupplier messageSupplier, final Throwable throwable) {
+    public void log(
+            final Level level, final Marker marker, final MessageSupplier messageSupplier, final Throwable throwable) {
         logIfEnabled(FQCN, level, marker, messageSupplier, throwable);
     }
 
@@ -1683,53 +2072,118 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1,
+    public void log(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
             final Object p2) {
         logIfEnabled(FQCN, level, marker, message, p0, p1, p2);
     }
 
     @Override
-    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1,
-            final Object p2, final Object p3) {
+    public void log(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         logIfEnabled(FQCN, level, marker, message, p0, p1, p2, p3);
     }
 
     @Override
-    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1,
-            final Object p2, final Object p3, final Object p4) {
+    public void log(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4) {
         logIfEnabled(FQCN, level, marker, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1,
-            final Object p2, final Object p3, final Object p4, final Object p5) {
+    public void log(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, level, marker, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1,
-            final Object p2, final Object p3, final Object p4, final Object p5, final Object p6) {
+    public void log(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         logIfEnabled(FQCN, level, marker, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1,
-            final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7) {
+    public void log(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         logIfEnabled(FQCN, level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1,
-            final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8) {
+    public void log(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void log(final Level level, final Marker marker, final String message, final Object p0, final Object p1,
-            final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8, final Object p9) {
+    public void log(
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -1749,48 +2203,109 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+    public void log(
+            final Level level,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         logIfEnabled(FQCN, level, null, message, p0, p1, p2, p3);
     }
 
     @Override
-    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
+    public void log(
+            final Level level,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
             final Object p4) {
         logIfEnabled(FQCN, level, null, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public void log(
+            final Level level,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, level, null, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public void log(
+            final Level level,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         logIfEnabled(FQCN, level, null, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7) {
+    public void log(
+            final Level level,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         logIfEnabled(FQCN, level, null, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+    public void log(
+            final Level level,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, level, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void log(final Level level, final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+    public void log(
+            final Level level,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, level, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final Message message,
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final Message message,
             final Throwable throwable) {
         if (isEnabled(level, marker, message, throwable)) {
             logMessageSafely(fqcn, level, marker, message, throwable);
@@ -1798,15 +2313,23 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker,
-            final MessageSupplier messageSupplier, final Throwable throwable) {
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final MessageSupplier messageSupplier,
+            final Throwable throwable) {
         if (isEnabled(level, marker, messageSupplier, throwable)) {
             logMessage(fqcn, level, marker, messageSupplier, throwable);
         }
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final Object message,
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final Object message,
             final Throwable throwable) {
         if (isEnabled(level, marker, message, throwable)) {
             logMessage(fqcn, level, marker, message, throwable);
@@ -1814,7 +2337,11 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final CharSequence message,
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final CharSequence message,
             final Throwable throwable) {
         if (isEnabled(level, marker, message, throwable)) {
             logMessage(fqcn, level, marker, message, throwable);
@@ -1822,7 +2349,11 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final Supplier<?> messageSupplier,
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final Supplier<?> messageSupplier,
             final Throwable throwable) {
         if (isEnabled(level, marker, messageSupplier, throwable)) {
             logMessage(fqcn, level, marker, messageSupplier, throwable);
@@ -1837,7 +2368,11 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
             final Supplier<?>... paramSuppliers) {
         if (isEnabled(level, marker, message)) {
             logMessage(fqcn, level, marker, message, paramSuppliers);
@@ -1845,64 +2380,108 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object... params) {
+    public void logIfEnabled(
+            final String fqcn, final Level level, final Marker marker, final String message, final Object... params) {
         if (isEnabled(level, marker, message, params)) {
             logMessage(fqcn, level, marker, message, params);
         }
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0) {
+    public void logIfEnabled(
+            final String fqcn, final Level level, final Marker marker, final String message, final Object p0) {
         if (isEnabled(level, marker, message, p0)) {
             logMessage(fqcn, level, marker, message, p0);
         }
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1) {
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1) {
         if (isEnabled(level, marker, message, p0, p1)) {
             logMessage(fqcn, level, marker, message, p0, p1);
         }
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2) {
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2) {
         if (isEnabled(level, marker, message, p0, p1, p2)) {
             logMessage(fqcn, level, marker, message, p0, p1, p2);
         }
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3) {
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         if (isEnabled(level, marker, message, p0, p1, p2, p3)) {
             logMessage(fqcn, level, marker, message, p0, p1, p2, p3);
         }
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4) {
         if (isEnabled(level, marker, message, p0, p1, p2, p3, p4)) {
             logMessage(fqcn, level, marker, message, p0, p1, p2, p3, p4);
         }
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         if (isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5)) {
             logMessage(fqcn, level, marker, message, p0, p1, p2, p3, p4, p5);
         }
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
             final Object p6) {
         if (isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6)) {
             logMessage(fqcn, level, marker, message, p0, p1, p2, p3, p4, p5, p6);
@@ -1910,69 +2489,124 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7) {
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         if (isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7)) {
             logMessage(fqcn, level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7);
         }
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8) {
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         if (isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8)) {
             logMessage(fqcn, level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
         }
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8, final Object p9) {
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         if (isEnabled(level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9)) {
             logMessage(fqcn, level, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
         }
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
+    public void logIfEnabled(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
             final Throwable throwable) {
         if (isEnabled(level, marker, message, throwable)) {
             logMessage(fqcn, level, marker, message, throwable);
         }
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final CharSequence message,
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final CharSequence message,
             final Throwable throwable) {
         logMessageSafely(fqcn, level, marker, messageFactory.newMessage(message), throwable);
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final Object message,
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final Object message,
             final Throwable throwable) {
         logMessageSafely(fqcn, level, marker, messageFactory.newMessage(message), throwable);
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker,
-            final MessageSupplier messageSupplier, final Throwable throwable) {
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final MessageSupplier messageSupplier,
+            final Throwable throwable) {
         final Message message = LambdaUtil.get(messageSupplier);
-        final Throwable effectiveThrowable = (throwable == null && message != null)
-                ? message.getThrowable()
-                : throwable;
+        final Throwable effectiveThrowable =
+                (throwable == null && message != null) ? message.getThrowable() : throwable;
         logMessageSafely(fqcn, level, marker, message, effectiveThrowable);
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final Supplier<?> messageSupplier,
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final Supplier<?> messageSupplier,
             final Throwable throwable) {
         final Message message = LambdaUtil.getMessage(messageSupplier, messageFactory);
-        final Throwable effectiveThrowable = (throwable == null && message != null)
-                ? message.getThrowable()
-                : throwable;
+        final Throwable effectiveThrowable =
+                (throwable == null && message != null) ? message.getThrowable() : throwable;
         logMessageSafely(fqcn, level, marker, message, effectiveThrowable);
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
             final Throwable throwable) {
         logMessageSafely(fqcn, level, marker, messageFactory.newMessage(message), throwable);
     }
@@ -1982,85 +2616,171 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object... params) {
+    protected void logMessage(
+            final String fqcn, final Level level, final Marker marker, final String message, final Object... params) {
         final Message msg = messageFactory.newMessage(message, params);
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0) {
+    protected void logMessage(
+            final String fqcn, final Level level, final Marker marker, final String message, final Object p0) {
         final Message msg = messageFactory.newMessage(message, p0);
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1) {
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1) {
         final Message msg = messageFactory.newMessage(message, p0, p1);
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2) {
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2);
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3) {
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3);
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4);
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5);
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
             final Object p6) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6);
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7) {
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7);
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8) {
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
-            final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8, final Object p9) {
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         final Message msg = messageFactory.newMessage(message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
+    protected void logMessage(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final String message,
             final Supplier<?>... paramSuppliers) {
         final Message msg = messageFactory.newMessage(message, LambdaUtil.getAll(paramSuppliers));
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
     @Override
-    public void logMessage(final Level level, final Marker marker, final String fqcn, final StackTraceElement location,
-        final Message message, final Throwable throwable) {
+    public void logMessage(
+            final Level level,
+            final Marker marker,
+            final String fqcn,
+            final StackTraceElement location,
+            final Message message,
+            final Throwable throwable) {
         try {
             incrementRecursionDepth();
             log(level, marker, fqcn, location, message, throwable);
@@ -2072,8 +2792,13 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         }
     }
 
-    protected void log(final Level level, final Marker marker, final String fqcn, final StackTraceElement location,
-        final Message message, final Throwable throwable) {
+    protected void log(
+            final Level level,
+            final Marker marker,
+            final String fqcn,
+            final StackTraceElement location,
+            final Message message,
+            final Throwable throwable) {
         logMessage(fqcn, level, marker, message, throwable);
     }
 
@@ -2096,12 +2821,17 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     @PerformanceSensitive
     // NOTE: This is a hot method. Current implementation compiles to 30 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
-    private void logMessageSafely(final String fqcn, final Level level, final Marker marker, final Message message,
+    private void logMessageSafely(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final Message message,
             final Throwable throwable) {
         try {
             logMessageTrackRecursion(fqcn, level, marker, message, throwable);
         } finally {
-            // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
+            // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in
+            // toString())
             ReusableMessageFactory.release(message);
         }
     }
@@ -2109,11 +2839,12 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     @PerformanceSensitive
     // NOTE: This is a hot method. Current implementation compiles to 33 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
-    private void logMessageTrackRecursion(final String fqcn,
-                                          final Level level,
-                                          final Marker marker,
-                                          final Message message,
-                                          final Throwable throwable) {
+    private void logMessageTrackRecursion(
+            final String fqcn,
+            final Level level,
+            final Marker marker,
+            final Message message,
+            final Throwable throwable) {
         try {
             incrementRecursionDepth(); // LOG4J2-1518, LOG4J2-2031
             tryLogMessage(fqcn, getLocation(fqcn), level, marker, message, throwable);
@@ -2155,16 +2886,18 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     @PerformanceSensitive
     // NOTE: This is a hot method. Current implementation compiles to 26 bytes of byte code.
     // This is within the 35 byte MaxInlineSize threshold. Modify with care!
-    private void tryLogMessage(final String fqcn,
-                               final StackTraceElement location,
-                               final Level level,
-                               final Marker marker,
-                               final Message message,
-                               final Throwable throwable) {
+    private void tryLogMessage(
+            final String fqcn,
+            final StackTraceElement location,
+            final Level level,
+            final Marker marker,
+            final Message message,
+            final Throwable throwable) {
         try {
             log(level, marker, fqcn, location, message, throwable);
         } catch (final Throwable t) {
-            // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the logger
+            // LOG4J2-1990 Log4j2 suppresses all exceptions that occur once application called the
+            // logger
             handleLogMessageException(t, fqcn, message);
         }
     }
@@ -2182,12 +2915,14 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         if (throwable instanceof LoggingException) {
             throw (LoggingException) throwable;
         }
-        StatusLogger.getLogger().warn("{} caught {} logging {}: {}",
-                fqcn,
-                throwable.getClass().getName(),
-                message.getClass().getSimpleName(),
-                message.getFormat(),
-                throwable);
+        StatusLogger.getLogger()
+                .warn(
+                        "{} caught {} logging {}: {}",
+                        fqcn,
+                        throwable.getClass().getName(),
+                        message.getClass().getSimpleName(),
+                        message.getFormat(),
+                        throwable);
     }
 
     @Override
@@ -2376,46 +3111,100 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+    public void trace(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
             final Object p3) {
         logIfEnabled(FQCN, Level.TRACE, marker, message, p0, p1, p2, p3);
     }
 
     @Override
-    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4) {
+    public void trace(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4) {
         logIfEnabled(FQCN, Level.TRACE, marker, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5) {
+    public void trace(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, Level.TRACE, marker, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5, final Object p6) {
+    public void trace(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         logIfEnabled(FQCN, Level.TRACE, marker, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5, final Object p6, final Object p7) {
+    public void trace(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         logIfEnabled(FQCN, Level.TRACE, marker, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8) {
+    public void trace(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, Level.TRACE, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void trace(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8, final Object p9) {
+    public void trace(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, Level.TRACE, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -2440,38 +3229,78 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void trace(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4) {
+    public void trace(
+            final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
         logIfEnabled(FQCN, Level.TRACE, null, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void trace(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public void trace(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, Level.TRACE, null, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void trace(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public void trace(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         logIfEnabled(FQCN, Level.TRACE, null, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void trace(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7) {
+    public void trace(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         logIfEnabled(FQCN, Level.TRACE, null, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void trace(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+    public void trace(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, Level.TRACE, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void trace(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8, final Object p9) {
+    public void trace(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, Level.TRACE, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -2517,7 +3346,8 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
 
     @Override
     public void traceExit(final EntryMessage message) {
-        // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
+        // If the message is null, traceEnter returned null because flow logging was disabled, we
+        // can optimize out calling isEnabled().
         if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessageSafely(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(message), null);
         }
@@ -2525,7 +3355,8 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
 
     @Override
     public <R> R traceExit(final EntryMessage message, final R result) {
-        // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
+        // If the message is null, traceEnter returned null because flow logging was disabled, we
+        // can optimize out calling isEnabled().
         if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessageSafely(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
         }
@@ -2534,7 +3365,8 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
 
     @Override
     public <R> R traceExit(final Message message, final R result) {
-        // If the message is null, traceEnter returned null because flow logging was disabled, we can optimize out calling isEnabled().
+        // If the message is null, traceEnter returned null because flow logging was disabled, we
+        // can optimize out calling isEnabled().
         if (message != null && isEnabled(Level.TRACE, EXIT_MARKER, message, null)) {
             logMessageSafely(FQCN, Level.TRACE, EXIT_MARKER, flowMessageFactory.newExitMessage(result, message), null);
         }
@@ -2697,45 +3529,100 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
+    public void warn(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
             final Object p3) {
         logIfEnabled(FQCN, Level.WARN, marker, message, p0, p1, p2, p3);
     }
 
     @Override
-    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4) {
+    public void warn(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4) {
         logIfEnabled(FQCN, Level.WARN, marker, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5) {
+    public void warn(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, Level.WARN, marker, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5, final Object p6) {
+    public void warn(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         logIfEnabled(FQCN, Level.WARN, marker, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5, final Object p6, final Object p7) {
+    public void warn(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         logIfEnabled(FQCN, Level.WARN, marker, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+    public void warn(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, Level.WARN, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void warn(final Marker marker, final String message, final Object p0, final Object p1, final Object p2,
-            final Object p3, final Object p4, final Object p5,
-            final Object p6, final Object p7, final Object p8, final Object p9) {
+    public void warn(
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, Level.WARN, marker, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -2760,39 +3647,78 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
     }
 
     @Override
-    public void warn(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4) {
+    public void warn(
+            final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
         logIfEnabled(FQCN, Level.WARN, null, message, p0, p1, p2, p3, p4);
     }
 
     @Override
-    public void warn(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public void warn(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         logIfEnabled(FQCN, Level.WARN, null, message, p0, p1, p2, p3, p4, p5);
     }
 
     @Override
-    public void warn(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public void warn(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         logIfEnabled(FQCN, Level.WARN, null, message, p0, p1, p2, p3, p4, p5, p6);
     }
 
     @Override
-    public void warn(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7) {
+    public void warn(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7) {
         logIfEnabled(FQCN, Level.WARN, null, message, p0, p1, p2, p3, p4, p5, p6, p7);
     }
 
     @Override
-    public void warn(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6, final Object p7, final Object p8) {
+    public void warn(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         logIfEnabled(FQCN, Level.WARN, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8);
     }
 
     @Override
-    public void warn(final String message, final Object p0, final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8, final Object p9) {
+    public void warn(
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         logIfEnabled(FQCN, Level.WARN, null, message, p0, p1, p2, p3, p4, p5, p6, p7, p8, p9);
     }
 
@@ -2897,5 +3823,4 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
         }
         return new DefaultLogBuilder(this, level);
     }
-
 }

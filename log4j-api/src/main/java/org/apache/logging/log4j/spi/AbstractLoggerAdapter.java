@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.util.LoaderUtil;
 
@@ -40,7 +39,7 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L>, Logg
      */
     protected final Map<LoggerContext, ConcurrentMap<String, L>> registry = new ConcurrentHashMap<>();
 
-    private final ReadWriteLock lock = new ReentrantReadWriteLock (true);
+    private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 
     @Override
     public L getLogger(final String name) {
@@ -67,29 +66,29 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L>, Logg
      */
     public ConcurrentMap<String, L> getLoggersInContext(final LoggerContext context) {
         ConcurrentMap<String, L> loggers;
-        lock.readLock ().lock ();
+        lock.readLock().lock();
         try {
-            loggers = registry.get (context);
+            loggers = registry.get(context);
         } finally {
-            lock.readLock ().unlock ();
+            lock.readLock().unlock();
         }
 
         if (loggers != null) {
             return loggers;
         }
-        lock.writeLock ().lock ();
+        lock.writeLock().lock();
         try {
-            loggers = registry.get (context);
+            loggers = registry.get(context);
             if (loggers == null) {
-                loggers = new ConcurrentHashMap<> ();
-                registry.put (context, loggers);
+                loggers = new ConcurrentHashMap<>();
+                registry.put(context, loggers);
                 if (context instanceof LoggerContextShutdownEnabled) {
                     ((LoggerContextShutdownEnabled) context).addShutdownListener(this);
                 }
             }
             return loggers;
         } finally {
-            lock.writeLock ().unlock ();
+            lock.writeLock().unlock();
         }
     }
 
@@ -139,11 +138,11 @@ public abstract class AbstractLoggerAdapter<L> implements LoggerAdapter<L>, Logg
 
     @Override
     public void close() {
-        lock.writeLock ().lock ();
+        lock.writeLock().lock();
         try {
             registry.clear();
         } finally {
-            lock.writeLock ().unlock ();
+            lock.writeLock().unlock();
         }
     }
 }

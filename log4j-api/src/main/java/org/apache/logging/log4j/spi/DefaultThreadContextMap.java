@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
@@ -50,7 +49,8 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
         init();
     }
 
-    // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
+    // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if
+    // configured.
     // (This method is package protected for JUnit tests.)
     static ThreadLocal<Map<String, String>> createThreadLocalMap(final boolean isMapEnabled) {
         if (inheritableMap) {
@@ -58,7 +58,7 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
                 @Override
                 protected Map<String, String> childValue(final Map<String, String> parentValue) {
                     return parentValue != null && isMapEnabled //
-                    ? Collections.unmodifiableMap(new HashMap<>(parentValue)) //
+                            ? Collections.unmodifiableMap(new HashMap<>(parentValue)) //
                             : null;
                 }
             };
@@ -153,10 +153,10 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
             return;
         }
         for (final Map.Entry<String, String> entry : map.entrySet()) {
-            //BiConsumer should be able to handle values of any type V. In our case the values are of type String.
+            // BiConsumer should be able to handle values of any type V. In our case the values are
+            // of type String.
             @SuppressWarnings("unchecked")
-            final
-            V value = (V) entry.getValue();
+            final V value = (V) entry.getValue();
             action.accept(entry.getKey(), value);
         }
     }
@@ -168,10 +168,10 @@ public class DefaultThreadContextMap implements ThreadContextMap, ReadOnlyString
             return;
         }
         for (final Map.Entry<String, String> entry : map.entrySet()) {
-            //TriConsumer should be able to handle values of any type V. In our case the values are of type String.
+            // TriConsumer should be able to handle values of any type V. In our case the values are
+            // of type String.
             @SuppressWarnings("unchecked")
-            final
-            V value = (V) entry.getValue();
+            final V value = (V) entry.getValue();
             action.accept(entry.getKey(), value, state);
         }
     }

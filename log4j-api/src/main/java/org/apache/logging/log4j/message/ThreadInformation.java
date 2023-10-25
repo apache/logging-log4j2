@@ -33,5 +33,4 @@ public interface ThreadInformation {
      * @param trace The stack trace element array to format.
      */
     void printStack(StringBuilder sb, StackTraceElement[] trace);
-
 }

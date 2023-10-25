@@ -19,7 +19,6 @@ package org.apache.logging.log4j;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
@@ -135,7 +134,8 @@ public final class MarkerManager {
          * @throws IllegalArgumentException if the argument is {@code null}
          */
         public Log4jMarker(final String name) {
-            // we can't store null references in a ConcurrentHashMap as it is, not to mention that a null Marker
+            // we can't store null references in a ConcurrentHashMap as it is, not to mention that a
+            // null Marker
             // name seems rather pointless. To get an "anonymous" Marker, just use an empty string.
             requireNonNull(name, "Marker name cannot be null.");
             this.name = name;
@@ -147,7 +147,8 @@ public final class MarkerManager {
         @Override
         public synchronized Marker addParents(final Marker... parentMarkers) {
             requireNonNull(parentMarkers, "A parent marker must be specified");
-            // It is not strictly necessary to copy the variable here but it should perform better than
+            // It is not strictly necessary to copy the variable here but it should perform better
+            // than
             // Accessing a volatile variable multiple times.
             final Marker[] localParents = this.parents;
             // Don't add a parent that is already in the hierarchy.
@@ -309,8 +310,8 @@ public final class MarkerManager {
             if (parent == marker) {
                 return true;
             }
-            final Marker[] localParents = parent instanceof Log4jMarker ? ((Log4jMarker) parent).parents : parent
-                    .getParents();
+            final Marker[] localParents =
+                    parent instanceof Log4jMarker ? ((Log4jMarker) parent).parents : parent.getParents();
             if (localParents != null) {
                 final int localParentsLength = localParents.length;
                 if (localParentsLength == 1) {
@@ -335,7 +336,8 @@ public final class MarkerManager {
          */
         @PerformanceSensitive("allocation")
         private static boolean contains(final Marker parent, final Marker... localParents) {
-            // performance tests showed a normal for loop is slightly faster than a for-each loop on some platforms
+            // performance tests showed a normal for loop is slightly faster than a for-each loop on
+            // some platforms
             // noinspection ForLoopReplaceableByForEach
             for (int i = 0, localParentsLength = localParents.length; i < localParentsLength; i++) {
                 final Marker marker = localParents[i];
@@ -365,7 +367,8 @@ public final class MarkerManager {
 
         @Override
         public String toString() {
-            // FIXME: might want to use an initial capacity; the default is 16 (or str.length() + 16)
+            // FIXME: might want to use an initial capacity; the default is 16 (or str.length() +
+            // 16)
             final StringBuilder sb = new StringBuilder();
             formatTo(sb);
             return sb.toString();
@@ -401,7 +404,8 @@ public final class MarkerManager {
         }
     }
 
-    // this method wouldn't be necessary if Marker methods threw an NPE instead of an IAE for null values ;)
+    // this method wouldn't be necessary if Marker methods threw an NPE instead of an IAE for null
+    // values ;)
     private static void requireNonNull(final Object obj, final String message) {
         if (obj == null) {
             throw new IllegalArgumentException(message);

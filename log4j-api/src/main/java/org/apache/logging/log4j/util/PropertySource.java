@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,8 +29,6 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * A source for global configuration properties.
@@ -50,8 +50,7 @@ public interface PropertySource {
      *
      * @param action action to perform on each key/value pair
      */
-    default void forEach(BiConsumer<String, String> action) {
-    }
+    default void forEach(BiConsumer<String, String> action) {}
 
     /**
      * Returns the list of all property names.
@@ -83,7 +82,6 @@ public interface PropertySource {
         return null;
     }
 
-
     /**
      * For PropertySources that cannot iterate over all the potential properties this provides a direct lookup.
      * @param key The key to search for.
@@ -104,7 +102,9 @@ public interface PropertySource {
 
         @Override
         public int compare(final PropertySource o1, final PropertySource o2) {
-            return Integer.compare(Objects.requireNonNull(o1).getPriority(), Objects.requireNonNull(o2).getPriority());
+            return Integer.compare(
+                    Objects.requireNonNull(o1).getPriority(),
+                    Objects.requireNonNull(o2).getPriority());
         }
     }
 
@@ -120,6 +120,7 @@ public interface PropertySource {
                 Pattern.CASE_INSENSITIVE);
         private static final Pattern PROPERTY_TOKENIZER = Pattern.compile("([A-Z]*[a-z0-9]+|[A-Z0-9]+)[-._/]?");
         private static final Map<CharSequence, List<CharSequence>> CACHE = new ConcurrentHashMap<>();
+
         static {
             // Add legacy properties without Log4j prefix
             CACHE.put("disableThreadContext", Arrays.asList("disable", "thread", "context"));
@@ -179,7 +180,6 @@ public interface PropertySource {
             return sb.toString();
         }
 
-        private Util() {
-        }
+        private Util() {}
     }
 }

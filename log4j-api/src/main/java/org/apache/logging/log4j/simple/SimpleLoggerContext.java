@@ -19,7 +19,6 @@ package org.apache.logging.log4j.simple;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -85,8 +84,10 @@ public class SimpleLoggerContext implements LoggerContext {
         final String lvl = props.getStringProperty(SYSTEM_PREFIX + "level");
         defaultLevel = Level.toLevel(lvl, Level.ERROR);
 
-        dateTimeFormat = showDateTime ? props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + "dateTimeFormat",
-                DEFAULT_DATE_TIME_FORMAT) : null;
+        dateTimeFormat = showDateTime
+                ? props.getStringProperty(
+                        SimpleLoggerContext.SYSTEM_PREFIX + "dateTimeFormat", DEFAULT_DATE_TIME_FORMAT)
+                : null;
 
         final String fileName = props.getStringProperty(SYSTEM_PREFIX + "logFile", SYSTEM_ERR);
         PrintStream ps;
@@ -122,8 +123,17 @@ public class SimpleLoggerContext implements LoggerContext {
             AbstractLogger.checkMessageFactory(extendedLogger, messageFactory);
             return extendedLogger;
         }
-        final SimpleLogger simpleLogger = new SimpleLogger(name, defaultLevel, showLogName, showShortName, showDateTime,
-                showContextMap, dateTimeFormat, messageFactory, props, stream);
+        final SimpleLogger simpleLogger = new SimpleLogger(
+                name,
+                defaultLevel,
+                showLogName,
+                showShortName,
+                showDateTime,
+                showContextMap,
+                dateTimeFormat,
+                messageFactory,
+                props,
+                stream);
         loggerRegistry.putIfAbsent(name, messageFactory, simpleLogger);
         return loggerRegistry.getLogger(name, messageFactory);
     }
@@ -153,5 +163,4 @@ public class SimpleLoggerContext implements LoggerContext {
     public boolean hasLogger(final String name, final MessageFactory messageFactory) {
         return false;
     }
-
 }

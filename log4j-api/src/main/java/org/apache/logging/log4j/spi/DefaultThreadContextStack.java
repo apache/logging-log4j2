@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.logging.log4j.ThreadContext.ContextStack;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -97,7 +96,7 @@ public class DefaultThreadContextStack implements ThreadContextStack, StringBuil
     public boolean containsAll(final Collection<?> objects) {
         if (objects.isEmpty()) { // quick check before accessing the ThreadLocal
             return true; // looks counter-intuitive, but see
-                         // j.u.AbstractCollection
+            // j.u.AbstractCollection
         }
         final MutableThreadContextStack values = STACK.get();
         return values != null && values.containsAll(objects);

@@ -24,6 +24,11 @@ import org.apache.logging.log4j.message.Message;
  * Logger that accepts the location of the caller.
  */
 public interface LocationAwareLogger {
-    void logMessage(final Level level, final Marker marker, final String fqcn, final StackTraceElement location,
-        final Message message, final Throwable throwable);
+    void logMessage(
+            final Level level,
+            final Marker marker,
+            final String fqcn,
+            final StackTraceElement location,
+            final Message message,
+            final Throwable throwable);
 }

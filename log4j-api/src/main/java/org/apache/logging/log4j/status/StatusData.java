@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.status;
 
+import static org.apache.logging.log4j.util.Chars.SPACE;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.Message;
-
-import static org.apache.logging.log4j.util.Chars.SPACE;
 
 /**
  * The Status data.
@@ -50,7 +49,11 @@ public class StatusData implements Serializable {
      * @param t The Error or Exception that occurred.
      * @param threadName The thread name
      */
-    public StatusData(final StackTraceElement caller, final Level level, final Message msg, final Throwable t,
+    public StatusData(
+            final StackTraceElement caller,
+            final Level level,
+            final Message msg,
+            final Throwable t,
             final String threadName) {
         this.timestamp = System.currentTimeMillis();
         this.caller = caller;

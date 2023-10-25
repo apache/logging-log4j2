@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
@@ -25,10 +28,6 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import aQute.bnd.annotation.Cardinality;
-import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -62,7 +61,8 @@ public final class ProviderUtil {
     private static final String[] COMPATIBLE_API_VERSIONS = {"2.6.0"};
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    // STARTUP_LOCK guards INSTANCE for lazy initialization; this allows the OSGi Activator to pause the startup and
+    // STARTUP_LOCK guards INSTANCE for lazy initialization; this allows the OSGi Activator to pause
+    // the startup and
     // wait for a Provider to be installed. See LOG4J2-373
     private static volatile ProviderUtil instance;
 

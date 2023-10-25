@@ -103,8 +103,7 @@ public final class StackLocator {
         return INSTANCE;
     }
 
-    private StackLocator() {
-    }
+    private StackLocator() {}
 
     // TODO: return Object.class instead of null (though it will have a null ClassLoader)
     // (MS) I believe this would work without any modifications elsewhere, but I could be wrong
@@ -153,7 +152,8 @@ public final class StackLocator {
         if (GET_CALLER_CLASS_METHOD == null) {
             return DEFAULT_CALLER_CLASS;
         }
-        // note that we need to add 1 to the depth value to compensate for this method, but not for the Method.invoke
+        // note that we need to add 1 to the depth value to compensate for this method, but not for
+        // the Method.invoke
         // since Reflection.getCallerClass ignores the call to Method.invoke()
         try {
             return (Class<?>) GET_CALLER_CLASS_METHOD.invoke(null, depth + 1 + JDK_7U25_OFFSET);
@@ -202,7 +202,8 @@ public final class StackLocator {
     // migrated from ThrowableProxy
     @PerformanceSensitive
     public Deque<Class<?>> getCurrentStackTrace() {
-        // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
+        // benchmarks show that using the SecurityManager is much faster than looping through
+        // getCallerClass(int)
         if (PrivateSecurityManagerStackTraceUtil.isEnabled()) {
             return PrivateSecurityManagerStackTraceUtil.getCurrentStackTrace();
         }
@@ -219,7 +220,8 @@ public final class StackLocator {
         if (fqcnOfLogger == null) {
             return null;
         }
-        // LOG4J2-1029 new Throwable().getStackTrace is faster than Thread.currentThread().getStackTrace().
+        // LOG4J2-1029 new Throwable().getStackTrace is faster than
+        // Thread.currentThread().getStackTrace().
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         boolean found = false;
         for (int i = 0; i < stackTrace.length; i++) {
@@ -236,8 +238,10 @@ public final class StackLocator {
     }
 
     public StackTraceElement getStackTraceElement(final int depth) {
-        // (MS) I tested the difference between using Throwable.getStackTrace() and Thread.getStackTrace(), and
-        // the version using Throwable was surprisingly faster! at least on Java 1.8. See ReflectionBenchmark.
+        // (MS) I tested the difference between using Throwable.getStackTrace() and
+        // Thread.getStackTrace(), and
+        // the version using Throwable was surprisingly faster! at least on Java 1.8. See
+        // ReflectionBenchmark.
         int i = 0;
         for (final StackTraceElement element : new Throwable().getStackTrace()) {
             if (isValid(element)) {

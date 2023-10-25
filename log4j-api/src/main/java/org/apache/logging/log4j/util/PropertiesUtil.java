@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
@@ -34,10 +37,6 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
-
-import aQute.bnd.annotation.Cardinality;
-import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.spi.ServiceConsumer;
 
 /**
  * <em>Consider this class private.</em>
@@ -178,11 +177,12 @@ public final class PropertiesUtil {
      * @param defaultValueIfPresent the default value to use if the property is defined but not assigned
      * @return the boolean value of the property or {@code defaultValue} if undefined.
      */
-    public boolean getBooleanProperty(final String name, final boolean defaultValueIfAbsent,
-                                      final boolean defaultValueIfPresent) {
+    public boolean getBooleanProperty(
+            final String name, final boolean defaultValueIfAbsent, final boolean defaultValueIfPresent) {
         final String prop = getStringProperty(name);
-        return prop == null ? defaultValueIfAbsent
-            : prop.isEmpty() ? defaultValueIfPresent : "true".equalsIgnoreCase(prop);
+        return prop == null
+                ? defaultValueIfAbsent
+                : prop.isEmpty() ? defaultValueIfPresent : "true".equalsIgnoreCase(prop);
     }
 
     /**
@@ -236,8 +236,13 @@ public final class PropertiesUtil {
                 return Charset.forName(mapped);
             }
         }
-        LowLevelLogUtil.log("Unable to get Charset '" + charsetName + "' for property '" + name + "', using default "
-            + defaultValue + " and continuing.");
+        LowLevelLogUtil.log("Unable to get Charset '"
+                + charsetName
+                + "' for property '"
+                + name
+                + "', using default "
+                + defaultValue
+                + " and continuing.");
         return defaultValue;
     }
 
@@ -448,14 +453,17 @@ public final class PropertiesUtil {
     private static final class Environment {
 
         private final Set<PropertySource> sources = new ConcurrentSkipListSet<>(new PropertySource.Comparator());
+
         /**
          * Maps a key to its value or the value of its normalization in the lowest priority source that contains it.
          */
         private final Map<String, String> literal = new ConcurrentHashMap<>();
+
         private final Map<List<CharSequence>, String> tokenized = new ConcurrentHashMap<>();
 
         private Environment(final PropertySource propertySource) {
-            final PropertyFilePropertySource sysProps = new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME, false);
+            final PropertyFilePropertySource sysProps =
+                    new PropertyFilePropertySource(LOG4J_SYSTEM_PROPERTIES_FILE_NAME, false);
             try {
                 sysProps.forEach((key, value) -> {
                     if (System.getProperty(key) == null) {
@@ -486,33 +494,29 @@ public final class PropertiesUtil {
             tokenized.clear();
             // 1. Collects all property keys from enumerable sources.
             final Set<String> keys = new HashSet<>();
-            sources.stream()
-                   .map(PropertySource::getPropertyNames)
-                   .forEach(keys::addAll);
-            // 2. Fills the property caches. Sources with higher priority values don't override the previous ones.
-            keys.stream()
-                .filter(Objects::nonNull)
-                .forEach(key -> {
-                    final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-                    final boolean hasTokens = !tokens.isEmpty();
-                    sources.forEach(source -> {
-                        if (source.containsProperty(key)) {
-                            final String value = source.getProperty(key);
-                            if (hasTokens) {
-                                tokenized.putIfAbsent(tokens, value);
-                            }
-                        }
+            sources.stream().map(PropertySource::getPropertyNames).forEach(keys::addAll);
+            // 2. Fills the property caches. Sources with higher priority values don't override the
+            // previous ones.
+            keys.stream().filter(Objects::nonNull).forEach(key -> {
+                final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
+                final boolean hasTokens = !tokens.isEmpty();
+                sources.forEach(source -> {
+                    if (source.containsProperty(key)) {
+                        final String value = source.getProperty(key);
                         if (hasTokens) {
-                            final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
-                            if (normalKey != null && source.containsProperty(normalKey)) {
-                                literal.putIfAbsent(key, source.getProperty(normalKey));
-                            }
-                            else if(source.containsProperty(key)) {
-                                literal.putIfAbsent(key, source.getProperty(key));
-                            }
+                            tokenized.putIfAbsent(tokens, value);
                         }
-                    });
+                    }
+                    if (hasTokens) {
+                        final String normalKey = Objects.toString(source.getNormalForm(tokens), null);
+                        if (normalKey != null && source.containsProperty(normalKey)) {
+                            literal.putIfAbsent(key, source.getProperty(normalKey));
+                        } else if (source.containsProperty(key)) {
+                            literal.putIfAbsent(key, source.getProperty(key));
+                        }
+                    }
                 });
+            });
         }
 
         private String get(final String key) {
@@ -537,12 +541,13 @@ public final class PropertiesUtil {
 
         private boolean containsKey(final String key) {
             final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-            return literal.containsKey(key) ||
-                   tokenized.containsKey(tokens) ||
-                   sources.stream().anyMatch(s -> {
+            return literal.containsKey(key)
+                    || tokenized.containsKey(tokens)
+                    || sources.stream().anyMatch(s -> {
                         final CharSequence normalizedKey = s.getNormalForm(tokens);
-                        return s.containsProperty(key) || normalizedKey != null && s.containsProperty(normalizedKey.toString());
-                   });
+                        return s.containsProperty(key)
+                                || normalizedKey != null && s.containsProperty(normalizedKey.toString());
+                    });
         }
     }
 
@@ -603,8 +608,8 @@ public final class PropertiesUtil {
      * new property maps without the prefix and period in the key
      * @since 2.17.2
      */
-    public static Map<String, Properties> partitionOnCommonPrefixes(final Properties properties,
-            final boolean includeBaseKey) {
+    public static Map<String, Properties> partitionOnCommonPrefixes(
+            final Properties properties, final boolean includeBaseKey) {
         final Map<String, Properties> parts = new ConcurrentHashMap<>();
         for (final String key : properties.stringPropertyNames()) {
             final int idx = key.indexOf('.');

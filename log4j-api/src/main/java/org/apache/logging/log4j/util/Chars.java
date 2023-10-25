@@ -83,6 +83,5 @@ public final class Chars {
         return (char) ('a' + digit - 10);
     }
 
-    private Chars() {
-    }
+    private Chars() {}
 }

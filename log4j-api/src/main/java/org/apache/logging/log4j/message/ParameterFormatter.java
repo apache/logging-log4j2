@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -31,6 +30,7 @@ final class ParameterFormatter {
      * Prefix for recursion.
      */
     static final String RECURSION_PREFIX = "[...";
+
     /**
      * Suffix for recursion.
      */
@@ -40,14 +40,17 @@ final class ParameterFormatter {
      * Prefix for errors.
      */
     static final String ERROR_PREFIX = "[!!!";
+
     /**
      * Separator for errors.
      */
     static final String ERROR_SEPARATOR = "=>";
+
     /**
      * Separator for error messages.
      */
     static final String ERROR_MSG_SEPARATOR = ":";
+
     /**
      * Suffix for errors.
      */
@@ -57,8 +60,8 @@ final class ParameterFormatter {
     private static final char DELIM_STOP = '}';
     private static final char ESCAPE_CHAR = '\\';
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-            .withZone(ZoneId.systemDefault());
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ").withZone(ZoneId.systemDefault());
 
     private ParameterFormatter() {}
 
@@ -110,10 +113,7 @@ final class ParameterFormatter {
      * A negative value indicates no limit.
      * @param analysis an object to store the results
      */
-    static void analyzePattern(
-            final String pattern,
-            final int argCount,
-            final MessagePatternAnalysis analysis) {
+    static void analyzePattern(final String pattern, final int argCount, final MessagePatternAnalysis analysis) {
 
         // Short-circuit if there is nothing interesting
         final int l;
@@ -147,7 +147,6 @@ final class ParameterFormatter {
                 }
             }
         }
-
     }
 
     /**
@@ -199,9 +198,7 @@ final class ParameterFormatter {
                 System.arraycopy(placeholderCharIndices, 0, newPlaceholderCharIndices, 0, placeholderCount);
                 placeholderCharIndices = newPlaceholderCharIndices;
             }
-
         }
-
     }
 
     /**
@@ -235,9 +232,7 @@ final class ParameterFormatter {
         if (analysis.placeholderCount > args.length) {
             final String message = String.format(
                     "found %d argument placeholders, but provided %d for pattern `%s`",
-                    analysis.placeholderCount,
-                    args.length,
-                    pattern);
+                    analysis.placeholderCount, args.length, pattern);
             throw new IllegalArgumentException(message);
         }
 
@@ -250,7 +245,6 @@ final class ParameterFormatter {
         else {
             formatMessageContainingNoEscapes(buffer, pattern, args, argCount, analysis);
         }
-
     }
 
     static void formatMessageContainingNoEscapes(
@@ -272,7 +266,6 @@ final class ParameterFormatter {
 
         // Format the last trailing text
         buffer.append(pattern, precedingTextStartIndex, pattern.length());
-
     }
 
     static void formatMessageContainingEscapes(
@@ -294,14 +287,10 @@ final class ParameterFormatter {
 
         // Format the last trailing text
         copyMessagePatternContainingEscapes(buffer, pattern, precedingTextStartIndex, pattern.length());
-
     }
 
     private static void copyMessagePatternContainingEscapes(
-            final StringBuilder buffer,
-            final String pattern,
-            final int startIndex,
-            final int endIndex) {
+            final StringBuilder buffer, final String pattern, final int startIndex, final int endIndex) {
         boolean escaped = false;
         int i = startIndex;
         for (; i < endIndex; i++) {
@@ -461,9 +450,7 @@ final class ParameterFormatter {
     }
 
     private static void appendPotentiallyRecursiveValue(
-            final Object o,
-            final StringBuilder str,
-            final Set<Object> dejaVu) {
+            final Object o, final StringBuilder str, final Set<Object> dejaVu) {
         final Class<?> oClass = o.getClass();
         if (oClass.isArray()) {
             appendArray(o, str, dejaVu, oClass);
@@ -477,10 +464,7 @@ final class ParameterFormatter {
     }
 
     private static void appendArray(
-            final Object o,
-            final StringBuilder str,
-            final Set<Object> dejaVu,
-            final Class<?> oClass) {
+            final Object o, final StringBuilder str, final Set<Object> dejaVu, final Class<?> oClass) {
         if (oClass == byte[].class) {
             str.append(Arrays.toString((byte[]) o));
         } else if (oClass == short[].class) {
@@ -524,10 +508,7 @@ final class ParameterFormatter {
     /**
      * Specialized handler for {@link Map}s.
      */
-    private static void appendMap(
-            final Object o,
-            final StringBuilder str,
-            final Set<Object> dejaVu) {
+    private static void appendMap(final Object o, final StringBuilder str, final Set<Object> dejaVu) {
         final Set<Object> effectiveDejaVu = getOrCreateDejaVu(dejaVu);
         final boolean seen = !effectiveDejaVu.add(o);
         if (seen) {
@@ -556,10 +537,7 @@ final class ParameterFormatter {
     /**
      * Specialized handler for {@link Collection}s.
      */
-    private static void appendCollection(
-            final Object o,
-            final StringBuilder str,
-            final Set<Object> dejaVu) {
+    private static void appendCollection(final Object o, final StringBuilder str, final Set<Object> dejaVu) {
         final Set<Object> effectiveDejaVu = getOrCreateDejaVu(dejaVu);
         final boolean seen = !effectiveDejaVu.add(o);
         if (seen) {
@@ -582,9 +560,7 @@ final class ParameterFormatter {
     }
 
     private static Set<Object> getOrCreateDejaVu(final Set<Object> dejaVu) {
-        return dejaVu == null
-                ? createDejaVu()
-                : dejaVu;
+        return dejaVu == null ? createDejaVu() : dejaVu;
     }
 
     private static Set<Object> createDejaVu() {
@@ -646,5 +622,4 @@ final class ParameterFormatter {
         }
         return obj.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(obj));
     }
-
 }

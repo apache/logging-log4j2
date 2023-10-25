@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -79,7 +78,8 @@ class CopyOnWriteSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
         this.localMap = createThreadLocalMap();
     }
 
-    // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
+    // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if
+    // configured.
     // (This method is package protected for JUnit tests.)
     private ThreadLocal<StringMap> createThreadLocalMap() {
         if (inheritableMap) {
