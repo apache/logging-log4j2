@@ -27,6 +27,7 @@ import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -73,6 +74,10 @@ public class HttpURLConnectionManager extends HttpManager {
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = "URLCONNECTION_SSRF_FD",
+            justification = "This connection URL is specified in a configuration file."
+    )
     public void send(final Layout layout, final LogEvent event) throws IOException {
         final HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
         urlConnection.setAllowUserInteraction(false);

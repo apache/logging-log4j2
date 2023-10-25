@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -64,6 +65,10 @@ public class FileManager extends OutputStreamManager {
     /**
      * @since 2.9
      */
+    @SuppressFBWarnings(
+            value = "OVERLY_PERMISSIVE_FILE_PERMISSION",
+            justification = "File permissions are specified in the configuration file."
+    )
     protected FileManager(final LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,
             final boolean createOnDemand, final String advertiseURI, final Layout layout,
             final String filePermissions, final String fileOwner, final String fileGroup, final boolean writeHeader,
@@ -133,6 +138,10 @@ public class FileManager extends OutputStreamManager {
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The destination file is specified in the configuration file."
+    )
     protected OutputStream createOutputStream() throws IOException {
         final String filename = getFileName();
         LOGGER.debug("Now writing to {} at {}", filename, new Date());
@@ -381,6 +390,10 @@ public class FileManager extends OutputStreamManager {
          * @return The FileManager for the File.
          */
         @Override
+        @SuppressFBWarnings(
+                value = "PATH_TRAVERSAL_IN",
+                justification = "The destination file should be specified in the configuration file."
+        )
         public FileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
             try {

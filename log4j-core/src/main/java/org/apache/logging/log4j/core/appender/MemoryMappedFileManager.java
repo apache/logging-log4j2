@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
@@ -357,6 +358,10 @@ public class MemoryMappedFileManager extends OutputStreamManager {
          */
         @SuppressWarnings("resource")
         @Override
+        @SuppressFBWarnings(
+                value = "PATH_TRAVERSAL_IN",
+                justification = "The destination file should be specified in the configuration file."
+        )
         public MemoryMappedFileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
             if (!data.append) {

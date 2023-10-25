@@ -324,8 +324,7 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <module.name />
-    <!-- TODO: fix errors and re-enable SpotBugs -->
-    <spotbugs.skip>true</spotbugs.skip>
+    <spotbugs.maxRank>14</spotbugs.maxRank>
     <project.build.outputTimestamp>2023-10-23T19:03:40Z</project.build.outputTimestamp>
 
     <!-- ========================

@@ -21,6 +21,7 @@ import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.Message;
 
@@ -114,6 +115,10 @@ public class StatusData {
      *
      * @return The formatted status data as a String.
      */
+    @SuppressFBWarnings(
+            value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+            justification = "Log4j prints stacktraces only to logs, which should be private."
+    )
     public String getFormattedStatus() {
         final StringBuilder sb = new StringBuilder();
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");

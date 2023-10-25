@@ -34,6 +34,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
@@ -682,6 +683,10 @@ public class RollingFileManager extends FileManager {
          * @return a RollingFileManager.
          */
         @Override
+        @SuppressFBWarnings(
+                value = "PATH_TRAVERSAL_IN",
+                justification = "The destination file should be specified in the configuration file."
+        )
         public RollingFileManager createManager(final String name, final FactoryData data) {
             long size = 0;
             File file = null;

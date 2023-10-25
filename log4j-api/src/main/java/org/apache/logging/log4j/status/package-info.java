@@ -19,7 +19,7 @@
  * used by applications reporting on the status of the logging system
  */
 @Export
-@Version("2.20.1")
+@Version("2.20.2")
 package org.apache.logging.log4j.status;
 
 import org.osgi.annotation.bundle.Export;
