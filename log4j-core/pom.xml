@@ -51,8 +51,6 @@
       org.fusesource.jansi;resolution:=optional,
       org.jctools.*;resolution:=optional,
       org.zeromq;resolution:=optional,
-      <!-- `java.compiler` is optional -->
-      javax.annotation.processing;resolution:=optional,
       javax.lang.model.*;resolution:=optional,
       javax.tools;resolution:=optional,
       <!-- `java.sql`, which depends on `java.logging` is optional -->
@@ -74,7 +72,6 @@
       com.fasterxml.jackson.databind;substitute="jackson-databind";transitive=false,
       com.fasterxml.jackson.dataformat.xml;substitute="jackson-dataformat-xml";transitive=false,
       com.fasterxml.jackson.dataformat.yaml;substitute="jackson-dataformat-yaml";transitive=false,
-      java.compiler;transitive=false,
       java.naming;transitive=false,
       org.apache.commons.csv;transitive=false,
       org.fusesource.jansi;transitive=false,

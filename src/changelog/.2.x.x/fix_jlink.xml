@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
+       type="fixed">
+  <issue id="1896" link="https://github.com/apache/logging-log4j2/issues/1896"/>
+  <description format="asciidoc">Fix JPMS descriptors causing `jlink` issues</description>
+</entry>
