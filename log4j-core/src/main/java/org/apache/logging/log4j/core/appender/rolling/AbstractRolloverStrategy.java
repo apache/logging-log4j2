@@ -28,6 +28,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
@@ -106,6 +107,10 @@ public abstract class AbstractRolloverStrategy implements RolloverStrategy {
         return getEligibleFiles("", path, logfilePattern, isAscending);
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The file path should be specified in the configuration file."
+    )
     protected SortedMap<Integer, Path> getEligibleFiles(final String currentFile, final String path,
             final String logfilePattern, final boolean isAscending) {
         final TreeMap<Integer, Path> eligibleFiles = new TreeMap<>();

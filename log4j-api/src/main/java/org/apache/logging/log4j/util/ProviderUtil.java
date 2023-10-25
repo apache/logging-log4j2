@@ -29,6 +29,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -89,6 +90,10 @@ public final class ProviderUtil {
      * @param url the URL to the provider properties file
      * @param cl the ClassLoader to load the provider classes with
      */
+    @SuppressFBWarnings(
+            value = "URLCONNECTION_SSRF_FD",
+            justification = "Uses a fixed URL that ends in 'META-INF/log4j-provider.properties'."
+    )
     protected static void loadProvider(final URL url, final ClassLoader cl) {
         try {
             final Properties props = PropertiesUtil.loadClose(url.openStream(), url);

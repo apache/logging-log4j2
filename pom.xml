@@ -314,8 +314,7 @@
     <!-- JDK version of the main Maven process (used in ASF parent POM) -->
     <minimalJavaBuildVersion>[11,12)</minimalJavaBuildVersion>
     <module.name />
-    <!-- TODO: fix errors and re-enable SpotBugs -->
-    <spotbugs.skip>true</spotbugs.skip>
+    <spotbugs.maxRank>14</spotbugs.maxRank>
     <project.build.outputTimestamp>2023-10-23T19:03:40Z</project.build.outputTimestamp>
 
     <!-- ========================

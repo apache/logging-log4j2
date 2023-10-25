@@ -21,6 +21,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * PropertySource backed by a properties file. Follows the same conventions as {@link PropertiesPropertySource}.
  *
@@ -36,6 +38,10 @@ public class PropertyFilePropertySource extends PropertiesPropertySource {
         super(loadPropertiesFile(fileName, useTccl));
     }
 
+    @SuppressFBWarnings(
+            value = "URLCONNECTION_SSRF_FD",
+            justification = "This property source should only be used with hardcoded file names."
+    )
     private static Properties loadPropertiesFile(final String fileName, final boolean useTccl) {
         final Properties props = new Properties();
         for (final URL url : LoaderUtil.findResources(fileName, useTccl)) {

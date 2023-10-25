@@ -33,6 +33,7 @@ import java.nio.file.attribute.UserPrincipalLookupService;
 import java.util.Objects;
 import java.util.Set;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -57,6 +58,10 @@ public final class FileUtils {
      * @param uri the URI
      * @return the resulting file object
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "Currently `uri` comes from a configuration file."
+    )
     public static File fileFromUri(URI uri) {
         if (uri == null) {
             return null;

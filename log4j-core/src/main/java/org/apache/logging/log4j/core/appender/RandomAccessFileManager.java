@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -194,6 +195,10 @@ public class RandomAccessFileManager extends OutputStreamManager {
          * @return The RandomAccessFileManager for the File.
          */
         @Override
+        @SuppressFBWarnings(
+                value = "PATH_TRAVERSAL_IN",
+                justification = "The destination file should be specified in the configuration file."
+        )
         public RandomAccessFileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
             if (!data.append) {

@@ -25,6 +25,8 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Helps with Throwable objects.
  */
@@ -68,6 +70,10 @@ public final class Throwables {
      * @param throwable the Throwable
      * @return a List of Strings
      */
+    @SuppressFBWarnings(
+            value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+            justification = "Log4j prints stacktraces only to logs, which should be private."
+    )
     public static List<String> toStringList(final Throwable throwable) {
         final StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);

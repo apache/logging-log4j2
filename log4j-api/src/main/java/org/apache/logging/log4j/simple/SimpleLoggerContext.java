@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -75,6 +76,10 @@ public class SimpleLoggerContext implements LoggerContext {
     /**
      * Constructs a new initialized instance.
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_OUT",
+            justification = "Opens a file retrieved from configuration (Log4j properties)"
+    )
     public SimpleLoggerContext() {
         props = new PropertiesUtil("log4j2.simplelog.properties");
 

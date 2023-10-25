@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -199,6 +200,10 @@ public class SimpleLogger extends AbstractLogger {
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+            justification = "Log4j prints stacktraces only to logs, which should be private."
+    )
     public void logMessage(final String fqcn, final Level mgsLevel, final Marker marker, final Message msg,
             final Throwable throwable) {
         final StringBuilder sb = new StringBuilder();

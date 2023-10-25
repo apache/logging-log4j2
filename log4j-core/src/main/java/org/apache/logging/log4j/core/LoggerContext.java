@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
@@ -134,6 +135,10 @@ public class LoggerContext extends AbstractLifeCycle
      * @param externalContext The external context.
      * @param configLocn The configuration location.
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The configLocn comes from a secure source (Log4j properties)"
+    )
     public LoggerContext(final String name, final Object externalContext, final String configLocn) {
         this.contextName = name;
         if (externalContext == null) {

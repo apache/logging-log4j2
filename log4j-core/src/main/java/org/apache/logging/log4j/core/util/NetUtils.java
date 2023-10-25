@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -149,6 +150,10 @@ public final class NetUtils {
      * @param path the URI string or path
      * @return the URI object
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "Currently `path` comes from a configuration file."
+    )
     public static URI toURI(final String path) {
         try {
             // Resolves absolute URI
