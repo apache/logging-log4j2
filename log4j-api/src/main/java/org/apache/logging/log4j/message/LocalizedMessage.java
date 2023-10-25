@@ -22,7 +22,6 @@ import java.io.ObjectOutputStream;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -67,11 +66,16 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this(baseName, (Locale) null, key, arguments);
     }
 
-    public LocalizedMessage(final ResourceBundle bundle, final String key, final Object[] arguments) {
+    public LocalizedMessage(
+            final ResourceBundle bundle, final String key, final Object[] arguments) {
         this(bundle, (Locale) null, key, arguments);
     }
 
-    public LocalizedMessage(final String baseName, final Locale locale, final String key, final Object[] arguments) {
+    public LocalizedMessage(
+            final String baseName,
+            final Locale locale,
+            final String key,
+            final Object[] arguments) {
         this.key = key;
         this.argArray = arguments;
         this.throwable = null;
@@ -80,7 +84,10 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this.locale = locale;
     }
 
-    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key,
+    public LocalizedMessage(
+            final ResourceBundle bundle,
+            final Locale locale,
+            final String key,
             final Object[] arguments) {
         this.key = key;
         this.argArray = arguments;
@@ -113,11 +120,13 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this(bundle, (Locale) null, key, new Object[] {arg});
     }
 
-    public LocalizedMessage(final String baseName, final Locale locale, final String key, final Object arg) {
+    public LocalizedMessage(
+            final String baseName, final Locale locale, final String key, final Object arg) {
         this(baseName, locale, key, new Object[] {arg});
     }
 
-    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object arg) {
+    public LocalizedMessage(
+            final ResourceBundle bundle, final Locale locale, final String key, final Object arg) {
         this(bundle, locale, key, new Object[] {arg});
     }
 
@@ -129,25 +138,36 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
         this((ResourceBundle) null, (Locale) null, messagePattern, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final String baseName, final String key, final Object arg1, final Object arg2) {
+    public LocalizedMessage(
+            final String baseName, final String key, final Object arg1, final Object arg2) {
         this(baseName, (Locale) null, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final ResourceBundle bundle, final String key, final Object arg1, final Object arg2) {
+    public LocalizedMessage(
+            final ResourceBundle bundle, final String key, final Object arg1, final Object arg2) {
         this(bundle, (Locale) null, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final String baseName, final Locale locale, final String key, final Object arg1,
+    public LocalizedMessage(
+            final String baseName,
+            final Locale locale,
+            final String key,
+            final Object arg1,
             final Object arg2) {
         this(baseName, locale, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final ResourceBundle bundle, final Locale locale, final String key, final Object arg1,
+    public LocalizedMessage(
+            final ResourceBundle bundle,
+            final Locale locale,
+            final String key,
+            final Object arg1,
             final Object arg2) {
         this(bundle, locale, key, new Object[] {arg1, arg2});
     }
 
-    public LocalizedMessage(final Locale locale, final String key, final Object arg1, final Object arg2) {
+    public LocalizedMessage(
+            final Locale locale, final String key, final Object arg1, final Object arg2) {
         this((ResourceBundle) null, locale, key, new Object[] {arg1, arg2});
     }
 
@@ -190,7 +210,8 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
             }
         }
         final String myKey = getFormat();
-        final String msgPattern = (bundle == null || !bundle.containsKey(myKey)) ? myKey : bundle.getString(myKey);
+        final String msgPattern =
+                (bundle == null || !bundle.containsKey(myKey)) ? myKey : bundle.getString(myKey);
         final Object[] array = argArray == null ? stringArgs : argArray;
         final FormattedMessage msg = new FormattedMessage(msgPattern, array);
         formattedMessage = msg.getFormattedMessage();
@@ -225,8 +246,8 @@ public class LocalizedMessage implements Message, LoggerNameAwareMessage {
      *            based on all or part of the package name. If false the key is expected to be the exact bundle id.
      * @return The ResourceBundle.
      */
-    protected ResourceBundle getResourceBundle(final String rbBaseName, final Locale resourceBundleLocale,
-            final boolean loop) {
+    protected ResourceBundle getResourceBundle(
+            final String rbBaseName, final Locale resourceBundleLocale, final boolean loop) {
         ResourceBundle rb = null;
 
         if (rbBaseName == null) {

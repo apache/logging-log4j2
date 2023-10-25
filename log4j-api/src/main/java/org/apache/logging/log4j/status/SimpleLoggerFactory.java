@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.status;
 
 import java.io.PrintStream;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
@@ -41,7 +40,8 @@ final class SimpleLoggerFactory {
             final Level level,
             final MessageFactory messageFactory,
             final PrintStream stream) {
-        final String dateFormat = StatusLogger.PROPS.getStringProperty(StatusLogger.STATUS_DATE_FORMAT);
+        final String dateFormat =
+                StatusLogger.PROPS.getStringProperty(StatusLogger.STATUS_DATE_FORMAT);
         final boolean dateFormatProvided = Strings.isNotBlank(dateFormat);
         return new SimpleLogger(
                 name,
@@ -55,5 +55,4 @@ final class SimpleLoggerFactory {
                 StatusLogger.PROPS,
                 stream);
     }
-
 }

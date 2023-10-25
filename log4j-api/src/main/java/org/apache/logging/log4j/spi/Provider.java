@@ -19,7 +19,6 @@ package org.apache.logging.log4j.spi;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.Properties;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -33,10 +32,12 @@ public class Provider {
      * Property name to set for a Log4j 2 provider to specify the priority of this implementation.
      */
     public static final String FACTORY_PRIORITY = "FactoryPriority";
+
     /**
      * Property name to set to the implementation of {@link org.apache.logging.log4j.spi.ThreadContextMap}.
      */
     public static final String THREAD_CONTEXT_MAP = "ThreadContextMap";
+
     /**
      * Property name to set to the implementation of {@link org.apache.logging.log4j.spi.LoggerContextFactory}.
      */
@@ -66,15 +67,18 @@ public class Provider {
         versions = null;
     }
 
-    public Provider(final Integer priority, final String versions,
-                    final Class<? extends LoggerContextFactory> loggerContextFactoryClass) {
+    public Provider(
+            final Integer priority,
+            final String versions,
+            final Class<? extends LoggerContextFactory> loggerContextFactoryClass) {
         this(priority, versions, loggerContextFactoryClass, null);
     }
 
-
-    public Provider(final Integer priority, final String versions,
-                    final Class<? extends LoggerContextFactory> loggerContextFactoryClass,
-                    final Class<? extends ThreadContextMap> threadContextMapClass) {
+    public Provider(
+            final Integer priority,
+            final String versions,
+            final Class<? extends LoggerContextFactory> loggerContextFactoryClass,
+            final Class<? extends ThreadContextMap> threadContextMapClass) {
         this.url = null;
         this.classLoader = null;
         this.priority = priority;
@@ -176,7 +180,11 @@ public class Provider {
                 return clazz.asSubclass(ThreadContextMap.class);
             }
         } catch (final Exception e) {
-            LOGGER.error("Unable to create class {} specified in {}", threadContextMap, url.toString(), e);
+            LOGGER.error(
+                    "Unable to create class {} specified in {}",
+                    threadContextMap,
+                    url.toString(),
+                    e);
         }
         return null;
     }
@@ -233,10 +241,14 @@ public class Provider {
         if (priority != null ? !priority.equals(provider.priority) : provider.priority != null) {
             return false;
         }
-        if (className != null ? !className.equals(provider.className) : provider.className != null) {
+        if (className != null
+                ? !className.equals(provider.className)
+                : provider.className != null) {
             return false;
         }
-        if (loggerContextFactoryClass != null ? !loggerContextFactoryClass.equals(provider.loggerContextFactoryClass) : provider.loggerContextFactoryClass != null) {
+        if (loggerContextFactoryClass != null
+                ? !loggerContextFactoryClass.equals(provider.loggerContextFactoryClass)
+                : provider.loggerContextFactoryClass != null) {
             return false;
         }
         return versions != null ? versions.equals(provider.versions) : provider.versions == null;
@@ -246,7 +258,11 @@ public class Provider {
     public int hashCode() {
         int result = priority != null ? priority.hashCode() : 0;
         result = 31 * result + (className != null ? className.hashCode() : 0);
-        result = 31 * result + (loggerContextFactoryClass != null ? loggerContextFactoryClass.hashCode() : 0);
+        result =
+                31 * result
+                        + (loggerContextFactoryClass != null
+                                ? loggerContextFactoryClass.hashCode()
+                                : 0);
         result = 31 * result + (versions != null ? versions.hashCode() : 0);
         return result;
     }

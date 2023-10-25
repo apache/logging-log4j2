@@ -50,7 +50,8 @@ public class Unbox {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int BITS_PER_INT = 32;
     private static final int RINGBUFFER_MIN_SIZE = 32;
-    private static final int RINGBUFFER_SIZE = calculateRingBufferSize("log4j.unbox.ringbuffer.size");
+    private static final int RINGBUFFER_SIZE =
+            calculateRingBufferSize("log4j.unbox.ringbuffer.size");
     private static final int MASK = RINGBUFFER_SIZE - 1;
 
     /**
@@ -99,6 +100,7 @@ public class Unbox {
     private static class State {
         private final StringBuilder[] ringBuffer = new StringBuilder[RINGBUFFER_SIZE];
         private int current;
+
         State() {
             for (int i = 0; i < ringBuffer.length; i++) {
                 ringBuffer[i] = new StringBuilder(21);
@@ -120,6 +122,7 @@ public class Unbox {
             return false;
         }
     }
+
     private static ThreadLocal<State> threadLocalState = new ThreadLocal<>();
     private static WebSafeState webSafeState = new WebSafeState();
 
@@ -128,18 +131,25 @@ public class Unbox {
     }
 
     private static int calculateRingBufferSize(final String propertyName) {
-        final String userPreferredRBSize = PropertiesUtil.getProperties().getStringProperty(propertyName,
-                String.valueOf(RINGBUFFER_MIN_SIZE));
+        final String userPreferredRBSize =
+                PropertiesUtil.getProperties()
+                        .getStringProperty(propertyName, String.valueOf(RINGBUFFER_MIN_SIZE));
         try {
             int size = Integer.parseInt(userPreferredRBSize.trim());
             if (size < RINGBUFFER_MIN_SIZE) {
                 size = RINGBUFFER_MIN_SIZE;
-                LOGGER.warn("Invalid {} {}, using minimum size {}.", propertyName, userPreferredRBSize,
+                LOGGER.warn(
+                        "Invalid {} {}, using minimum size {}.",
+                        propertyName,
+                        userPreferredRBSize,
                         RINGBUFFER_MIN_SIZE);
             }
             return ceilingNextPowerOfTwo(size);
         } catch (final Exception ex) {
-            LOGGER.warn("Invalid {} {}, using default size {}.", propertyName, userPreferredRBSize,
+            LOGGER.warn(
+                    "Invalid {} {}, using default size {}.",
+                    propertyName,
+                    userPreferredRBSize,
                     RINGBUFFER_MIN_SIZE);
             return RINGBUFFER_MIN_SIZE;
         }
@@ -263,7 +273,9 @@ public class Unbox {
     }
 
     private static StringBuilder getSB() {
-        return Constants.ENABLE_THREADLOCALS ? getState().getStringBuilder() : webSafeState.getStringBuilder();
+        return Constants.ENABLE_THREADLOCALS
+                ? getState().getStringBuilder()
+                : webSafeState.getStringBuilder();
     }
 
     /** For testing. */

@@ -104,7 +104,8 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
+    Message newMessage(
+            String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5);
 
     /**
      * Creates a new parameterized message.
@@ -120,7 +121,15 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6);
+    Message newMessage(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6);
 
     /**
      * Creates a new parameterized message.
@@ -137,7 +146,15 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+    Message newMessage(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
             Object p7);
 
     /**
@@ -156,8 +173,17 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8);
+    Message newMessage(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8);
 
     /**
      * Creates a new parameterized message.
@@ -176,6 +202,16 @@ public interface MessageFactory2 extends MessageFactory {
      * @return a new message
      * @see ParameterizedMessageFactory
      */
-    Message newMessage(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
-            Object p7, Object p8, Object p9);
+    Message newMessage(
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 }

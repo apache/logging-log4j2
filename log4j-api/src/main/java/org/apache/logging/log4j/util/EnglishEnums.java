@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.util;
 
-
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
@@ -32,8 +31,7 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
  */
 public final class EnglishEnums {
 
-    private EnglishEnums() {
-    }
+    private EnglishEnums() {}
 
     /**
      * Returns the Result for the given string.
@@ -64,8 +62,8 @@ public final class EnglishEnums {
      * @param <T> The type of the enum.
      * @return an enum value or {@code defaultValue} if {@code name} is null.
      */
-    public static <T extends Enum<T>> T valueOf(final Class<T> enumType, final String name, final T defaultValue) {
+    public static <T extends Enum<T>> T valueOf(
+            final Class<T> enumType, final String name, final T defaultValue) {
         return name == null ? defaultValue : Enum.valueOf(enumType, toRootUpperCase(name));
     }
-
 }

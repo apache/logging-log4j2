@@ -75,5 +75,4 @@ public class PropertiesPropertySource implements PropertySource {
     public boolean containsProperty(final String key) {
         return getProperty(key) != null;
     }
-
 }

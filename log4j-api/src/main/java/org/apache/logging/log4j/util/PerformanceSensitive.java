@@ -29,7 +29,9 @@ import java.lang.annotation.RetentionPolicy;
  */
 // Not @Documented: Do not (yet) make this annotation part of the public API of annotated elements.
 // No @Target: No restrictions yet on what code elements may be annotated or not.
-@Retention(RetentionPolicy.CLASS) // Currently no need to reflectively discover this annotation at runtime.
+@Retention(
+        RetentionPolicy
+                .CLASS) // Currently no need to reflectively discover this annotation at runtime.
 public @interface PerformanceSensitive {
     /** Description of why this is written the way it is. */
     String[] value() default "";

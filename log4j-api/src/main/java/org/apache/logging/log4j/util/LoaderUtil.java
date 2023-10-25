@@ -47,13 +47,15 @@ public final class LoaderUtil {
 
     private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();
 
-    // this variable must be lazily loaded; otherwise, we get a nice circular class loading problem where LoaderUtil
+    // this variable must be lazily loaded; otherwise, we get a nice circular class loading problem
+    // where LoaderUtil
     // wants to use PropertiesUtil, but then PropertiesUtil wants to use LoaderUtil.
     private static Boolean ignoreTCCL;
 
     private static final boolean GET_CLASS_LOADER_DISABLED;
 
-    private static final PrivilegedAction<ClassLoader> TCCL_GETTER = new ThreadContextClassLoaderGetter();
+    private static final PrivilegedAction<ClassLoader> TCCL_GETTER =
+            new ThreadContextClassLoaderGetter();
 
     static {
         if (SECURITY_MANAGER != null) {
@@ -70,8 +72,7 @@ public final class LoaderUtil {
         }
     }
 
-    private LoaderUtil() {
-    }
+    private LoaderUtil() {}
 
     /**
      * Gets the current Thread ClassLoader. Returns the system ClassLoader if the TCCL is {@code null}. If the system
@@ -87,7 +88,9 @@ public final class LoaderUtil {
             // however, if this is null, there's really no option left at this point
             return LoaderUtil.class.getClassLoader();
         }
-        return SECURITY_MANAGER == null ? TCCL_GETTER.run() : AccessController.doPrivileged(TCCL_GETTER);
+        return SECURITY_MANAGER == null
+                ? TCCL_GETTER.run()
+                : AccessController.doPrivileged(TCCL_GETTER);
     }
 
     /**
@@ -101,7 +104,9 @@ public final class LoaderUtil {
                 return cl;
             }
             final ClassLoader ccl = LoaderUtil.class.getClassLoader();
-            return ccl == null && !GET_CLASS_LOADER_DISABLED ? ClassLoader.getSystemClassLoader() : ccl;
+            return ccl == null && !GET_CLASS_LOADER_DISABLED
+                    ? ClassLoader.getSystemClassLoader()
+                    : ccl;
         }
     }
 
@@ -119,7 +124,8 @@ public final class LoaderUtil {
         } catch (final ClassNotFoundException | LinkageError e) {
             return false;
         } catch (final Throwable e) {
-            LowLevelLogUtil.logException("Unknown error checking for existence of class: " + className, e);
+            LowLevelLogUtil.logException(
+                    "Unknown error checking for existence of class: " + className, e);
             return false;
         }
     }
@@ -163,7 +169,8 @@ public final class LoaderUtil {
         try {
             return clazz.getConstructor().newInstance();
         } catch (final NoSuchMethodException ignored) {
-            // FIXME: looking at the code for Class.newInstance(), this seems to do the same thing as above
+            // FIXME: looking at the code for Class.newInstance(), this seems to do the same thing
+            // as above
             return clazz.newInstance();
         }
     }
@@ -180,8 +187,11 @@ public final class LoaderUtil {
      * @since 2.1
      */
     @SuppressWarnings("unchecked")
-    public static <T> T newInstanceOf(final String className) throws ClassNotFoundException, IllegalAccessException,
-            InstantiationException, InvocationTargetException {
+    public static <T> T newInstanceOf(final String className)
+            throws ClassNotFoundException,
+                    IllegalAccessException,
+                    InstantiationException,
+                    InvocationTargetException {
         return newInstanceOf((Class<T>) loadClass(className));
     }
 
@@ -200,8 +210,10 @@ public final class LoaderUtil {
      * @since 2.1
      */
     public static <T> T newCheckedInstanceOf(final String className, final Class<T> clazz)
-            throws ClassNotFoundException, InvocationTargetException, InstantiationException,
-            IllegalAccessException {
+            throws ClassNotFoundException,
+                    InvocationTargetException,
+                    InstantiationException,
+                    IllegalAccessException {
         return clazz.cast(newInstanceOf(className));
     }
 
@@ -219,9 +231,12 @@ public final class LoaderUtil {
      * @throws ClassCastException        if the constructed object isn't type compatible with {@code T}
      * @since 2.5
      */
-    public static <T> T newCheckedInstanceOfProperty(final String propertyName, final Class<T> clazz)
-        throws ClassNotFoundException, InvocationTargetException, InstantiationException,
-        IllegalAccessException {
+    public static <T> T newCheckedInstanceOfProperty(
+            final String propertyName, final Class<T> clazz)
+            throws ClassNotFoundException,
+                    InvocationTargetException,
+                    InstantiationException,
+                    IllegalAccessException {
         final String className = PropertiesUtil.getProperties().getStringProperty(propertyName);
         if (className == null) {
             return null;
@@ -232,7 +247,8 @@ public final class LoaderUtil {
     private static boolean isIgnoreTccl() {
         // we need to lazily initialize this, but concurrent access is not an issue
         if (ignoreTCCL == null) {
-            final String ignoreTccl = PropertiesUtil.getProperties().getStringProperty(IGNORE_TCCL_PROPERTY, null);
+            final String ignoreTccl =
+                    PropertiesUtil.getProperties().getStringProperty(IGNORE_TCCL_PROPERTY, null);
             ignoreTCCL = ignoreTccl != null && !"false".equalsIgnoreCase(ignoreTccl.trim());
         }
         return ignoreTCCL;
@@ -261,9 +277,10 @@ public final class LoaderUtil {
     static Collection<UrlResource> findUrlResources(final String resource, final boolean useTccl) {
         // @formatter:off
         final ClassLoader[] candidates = {
-                useTccl ? getThreadContextClassLoader() : null,
-                LoaderUtil.class.getClassLoader(),
-                GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader()};
+            useTccl ? getThreadContextClassLoader() : null,
+            LoaderUtil.class.getClassLoader(),
+            GET_CLASS_LOADER_DISABLED ? null : ClassLoader.getSystemClassLoader()
+        };
         // @formatter:on
         final Collection<UrlResource> resources = new LinkedHashSet<>();
         for (final ClassLoader cl : candidates) {
@@ -312,7 +329,9 @@ public final class LoaderUtil {
 
             final UrlResource that = (UrlResource) o;
 
-            if (classLoader != null ? !classLoader.equals(that.classLoader) : that.classLoader != null) {
+            if (classLoader != null
+                    ? !classLoader.equals(that.classLoader)
+                    : that.classLoader != null) {
                 return false;
             }
             if (url != null ? !url.equals(that.url) : that.url != null) {

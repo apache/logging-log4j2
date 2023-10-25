@@ -142,7 +142,8 @@ public interface ExtendedLogger extends Logger {
      * @param p3 the message parameters
      * @return True if logging is enabled, false otherwise.
      */
-    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3);
+    boolean isEnabled(
+            Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3);
 
     /**
      * Tests if logging is enabled.
@@ -157,7 +158,14 @@ public interface ExtendedLogger extends Logger {
      * @param p4 the message parameters
      * @return True if logging is enabled, false otherwise.
      */
-    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
+    boolean isEnabled(
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
             Object p4);
 
     /**
@@ -174,8 +182,16 @@ public interface ExtendedLogger extends Logger {
      * @param p5 the message parameters
      * @return True if logging is enabled, false otherwise.
      */
-    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
-            Object p4, Object p5);
+    boolean isEnabled(
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5);
 
     /**
      * Determines if logging is enabled.
@@ -192,8 +208,17 @@ public interface ExtendedLogger extends Logger {
      * @param p6 the message parameters
      * @return True if logging is enabled, false otherwise.
      */
-    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
-            Object p4, Object p5, Object p6);
+    boolean isEnabled(
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6);
 
     /**
      * Tests if logging is enabled.
@@ -211,8 +236,18 @@ public interface ExtendedLogger extends Logger {
      * @param p7 the message parameters
      * @return True if logging is enabled, false otherwise.
      */
-    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
-            Object p4, Object p5, Object p6, Object p7);
+    boolean isEnabled(
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7);
 
     /**
      * Tests if logging is enabled.
@@ -231,8 +266,19 @@ public interface ExtendedLogger extends Logger {
      * @param p8 the message parameters
      * @return True if logging is enabled, false otherwise.
      */
-    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
-            Object p4, Object p5, Object p6, Object p7, Object p8);
+    boolean isEnabled(
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8);
 
     /**
      * Tests if logging is enabled.
@@ -252,8 +298,20 @@ public interface ExtendedLogger extends Logger {
      * @param p9 the message parameters
      * @return True if logging is enabled, false otherwise.
      */
-    boolean isEnabled(Level level, Marker marker, String message, Object p0, Object p1, Object p2, Object p3,
-            Object p4, Object p5, Object p6, Object p7, Object p8, Object p9);
+    boolean isEnabled(
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs a message if the specified level is active.
@@ -349,7 +407,8 @@ public interface ExtendedLogger extends Logger {
      * @param p0 the message parameters
      * @param p1 the message parameters
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1);
+    void logIfEnabled(
+            String fqcn, Level level, Marker marker, String message, Object p0, Object p1);
 
     /**
      * Logs a message if the specified level is active.
@@ -363,7 +422,14 @@ public interface ExtendedLogger extends Logger {
      * @param p1 the message parameters
      * @param p2 the message parameters
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2);
+    void logIfEnabled(
+            String fqcn,
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2);
 
     /**
      * Logs a message if the specified level is active.
@@ -378,7 +444,14 @@ public interface ExtendedLogger extends Logger {
      * @param p2 the message parameters
      * @param p3 the message parameters
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
+    void logIfEnabled(
+            String fqcn,
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
             Object p3);
 
     /**
@@ -395,8 +468,16 @@ public interface ExtendedLogger extends Logger {
      * @param p3 the message parameters
      * @param p4 the message parameters
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
-            Object p3, Object p4);
+    void logIfEnabled(
+            String fqcn,
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4);
 
     /**
      * Logs a message if the specified level is active.
@@ -413,8 +494,17 @@ public interface ExtendedLogger extends Logger {
      * @param p4 the message parameters
      * @param p5 the message parameters
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
-            Object p3, Object p4, Object p5);
+    void logIfEnabled(
+            String fqcn,
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5);
 
     /**
      * Logs a message if the specified level is active.
@@ -432,8 +522,18 @@ public interface ExtendedLogger extends Logger {
      * @param p5 the message parameters
      * @param p6 the message parameters
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
-            Object p3, Object p4, Object p5, Object p6);
+    void logIfEnabled(
+            String fqcn,
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6);
 
     /**
      * Logs a message if the specified level is active.
@@ -452,8 +552,19 @@ public interface ExtendedLogger extends Logger {
      * @param p6 the message parameters
      * @param p7 the message parameters
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
-            Object p3, Object p4, Object p5, Object p6, Object p7);
+    void logIfEnabled(
+            String fqcn,
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7);
 
     /**
      * Logs a message if the specified level is active.
@@ -473,8 +584,20 @@ public interface ExtendedLogger extends Logger {
      * @param p7 the message parameters
      * @param p8 the message parameters
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
-            Object p3, Object p4, Object p5, Object p6, Object p7, Object p8);
+    void logIfEnabled(
+            String fqcn,
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8);
 
     /**
      * Logs a message if the specified level is active.
@@ -495,8 +618,21 @@ public interface ExtendedLogger extends Logger {
      * @param p8 the message parameters
      * @param p9 the message parameters
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Object p0, Object p1, Object p2,
-            Object p3, Object p4, Object p5, Object p6, Object p7, Object p8, Object p9);
+    void logIfEnabled(
+            String fqcn,
+            Level level,
+            Marker marker,
+            String message,
+            Object p0,
+            Object p1,
+            Object p2,
+            Object p3,
+            Object p4,
+            Object p5,
+            Object p6,
+            Object p7,
+            Object p8,
+            Object p9);
 
     /**
      * Logs a message at the specified level. It is the responsibility of the caller to ensure the specified
@@ -521,7 +657,8 @@ public interface ExtendedLogger extends Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, MessageSupplier msgSupplier, Throwable t);
+    void logIfEnabled(
+            String fqcn, Level level, Marker marker, MessageSupplier msgSupplier, Throwable t);
 
     /**
      * Logs a message whose parameters are only to be constructed if the specified level is active.
@@ -533,7 +670,8 @@ public interface ExtendedLogger extends Logger {
      * @param message The message format.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, String message, Supplier<?>... paramSuppliers);
+    void logIfEnabled(
+            String fqcn, Level level, Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
      * Logs a message which is only to be constructed if the specified level is active.
@@ -545,6 +683,6 @@ public interface ExtendedLogger extends Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
      */
-    void logIfEnabled(String fqcn, Level level, Marker marker, Supplier<?> msgSupplier, Throwable t);
-
+    void logIfEnabled(
+            String fqcn, Level level, Marker marker, Supplier<?> msgSupplier, Throwable t);
 }

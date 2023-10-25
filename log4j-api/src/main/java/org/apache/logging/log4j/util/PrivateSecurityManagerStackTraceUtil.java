@@ -61,7 +61,8 @@ final class PrivateSecurityManagerStackTraceUtil {
      *
      * @return the execution stack.
      */
-    // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
+    // benchmarks show that using the SecurityManager is much faster than looping through
+    // getCallerClass(int)
     static Deque<Class<?>> getCurrentStackTrace() {
         final Class<?>[] array = SECURITY_MANAGER.getClassContext();
         final Deque<Class<?>> classes = new ArrayDeque<>(array.length);
@@ -75,6 +76,5 @@ final class PrivateSecurityManagerStackTraceUtil {
         protected Class<?>[] getClassContext() {
             return super.getClassContext();
         }
-
     }
 }

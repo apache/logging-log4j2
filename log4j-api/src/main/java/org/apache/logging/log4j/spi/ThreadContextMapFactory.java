@@ -78,8 +78,7 @@ public final class ThreadContextMapFactory {
         GcFreeThreadContextKey = properties.getBooleanProperty(GC_FREE_THREAD_CONTEXT_KEY);
     }
 
-    private ThreadContextMapFactory() {
-    }
+    private ThreadContextMapFactory() {}
 
     public static ThreadContextMap createThreadContextMap() {
         final ClassLoader cl = ProviderUtil.findClassLoader();
@@ -91,12 +90,18 @@ public final class ThreadContextMapFactory {
                     result = (ThreadContextMap) clazz.newInstance();
                 }
             } catch (final ClassNotFoundException cnfe) {
-                LOGGER.error("Unable to locate configured ThreadContextMap {}", ThreadContextMapName);
+                LOGGER.error(
+                        "Unable to locate configured ThreadContextMap {}", ThreadContextMapName);
             } catch (final Exception ex) {
-                LOGGER.error("Unable to create configured ThreadContextMap {}", ThreadContextMapName, ex);
+                LOGGER.error(
+                        "Unable to create configured ThreadContextMap {}",
+                        ThreadContextMapName,
+                        ex);
             }
         }
-        if (result == null && ProviderUtil.hasProviders() && LogManager.getFactory() != null) { //LOG4J2-1658
+        if (result == null
+                && ProviderUtil.hasProviders()
+                && LogManager.getFactory() != null) { // LOG4J2-1658
             final String factoryClassName = LogManager.getFactory().getClass().getName();
             for (final Provider provider : ProviderUtil.getProviders()) {
                 if (factoryClassName.equals(provider.getClassName())) {
@@ -106,8 +111,10 @@ public final class ThreadContextMapFactory {
                             result = clazz.newInstance();
                             break;
                         } catch (final Exception e) {
-                            LOGGER.error("Unable to locate or load configured ThreadContextMap {}",
-                                    provider.getThreadContextMap(), e);
+                            LOGGER.error(
+                                    "Unable to locate or load configured ThreadContextMap {}",
+                                    provider.getThreadContextMap(),
+                                    e);
                             result = createDefaultThreadContextMap();
                         }
                     }

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.util.Objects;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.status.StatusLogger;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -35,9 +34,9 @@ public class OsgiServiceLocator {
              * OSGI classes of any version can still be present even if Log4j2 does not run in
              * an OSGI container, hence we check if this class is in a bundle.
              */
-            final Class< ? > clazz = Class.forName("org.osgi.framework.FrameworkUtil");
-            return clazz.getMethod("getBundle", Class.class)
-                    .invoke(null, OsgiServiceLocator.class) != null;
+            final Class<?> clazz = Class.forName("org.osgi.framework.FrameworkUtil");
+            return clazz.getMethod("getBundle", Class.class).invoke(null, OsgiServiceLocator.class)
+                    != null;
         } catch (final ClassNotFoundException | NoSuchMethodException | LinkageError e) {
             return false;
         } catch (final Throwable e) {
@@ -54,23 +53,34 @@ public class OsgiServiceLocator {
         return loadServices(serviceType, lookup, true);
     }
 
-    public static <T> Stream<T> loadServices(final Class<T> serviceType, final Lookup lookup, final boolean verbose) {
+    public static <T> Stream<T> loadServices(
+            final Class<T> serviceType, final Lookup lookup, final boolean verbose) {
         final Class<?> lookupClass = Objects.requireNonNull(lookup, "lookup").lookupClass();
-        final Bundle bundle = FrameworkUtil.getBundle(Objects.requireNonNull(lookupClass, "lookupClass"));
+        final Bundle bundle =
+                FrameworkUtil.getBundle(Objects.requireNonNull(lookupClass, "lookupClass"));
         if (bundle != null) {
             final BundleContext ctx = bundle.getBundleContext();
             if (ctx == null) {
                 if (verbose) {
-                    StatusLogger.getLogger().error(
-                            "Unable to load OSGI services: The bundle has no valid BundleContext for serviceType = {}, lookup = {}, lookupClass = {}, bundle = {}",
-                            serviceType, lookup, lookupClass, bundle);
+                    StatusLogger.getLogger()
+                            .error(
+                                    "Unable to load OSGI services: The bundle has no valid BundleContext for serviceType = {}, lookup = {}, lookupClass = {}, bundle = {}",
+                                    serviceType,
+                                    lookup,
+                                    lookupClass,
+                                    bundle);
                 }
             } else {
                 try {
-                    return ctx.getServiceReferences(serviceType, null).stream().map(ctx::getService);
+                    return ctx.getServiceReferences(serviceType, null).stream()
+                            .map(ctx::getService);
                 } catch (Throwable e) {
                     if (verbose) {
-                        StatusLogger.getLogger().error("Unable to load OSGI services for service {}", serviceType, e);
+                        StatusLogger.getLogger()
+                                .error(
+                                        "Unable to load OSGI services for service {}",
+                                        serviceType,
+                                        e);
                     }
                 }
             }

@@ -24,7 +24,8 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
-public class ReusableSimpleMessage implements ReusableMessage, CharSequence, ParameterVisitable, Clearable {
+public class ReusableSimpleMessage
+        implements ReusableMessage, CharSequence, ParameterVisitable, Clearable {
     private static final long serialVersionUID = -9199974506498249809L;
     private CharSequence charSequence;
 
@@ -81,8 +82,7 @@ public class ReusableSimpleMessage implements ReusableMessage, CharSequence, Par
     }
 
     @Override
-    public <S> void forEachParameter(final ParameterConsumer<S> action, final S state) {
-    }
+    public <S> void forEachParameter(final ParameterConsumer<S> action, final S state) {}
 
     @Override
     public Message memento() {

@@ -20,7 +20,6 @@ import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.Chars;
 import org.apache.logging.log4j.util.EnglishEnums;
@@ -50,7 +49,8 @@ import org.apache.logging.log4j.util.TriConsumer;
  */
 @PerformanceSensitive("allocation")
 @AsynchronouslyFormattable
-public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStringBuilderFormattable {
+public class MapMessage<M extends MapMessage<M, V>, V>
+        implements MultiFormatStringBuilderFormattable {
 
     private static final long serialVersionUID = -5031471831131487120L;
 
@@ -82,11 +82,15 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
          * @return a MapFormat
          */
         public static MapFormat lookupIgnoreCase(final String format) {
-            return XML.name().equalsIgnoreCase(format) ? XML //
-                    : JSON.name().equalsIgnoreCase(format) ? JSON //
-                    : JAVA.name().equalsIgnoreCase(format) ? JAVA //
-                    : JAVA_UNQUOTED.name().equalsIgnoreCase(format) ? JAVA_UNQUOTED //
-                    : null;
+            return XML.name().equalsIgnoreCase(format)
+                    ? XML //
+                    : JSON.name().equalsIgnoreCase(format)
+                            ? JSON //
+                            : JAVA.name().equalsIgnoreCase(format)
+                                    ? JAVA //
+                                    : JAVA_UNQUOTED.name().equalsIgnoreCase(format)
+                                            ? JAVA_UNQUOTED //
+                                            : null;
         }
 
         /**
@@ -160,7 +164,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     public Map<String, V> getData() {
         final TreeMap<String, V> result = new TreeMap<>(); // returned map must be sorted
         for (int i = 0; i < data.size(); i++) {
-            // The Eclipse compiler does not need the typecast to V, but the Oracle compiler sure does.
+            // The Eclipse compiler does not need the typecast to V, but the Oracle compiler sure
+            // does.
             result.put(data.getKeyAt(i), (V) data.getValueAt(i));
         }
         return Collections.unmodifiableMap(result);
@@ -254,7 +259,8 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
      */
     public String asString(final String format) {
         try {
-            return format(EnglishEnums.valueOf(MapFormat.class, format), new StringBuilder()).toString();
+            return format(EnglishEnums.valueOf(MapFormat.class, format), new StringBuilder())
+                    .toString();
         } catch (final IllegalArgumentException ex) {
             return asString();
         }
@@ -322,24 +328,28 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
             appendMap(sb);
         } else {
             switch (format) {
-                case XML : {
-                    asXml(sb);
-                    break;
-                }
-                case JSON : {
-                    asJson(sb);
-                    break;
-                }
-                case JAVA : {
-                    asJava(sb);
-                    break;
-                }
+                case XML:
+                    {
+                        asXml(sb);
+                        break;
+                    }
+                case JSON:
+                    {
+                        asJson(sb);
+                        break;
+                    }
+                case JAVA:
+                    {
+                        asJava(sb);
+                        break;
+                    }
                 case JAVA_UNQUOTED:
                     asJavaUnquoted(sb);
                     break;
-                default : {
-                    appendMap(sb);
-                }
+                default:
+                    {
+                        appendMap(sb);
+                    }
             }
         }
         return sb;
@@ -353,9 +363,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
     public void asXml(final StringBuilder sb) {
         sb.append("<Map>\n");
         for (int i = 0; i < data.size(); i++) {
-            sb.append("  <Entry key=\"")
-                    .append(data.getKeyAt(i))
-                    .append("\">");
+            sb.append("  <Entry key=\"").append(data.getKeyAt(i)).append("\">");
             final int size = sb.length();
             ParameterFormatter.recursiveDeepToString(data.getValueAt(i), sb);
             StringBuilders.escapeXml(sb, size);
@@ -642,7 +650,6 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
         return (M) this;
     }
 
-
     /**
      * Adds an item to the data Map.
      * @param candidateKey The name of the data item.
@@ -745,5 +752,4 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
         put(key, value);
         return (M) this;
     }
-
 }

@@ -21,7 +21,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
@@ -58,12 +57,20 @@ public class SimpleLogger extends AbstractLogger {
 
     private final String logName;
 
-    public SimpleLogger(final String name, final Level defaultLevel, final boolean showLogName,
-            final boolean showShortLogName, final boolean showDateTime, final boolean showContextMap,
-            final String dateTimeFormat, final MessageFactory messageFactory, final PropertiesUtil props,
+    public SimpleLogger(
+            final String name,
+            final Level defaultLevel,
+            final boolean showLogName,
+            final boolean showShortLogName,
+            final boolean showDateTime,
+            final boolean showContextMap,
+            final String dateTimeFormat,
+            final MessageFactory messageFactory,
+            final PropertiesUtil props,
             final PrintStream stream) {
         super(name, messageFactory);
-        final String lvl = props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + name + ".level");
+        final String lvl =
+                props.getStringProperty(SimpleLoggerContext.SYSTEM_PREFIX + name + ".level");
         this.level = Level.toLevel(lvl, defaultLevel);
         if (showShortLogName) {
             final int index = name.lastIndexOf(".");
@@ -101,17 +108,20 @@ public class SimpleLogger extends AbstractLogger {
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final Message msg, final Throwable t) {
+    public boolean isEnabled(
+            final Level testLevel, final Marker marker, final Message msg, final Throwable t) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final CharSequence msg, final Throwable t) {
+    public boolean isEnabled(
+            final Level testLevel, final Marker marker, final CharSequence msg, final Throwable t) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final Object msg, final Throwable t) {
+    public boolean isEnabled(
+            final Level testLevel, final Marker marker, final Object msg, final Throwable t) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
@@ -121,85 +131,155 @@ public class SimpleLogger extends AbstractLogger {
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String msg, final Object... p1) {
+    public boolean isEnabled(
+            final Level testLevel, final Marker marker, final String msg, final Object... p1) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0) {
+    public boolean isEnabled(
+            final Level testLevel, final Marker marker, final String message, final Object p0) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
             final Object p1) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2) {
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3) {
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
             final Object p4) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5) {
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6) {
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
             final Object p7) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8) {
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String message, final Object p0,
-            final Object p1, final Object p2, final Object p3,
-            final Object p4, final Object p5, final Object p6,
-            final Object p7, final Object p8, final Object p9) {
+    public boolean isEnabled(
+            final Level testLevel,
+            final Marker marker,
+            final String message,
+            final Object p0,
+            final Object p1,
+            final Object p2,
+            final Object p3,
+            final Object p4,
+            final Object p5,
+            final Object p6,
+            final Object p7,
+            final Object p8,
+            final Object p9) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public boolean isEnabled(final Level testLevel, final Marker marker, final String msg, final Throwable t) {
+    public boolean isEnabled(
+            final Level testLevel, final Marker marker, final String msg, final Throwable t) {
         return this.level.intLevel() >= testLevel.intLevel();
     }
 
     @Override
-    public void logMessage(final String fqcn, final Level mgsLevel, final Marker marker, final Message msg,
+    public void logMessage(
+            final String fqcn,
+            final Level mgsLevel,
+            final Marker marker,
+            final Message msg,
             final Throwable throwable) {
         final StringBuilder sb = new StringBuilder();
         // Append date-time if so configured
@@ -230,7 +310,9 @@ public class SimpleLogger extends AbstractLogger {
         }
         final Object[] params = msg.getParameters();
         Throwable t;
-        if (throwable == null && params != null && params.length > 0
+        if (throwable == null
+                && params != null
+                && params.length > 0
                 && params[params.length - 1] instanceof Throwable) {
             t = (Throwable) params[params.length - 1];
         } else {
@@ -252,5 +334,4 @@ public class SimpleLogger extends AbstractLogger {
     public void setStream(final PrintStream stream) {
         this.stream = stream;
     }
-
 }

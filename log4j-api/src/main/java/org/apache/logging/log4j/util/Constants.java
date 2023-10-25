@@ -27,9 +27,12 @@ public final class Constants {
      * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
      * is present in the classpath.
      */
-    public static final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.is.webapp", isClassAvailable("javax.servlet.Servlet")
-                    || isClassAvailable("jakarta.servlet.Servlet"));
+    public static final boolean IS_WEB_APP =
+            PropertiesUtil.getProperties()
+                    .getBooleanProperty(
+                            "log4j2.is.webapp",
+                            isClassAvailable("javax.servlet.Servlet")
+                                    || isClassAvailable("jakarta.servlet.Servlet"));
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
@@ -38,8 +41,10 @@ public final class Constants {
      * "log4j2.enable.threadlocals" to "false".
      * </p>
      */
-    public static final boolean ENABLE_THREADLOCALS = !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.enable.threadlocals", true);
+    public static final boolean ENABLE_THREADLOCALS =
+            !IS_WEB_APP
+                    && PropertiesUtil.getProperties()
+                            .getBooleanProperty("log4j2.enable.threadlocals", true);
 
     /**
      * Java major version.
@@ -55,7 +60,8 @@ public final class Constants {
      * </p>
      * @since 2.9
      */
-    public static final int MAX_REUSABLE_MESSAGE_SIZE = size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
+    public static final int MAX_REUSABLE_MESSAGE_SIZE =
+            size("log4j.maxReusableMsgSize", (128 * 2 + 2) * 2 + 2);
 
     /**
      * Name of the system property that will turn on TRACE level internal log4j2 status logging.
@@ -99,8 +105,7 @@ public final class Constants {
     /**
      * Prevent class instantiation.
      */
-    private Constants() {
-    }
+    private Constants() {}
 
     private static int getMajorVersion() {
         return getMajorVersion(System.getProperty("java.version"));

@@ -16,20 +16,19 @@
  */
 package org.apache.logging.log4j.message;
 
+import static org.apache.logging.log4j.message.ParameterFormatter.analyzePattern;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
-
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.internal.SerializationUtil;
-
-import static org.apache.logging.log4j.message.ParameterFormatter.analyzePattern;
 
 /**
  * A {@link Message} accepting argument placeholders in the formatting pattern.
@@ -83,15 +82,17 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     private static final long serialVersionUID = -665975803997290697L;
 
-    private static final ThreadLocal<StringBuilder> STRING_BUILDER_HOLDER = Constants.ENABLE_THREADLOCALS
-            ? ThreadLocal.withInitial(() -> new StringBuilder(Constants.MAX_REUSABLE_MESSAGE_SIZE))
-            : null;
+    private static final ThreadLocal<StringBuilder> STRING_BUILDER_HOLDER =
+            Constants.ENABLE_THREADLOCALS
+                    ? ThreadLocal.withInitial(
+                            () -> new StringBuilder(Constants.MAX_REUSABLE_MESSAGE_SIZE))
+                    : null;
 
     private final String pattern;
 
     private transient Object[] args;
 
-    private transient final Throwable throwable;
+    private final transient Throwable throwable;
 
     private final MessagePatternAnalysis patternAnalysis;
 
@@ -113,7 +114,8 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @deprecated Use {@link #ParameterizedMessage(String, Object[], Throwable)} instead
      */
     @Deprecated
-    public ParameterizedMessage(final String pattern, final String[] args, final Throwable throwable) {
+    public ParameterizedMessage(
+            final String pattern, final String[] args, final Throwable throwable) {
         this(pattern, Arrays.stream(args).toArray(Object[]::new), throwable);
     }
 
@@ -131,7 +133,8 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param args arguments to be formatted
      * @param throwable a {@link Throwable}
      */
-    public ParameterizedMessage(final String pattern, final Object[] args, final Throwable throwable) {
+    public ParameterizedMessage(
+            final String pattern, final Object[] args, final Throwable throwable) {
         this.args = args;
         this.pattern = pattern;
         this.patternAnalysis = analyzePattern(pattern, args != null ? args.length : 0);
@@ -139,9 +142,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     }
 
     private static Throwable determineThrowable(
-            final Throwable throwable,
-            final Object[] args,
-            final MessagePatternAnalysis analysis) {
+            final Throwable throwable, final Object[] args, final MessagePatternAnalysis analysis) {
 
         // Short-circuit if an explicit `Throwable` is provided
         if (throwable != null) {
@@ -158,7 +159,6 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
         // No `Throwable`s available
         return null;
-
     }
 
     /**
@@ -184,7 +184,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param arg an argument
      */
     public ParameterizedMessage(final String pattern, final Object arg) {
-        this(pattern, new Object[]{arg});
+        this(pattern, new Object[] {arg});
     }
 
     /**
@@ -198,7 +198,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param arg1 the second argument
      */
     public ParameterizedMessage(final String pattern, final Object arg0, final Object arg1) {
-        this(pattern, new Object[]{arg0, arg1});
+        this(pattern, new Object[] {arg0, arg1});
     }
 
     /**
@@ -355,16 +355,24 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     @Override
     public String toString() {
-        return "ParameterizedMessage[messagePattern=" + pattern + ", stringArgs=" +
-                Arrays.toString(args) + ", throwable=" + throwable + ']';
+        return "ParameterizedMessage[messagePattern="
+                + pattern
+                + ", stringArgs="
+                + Arrays.toString(args)
+                + ", throwable="
+                + throwable
+                + ']';
     }
 
     private void writeObject(final ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         out.writeInt(args.length);
         for (int i = 0; i < args.length; i++) {
-            SerializationUtil.writeWrappedObject(args[i] instanceof Serializable ? (Serializable) args[i] :
-                    String.valueOf(args[i]), out);
+            SerializationUtil.writeWrappedObject(
+                    args[i] instanceof Serializable
+                            ? (Serializable) args[i]
+                            : String.valueOf(args[i]),
+                    out);
         }
     }
 

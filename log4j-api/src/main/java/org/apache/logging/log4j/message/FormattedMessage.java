@@ -49,7 +49,7 @@ public class FormattedMessage implements Message {
      * @since 2.6
      */
     public FormattedMessage(final Locale locale, final String messagePattern, final Object arg) {
-        this(locale, messagePattern, new Object[] { arg }, null);
+        this(locale, messagePattern, new Object[] {arg}, null);
     }
 
     /**
@@ -60,8 +60,12 @@ public class FormattedMessage implements Message {
      * @param arg2 The second parameter.
      * @since 2.6
      */
-    public FormattedMessage(final Locale locale, final String messagePattern, final Object arg1, final Object arg2) {
-        this(locale, messagePattern, new Object[] { arg1, arg2 });
+    public FormattedMessage(
+            final Locale locale,
+            final String messagePattern,
+            final Object arg1,
+            final Object arg2) {
+        this(locale, messagePattern, new Object[] {arg1, arg2});
     }
 
     /**
@@ -71,7 +75,8 @@ public class FormattedMessage implements Message {
      * @param arguments The parameter.
      * @since 2.6
      */
-    public FormattedMessage(final Locale locale, final String messagePattern, final Object... arguments) {
+    public FormattedMessage(
+            final Locale locale, final String messagePattern, final Object... arguments) {
         this(locale, messagePattern, arguments, null);
     }
 
@@ -83,7 +88,11 @@ public class FormattedMessage implements Message {
      * @param throwable The throwable
      * @since 2.6
      */
-    public FormattedMessage(final Locale locale, final String messagePattern, final Object[] arguments, final Throwable throwable) {
+    public FormattedMessage(
+            final Locale locale,
+            final String messagePattern,
+            final Object[] arguments,
+            final Throwable throwable) {
         this.locale = locale;
         this.messagePattern = messagePattern;
         this.argArray = arguments;
@@ -96,7 +105,7 @@ public class FormattedMessage implements Message {
      * @param arg The parameter.
      */
     public FormattedMessage(final String messagePattern, final Object arg) {
-        this(messagePattern, new Object[] { arg }, null);
+        this(messagePattern, new Object[] {arg}, null);
     }
 
     /**
@@ -106,7 +115,7 @@ public class FormattedMessage implements Message {
      * @param arg2 The second parameter.
      */
     public FormattedMessage(final String messagePattern, final Object arg1, final Object arg2) {
-        this(messagePattern, new Object[] { arg1, arg2 });
+        this(messagePattern, new Object[] {arg1, arg2});
     }
 
     /**
@@ -124,13 +133,13 @@ public class FormattedMessage implements Message {
      * @param arguments The parameter.
      * @param throwable The throwable
      */
-    public FormattedMessage(final String messagePattern, final Object[] arguments, final Throwable throwable) {
+    public FormattedMessage(
+            final String messagePattern, final Object[] arguments, final Throwable throwable) {
         this.locale = Locale.getDefault(Locale.Category.FORMAT);
         this.messagePattern = messagePattern;
         this.argArray = arguments;
         this.throwable = throwable;
     }
-
 
     @Override
     public boolean equals(final Object o) {
@@ -143,7 +152,9 @@ public class FormattedMessage implements Message {
 
         final FormattedMessage that = (FormattedMessage) o;
 
-        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
+        if (messagePattern != null
+                ? !messagePattern.equals(that.messagePattern)
+                : that.messagePattern != null) {
             return false;
         }
         if (!Arrays.equals(stringArgs, that.stringArgs)) {
@@ -196,7 +207,8 @@ public class FormattedMessage implements Message {
      * @param aThrowable The throwable
      * @return The message that performs formatting.
      */
-    protected Message getMessage(final String msgPattern, final Object[] args, final Throwable aThrowable) {
+    protected Message getMessage(
+            final String msgPattern, final Object[] args, final Throwable aThrowable) {
         // Check for valid `{ ArgumentIndex [, FormatType [, FormatStyle]] }` format specifiers
         try {
             final MessageFormat format = new MessageFormat(msgPattern);
@@ -239,7 +251,6 @@ public class FormattedMessage implements Message {
         }
         return message.getThrowable();
     }
-
 
     @Override
     public int hashCode() {

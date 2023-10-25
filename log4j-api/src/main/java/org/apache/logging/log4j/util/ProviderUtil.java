@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.URL;
@@ -25,10 +28,6 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import aQute.bnd.annotation.Cardinality;
-import aQute.bnd.annotation.Resolution;
-import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.spi.Provider;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -38,7 +37,10 @@ import org.apache.logging.log4j.status.StatusLogger;
  * container framework, any Log4j Providers not accessible through standard classpath scanning should
  * {@link #loadProvider(java.net.URL, ClassLoader)} a classpath accordingly.
  */
-@ServiceConsumer(value = Provider.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
+@ServiceConsumer(
+        value = Provider.class,
+        resolution = Resolution.OPTIONAL,
+        cardinality = Cardinality.MULTIPLE)
 public final class ProviderUtil {
 
     /**
@@ -62,7 +64,8 @@ public final class ProviderUtil {
     private static final String[] COMPATIBLE_API_VERSIONS = {"2.6.0"};
     private static final Logger LOGGER = StatusLogger.getLogger();
 
-    // STARTUP_LOCK guards INSTANCE for lazy initialization; this allows the OSGi Activator to pause the startup and
+    // STARTUP_LOCK guards INSTANCE for lazy initialization; this allows the OSGi Activator to pause
+    // the startup and
     // wait for a Provider to be installed. See LOG4J2-373
     private static volatile ProviderUtil instance;
 
@@ -71,7 +74,8 @@ public final class ProviderUtil {
                 .filter(provider -> validVersion(provider.getVersions()))
                 .forEach(PROVIDERS::add);
 
-        for (final LoaderUtil.UrlResource resource : LoaderUtil.findUrlResources(PROVIDER_RESOURCE, false)) {
+        for (final LoaderUtil.UrlResource resource :
+                LoaderUtil.findUrlResources(PROVIDER_RESOURCE, false)) {
             loadProvider(resource.getUrl(), resource.getClassLoader());
         }
     }
@@ -106,7 +110,8 @@ public final class ProviderUtil {
      * @param classLoader null can be used to mark the bootstrap class loader.
      */
     protected static void loadProviders(final ClassLoader classLoader) {
-        ServiceLoaderUtil.loadClassloaderServices(Provider.class, MethodHandles.lookup(), classLoader, true)
+        ServiceLoaderUtil.loadClassloaderServices(
+                        Provider.class, MethodHandles.lookup(), classLoader, true)
                 .filter(provider -> validVersion(provider.getVersions()))
                 .forEach(PROVIDERS::add);
     }

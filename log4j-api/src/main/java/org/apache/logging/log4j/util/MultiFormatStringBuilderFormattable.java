@@ -26,7 +26,8 @@ import org.apache.logging.log4j.message.MultiformatMessage;
  *
  * @since 2.10
  */
-public interface MultiFormatStringBuilderFormattable extends MultiformatMessage, StringBuilderFormattable {
+public interface MultiFormatStringBuilderFormattable
+        extends MultiformatMessage, StringBuilderFormattable {
 
     /**
      * Writes a text representation of this object into the specified {@code StringBuilder}, ideally without allocating
@@ -37,5 +38,4 @@ public interface MultiFormatStringBuilderFormattable extends MultiformatMessage,
      * @param buffer the StringBuilder to write into
      */
     void formatTo(String[] formats, StringBuilder buffer);
-
 }

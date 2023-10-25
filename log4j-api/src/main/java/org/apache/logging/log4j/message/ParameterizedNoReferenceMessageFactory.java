@@ -81,13 +81,13 @@ public final class ParameterizedNoReferenceMessageFactory extends AbstractMessag
     /**
      * Constructs a message factory with default flow strings.
      */
-    public ParameterizedNoReferenceMessageFactory() {
-    }
+    public ParameterizedNoReferenceMessageFactory() {}
 
     /**
      * Instance of ParameterizedStatusMessageFactory.
      */
-    public static final ParameterizedNoReferenceMessageFactory INSTANCE = new ParameterizedNoReferenceMessageFactory();
+    public static final ParameterizedNoReferenceMessageFactory INSTANCE =
+            new ParameterizedNoReferenceMessageFactory();
 
     /**
      * Creates {@link SimpleMessage} instances containing the formatted parameterized message string.

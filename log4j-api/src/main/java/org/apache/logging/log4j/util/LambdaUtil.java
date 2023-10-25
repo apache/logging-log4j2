@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 
-
 /**
  * Utility class for lambda support.
  */
@@ -27,8 +26,7 @@ public final class LambdaUtil {
     /**
      * Private constructor: this class is not intended to be instantiated.
      */
-    private LambdaUtil() {
-    }
+    private LambdaUtil() {}
 
     /**
      * Converts an array of lambda expressions into an array of their evaluation results.
@@ -83,7 +81,8 @@ public final class LambdaUtil {
      * @return the Message resulting from evaluating the lambda expression or the Message created by the factory for
      * supplied values that are not of type Message
      */
-    public static Message getMessage(final Supplier<?> supplier, final MessageFactory messageFactory) {
+    public static Message getMessage(
+            final Supplier<?> supplier, final MessageFactory messageFactory) {
         if (supplier == null) {
             return null;
         }

@@ -20,7 +20,4 @@ package org.apache.logging.log4j.message;
  * A Message that is a collection of Messages.
  * @param <T> The Message type.
  */
-public interface MessageCollectionMessage<T> extends Message, Iterable<T> {
-
-
-}
+public interface MessageCollectionMessage<T> extends Message, Iterable<T> {}

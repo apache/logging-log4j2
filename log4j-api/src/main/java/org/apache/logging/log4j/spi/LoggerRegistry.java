@@ -23,14 +23,14 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.message.MessageFactory;
 
 /**
  * Convenience class to be used by {@code LoggerContext} implementations.
  */
 public class LoggerRegistry<T extends ExtendedLogger> {
-    private static final String DEFAULT_FACTORY_KEY = AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS.getName();
+    private static final String DEFAULT_FACTORY_KEY =
+            AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS.getName();
     private final MapFactory<T> factory;
     private final Map<String, Map<String, T>> map;
 
@@ -97,7 +97,8 @@ public class LoggerRegistry<T extends ExtendedLogger> {
         this.map = factory.createOuterMap();
     }
 
-    private static String factoryClassKey(final Class<? extends MessageFactory> messageFactoryClass) {
+    private static String factoryClassKey(
+            final Class<? extends MessageFactory> messageFactoryClass) {
         return messageFactoryClass == null ? DEFAULT_FACTORY_KEY : messageFactoryClass.getName();
     }
 
@@ -172,11 +173,13 @@ public class LoggerRegistry<T extends ExtendedLogger> {
      * @return true if the Logger exists, false otherwise.
      * @since 2.5
      */
-    public boolean hasLogger(final String name, final Class<? extends MessageFactory> messageFactoryClass) {
+    public boolean hasLogger(
+            final String name, final Class<? extends MessageFactory> messageFactoryClass) {
         return getOrCreateInnerMap(factoryClassKey(messageFactoryClass)).containsKey(name);
     }
 
-    public void putIfAbsent(final String name, final MessageFactory messageFactory, final T logger) {
+    public void putIfAbsent(
+            final String name, final MessageFactory messageFactory, final T logger) {
         factory.putIfAbsent(getOrCreateInnerMap(factoryKey(messageFactory)), name, logger);
     }
 }

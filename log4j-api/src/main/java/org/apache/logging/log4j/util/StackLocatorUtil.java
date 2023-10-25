@@ -19,7 +19,6 @@ package org.apache.logging.log4j.util;
 import java.util.Deque;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
-
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -33,8 +32,7 @@ public final class StackLocatorUtil {
         stackLocator = StackLocator.getInstance();
     }
 
-    private StackLocatorUtil() {
-    }
+    private StackLocatorUtil() {}
 
     // TODO: return Object.class instead of null (though it will have a null ClassLoader)
     // (MS) I believe this would work without any modifications elsewhere, but I could be wrong
@@ -100,7 +98,8 @@ public final class StackLocatorUtil {
      * @return the first matching class after <code>sentinelClass</code> is found.
      */
     @PerformanceSensitive
-    public static Class<?> getCallerClass(final Class<?> sentinelClass, final Predicate<Class<?>> callerPredicate) {
+    public static Class<?> getCallerClass(
+            final Class<?> sentinelClass, final Predicate<Class<?>> callerPredicate) {
         return stackLocator.getCallerClass(sentinelClass, callerPredicate);
     }
 
@@ -122,7 +121,8 @@ public final class StackLocatorUtil {
         } catch (NoSuchElementException ex) {
             if (!errorLogged) {
                 errorLogged = true;
-                StatusLogger.getLogger().warn("Unable to locate stack trace element for {}", fqcnOfLogger, ex);
+                StatusLogger.getLogger()
+                        .warn("Unable to locate stack trace element for {}", fqcnOfLogger, ex);
             }
             return null;
         }

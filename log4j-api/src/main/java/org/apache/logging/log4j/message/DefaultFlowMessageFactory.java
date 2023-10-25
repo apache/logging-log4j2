@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
-
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -127,17 +126,18 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
         }
     }
 
-    private static final class SimpleEntryMessage extends AbstractFlowMessage implements EntryMessage {
+    private static final class SimpleEntryMessage extends AbstractFlowMessage
+            implements EntryMessage {
 
         private static final long serialVersionUID = 1L;
 
         SimpleEntryMessage(final String entryText, final Message message) {
             super(entryText, message);
         }
-
     }
 
-    private static final class SimpleExitMessage extends AbstractFlowMessage implements ExitMessage {
+    private static final class SimpleExitMessage extends AbstractFlowMessage
+            implements ExitMessage {
 
         private static final long serialVersionUID = 1L;
 

@@ -19,7 +19,6 @@ package org.apache.logging.log4j.message;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
 /**
@@ -62,12 +61,12 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
      */
     @Override
     public String getFormattedMessage() {
-        return message = message == null ? String.valueOf(charSequence) : message ;
+        return message = message == null ? String.valueOf(charSequence) : message;
     }
 
     @Override
     public void formatTo(final StringBuilder buffer) {
-    buffer.append(message != null ? message : charSequence);
+        buffer.append(message != null ? message : charSequence);
     }
 
     /**
@@ -99,7 +98,9 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
 
         final SimpleMessage that = (SimpleMessage) o;
 
-        return !(charSequence != null ? !charSequence.equals(that.charSequence) : that.charSequence != null);
+        return !(charSequence != null
+                ? !charSequence.equals(that.charSequence)
+                : that.charSequence != null);
     }
 
     @Override
@@ -122,7 +123,6 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
         return null;
     }
 
-
     // CharSequence impl
 
     @Override
@@ -139,7 +139,6 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
     public CharSequence subSequence(final int start, final int end) {
         return charSequence.subSequence(start, end);
     }
-
 
     private void writeObject(final ObjectOutputStream out) throws IOException {
         getFormattedMessage(); // initialize the message:String field

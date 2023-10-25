@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.util;
 
 import java.lang.reflect.Method;
-
 import org.apache.logging.log4j.LoggingException;
 
 /**
@@ -46,14 +45,13 @@ public final class Base64Util {
         }
     }
 
-    private Base64Util() {
-    }
+    private Base64Util() {}
 
     public static String encode(final String str) {
         if (str == null) {
             return null;
         }
-        final byte [] data = str.getBytes();
+        final byte[] data = str.getBytes();
         if (encodeMethod != null) {
             try {
                 return (String) encodeMethod.invoke(encoder, data);

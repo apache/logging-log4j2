@@ -23,7 +23,6 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.IllegalFormatException;
 import java.util.Locale;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
@@ -56,7 +55,8 @@ public class MessageFormatMessage implements Message {
      * @param parameters The objects to format
      * @since 2.6
      */
-    public MessageFormatMessage(final Locale locale, final String messagePattern, final Object... parameters) {
+    public MessageFormatMessage(
+            final Locale locale, final String messagePattern, final Object... parameters) {
         this.locale = locale;
         this.messagePattern = messagePattern;
         this.parameters = parameters;
@@ -130,7 +130,9 @@ public class MessageFormatMessage implements Message {
 
         final MessageFormatMessage that = (MessageFormatMessage) o;
 
-        if (messagePattern != null ? !messagePattern.equals(that.messagePattern) : that.messagePattern != null) {
+        if (messagePattern != null
+                ? !messagePattern.equals(that.messagePattern)
+                : that.messagePattern != null) {
             return false;
         }
         return Arrays.equals(serializedParameters, that.serializedParameters);
@@ -139,10 +141,13 @@ public class MessageFormatMessage implements Message {
     @Override
     public int hashCode() {
         int result = messagePattern != null ? messagePattern.hashCode() : 0;
-        result = HASHVAL * result + (serializedParameters != null ? Arrays.hashCode(serializedParameters) : 0);
+        result =
+                HASHVAL * result
+                        + (serializedParameters != null
+                                ? Arrays.hashCode(serializedParameters)
+                                : 0);
         return result;
     }
-
 
     @Override
     public String toString() {

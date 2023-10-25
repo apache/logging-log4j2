@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
-
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
@@ -29,20 +28,23 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
     /**
      * RFC 5424 Time Quality.
      */
-    public static final StructuredDataId TIME_QUALITY = new StructuredDataId("timeQuality", null, new String[] {
-            "tzKnown", "isSynced", "syncAccuracy"});
+    public static final StructuredDataId TIME_QUALITY =
+            new StructuredDataId(
+                    "timeQuality", null, new String[] {"tzKnown", "isSynced", "syncAccuracy"});
 
     /**
      * RFC 5424 Origin.
      */
-    public static final StructuredDataId ORIGIN = new StructuredDataId("origin", null, new String[] {"ip",
-            "enterpriseId", "software", "swVersion"});
+    public static final StructuredDataId ORIGIN =
+            new StructuredDataId(
+                    "origin", null, new String[] {"ip", "enterpriseId", "software", "swVersion"});
 
     /**
      * RFC 5424 Meta.
      */
-    public static final StructuredDataId META = new StructuredDataId("meta", null, new String[] {"sequenceId",
-            "sysUpTime", "language"});
+    public static final StructuredDataId META =
+            new StructuredDataId(
+                    "meta", null, new String[] {"sequenceId", "sysUpTime", "language"});
 
     /**
      * Reserved enterprise number.
@@ -96,15 +98,18 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @param maxLength The maximum length of the id's name.
      * @since 2.9
      */
-    public StructuredDataId(final String name, final String[] required, final String[] optional, int maxLength) {
+    public StructuredDataId(
+            final String name, final String[] required, final String[] optional, int maxLength) {
         int index = -1;
         if (name != null) {
             if (maxLength <= 0) {
                 maxLength = MAX_LENGTH;
             }
             if (name.length() > maxLength) {
-                throw new IllegalArgumentException(String.format("Length of id %s exceeds maximum of %d characters",
-                        name, maxLength));
+                throw new IllegalArgumentException(
+                        String.format(
+                                "Length of id %s exceeds maximum of %d characters",
+                                name, maxLength));
             }
             index = name.indexOf(AT_SIGN);
         }
@@ -128,8 +133,11 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @param required The list of keys that are required for this id.
      * @param optional The list of keys that are optional for this id.
      */
-    public StructuredDataId(final String name, final String enterpriseNumber, final String[] required,
-                            final String[] optional) {
+    public StructuredDataId(
+            final String name,
+            final String enterpriseNumber,
+            final String[] required,
+            final String[] optional) {
         this(name, enterpriseNumber, required, optional, MAX_LENGTH);
     }
 
@@ -143,8 +151,11 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @deprecated Use {@link #StructuredDataId(String, String, String[], String[])} instead.
      */
     @Deprecated
-    public StructuredDataId(final String name, final int enterpriseNumber, final String[] required,
-                            final String[] optional) {
+    public StructuredDataId(
+            final String name,
+            final int enterpriseNumber,
+            final String[] required,
+            final String[] optional) {
         this(name, String.valueOf(enterpriseNumber), required, optional, MAX_LENGTH);
     }
 
@@ -158,13 +169,18 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @param maxLength The maximum length of the StructuredData Id key.
      * @since 2.9
      */
-    public StructuredDataId(final String name, final String enterpriseNumber, final String[] required,
-                            final String[] optional, final int maxLength) {
+    public StructuredDataId(
+            final String name,
+            final String enterpriseNumber,
+            final String[] required,
+            final String[] optional,
+            final int maxLength) {
         if (name == null) {
             throw new IllegalArgumentException("No structured id name was supplied");
         }
         if (name.contains(AT_SIGN)) {
-            throw new IllegalArgumentException("Structured id name cannot contain an " + Strings.quote(AT_SIGN));
+            throw new IllegalArgumentException(
+                    "Structured id name cannot contain an " + Strings.quote(AT_SIGN));
         }
         if (RESERVED.equals(enterpriseNumber)) {
             throw new IllegalArgumentException("No enterprise number was supplied");
@@ -173,7 +189,8 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
         this.enterpriseNumber = enterpriseNumber;
         final String id = name + AT_SIGN + enterpriseNumber;
         if (maxLength > 0 && id.length() > maxLength) {
-            throw new IllegalArgumentException("Length of id exceeds maximum of " + maxLength + " characters: " + id);
+            throw new IllegalArgumentException(
+                    "Length of id exceeds maximum of " + maxLength + " characters: " + id);
         }
         this.required = required;
         this.optional = optional;
@@ -191,8 +208,12 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @deprecated Use {@link #StructuredDataId(String, String, String[], String[], int)} instead.
      */
     @Deprecated
-    public StructuredDataId(final String name, final int enterpriseNumber, final String[] required,
-            final String[] optional, final int maxLength) {
+    public StructuredDataId(
+            final String name,
+            final int enterpriseNumber,
+            final String[] required,
+            final String[] optional,
+            final int maxLength) {
         this(name, String.valueOf(enterpriseNumber), required, optional, maxLength);
     }
 

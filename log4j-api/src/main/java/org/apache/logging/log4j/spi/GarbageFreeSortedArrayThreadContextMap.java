@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -35,7 +34,8 @@ import org.apache.logging.log4j.util.StringMap;
  * </p>
  * @since 2.7
  */
-class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap, ObjectThreadContextMap  {
+class GarbageFreeSortedArrayThreadContextMap
+        implements ReadOnlyThreadContextMap, ObjectThreadContextMap {
 
     /**
      * Property name ({@value} ) for selecting {@code InheritableThreadLocal} (value "true") or plain
@@ -51,7 +51,8 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
     /**
      * System property name that can be used to control the data structure's initial capacity.
      */
-    protected static final String PROPERTY_NAME_INITIAL_CAPACITY = "log4j2.ThreadContext.initial.capacity";
+    protected static final String PROPERTY_NAME_INITIAL_CAPACITY =
+            "log4j2.ThreadContext.initial.capacity";
 
     protected final ThreadLocal<StringMap> localMap;
 
@@ -64,7 +65,9 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
      */
     static void init() {
         final PropertiesUtil properties = PropertiesUtil.getProperties();
-        initialCapacity = properties.getIntegerProperty(PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY);
+        initialCapacity =
+                properties.getIntegerProperty(
+                        PROPERTY_NAME_INITIAL_CAPACITY, DEFAULT_INITIAL_CAPACITY);
         inheritableMap = properties.getBooleanProperty(INHERITABLE_MAP);
     }
 
@@ -76,7 +79,8 @@ class GarbageFreeSortedArrayThreadContextMap implements ReadOnlyThreadContextMap
         this.localMap = createThreadLocalMap();
     }
 
-    // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if configured.
+    // LOG4J2-479: by default, use a plain ThreadLocal, only use InheritableThreadLocal if
+    // configured.
     // (This method is package protected for JUnit tests.)
     private ThreadLocal<StringMap> createThreadLocalMap() {
         if (inheritableMap) {

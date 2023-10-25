@@ -16,15 +16,14 @@
  */
 package org.apache.logging.log4j;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.util.Strings;
-
-import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
@@ -79,7 +78,8 @@ public final class Level implements Comparable<Level>, Serializable {
 
     private static final Level[] EMPTY_ARRAY = {};
 
-    private static final ConcurrentMap<String, Level> LEVELS = new ConcurrentHashMap<>(); // SUPPRESS CHECKSTYLE
+    private static final ConcurrentMap<String, Level> LEVELS =
+            new ConcurrentHashMap<>(); // SUPPRESS CHECKSTYLE
 
     /**
      * No events will be logged.
@@ -218,6 +218,7 @@ public final class Level implements Comparable<Level>, Serializable {
     public Level clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
     }
+
     // CHECKSTYLE:ON
 
     @Override

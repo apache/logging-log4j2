@@ -32,7 +32,8 @@ public interface LoggerContextFactory {
      * @param allContexts if true all LoggerContexts that can be located will be shutdown.
      * @since 2.13.0
      */
-    default void shutdown(String fqcn, ClassLoader loader, boolean currentContext, boolean allContexts) {
+    default void shutdown(
+            String fqcn, ClassLoader loader, boolean currentContext, boolean allContexts) {
         if (hasContext(fqcn, loader, currentContext)) {
             final LoggerContext ctx = getContext(fqcn, loader, null, currentContext);
             if (ctx instanceof Terminable) {
@@ -64,7 +65,8 @@ public interface LoggerContextFactory {
      * @param externalContext An external context (such as a ServletContext) to be associated with the LoggerContext.
      * @return The LoggerContext.
      */
-    LoggerContext getContext(String fqcn, ClassLoader loader, Object externalContext, boolean currentContext);
+    LoggerContext getContext(
+            String fqcn, ClassLoader loader, Object externalContext, boolean currentContext);
 
     /**
      * Creates a {@link LoggerContext}.
@@ -78,8 +80,13 @@ public interface LoggerContextFactory {
      * @param name The name of the context or null.
      * @return The LoggerContext.
      */
-    LoggerContext getContext(String fqcn, ClassLoader loader, Object externalContext, boolean currentContext,
-                             URI configLocation, String name);
+    LoggerContext getContext(
+            String fqcn,
+            ClassLoader loader,
+            Object externalContext,
+            boolean currentContext,
+            URI configLocation,
+            String name);
 
     /**
      * Removes knowledge of a LoggerContext.

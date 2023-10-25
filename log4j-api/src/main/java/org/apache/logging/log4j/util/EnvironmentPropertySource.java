@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.util.Collection;
-import java.util.Map;
-
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * PropertySource implementation that uses environment variables as a source.
@@ -45,7 +44,9 @@ public class EnvironmentPropertySource implements PropertySource {
     private void logException(final SecurityException e) {
         // There is no status logger yet.
         LowLevelLogUtil.logException(
-                "The system environment variables are not available to Log4j due to security restrictions: " + e, e);
+                "The system environment variables are not available to Log4j due to security restrictions: "
+                        + e,
+                e);
     }
 
     @Override
@@ -108,5 +109,4 @@ public class EnvironmentPropertySource implements PropertySource {
             return PropertySource.super.containsProperty(key);
         }
     }
-
 }

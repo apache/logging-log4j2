@@ -16,6 +16,9 @@
  */
 package org.apache.logging.log4j.util;
 
+import static org.apache.logging.log4j.util.internal.SerializationUtil.REQUIRED_JAVA_CLASSES;
+import static org.apache.logging.log4j.util.internal.SerializationUtil.REQUIRED_JAVA_PACKAGES;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidObjectException;
@@ -23,9 +26,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.util.Collection;
 import java.util.Collections;
-
-import static org.apache.logging.log4j.util.internal.SerializationUtil.REQUIRED_JAVA_CLASSES;
-import static org.apache.logging.log4j.util.internal.SerializationUtil.REQUIRED_JAVA_PACKAGES;
 
 /**
  * Extends {@link ObjectInputStream} to only allow some built-in Log4j classes and caller-specified classes to be
@@ -47,12 +47,13 @@ public class FilteredObjectInputStream extends ObjectInputStream {
     }
 
     public FilteredObjectInputStream(final Collection<String> allowedExtraClasses)
-        throws IOException, SecurityException {
+            throws IOException, SecurityException {
         this.allowedExtraClasses = allowedExtraClasses;
     }
 
-    public FilteredObjectInputStream(final InputStream inputStream, final Collection<String> allowedExtraClasses)
-        throws IOException {
+    public FilteredObjectInputStream(
+            final InputStream inputStream, final Collection<String> allowedExtraClasses)
+            throws IOException {
         super(inputStream);
         this.allowedExtraClasses = allowedExtraClasses;
     }
@@ -62,7 +63,8 @@ public class FilteredObjectInputStream extends ObjectInputStream {
     }
 
     @Override
-    protected Class<?> resolveClass(final ObjectStreamClass desc) throws IOException, ClassNotFoundException {
+    protected Class<?> resolveClass(final ObjectStreamClass desc)
+            throws IOException, ClassNotFoundException {
         final String name = desc.getName();
         if (!(isAllowedByDefault(name) || allowedExtraClasses.contains(name))) {
             throw new InvalidObjectException("Class is not allowed for deserialization: " + name);
@@ -82,5 +84,4 @@ public class FilteredObjectInputStream extends ObjectInputStream {
         }
         return false;
     }
-
 }
