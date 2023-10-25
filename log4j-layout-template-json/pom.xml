@@ -43,8 +43,8 @@
       -->
     <bnd-module-name>org.apache.logging.log4j.layout.template.json</bnd-module-name>
     <bnd-extra-module-options>
-      <!-- Correct module names -->
-      org.jctools.core;substitute="jctools-core"
+      <!-- JCTools is optional (#1895) -->
+      org.jctools.core;substitute="jctools-core";static=true
     </bnd-extra-module-options>
     <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
 

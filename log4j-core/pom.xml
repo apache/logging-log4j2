@@ -62,8 +62,8 @@
       javax.naming;resolution:=optional
     </bnd-extra-package-options>
     <bnd-extra-module-options>
-      <!-- OSGI is optional in JPMS -->
-      org.osgi.core;static=true,
+      <!-- OSGI is optional in JPMS and it shouldn't be transitive either (#1895) -->
+      org.osgi.core;static=true;transitive=false,
       <!-- BND seems to always add `java.logging` (dependency of `java.sql`) -->
       java.logging;static=true,
       java.sql;static=true,
