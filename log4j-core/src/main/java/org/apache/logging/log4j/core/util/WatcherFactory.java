@@ -20,11 +20,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
-import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Namespace;
@@ -47,7 +47,7 @@ public class WatcherFactory {
     }
 
     public Watcher newWatcher(final Source source, final Configuration configuration, final Reconfigurable reconfigurable,
-                              final List<ConfigurationListener> configurationListeners, final long lastModifiedMillis) {
+                              final List<Consumer<Reconfigurable>> configurationListeners, final long lastModifiedMillis) {
         if (source.getFile() != null) {
             return new ConfigurationFileWatcher(configuration, reconfigurable, configurationListeners,
                 lastModifiedMillis);
@@ -65,7 +65,7 @@ public class WatcherFactory {
 
     public static <T extends Watcher> T instantiate(final String name, final Class<T> clazz,
                                                     final Configuration configuration, final Reconfigurable reconfigurable,
-                                                    final List<ConfigurationListener> listeners, final long lastModifiedMillis) {
+                                                    final List<Consumer<Reconfigurable>> listeners, final long lastModifiedMillis) {
         Objects.requireNonNull(clazz, "No class provided");
         try {
             final Constructor<T> constructor = clazz

@@ -25,13 +25,13 @@ import java.util.TimeZone;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.HttpWatcher;
@@ -70,7 +70,7 @@ public class WatchHttpTest {
         final WireMock wireMock = info.getWireMock();
 
         final BlockingQueue<String> queue = new LinkedBlockingQueue<>();
-        final List<ConfigurationListener> listeners = new ArrayList<>();
+        final List<Consumer<Reconfigurable>> listeners = new ArrayList<>();
         listeners.add(new TestConfigurationListener(queue, "log4j-test1.xml"));
         final Calendar now = Calendar.getInstance(UTC);
         final Calendar previous = now;
@@ -108,7 +108,7 @@ public class WatchHttpTest {
         final WireMock wireMock = info.getWireMock();
 
         final BlockingQueue<String> queue = new LinkedBlockingQueue<>();
-        final List<ConfigurationListener> listeners = new ArrayList<>();
+        final List<Consumer<Reconfigurable>> listeners = new ArrayList<>();
         listeners.add(new TestConfigurationListener(queue, "log4j-test2.xml"));
         final TimeZone timeZone = TimeZone.getTimeZone("UTC");
         final Calendar now = Calendar.getInstance(timeZone);
@@ -141,7 +141,7 @@ public class WatchHttpTest {
         }
     }
 
-    private static class TestConfigurationListener implements ConfigurationListener {
+    private static class TestConfigurationListener implements Consumer<Reconfigurable> {
         private final Queue<String> queue;
         private final String name;
 
@@ -151,7 +151,7 @@ public class WatchHttpTest {
         }
 
         @Override
-        public void onChange(final Reconfigurable reconfigurable) {
+        public void accept(final Reconfigurable reconfigurable) {
             //System.out.println("Reconfiguration detected for " + name);
             queue.add(name);
         }

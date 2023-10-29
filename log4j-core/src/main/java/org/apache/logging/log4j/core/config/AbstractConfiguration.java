@@ -34,6 +34,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import aQute.bnd.annotation.Resolution;
@@ -116,7 +117,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     /**
      * Listeners for configuration changes.
      */
-    protected final List<ConfigurationListener> listeners = new CopyOnWriteArrayList<>();
+    protected final List<Consumer<Reconfigurable>> listeners = new CopyOnWriteArrayList<>();
 
     /**
      * Core plugins.
@@ -793,22 +794,22 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
     }
 
     /**
-     * Add a listener for changes on the configuration.
+     * Add a listener for changes to the source of this configuration.
      *
-     * @param listener The ConfigurationListener to add.
+     * @param listener The listener to add.
      */
     @Override
-    public void addListener(final ConfigurationListener listener) {
+    public void addListener(final Consumer<Reconfigurable> listener) {
         listeners.add(listener);
     }
 
     /**
-     * Remove a ConfigurationListener.
+     * Remove an existing listener for configuration source updates.
      *
-     * @param listener The ConfigurationListener to remove.
+     * @param listener The listener to remove.
      */
     @Override
-    public void removeListener(final ConfigurationListener listener) {
+    public void removeListener(final Consumer<Reconfigurable> listener) {
         listeners.remove(listener);
     }
 

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.config;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Level;
@@ -125,9 +126,9 @@ public interface Configuration extends Filterable {
      */
     LoggerConfig getRootLogger();
 
-    void addListener(ConfigurationListener listener);
+    void addListener(Consumer<Reconfigurable> listener);
 
-    void removeListener(ConfigurationListener listener);
+    void removeListener(Consumer<Reconfigurable> listener);
 
     StrSubstitutor getStrSubstitutor();
 

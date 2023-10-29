@@ -19,9 +19,9 @@ package org.apache.logging.log4j.core.util;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 
 /**
@@ -33,7 +33,8 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     private volatile long lastModifiedMillis;
 
     public WrappedFileWatcher(final FileWatcher watcher, final Configuration configuration,
-                              final Reconfigurable reconfigurable, final List<ConfigurationListener> configurationListeners,
+                              final Reconfigurable reconfigurable,
+                              final List<Consumer<Reconfigurable>> configurationListeners,
                               final long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
         this.watcher = watcher;
@@ -66,7 +67,7 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     }
 
     @Override
-    public List<ConfigurationListener> getListeners() {
+    public List<Consumer<Reconfigurable>> getListeners() {
         if (super.getListeners() != null) {
             return Collections.unmodifiableList(super.getListeners());
         } else {
@@ -90,7 +91,7 @@ public class WrappedFileWatcher extends AbstractWatcher implements FileWatcher {
     }
 
     @Override
-    public Watcher newWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners,
+    public Watcher newWatcher(final Reconfigurable reconfigurable, final List<Consumer<Reconfigurable>> listeners,
            final long lastModifiedMillis) {
         final WrappedFileWatcher watcher = new WrappedFileWatcher(this.watcher, getConfiguration(), reconfigurable, listeners,
             lastModifiedMillis);

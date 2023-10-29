@@ -27,15 +27,15 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test reconfiguring with an XML configuration.
@@ -59,8 +59,7 @@ public class XmlReconfigurationTest {
         final Logger logger = LogManager.getLogger("test");
         logger.info("Hello");
         final Configuration original = context.getConfiguration();
-        final TestListener listener = new TestListener();
-        original.addListener(listener);
+        original.addListener(ignored -> toggle.countDown());
         file.setLastModified(System.currentTimeMillis());
         try {
             if (!toggle.await(3, TimeUnit.SECONDS)) {
@@ -73,14 +72,6 @@ public class XmlReconfigurationTest {
         }
         final Configuration updated = context.getConfiguration();
         assertNotSame(original, updated, "Configurations are the same");
-    }
-
-    private class TestListener implements ConfigurationListener {
-
-        public synchronized void onChange(final Reconfigurable reconfigurable) {
-            toggle.countDown();
-        }
-
     }
 
     private LoggerContext configure(final File configFile) throws Exception {

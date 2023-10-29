@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
@@ -57,7 +58,7 @@ public class HttpWatcher extends AbstractWatcher {
     private static final String HTTPS = "https";
 
     public HttpWatcher(final Configuration configuration, final Reconfigurable reconfigurable,
-            final List<ConfigurationListener> configurationListeners, final long lastModifiedMillis) {
+                       final List<Consumer<Reconfigurable>> configurationListeners, final long lastModifiedMillis) {
         super(configuration, reconfigurable, configurationListeners);
         properties = configuration.getContextProperties();
         sslConfiguration = SslConfigurationFactory.getSslConfiguration(properties);
@@ -90,7 +91,7 @@ public class HttpWatcher extends AbstractWatcher {
     }
 
     @Override
-    public Watcher newWatcher(final Reconfigurable reconfigurable, final List<ConfigurationListener> listeners,
+    public Watcher newWatcher(final Reconfigurable reconfigurable, final List<Consumer<Reconfigurable>> listeners,
             final long lastModifiedMillis) {
         final HttpWatcher watcher = new HttpWatcher(getConfiguration(), reconfigurable, listeners, lastModifiedMillis);
         if (getSource() != null) {

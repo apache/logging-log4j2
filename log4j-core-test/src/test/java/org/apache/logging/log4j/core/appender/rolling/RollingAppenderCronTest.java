@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -39,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  *
  */
-public class RollingAppenderCronTest extends AbstractRollingListenerTest implements PropertyChangeListener {
+public class RollingAppenderCronTest extends AbstractRollingListenerTest {
 
     private static final String CONFIG = "log4j-rolling-cron.xml";
     private static final String DIR = "target/rolling-cron";
@@ -64,7 +62,7 @@ public class RollingAppenderCronTest extends AbstractRollingListenerTest impleme
         assertThat(dir).isDirectoryContaining("glob:**.gz");
 
         final Path src = Path.of("target", "test-classes", "log4j-rolling-cron2.xml");
-        context.addPropertyChangeListener(this);
+        context.addConfigurationStartedListener(ignored -> reconfigured.countDown());
         try (final OutputStream os = Files.newOutputStream(Path.of("target", "test-classes", "log4j-rolling-cron.xml"))) {
             Files.copy(src, os);
         }
@@ -87,10 +85,5 @@ public class RollingAppenderCronTest extends AbstractRollingListenerTest impleme
     @Override
     public void rolloverComplete(final String fileName) {
         rollover.countDown();
-    }
-
-    @Override
-    public void propertyChange(final PropertyChangeEvent evt) {
-        reconfigured.countDown();
     }
 }
