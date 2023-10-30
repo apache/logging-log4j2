@@ -165,11 +165,6 @@
       <artifactId>slf4j-api</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-ext</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- Useful mock classes and utilities -->
     <dependency>
       <groupId>org.springframework</groupId>

@@ -21,6 +21,7 @@ import java.lang.reflect.Proxy;
 import java.util.Date;
 import java.util.List;
 
+import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import org.apache.logging.log4j.LogManager;
@@ -31,30 +32,31 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.MessageFactory2Adapter;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+@UsingStatusListener
+@LoggerContextSource
 public class LoggerTest {
 
-    private static final String CONFIG = "target/test-classes/logback-slf4j.xml";
-
-    @ClassRule
-    public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
-
+    private static final Object OBJ = new Object();
+    // Log4j objects
     private Logger logger;
+    // Logback objects
+    private LoggerContext context;
     private StringListAppender<ILoggingEvent> list;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
-        final org.slf4j.Logger slf4jLogger = CTX.getLogger();
+        final org.slf4j.Logger slf4jLogger = context.getLogger(getClass());
         logger = LogManager.getLogger();
         assertThat(slf4jLogger, is(theInstance(((SLF4JLogger) logger).getLogger())));
-        final ch.qos.logback.classic.Logger rootLogger = CTX.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        final ch.qos.logback.classic.Logger rootLogger = context.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
         rootLogger.detachAppender("console");
         list = TestUtil.getListAppender(rootLogger, "LIST");
         assertThat(list, is(notNullValue()));
@@ -78,14 +80,14 @@ public class LoggerTest {
 
     @Test
     public void simpleFlowDeprecated() {
-        logger.entry(CONFIG);
+        logger.entry(OBJ);
         logger.exit(0);
         assertThat(list.strList, hasSize(2));
     }
 
     @Test
     public void simpleFlow() {
-        logger.entry(CONFIG);
+        logger.entry(OBJ);
         logger.traceExit(0);
         assertThat(list.strList, hasSize(2));
     }
@@ -175,7 +177,7 @@ public class LoggerTest {
 
     @Test
     public void paramIncludesSubstitutionMarker_nonLocationAware() {
-        final org.slf4j.Logger slf4jLogger = CTX.getLogger();
+        final org.slf4j.Logger slf4jLogger = context.getLogger(getClass());
         final Logger nonLocationAwareLogger = new SLF4JLogger(
         slf4jLogger.getName(),
         (org.slf4j.Logger) Proxy.newProxyInstance(

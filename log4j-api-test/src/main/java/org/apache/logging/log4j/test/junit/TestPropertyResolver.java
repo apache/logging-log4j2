@@ -44,7 +44,7 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
         ReflectionSupport
                 .findFields(testClass,
                         field -> ModifierSupport.isNotStatic(field)
-                                && field.getType().isAssignableFrom(TestProperties.class),
+                                && field.getType().equals(TestProperties.class),
                         HierarchyTraversalMode.BOTTOM_UP)
                 .forEach(field -> {
                     try {
@@ -65,7 +65,7 @@ public class TestPropertyResolver extends TypeBasedParameterResolver<TestPropert
         ReflectionSupport
                 .findFields(testClass,
                         field -> ModifierSupport.isStatic(field)
-                                && field.getType().isAssignableFrom(TestProperties.class),
+                                && field.getType().equals(TestProperties.class),
                         HierarchyTraversalMode.BOTTOM_UP)
                 .forEach(field -> {
                     try {

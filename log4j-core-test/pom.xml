@@ -31,6 +31,9 @@
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
 
+    <!-- Dependency versions -->
+    <slf4j-ext.version>${slf4j.version}</slf4j-ext.version>
+
     <!--
       ~ OSGi and JPMS options
       -->

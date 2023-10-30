@@ -30,8 +30,6 @@
   <properties>
     <docLabel>SLF4J Documentation</docLabel>
     <projectDir>/slf4j2-impl</projectDir>
-    <!-- Override parent's default -->
-    <slf4j.version>2.0.6</slf4j.version>
 
     <!--
       ~ OSGi and JPMS options
@@ -77,11 +75,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-ext</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
@@ -109,6 +102,12 @@
     <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-ext</artifactId>
+      <version>${slf4j.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
