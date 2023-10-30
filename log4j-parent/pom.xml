@@ -148,7 +148,7 @@
     <woodstox.version>6.5.1</woodstox.version>
     <xmlunit.version>2.9.1</xmlunit.version>
     <xz.version>1.9</xz.version>
-    <zstd.version>1.5.5-6</zstd.version>
+    <zstd.version>1.5.5-7</zstd.version>
 
     <!-- =====================================================
          Pinned transitive dependency version properties (in alphabetical order)
