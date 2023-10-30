@@ -16,9 +16,10 @@
  */
 package org.apache.logging.slf4j;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Arrays;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,14 +45,13 @@ public class Log4j2Jira1688Test {
         // First logging of args
         logger.error(someFormat, args); // Only the first element (args[0]) of args will be logged - why?
         // GG: because the pattern {} picks up the 1 st argument, not the whole array
-        Assert.assertArrayEquals(originalArgs, args);
-        System.out.println("args are still ok: " + Arrays.toString(args));
+        assertThat(args).containsExactly(originalArgs);
 
         // Bug: The second logging of args sets all elements of args to null
         logger.error(someFormat, args);
         // GG: All is well args is still intact
         System.out.println("args " + Arrays.toString(args));
-        Assert.assertArrayEquals(originalArgs, args);
+        assertThat(args).containsExactly(originalArgs);
     }
 
     /**

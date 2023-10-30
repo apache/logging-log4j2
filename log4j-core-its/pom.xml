@@ -152,11 +152,6 @@
       <artifactId>slf4j-api</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-ext</artifactId>
-      <scope>test</scope>
-    </dependency>
     <!-- Used for testing HttpAppender -->
     <dependency>
       <groupId>com.github.tomakehurst</groupId>
