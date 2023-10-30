@@ -18,11 +18,13 @@ package org.apache.logging.log4j.osgi.tests.equinox;
 
 import org.apache.logging.log4j.osgi.tests.AbstractLoadBundleTest;
 import org.eclipse.osgi.launch.EquinoxFactory;
+import org.junit.Ignore;
 import org.osgi.framework.launch.FrameworkFactory;
 
 /**
  * Tests loading the Core bundle into an Eclipse Equinox OSGi container.
  */
+@Ignore
 public class EquinoxLoadApiBundleTest extends AbstractLoadBundleTest {
 
     @Override

@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.util;
 
 import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.io.File;
 import java.util.Date;
@@ -47,7 +48,7 @@ import org.apache.logging.log4j.util.ServiceLoaderUtil;
  * @see ConfigurationScheduler
  */
 @Singleton
-@ServiceConsumer(value = WatchEventService.class, cardinality = Cardinality.MULTIPLE)
+@ServiceConsumer(value = WatchEventService.class, cardinality = Cardinality.MULTIPLE, resolution = Resolution.OPTIONAL)
 public class WatchManager extends AbstractLifeCycle {
 
     private static final class ConfigurationMonitor {

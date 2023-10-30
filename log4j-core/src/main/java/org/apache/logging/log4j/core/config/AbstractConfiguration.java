@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.config;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -91,7 +93,7 @@ import org.apache.logging.log4j.util.ServiceLoaderUtil;
 /**
  * The base Configuration. Many configuration implementations will extend this class.
  */
-@ServiceConsumer(ScriptManagerFactory.class)
+@ServiceConsumer(value = ScriptManagerFactory.class, cardinality = Cardinality.SINGLE, resolution = Resolution.OPTIONAL)
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
 
     /**

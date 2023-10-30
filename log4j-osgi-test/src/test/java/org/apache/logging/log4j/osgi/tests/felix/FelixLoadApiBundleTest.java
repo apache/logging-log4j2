@@ -17,11 +17,13 @@
 package org.apache.logging.log4j.osgi.tests.felix;
 
 import org.apache.logging.log4j.osgi.tests.AbstractLoadBundleTest;
+import org.junit.Ignore;
 import org.osgi.framework.launch.FrameworkFactory;
 
 /**
  * Tests loading the Core bundle into an Apache Felix OSGi container.
  */
+@Ignore
 public class FelixLoadApiBundleTest extends AbstractLoadBundleTest {
 
     @Override

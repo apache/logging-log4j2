@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Option;
@@ -38,6 +39,7 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
+@Ignore
 public class CoreOsgiTest {
 
     @org.ops4j.pax.exam.Configuration
@@ -48,6 +50,12 @@ public class CoreOsgiTest {
                 linkBundle("org.apache.logging.log4j.core"),
                 linkBundle("org.apache.logging.log4j.1.2.api").start(false),
                 // required by Pax Exam's logging
+                linkBundle("org.objectweb.asm"),
+                linkBundle("org.objectweb.asm.commons"),
+                linkBundle("org.objectweb.asm.tree"),
+                linkBundle("org.objectweb.asm.tree.analysis"),
+                linkBundle("org.objectweb.asm.util"),
+                linkBundle("org.apache.aries.spifly.dynamic.bundle").startLevel(2),
                 linkBundle("slf4j.api"),
                 linkBundle("ch.qos.logback.classic"),
                 linkBundle("ch.qos.logback.core"),

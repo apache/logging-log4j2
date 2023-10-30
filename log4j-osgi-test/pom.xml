@@ -23,20 +23,25 @@
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
-
   <artifactId>log4j-osgi-test</artifactId>
   <packaging>jar</packaging>
-  <name>Apache Log4j OSGi</name>
+  <name>Apache Log4j OSGi tests</name>
   <description>The Apache Log4j OSGi tests</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
+    <docLabel>OSGi Documentation</docLabel>
+    <projectDir>/osgi</projectDir>
     <module.name>org.apache.logging.log4j.osgi</module.name>
-    <skipTests>true</skipTests>
     <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
+    <spifly.version>1.3.6</spifly.version>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
+    </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-1.2-api</artifactId>
@@ -45,6 +50,11 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -68,11 +78,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
@@ -88,20 +93,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-core</artifactId>
+      <groupId>org.apache.aries.spifly</groupId>
+      <artifactId>org.apache.aries.spifly.dynamic.bundle</artifactId>
+      <version>${spifly.version}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.framework</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- Place Felix before Equinox because Felix is signed. / also place it before org.osgi.core so that its versions of the OSGi classes are used -->
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
@@ -140,6 +136,29 @@
   </dependencies>
   <build>
     <plugins>
+
+      <!--
+        ~ Unban Logback.
+        -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ban-logging-dependencies</id>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <includes>
+                    <include>ch.qos.logback:*:*:*:test</include>
+                  </includes>
+                </bannedDependencies>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.ops4j.pax.exam</groupId>
         <artifactId>exam-maven-plugin</artifactId>
@@ -152,13 +171,26 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <classpathDependencyExcludes>
-            <classpathDependencyExclude>org.osgi:org.osgi.framework</classpathDependencyExclude>
-          </classpathDependencyExcludes>
+          <classpathDependencyExcludes>org.osgi:org.osgi.framework</classpathDependencyExcludes>
           <systemPropertyVariables>
             <!-- PAX logging has a copy of Log4j2 API-->
             <pax.exam.logging>false</pax.exam.logging>
@@ -166,6 +198,7 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 </project>
