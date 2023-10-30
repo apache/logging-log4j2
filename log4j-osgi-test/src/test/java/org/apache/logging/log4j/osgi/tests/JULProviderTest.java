@@ -52,7 +52,12 @@ public class JULProviderTest {
         return options(
                 linkBundle("org.apache.logging.log4j.api"),
                 linkBundle("org.apache.logging.log4j.to.jul"),
-                // required by Pax Exam's logging
+                linkBundle("org.objectweb.asm"),
+                linkBundle("org.objectweb.asm.commons"),
+                linkBundle("org.objectweb.asm.tree"),
+                linkBundle("org.objectweb.asm.tree.analysis"),
+                linkBundle("org.objectweb.asm.util"),
+                linkBundle("org.apache.aries.spifly.dynamic.bundle").startLevel(2),
                 linkBundle("slf4j.api"),
                 linkBundle("ch.qos.logback.classic"),
                 linkBundle("ch.qos.logback.core"),
