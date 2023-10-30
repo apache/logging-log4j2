@@ -40,8 +40,6 @@ updates:
     # Tomcat Juli 10.1.x requires Java 11
     - dependency-name: "org.apache.tomcat:*"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]
-    # Always update SLF4J manually
-    - dependency-name: "org.slf4j:*"
     # Keep Logback version 1.2.x
     - dependency-name: "ch.qos.logback:*"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]
@@ -110,8 +108,6 @@ updates:
     # Spring Cloud 2022.x is Jakarta EE 9
     - dependency-name: "org.springframework.cloud:*"
       update-types: ["version-update:semver-major"]
-    # Always update SLF4J manually
-    - dependency-name: "org.slf4j:*"
     # Keep Logback version 1.2.x
     - dependency-name: "ch.qos.logback:*"
       update-types: ["version-update:semver-major", "version-update:semver-minor"]

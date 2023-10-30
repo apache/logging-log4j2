@@ -21,17 +21,14 @@ import java.util.List;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import org.apache.logging.log4j.LogManager;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 
+@UsingStatusListener
+@LoggerContextSource
 public class CallerInformationTest {
-
-    private static final String CONFIG = "target/test-classes/logback-calling-class.xml";
-
-    @ClassRule
-    public static final LoggerContextRule CTX = new LoggerContextRule(CONFIG);
 
     @Test
     public void testClassLogger() throws Exception {

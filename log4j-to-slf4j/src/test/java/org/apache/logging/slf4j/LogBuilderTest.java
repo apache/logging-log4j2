@@ -20,7 +20,6 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import org.apache.logging.log4j.CloseableThreadContext;
@@ -30,33 +29,31 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.slf4j.LoggerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@UsingStatusListener
+@LoggerContextSource
 public class LogBuilderTest {
 
-    private static final String CONFIG = "target/test-classes/logback-turbofilter.xml";
     private static final CharSequence CHAR_SEQUENCE = "CharSequence";
     private static final String STRING = "String";
     private static final Message MESSAGE = new SimpleMessage();
     private static final Object[] P = { "p0", "p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9" };
     private static final Object OBJECT = "Object";
 
-    private static LoggerContext context;
+    // Log4j objects
     private static Logger logger;
+    // Logback objects
+    private static LoggerContext context;
     private static StringListAppender<ILoggingEvent> list;
 
     @BeforeAll
     public static void setUp() throws Exception {
-        context = (LoggerContext) LoggerFactory.getILoggerFactory();
-        final JoranConfigurator configurator = new JoranConfigurator();
-        configurator.setContext(context);
-        configurator.doConfigure(CONFIG);
-
         final org.slf4j.Logger slf4jLogger = context.getLogger(LogBuilderTest.class);
         logger = LogManager.getLogger(LogBuilderTest.class);
         assertThat(slf4jLogger).isSameAs(((SLF4JLogger) logger).getLogger());
