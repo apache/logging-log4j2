@@ -34,6 +34,7 @@
     <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
     <maven.install.skip>true</maven.install.skip>
+    <spifly.version>1.3.6</spifly.version>
   </properties>
   <dependencies>
     <dependency>
@@ -89,6 +90,12 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.aries.spifly</groupId>
+      <artifactId>org.apache.aries.spifly.dynamic.bundle</artifactId>
+      <version>${spifly.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
