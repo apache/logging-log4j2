@@ -802,4 +802,15 @@ public class LoggerContext extends AbstractLifeCycle
     protected Logger newInstance(final LoggerContext ctx, final String name, final MessageFactory messageFactory) {
         return new Logger(ctx, name, messageFactory);
     }
+
+    /**
+     * Returns the number of logging events discarded by the disruptor's queue full policy, or 0 if the disruptor
+     * does not use a discarding policy or has not discarded. This is pulled from the disruptor used by this context's
+     * associated {@link org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate}
+     *
+     * @return 0 if the disruptor is not configured to discard or has not discarded, otherwise a positive long
+     */
+    public long getDiscardCount() {
+        return configuration.getAsyncLoggerConfigDelegate().getDiscardCount();
+    }
 }

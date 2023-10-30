@@ -62,4 +62,14 @@ public interface AsyncLoggerConfigDelegate {
      * @param logEventFactory the factory used
      */
     void setLogEventFactory(LogEventFactory logEventFactory);
+
+    /**
+     * Returns the number of logging events discarded by the disruptor's queue full policy, or 0 if the disruptor
+     * does not use a discarding policy or has not discarded.
+     *
+     * @return 0 if the disruptor is not configured to discard or has not discarded, otherwise a positive long
+     */
+    default long getDiscardCount() {
+        return 0;
+    }
 }

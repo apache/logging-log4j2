@@ -86,6 +86,10 @@ class AsyncLoggerDisruptor extends AbstractLifeCycle {
         return waitStrategy;
     }
 
+    AsyncQueueFullPolicy getAsyncQueueFullPolicy() {
+        return asyncQueueFullPolicy;
+    }
+
     public String getContextName() {
         return contextName;
     }
