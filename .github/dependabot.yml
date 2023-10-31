@@ -80,6 +80,9 @@ updates:
     # WebCompere System Stubs requires Java 11
     - dependency-name: "uk.org.webcompere:*"
       versions: ["2.1.0,)"]
+    # Slf4j Extensions contain a breaking change in 1.7.26
+    - dependency-name: "org.slf4j:slf4j-ext"
+      versions: ["1.7.26,)"]
 
 - package-ecosystem: github-actions
   directory: "/"
@@ -130,6 +133,9 @@ updates:
     # Json Unit 3.x requires Java 17
     - dependency-name: "net.javacrumbs.json-unit:*"
       versions: ["[3.0.0,)"]
+    # Slf4j Extensions contain a breaking change in 1.7.26
+    - dependency-name: "org.slf4j:slf4j-ext"
+      versions: ["1.7.26,)"]
 
 - package-ecosystem: github-actions
   directory: "/"
