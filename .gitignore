@@ -12,20 +12,26 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-bin/
-.cache-main
-.cache-tests
-.classpath
-.factorypath
-felix-cache/
+
+.project
 .idea
 **/*.iml
 /.metadata/
 /.mvn/wrapper/maven-wrapper.jar
+.flattened-pom.xml
 .project
 .settings
 .surefire-*
 **/target
 target/
+.settings
+.classpath
+.cache-main
+.cache-tests
 .toDelete
+.factorypath
+.surefire-*
 velocity.log
+felix-cache/
+/.metadata/
+.DS_Store
