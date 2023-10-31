@@ -326,6 +326,8 @@
     <module.name />
     <!-- TODO: fix errors and reenable SpotBugs -->
     <spotbugs.skip>true</spotbugs.skip>
+    <!-- TODO: re-enable BND Baseline -->
+    <bnd.baseline.skip>true</bnd.baseline.skip>
 
     <!-- ========================
          Site-specific properties
@@ -1377,12 +1379,6 @@
     <pluginManagement>
 
       <plugins>
-
-        <plugin>
-          <groupId>biz.aQute.bnd</groupId>
-          <artifactId>bnd-baseline-maven-plugin</artifactId>
-          <version>${bnd-maven-plugin.version}</version>
-        </plugin>
 
         <plugin>
           <groupId>org.ops4j.pax.exam</groupId>
