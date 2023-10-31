@@ -410,7 +410,7 @@
     <graalvm.version>23.1.1</graalvm.version>
     <groovy.version>4.0.6</groovy.version>
     <guava.version>32.1.2-jre</guava.version>
-    <h2.version>2.2.222</h2.version>
+    <h2.version>2.2.224</h2.version>
     <hadoop.version>1.2.1</hadoop.version>
     <hamcrest.version>2.2</hamcrest.version>
     <HdrHistogram.version>2.1.12</HdrHistogram.version>
