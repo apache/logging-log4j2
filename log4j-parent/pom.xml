@@ -140,7 +140,7 @@
     <plexus-utils.version>3.5.0</plexus-utils.version>
     <slf4j.version>2.0.9</slf4j.version>
     <!-- Last version before a breaking change -->
-    <slf4j-ext.version>2.0.9</slf4j-ext.version>
+    <slf4j-ext.version>1.7.25</slf4j-ext.version>
     <spring-boot.version>2.7.17</spring-boot.version>
     <spring-framework.version>5.3.30</spring-framework.version>
     <system-stubs.version>2.0.3</system-stubs.version>
