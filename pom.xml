@@ -306,26 +306,6 @@
     <!-- project version -->
     <revision>2.22.0-SNAPSHOT</revision>
 
-    <!-- ===================
-         `MANIFEST.MF` fixes
-         ===================
-
-         Adds certain `Implementation-*` and `Specification-*` entries to the generated `MANIFEST.MF`.
-         Using these properties is known to be a bad practice: https://github.com/apache/logging-log4j2/issues/1923#issuecomment-1786818254
-         Users should use `META-INF/maven/<groupId>/<artifactId>/pom.properties` instead.
-         Yet we support it due to backward compatibility reasons.
-         WARNING! These properties should ideally not be ported to Log4j 3!
-
-         Defining this as a property works.
-         Because `bnd-maven-plugin` automatically includes properties starting with a capital letter. -->
-    <Implementation-Title>${project.name}</Implementation-Title>
-    <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-    <Implementation-Vendor>The Apache Software Foundation</Implementation-Vendor>
-    <Implementation-Version>${project.version}</Implementation-Version>
-    <Specification-Title>${project.name}</Specification-Title>
-    <Specification-Vendor>The Apache Software Foundation</Specification-Vendor>
-    <Specification-Version>${project.version}</Specification-Version>
-
     <!-- =================
          Common properties
          ================= -->
