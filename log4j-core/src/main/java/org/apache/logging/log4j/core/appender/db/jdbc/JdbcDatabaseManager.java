@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
@@ -589,6 +590,10 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         return true;
     }
 
+    @SuppressFBWarnings(
+            value = "SQL_INJECTION_JDBC",
+            justification = "The SQL statement is generated based on the configuration file."
+    )
     private void connectAndPrepare() throws SQLException {
         logger().debug("Acquiring JDBC connection from {}", this.getConnectionSource());
         this.connection = getConnectionSource().getConnection();
@@ -654,6 +659,10 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         return factoryData.tableName;
     }
 
+    @SuppressFBWarnings(
+            value = "SQL_INJECTION_JDBC",
+            justification = "The SQL statement is generated based on the configuration file."
+    )
     private void initColumnMetaData() throws SQLException {
         // Could use:
         // this.connection.getMetaData().getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);

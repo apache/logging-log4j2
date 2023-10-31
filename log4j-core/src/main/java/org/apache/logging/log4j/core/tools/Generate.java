@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.util.Integers;
 
 /**
@@ -1111,6 +1112,10 @@ public final class Generate {
         out.println("       For each custom log level, specify NAME=intLevel (without spaces).");
     }
 
+    @SuppressFBWarnings(
+            value = "FORMAT_STRING_MANIPULATION",
+            justification = "The format strings come from constants. The replacement is done for readability."
+    )
     static String generateSource(final String classNameFQN, final List<LevelInfo> levels, final Type type) {
         final StringBuilder sb = new StringBuilder(10000 * levels.size());
         final int lastDot = classNameFQN.lastIndexOf('.');

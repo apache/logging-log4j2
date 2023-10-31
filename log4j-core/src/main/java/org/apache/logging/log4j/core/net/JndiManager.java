@@ -25,6 +25,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.JndiCloser;
@@ -226,6 +227,10 @@ public class JndiManager extends AbstractManager {
      * @throws  NamingException if a naming exception is encountered
      */
     @SuppressWarnings({"unchecked", "BanJNDI"})
+    @SuppressFBWarnings(
+            value = "LDAP_INJECTION",
+            justification = "This method only accepts an empty or 'java:' URI scheme."
+    )
     public <T> T lookup(final String name) throws NamingException {
         if (context == null) {
             return null;

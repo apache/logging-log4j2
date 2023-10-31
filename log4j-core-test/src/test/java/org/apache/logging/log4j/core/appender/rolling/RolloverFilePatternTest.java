@@ -30,7 +30,7 @@ public class RolloverFilePatternTest {
     @Test
     public void testFilePatternWithoutPadding() throws Exception {
       final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%i.log.gz");
-      assertTrue(matcher.matches());
+      assertTrue(matcher.find());
       assertNull(matcher.group("ZEROPAD"));
       assertNull(matcher.group("PADDING"));
     }
@@ -38,7 +38,7 @@ public class RolloverFilePatternTest {
     @Test
     public void testFilePatternWithSpacePadding() throws Exception {
       final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%3i.log.gz");
-      assertTrue(matcher.matches());
+      assertTrue(matcher.find());
       assertNull(matcher.group("ZEROPAD"));
       assertEquals("3", matcher.group("PADDING"));
     }
@@ -46,7 +46,7 @@ public class RolloverFilePatternTest {
     @Test
     public void testFilePatternWithZeroPadding() throws Exception {
       final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%03i.log.gz");
-      assertTrue(matcher.matches());
+      assertTrue(matcher.find());
       assertEquals("0", matcher.group("ZEROPAD"));
       assertEquals("3", matcher.group("PADDING"));
     }
@@ -54,6 +54,6 @@ public class RolloverFilePatternTest {
     @Test
     public void testFilePatternUnmatched() throws Exception {
       final Matcher matcher = AbstractRolloverStrategy.PATTERN_COUNTER.matcher("target/logs/test-%n.log.gz");
-      assertFalse(matcher.matches());
+      assertFalse(matcher.find());
     }
 }

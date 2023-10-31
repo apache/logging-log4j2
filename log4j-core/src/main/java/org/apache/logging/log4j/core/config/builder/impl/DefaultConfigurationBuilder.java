@@ -39,6 +39,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -91,6 +92,10 @@ public class DefaultConfigurationBuilder<T extends BuiltConfiguration> implement
     private LoggerContext loggerContext;
     private String name;
 
+    @SuppressFBWarnings(
+            value = {"XXE_DTD_TRANSFORM_FACTORY", "XXE_XSLT_TRANSFORM_FACTORY"},
+            justification = "This method only uses internally generated data."
+    )
     public static void formatXml(final Source source, final Result result)
         throws TransformerConfigurationException, TransformerFactoryConfigurationError, TransformerException {
         final Transformer transformer = TransformerFactory.newInstance().newTransformer();

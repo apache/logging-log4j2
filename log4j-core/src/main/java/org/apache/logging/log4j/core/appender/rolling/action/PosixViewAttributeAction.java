@@ -29,6 +29,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
 import java.util.Set;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -114,6 +115,10 @@ public class PosixViewAttributeAction extends AbstractPathAction {
         private String fileGroup;
 
         @Override
+        @SuppressFBWarnings(
+                value = "OVERLY_PERMISSIVE_FILE_PERMISSION",
+                justification = "File permissions are specified in a configuration file."
+        )
         public PosixViewAttributeAction build() {
             if (Strings.isEmpty(basePath)) {
                 LOGGER.error("Posix file attribute view action not valid because base path is empty.");

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
@@ -106,6 +107,7 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
      * @param aManager The RollingFileManager.
      */
     @Override
+    @SuppressFBWarnings("PREDICTABLE_RANDOM")
     public void initialize(final RollingFileManager aManager) {
         this.manager = aManager;
         long current = aManager.getFileTime();
@@ -127,6 +129,7 @@ public final class TimeBasedTriggeringPolicy extends AbstractTriggeringPolicy {
      * @return true if a rollover should occur.
      */
     @Override
+    @SuppressFBWarnings("PREDICTABLE_RANDOM")
     public boolean isTriggeringEvent(final LogEvent event) {
         final long nowMillis = event.getTimeMillis();
         if (nowMillis >= nextRolloverMillis) {
