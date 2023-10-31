@@ -39,6 +39,7 @@ import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 import javax.management.ObjectName;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
@@ -144,6 +145,10 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+            justification = "JMX should be considered a trusted channel."
+    )
     public String getConfigText(final String charsetName) throws IOException {
         try {
             final ConfigurationSource source = loggerContext.getConfiguration().getConfigurationSource();

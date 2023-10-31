@@ -18,9 +18,8 @@ package org.apache.logging.log4j.util;
 
 import java.io.PrintWriter;
 
-import org.apache.logging.log4j.Logger;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.logging.log4j.Logger;
 
 /**
  * PrintWriter-based logging utility for classes too low level to use {@link org.apache.logging.log4j.status.StatusLogger}.

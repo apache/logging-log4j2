@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPOutputStream;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -718,6 +719,10 @@ public final class GelfLayout extends AbstractStringLayout {
     /**
      * Non-private to make it accessible from unit test.
      */
+    @SuppressFBWarnings(
+            value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+            justification = "Log4j prints stacktraces only to logs, which should be private."
+    )
     static CharSequence formatThrowable(final Throwable throwable) {
         // stack traces are big enough to provide a reasonably large initial capacity here
         final StringWriter sw = new StringWriter(2048);

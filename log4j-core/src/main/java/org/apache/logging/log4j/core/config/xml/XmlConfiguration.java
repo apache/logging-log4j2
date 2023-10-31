@@ -32,6 +32,7 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -71,6 +72,10 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
     private boolean strict;
     private String schemaResource;
 
+    @SuppressFBWarnings(
+            value = "XXE_DOCUMENT",
+            justification = "The `newDocumentBuilder` method disables DTD processing."
+    )
     public XmlConfiguration(final LoggerContext loggerContext, final ConfigurationSource configSource) {
         super(loggerContext, configSource);
         byte[] buffer = null;

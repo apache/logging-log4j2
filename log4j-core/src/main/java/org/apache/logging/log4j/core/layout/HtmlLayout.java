@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -238,6 +239,10 @@ public final class HtmlLayout extends AbstractStringLayout {
         return contentType;
     }
 
+    @SuppressFBWarnings(
+            value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+            justification = "Log4j prints stacktraces only to logs, which should be private."
+    )
     private void appendThrowableAsHtml(final Throwable throwable, final StringBuilder sbuf) {
         final StringWriter sw = new StringWriter();
         final PrintWriter pw = new PrintWriter(sw);

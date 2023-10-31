@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
@@ -342,6 +343,9 @@ public class TcpSocketManager extends AbstractSocketManager {
         return createSocket(socketAddress, socketOptions, connectTimeoutMillis);
     }
 
+    @SuppressFBWarnings(
+            value = "UNENCRYPTED_SOCKET"
+    )
     protected static Socket createSocket(final InetSocketAddress socketAddress, final SocketOptions socketOptions,
             final int connectTimeoutMillis) throws IOException {
         LOGGER.debug("Creating socket {}", socketAddress.toString());

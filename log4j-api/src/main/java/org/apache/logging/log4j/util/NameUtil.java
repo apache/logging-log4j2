@@ -21,6 +21,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  *
  */
@@ -49,6 +51,11 @@ public final class NameUtil {
      * @param input string to be hashed
      * @return string composed of 32 hexadecimal digits of the calculated hash
      */
+    @SuppressFBWarnings(
+            value = "WEAK_MESSAGE_DIGEST_MD5",
+            justification = "Used to create unique identifiers."
+    )
+    @Deprecated
     public static String md5(final String input) {
         Objects.requireNonNull(input, "input");
         try {
@@ -57,11 +64,8 @@ public final class NameUtil {
             final byte[] bytes = digest.digest(inputBytes);
             final StringBuilder md5 = new StringBuilder(bytes.length * 2);
             for (final byte b : bytes) {
-                final String hex = Integer.toHexString(0xFF & b);
-                if (hex.length() == 1) {
-                    md5.append('0');
-                }
-                md5.append(hex);
+                md5.append(Character.forDigit((0xFF & b) >> 4, 16));
+                md5.append(Character.forDigit(0x0F & b, 16));
             }
             return md5.toString();
         }

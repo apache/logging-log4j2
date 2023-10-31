@@ -19,6 +19,8 @@ package org.apache.logging.log4j.core.net.ssl;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * An HostnameVerifier which accepts everything.
  */
@@ -32,6 +34,7 @@ public final class LaxHostnameVerifier implements HostnameVerifier {
     }
 
     @Override
+    @SuppressFBWarnings("WEAK_HOSTNAME_VERIFIER")
     public boolean verify(final String s, final SSLSession sslSession) {
         return true;
     }

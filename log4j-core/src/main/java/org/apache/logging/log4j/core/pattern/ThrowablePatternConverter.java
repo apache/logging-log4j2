@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
@@ -175,6 +176,10 @@ public class ThrowablePatternConverter extends LogEventPatternConverter {
         }
     }
 
+    @SuppressFBWarnings(
+            value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+            justification = "Formatting a throwable is the main purpose of this class."
+    )
     private void formatOption(final Throwable throwable, final String suffix, final StringBuilder buffer) {
         final int len = buffer.length();
         if (len > 0 && !Character.isWhitespace(buffer.charAt(len - 1))) {

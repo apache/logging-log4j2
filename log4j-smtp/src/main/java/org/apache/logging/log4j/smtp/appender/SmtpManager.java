@@ -37,6 +37,7 @@ import javax.mail.internet.MimeUtility;
 import javax.mail.util.ByteArrayDataSource;
 import javax.net.ssl.SSLSocketFactory;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
@@ -284,8 +285,11 @@ public class SmtpManager extends AbstractManager {
         }
     }
 
-    protected void sendMultipartMessage(final MimeMessage msg, final MimeMultipart mp, final String subject) throws MessagingException {
-        synchronized (msg) {
+    @SuppressFBWarnings(
+            value = "SMTP_HEADER_INJECTION",
+            justification = "False positive, since MimeMessage#setSubject does actually escape new lines."
+    )
+    protected void sendMultipartMessage(final MimeMessage msg, final MimeMultipart mp, final String subject) throws MessagingException {synchronized (msg) {
             msg.setContent(mp);
             msg.setSentDate(new Date());
             msg.setSubject(subject);
