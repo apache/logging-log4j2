@@ -20,8 +20,10 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
+
   <artifactId>log4j-plugins</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j Plugins</name>
@@ -51,19 +53,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <annotationProcessorPaths>
-            <path>
-              <groupId>com.google.errorprone</groupId>
-              <artifactId>error_prone_core</artifactId>
-              <version>${errorprone.version}</version>
-            </path>
-          </annotationProcessorPaths>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>

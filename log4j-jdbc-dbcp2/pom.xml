@@ -20,7 +20,8 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
 
   <artifactId>log4j-jdbc-dbcp2</artifactId>
