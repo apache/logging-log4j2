@@ -459,7 +459,6 @@
         <version>${project.version}</version>
       </dependency>
 
-
       <!-- JNDI -->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
