@@ -1,0 +1,63 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+= Apache Log4j
+
+Apache Log4j is a versatile, industrial-grade Java logging framework composed of an API, its implementation,  and components to assist the deployment for various use cases.
+Log4j is https://security.googleblog.com/2021/12/apache-log4j-vulnerability.html[used by 8% of the Maven ecosystem] and listed as one of https://docs.google.com/spreadsheets/d/1ONZ4qeMq8xmeCHX03lIgIYE4MEXVfVL6oj05lbuXTDM/edit#gid=1024997528[the top 100 critical open source software projects].
+The project is actively maintained by a link:team.html[team] of several volunteers and xref:support.adoc[support]ed by a big community.
+
+[#links]
+== Quick links
+- link:maven-artifacts.html[How can I add Log4j artifacts to my Maven/Ivy/Gradle project?]
+- link:manual/usage.html?[How can I use the Log4j API?]
+- link:manual/configuration.html[How can I configure my `log4j2.xml`?]
+- link:release-notes.adoc[Where are the release notes?]
+- link:support.adoc[**I need help!**]
+
+[#features]
+== Features
+
+We share below some highlights from Log4j features.
+
+Batteries included::
+Log4j bundles a rich set of components to assist various use cases.
+* link:manual/appenders.html[Appenders] targeting files, network sockets, databases, SMTP servers, etc.
+* link:manual/layouts.html[Layouts] that can render CSV, HTML, JSON, Syslog, etc. formatted outputs
+* link:manual/filters.html[Filters] that can be configured using log event rates, regular expressions, scripts, time, etc.
+* link:manual/lookups.html[Lookups] for accessing system properties, environment variables, log event fields, etc.
+
+
+API separation::
+The API for Log4j (i.e., `log4j-api`) is separate from the implementation (i.e., `log4j-core`) making it clear for application developers which classes and methods they can use while ensuring forward compatibility.
+(See link:manual/api-separation.html[API Separation] for details.)
+The Log4j API also provides the most feature rich logging facade in the market; support for various `Message` types (`Object`, `Map`, etc.) besides plain `String`, lambda expressions, parametrized logging, markers, levels, diagnostic contexts (aka. MDC/NDC), etc.
+Check out the link:manual/api.html[Java API], link:/log4j/kotlin[Kotlin API], and link:/log4j/scala[Scala API] pages for further information.
+
+No vendor lock-in::
+Even though the Log4j API is implemented by the Log4j at its fullest, users can choose to use another logging backend.
+This can be achieved by either using another backend implementing the Log4j API, or forwarding Log4j API calls to another logging facade (e.g., SLF4J) and using a backend for that particular facade.
+
+Performance::
+When configured correctly, Log4j can deliver excelling performance without almost any burden on the Java garbage collector.
+This is made possible via an asynchronous logger founded on the https://lmax-exchange.github.io/disruptor/[LMAX Disruptor] technology (having its roots in the demanding industry of financial trading) and the garbage-free features baked at hot paths.
+Check out the link:performance.html[Performance] page for details.
+
+Extensibility::
+Log4j contains a fully-fledged xref:manual/plugins.html[plugin support] that users can leverage to extend its functionality.
+You can easily add your own components (layouts, appenders, filters, etc.) or customizing existing ones (e.g., adding new directives to the link:manual/layouts.html#PatternLayout[Pattern] or xref:manual/json-template-layout.adoc#extending[JSON Template Layout]).
+Check out the link:manual/extending.html[Extending Log4j] page.
