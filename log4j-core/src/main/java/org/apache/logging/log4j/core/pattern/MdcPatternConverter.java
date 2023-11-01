@@ -146,7 +146,7 @@ public final class MdcPatternConverter extends LogEventPatternConverter {
 
     @Override
     public String emptyVariableOutput() {
-        return "{}";
+        return key == null ? "{}" : "";
     }
 
 }

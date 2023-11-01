@@ -69,8 +69,13 @@ public class VariablesNotEmptyReplacementConverterTest {
     }
 
     @Test
+    void MDC_with_non_existent_key_should_be_replaced() {
+        testReplacement("foo=%mdc{noSuchKey1}", "");
+    }
+
+    @Test
     void MDC_with_non_existent_keys_should_be_replaced() {
-        testReplacement("%mdc{noSuchKey1,noSuchKey2}", "");
+        testReplacement("foo=%mdc{noSuchKey1,noSuchKey2}", "");
     }
 
     private void testReplacement(final String tag, final String expectedValue) {

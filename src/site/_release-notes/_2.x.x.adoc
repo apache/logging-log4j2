@@ -47,6 +47,7 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 === Changed
 
 * Change the order of evaluation of `FormattedMessage` formatters. Messages are evaluated using `java.util.Format` only if they don't comply to the `java.text.MessageFormat` or `ParameterizedMessage` format. (https://github.com/apache/logging-log4j2/issues/1223[1223])
+* Fix MDC pattern converter causing issues for `%notEmpty` (https://github.com/apache/logging-log4j2/issues/1922[1922])
 * Fix `NotSerializableException` when `Logger` is serialized with a `ReusableMessageFactory`. (https://github.com/apache/logging-log4j2/issues/1884[1884])
 * Update `com.fasterxml.jackson:jackson-bom` to version `2.15.3` (https://github.com/apache/logging-log4j2/pull/1894[1894])
 * Update `com.github.luben:zstd-jni` to version `1.5.5-8` (https://github.com/apache/logging-log4j2/pull/1935[1935])
