@@ -28,8 +28,6 @@
   <name>Apache Log4j SLF4J 2.0 Binding</name>
   <description>The Apache Log4j SLF4J 2.0 API binding to Log4j 2 Core</description>
   <properties>
-    <docLabel>SLF4J Documentation</docLabel>
-    <projectDir>/slf4j2-impl</projectDir>
 
     <!--
       ~ OSGi and JPMS options

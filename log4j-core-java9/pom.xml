@@ -28,8 +28,6 @@
   <name>Apache Log4j Implementation Java 9 support</name>
   <description>The Apache Log4j Implementation (Java 9)</description>
   <properties>
-    <docLabel>Log4j Implementation Documentation</docLabel>
-    <projectDir>/core</projectDir>
     <maven.compiler.release>9</maven.compiler.release>
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>

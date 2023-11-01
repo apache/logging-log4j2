@@ -27,8 +27,6 @@
   <name>Apache Log4j Spring Cloud Config Client Support</name>
   <description>Apache Log4j Spring Cloud Config Client Support</description>
   <properties>
-    <docLabel>Log4j Spring Cloud Config Client Documentation</docLabel>
-    <projectDir>/log4j-spring-cloud-config-client</projectDir>
 
     <!--
       ~ OSGi and JPMS options

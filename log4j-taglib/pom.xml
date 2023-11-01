@@ -28,8 +28,6 @@
   <name>Apache Log4j Tag Library</name>
   <description>The Apache Log4j Tag Library for Web Applications</description>
   <properties>
-    <docLabel>Log4j Tag Library Documentation</docLabel>
-    <projectDir>/taglib</projectDir>
 
     <!--
       ~ OSGi and JPMS options

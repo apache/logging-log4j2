@@ -28,8 +28,6 @@
   <name>Apache Log4j API</name>
   <description>The Apache Log4j API</description>
   <properties>
-    <docLabel>API Documentation</docLabel>
-    <projectDir>/api</projectDir>
     <javadoc.skip>false</javadoc.skip>
 
     <!--

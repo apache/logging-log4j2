@@ -28,10 +28,6 @@
   <name>Apache Log4j to JUL Bridge</name>
   <description>The Apache Log4j binding between Log4j 2 API and java.util.logging (JUL).</description>
   <inceptionYear>2022</inceptionYear>
-  <properties>
-    <docLabel>Log4j to JUL Documentation</docLabel>
-    <projectDir>/log4j-to-jul</projectDir>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>org.osgi</groupId>

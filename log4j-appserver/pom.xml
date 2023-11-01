@@ -32,8 +32,6 @@
   <description>Provide Log4j as the logging implementation for application servers</description>
 
   <properties>
-    <docLabel>Web Documentation</docLabel>
-    <projectDir>/log4j-appserver</projectDir>
 
     <!--
       ~ OSGi and JPMS options

@@ -28,8 +28,6 @@
   <name>Apache Log4j Jakarta SMTP</name>
   <description>Apache Log4j Simple Mail Transfer Protocol (SMTP) Appender, version for Jakarta EE 9.</description>
   <properties>
-    <docLabel>Log4j SMTP Appender Documentation</docLabel>
-    <projectDir>/log4j-jakarta-smtp</projectDir>
 
     <!--
       ~ OSGi and JPMS options

@@ -28,8 +28,6 @@
   <name>Apache Log4j Flume Bridge</name>
   <description>The Apache Log4j Flume Appender</description>
   <properties>
-    <docLabel>Flume Documentation</docLabel>
-    <projectDir>/flume-ng</projectDir>
 
     <!--
       ~ OSGi and JPMS options

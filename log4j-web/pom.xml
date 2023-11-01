@@ -30,8 +30,6 @@
   <description>The Apache Log4j support for web servlet containers</description>
 
   <properties>
-    <docLabel>Web Documentation</docLabel>
-    <projectDir>/log4j-web</projectDir>
 
     <!--
       ~ OSGi and JPMS options

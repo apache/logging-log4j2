@@ -28,8 +28,6 @@
   <name>Apache Log4j Spring Boot Support</name>
   <description>Apache Log4j Spring Boot Support</description>
   <properties>
-    <docLabel>Log4j Spring Boot Documentation</docLabel>
-    <projectDir>/log4j-spring-boot</projectDir>
 
     <!--
       ~ OSGi and JPMS options

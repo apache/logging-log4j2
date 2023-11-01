@@ -28,8 +28,6 @@
   <name>Apache Log4j Commons Logging Bridge</name>
   <description>The Apache Log4j Commons Logging Adapter</description>
   <properties>
-    <docLabel>JCL Bridge Documentation</docLabel>
-    <projectDir>/jcl-bridge</projectDir>
     <bnd-extra-module-options>
       <!-- Filebase module names: MUST be static -->
       commons.logging;substitute="commons-logging";transitive=false;static=true

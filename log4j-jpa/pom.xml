@@ -28,8 +28,6 @@
   <name>Apache Log4j JPA</name>
   <description>Apache Log4j Java Persistence API Appender.</description>
   <properties>
-    <docLabel>Log4j JPA Documentation</docLabel>
-    <projectDir>/log4j-jpa</projectDir>
 
     <!--
       ~ OSGi and JPMS options

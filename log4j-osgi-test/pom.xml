@@ -28,8 +28,6 @@
   <name>Apache Log4j OSGi tests</name>
   <description>The Apache Log4j OSGi tests</description>
   <properties>
-    <docLabel>OSGi Documentation</docLabel>
-    <projectDir>/osgi</projectDir>
     <module.name>org.apache.logging.log4j.osgi</module.name>
     <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.deploy.skip>true</maven.deploy.skip>

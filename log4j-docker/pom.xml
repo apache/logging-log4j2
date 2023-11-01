@@ -28,8 +28,6 @@
   <name>Apache Log4j Docker Library</name>
   <description>Apache Log4j Docker Support</description>
   <properties>
-    <docLabel>Log4j Docker Library Documentation</docLabel>
-    <projectDir>/docker</projectDir>
 
     <!--
       ~ OSGi and JPMS options

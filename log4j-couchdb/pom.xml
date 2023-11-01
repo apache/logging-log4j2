@@ -28,8 +28,6 @@
   <name>Apache Log4j CouchDB</name>
   <description>CouchDB appender for Log4j.</description>
   <properties>
-    <docLabel>CouchDB Documentation</docLabel>
-    <projectDir>/log4j-couchdb</projectDir>
 
     <!--
       ~ OSGi and JPMS options

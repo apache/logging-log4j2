@@ -28,8 +28,6 @@
   <name>Apache Log4j Cassandra</name>
   <description>Cassandra appender for Log4j.</description>
   <properties>
-    <docLabel>Cassandra Documentation</docLabel>
-    <projectDir>/log4j-cassandra</projectDir>
 
     <!--
       ~ OSGi and JPMS options

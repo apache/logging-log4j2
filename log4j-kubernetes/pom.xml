@@ -28,8 +28,6 @@
   <name>Apache Log4j Kubernetes Library</name>
   <description>Apache Log4j Kubernetes Support</description>
   <properties>
-    <docLabel>Log4j Kubernetes Library Documentation</docLabel>
-    <projectDir>/kubernetes</projectDir>
 
     <!--
       ~ OSGi and JPMS options

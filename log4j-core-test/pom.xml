@@ -28,8 +28,6 @@
   <name>Apache Log4j Core Tests</name>
   <description>The Apache Log4j Implementation Tests</description>
   <properties>
-    <docLabel>Core Documentation</docLabel>
-    <projectDir>/core</projectDir>
 
     <!-- Dependency versions -->
     <slf4j-ext.version>${slf4j.version}</slf4j-ext.version>

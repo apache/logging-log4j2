@@ -31,8 +31,6 @@
 
   <properties>
 
-    <docLabel>Log4j Layout for JSON Template Documentation</docLabel>
-    <projectDir>/log4j-layout-template-json</projectDir>
     <maven.deploy.skip>true</maven.deploy.skip>
 
     <!--

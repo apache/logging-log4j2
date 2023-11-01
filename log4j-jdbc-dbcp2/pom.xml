@@ -28,8 +28,6 @@
   <name>Apache Log4j JDBC DBCP 2</name>
   <description>Connection source for the JDBC Appender using Apache Commons DBCP2.</description>
   <properties>
-    <docLabel>Log4j JDBC DBCP 2 Documentation</docLabel>
-    <projectDir>/log4j-jdbc-dbcp2</projectDir>
 
     <!--
       ~ OSGi and JPMS options

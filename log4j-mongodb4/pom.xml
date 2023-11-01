@@ -28,8 +28,6 @@
   <name>Apache Log4j MongoDB 4</name>
   <description>MongoDB appender for Log4j using the MongoDB 4 driver API.</description>
   <properties>
-    <docLabel>MongoDB 4 Documentation</docLabel>
-    <projectDir>/log4j-mongodb4</projectDir>
 
     <!--
       ~ OSGi and JPMS options

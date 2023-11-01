@@ -27,10 +27,6 @@
   <packaging>jar</packaging>
   <name>Apache Log4j Streaming Interface</name>
   <description>The Apache Log4j streams to log event converters</description>
-  <properties>
-    <docLabel>Streaming Documentation</docLabel>
-    <projectDir>/log4j-iostreams</projectDir>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
