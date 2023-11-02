@@ -61,7 +61,7 @@
     <!-- `maven-javadoc-plugin` is only used to generate Javadoc HTML used in the website.
          We don't deploy any Javadoc JARs.
          We also don't generate Javadoc HTML for all modules, but only for two modules: `log4j-api` and `log4j-core`. -->
-    <javadoc.skip>true</javadoc.skip>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
     <!-- Skipping `maven-site-plugin` globally.
          It is manually enabled only for the parent module below. -->
     <maven.site.skip>true</maven.site.skip>

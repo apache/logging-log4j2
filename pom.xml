@@ -334,8 +334,8 @@
     <!-- `maven-javadoc-plugin` is only used to generate Javadoc HTML used in the website.
          We don't deploy any Javadoc JARs.
          We also don't generate Javadoc HTML for all modules, but only for two modules: `log4j-api` and `log4j-core`. -->
-    <javadoc.doclint>all,-missing,-html</javadoc.doclint>
-    <javadoc.skip>true</javadoc.skip>
+    <doclint>all,-missing,-html</doclint>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
     <!-- Skipping `maven-site-plugin` globally.
          It is manually enabled only for this root module below. -->
     <maven.site.skip>true</maven.site.skip>
@@ -722,12 +722,9 @@
             </goals>
             <phase>pre-site</phase>
             <!-- This execution must be inherited and enabled by modules publishing javadocs: `-api` and `-core`.
-                 Such modules enable this execution via `javadoc.skip` property.
+                 Such modules enable this execution via `maven.javadoc.skip` property.
                  Hence, don't insert a `<inherited>false</inherited>`, please! -->
-            <configuration combine.self="override">
-              <!-- `notimestamp` avoids `diff` noise and is required for reproducible builds: https://maven.apache.org/guides/mini/guide-reproducible-builds.html -->
-              <notimestamp>true</notimestamp>
-              <skip>${javadoc.skip}</skip>
+            <configuration>
               <bottom><![CDATA[<p align="center">
               Copyright &copy; {inceptionYear}-{currentYear} {organizationName}.
               All Rights Reserved.<br/>

@@ -32,7 +32,7 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Core Documentation</docLabel>
     <projectDir>/core</projectDir>
-    <javadoc.skip>false</javadoc.skip>
+    <maven.javadoc.skip>false</maven.javadoc.skip>
 
     <!--
       ~ OSGi and JPMS options
