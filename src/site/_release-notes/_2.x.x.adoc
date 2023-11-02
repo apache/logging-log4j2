@@ -64,6 +64,10 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 * Update `uk.org.webcompere:system-stubs-core` to version `2.0.3` (https://github.com/apache/logging-log4j2/pull/1892[1892])
 * Update Spring Framework from version 5.3.29 to 5.3.30;
 
+=== Removed
+
+* Removed unused `FastDateParser` which was causing unnecessary heap overhead (https://issues.apache.org/jira/browse/LOG4J2-3672[LOG4J2-3672], https://github.com/apache/logging-log4j2/pull/1848[1848])
+
 === Fixed
 
 * Export missing OSGi & JPMS modules in `log4j-layout-template-json` and `log4j-1.2-api` (https://github.com/apache/logging-log4j2/issues/1895[1895])
