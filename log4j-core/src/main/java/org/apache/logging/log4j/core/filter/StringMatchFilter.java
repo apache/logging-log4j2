@@ -29,7 +29,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
 /**
- * This filter returns the onMatch result if the logging level in the event matches the specified logging level
+ * This filter returns the onMatch result if the message in the event matches the specified text
  * exactly.
  */
 @Configurable(elementType = Filter.ELEMENT_TYPE, printObject = true)
@@ -158,8 +158,8 @@ public final class StringMatchFilter extends AbstractFilter {
         private String text = "";
 
         /**
-         * Sets the logging level to use.
-         * @param level the logging level to use.
+         * Sets the text to match.
+         * @param text the text to match.
          * @return this
          */
         public StringMatchFilter.Builder setMatchString(final String text) {

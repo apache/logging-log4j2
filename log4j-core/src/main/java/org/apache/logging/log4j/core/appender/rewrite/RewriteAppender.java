@@ -89,7 +89,7 @@ public final class RewriteAppender extends AbstractAppender {
     /**
      * Creates a RewriteAppender.
      * @param name The name of the Appender.
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
      *               they are propagated to the caller.
      * @param appenderRefs An array of Appender names to call.
      * @param config The Configuration.

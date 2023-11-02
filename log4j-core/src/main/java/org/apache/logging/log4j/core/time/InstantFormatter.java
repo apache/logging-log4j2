@@ -85,7 +85,7 @@ public final class InstantFormatter {
     /**
      * Checks if the given {@link Instant}s are equal from the point of view of the employed formatter.
      * <p>
-     * This method should be preferred over {@link Instant#equals(Object)}.
+     * This method should be preferred over {@link Object#equals(Object)}.
      * For instance, {@link FixedDateFormat} and {@link FastDateFormat} discard nanoseconds, hence, from their point of view, two different {@code Instant}s are equal if they match up to millisecond precision.
      * </p>
      */

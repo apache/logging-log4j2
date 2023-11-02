@@ -29,12 +29,14 @@ import org.apache.logging.log4j.util.PropertyEnvironment;
  * created by this factory is used in AsyncLogger, AsyncLoggerConfig and AsyncAppender
  * to control if events are logged in the current thread, the background thread, or discarded.
  * <p>
- * Property {@value Log4jPropertyKey#ASYNC_LOGGER_QUEUE_FULL_POLICY} controls the routing behaviour. If this property is not specified or has
+ * Property {@link Log4jPropertyKey#ASYNC_LOGGER_QUEUE_FULL_POLICY} controls the routing behaviour. If this property is
+ * not specified or has
  * value {@code "Default"}, this factory creates {@link DefaultAsyncQueueFullPolicy} objects.
  * </p> <p>
  * If this property has value {@code "Discard"}, this factory creates {@link DiscardingAsyncQueueFullPolicy} objects.
  * By default, this router discards events of level {@code INFO}, {@code DEBUG} and {@code TRACE} if the queue is full.
- * This can be adjusted with property {@value Log4jPropertyKey#ASYNC_LOGGER_DISCARD_THRESHOLD} (name of the level at which to start
+ * This can be adjusted with property {@link Log4jPropertyKey#ASYNC_LOGGER_DISCARD_THRESHOLD} (name of the level at
+ * which to start
  * discarding).
  * </p> <p>
  * For any other value, this

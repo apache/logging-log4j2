@@ -35,7 +35,7 @@ import org.apache.logging.log4j.util.StringMap;
  * instances may be either populated with key-value pairs from the context, or completely replaced altogether.
  * <p>
  * By default returns {@code SortedArrayStringMap} objects. Can be configured by setting system property
- * {@value Log4jPropertyKey#THREAD_CONTEXT_DATA_CLASS_NAME}
+ * {@link Log4jPropertyKey#THREAD_CONTEXT_DATA_CLASS_NAME}
  * to the fully qualified class name of a class implementing the {@code StringMap}
  * interface. The class must have a public default constructor, and if possible should also have a public constructor
  * that takes a single {@code int} argument for the initial capacity.

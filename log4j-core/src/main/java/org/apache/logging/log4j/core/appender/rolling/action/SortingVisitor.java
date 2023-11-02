@@ -40,10 +40,9 @@ public class SortingVisitor extends SimpleFileVisitor<Path> {
     private final List<PathWithAttributes> collected = new ArrayList<>();
 
     /**
-     * Constructs a new DeletingVisitor.
+     * Constructs a new SortingVisitor.
      *
-     * @param basePath used to relativize paths
-     * @param pathFilters objects that need to confirm whether a file can be deleted
+     * @param sorter used to sort paths
      */
     public SortingVisitor(final PathSorter sorter) {
         this.sorter = Objects.requireNonNull(sorter, "sorter");

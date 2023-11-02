@@ -168,9 +168,9 @@ public abstract class AbstractLayout implements Layout {
      * {@code AbstractStringLayout} provides various convenience methods to help with this:
      * </p>
      * <pre>@Category(Node.CATEGORY)
-     * @Plugin(value = "MyLayout", elementType = Layout.ELEMENT_TYPE, printObject = true)
+     * &#064;Plugin(value = "MyLayout", elementType = Layout.ELEMENT_TYPE, printObject = true)
      * public final class MyLayout extends AbstractStringLayout {
-     *     @Override
+     *     &#064;Override
      *     public void encode(LogEvent event, ByteBufferDestination destination) {
      *         StringBuilder text = getStringBuilder();
      *         convertLogEventToText(event, text);

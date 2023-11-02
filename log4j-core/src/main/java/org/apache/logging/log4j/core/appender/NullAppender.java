@@ -26,7 +26,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * An Appender that ignores log events. Use for compatibility with version 1.2 and handy for composing a
- * {@link ScriptAppenderSelector}.
+ * {@code ScriptAppenderSelector}.
  */
 @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
 @Plugin(NullAppender.PLUGIN_NAME)

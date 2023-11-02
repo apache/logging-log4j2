@@ -51,12 +51,12 @@ public class SocketAppender extends AbstractOutputStreamAppender<AbstractSocketM
 
     /**
      * Subclasses can extend this abstract Builder.
-     * <h1>Defaults</h1>
+     * <h2>Defaults</h2>
      * <ul>
      * <li>host: "localhost"</li>
      * <li>protocol: "TCP"</li>
      * </ul>
-     * <h1>Changes</h1>
+     * <h2>Changes</h2>
      * <ul>
      * <li>Removed deprecated "delayMillis", use "reconnectionDelayMillis".</li>
      * <li>Removed deprecated "reconnectionDelay", use "reconnectionDelayMillis".</li>

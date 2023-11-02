@@ -47,7 +47,7 @@ public final class ClockFactory {
 
     /**
      * Returns a {@code Clock} instance depending on the value of system
-     * property {@link #PROPERTY_NAME}.
+     * property {@link Log4jPropertyKey#CONFIG_CLOCK}.
      * <p>
      * If system property {@code log4j.Clock=CachedClock} is specified,
      * this method returns an instance of {@link CachedClock}. If system

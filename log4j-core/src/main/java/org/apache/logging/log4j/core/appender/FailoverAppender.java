@@ -176,7 +176,7 @@ public final class FailoverAppender extends AbstractAppender {
      * @param retryIntervalSeconds The retry interval in seconds.
      * @param config The current Configuration (passed by the Configuration when the appender is created).
      * @param filter A Filter (optional).
-     * @param ignore If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
+     * @param ignoreExceptions If {@code "true"} (default) exceptions encountered when appending events are logged; otherwise
      *               they are propagated to the caller.
      * @return The FailoverAppender that was created.
      */

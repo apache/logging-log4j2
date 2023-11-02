@@ -189,8 +189,8 @@ public class DeleteAction extends AbstractPathAction {
      *            href="http://logging.apache.org/log4j/2.x/manual/configuration.html#StatusMessages">status logger</a>
      *            at INFO level. Users can use this to do a dry run to test if their configuration works as expected.
      *            Default is false.
-     * @param PathSorter a plugin implementing the {@link PathSorter} interface
-     * @param PathConditions an array of path conditions (if more than one, they all need to accept a path before it is
+     * @param sorterParameter a plugin implementing the {@link PathSorter} interface
+     * @param pathConditions an array of path conditions (if more than one, they all need to accept a path before it is
      *            deleted).
      * @param config The Configuration.
      * @return A DeleteAction.

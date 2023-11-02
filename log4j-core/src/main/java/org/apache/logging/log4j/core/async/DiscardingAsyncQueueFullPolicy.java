@@ -26,7 +26,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Discarding router extends the DefaultAsyncQueueFullPolicy by first verifying if the queue is fuller than the specified
  * threshold ratio; if this is the case, log events {@linkplain Level#isMoreSpecificThan(Level) more specific} than
- * the specified threshold level are dropped. If this is not the case, the {@linkplain DefaultAsyncQueueFullPolicy
+ * the specified threshold level are dropped. If this is not the case, the {@linkplain DefaultAsyncQueueFullPolicy}
  * default routing rules hold.
  */
 public class DiscardingAsyncQueueFullPolicy extends DefaultAsyncQueueFullPolicy {

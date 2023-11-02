@@ -66,7 +66,7 @@ public final class Property {
 
     /**
      * Returns {@code true} if the value contains a substitutable property that requires a lookup to be resolved.
-     * @return {@code true} if the value contains {@code "${"}, {@code false} otherwise
+     * @return {@code true} if the value contains "${", {@code false} otherwise
      */
     public boolean isValueNeedsLookup() {
         return valueNeedsLookup;

@@ -43,7 +43,8 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
  * Cron expressions are comprised of 6 required fields and one optional field
  * separated by white space. The fields respectively are described as follows:
  * <p/>
- * <table cellspacing="8">
+ * <table>
+ *     <caption>Cron fields</caption>
  * <tr>
  * <th align="left">Field Name</th>
  * <th align="left">&nbsp;</th>

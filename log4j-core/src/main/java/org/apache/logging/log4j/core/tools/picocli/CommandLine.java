@@ -2799,7 +2799,7 @@ public class CommandLine {
     /**
      * A collection of methods and inner classes that provide fine-grained control over the contents and layout of
      * the usage help message to display to end users when help is requested or invalid input values were specified.
-     * <h3>Layered API</h3>
+     * <h2>Layered API</h2>
      * <p>The {@link Command} annotation provides the easiest way to customize usage help messages. See
      * the <a href="https://remkop.github.io/picocli/index.html#_usage_help">Manual</a> for details.</p>
      * <p>This Help class provides high-level functions to create sections of the usage help message and headings
@@ -2807,7 +2807,7 @@ public class CommandLine {
      * method, application authors may want to create a custom usage help message by reorganizing sections in a
      * different order and/or adding custom sections.</p>
      * <p>Finally, the Help class contains inner classes and interfaces that can be used to create custom help messages.</p>
-     * <h4>IOptionRenderer and IParameterRenderer</h4>
+     * <h3>IOptionRenderer and IParameterRenderer</h3>
      * <p>Renders a field annotated with {@link Option} or {@link Parameters} to an array of {@link Text} values.
      * By default, these values are</p><ul>
      * <li>mandatory marker character (if the option/parameter is {@link Option#required() required})</li>
@@ -2817,15 +2817,15 @@ public class CommandLine {
      * <li>description</li>
      * </ul>
      * <p>Other components rely on this ordering.</p>
-     * <h4>Layout</h4>
+     * <h3>Layout</h3>
      * <p>Delegates to the renderers to create {@link Text} values for the annotated fields, and uses a
      * {@link TextTable} to display these values in tabular format. Layout is responsible for deciding which values
      * to display where in the table. By default, Layout shows one option or parameter per table row.</p>
-     * <h4>TextTable</h4>
+     * <h3>TextTable</h3>
      * <p>Responsible for spacing out {@link Text} values according to the {@link Column} definitions the table was
      * created with. Columns have a width, indentation, and an overflow policy that decides what to do if a value is
      * longer than the column's width.</p>
-     * <h4>Text</h4>
+     * <h3>Text</h3>
      * <p>Encapsulates rich text with styles and colors in a way that other components like {@link TextTable} are
      * unaware of the embedded ANSI escape codes.</p>
      */
