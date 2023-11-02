@@ -64,6 +64,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.IStyle;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Style;
 import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;
@@ -2637,6 +2638,7 @@ public class CommandLine {
      * Inner class to group the built-in {@link ITypeConverter} implementations.
      */
     private static final class BuiltIn {
+        @SuppressFBWarnings("PATH_TRAVERSAL_IN")
         static class PathConverter implements ITypeConverter<Path> {
             @Override public Path convert(final String value) { return Paths.get(value); }
         }
@@ -2712,6 +2714,7 @@ public class CommandLine {
             public Double convert(final String value) { return Double.valueOf(value); }
         }
 
+        @SuppressFBWarnings("PATH_TRAVERSAL_IN")
         static class FileConverter implements ITypeConverter<File> {
             @Override
             public File convert(final String value) { return new File(value); }

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 import java.io.File;
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CommonsCompressAction;
 import org.apache.logging.log4j.core.appender.rolling.action.GzCompressAction;
@@ -115,10 +116,18 @@ public enum FileExtension {
         return extension.length();
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     File source(final String fileName) {
         return new File(fileName);
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     File target(final String fileName) {
         return new File(fileName);
     }

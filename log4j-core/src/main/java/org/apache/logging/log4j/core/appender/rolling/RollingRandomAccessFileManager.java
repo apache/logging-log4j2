@@ -23,6 +23,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.file.Paths;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
@@ -145,10 +146,18 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     protected void createFileAfterRollover() throws IOException {
         createFileAfterRollover(getFileName());
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     private void createFileAfterRollover(final String fileName) throws IOException {
         this.randomAccessFile = new RandomAccessFile(fileName, "rw");
         if (isAttributeViewEnabled()) {
@@ -214,6 +223,10 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
          * @return a RollingFileManager.
          */
         @Override
+        @SuppressFBWarnings(
+                value = "PATH_TRAVERSAL_IN",
+                justification = "The name of the accessed files is based on a configuration value."
+        )
         public RollingRandomAccessFileManager createManager(final String name, final FactoryData data) {
             File file = null;
             long size = 0;

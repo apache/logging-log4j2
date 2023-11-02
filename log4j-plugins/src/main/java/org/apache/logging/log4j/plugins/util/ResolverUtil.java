@@ -28,6 +28,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -164,6 +165,10 @@ public class ResolverUtil {
      * @param packageName
      *        the name of the package from which to start scanning for classes, e.g. {@code net.sourceforge.stripes}
      */
+    @SuppressFBWarnings(
+            value = {"URLCONNECTION_SSRF_FD", "PATH_TRAVERSAL_IN"},
+            justification = "The URLs used come from the classloader."
+    )
     public void findInPackage(final Test test, String packageName) {
         packageName = packageName.replace('.', '/');
         final ClassLoader loader = getClassLoader();
@@ -236,6 +241,10 @@ public class ResolverUtil {
         }
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The URLs used come from the classloader."
+    )
     String extractPath(final URL url) throws UnsupportedEncodingException, URISyntaxException {
         String urlPath = url.getPath(); // same as getFile but without the Query portion
         // System.out.println(url.getProtocol() + "->" + urlPath);

@@ -27,6 +27,7 @@ import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
 import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
@@ -293,6 +294,10 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
      * @throws SecurityException if an error occurs.
      */
     @Override
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
         LOGGER.debug("Rolling " + currentFileName);
         if (maxFiles < 0) {

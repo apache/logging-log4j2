@@ -34,6 +34,7 @@ import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
@@ -324,6 +325,10 @@ public class ConfigurationSource {
         return getConfigurationSource(url);
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     private static ConfigurationSource getConfigurationSource(final URL url) {
         try {
             final URLConnection urlConnection = url.openConnection();

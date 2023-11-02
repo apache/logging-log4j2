@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.ContextDataInjector;
@@ -321,6 +322,10 @@ public class MutableThreadContextMapFilter extends AbstractFilter {
         }
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The location of the file comes from a configuration value."
+    )
     private static LastModifiedSource getSource(final String configLocation) {
         LastModifiedSource source = null;
         try {

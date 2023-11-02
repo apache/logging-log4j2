@@ -324,7 +324,6 @@
     <docLabel>Site Documentation</docLabel>
     <projectDir />
     <module.name />
-    <spotbugs.maxRank>14</spotbugs.maxRank>
     <project.build.outputTimestamp>2023-10-23T19:03:40Z</project.build.outputTimestamp>
 
     <!-- ========================
@@ -677,6 +676,15 @@
             <exclude>**/MANIFEST.MF</exclude>
             <exclude>.surefire-*</exclude>
           </excludes>
+        </configuration>
+      </plugin>
+
+      <!-- TODO: Remove after upgrading to `logging-parent` 10.3.0 -->
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <configuration>
+          <excludeFilterFile>${maven.multiModuleProjectDirectory}/spotbugs-exclude.xml</excludeFilterFile>
         </configuration>
       </plugin>
 

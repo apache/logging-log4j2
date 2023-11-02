@@ -34,6 +34,7 @@ import java.util.Base64;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.appender.rolling.action.Duration;
 import org.apache.logging.log4j.core.util.CronExpression;
@@ -200,6 +201,10 @@ public final class CoreTypeConverters {
     @Plugin
     public static class FileConverter implements TypeConverter<File> {
         @Override
+        @SuppressFBWarnings(
+                value = "PATH_TRAVERSAL_IN",
+                justification = "The name of the accessed file is based on a configuration value."
+        )
         public File convert(final String s) {
             return new File(s);
         }
@@ -238,6 +243,10 @@ public final class CoreTypeConverters {
     @Plugin
     public static class PathConverter implements TypeConverter<Path> {
         @Override
+        @SuppressFBWarnings(
+                value = "PATH_TRAVERSAL_IN",
+                justification = "The name of the accessed file is based on a configuration value."
+        )
         public Path convert(final String s) throws Exception {
             return Paths.get(s);
         }

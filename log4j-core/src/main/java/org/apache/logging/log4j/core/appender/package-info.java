@@ -18,7 +18,7 @@
  * Log4j 2 Appenders.
  */
 @Export
-@Version("2.20.1")
+@Version("2.20.2")
 package org.apache.logging.log4j.core.appender;
 
 import org.osgi.annotation.bundle.Export;

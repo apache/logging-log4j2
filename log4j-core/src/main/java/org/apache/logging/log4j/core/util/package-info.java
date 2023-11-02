@@ -18,7 +18,7 @@
  * Log4j 2 helper classes.
  */
 @Export
-@Version("2.20.1")
+@Version("2.20.2")
 package org.apache.logging.log4j.core.util;
 
 import org.osgi.annotation.bundle.Export;
