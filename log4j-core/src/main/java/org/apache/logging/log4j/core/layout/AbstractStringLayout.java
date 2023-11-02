@@ -23,8 +23,8 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -33,7 +33,6 @@ import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyKey;
 import org.apache.logging.log4j.util.StringBuilders;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Abstract base class for Layouts that result in a String.
@@ -236,11 +235,6 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
         return headerSerializer;
     }
 
-    private DefaultLogEventFactory getLogEventFactory() {
-        // TODO: inject this
-        return DefaultLogEventFactory.newInstance();
-    }
-
     /**
      * Returns a {@code Encoder<StringBuilder>} that this Layout implementation can use for encoding log events.
      *
@@ -265,10 +259,15 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
         if (serializer == null) {
             return null;
         }
-        final LoggerConfig rootLogger = getConfiguration().getRootLogger();
-        // Using "" for the FQCN, does it matter?
-        final LogEvent logEvent = getLogEventFactory().createEvent(rootLogger.getName(), null, Strings.EMPTY,
-                rootLogger.getLevel(), null, null, null);
+        final Configuration config = getConfiguration();
+        if (config == null) {
+            return null;
+        }
+        final LoggerConfig rootLogger = config.getRootLogger();
+        final LogEventFactory logEventFactory = config.getComponent(LogEventFactory.KEY);
+        final String fqcn = getClass().getName();
+        final LogEvent logEvent = logEventFactory.createEvent(
+                rootLogger.getName(), null, fqcn, rootLogger.getLevel(), null, null, null);
         return serializer.toSerializable(logEvent);
     }
 
