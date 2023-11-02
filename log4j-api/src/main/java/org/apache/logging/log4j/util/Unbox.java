@@ -41,7 +41,8 @@ import org.apache.logging.log4j.status.StatusLogger;
  * have up to 32 boxed primitives in a single logger call.
  * </p>
  * <p>
- * If more slots are required, set system property {@value LoggingSystemProperty#UNBOX_RING_BUFFER_SIZE} to the desired ring buffer size.
+ * If more slots are required, set system property {@link LoggingSystemProperty#UNBOX_RING_BUFFER_SIZE} to the desired
+ * ring buffer size.
  * Note that the specified number will be rounded up to the nearest power of 2.
  * </p>
  * @since 2.6

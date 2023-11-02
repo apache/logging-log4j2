@@ -126,7 +126,7 @@ public enum LoggingSystemProperty implements PropertyKey {
     /**
      * Property to enable TRACE-level debug logging in the Log4j system itself.
      * <p>
-     * If property {@value} is either defined empty or its value equals to {@code true} (ignoring case), all internal
+     * If the property is either defined empty or its value equals to {@code true} (ignoring case), all internal
      * logging will be printed to the console. The presence of this system property overrides any value set in the
      * configuration's {@code <Configuration status="<level>" ...>} status attribute.
      * </p>

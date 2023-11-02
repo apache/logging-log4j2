@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * <em>Consider this class private.</em> Provides various methods to determine the caller class. <h3>Background</h3>
+ * <em>Consider this class private.</em> Provides various methods to determine the caller class.
  */
 @InternalApi
 public final class StackLocatorUtil {

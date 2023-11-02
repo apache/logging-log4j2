@@ -21,8 +21,9 @@ import java.util.ResourceBundle;
 /**
  * Creates {@link FormattedMessage} instances for {@link MessageFactory} methods.
  *
- * <h3></h3>
- * <h4>Note to implementors</h4>
+ * <p>
+ * <strong>Note to implementors:</strong>
+ * </p>
  * <p>
  * This class does <em>not</em> implement any {@link MessageFactory} methods and lets the superclass funnel those calls
  * through {@link #newMessage(String, Object...)}.

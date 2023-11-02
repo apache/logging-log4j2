@@ -28,6 +28,7 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
  * <table>
+ * <caption>Levels</caption>
  * <tr>
  * <th>Name</th>
  * <th>Description</th>

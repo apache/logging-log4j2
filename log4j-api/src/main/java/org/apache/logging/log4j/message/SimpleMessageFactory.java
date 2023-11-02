@@ -29,8 +29,9 @@ package org.apache.logging.log4j.message;
  * This class is immutable.
  * </p>
  *
- * <h3></h3>
- * <h4>Note to implementors</h4>
+ * <p>
+ * <strong>Note to implementors:</strong>
+ * </p>
  * <p>
  * This class implements all {@link MessageFactory} methods.
  * </p>
