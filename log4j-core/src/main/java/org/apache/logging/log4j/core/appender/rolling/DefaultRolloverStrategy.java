@@ -28,6 +28,7 @@ import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Core;
 import org.apache.logging.log4j.core.appender.rolling.action.Action;
 import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
@@ -411,6 +412,10 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @param manager The RollingFileManager
      * @return true if purge was successful and rollover should be attempted.
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     private int purgeAscending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
         final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
         final int maxFiles = highIndex - lowIndex + 1;
@@ -467,6 +472,10 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @param manager The RollingFileManager
      * @return true if purge was successful and rollover should be attempted.
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     private int purgeDescending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
         // Retrieve the files in descending order, so the highest key will be first.
         final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager, false);
@@ -517,6 +526,10 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @throws SecurityException if an error occurs.
      */
     @Override
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
         int fileIndex;
         final StringBuilder buf = new StringBuilder(255);

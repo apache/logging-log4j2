@@ -25,6 +25,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * File rename action.
  */
@@ -103,6 +105,10 @@ public class FileRenameAction extends AbstractAction {
      * @param renameEmptyFiles if true, rename file even if empty, otherwise delete empty files.
      * @return true if successfully renamed.
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     public static boolean execute(final File source, final File destination, final boolean renameEmptyFiles) {
         if (renameEmptyFiles || (source.length() > 0)) {
             final File parent = destination.getParentFile();

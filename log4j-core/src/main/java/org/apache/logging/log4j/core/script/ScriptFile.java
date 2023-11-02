@@ -26,6 +26,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.config.Node;
 import org.apache.logging.log4j.core.config.plugins.Plugin;
 import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
@@ -60,6 +61,10 @@ public class ScriptFile extends AbstractScript {
     }
 
     @PluginFactory
+    @SuppressFBWarnings(
+            value = {"URLCONNECTION_SSRF_FD", "PATH_TRAVERSAL_IN"},
+            justification = "The `filePathOrUri` parameter comes from configuration."
+    )
     public static ScriptFile createScript(
             // @formatter:off
             @PluginAttribute("name") String name,

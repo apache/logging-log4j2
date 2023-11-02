@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 
 /**
@@ -101,6 +102,10 @@ public abstract class AbstractPathAction extends AbstractAction {
      *
      * @return the base path (all lookups resolved)
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     public Path getBasePath() {
         return Paths.get(subst.replace(getBasePathString()));
     }

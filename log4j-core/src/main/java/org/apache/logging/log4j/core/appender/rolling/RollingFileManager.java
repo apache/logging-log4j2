@@ -153,6 +153,10 @@ public class RollingFileManager extends FileManager {
         this.directWrite = rolloverStrategy instanceof DirectFileRolloverStrategy;
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     public void initialize() {
 
         if (!initialized) {
@@ -726,7 +730,7 @@ public class RollingFileManager extends FileManager {
          */
         @Override
         @SuppressFBWarnings(
-                value = "PATH_TRAVERSAL_IN",
+                value = {"PATH_TRAVERSAL_IN", "PATH_TRAVERSAL_OUT"},
                 justification = "The destination file should be specified in the configuration file."
         )
         public RollingFileManager createManager(final String name, final FactoryData data) {

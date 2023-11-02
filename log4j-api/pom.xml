@@ -47,8 +47,6 @@
       java.management;static=true
     </bnd-extra-module-options>
 
-    <!-- FIXME: temporary -->
-    <spotbugs.skip>true</spotbugs.skip>
   </properties>
   <dependencies>
     <dependency>

@@ -106,6 +106,10 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The location of the configuration comes from a running configuration."
+    )
     public String getConfigLocationUri() {
         if (loggerContext.getConfigLocation() != null) {
             return String.valueOf(loggerContext.getConfigLocation());
@@ -117,6 +121,10 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = {"URLCONNECTION_SSRF_FD", "PATH_TRAVERSAL_IN"},
+            justification = "This method should only be called by a secure JMX connection."
+    )
     public void setConfigLocationUri(final String configLocation) throws URISyntaxException, IOException {
         if (configLocation == null || configLocation.isEmpty()) {
             throw new IllegalArgumentException("Missing configuration location");

@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
@@ -57,6 +58,10 @@ public class UrlConnectionFactory {
     public static final String ALLOWED_PROTOCOLS = "log4j2.Configuration.allowedProtocols";
 
     @SuppressWarnings("unchecked")
+    @SuppressFBWarnings(
+            value = "URLCONNECTION_SSRF_FD",
+            justification = "The URL parameter originates only from secure sources."
+    )
     public static <T extends URLConnection> T createConnection(final URL url, final long lastModifiedMillis,
             final SslConfiguration sslConfiguration, final AuthorizationProvider authorizationProvider)
         throws IOException {
@@ -112,6 +117,10 @@ public class UrlConnectionFactory {
         return (T) urlConnection;
     }
 
+    @SuppressFBWarnings(
+            value = "URLCONNECTION_SSRF_FD",
+            justification = "This method sanitizes the usage of the provided URL."
+    )
     public static URLConnection createConnection(final URL url) throws IOException {
         URLConnection urlConnection = null;
         if (url.getProtocol().equals(HTTPS) || url.getProtocol().equals(HTTP)) {
