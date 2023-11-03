@@ -27,6 +27,7 @@ import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
@@ -40,7 +41,7 @@ import static org.apache.logging.log4j.util.Chars.LF;
 @ServiceConsumer(value = ThreadInfoFactory.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.SINGLE)
 public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     private static final long serialVersionUID = -1103400781608841088L;
-    private static ThreadInfoFactory FACTORY;
+    private static final Lazy<ThreadInfoFactory> FACTORY = Lazy.lazy(ThreadDumpMessage::initFactory);
 
     private volatile Map<ThreadInformation, StackTraceElement[]> threads;
     private final String title;
@@ -52,19 +53,12 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
      */
     public ThreadDumpMessage(final String title) {
         this.title = title == null ? Strings.EMPTY : title;
-        threads = getFactory().createThreadInfo();
+        threads = FACTORY.get().createThreadInfo();
     }
 
     private ThreadDumpMessage(final String formattedMsg, final String title) {
         this.formattedMessage = formattedMsg;
         this.title = title == null ? Strings.EMPTY : title;
-    }
-
-    private static ThreadInfoFactory getFactory() {
-        if (FACTORY == null) {
-            FACTORY = initFactory();
-        }
-        return FACTORY;
     }
 
     private static ThreadInfoFactory initFactory() {

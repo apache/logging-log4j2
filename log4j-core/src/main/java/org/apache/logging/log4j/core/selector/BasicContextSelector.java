@@ -17,20 +17,20 @@
 package org.apache.logging.log4j.core.selector;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
+import org.apache.logging.log4j.util.Lazy;
 
 /**
  * Returns either this Thread's context or the default LoggerContext.
  */
 public class BasicContextSelector implements ContextSelector {
 
-    private static final LoggerContext CONTEXT = new LoggerContext("Default");
+    private final Lazy<LoggerContext> defaultLoggerContext = Lazy.lazy(() -> new LoggerContext("Default"));
 
     @Override
     public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext, final boolean allContexts) {
@@ -49,7 +49,7 @@ public class BasicContextSelector implements ContextSelector {
     @Override
     public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
         final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
-        return ctx != null ? ctx : CONTEXT;
+        return ctx != null ? ctx : defaultLoggerContext.get();
     }
 
 
@@ -58,11 +58,11 @@ public class BasicContextSelector implements ContextSelector {
                                     final URI configLocation) {
 
         final LoggerContext ctx = ContextAnchor.THREAD_CONTEXT.get();
-        return ctx != null ? ctx : CONTEXT;
+        return ctx != null ? ctx : defaultLoggerContext.get();
     }
 
     public LoggerContext locateContext(final String name, final String configLocation) {
-        return CONTEXT;
+        return defaultLoggerContext.get();
     }
 
     @Override
@@ -77,9 +77,7 @@ public class BasicContextSelector implements ContextSelector {
 
     @Override
     public List<LoggerContext> getLoggerContexts() {
-        final List<LoggerContext> list = new ArrayList<>();
-        list.add(CONTEXT);
-        return Collections.unmodifiableList(list);
+        return Collections.singletonList(defaultLoggerContext.get());
     }
 
 }

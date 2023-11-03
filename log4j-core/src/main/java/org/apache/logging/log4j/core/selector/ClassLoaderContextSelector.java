@@ -32,6 +32,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 
 /**
@@ -47,12 +48,13 @@ import org.apache.logging.log4j.util.StackLocatorUtil;
  */
 public class ClassLoaderContextSelector implements ContextSelector, LoggerContextShutdownAware {
 
-    private static final AtomicReference<LoggerContext> DEFAULT_CONTEXT = new AtomicReference<>();
-
     protected static final StatusLogger LOGGER = StatusLogger.getLogger();
 
     protected static final ConcurrentMap<String, AtomicReference<WeakReference<LoggerContext>>> CONTEXT_MAP =
             new ConcurrentHashMap<>();
+
+    private final Lazy<LoggerContext> defaultLoggerContext =
+            Lazy.lazy(() -> createContext(defaultContextName(), null));
 
     @Override
     public void shutdown(final String fqcn, final ClassLoader loader, final boolean currentContext,
@@ -259,12 +261,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     protected LoggerContext getDefault() {
-        final LoggerContext ctx = DEFAULT_CONTEXT.get();
-        if (ctx != null) {
-            return ctx;
-        }
-        DEFAULT_CONTEXT.compareAndSet(null, createContext(defaultContextName(), null));
-        return DEFAULT_CONTEXT.get();
+        return defaultLoggerContext.get();
     }
 
     protected String defaultContextName() {
