@@ -87,7 +87,10 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
      * @param messageFactory message factory of this logger
      * @param loggerDisruptor helper class that logging can be delegated to. This object owns the Disruptor.
      */
-    public AsyncLogger(final LoggerContext context, final String name, final MessageFactory messageFactory,
+    AsyncLogger(
+            final LoggerContext context,
+            final String name,
+            final MessageFactory messageFactory,
             final AsyncLoggerDisruptor loggerDisruptor) {
         super(context, name, messageFactory);
         this.loggerDisruptor = loggerDisruptor;
