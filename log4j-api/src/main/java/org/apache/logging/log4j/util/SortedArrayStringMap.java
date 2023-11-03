@@ -50,6 +50,7 @@ import org.apache.logging.log4j.util.internal.SerializationUtil;
  *
  * @since 2.7
  */
+@InternalApi
 public class SortedArrayStringMap implements IndexedStringMap {
 
     /**

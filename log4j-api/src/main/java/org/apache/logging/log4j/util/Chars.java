@@ -19,6 +19,7 @@ package org.apache.logging.log4j.util;
 /**
  * <em>Consider this class private.</em>
  */
+@InternalApi
 public final class Chars {
 
     /** Carriage Return. */

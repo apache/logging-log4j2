@@ -25,6 +25,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * <em>Consider this class private.</em> Provides various methods to determine the caller class. <h3>Background</h3>
  */
+@InternalApi
 public final class StackLocatorUtil {
     private static StackLocator stackLocator = null;
     private static volatile boolean errorLogged;

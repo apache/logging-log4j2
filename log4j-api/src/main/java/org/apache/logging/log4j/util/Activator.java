@@ -48,6 +48,7 @@ import org.osgi.framework.wiring.BundleWiring;
  */
 @Header(name = Constants.BUNDLE_ACTIVATOR, value = "${@class}")
 @Header(name = Constants.BUNDLE_ACTIVATIONPOLICY, value = Constants.ACTIVATION_LAZY)
+@InternalApi
 public class Activator implements BundleActivator, SynchronousBundleListener {
 
     private static final SecurityManager SECURITY_MANAGER = System.getSecurityManager();

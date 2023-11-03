@@ -40,6 +40,7 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * This class should be considered internal.
  */
+@InternalApi
 public final class ServiceLoaderUtil {
 
     private static final int MAX_BROKEN_SERVICES = 8;

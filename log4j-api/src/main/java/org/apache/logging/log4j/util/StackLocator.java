@@ -46,6 +46,7 @@ import java.util.function.Predicate;
  * examination of every virtual frame of execution.
  * </p>
  */
+@InternalApi
 public final class StackLocator {
 
     /** TODO Consider removing now that we require Java 8. */

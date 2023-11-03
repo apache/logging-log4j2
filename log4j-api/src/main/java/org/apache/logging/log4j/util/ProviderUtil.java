@@ -38,6 +38,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * container framework, any Log4j Providers not accessible through standard classpath scanning should
  * {@link #loadProvider(java.net.URL, ClassLoader)} a classpath accordingly.
  */
+@InternalApi
 @ServiceConsumer(value = Provider.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
 public final class ProviderUtil {
 

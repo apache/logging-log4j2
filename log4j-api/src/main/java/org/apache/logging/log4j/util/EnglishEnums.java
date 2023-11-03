@@ -30,6 +30,7 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
  * avoid problems on the Turkish locale. Do not use with Turkish enum values.
  * </p>
  */
+@InternalApi
 public final class EnglishEnums {
 
     private EnglishEnums() {

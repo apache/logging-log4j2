@@ -23,6 +23,7 @@ import static java.lang.Character.toLowerCase;
 /**
  * <em>Consider this class private.</em>
  */
+@InternalApi
 public final class StringBuilders {
 
     private static final Class<?> timeClass;

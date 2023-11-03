@@ -25,6 +25,7 @@ import java.util.Objects;
  *
  * @see <a href="http://commons.apache.org/proper/commons-lang/">Apache Commons Lang</a>
  */
+@InternalApi
 public final class Strings {
 
     private static final ThreadLocal<StringBuilder> tempStr = ThreadLocal.withInitial(StringBuilder::new);
