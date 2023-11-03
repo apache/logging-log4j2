@@ -639,11 +639,7 @@ public class JsonLayoutTest {
 
         // Create the layout.
         final KeyValuePair[] additionalFields = {
-                KeyValuePair
-                        .newBuilder()
-                        .setKey("who")
-                        .setValue("${ctx:WHO}")
-                        .build()
+                new KeyValuePair("who", "${ctx:WHO}")
         };
         final JsonLayout layout = JsonLayout
                 .newBuilder()
