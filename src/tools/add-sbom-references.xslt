@@ -88,19 +88,21 @@
     </bom>
   </xsl:template>
   <xsl:template match="cdx14:externalReferences[preceding-sibling::cdx14:group/text() = 'org.apache.logging.log4j']">
-    <xsl:apply-templates/>
-    <reference>
-      <xsl:attribute name="type">vulnerability-assertion</xsl:attribute>
-      <url>
-        <xsl:text>urn:cdx:</xsl:text>
-        <xsl:value-of select="$vdr.serialNumber"/>
-      </url>
-    </reference>
-    <reference>
-      <xsl:attribute name="type">vulnerability-assertion</xsl:attribute>
-      <url>
-        <xsl:value-of select="$vdr.url"/>
-      </url>
-    </reference>
+    <externalReferences>
+      <xsl:apply-templates/>
+      <reference>
+        <xsl:attribute name="type">vulnerability-assertion</xsl:attribute>
+        <url>
+          <xsl:text>urn:cdx:</xsl:text>
+          <xsl:value-of select="$vdr.serialNumber"/>
+        </url>
+      </reference>
+      <reference>
+        <xsl:attribute name="type">vulnerability-assertion</xsl:attribute>
+        <url>
+          <xsl:value-of select="$vdr.url"/>
+        </url>
+      </reference>
+    </externalReferences>
   </xsl:template>
 </xsl:stylesheet>
