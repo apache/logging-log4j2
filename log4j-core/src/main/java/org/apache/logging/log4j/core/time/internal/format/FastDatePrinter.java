@@ -77,7 +77,6 @@ import org.apache.logging.log4j.core.util.Throwables;
  * </p>
  *
  * @since Apache Commons Lang 3.2
- * @see FastDateParser
  */
 public class FastDatePrinter implements DatePrinter {
     // A lot of the speed in this class comes from caching, but some comes

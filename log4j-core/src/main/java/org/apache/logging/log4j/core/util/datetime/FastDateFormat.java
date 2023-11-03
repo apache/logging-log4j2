@@ -17,8 +17,6 @@
 package org.apache.logging.log4j.core.util.datetime;
 
 import java.text.FieldPosition;
-import java.text.ParseException;
-import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -30,7 +28,7 @@ import org.apache.logging.log4j.core.time.internal.format.*;
  *
  * @deprecated Use {@link org.apache.logging.log4j.core.time.internal.format.FastDateFormat}
  */
-public class FastDateFormat extends Format implements DateParser, DatePrinter {
+public class FastDateFormat extends Format implements DatePrinter {
 
     private org.apache.logging.log4j.core.time.internal.format.FastDateFormat formatter = null;
 
@@ -150,26 +148,6 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
     @Override
     public <B extends Appendable> B format(final Calendar calendar, final B buf) {
         return formatter.format(calendar, buf);
-    }
-
-    @Override
-    public Date parse(final String source) throws ParseException {
-        return formatter.parse(source);
-    }
-
-    @Override
-    public Date parse(final String source, final ParsePosition pos) {
-        return formatter.parse(source, pos);
-    }
-
-    @Override
-    public boolean parse(final String source, final ParsePosition pos, final Calendar calendar) {
-        return formatter.parse(source, pos, calendar);
-    }
-
-    @Override
-    public Object parseObject(final String source, final ParsePosition pos) {
-        return formatter.parseObject(source, pos);
     }
 
     @Override
