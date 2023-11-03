@@ -41,7 +41,7 @@ import org.apache.logging.log4j.util.Strings;
 public class LogManager {
 
     /**
-     * The name of the root Logger is {@value #ROOT_LOGGER_NAME}.
+     * Constant holding the name of the root logger (the empty string).
      */
     public static final String ROOT_LOGGER_NAME = Strings.EMPTY;
 

@@ -27,8 +27,8 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.time.SystemNanoClock;
-import org.apache.logging.log4j.plugins.di.DI;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
@@ -96,20 +96,10 @@ public final class PatternParser {
     /**
      * Constructor.
      *
-     * @param converterKey
-     *            The type of converters that will be used.
-     */
-    public PatternParser(final String converterKey) {
-        this(null, converterKey, null, null);
-    }
-
-    /**
-     * Constructor.
-     *
      * @param config
      *            The current Configuration.
      * @param converterKey
-     *            The key to lookup the converters.
+     *            The key to look up the converters.
      * @param expected
      *            The expected base Class of each Converter.
      */
@@ -120,36 +110,38 @@ public final class PatternParser {
     /**
      * Constructor.
      *
-     * @param config
+     * @param configuration
      *            The current Configuration.
      * @param converterKey
-     *            The key to lookup the converters.
+     *            The key to look up the converters.
      * @param expectedClass
      *            The expected base Class of each Converter.
      * @param filterClass
      *            Filter the returned plugins after calling the plugin manager.
      */
-    public PatternParser(final Configuration config, final String converterKey, final Class<?> expectedClass,
+    public PatternParser(
+            final Configuration configuration,
+            final String converterKey,
+            final Class<?> expectedClass,
             final Class<?> filterClass) {
-        this.config = config;
-        final PluginNamespace plugins;
+        config = configuration != null ? configuration : new NullConfiguration();
         final Key<PluginNamespace> pluginCategoryKey = PLUGIN_CATEGORY_KEY.withNamespace(converterKey);
-        if (config == null) {
-            plugins = DI.createInitializedFactory().getInstance(pluginCategoryKey);
-        } else {
-            plugins = config.getComponent(pluginCategoryKey);
-        }
+        final PluginNamespace plugins = config.getComponent(pluginCategoryKey);
 
         final Map<String, Class<? extends PatternConverter>> converters = new LinkedHashMap<>();
 
         for (final PluginType<?> type : plugins) {
             try {
-                final Class<? extends PatternConverter> clazz = type.getPluginClass().asSubclass(PatternConverter.class);
-                if (filterClass != null && !filterClass.isAssignableFrom(clazz)) {
+                final Class<?> pluginClass = type.getPluginClass();
+                if (expectedClass != null && !expectedClass.isAssignableFrom(pluginClass)) {
                     continue;
                 }
-                final ConverterKeys keys = clazz.getAnnotation(ConverterKeys.class);
+                if (filterClass != null && !filterClass.isAssignableFrom(pluginClass)) {
+                    continue;
+                }
+                final ConverterKeys keys = pluginClass.getAnnotation(ConverterKeys.class);
                 if (keys != null) {
+                    final Class<? extends PatternConverter> clazz = pluginClass.asSubclass(PatternConverter.class);
                     for (final String key : keys.value()) {
                         if (converters.containsKey(key)) {
                             LOGGER.warn("Converter key '{}' is already mapped to '{}'. " +
@@ -161,7 +153,7 @@ public final class PatternParser {
                     }
                 }
             } catch (final Exception ex) {
-                LOGGER.error("Error processing plugin " + type.getElementType(), ex);
+                LOGGER.error("Error processing plugin {}", type.getElementType(), ex);
             }
         }
         converterRules = converters;

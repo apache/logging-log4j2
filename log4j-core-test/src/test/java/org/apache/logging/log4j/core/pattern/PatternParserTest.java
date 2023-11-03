@@ -66,7 +66,7 @@ public class PatternParserTest {
 
     @BeforeEach
     public void setup() {
-        parser = new PatternParser(KEY);
+        parser = new PatternParser(ctx.getConfiguration(), KEY, null);
     }
 
     private void validateConverter(final List<PatternFormatter> formatter, final int index, final String name) {

@@ -24,12 +24,10 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.layout.AbstractStringLayout;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.web.WebLoggerContextUtils;
 
 /**
@@ -40,7 +38,7 @@ import org.apache.logging.log4j.web.WebLoggerContextUtils;
 public final class ServletAppender extends AbstractAppender {
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<ServletAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<ServletAppender> {
 
         @PluginBuilderAttribute
         private boolean logThrowables;
@@ -56,13 +54,7 @@ public final class ServletAppender extends AbstractAppender {
                 LOGGER.error("No servlet context is available");
                 return null;
             }
-            Layout layout = getLayout();
-            if (layout == null) {
-                layout = PatternLayout.createDefaultLayout();
-            } else if (!(layout instanceof AbstractStringLayout)) {
-                LOGGER.error("Layout must be a StringLayout to log to ServletContext");
-                return null;
-            }
+            Layout layout = getOrCreateLayout();
             return new ServletAppender(name, layout, getFilter(), servletContext, isIgnoreExceptions(), logThrowables);
         }
 
@@ -84,7 +76,7 @@ public final class ServletAppender extends AbstractAppender {
 
     }
 
-    @PluginBuilderFactory
+    @Factory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }
@@ -101,31 +93,11 @@ public final class ServletAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        final String serialized = ((AbstractStringLayout) getLayout()).toSerializable(event);
+        final String serialized = getLayout().toSerializable(event);
         if (logThrowables) {
             servletContext.log(serialized, event.getThrown());
         } else {
             servletContext.log(serialized);
         }
     }
-
-    /**
-     * Creates a Servlet Appender.
-     * @param layout The layout to use (required). Must extend {@link AbstractStringLayout}.
-     * @param filter The Filter or null.
-     * @param name The name of the Appender (required).
-     * @param ignoreExceptions If {@code true} (default) exceptions encountered when appending events are logged;
-     *                         otherwise they are propagated to the caller.
-     * @return The ServletAppender.
-     * @deprecated Use {@link #newBuilder()}.
-     */
-    @Deprecated
-    public static ServletAppender createAppender(final Layout layout, final Filter filter,
-                                                 final String name, final boolean ignoreExceptions) {
-        // @formatter:off
-        return newBuilder().setFilter(filter).setIgnoreExceptions(ignoreExceptions).setLayout(layout).setName(name)
-                .build();
-        // @formatter:on
-    }
-
 }

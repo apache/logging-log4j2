@@ -53,7 +53,12 @@ public class OutputStreamAppenderTest {
         final LoggerContext context = LoggerContext.getContext(false);
         final Configuration config = context.getConfiguration();
         final PatternLayout layout = PatternLayout.createDefaultLayout(config);
-        final Appender appender = OutputStreamAppender.createAppender(layout, null, outputStream, outputStreamName, false, true);
+        final OutputStreamAppender appender = OutputStreamAppender.newBuilder()
+                .setLayout(layout)
+                .setConfiguration(config)
+                .setTarget(outputStream)
+                .setName(outputStreamName)
+                .build();
         appender.start();
         config.addAppender(appender);
         ConfigurationTestUtils.updateLoggers(appender, config);
@@ -63,7 +68,7 @@ public class OutputStreamAppenderTest {
     public void testBuildFilter() {
         final NoMarkerFilter filter = NoMarkerFilter.newBuilder().build();
         // @formatter:off
-        final OutputStreamAppender.Builder builder = OutputStreamAppender.newBuilder()
+        final var builder = OutputStreamAppender.newBuilder()
                 .setName("test")
                 .setFilter(filter);
         // @formatter:on
@@ -102,7 +107,7 @@ public class OutputStreamAppenderTest {
      */
     @Test
     public void testUpdatePatternWithFileAppender() {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final LoggerContext ctx = LoggerContext.getContext(false);
         final Configuration config = ctx.getConfiguration();
         // @formatter:off
         final Appender appender = FileAppender.newBuilder()

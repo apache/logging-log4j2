@@ -21,13 +21,10 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.HtmlLayout;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAttribute;
@@ -46,7 +43,7 @@ import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
  * memory requirements at a reasonable level while still delivering useful
  * application context.
  *
- * By default, an email message will formatted as HTML. This can be modified by
+ * By default, an email message will be formatted as HTML. This can be modified by
  * setting a layout for the appender.
  *
  * By default, an email message will be sent when an ERROR or higher severity
@@ -229,24 +226,6 @@ public final class SmtpAppender extends AbstractAppender {
             return this;
         }
 
-        /**
-         * Specifies the layout used for the email message body. By default, this uses the
-         * {@linkplain HtmlLayout#createDefaultLayout() default HTML layout}.
-         */
-        @Override
-        public Builder setLayout(final Layout layout) {
-            return super.setLayout(layout);
-        }
-
-        /**
-         * Specifies the filter used for this appender. By default, uses a {@link ThresholdFilter} with a level of
-         * ERROR.
-         */
-        @Override
-        public Builder setFilter(final Filter filter) {
-            return super.setFilter(filter);
-        }
-
         @Override
         public SmtpAppender build() {
             if (getLayout() == null) {
@@ -268,46 +247,6 @@ public final class SmtpAppender extends AbstractAppender {
     @PluginFactory
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    /**
-     * Create a SmtpAppender.
-     * @deprecated Use {@link #newBuilder()} to create and configure a {@link Builder} instance.
-     * @see Builder
-     */
-    public static SmtpAppender createAppender(final Configuration config, final String name, final String to,
-                                              final String cc, final String bcc, final String from,
-                                              final String replyTo, final String subject, final String smtpProtocol,
-                                              final String smtpHost, final String smtpPortStr,
-                                              final String smtpUsername, final String smtpPassword,
-                                              final String smtpDebug, final String bufferSizeStr,
-                                              Layout layout, Filter filter,
-                                              final String ignore) {
-        if (name == null) {
-            LOGGER.error("No name provided for SmtpAppender");
-            return null;
-        }
-
-        final boolean ignoreExceptions = Booleans.parseBoolean(ignore, true);
-        final int smtpPort = AbstractAppender.parseInt(smtpPortStr, 0);
-        final boolean isSmtpDebug = Boolean.parseBoolean(smtpDebug);
-        final int bufferSize = bufferSizeStr == null ? DEFAULT_BUFFER_SIZE : Integer.parseInt(bufferSizeStr);
-
-        if (layout == null) {
-            layout = HtmlLayout.createDefaultLayout();
-        }
-        if (filter == null) {
-            filter = ThresholdFilter.createFilter(null, null, null);
-        }
-        final Configuration configuration = config != null ? config : new DefaultConfiguration();
-
-        final SmtpManager manager = SmtpManager.getSmtpManager(configuration, to, cc, bcc, from, replyTo, subject, smtpProtocol,
-            smtpHost, smtpPort, smtpUsername, smtpPassword, isSmtpDebug, filter.toString(),  bufferSize, null);
-        if (manager == null) {
-            return null;
-        }
-
-        return new SmtpAppender(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY, manager);
     }
 
     /**

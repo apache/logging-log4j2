@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
@@ -77,7 +76,12 @@ public class WriterAppenderTest {
         final LoggerContext context = LoggerContext.getContext(false);
         final Configuration config = context.getConfiguration();
         final PatternLayout layout = PatternLayout.createDefaultLayout(config);
-        final Appender appender = WriterAppender.createAppender(layout, null, writer, writerName, false, true);
+        final WriterAppender appender = WriterAppender.newBuilder()
+                .setLayout(layout)
+                .setConfiguration(config)
+                .setTarget(writer)
+                .setName(writerName)
+                .build();
         appender.start();
         config.addAppender(appender);
         ConfigurationTestUtils.updateLoggers(appender, config);

@@ -195,8 +195,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
                 return (ConfigurableInstanceFactory) value;
             }
         }
-        final ConfigurableInstanceFactory instanceFactory = this.instanceFactory;
-        return instanceFactory != null ? instanceFactory.newChildInstanceFactory() : null;
+        return instanceFactory;
     }
 
     private LoggerContext locateContext(
@@ -278,7 +277,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
 
     protected LoggerContext createContext(final String name, final URI configLocation) {
         final ConfigurableInstanceFactory instanceFactory = this.instanceFactory;
-        return createContext(name, configLocation, instanceFactory != null ? instanceFactory.newChildInstanceFactory() : null);
+        return createContext(name, configLocation, instanceFactory);
     }
 
     protected LoggerContext createContext(final String name, final URI configLocation, final ConfigurableInstanceFactory instanceFactory) {

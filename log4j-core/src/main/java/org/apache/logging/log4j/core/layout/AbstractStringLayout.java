@@ -20,14 +20,13 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.StringEncoder;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -41,17 +40,12 @@ import org.apache.logging.log4j.util.StringBuilders;
  * performance: all characters are simply cast to bytes.
  * </p>
  */
-public abstract class AbstractStringLayout extends AbstractLayout implements StringLayout {
+public abstract class AbstractStringLayout extends AbstractLayout {
 
     public abstract static class Builder<B extends Builder<B>> extends AbstractLayout.Builder<B> {
 
-        @PluginBuilderAttribute(value = "charset")
         private Charset charset;
-
-        @PluginElement("footerSerializer")
         private Serializer footerSerializer;
-
-        @PluginElement("headerSerializer")
         private Serializer headerSerializer;
 
         public Charset getCharset() {
@@ -66,17 +60,17 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
             return headerSerializer;
         }
 
-        public B setCharset(final Charset charset) {
+        public B setCharset(@PluginAttribute final Charset charset) {
             this.charset = charset;
             return asBuilder();
         }
 
-        public B setFooterSerializer(final Serializer footerSerializer) {
+        public B setFooterSerializer(@PluginElement final Serializer footerSerializer) {
             this.footerSerializer = footerSerializer;
             return asBuilder();
         }
 
-        public B setHeaderSerializer(final Serializer headerSerializer) {
+        public B setHeaderSerializer(@PluginElement final Serializer headerSerializer) {
             this.headerSerializer = headerSerializer;
             return asBuilder();
         }

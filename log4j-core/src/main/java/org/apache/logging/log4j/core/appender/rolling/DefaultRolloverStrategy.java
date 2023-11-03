@@ -34,6 +34,7 @@ import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
 import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
 import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Integers;
@@ -143,9 +144,10 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             final String trimmedCompressionLevelStr = compressionLevelStr != null ? compressionLevelStr.trim() : compressionLevelStr;
             final int compressionLevel = Integers.parseInt(trimmedCompressionLevelStr, Deflater.DEFAULT_COMPRESSION);
             // The config object can be null when this object is built programmatically.
-            final StrSubstitutor nonNullStrSubstitutor = config != null ? config.getStrSubstitutor() : new StrSubstitutor();
+            final Configuration configuration = config != null ? config : new NullConfiguration();
+            final StrSubstitutor nonNullStrSubstitutor = configuration.getStrSubstitutor();
             return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, nonNullStrSubstitutor,
-                    customActions, stopCustomActionsOnError, tempCompressedFilePattern);
+                    customActions, stopCustomActionsOnError, tempCompressedFilePattern, configuration);
         }
 
         public String getMax() {
@@ -302,7 +304,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      */
     protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
             final int compressionLevel, final StrSubstitutor strSubstitutor, final Action[] customActions,
-            final boolean stopCustomActionsOnError, final String tempCompressedFilePatternString) {
+            final boolean stopCustomActionsOnError, final String tempCompressedFilePatternString,
+            final Configuration configuration) {
         super(strSubstitutor);
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;

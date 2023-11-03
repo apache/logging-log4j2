@@ -74,8 +74,6 @@ public class LoggerContext extends AbstractLifeCycle
 
     public static final Key<LoggerContext> KEY = Key.forClass(LoggerContext.class);
 
-    private static final Configuration NULL_CONFIGURATION = new NullConfiguration();
-
     private final LoggerRegistry<Logger> loggerRegistry = new LoggerRegistry<>();
     private final List<Consumer<Configuration>> configurationStartedListeners = new ArrayList<>();
     private final List<Consumer<Configuration>> configurationStoppedListeners = new ArrayList<>();
@@ -88,6 +86,7 @@ public class LoggerContext extends AbstractLifeCycle
      * reference is updated.
      */
     private volatile Configuration configuration = new DefaultConfiguration();
+    private final Configuration nullConfiguration;
     private static final String EXTERNAL_CONTEXT_KEY = "__EXTERNAL_CONTEXT_KEY__";
     private final ConcurrentMap<String, Object> externalMap = new ConcurrentHashMap<>();
     private String contextName;
@@ -143,6 +142,7 @@ public class LoggerContext extends AbstractLifeCycle
         this.configLocation = configLocn;
         this.instanceFactory = instanceFactory.newChildInstanceFactory();
         initializeInstanceFactory();
+        this.nullConfiguration = new NullConfiguration(this);
     }
 
     /**
@@ -185,6 +185,7 @@ public class LoggerContext extends AbstractLifeCycle
         }
         this.instanceFactory = instanceFactory.newChildInstanceFactory();
         initializeInstanceFactory();
+        this.nullConfiguration = new NullConfiguration(this);
     }
 
     private void initializeInstanceFactory() {
@@ -421,7 +422,7 @@ public class LoggerContext extends AbstractLifeCycle
                 shutdownCallback = null;
             }
             final Configuration prev = configuration;
-            configuration = NULL_CONFIGURATION;
+            configuration = nullConfiguration;
             updateLoggers();
             prev.stop(timeout, timeUnit);
             externalMap.clear();

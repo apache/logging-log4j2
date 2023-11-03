@@ -18,7 +18,6 @@ package org.apache.logging.log4j.core.layout;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -94,7 +93,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param eventPattern conversion pattern.
      * @param patternSelector The PatternSelector.
      * @param charset The character set.
-     * @param alwaysWriteExceptions Whether or not exceptions should always be handled in this pattern (if {@code true},
+     * @param alwaysWriteExceptions Whether exceptions should always be handled in this pattern (if {@code true},
      *                         exceptions will be written even if the pattern does not specify so).
      * @param disableAnsi
      *            If {@code "true"}, do not output ANSI escape codes
@@ -170,11 +169,11 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     @Override
     public Map<String, String> getContentFormat() {
-        final Map<String, String> result = new HashMap<>();
-        result.put("structured", "false");
-        result.put("formatType", "conversion");
-        result.put("format", conversionPattern);
-        return result;
+        return Map.of(
+                "structured", "false",
+                "formatType", "conversion",
+                "format", conversionPattern
+        );
     }
 
     /**
@@ -219,7 +218,7 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     public static PatternParser createPatternParser(final Configuration config) {
         if (config == null) {
-            return new PatternParser(config, KEY, LogEventPatternConverter.class);
+            return new PatternParser(null, KEY, LogEventPatternConverter.class);
         }
         PatternParser parser = config.getComponent(KEY);
         if (parser == null) {

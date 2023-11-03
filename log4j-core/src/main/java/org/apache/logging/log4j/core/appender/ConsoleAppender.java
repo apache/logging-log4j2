@@ -31,7 +31,6 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.CloseShieldOutputStream;
 import org.apache.logging.log4j.core.util.Loader;
@@ -134,8 +133,6 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
 
         @PluginBuilderAttribute
         private boolean direct;
-        @PluginConfiguration
-        private Configuration configuration;
 
         public B setTarget(final Target aTarget) {
             this.target = aTarget;
@@ -152,21 +149,13 @@ public final class ConsoleAppender extends AbstractOutputStreamAppender<OutputSt
             return asBuilder();
         }
 
-        /**
-         * @param configuration
-         *        The Configuration. Used to access properties.
-         */
-        public B setConfiguration(final Configuration configuration) {
-            this.configuration = configuration;
-            return asBuilder();
-        }
-
         @Override
         public ConsoleAppender build() {
             if (follow && direct) {
                 throw new IllegalArgumentException("Cannot use both follow and direct on ConsoleAppender '" + getName() + "'");
             }
             final Layout layout = getOrCreateLayout(target.getDefaultCharset());
+            final Configuration configuration = getConfiguration();
             final PropertyEnvironment propertyEnvironment = configuration != null
                     && configuration.getLoggerContext() != null
                     ? configuration.getLoggerContext().getProperties() : PropertiesUtil.getProperties();

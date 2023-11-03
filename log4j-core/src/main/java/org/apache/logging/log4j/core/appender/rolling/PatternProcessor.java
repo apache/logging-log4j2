@@ -80,14 +80,14 @@ public class PatternProcessor {
      */
     public PatternProcessor(final String pattern) {
         this.pattern = pattern;
-        final PatternParser parser = createPatternParser();
-        // FIXME: this seems to expect List<ArrayPatternConverter> in practice; types need to be fixed around this
+        final PatternParser parser = new PatternParser(null, KEY, ArrayPatternConverter.class);
         final List<PatternConverter> converters = new ArrayList<>();
         final List<FormattingInfo> fields = new ArrayList<>();
         parser.parse(pattern, converters, fields, false, false, false);
-        patternFields = fields.toArray(FormattingInfo.EMPTY_ARRAY);
-        final ArrayPatternConverter[] converterArray = new ArrayPatternConverter[converters.size()];
-        patternConverters = converters.toArray(converterArray);
+        patternFields = fields.toArray(FormattingInfo[]::new);
+        patternConverters = converters.stream()
+                .map(ArrayPatternConverter.class::cast)
+                .toArray(ArrayPatternConverter[]::new);
         this.fileExtension = FileExtension.lookupForFile(pattern);
 
         for (final ArrayPatternConverter converter : patternConverters) {
@@ -350,11 +350,6 @@ public class PatternProcessor {
             return RolloverFrequency.ANNUALLY;
         }
         return null;
-    }
-
-    private PatternParser createPatternParser() {
-
-        return new PatternParser(null, KEY, null);
     }
 
     private boolean patternContains(final String pattern, final char... chars) {

@@ -16,18 +16,7 @@
  */
 package org.apache.logging.log4j.core;
 
-import java.nio.charset.Charset;
-
 /**
- * Instantiates the @{link Layout} type for String-based layouts.
+ * Legacy interface from when layouts used to support more than strings or bytes.
  */
-public interface StringLayout extends Layout {
-
-    /**
-     * Gets the Charset this layout uses to encode Strings into bytes.
-     *
-     * @return the Charset this layout uses to encode Strings into bytes.
-     */
-    Charset getCharset();
-
-}
+public interface StringLayout extends Layout {}

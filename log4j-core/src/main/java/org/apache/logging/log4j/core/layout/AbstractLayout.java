@@ -16,22 +16,21 @@
  */
 package org.apache.logging.log4j.core.layout;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
 
 /**
  * Abstract base class for Layouts.
  */
-public abstract class AbstractLayout implements Layout {
+public abstract class AbstractLayout implements StringLayout {
 
     /**
      * Subclasses can extend this abstract Builder.
@@ -40,13 +39,8 @@ public abstract class AbstractLayout implements Layout {
      */
     public abstract static class Builder<B extends Builder<B>> {
 
-        @PluginConfiguration
         private Configuration configuration;
-
-        @PluginBuilderAttribute
         private byte[] footer;
-
-        @PluginBuilderAttribute
         private byte[] header;
 
         public B asBuilder() {
@@ -65,17 +59,18 @@ public abstract class AbstractLayout implements Layout {
             return header;
         }
 
+        @Inject
         public B setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return asBuilder();
         }
 
-        public B setFooter(final byte[] footer) {
+        public B setFooter(@PluginAttribute final byte[] footer) {
             this.footer = footer;
             return asBuilder();
         }
 
-        public B setHeader(final byte[] header) {
+        public B setHeader(@PluginAttribute final byte[] header) {
             this.header = header;
             return asBuilder();
         }
@@ -130,7 +125,7 @@ public abstract class AbstractLayout implements Layout {
 
     @Override
     public Map<String, String> getContentFormat() {
-        return new HashMap<>();
+        return Map.of();
     }
 
     /**
