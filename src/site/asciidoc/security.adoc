@@ -65,20 +65,50 @@ We choose to pool all information on this one page, allowing easy searching for 
 
 [cols="1h,5"]
 |===
+|Summary |JDBC appender is vulnerable to remote code execution in certain configurations
+|CVSS 3.x Score & Vector |6.6 MEDIUM (CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H)
+|Components affected |`log4j-core`
+|Versions affected |all versions from `2.0-beta7` to `2.17.0`
+|Versions fixed |`2.3.2` (for Java 6), `2.12.4` (for Java 7), or `2.17.1` (for Java 8 and later)
+|===
+
+[#CVE-2021-44832-description]
+==== Description
+
+An attacker with write access to the logging configuration can construct a malicious configuration using a JDBC Appender with a data source referencing a JNDI URI which can execute remote code.
+This issue is fixed by limiting JNDI data source names to the `java` protocol.
+
+[#CVE-2021-44832-mitigation]
+==== Mitigation
+
+Upgrade to `2.3.2` (for Java 6), `2.12.4` (for Java 7), or `2.17.1` (for Java 8 and later).
+
+In prior releases confirm that if the JDBC Appender is being used it is not configured to use any protocol other than `java`.
+
+[#CVE-2021-44832-references]
+==== References
+- {cve-url-prefix}/CVE-2021-44832[CVE-2021-44832]
+
+[#CVE-2021-45105]
+=== {cve-url-prefix}/CVE-2021-45105[CVE-2021-45105]
+
+[cols="1h,5"]
+|===
 |Summary |Infinite recursion in lookup evaluation
-|CVSS 3.x Score & Vector |6.6 MEDIUM (AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H)
+|CVSS 3.x Score & Vector |5.9 MEDIUM (CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H)
+|Components affected |`log4j-core`
 |Versions affected |all versions from `2.0-alpha1` to `2.16.0` (excluding `2.3.1` and `2.12.3`)
 |Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later)
 |===
 
-[#CVE-2021-44832-description]
+[#CVE-2021-45105-description]
 ==== Description
 
 Log4j versions `2.0-alpha1` through `2.16.0` (excluding `2.3.1` and `2.12.3`), did not protect from uncontrolled recursion that can be implemented using self-referential lookups.
 When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, `$${ctx:loginId}`), attackers with control over Thread Context Map (MDC) input data can craft malicious input data that contains a recursive lookup, resulting in a `StackOverflowError` that will terminate the process.
 This is also known as a _DoS (Denial-of-Service)_ attack.
 
-[#CVE-2021-44832-mitigation]
+[#CVE-2021-45105-mitigation]
 ==== Mitigation
 
 Upgrade to `2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later).
@@ -93,12 +123,12 @@ Note that this mitigation is insufficient in releases older than `2.12.2` (for J
 Note that only the `log4j-core` JAR file is impacted by this vulnerability.
 Applications using only the `log4j-api` JAR file without the `log4j-core` JAR file are not impacted by this vulnerability.
 
-[#CVE-2021-44832-credits]
+[#CVE-2021-45105-credits]
 ==== Credits
 
 Independently discovered by Hideki Okamoto of Akamai Technologies, Guy Lederfein of Trend Micro Research working with Trend Micro's Zero Day Initiative, and another anonymous vulnerability researcher.
 
-[#CVE-2021-44832-references]
+[#CVE-2021-45105-references]
 ==== References
 
 - {cve-url-prefix}/CVE-2021-45105[CVE-2021-45105]
@@ -109,8 +139,9 @@ Independently discovered by Hideki Okamoto of Akamai Technologies, Guy Lederfein
 
 [cols="1h,5"]
 |===
-|Summary |Thread Context Lookup is vulnerable to remote code execution in certain non-default configurations
-|CVSS 3.x Score & Vector |9.0 CRITICAL (AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H)
+|Summary |Thread Context Lookup is vulnerable to remote code execution in certain configurations
+|CVSS 3.x Score & Vector |9.0 CRITICAL (CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H)
+|Components affected |`log4j-core`
 |Versions affected |all versions from `2.0-beta9` to `2.15.0` (excluding `2.3.1` and `2.12.3`)
 |Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later)
 |===
@@ -152,7 +183,8 @@ Additional vulnerability details discovered independently by Ash Fox of Google, 
 [cols="1h,5"]
 |===
 |Summary |JNDI lookup can be exploited to execute arbitrary code loaded from an LDAP server
-|CVSS 3.x Score & Vector |10.0 CRITICAL (AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H)
+|CVSS 3.x Score & Vector |10.0 CRITICAL (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H)
+|Components affected |`log4j-core`
 |Versions affected |all versions from `2.0-beta9` to `2.14.1` (excluding `2.3.1` and `2.12.3`)
 |Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later)
 |===
@@ -203,9 +235,10 @@ This issue was discovered by Chen Zhaojun of Alibaba Cloud Security Team.
 [cols="1h,5"]
 |===
 |Summary |Improper validation of certificate with host mismatch in SMTP appender
-|CVSS 3.x Score & Vector |3.7 LOW (AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N)
+|CVSS 3.x Score & Vector |3.7 LOW (CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N)
+|Components affected |`log4j-core`
 |Versions affected |all versions from `2.0-beta1` to `2.13.1` (excluding `2.3.1` and `2.12.3`)
-|Versions fixed |`2.12.3` (Java 7) and `2.13.2` (Java 8)
+|Versions fixed |`2.12.3` (Java 7) and `2.13.2` (Java 8 and later)
 |===
 
 [#CVE-2020-9488-description]
@@ -223,7 +256,7 @@ Usages of `SslConfiguration` that are configured via system properties are not a
 [#CVE-2020-9488-mitigation]
 ==== Mitigation
 
-Upgrade to `2.12.3` (Java 7) or `2.13.2` (Java 8).
+Upgrade to `2.12.3` (Java 7) or `2.13.2` (Java 8 and later).
 
 Alternatively, users can set the `mail.smtp.ssl.checkserveridentity` system property to `true` to enable SMTPS hostname verification for all SMTPS mail sessions.
 
@@ -244,7 +277,8 @@ This issue was discovered by Peter Stöckli.
 [cols="1h,5"]
 |===
 |Summary |TCP/UDP socket servers can be exploited to execute arbitrary code
-|CVSS 3.x Score & Vector |9.8 CRITICAL (AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)
+|CVSS 3.x Score & Vector |9.8 CRITICAL (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)
+|Components affected |`log4j-core`
 |Versions affected |all versions from `2.0-alpha1` to `2.8.1`
 |Versions fixed |`2.8.2` (Java 7)
 |===
