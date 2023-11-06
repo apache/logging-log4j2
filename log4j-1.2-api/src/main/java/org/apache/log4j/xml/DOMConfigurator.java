@@ -31,6 +31,7 @@ import java.util.Properties;
 
 import javax.xml.parsers.FactoryConfigurationError;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
@@ -70,6 +71,10 @@ public class DOMConfigurator {
     public static void configure(final Element element) {
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The filename comes from a system property."
+    )
     public static void configure(final String fileName) throws FactoryConfigurationError {
         final Path path = Paths.get(fileName);
         try (final InputStream inputStream = Files.newInputStream(path)) {

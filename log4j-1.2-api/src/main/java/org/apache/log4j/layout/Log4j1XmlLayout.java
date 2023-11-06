@@ -22,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Node;
@@ -86,6 +87,10 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
         return text.toString();
     }
 
+    @SuppressFBWarnings(
+            value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+            justification = "The throwable is formatted into a log file, which should be private."
+    )
     private void formatTo(final LogEvent event, final StringBuilder buf) {
         buf.append("<log4j:event logger=\"");
         buf.append(Transform.escapeHtmlTags(event.getLoggerName()));

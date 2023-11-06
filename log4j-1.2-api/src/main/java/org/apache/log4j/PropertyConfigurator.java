@@ -30,6 +30,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
@@ -356,6 +357,10 @@ public class PropertyConfigurator implements Configurator {
      * @param fileName The configuration file
      * @param loggerRepository The hierarchy
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The filename comes from a system property."
+    )
     Configuration doConfigure(final String fileName, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
         try (final InputStream inputStream = Files.newInputStream(Paths.get(fileName))) {
             return doConfigure(inputStream, loggerRepository, classLoader);

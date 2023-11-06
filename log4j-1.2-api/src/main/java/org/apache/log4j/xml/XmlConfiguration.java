@@ -29,6 +29,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
@@ -131,6 +132,10 @@ public class XmlConfiguration extends Log4j1Configuration {
         final ConfigurationSource source = getConfigurationSource();
         final ParseAction action = new ParseAction() {
             @Override
+            @SuppressFBWarnings(
+                    value = "XXE_DOCUMENT",
+                    justification = "The `DocumentBuilder` is configured to not resolve external entities."
+            )
             public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
                 @SuppressWarnings("resource")
                 final // The ConfigurationSource and its caller manages the InputStream.

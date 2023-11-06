@@ -28,6 +28,8 @@
   <name>Apache Log4j API Tests</name>
   <description>The Apache Log4j API Test</description>
   <properties>
+    <!-- Ignore less important (high rank) bugs for test artifacts -->
+    <spotbugs.maxRank>9</spotbugs.maxRank>
 
     <!--
       ~ OSGi and JPMS options
