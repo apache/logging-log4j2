@@ -15,6 +15,8 @@
     limitations under the License.
 ////
 
+:cve-url-prefix: https://nvd.nist.gov/vuln/detail
+
 = Security
 
 The Apache Log4j Security Team takes security seriously.
@@ -52,51 +54,6 @@ The Apache Log4j Security Team follows the https://www.apache.org/security/commi
 Found security vulnerabilities are subject to voting (by means of https://logging.apache.org/guidelines.html[_lazy approval_], preferably) in the private mailto:security@logging.apache.org[security mailing list] before creating a CVE and populating its associated content.
 This procedure involves only the creation of CVEs and blocks neither (vulnerability) fixes, nor releases.
 
-[#Security_Impact_Levels]
-== Impact levels
-
-The Apache Log4j Security Team rates the impact of each security flaw that affects Log4j.
-We have chosen a rating scale quite similar to those used by other major vendors in order to be consistent.
-Basically the goal of the rating system is to answer the question of _"How worried should I be about this vulnerability?"_.
-
-Note that the rating may vary from platform to platform and the rating chosen for each flaw is the worst possible case across all architectures.
-To determine the exact impact of a particular vulnerability on your own systems you will still need to read the security advisories to find out more about the flaw.
-
-We use the following descriptions to decide on the impact rating to give each vulnerability:
-
-[cols="1,2",options="header"]
-|===
-|Severity|https://www.first.org/cvss/calculator/3.0[CVSS v3 Score Range]
-|Critical|9.0 - 10.0
-|High|7.0 - 8.9
-|Moderate|4.0 - 6.9
-|Low|0.1 - 3.9
-|===
-
-[#impact-level-critical]
-=== Critical
-
-A vulnerability rated with a _critical_ impact is one which could potentially be exploited by a remote attacker to get Log4j to execute arbitrary code (either as the user the server is running as, or root).
-These are the sorts of vulnerabilities that could be exploited automatically by worms.
-
-[#impact-level-high]
-=== High
-
-A vulnerability rated as _high_ impact is one which could result in the compromise of data or availability of the server.
-For Log4j this includes issues that allow an easy remote denial-of-service (something that is out of proportion to the attack or with a lasting consequence), access to arbitrary files outside the context root, or access to files that should be otherwise prevented by limits or authentication.
-
-[#impact-level-moderate]
-=== Moderate
-
-A vulnerability is likely to be rated as _moderate_ if there is significant mitigation to make the issue less of an impact.
-This might be because the flaw does not affect likely configurations, or it is a configuration that isn't widely used.
-
-[#impact-level-low]
-=== Low
-
-All other security flaws are classed as a _low_ impact.
-This rating is used for issues that are believed to be extremely hard to exploit, or where an exploit gives minimal consequences.
-
 [#vulnerabilities]
 == Known vulnerabilities
 
@@ -104,14 +61,12 @@ The Log4j Security Team believes that accuracy, completeness and availability of
 We choose to pool all information on this one page, allowing easy searching for security vulnerabilities over a range of criteria.
 
 [#CVE-2021-44832]
-=== https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44832[CVE-2021-44832]
+=== {cve-url-prefix}/CVE-2021-44832[CVE-2021-44832]
 
 [cols="1h,5"]
 |===
 |Summary |Infinite recursion in lookup evaluation
-|Type |Denial-of-Service
-|Severity |Moderate
-|Base CVSS score |6.6 (AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H)
+|CVSS 3.x Score & Vector |6.6 MEDIUM (AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H)
 |Versions affected |all versions from `2.0-alpha1` to `2.16.0` (excluding `2.3.1` and `2.12.3`)
 |Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later)
 |===
@@ -146,18 +101,16 @@ Independently discovered by Hideki Okamoto of Akamai Technologies, Guy Lederfein
 [#CVE-2021-44832-references]
 ==== References
 
-- https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45105[CVE-2021-45105]
+- {cve-url-prefix}/CVE-2021-45105[CVE-2021-45105]
 - https://issues.apache.org/jira/browse/LOG4J2-3230[LOG4J2-3230]
 
 [#CVE-2021-45046]
-=== https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046[CVE-2021-45046]
+=== {cve-url-prefix}/CVE-2021-45046[CVE-2021-45046]
 
 [cols="1h,5"]
 |===
 |Summary |Thread Context Lookup is vulnerable to remote code execution in certain non-default configurations
-|Type |Remote Code Execution
-|Severity |Critical
-|Base CVSS score |9.0 (AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H)
+|CVSS 3.x Score & Vector |9.0 CRITICAL (AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H)
 |Versions affected |all versions from `2.0-beta9` to `2.15.0` (excluding `2.3.1` and `2.12.3`)
 |Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later)
 |===
@@ -190,18 +143,16 @@ Additional vulnerability details discovered independently by Ash Fox of Google, 
 [#CVE-2021-45046-references]
 ==== References
 
-- https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-45046[CVE-2021-45046]
+- {cve-url-prefix}/CVE-2021-45046[CVE-2021-45046]
 - https://issues.apache.org/jira/browse/LOG4J2-3221[LOG4J2-3221]
 
 [#CVE-2021-44228]
-=== https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228[CVE-2021-44228]
+=== {cve-url-prefix}/CVE-2021-44228[CVE-2021-44228]
 
 [cols="1h,5"]
 |===
 |Summary |JNDI lookup can be exploited to execute arbitrary code loaded from an LDAP server
-|Type |Remote Code Execution
-|Severity |Critical
-|Base CVSS score |10.0 CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H
+|CVSS 3.x Score & Vector |10.0 CRITICAL (AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H)
 |Versions affected |all versions from `2.0-beta9` to `2.14.1` (excluding `2.3.1` and `2.12.3`)
 |Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later)
 |===
@@ -225,7 +176,7 @@ include::_log4j1-eol.adoc[]
 
 Log4j 1 does not have Lookups, so the risk is lower.
 Applications using Log4j 1 are only vulnerable to this attack when they use JNDI in their configuration.
-A separate CVE (https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-4104[CVE-2021-4104]) has been filed for this vulnerability.
+A separate CVE ({cve-url-prefix}/CVE-2021-4104[CVE-2021-4104]) has been filed for this vulnerability.
 To mitigate, audit your logging configuration to ensure it has no `JMSAppender` configured.
 Log4j 1 configurations without `JMSAppender` are not impacted by this vulnerability.
 
@@ -242,18 +193,17 @@ This issue was discovered by Chen Zhaojun of Alibaba Cloud Security Team.
 [#CVE-2021-44228-references]
 ==== References
 
-- https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228[CVE-2021-44228]
+- {cve-url-prefix}/CVE-2021-44228[CVE-2021-44228]
 - https://issues.apache.org/jira/browse/LOG4J2-3198[LOG4J2-3198]
 - https://issues.apache.org/jira/browse/LOG4J2-3201[LOG4J2-3201]
 
 [#CVE-2020-9488]
-=== https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9488[CVE-2020-9488]
+=== {cve-url-prefix}/CVE-2020-9488[CVE-2020-9488]
 
 [cols="1h,5"]
 |===
 |Summary |Improper validation of certificate with host mismatch in SMTP appender
-|Severity |Low
-|Base CVSS score |3.7 (Low) CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N
+|CVSS 3.x Score & Vector |3.7 LOW (AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N)
 |Versions affected |all versions from `2.0-beta1` to `2.13.1` (excluding `2.3.1` and `2.12.3`)
 |Versions fixed |`2.12.3` (Java 7) and `2.13.2` (Java 8)
 |===
@@ -285,18 +235,16 @@ This issue was discovered by Peter Stöckli.
 [#CVE-2020-9488-references]
 ==== References
 
-- https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-9488[CVE-2020-9488]
+- {cve-url-prefix}/CVE-2020-9488[CVE-2020-9488]
 - https://issues.apache.org/jira/browse/LOG4J2-2819[LOG4J2-2819]
 
 [#CVE-2017-5645]
-=== https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5645[CVE-2017-5645]
+=== {cve-url-prefix}/CVE-2017-5645[CVE-2017-5645]
 
 [cols="1h,5"]
 |===
 |Summary |TCP/UDP socket servers can be exploited to execute arbitrary code
-|Type |Remote Code Execution
-|Severity |Moderate
-|Base CVSS score |7.5 (AV:N/AC:L/Au:N/C:P/I:P/A:P)
+|CVSS 3.x Score & Vector |9.8 CRITICAL (AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)
 |Versions affected |all versions from `2.0-alpha1` to `2.8.1`
 |Versions fixed |`2.8.2` (Java 7)
 |===
@@ -309,7 +257,7 @@ When using the TCP socket server or UDP socket server to receive serialized log 
 [#CVE-2017-5645-mitigation]
 ==== Mitigation
 
-Java 7 and above users should migrate to version 2.8.2 or avoid using the socket server classes.
+Java 7 and above users should migrate to version `2.8.2` or avoid using the socket server classes.
 Java 6 users should avoid using the TCP or UDP socket server classes, or they can manually backport https://github.com/apache/logging-log4j2/commit/5dcc192[the security fix commit] from `2.8.2`.
 
 [#CVE-2017-5645-credits]
@@ -320,6 +268,6 @@ This issue was discovered by Marcio Almeida de Macedo of Red Team at Telstra.
 [#CVE-2017-5645-references]
 ==== References
 
-- https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5645[CVE-2017-5645]
+- {cve-url-prefix}/CVE-2017-5645[CVE-2017-5645]
 - https://issues.apache.org/jira/browse/LOG4J2-1863[LOG4J2-1863]
 - https://github.com/apache/logging-log4j2/commit/5dcc192[Security fix commit]
