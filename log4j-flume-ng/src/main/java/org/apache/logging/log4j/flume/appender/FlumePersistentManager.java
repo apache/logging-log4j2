@@ -48,6 +48,7 @@ import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 import com.sleepycat.je.StatsConfig;
 import com.sleepycat.je.Transaction;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.flume.Event;
 import org.apache.flume.event.SimpleEvent;
 import org.apache.logging.log4j.LoggingException;
@@ -171,6 +172,10 @@ public class FlumePersistentManager extends FlumeAvroManager {
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = {"CIPHER_INTEGRITY", "ECB_MODE"},
+            justification = "Work-in-progress: https://github.com/apache/logging-log4j2/issues/1947"
+    )
     public void send(final Event event)  {
         if (worker.isShutdown()) {
             throw new LoggingException("Unable to record event");
@@ -384,6 +389,10 @@ public class FlumePersistentManager extends FlumeAvroManager {
          * @return The FlumeKratiManager.
          */
         @Override
+        @SuppressFBWarnings(
+                value = "PATH_TRAVERSAL_IN",
+                justification = "The name of the directory is provided in a configuration file."
+        )
         public FlumePersistentManager createManager(final String name, final FactoryData data) {
             SecretKey secretKey = null;
             Database database = null;
@@ -777,6 +786,10 @@ public class FlumePersistentManager extends FlumeAvroManager {
             return errors;
         }
 
+        @SuppressFBWarnings(
+                value = {"CIPHER_INTEGRITY", "ECB_MODE"},
+                justification = "Work-in-progress: https://github.com/apache/logging-log4j2/issues/1947"
+        )
         private SimpleEvent createEvent(final DatabaseEntry data) {
             final SimpleEvent event = new SimpleEvent();
             try {

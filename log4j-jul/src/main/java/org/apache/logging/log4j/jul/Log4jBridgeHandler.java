@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.logging.LogRecord;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -137,7 +138,11 @@ public class Log4jBridgeHandler extends java.util.logging.Handler implements Con
 
 
     /** Perform init. of this handler with given configuration (typical use is for constructor). */
-       protected void init(boolean debugOutput, String suffixToAppend, boolean propagateLevels) {
+    @SuppressFBWarnings(
+            value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+            justification = "The data is available only in debug mode."
+    )
+    protected void init(boolean debugOutput, String suffixToAppend, boolean propagateLevels) {
            this.doDebugOutput = debugOutput;
         if (debugOutput) {
             new Exception("DIAGNOSTIC ONLY (sysout):  Log4jBridgeHandler instance created (" + this + ")")

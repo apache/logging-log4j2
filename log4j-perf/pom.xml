@@ -30,10 +30,9 @@
   <description>The Apache Log4j development-time performance tests</description>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>Apache Log4J Performance Tests</docLabel>
-    <projectDir>/log4j-perf</projectDir>
+    <!-- Ignore less important (high rank) bugs for test artifacts -->
+    <spotbugs.maxRank>9</spotbugs.maxRank>
+
     <uberjar.name>benchmarks</uberjar.name>
     <bnd.baseline.skip>true</bnd.baseline.skip>
     <maven.deploy.skip>true</maven.deploy.skip>
