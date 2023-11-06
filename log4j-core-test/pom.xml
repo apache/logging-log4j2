@@ -29,9 +29,11 @@
   <name>Apache Log4j Core Tests</name>
   <description>The Apache Log4j Implementation Tests</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>Core Documentation</docLabel>
-    <projectDir>/log4j-core-test</projectDir>
+    <!-- Ignore less important (high rank) bugs for test artifacts -->
+    <spotbugs.maxRank>9</spotbugs.maxRank>
+
+    <!-- Dependency versions -->
+    <slf4j-ext.version>${slf4j.version}</slf4j-ext.version>
 
     <!--
       ~ OSGi and JPMS options

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.Writer;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.QuietWriter;
 import org.apache.log4j.spi.ErrorCode;
@@ -248,6 +249,10 @@ public class FileAppender extends WriterAppender {
      * @param fileName The path to the log file.
      * @param append If true will append to fileName. Otherwise will truncate fileName.
      */
+    @SuppressFBWarnings(
+            value = {"PATH_TRAVERSAL_IN", "PATH_TRAVERSAL_OUT"},
+            justification = "The file name comes from a configuration file."
+    )
     public synchronized void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize) throws IOException {
         LogLog.debug("setFile called: " + fileName + ", " + append);
 

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.Writer;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.log4j.helpers.CountingQuietWriter;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
@@ -107,6 +108,10 @@ public class RollingFileAppender extends FileAppender {
      * created.
      * </p>
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The filename comes from a system property."
+    )
     public // synchronization not necessary since doAppend is alreasy synched
     void rollOver() {
         File target;
@@ -182,6 +187,10 @@ public class RollingFileAppender extends FileAppender {
         }
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The file name comes from a configuration file."
+    )
     public synchronized void setFile(final String fileName, final boolean append, final boolean bufferedIO, final int bufferSize) throws IOException {
         super.setFile(fileName, append, this.bufferedIO, this.bufferSize);
         if (append) {
