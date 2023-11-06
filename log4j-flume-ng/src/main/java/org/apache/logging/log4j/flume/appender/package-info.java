@@ -19,7 +19,7 @@
  */
 @Export
 @Open("org.apache.logging.log4j.core")
-@Version("2.20.1")
+@Version("2.20.2")
 package org.apache.logging.log4j.flume.appender;
 
 import aQute.bnd.annotation.jpms.Open;

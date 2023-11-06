@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -93,6 +94,10 @@ public final class Uris {
         }
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The uri parameter comes from aconfiguration file."
+    )
     private static String readFileUri(
             final URI uri,
             final Charset charset)
@@ -103,6 +108,10 @@ public final class Uris {
         }
     }
 
+    @SuppressFBWarnings(
+            value = "URLCONNECTION_SSRF_FD",
+            justification = "The uri parameter comes fro a configuration file."
+    )
     private static String readClassPathUri(
             final URI uri,
             final Charset charset)
