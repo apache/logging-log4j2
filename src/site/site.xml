@@ -69,7 +69,13 @@
         <item name="Trade-offs" href="/performance.html#tradeoffs" />
       </item>
       <item name="Articles and Tutorials" href="/articles.html"/>
-      <item name="Security" href="/security.html"/>
+      <item name="Security" href="/security.html">
+        <item name="Getting support" href="/security.html#support" />
+        <item name="Reporting vulnerabilities" href="/security.html#reporting" />
+        <item name="Vulnerability handling policy" href="/security.html#policy" />
+        <item name="Impact levels" href="/security.html#Security_Impact_Levels" />
+        <item name="Known Vulnerabilities" href="/security.html#vulnerabilities" />
+      </item>
     </menu>
 
     <menu name="Manual" inherit="top" img="img/glyphicons/book.png">
