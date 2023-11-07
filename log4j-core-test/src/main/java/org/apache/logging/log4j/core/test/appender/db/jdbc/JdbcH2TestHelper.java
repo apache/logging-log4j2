@@ -17,15 +17,11 @@
 package org.apache.logging.log4j.core.test.appender.db.jdbc;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.io.file.PathUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.core.appender.db.jdbc.AbstractConnectionSource;
 import org.apache.logging.log4j.core.appender.db.jdbc.ConnectionSource;
 
@@ -37,9 +33,12 @@ public class JdbcH2TestHelper {
     public static final String CONNECTION_STRING_IN_MEMORY = "jdbc:h2:mem:Log4j";
 
     /**
-     * A JDBC connection string for an H2 database in the Java temporary directory.
+     * A JDBC connection string for a permanent H2 database.
+     *
+     * Since 2.22.0 this uses a permanent in-memory database.
      */
-    public static final String CONNECTION_STRING_TEMP_DIR = "jdbc:h2:" + getH2Path() + "/test_log4j;TRACE_LEVEL_SYSTEM_OUT=0";
+    @Deprecated
+    public static final String CONNECTION_STRING_TEMP_DIR = "jdbc:h2:mem:Log4j_perm;DB_CLOSE_DELAY=-1";
 
     public static final String USER_NAME = "sa";
     public static final String PASSWORD = "";
@@ -51,6 +50,7 @@ public class JdbcH2TestHelper {
         }
     };
 
+    @Deprecated
     public static ConnectionSource TEST_CONFIGURATION_SOURCE_TMPDIR = new AbstractConnectionSource() {
         @Override
         public Connection getConnection() throws SQLException {
@@ -58,14 +58,9 @@ public class JdbcH2TestHelper {
         }
     };
 
-    /** Directory used in configuration files and connection strings. */
-    static final String H2_TEST_RELATIVE_DIR = "h2";
-
+    @Deprecated
     public static void deleteDir() throws IOException {
-        final Path resolve = getH2Path();
-        if (Files.exists(resolve)) {
-            PathUtils.deleteDirectory(resolve);
-        }
+        // Since 2.22.0 this is a no-op
     }
 
     @SuppressFBWarnings(value = "DMI_EMPTY_DB_PASSWORD")
@@ -73,13 +68,13 @@ public class JdbcH2TestHelper {
         return DriverManager.getConnection(CONNECTION_STRING_IN_MEMORY, USER_NAME, PASSWORD);
     }
 
+    /**
+     * Since 2.22.0 this uses a permanent in-memory database.
+     */
+    @Deprecated
     @SuppressFBWarnings(value = "DMI_EMPTY_DB_PASSWORD")
     public static Connection getConnectionTempDir() throws SQLException {
         return DriverManager.getConnection(CONNECTION_STRING_TEMP_DIR, USER_NAME, PASSWORD);
-    }
-
-    private static Path getH2Path() {
-        return SystemUtils.getJavaIoTmpDir().toPath().resolve(H2_TEST_RELATIVE_DIR).normalize();
     }
 
 }

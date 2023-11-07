@@ -22,7 +22,7 @@
       <PatternLayout pattern="%C{1.} %m %level MDC%X%n"/>
     </Console>
     <Jdbc name="databaseAppender" tableName="dsMappingLogEntry" ignoreExceptions="false">
-      <DriverManager connectionString="jdbc:h2:${sys:java.io.tmpdir}/h2/test_log4j;TRACE_LEVEL_SYSTEM_OUT=0" userName="sa" password="" />
+      <DriverManager connectionString="jdbc:h2:mem:Log4j_perm;DB_CLOSE_DELAY=-1" userName="sa" password="" />
       <ColumnMapping name="level" pattern="%level" />
       <ColumnMapping name="logger" pattern="%logger" />
       <ColumnMapping name="message" literal="'Hello World!'" />
