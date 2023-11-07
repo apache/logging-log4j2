@@ -60,6 +60,12 @@ This procedure involves only the creation of CVEs and blocks neither (vulnerabil
 The Log4j Security Team believes that accuracy, completeness and availability of security information is essential for our users.
 We choose to pool all information on this one page, allowing easy searching for security vulnerabilities over a range of criteria.
 
+[NOTE]
+====
+We adhere to https://maven.apache.org/enforcer/enforcer-rules/versionRanges.html[the Maven version range syntax] while sharing versions of affected components.
+We only extend this mathematical notation with set union operator (i.e., `∪`) to denote union of multiple ranges.
+====
+
 [#CVE-2021-44832]
 === {cve-url-prefix}/CVE-2021-44832[CVE-2021-44832]
 
@@ -68,7 +74,7 @@ We choose to pool all information on this one page, allowing easy searching for 
 |Summary |JDBC appender is vulnerable to remote code execution in certain configurations
 |CVSS 3.x Score & Vector |6.6 MEDIUM (CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H)
 |Components affected |`log4j-core`
-|Versions affected |all versions from `2.0-beta7` to `2.17.0`
+|Versions affected |`[2.0-beta7, 2.3.2) ∪ [2.4, 2.12.4) ∪ [2.13.0, 2.17.1)`
 |Versions fixed |`2.3.2` (for Java 6), `2.12.4` (for Java 7), or `2.17.1` (for Java 8 and later)
 |===
 
@@ -97,8 +103,8 @@ In prior releases confirm that if the JDBC Appender is being used it is not conf
 |Summary |Infinite recursion in lookup evaluation
 |CVSS 3.x Score & Vector |5.9 MEDIUM (CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H)
 |Components affected |`log4j-core`
-|Versions affected |all versions from `2.0-alpha1` to `2.16.0` (excluding `2.3.1` and `2.12.3`)
-|Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later)
+|Versions affected |`[2.0-alpha1, 2.3.1) ∪ [2.4, 2.12.3) ∪ [2.13.0, 2.17.0)`
+|Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), and `2.17.0` (for Java 8 and later)
 |===
 
 [#CVE-2021-45105-description]
@@ -142,8 +148,8 @@ Independently discovered by Hideki Okamoto of Akamai Technologies, Guy Lederfein
 |Summary |Thread Context Lookup is vulnerable to remote code execution in certain configurations
 |CVSS 3.x Score & Vector |9.0 CRITICAL (CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H)
 |Components affected |`log4j-core`
-|Versions affected |all versions from `2.0-beta9` to `2.15.0` (excluding `2.3.1` and `2.12.3`)
-|Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later)
+|Versions affected |`[2.0-beta9, 2.3.1) ∪ [2.4, 2.12.3) ∪ [2.13.0, 2.17.0)`
+|Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), and `2.17.0` (for Java 8 and later)
 |===
 
 [#CVE-2021-45046-description]
@@ -185,8 +191,8 @@ Additional vulnerability details discovered independently by Ash Fox of Google, 
 |Summary |JNDI lookup can be exploited to execute arbitrary code loaded from an LDAP server
 |CVSS 3.x Score & Vector |10.0 CRITICAL (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H)
 |Components affected |`log4j-core`
-|Versions affected |all versions from `2.0-beta9` to `2.14.1` (excluding `2.3.1` and `2.12.3`)
-|Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later)
+|Versions affected |`[2.0-beta9, 2.3.1) ∪ [2.4, 2.12.3) ∪ [2.13.0, 2.17.0)`
+|Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), and `2.17.0` (for Java 8 and later)
 |===
 
 [#CVE-2021-44228-description]
@@ -237,7 +243,7 @@ This issue was discovered by Chen Zhaojun of Alibaba Cloud Security Team.
 |Summary |Improper validation of certificate with host mismatch in SMTP appender
 |CVSS 3.x Score & Vector |3.7 LOW (CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N)
 |Components affected |`log4j-core`
-|Versions affected |all versions from `2.0-beta1` to `2.13.1` (excluding `2.3.1` and `2.12.3`)
+|Versions affected |`[2.0-beta1, 2.12.3) ∪ [2.13.1, 2.13.2)`
 |Versions fixed |`2.12.3` (Java 7) and `2.13.2` (Java 8 and later)
 |===
 
@@ -279,7 +285,7 @@ This issue was discovered by Peter Stöckli.
 |Summary |TCP/UDP socket servers can be exploited to execute arbitrary code
 |CVSS 3.x Score & Vector |9.8 CRITICAL (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)
 |Components affected |`log4j-core`
-|Versions affected |all versions from `2.0-alpha1` to `2.8.1`
+|Versions affected |`[2.0-alpha1, 2.8.2)`
 |Versions fixed |`2.8.2` (Java 7)
 |===
 
