@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.jdbc.appender;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -34,7 +33,6 @@ import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.apache.logging.log4j.message.MapMessage;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -77,16 +75,6 @@ public class JdbcAppenderMapMessageDataSourceTest {
                 .around(new LoggerContextRule("org/apache/logging/log4j/jdbc/appender/log4j2-data-source-map-message.xml"));
         // @formatter:on
         this.jdbcRule = jdbcRule;
-    }
-
-    @Before
-    public void afterEachDeleteDir() throws IOException {
-        JdbcH2TestHelper.deleteDir();
-    }
-
-    @Before
-    public void beforeEachDeleteDir() throws IOException {
-        JdbcH2TestHelper.deleteDir();
     }
 
     private DataSource createMockDataSource() {

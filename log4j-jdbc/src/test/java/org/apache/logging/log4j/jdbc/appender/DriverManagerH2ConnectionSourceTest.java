@@ -23,7 +23,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DriverManagerH2ConnectionSourceTest extends AbstractH2Test {
+public class DriverManagerH2ConnectionSourceTest {
 
     @Test
     public void testH2Properties() throws SQLException {
