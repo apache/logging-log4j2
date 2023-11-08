@@ -283,7 +283,7 @@ This issue was discovered by Peter Stöckli.
 [cols="1h,5"]
 |===
 |Summary |TCP/UDP socket servers can be exploited to execute arbitrary code
-|CVSS 3.x Score & Vector |9.8 CRITICAL (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)
+|CVSS 2.0 Score & Vector |7.5 HIGH (AV:N/AC:L/Au:N/C:P/I:P/A:P)
 |Components affected |`log4j-core`
 |Versions affected |`[2.0-alpha1, 2.8.2)`
 |Versions fixed |`2.8.2` (Java 7)
