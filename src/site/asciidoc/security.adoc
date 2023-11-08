@@ -54,6 +54,13 @@ The Apache Log4j Security Team follows the https://www.apache.org/security/commi
 Reported security vulnerabilities are subject to voting (by means of https://logging.apache.org/guidelines.html[_lazy approval_], preferably) in the private mailto:security@logging.apache.org[security mailing list] before creating a CVE and populating its associated content.
 This procedure involves only the creation of CVEs and blocks neither (vulnerability) fixes, nor releases.
 
+[#vdr]
+== Vulnerability Disclosure Report (VDR)
+
+Starting with version `2.22.0`, Log4j distributes https://cyclonedx.org/capabilities/vdr[CycloneDX Software Bill of Materials (SBOM)] along with each deployed artifact.
+Produced SBOMs contain BOM-links referring to a https://cyclonedx.org/capabilities/vdr[CycloneDX Vulnerability Disclosure Report (VDR)] that Apache Logging Services uses for all projects it maintains.
+All this is streamlined by `logging-parent`, see https://logging.apache.org/logging-parent/latest/#cyclonedx-sbom[its website] for details.
+
 [#vulnerabilities]
 == Known vulnerabilities
 

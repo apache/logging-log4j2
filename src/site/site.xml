@@ -73,6 +73,7 @@
         <item name="Getting support" href="/security.html#support" />
         <item name="Reporting vulnerabilities" href="/security.html#reporting" />
         <item name="Vulnerability handling policy" href="/security.html#policy" />
+        <item name="Vulnerability Disclosure Report (VDR)" href="/security.html#vdr" />
         <item name="Known Vulnerabilities" href="/security.html#vulnerabilities" />
       </item>
     </menu>
