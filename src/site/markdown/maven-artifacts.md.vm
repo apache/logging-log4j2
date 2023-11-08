@@ -189,7 +189,7 @@ dependencies {
 
 $h2 CycloneDX Software Bill of Materials (SBOM)
 
-Starting with version `2.22.0`, Log4j distributes [CyclenoDX Software Bill of Materials (SBOM)](https://cyclonedx.org/capabilities/sbom/) along with each deployed artifact.
+Starting with version `2.22.0`, Log4j distributes [CycloneDX Software Bill of Materials (SBOM)](https://cyclonedx.org/capabilities/sbom/) along with each deployed artifact.
 This is streamlined by `logging-parent`, see [its website](https://logging.apache.org/logging-parent/latest/#cyclonedx-sbom) for details.
 
 $h2 Optional Components

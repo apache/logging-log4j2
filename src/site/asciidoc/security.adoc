@@ -1,0 +1,320 @@
+////
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+////
+
+:cve-url-prefix: https://nvd.nist.gov/vuln/detail
+
+= Security
+
+The Apache Log4j Security Team takes security seriously.
+This allows our users to place their trust in Log4j for protecting their mission-critical data.
+In this page we will help you find guidance on security-related issues and access to known vulnerabilities.
+
+include::_log4j1-eol.adoc[]
+
+[#support]
+== Getting support
+
+If you need help on building or configuring Log4j or other help on following the instructions to mitigate the known vulnerabilities listed here, please use our xref:support.adoc#discussions[user support channels].
+
+[TIP]
+====
+If you need to apply a source code patch, use the building instructions for the Log4j version that you are using.
+These instructions can be found in `BUILDING.md` distributed with the sources.
+====
+
+[#reporting]
+== Reporting vulnerabilities
+
+If you have encountered an unlisted security vulnerability or other unexpected behaviour that has a security impact, or if the descriptions here are incomplete, please report them **privately** to mailto:security@logging.apache.org[the Log4j Security Team].
+
+[WARNING]
+====
+The threat model that Log4j uses considers configuration files as safe input controlled by the programmer; **potential vulnerabilities that require the ability to modify a configuration are not considered vulnerabilities** as the required access to do so implies the attacker can execute arbitrary code.
+====
+
+[#policy]
+== Vulnerability handling policy
+
+The Apache Log4j Security Team follows the https://www.apache.org/security/committers.html[ASF Project Security] guide for handling security vulnerabilities.
+
+Reported security vulnerabilities are subject to voting (by means of https://logging.apache.org/guidelines.html[_lazy approval_], preferably) in the private mailto:security@logging.apache.org[security mailing list] before creating a CVE and populating its associated content.
+This procedure involves only the creation of CVEs and blocks neither (vulnerability) fixes, nor releases.
+
+[#vdr]
+== Vulnerability Disclosure Report (VDR)
+
+Starting with version `2.22.0`, Log4j distributes https://cyclonedx.org/capabilities/vdr[CycloneDX Software Bill of Materials (SBOM)] along with each deployed artifact.
+Produced SBOMs contain BOM-links referring to a https://cyclonedx.org/capabilities/vdr[CycloneDX Vulnerability Disclosure Report (VDR)] that Apache Logging Services uses for all projects it maintains.
+All this is streamlined by `logging-parent`, see https://logging.apache.org/logging-parent/latest/#cyclonedx-sbom[its website] for details.
+
+[#vulnerabilities]
+== Known vulnerabilities
+
+The Log4j Security Team believes that accuracy, completeness and availability of security information is essential for our users.
+We choose to pool all information on this one page, allowing easy searching for security vulnerabilities over a range of criteria.
+
+[NOTE]
+====
+We adhere to https://maven.apache.org/enforcer/enforcer-rules/versionRanges.html[the Maven version range syntax] while sharing versions of affected components.
+We only extend this mathematical notation with set union operator (i.e., `∪`) to denote union of multiple ranges.
+====
+
+[#CVE-2021-44832]
+=== {cve-url-prefix}/CVE-2021-44832[CVE-2021-44832]
+
+[cols="1h,5"]
+|===
+|Summary |JDBC appender is vulnerable to remote code execution in certain configurations
+|CVSS 3.x Score & Vector |6.6 MEDIUM (CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H)
+|Components affected |`log4j-core`
+|Versions affected |`[2.0-beta7, 2.3.2) ∪ [2.4, 2.12.4) ∪ [2.13.0, 2.17.1)`
+|Versions fixed |`2.3.2` (for Java 6), `2.12.4` (for Java 7), or `2.17.1` (for Java 8 and later)
+|===
+
+[#CVE-2021-44832-description]
+==== Description
+
+An attacker with write access to the logging configuration can construct a malicious configuration using a JDBC Appender with a data source referencing a JNDI URI which can execute remote code.
+This issue is fixed by limiting JNDI data source names to the `java` protocol.
+
+[#CVE-2021-44832-mitigation]
+==== Mitigation
+
+Upgrade to `2.3.2` (for Java 6), `2.12.4` (for Java 7), or `2.17.1` (for Java 8 and later).
+
+In prior releases confirm that if the JDBC Appender is being used it is not configured to use any protocol other than `java`.
+
+[#CVE-2021-44832-references]
+==== References
+- {cve-url-prefix}/CVE-2021-44832[CVE-2021-44832]
+
+[#CVE-2021-45105]
+=== {cve-url-prefix}/CVE-2021-45105[CVE-2021-45105]
+
+[cols="1h,5"]
+|===
+|Summary |Infinite recursion in lookup evaluation
+|CVSS 3.x Score & Vector |5.9 MEDIUM (CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H)
+|Components affected |`log4j-core`
+|Versions affected |`[2.0-alpha1, 2.3.1) ∪ [2.4, 2.12.3) ∪ [2.13.0, 2.17.0)`
+|Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), and `2.17.0` (for Java 8 and later)
+|===
+
+[#CVE-2021-45105-description]
+==== Description
+
+Log4j versions `2.0-alpha1` through `2.16.0` (excluding `2.3.1` and `2.12.3`), did not protect from uncontrolled recursion that can be implemented using self-referential lookups.
+When the logging configuration uses a non-default Pattern Layout with a Context Lookup (for example, `$${ctx:loginId}`), attackers with control over Thread Context Map (MDC) input data can craft malicious input data that contains a recursive lookup, resulting in a `StackOverflowError` that will terminate the process.
+This is also known as a _DoS (Denial-of-Service)_ attack.
+
+[#CVE-2021-45105-mitigation]
+==== Mitigation
+
+Upgrade to `2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later).
+
+Alternatively, this infinite recursion issue can be mitigated in configuration:
+
+* In PatternLayout in the logging configuration, replace Context Lookups like `${ctx:loginId}` or `$${ctx:loginId}` with Thread Context Map patterns (`%X`, `%mdc`, or `%MDC`).
+* Otherwise, in the configuration, remove references to Context Lookups like `${ctx:loginId}` or `$${ctx:loginId}` where they originate
+from sources external to the application such as HTTP headers or user input.
+Note that this mitigation is insufficient in releases older than `2.12.2` (for Java 7), and `2.16.0` (for Java 8 and later) as the issues fixed in those releases will still be present.
+
+Note that only the `log4j-core` JAR file is impacted by this vulnerability.
+Applications using only the `log4j-api` JAR file without the `log4j-core` JAR file are not impacted by this vulnerability.
+
+[#CVE-2021-45105-credits]
+==== Credits
+
+Independently discovered by Hideki Okamoto of Akamai Technologies, Guy Lederfein of Trend Micro Research working with Trend Micro's Zero Day Initiative, and another anonymous vulnerability researcher.
+
+[#CVE-2021-45105-references]
+==== References
+
+- {cve-url-prefix}/CVE-2021-45105[CVE-2021-45105]
+- https://issues.apache.org/jira/browse/LOG4J2-3230[LOG4J2-3230]
+
+[#CVE-2021-45046]
+=== {cve-url-prefix}/CVE-2021-45046[CVE-2021-45046]
+
+[cols="1h,5"]
+|===
+|Summary |Thread Context Lookup is vulnerable to remote code execution in certain configurations
+|CVSS 3.x Score & Vector |9.0 CRITICAL (CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H)
+|Components affected |`log4j-core`
+|Versions affected |`[2.0-beta9, 2.3.1) ∪ [2.4, 2.12.3) ∪ [2.13.0, 2.17.0)`
+|Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), and `2.17.0` (for Java 8 and later)
+|===
+
+[#CVE-2021-45046-description]
+==== Description
+
+It was found that the fix to address <<CVE-2021-44228>> in Log4j `2.15.0` was incomplete in certain non-default configurations.
+When the logging configuration uses a non-default Pattern Layout with a Thread Context Lookup (for example, `$${ctx:loginId}`), attackers with control over Thread Context Map (MDC) can craft malicious input data using a JNDI Lookup pattern, resulting in an information leak and remote code execution in some environments and local code execution in all environments.
+Remote code execution has been demonstrated on macOS, Fedora, Arch Linux, and Alpine Linux.
+
+Note that this vulnerability is not limited to just the JNDI lookup.
+Any other Lookup could also be included in a Thread Context Map variable and possibly have private details exposed to anyone with access to the logs.
+
+Note that only the `log4j-core` JAR file is impacted by this vulnerability.
+Applications using only the `log4j-api` JAR file without the `log4j-core` JAR file are not impacted by this vulnerability.
+
+[#CVE-2021-45046-mitigation]
+==== Mitigation
+
+Upgrade to Log4j `2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later).
+
+[#CVE-2021-45046-credits]
+==== Credits
+
+This issue was discovered by Kai Mindermann of iC Consult and separately by 4ra1n.
+
+Additional vulnerability details discovered independently by Ash Fox of Google, Alvaro Muñoz and Tony Torralba from GitHub, Anthony Weems of Praetorian, and RyotaK (@ryotkak).
+
+[#CVE-2021-45046-references]
+==== References
+
+- {cve-url-prefix}/CVE-2021-45046[CVE-2021-45046]
+- https://issues.apache.org/jira/browse/LOG4J2-3221[LOG4J2-3221]
+
+[#CVE-2021-44228]
+=== {cve-url-prefix}/CVE-2021-44228[CVE-2021-44228]
+
+[cols="1h,5"]
+|===
+|Summary |JNDI lookup can be exploited to execute arbitrary code loaded from an LDAP server
+|CVSS 3.x Score & Vector |10.0 CRITICAL (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H)
+|Components affected |`log4j-core`
+|Versions affected |`[2.0-beta9, 2.3.1) ∪ [2.4, 2.12.3) ∪ [2.13.0, 2.17.0)`
+|Versions fixed |`2.3.1` (for Java 6), `2.12.3` (for Java 7), and `2.17.0` (for Java 8 and later)
+|===
+
+[#CVE-2021-44228-description]
+==== Description
+
+In Log4j, the JNDI features used in configurations, log messages, and parameters do not protect against attacker-controlled LDAP and other JNDI related endpoints.
+An attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers.
+
+Note that only the `log4j-core` JAR file is impacted by this vulnerability.
+Applications using only the `log4j-api` JAR file without the `log4j-core` JAR file are not impacted by this vulnerability.
+
+[#CVE-2021-44228-mitigation]
+==== Mitigation
+
+[#CVE-2021-44228-mitigation-log4j1]
+===== Log4j 1 mitigation
+
+include::_log4j1-eol.adoc[]
+
+Log4j 1 does not have Lookups, so the risk is lower.
+Applications using Log4j 1 are only vulnerable to this attack when they use JNDI in their configuration.
+A separate CVE ({cve-url-prefix}/CVE-2021-4104[CVE-2021-4104]) has been filed for this vulnerability.
+To mitigate, audit your logging configuration to ensure it has no `JMSAppender` configured.
+Log4j 1 configurations without `JMSAppender` are not impacted by this vulnerability.
+
+[#CVE-2021-44228-mitigation-log4j2]
+===== Log4j 2 mitigation
+
+Upgrade to Log4j `2.3.1` (for Java 6), `2.12.3` (for Java 7), or `2.17.0` (for Java 8 and later).
+
+[#CVE-2021-44228-credits]
+==== Credits
+
+This issue was discovered by Chen Zhaojun of Alibaba Cloud Security Team.
+
+[#CVE-2021-44228-references]
+==== References
+
+- {cve-url-prefix}/CVE-2021-44228[CVE-2021-44228]
+- https://issues.apache.org/jira/browse/LOG4J2-3198[LOG4J2-3198]
+- https://issues.apache.org/jira/browse/LOG4J2-3201[LOG4J2-3201]
+
+[#CVE-2020-9488]
+=== {cve-url-prefix}/CVE-2020-9488[CVE-2020-9488]
+
+[cols="1h,5"]
+|===
+|Summary |Improper validation of certificate with host mismatch in SMTP appender
+|CVSS 3.x Score & Vector |3.7 LOW (CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N)
+|Components affected |`log4j-core`
+|Versions affected |`[2.0-beta1, 2.12.3) ∪ [2.13.1, 2.13.2)`
+|Versions fixed |`2.12.3` (Java 7) and `2.13.2` (Java 8 and later)
+|===
+
+[#CVE-2020-9488-description]
+==== Description
+
+Improper validation of certificate with host mismatch in SMTP appender.
+This could allow an SMTPS connection to be intercepted by a man-in-the-middle attack which could leak any log
+messages sent through that appender.
+
+The reported issue was caused by an error in `SslConfiguration`.
+Any element using `SslConfiguration` in the Log4j `Configuration` is also affected by this issue.
+This includes `HttpAppender`, `SocketAppender`, and `SyslogAppender`.
+Usages of `SslConfiguration` that are configured via system properties are not affected.
+
+[#CVE-2020-9488-mitigation]
+==== Mitigation
+
+Upgrade to `2.12.3` (Java 7) or `2.13.2` (Java 8 and later).
+
+Alternatively, users can set the `mail.smtp.ssl.checkserveridentity` system property to `true` to enable SMTPS hostname verification for all SMTPS mail sessions.
+
+[#CVE-2020-9488-credits]
+==== Credits
+
+This issue was discovered by Peter Stöckli.
+
+[#CVE-2020-9488-references]
+==== References
+
+- {cve-url-prefix}/CVE-2020-9488[CVE-2020-9488]
+- https://issues.apache.org/jira/browse/LOG4J2-2819[LOG4J2-2819]
+
+[#CVE-2017-5645]
+=== {cve-url-prefix}/CVE-2017-5645[CVE-2017-5645]
+
+[cols="1h,5"]
+|===
+|Summary |TCP/UDP socket servers can be exploited to execute arbitrary code
+|CVSS 2.0 Score & Vector |7.5 HIGH (AV:N/AC:L/Au:N/C:P/I:P/A:P)
+|Components affected |`log4j-core`
+|Versions affected |`[2.0-alpha1, 2.8.2)`
+|Versions fixed |`2.8.2` (Java 7)
+|===
+
+[#CVE-2017-5645-description]
+==== Description
+
+When using the TCP socket server or UDP socket server to receive serialized log events from another application, a specially crafted binary payload can be sent that, when deserialized, can execute arbitrary code.
+
+[#CVE-2017-5645-mitigation]
+==== Mitigation
+
+Java 7 and above users should migrate to version `2.8.2` or avoid using the socket server classes.
+Java 6 users should avoid using the TCP or UDP socket server classes, or they can manually backport https://github.com/apache/logging-log4j2/commit/5dcc192[the security fix commit] from `2.8.2`.
+
+[#CVE-2017-5645-credits]
+==== Credits
+
+This issue was discovered by Marcio Almeida de Macedo of Red Team at Telstra.
+
+[#CVE-2017-5645-references]
+==== References
+
+- {cve-url-prefix}/CVE-2017-5645[CVE-2017-5645]
+- https://issues.apache.org/jira/browse/LOG4J2-1863[LOG4J2-1863]
+- https://github.com/apache/logging-log4j2/commit/5dcc192[Security fix commit]
