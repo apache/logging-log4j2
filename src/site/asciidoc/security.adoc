@@ -43,7 +43,7 @@ If you have encountered an unlisted security vulnerability or other unexpected b
 
 [WARNING]
 ====
-Reports assuming attacker's access to the Log4j configuration will not qualify as a vulnerability.
+The threat model that Log4j uses considers configuration files as safe input controlled by the programmer; **potential vulnerabilities that require the ability to modify a configuration are not considered vulnerabilities** as the required access to do so implies the attacker can execute arbitrary code.
 ====
 
 [#policy]
@@ -51,7 +51,7 @@ Reports assuming attacker's access to the Log4j configuration will not qualify a
 
 The Apache Log4j Security Team follows the https://www.apache.org/security/committers.html[ASF Project Security] guide for handling security vulnerabilities.
 
-Found security vulnerabilities are subject to voting (by means of https://logging.apache.org/guidelines.html[_lazy approval_], preferably) in the private mailto:security@logging.apache.org[security mailing list] before creating a CVE and populating its associated content.
+Reported security vulnerabilities are subject to voting (by means of https://logging.apache.org/guidelines.html[_lazy approval_], preferably) in the private mailto:security@logging.apache.org[security mailing list] before creating a CVE and populating its associated content.
 This procedure involves only the creation of CVEs and blocks neither (vulnerability) fixes, nor releases.
 
 [#vulnerabilities]
