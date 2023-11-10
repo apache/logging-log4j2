@@ -31,20 +31,12 @@ the originals on the main distribution server.
 
 | Distribution                   | Mirrors                                                  | Checksum                                                              | Signature                                                       |
 | ------------------------------ | -------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Apache Log4j 2 binary (tar.gz) | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz][bintar] | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.sha512][bintarsha512] | [apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc][bintarasc] |
 | Apache Log4j 2 binary (zip)    | [apache-log4j-${Log4jReleaseVersion}-bin.zip][binzip]    | [apache-log4j-${Log4jReleaseVersion}-bin.zip.sha512][binzipsha512]    | [apache-log4j-${Log4jReleaseVersion}-bin.zip.asc][binzipasc]    |
-| Apache Log4j 2 source (tar.gz) | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz][srctar] | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz.sha512][srctarsha512] | [apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc][srctarasc] |
 | Apache Log4j 2 source (zip)    | [apache-log4j-${Log4jReleaseVersion}-src.zip][srczip]    | [apache-log4j-${Log4jReleaseVersion}-src.zip.sha512][srczipsha512]    | [apache-log4j-${Log4jReleaseVersion}-src.zip.asc][srczipasc]    |
 
-[bintar]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz
-[bintarsha512]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.sha512
-[bintarasc]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc
 [binzip]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip
 [binzipsha512]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.sha512
 [binzipasc]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-bin.zip.asc
-[srctar]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz
-[srctarsha512]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.sha512
-[srctarasc]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.tar.gz.asc
 [srczip]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip
 [srczipsha512]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.sha512
 [srczipasc]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersion}/apache-log4j-${Log4jReleaseVersion}-src.zip.asc
@@ -59,7 +51,7 @@ Make sure you get these files from the [main distribution directory](https://www
 than from a mirror. Then verify the signatures using
 
     gpg --import KEYS
-    gpg --verify apache-log4j-${Log4jReleaseVersion}-bin.tar.gz.asc
+    gpg --verify apache-log4j-${Log4jReleaseVersion}-bin.zip.asc
 
 Alternatively, you can verify the SHA512 signature on the files. A Unix program called sha or sha512sum is included
 in many Unix distributions.
@@ -79,20 +71,12 @@ $h3 Java 7 Release ${Log4jReleaseVersionJava7}
 
 | Distribution                   | Mirrors                                                         | Checksum                                                        | Signature                                                                           |
 | ------------------------------ | --------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| Apache Log4j 2 binary (tar.gz) | [apache-log4j-${Log4jReleaseVersionJava7}-bin.tar.gz][bintarJ7] | [apache-log4j-${Log4jReleaseVersionJava7}-bin.tar.gz.sha512][bintarsha512J7] | [apache-log4j-${Log4jReleaseVersionJava7}-bin.tar.gz.asc][bintarascJ7] |
 | Apache Log4j 2 binary (zip)    | [apache-log4j-${Log4jReleaseVersionJava7}-bin.zip][binzipJ7]    | [apache-log4j-${Log4jReleaseVersionJava7}-bin.zip.sha512][binzipsha512J7]    | [apache-log4j-${Log4jReleaseVersionJava7}-bin.zip.asc][binzipascJ7]    |
-| Apache Log4j 2 source (tar.gz) | [apache-log4j-${Log4jReleaseVersionJava7}-src.tar.gz][srctarJ7] | [apache-log4j-${Log4jReleaseVersionJava7}-src.tar.gz.sha512][srctarsha512J7] | [apache-log4j-${Log4jReleaseVersionJava7}-src.tar.gz.asc][srctarascJ7] |
 | Apache Log4j 2 source (zip)    | [apache-log4j-${Log4jReleaseVersionJava7}-src.zip][srczipJ7]    | [apache-log4j-${Log4jReleaseVersionJava7}-src.zip.sha512][srczipsha512J7]    | [apache-log4j-${Log4jReleaseVersionJava7}-src.zip.asc][srczipascJ7]    |
 
-[bintarJ7]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-bin.tar.gz
-[bintarsha512J7]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-bin.tar.gz.sha512
-[bintarascJ7]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-bin.tar.gz.asc
 [binzipJ7]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-bin.zip
 [binzipsha512J7]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-bin.zip.sha512
 [binzipascJ7]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-bin.zip.asc
-[srctarJ7]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-src.tar.gz
-[srctarsha512J7]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-src.tar.gz.sha512
-[srctarascJ7]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-src.tar.gz.asc
 [srczipJ7]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-src.zip
 [srczipsha512J7]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-src.zip.sha512
 [srczipascJ7]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava7}/apache-log4j-${Log4jReleaseVersionJava7}-src.zip.asc
@@ -101,24 +85,15 @@ $h3 Java 6 Release ${Log4jReleaseVersionJava6}
 
 | Distribution                   | Mirrors                                                         | Checksum                                                        | Signature                                                                           |
 | ------------------------------ | --------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| Apache Log4j 2 binary (tar.gz) | [apache-log4j-${Log4jReleaseVersionJava6}-bin.tar.gz][bintarJ6] | [apache-log4j-${Log4jReleaseVersionJava6}-bin.tar.gz.sha512][bintarsha512J6] | [apache-log4j-${Log4jReleaseVersionJava6}-bin.tar.gz.asc][bintarascJ6] |
 | Apache Log4j 2 binary (zip)    | [apache-log4j-${Log4jReleaseVersionJava6}-bin.zip][binzipJ6]    | [apache-log4j-${Log4jReleaseVersionJava6}-bin.zip.sha512][binzipsha512J6]    | [apache-log4j-${Log4jReleaseVersionJava6}-bin.zip.asc][binzipascJ6]    |
-| Apache Log4j 2 source (tar.gz) | [apache-log4j-${Log4jReleaseVersionJava6}-src.tar.gz][srctarJ6] | [apache-log4j-${Log4jReleaseVersionJava6}-src.tar.gz.sha512][srctarsha512J6] | [apache-log4j-${Log4jReleaseVersionJava6}-src.tar.gz.asc][srctarascJ6] |
 | Apache Log4j 2 source (zip)    | [apache-log4j-${Log4jReleaseVersionJava6}-src.zip][srczipJ6]    | [apache-log4j-${Log4jReleaseVersionJava6}-src.zip.sha512][srczipsha512J6]    | [apache-log4j-${Log4jReleaseVersionJava6}-src.zip.asc][srczipascJ6]    |
 
-[bintarJ6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersionJava6}/apache-log4j-${Log4jReleaseVersionJava6}-bin.tar.gz
-[bintarsha512J6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava6}/apache-log4j-${Log4jReleaseVersionJava6}-bin.tar.gz.sha512
-[bintarascJ6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava6}/apache-log4j-${Log4jReleaseVersionJava6}-bin.tar.gz.asc
 [binzipJ6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersionJava6}/apache-log4j-${Log4jReleaseVersionJava6}-bin.zip
 [binzipsha512J6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava6}/apache-log4j-${Log4jReleaseVersionJava6}-bin.zip.sha512
 [binzipascJ6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava6}/apache-log4j-${Log4jReleaseVersionJava6}-bin.zip.asc
-[srctarJ6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersionJava6}/apache-log4j-${Log4jReleaseVersionJava6}-src.tar.gz
-[srctarsha512J6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava6}/apache-log4j-${Log4jReleaseVersionJava6}-src.tar.gz.sha512
-[srctarascJ6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava6}/apache-log4j-${Log4jReleaseVersionJava6}-src.tar.gz.asc
 [srczipJ6]: https://www.apache.org/dyn/closer.lua/logging/log4j/${Log4jReleaseVersionJava6}/apache-log4j-${Log4jReleaseVersionJava6}-src.zip
 [srczipsha512J6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava6}/apache-log4j-${Log4jReleaseVersionJava6}-src.zip.sha512
 [srczipascJ6]: https://www.apache.org/dist/logging/log4j/${Log4jReleaseVersionJava6}/apache-log4j-${Log4jReleaseVersionJava6}-src.zip.asc
-
 
 $h2 Using Log4j on your classpath
 
