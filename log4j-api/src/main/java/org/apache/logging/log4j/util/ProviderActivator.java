@@ -38,6 +38,7 @@ public abstract class ProviderActivator implements BundleActivator {
     }
 
     @Override
+    @SuppressWarnings("JdkObsolete")
     public void start(final BundleContext context) throws Exception {
         final Hashtable<String, String> props = new Hashtable<>();
         props.put(API_VERSION, provider.getVersions());

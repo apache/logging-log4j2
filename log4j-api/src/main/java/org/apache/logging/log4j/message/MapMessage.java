@@ -472,7 +472,7 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
         if (this == o) {
             return true;
         }
-        if (o == null || this.getClass() != o.getClass()) {
+        if (!(o instanceof MapMessage)) {
             return false;
         }
 

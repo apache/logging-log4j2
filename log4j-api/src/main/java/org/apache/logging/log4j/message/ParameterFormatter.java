@@ -151,7 +151,8 @@ final class ParameterFormatter {
     }
 
     /**
-     * @see #analyzePattern(String, int, MessagePatternAnalysis)
+     *See {@link #analyzePattern(String, int, MessagePatternAnalysis)}.
+
      */
     static final class MessagePatternAnalysis implements Serializable {
 

@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 
 /**
+ * Provides the PID of the current JVM.
+ *
  * @since 2.9
  */
 public class ProcessIdUtil {
@@ -38,7 +40,7 @@ public class ProcessIdUtil {
             final Object runtimeMXBean = getRuntimeMXBean.invoke(null);
             final String name = (String) getName.invoke(runtimeMXBean);
             //String name = ManagementFactory.getRuntimeMXBean().getName(); //JMX not allowed on Android
-            return name.split("@")[0]; // likely works on most platforms
+            return name.split("@", -1)[0]; // likely works on most platforms
         } catch (final Exception ex) {
             try {
                 return new File("/proc/self").getCanonicalFile().getName(); // try a Linux-specific way

@@ -416,7 +416,7 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof StructuredDataMessage)) {
             return false;
         }
 

@@ -46,19 +46,19 @@ public final class ProviderUtil {
     /**
      * Resource name for a Log4j 2 provider properties file.
      */
-    protected static final String PROVIDER_RESOURCE = "META-INF/log4j-provider.properties";
+    static final String PROVIDER_RESOURCE = "META-INF/log4j-provider.properties";
 
     /**
      * Loaded providers.
      */
-    protected static final Collection<Provider> PROVIDERS = new HashSet<>();
+    static final Collection<Provider> PROVIDERS = new HashSet<>();
 
     /**
      * Guards the ProviderUtil singleton instance from lazy initialization. This is primarily used for OSGi support.
      *
      * @since 2.1
      */
-    protected static final Lock STARTUP_LOCK = new ReentrantLock();
+    static final Lock STARTUP_LOCK = new ReentrantLock();
 
     private static final String API_VERSION = "Log4jAPIVersion";
     private static final String[] COMPATIBLE_API_VERSIONS = {"2.6.0"};
@@ -78,7 +78,7 @@ public final class ProviderUtil {
         }
     }
 
-    protected static void addProvider(final Provider provider) {
+    static void addProvider(final Provider provider) {
         PROVIDERS.add(provider);
         LOGGER.debug("Loaded Provider {}", provider);
     }
@@ -94,7 +94,7 @@ public final class ProviderUtil {
             value = "URLCONNECTION_SSRF_FD",
             justification = "Uses a fixed URL that ends in 'META-INF/log4j-provider.properties'."
     )
-    protected static void loadProvider(final URL url, final ClassLoader cl) {
+    static void loadProvider(final URL url, final ClassLoader cl) {
         try {
             final Properties props = PropertiesUtil.loadClose(url.openStream(), url);
             if (validVersion(props.getProperty(API_VERSION))) {
@@ -111,7 +111,7 @@ public final class ProviderUtil {
      *
      * @param classLoader null can be used to mark the bootstrap class loader.
      */
-    protected static void loadProviders(final ClassLoader classLoader) {
+    static void loadProviders(final ClassLoader classLoader) {
         ServiceLoaderUtil.loadClassloaderServices(Provider.class, MethodHandles.lookup(), classLoader, true)
                 .filter(provider -> validVersion(provider.getVersions()))
                 .forEach(PROVIDERS::add);
@@ -121,7 +121,7 @@ public final class ProviderUtil {
      * @deprecated Use {@link #loadProvider(java.net.URL, ClassLoader)} instead. Will be removed in 3.0.
      */
     @Deprecated
-    protected static void loadProviders(final Enumeration<URL> urls, final ClassLoader cl) {
+    static void loadProviders(final Enumeration<URL> urls, final ClassLoader cl) {
         if (urls != null) {
             while (urls.hasMoreElements()) {
                 loadProvider(urls.nextElement(), cl);
@@ -144,7 +144,7 @@ public final class ProviderUtil {
      *
      * @since 2.1
      */
-    protected static void lazyInit() {
+    static void lazyInit() {
         // noinspection DoubleCheckedLocking
         if (instance == null) {
             try {

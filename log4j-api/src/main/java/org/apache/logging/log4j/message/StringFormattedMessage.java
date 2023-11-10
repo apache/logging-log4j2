@@ -131,7 +131,7 @@ public class StringFormattedMessage implements Message {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof StringFormattedMessage)) {
             return false;
         }
 

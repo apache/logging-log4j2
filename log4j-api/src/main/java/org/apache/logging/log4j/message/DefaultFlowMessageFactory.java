@@ -58,8 +58,8 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
 
     private static MessageFactory createDefaultMessageFactory() {
         try {
-            return AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS.newInstance();
-        } catch (final InstantiationException | IllegalAccessException e) {
+            return AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS.getDeclaredConstructor().newInstance();
+        } catch (final ReflectiveOperationException e) {
             throw new IllegalStateException(e);
         }
     }

@@ -95,6 +95,7 @@ public interface LogBuilder {
      * @param message The message.
      * @param params Parameters to the message.
      */
+    @SuppressWarnings("deprecation")
     default void log(String message, Supplier<?>... params) {
     }
 
@@ -109,6 +110,7 @@ public interface LogBuilder {
      * Causes all the data collected to be logged along with the message. Interface default method does nothing.
      * @param messageSupplier The supplier of the message to log.
      */
+    @SuppressWarnings("deprecation")
     default void log(Supplier<Message> messageSupplier) {
     }
 
@@ -119,6 +121,7 @@ public interface LogBuilder {
      * @return the message logger or {@code null} if no logging occurred.
      * @since 2.20
      */
+    @SuppressWarnings("deprecation")
     default Message logAndGet(final Supplier<Message> messageSupplier) {
         return null;
     }

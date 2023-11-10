@@ -102,7 +102,7 @@ public class ObjectMessage implements Message, StringBuilderFormattable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ObjectMessage)) {
             return false;
         }
 

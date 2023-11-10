@@ -484,7 +484,7 @@ public final class LoaderUtil {
             if (this == o) {
                 return true;
             }
-            if (o == null || getClass() != o.getClass()) {
+            if (!(o instanceof UrlResource)) {
                 return false;
             }
 

@@ -32,6 +32,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 final class LowLevelLogUtil {
 
+    @SuppressWarnings("DefaultCharset")
     private static PrintWriter writer = new PrintWriter(System.err, true);
 
     /**
@@ -66,6 +67,7 @@ final class LowLevelLogUtil {
      *
      * @param out the OutputStream to log to
      */
+    @SuppressWarnings("DefaultCharset")
     public static void setOutputStream(final OutputStream out) {
         LowLevelLogUtil.writer = new PrintWriter(Objects.requireNonNull(out), true);
     }

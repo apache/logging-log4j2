@@ -65,7 +65,7 @@ public class LogManager {
 
     private static volatile LoggerContextFactory factory;
 
-    /**
+    /*
      * Scans the classpath to find all logging implementation. Currently, only one will be used but this could be
      * extended to allow multiple implementations to be used.
      */
@@ -92,7 +92,7 @@ public class LogManager {
                     final Class<? extends LoggerContextFactory> factoryClass = provider.loadLoggerContextFactory();
                     if (factoryClass != null) {
                         try {
-                            factories.put(provider.getPriority(), factoryClass.newInstance());
+                            factories.put(provider.getPriority(), factoryClass.getDeclaredConstructor().newInstance());
                         } catch (final Exception e) {
                             LOGGER.error("Unable to create class {} specified in provider URL {}",
                                     factoryClass.getName(), provider.getUrl(), e);

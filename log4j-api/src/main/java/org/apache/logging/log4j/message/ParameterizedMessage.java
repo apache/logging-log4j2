@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
+import com.google.errorprone.annotations.InlineMe;
 import org.apache.logging.log4j.message.ParameterFormatter.MessagePatternAnalysis;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -112,6 +113,9 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      * @param throwable a {@link Throwable}
      * @deprecated Use {@link #ParameterizedMessage(String, Object[], Throwable)} instead
      */
+    @InlineMe(
+            replacement = "this(pattern, Arrays.stream(args).toArray(Object[]::new), throwable)",
+            imports = "java.util.Arrays")
     @Deprecated
     public ParameterizedMessage(final String pattern, final String[] args, final Throwable throwable) {
         this(pattern, Arrays.stream(args).toArray(Object[]::new), throwable);
@@ -268,9 +272,9 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     }
 
     /**
+     * Returns the formatted message.
      * @param pattern a message pattern containing argument placeholders
      * @param args arguments to be used to replace placeholders
-     * @return the formatted message
      */
     public static String format(final String pattern, final Object[] args) {
         final int argCount = args != null ? args.length : 0;
@@ -282,7 +286,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
         if (this == object) {
             return true;
         }
-        if (object == null || getClass() != object.getClass()) {
+        if (!(object instanceof ParameterizedMessage)) {
             return false;
         }
         final ParameterizedMessage that = (ParameterizedMessage) object;
@@ -297,8 +301,8 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     }
 
     /**
+     * Returns the number of argument placeholders.
      * @param pattern the message pattern to be analyzed
-     * @return the number of argument placeholders
      */
     public static int countArgumentPlaceholders(final String pattern) {
         if (pattern == null) {

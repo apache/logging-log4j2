@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.util;
 
+import java.nio.charset.Charset;
 import java.util.Base64;
 
 
@@ -31,6 +32,6 @@ public final class Base64Util {
     }
 
     public static String encode(final String str) {
-        return str != null ? encoder.encodeToString(str.getBytes()) : null;
+        return str != null ? encoder.encodeToString(str.getBytes(Charset.defaultCharset())) : null;
     }
 }

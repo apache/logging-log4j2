@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.google.errorprone.annotations.InlineMe;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
@@ -83,7 +84,7 @@ public final class MarkerManager {
         if (parentMarker == null) {
             throw new IllegalArgumentException("Parent Marker " + parent + " has not been defined");
         }
-        return getMarker(name, parentMarker);
+        return getMarker(name).addParents(parentMarker);
     }
 
     /**
@@ -95,6 +96,9 @@ public final class MarkerManager {
      * @throws IllegalArgumentException if any argument is {@code null}
      * @deprecated Use the Marker add or set methods to add parent Markers. Will be removed by final GA release.
      */
+    @InlineMe(
+            replacement = "MarkerManager.getMarker(name).addParents(parent)",
+            imports = "org.apache.logging.log4j.MarkerManager")
     @Deprecated
     public static Marker getMarker(final String name, final Marker parent) {
         return getMarker(name).addParents(parent);

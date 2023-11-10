@@ -122,6 +122,7 @@ public class StatusData implements Serializable {
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
             justification = "Log4j prints stacktraces only to logs, which should be private."
     )
+    @SuppressWarnings("DefaultCharset")
     public String getFormattedStatus() {
         final StringBuilder sb = new StringBuilder();
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");

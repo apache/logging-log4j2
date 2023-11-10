@@ -1067,6 +1067,13 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_annotations</artifactId>
+      <version>${error-prone.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>osgi.annotation</artifactId>
       <scope>provided</scope>

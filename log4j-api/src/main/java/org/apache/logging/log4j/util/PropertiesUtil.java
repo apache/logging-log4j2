@@ -195,6 +195,7 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
+    @SuppressWarnings("deprecation")
     public Boolean getBooleanProperty(final String[] prefixes, final String key, final Supplier<Boolean> supplier) {
         for (String prefix : prefixes) {
             if (hasProperty(prefix + key)) {
@@ -255,6 +256,7 @@ public final class PropertiesUtil {
             try {
                 return Double.parseDouble(prop);
             } catch (final Exception ignored) {
+                // returns default value
             }
         }
         return defaultValue;
@@ -289,6 +291,7 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
+    @SuppressWarnings("deprecation")
     public Integer getIntegerProperty(final String[] prefixes, final String key, final Supplier<Integer> supplier) {
         for (String prefix : prefixes) {
             if (hasProperty(prefix + key)) {
@@ -311,6 +314,7 @@ public final class PropertiesUtil {
             try {
                 return Long.parseLong(prop);
             } catch (final Exception ignored) {
+                // returns the default value
             }
         }
         return defaultValue;
@@ -325,6 +329,7 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
+    @SuppressWarnings("deprecation")
     public Long getLongProperty(final String[] prefixes, final String key, final Supplier<Long> supplier) {
         for (String prefix : prefixes) {
             if (hasProperty(prefix + key)) {
@@ -359,6 +364,7 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
+    @SuppressWarnings("deprecation")
     public Duration getDurationProperty(final String[] prefixes, final String key, final Supplier<Duration> supplier) {
         for (String prefix : prefixes) {
             if (hasProperty(prefix + key)) {
@@ -377,6 +383,7 @@ public final class PropertiesUtil {
      * @return The value or null if it is not found.
      * @since 2.13.0
      */
+    @SuppressWarnings("deprecation")
     public String getStringProperty(final String[] prefixes, final String key, final Supplier<String> supplier) {
         for (String prefix : prefixes) {
             final String result = getStringProperty(prefix + key);
@@ -538,12 +545,13 @@ public final class PropertiesUtil {
 
         private boolean containsKey(final String key) {
             final List<CharSequence> tokens = PropertySource.Util.tokenize(key);
-            return literal.containsKey(key) ||
-                   tokenized.containsKey(tokens) ||
-                   sources.stream().anyMatch(s -> {
+            return literal.containsKey(key)
+                    || tokenized.containsKey(tokens)
+                    || sources.stream().anyMatch(s -> {
                         final CharSequence normalizedKey = s.getNormalForm(tokens);
-                        return s.containsProperty(key) || normalizedKey != null && s.containsProperty(normalizedKey.toString());
-                   });
+                        return s.containsProperty(key)
+                                || (normalizedKey != null && s.containsProperty(normalizedKey.toString()));
+                    });
         }
     }
 
@@ -645,6 +653,8 @@ public final class PropertiesUtil {
         HOURS("h,hour,hours", ChronoUnit.HOURS),
         DAYS("d,day,days", ChronoUnit.DAYS);
 
+        // descriptions is effectively immutable
+        @SuppressWarnings("ImmutableEnumChecker")
         private final String[] descriptions;
         private final ChronoUnit timeUnit;
 
@@ -653,9 +663,7 @@ public final class PropertiesUtil {
             this.timeUnit = timeUnit;
         }
 
-        ChronoUnit getTimeUnit() {
-            return this.timeUnit;
-        }
+
 
         static Duration getDuration(final String time) {
             final String value = time.trim();

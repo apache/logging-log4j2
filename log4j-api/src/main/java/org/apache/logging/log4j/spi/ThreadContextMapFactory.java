@@ -88,7 +88,7 @@ public final class ThreadContextMapFactory {
             try {
                 final Class<?> clazz = cl.loadClass(ThreadContextMapName);
                 if (ThreadContextMap.class.isAssignableFrom(clazz)) {
-                    result = (ThreadContextMap) clazz.newInstance();
+                    result = (ThreadContextMap) clazz.getDeclaredConstructor().newInstance();
                 }
             } catch (final ClassNotFoundException cnfe) {
                 LOGGER.error("Unable to locate configured ThreadContextMap {}", ThreadContextMapName);
@@ -103,7 +103,7 @@ public final class ThreadContextMapFactory {
                     final Class<? extends ThreadContextMap> clazz = provider.loadThreadContextMap();
                     if (clazz != null) {
                         try {
-                            result = clazz.newInstance();
+                            result = clazz.getDeclaredConstructor().newInstance();
                             break;
                         } catch (final Exception e) {
                             LOGGER.error("Unable to locate or load configured ThreadContextMap {}",

@@ -267,7 +267,7 @@ enum MapMessageJsonFormatter {;
         } else {
             final long longNumber = number.longValue();
             final double doubleValue = number.doubleValue();
-            if (Double.compare(longNumber, doubleValue) == 0) {
+            if (Double.compare((double) longNumber, doubleValue) == 0) {
                 sb.append(longNumber);
             } else {
                 sb.append(doubleValue);

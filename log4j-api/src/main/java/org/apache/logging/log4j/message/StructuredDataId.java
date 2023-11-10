@@ -18,6 +18,7 @@ package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
 
+import com.google.errorprone.annotations.InlineMe;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
@@ -143,9 +144,10 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @deprecated Use {@link #StructuredDataId(String, String, String[], String[])} instead.
      */
     @Deprecated
-    public StructuredDataId(final String name, final int enterpriseNumber, final String[] required,
-                            final String[] optional) {
-        this(name, String.valueOf(enterpriseNumber), required, optional, MAX_LENGTH);
+    @InlineMe(replacement = "this(name, String.valueOf(enterpriseNumber), required, optional)")
+    public StructuredDataId(
+            final String name, final int enterpriseNumber, final String[] required, final String[] optional) {
+        this(name, String.valueOf(enterpriseNumber), required, optional);
     }
 
     /**
@@ -190,9 +192,14 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @since 2.9
      * @deprecated Use {@link #StructuredDataId(String, String, String[], String[], int)} instead.
      */
+    @InlineMe(replacement = "this(name, String.valueOf(enterpriseNumber), required, optional, maxLength)")
     @Deprecated
-    public StructuredDataId(final String name, final int enterpriseNumber, final String[] required,
-            final String[] optional, final int maxLength) {
+    public StructuredDataId(
+            final String name,
+            final int enterpriseNumber,
+            final String[] required,
+            final String[] optional,
+            final int maxLength) {
         this(name, String.valueOf(enterpriseNumber), required, optional, maxLength);
     }
 

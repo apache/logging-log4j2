@@ -137,9 +137,12 @@ public interface PropertySource {
          * @param value property name
          * @return the property broken into lower case tokens
          */
+        // https://errorprone.info/bugpattern/CollectionUndefinedEquality
+        @SuppressWarnings("CollectionUndefinedEquality")
         public static List<CharSequence> tokenize(final CharSequence value) {
-            if (CACHE.containsKey(value)) {
-                return CACHE.get(value);
+            // `value` should be a `String`
+            if (CACHE.containsKey(value.toString())) {
+                return CACHE.get(value.toString());
             }
             final List<CharSequence> tokens = new ArrayList<>();
             int start = 0;

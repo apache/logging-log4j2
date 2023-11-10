@@ -29,14 +29,15 @@ import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Handles messages that consist of a format string conforming to java.text.MessageFormat.
- *
- * @serial In version 2.1, due to a bug in the serialization format, the serialization format was changed along with
- * its {@code serialVersionUID} value.
  */
 public class MessageFormatMessage implements Message {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
+    /**
+     * @serial In version 2.1, due to a bug in the serialization format, the serialization format was changed along with
+     * its {@code serialVersionUID} value.
+     */
     private static final long serialVersionUID = 1L;
 
     private static final int HASHVAL = 31;
@@ -124,7 +125,7 @@ public class MessageFormatMessage implements Message {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof MessageFormatMessage)) {
             return false;
         }
 

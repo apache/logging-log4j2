@@ -224,7 +224,7 @@ public class Provider {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Provider)) {
             return false;
         }
 
