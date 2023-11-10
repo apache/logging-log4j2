@@ -35,7 +35,6 @@ import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
 import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
@@ -175,24 +174,6 @@ public class WatchManager extends AbstractLifeCycle {
      */
     public int getIntervalSeconds() {
         return this.intervalSeconds;
-    }
-
-    /**
-     * Returns a Map of the file watchers.
-     *
-     * @return A Map of the file watchers.
-     * @deprecated use getConfigurationWatchers.
-     */
-    public Map<File, FileWatcher> getWatchers() {
-        final Map<File, FileWatcher> map = new HashMap<>(watchers.size());
-        for (final Map.Entry<Source, ConfigurationMonitor> entry : watchers.entrySet()) {
-            if (entry.getValue().getWatcher() instanceof ConfigurationFileWatcher) {
-                map.put(entry.getKey().getFile(), (FileWatcher) entry.getValue().getWatcher());
-            } else {
-                map.put(entry.getKey().getFile(), new WrappedFileWatcher((FileWatcher) entry.getValue().getWatcher()));
-            }
-        }
-        return map;
     }
 
     public boolean hasEventListeners() {

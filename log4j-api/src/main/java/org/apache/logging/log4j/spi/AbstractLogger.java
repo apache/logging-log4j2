@@ -2763,7 +2763,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
      * @since 2.20.0
      */
     protected LogBuilder getLogBuilder(final Level level) {
-        if (Constants.ENABLE_THREADLOCALS) {
+        if (Constants.isThreadLocalsEnabled()) {
             final DefaultLogBuilder builder = logBuilder.get();
             if (!builder.isInUse()) {
                 return builder.reset(this, level);

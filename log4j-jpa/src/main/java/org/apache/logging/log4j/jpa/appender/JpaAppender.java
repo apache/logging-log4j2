@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseAppender;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -78,7 +79,8 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
             @PluginElement final Filter filter,
             @PluginAttribute final String bufferSize,
             @PluginAttribute final String entityClassName,
-            @PluginAttribute final String persistenceUnitName) {
+            @PluginAttribute final String persistenceUnitName,
+            final Configuration configuration) {
         if (Strings.isEmpty(entityClassName) || Strings.isEmpty(persistenceUnitName)) {
             LOGGER.error("Attributes entityClassName and persistenceUnitName are required for JPA Appender.");
             return null;
@@ -106,7 +108,7 @@ public final class JpaAppender extends AbstractDatabaseAppender<JpaDatabaseManag
                     + ", persistenceUnitName=" + persistenceUnitName + ", entityClass=" + entityClass.getName() + '}';
 
             final JpaDatabaseManager manager = JpaDatabaseManager.getJPADatabaseManager(
-                    managerName, bufferSizeInt, entityClass, entityConstructor, persistenceUnitName
+                    managerName, bufferSizeInt, entityClass, entityConstructor, persistenceUnitName, configuration
             );
             if (manager == null) {
                 return null;

@@ -50,8 +50,14 @@ public class JiraLog4j2_2134Test {
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
         final AppenderRef[] refs = new AppenderRef[]{ref};
-        final LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, "testlog4j2refresh", "true", refs,
-        null, config, null);
+        final LoggerConfig loggerConfig = LoggerConfig.newBuilder()
+                .setAdditivity(false)
+                .setLevel(Level.INFO)
+                .setLoggerName("testlog4j2refresh")
+                .setIncludeLocation("true")
+                .setRefs(refs)
+                .setConfig(config)
+                .build();
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("testlog4j2refresh", loggerConfig);
         ctx.stop();
@@ -127,8 +133,14 @@ public class JiraLog4j2_2134Test {
         config.addAppender(appender);
         final AppenderRef ref = AppenderRef.createAppenderRef("File", null, null);
         final AppenderRef[] refs = new AppenderRef[]{ref};
-        final LoggerConfig loggerConfig = LoggerConfig.createLogger(false, Level.INFO, "testlog4j2refresh", "true", refs,
-        null, config, null);
+        final LoggerConfig loggerConfig = LoggerConfig.newBuilder()
+                .setAdditivity(false)
+                .setLevel(Level.INFO)
+                .setLoggerName("testlog4j2refresh")
+                .setIncludeLocation("true")
+                .setRefs(refs)
+                .setConfig(config)
+                .build();
         loggerConfig.addAppender(appender, null, null);
         config.addLogger("testlog4j2refresh", loggerConfig);
         ctx.stop();

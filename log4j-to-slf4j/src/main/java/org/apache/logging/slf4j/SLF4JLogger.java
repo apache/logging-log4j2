@@ -308,7 +308,7 @@ public class SLF4JLogger extends AbstractLogger {
     @Override
     protected LogBuilder getLogBuilder(final Level level) {
         final SLF4JLogBuilder builder = logBuilder.get();
-        return Constants.ENABLE_THREADLOCALS && !builder.isInUse() ? builder.reset(this, level)
+        return Constants.isThreadLocalsEnabled() && !builder.isInUse() ? builder.reset(this, level)
                 : new SLF4JLogBuilder(this, level);
     }
 

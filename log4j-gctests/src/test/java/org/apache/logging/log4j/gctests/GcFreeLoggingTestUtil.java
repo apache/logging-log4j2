@@ -61,7 +61,7 @@ public enum GcFreeLoggingTestUtil {
         System.setProperty(LoggingSystemProperty.IS_WEBAPP.getSystemKey(), "false");
         System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), configurationFile);
 
-        assertTrue(isThreadLocalsEnabled(), "Constants.ENABLE_THREADLOCALS");
+        assertTrue(isThreadLocalsEnabled(), "Constants.isThreadLocalsEnabled()");
         assertTrue(Constants.ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
         assertFalse(isWebApp(), "Constants.isWebApp()");
 

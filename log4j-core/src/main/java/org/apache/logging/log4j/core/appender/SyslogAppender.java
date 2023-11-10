@@ -240,14 +240,6 @@ public class SyslogAppender extends SocketAppender {
             return asBuilder();
         }
 
-        /**
-         * @deprecated Use {@link #setEnterpriseNumber(String)} instead
-         */
-        public B setEnterpriseNumber(final int enterpriseNumber) {
-            this.enterpriseNumber = String.valueOf(enterpriseNumber);
-            return asBuilder();
-        }
-
         public B setIncludeMdc(final boolean includeMdc) {
             this.includeMdc = includeMdc;
             return asBuilder();

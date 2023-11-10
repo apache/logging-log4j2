@@ -260,7 +260,10 @@ public class ThreadContextMapFilter extends MapFilter {
                 return null;
             }
             final boolean isAnd = operator == null || !operator.equalsIgnoreCase("or");
-            return new ThreadContextMapFilter(map, isAnd, getOnMatch(), getOnMismatch(), contextDataInjector);
+            final ContextDataInjector injector = contextDataInjector != null
+                    ? contextDataInjector
+                    : ContextDataInjectorFactory.createInjector();
+            return new ThreadContextMapFilter(map, isAnd, getOnMatch(), getOnMismatch(), injector);
         }
     }
 
@@ -269,15 +272,4 @@ public class ThreadContextMapFilter extends MapFilter {
         return new Builder();
     }
 
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static ThreadContextMapFilter createFilter(
-            final KeyValuePair[] pairs, final String operator, final Result onMatch, final Result onMismatch) {
-        return newBuilder()
-                .setPairs(pairs)
-                .setOperator(operator)
-                .setOnMatch(onMatch)
-                .setOnMismatch(onMismatch)
-                .setContextDataInjector(ContextDataInjectorFactory.createInjector())
-                .get();
-    }
 }

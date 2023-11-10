@@ -22,6 +22,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.NullConfiguration;
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
@@ -33,6 +35,8 @@ import static org.junit.Assert.*;
 public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     private static final String USER_ID = "sa";
     private static final String PASSWORD = Strings.EMPTY;
+
+    private final Configuration configuration = new NullConfiguration();
 
     public JpaHsqldbAppenderTest() {
         super("hsqldb");
@@ -62,7 +66,7 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
 
     @Test
     public void testNoEntityClassName() {
-        final JpaAppender appender = JpaAppender.createAppender("name", null, null, null, null, "jpaAppenderTestUnit");
+        final JpaAppender appender = JpaAppender.createAppender("name", null, null, null, null, "jpaAppenderTestUnit", configuration);
 
         assertNull("The appender should be null.", appender);
     }
@@ -70,7 +74,7 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     @Test
     public void testNoPersistenceUnitName() {
         final JpaAppender appender = JpaAppender.createAppender("name", null, null, null, TestBaseEntity.class.getName(),
-                null);
+                null, configuration);
 
         assertNull("The appender should be null.", appender);
     }
@@ -78,7 +82,7 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     @Test
     public void testBadEntityClassName() {
         final JpaAppender appender = JpaAppender.createAppender("name", null, null, null, "com.foo.Bar",
-                "jpaAppenderTestUnit");
+                "jpaAppenderTestUnit", configuration);
 
         assertNull("The appender should be null.", appender);
     }
@@ -86,7 +90,7 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     @Test
     public void testNonLogEventEntity() {
         final JpaAppender appender = JpaAppender.createAppender("name", null, null, null, Object.class.getName(),
-                "jpaAppenderTestUnit");
+                "jpaAppenderTestUnit", configuration);
 
         assertNull("The appender should be null.", appender);
     }
@@ -94,7 +98,7 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     @Test
     public void testBadConstructorEntity01() {
         final JpaAppender appender = JpaAppender.createAppender("name", null, null, null,
-                BadConstructorEntity1.class.getName(), "jpaAppenderTestUnit");
+                BadConstructorEntity1.class.getName(), "jpaAppenderTestUnit", configuration);
 
         assertNull("The appender should be null.", appender);
     }
@@ -102,7 +106,7 @@ public class JpaHsqldbAppenderTest extends AbstractJpaAppenderTest {
     @Test
     public void testBadConstructorEntity02() {
         final JpaAppender appender = JpaAppender.createAppender("name", null, null, null,
-                BadConstructorEntity2.class.getName(), "jpaAppenderTestUnit");
+                BadConstructorEntity2.class.getName(), "jpaAppenderTestUnit", configuration);
 
         assertNull("The appender should be null.", appender);
     }

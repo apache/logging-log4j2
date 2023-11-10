@@ -53,30 +53,6 @@ import org.apache.logging.log4j.util.StringMap;
 @PerformanceSensitive("allocation")
 public final class DynamicThresholdFilter extends AbstractFilter {
 
-    /**
-     * Creates a DynamicThresholdFilter.
-     * @param key The name of the key to compare.
-     * @param pairs An array of value and Level pairs.
-     * @param defaultThreshold The default Level.
-     * @param onMatch The action to perform if a match occurs.
-     * @param onMismatch The action to perform if no match occurs.
-     * @return The DynamicThresholdFilter.
-     * @deprecated use {@link Builder}
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static DynamicThresholdFilter createFilter(
-            final String key, final KeyValuePair[] pairs, final Level defaultThreshold, final Result onMatch,
-            final Result onMismatch) {
-        return newBuilder()
-                .setKey(key)
-                .setPairs(pairs)
-                .setDefaultThreshold(defaultThreshold)
-                .setOnMatch(onMatch)
-                .setOnMismatch(onMismatch)
-                .setContextDataInjector(ContextDataInjectorFactory.createInjector())
-                .get();
-    }
-
     @PluginFactory
     public static Builder newBuilder() {
         return new Builder();

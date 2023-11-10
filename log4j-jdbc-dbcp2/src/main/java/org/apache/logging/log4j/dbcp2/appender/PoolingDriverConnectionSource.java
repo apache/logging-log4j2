@@ -105,18 +105,6 @@ public final class PoolingDriverConnectionSource extends AbstractDriverManagerCo
 
     private final String poolName;
 
-    /**
-     * @deprecated Use {@link #newPoolingDriverConnectionSourceBuilder()}.
-     */
-    @Deprecated
-    public PoolingDriverConnectionSource(final String driverClassName, final String connectionString,
-            final char[] userName, final char[] password, final Property[] properties, final String poolName)
-            throws SQLException {
-        super(driverClassName, connectionString, URL_PREFIX + poolName, userName, password, properties);
-        this.poolName = poolName;
-        setupDriver(connectionString, null);
-    }
-
     private PoolingDriverConnectionSource(final String driverClassName, final String connectionString,
             final char[] userName, final char[] password, final Property[] properties, final String poolName,
             final PoolableConnectionFactoryConfig poolableConnectionFactoryConfig)

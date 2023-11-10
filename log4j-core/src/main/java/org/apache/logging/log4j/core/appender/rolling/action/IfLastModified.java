@@ -98,18 +98,6 @@ public final class IfLastModified implements PathCondition {
         return "IfLastModified(age=" + age + nested + ")";
     }
 
-    /**
-     * Create an IfLastModified condition.
-     *
-     * @param age The path age that is accepted by this condition. Must be a valid Duration.
-     * @param nestedConditions nested conditions to evaluate if this condition accepts a path
-     * @return An IfLastModified condition.
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static IfLastModified createAgeCondition(final Duration age, final PathCondition... nestedConditions) {
-        return newBuilder().setAge(age).setNestedConditions(nestedConditions).get();
-    }
-
     @PluginFactory
     public static Builder newBuilder() {
         return new Builder();

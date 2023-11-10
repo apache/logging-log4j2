@@ -160,20 +160,6 @@ public class TextEncoderHelper {
     }
 
     /**
-     * For testing purposes only.
-     */
-    @Deprecated
-    public static void encodeText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            final ByteBufferDestination destination) {
-        charsetEncoder.reset();
-        destination.withLock(() -> {
-            ByteBuffer byteBuf = destination.getByteBuffer();
-            byteBuf = encodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf);
-            flushRemainingBytes(charsetEncoder, destination, byteBuf);
-        });
-    }
-
-    /**
      * Continues to write the contents of the ByteBuffer to the destination and encode more of the CharBuffer text
      * into the ByteBuffer until the remaining encoded text fit into the ByteBuffer, at which point the ByteBuffer
      * is returned (without flushing the CharEncoder).
@@ -211,19 +197,6 @@ public class TextEncoderHelper {
         } catch (final CharacterCodingException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    private static ByteBuffer encodeAsMuchAsPossible(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            final boolean endOfInput, final ByteBufferDestination destination, ByteBuffer temp) {
-        CoderResult result;
-        do {
-            result = charsetEncoder.encode(charBuf, temp, endOfInput);
-            temp = drainIfByteBufferFull(destination, temp, result);
-        } while (result.isOverflow()); // byte buffer has been drained: retry
-        if (!result.isUnderflow()) { // we should have fully read the char buffer contents
-            throwException(result);
-        }
-        return temp;
     }
 
     /**

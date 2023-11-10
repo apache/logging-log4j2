@@ -45,23 +45,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
 
     protected OutputStreamManager(final OutputStream os, final String streamName, final Layout layout,
             final boolean writeHeader, final int bufferSize) {
-        this(os, streamName, layout, writeHeader, ByteBuffer.wrap(new byte[bufferSize]));
-    }
-
-    /**
-     * @since 2.6
-     * @deprecated
-     */
-    @Deprecated
-    protected OutputStreamManager(final OutputStream os, final String streamName, final Layout layout,
-            final boolean writeHeader, final ByteBuffer byteBuffer) {
-        super(null, streamName);
-        this.outputStream = os;
-        this.layout = layout;
-        this.byteBuffer = Objects.requireNonNull(byteBuffer, "byteBuffer");
-        if (writeHeader) {
-            writeHeader(os);
-        }
+        this(null, os, streamName, false, layout, writeHeader, ByteBuffer.wrap(new byte[bufferSize]));
     }
 
     /**

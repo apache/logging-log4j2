@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.util.Integers;
@@ -79,14 +81,16 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
                 return null;
             }
             final Layout layout = getOrCreateLayout();
+            final Configuration configuration = getConfiguration();
+            final LoggerContext loggerContext = configuration.getLoggerContext();
             final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(fileName, append, isImmediateFlush(),
-                    actualRegionLength, advertiseURI, layout);
+                    actualRegionLength, advertiseURI, layout, loggerContext);
             if (manager == null) {
                 return null;
             }
 
             return new MemoryMappedFileAppender(name, layout, getFilter(), manager, fileName, isIgnoreExceptions(), false,
-                    advertise ? getConfiguration().getAdvertiser() : null, getPropertyArray());
+                    advertise ? configuration.getAdvertiser() : null, getPropertyArray());
         }
 
         public B setFileName(final String fileName) {

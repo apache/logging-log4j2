@@ -178,7 +178,7 @@ public class CassandraAppender extends AbstractDatabaseAppender<CassandraManager
         public CassandraAppender build() {
             final CassandraManager manager = CassandraManager.getManager(getName(), contactPoints, columns, useTls,
                 clusterName, keyspace, table, username, password, useClockForTimestampGenerator, bufferSize, batched,
-                batchType);
+                batchType, getConfiguration());
             return new CassandraAppender(getName(), getFilter(), isIgnoreExceptions(), getPropertyArray(), manager);
         }
 

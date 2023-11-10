@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
+import org.apache.logging.log4j.core.config.Configuration;
 
 /**
  * An {@link AbstractDatabaseManager} implementation for relational databases accessed via JPA.
@@ -46,8 +47,8 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
     private JpaDatabaseManager(final String name, final int bufferSize,
                                final Class<? extends AbstractLogEventWrapperEntity> entityClass,
                                final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
-                               final String persistenceUnitName) {
-        super(name, bufferSize);
+                               final String persistenceUnitName, final Configuration configuration) {
+        super(name, bufferSize, null, configuration);
         this.entityClassName = entityClass.getName();
         this.entityConstructor = entityConstructor;
         this.persistenceUnitName = persistenceUnitName;
@@ -153,10 +154,11 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
                                                                    entityClass,
                                                            final Constructor<? extends AbstractLogEventWrapperEntity>
                                                                    entityConstructor,
-                                                           final String persistenceUnitName) {
+                                                           final String persistenceUnitName,
+                                                           final Configuration configuration) {
 
         return AbstractDatabaseManager.getManager(
-                name, new FactoryData(bufferSize, entityClass, entityConstructor, persistenceUnitName), FACTORY
+                name, new FactoryData(bufferSize, entityClass, entityConstructor, persistenceUnitName, configuration), FACTORY
         );
     }
 
@@ -170,8 +172,8 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
 
         protected FactoryData(final int bufferSize, final Class<? extends AbstractLogEventWrapperEntity> entityClass,
                               final Constructor<? extends AbstractLogEventWrapperEntity> entityConstructor,
-                              final String persistenceUnitName) {
-            super(bufferSize, null);
+                              final String persistenceUnitName, final Configuration configuration) {
+            super(configuration, bufferSize, null);
 
             this.entityClass = entityClass;
             this.entityConstructor = entityConstructor;
@@ -186,7 +188,8 @@ public final class JpaDatabaseManager extends AbstractDatabaseManager {
         @Override
         public JpaDatabaseManager createManager(final String name, final FactoryData data) {
             return new JpaDatabaseManager(
-                    name, data.getBufferSize(), data.entityClass, data.entityConstructor, data.persistenceUnitName
+                    name, data.getBufferSize(), data.entityClass, data.entityConstructor, data.persistenceUnitName,
+                    data.getConfiguration()
             );
         }
     }

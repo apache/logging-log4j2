@@ -226,20 +226,6 @@ public final class NoSqlDatabaseManager<W> extends AbstractDatabaseManager {
      * @param name The name of the manager, which should include connection details and hashed passwords where possible.
      * @param bufferSize The size of the log event buffer.
      * @param provider A provider instance which will be used to obtain connections to the chosen NoSQL database.
-     * @return a new or existing NoSQL manager as applicable.
-     * @deprecated Use {@link #getNoSqlDatabaseManager(String, int, NoSqlProvider, KeyValuePair[], Configuration)}.
-     */
-    @Deprecated
-    public static NoSqlDatabaseManager<?> getNoSqlDatabaseManager(final String name, final int bufferSize, final NoSqlProvider<?> provider) {
-        return AbstractDatabaseManager.getManager(name, new FactoryData(null, bufferSize, provider, null), FACTORY);
-    }
-
-    /**
-     * Creates a NoSQL manager for use within the {@link NoSqlAppender}, or returns a suitable one if it already exists.
-     *
-     * @param name The name of the manager, which should include connection details and hashed passwords where possible.
-     * @param bufferSize The size of the log event buffer.
-     * @param provider A provider instance which will be used to obtain connections to the chosen NoSQL database.
      * @param additionalFields Additional fields.
      * @param configuration TODO
      * @return a new or existing NoSQL manager as applicable.

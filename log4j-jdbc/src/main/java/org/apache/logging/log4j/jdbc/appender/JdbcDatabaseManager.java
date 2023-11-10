@@ -46,6 +46,7 @@ import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager;
 import org.apache.logging.log4j.core.appender.db.ColumnMapping;
 import org.apache.logging.log4j.core.appender.db.DbAppenderLoggingException;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.jdbc.convert.DateTypeConverter;
@@ -76,10 +77,10 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
         private final boolean truncateStrings;
 
         protected FactoryData(final int bufferSize, final Layout layout,
-                final ConnectionSource connectionSource, final String tableName, final ColumnConfig[] columnConfigs,
-                final ColumnMapping[] columnMappings, final boolean immediateFail, final long reconnectIntervalMillis,
-                final boolean truncateStrings) {
-            super(bufferSize, layout);
+                              final ConnectionSource connectionSource, final String tableName, final ColumnConfig[] columnConfigs,
+                              final ColumnMapping[] columnMappings, final boolean immediateFail, final long reconnectIntervalMillis,
+                              final boolean truncateStrings, final Configuration configuration) {
+            super(configuration, bufferSize, layout);
             this.connectionSource = connectionSource;
             this.tableName = tableName;
             this.columnConfigs = columnConfigs;
@@ -393,9 +394,10 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
     public static JdbcDatabaseManager getManager(final String name, final int bufferSize,
                                                  final Layout layout, final ConnectionSource connectionSource,
                                                  final String tableName, final ColumnConfig[] columnConfigs, final ColumnMapping[] columnMappings,
-                                                 final boolean immediateFail, final long reconnectIntervalMillis, final boolean truncateStrings) {
+                                                 final boolean immediateFail, final long reconnectIntervalMillis, final boolean truncateStrings,
+                                                 final Configuration configuration) {
         return getManager(name, new FactoryData(bufferSize, layout, connectionSource, tableName, columnConfigs,
-                columnMappings, immediateFail, reconnectIntervalMillis, truncateStrings), getFactory());
+                columnMappings, immediateFail, reconnectIntervalMillis, truncateStrings, configuration), getFactory());
     }
 
     // NOTE: prepared statements are prepared in this order: column mappings, then column configs
@@ -410,7 +412,7 @@ public final class JdbcDatabaseManager extends AbstractDatabaseManager {
 
     private JdbcDatabaseManager(final String name, final String sqlStatement, final List<ColumnConfig> columnConfigs,
             final FactoryData factoryData) {
-        super(name, factoryData.getBufferSize());
+        super(name, factoryData.getBufferSize(), factoryData.getLayout(), factoryData.getConfiguration());
         this.sqlStatement = sqlStatement;
         this.columnConfigs = columnConfigs;
         this.factoryData = factoryData;

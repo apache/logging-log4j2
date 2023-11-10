@@ -41,18 +41,6 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
 
         /**
          * Constructs the base factory data.
-         *
-         * @param bufferSize The size of the buffer.
-         * @param layout The appender-level layout
-         * @deprecated Use {@link AbstractFactoryData#AbstractFactoryData(Configuration, int, Layout)}.
-         */
-        @Deprecated
-        protected AbstractFactoryData(final int bufferSize, final Layout layout) {
-            this(null, bufferSize, layout);
-        }
-
-        /**
-         * Constructs the base factory data.
          * @param configuration Configuration creating this instance.
          * @param bufferSize The size of the buffer.
          * @param layout The appender-level layout
@@ -105,31 +93,6 @@ public abstract class AbstractDatabaseManager extends AbstractManager implements
     private final int bufferSize;
     private final Layout layout;
     private boolean running;
-    /**
-     * Constructs the base manager.
-     *
-     * @param name The manager name, which should include any configuration details that one might want to be able to
-     *             reconfigure at runtime, such as database name, username, (hashed) password, etc.
-     * @param bufferSize The size of the log event buffer.
-     * @deprecated Use {@link AbstractDatabaseManager#AbstractDatabaseManager(String, int, Layout, Configuration)}.
-     */
-    @Deprecated
-    protected AbstractDatabaseManager(final String name, final int bufferSize) {
-        this(name, bufferSize, null);
-    }
-
-    /**
-     * Constructs the base manager.
-     *
-     * @param name The manager name, which should include any configuration details that one might want to be able to
-     *             reconfigure at runtime, such as database name, username, (hashed) password, etc.
-     * @param layout the Appender-level layout.
-     * @param bufferSize The size of the log event buffer.
-     * @deprecated Use {@link AbstractDatabaseManager#AbstractDatabaseManager(String, int, Layout, Configuration)}.
-     */
-    protected AbstractDatabaseManager(final String name, final int bufferSize, final Layout layout) {
-        this(name, bufferSize, layout, null);
-    }
 
     /**
      * Constructs the base manager.

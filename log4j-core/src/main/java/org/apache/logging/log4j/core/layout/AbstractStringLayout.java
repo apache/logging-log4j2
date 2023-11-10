@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.spi.AbstractLogger;
@@ -246,7 +245,8 @@ public abstract class AbstractStringLayout extends AbstractLayout {
         if (serializable == null) {
             return defaultValue;
         }
-        return StringEncoder.toBytes(serializable, getCharset());
+        final Charset charset = getCharset();
+        return serializable.getBytes(charset != null ? charset : Charset.defaultCharset());
     }
 
     protected String serializeToString(final Serializer serializer) {
