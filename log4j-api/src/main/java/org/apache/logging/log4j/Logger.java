@@ -70,7 +70,7 @@ import org.apache.logging.log4j.util.Supplier;
  * </pre>
  *
  * <p>
- * Note that although {@link MessageSupplier} is provided, using {@link Supplier<Message>} works just the
+ * Note that although {@link MessageSupplier} is provided, using {@link Supplier Supplier&lt;Message&gt;} works just the
  * same. MessageSupplier was deprecated in 2.6 and un-deprecated in 2.8.1. Anonymous class usage of these APIs
  * should prefer using Supplier instead.
  * </p>

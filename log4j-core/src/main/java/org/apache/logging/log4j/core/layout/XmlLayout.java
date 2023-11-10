@@ -32,7 +32,7 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
 /**
  * Appends a series of {@code event} elements as defined in the <a href="log4j.dtd">log4j.dtd</a>.
  *
- * <h3>Complete well-formed XML vs. fragment XML</h3>
+ * <h2>Complete well-formed XML vs. fragment XML</h2>
  * <p>
  * If you configure {@code complete="true"}, the appender outputs a well-formed XML document where the default namespace
  * is the log4j namespace {@value XmlConstants#XML_NAMESPACE}. By default, with {@code complete="false"}, you should
@@ -41,18 +41,18 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
  * <p>
  * If {@code complete="false"}, the appender does not write the XML processing instruction and the root element.
  * </p>
- * <h3>Encoding</h3>
+ * <h2>Encoding</h2>
  * <p>
  * Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
  * events containing non-ASCII characters could result in corrupted log files.
  * </p>
- * <h3>Pretty vs. compact XML</h3>
+ * <h2>Pretty vs. compact XML</h2>
  * <p>
  * By default, the XML layout is not compact (compact = not "pretty") with {@code compact="false"}, which means the
  * appender uses end-of-line characters and indents lines to format the XML. If {@code compact="true"}, then no
  * end-of-line or indentation is used. Message content may contain, of course, end-of-lines.
  * </p>
- * <h3>Additional Fields</h3>
+ * <h2>Additional Fields</h2>
  * <p>
  * This property allows addition of custom fields into generated JSON.
  * {@code <XmlLayout><KeyValuePair key="foo" value="bar"/></XmlLayout>} inserts {@code <foo>bar</foo>} directly

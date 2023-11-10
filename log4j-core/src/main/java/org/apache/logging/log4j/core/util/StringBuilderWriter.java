@@ -28,7 +28,7 @@ import java.io.Writer;
  * For safe usage with multiple {@link Thread}s then
  * <code>java.io.StringWriter</code> should be used.
  *
- * <h3>History</h3>
+ * <h2>History</h2>
  * <ol>
  * <li>Copied from Apache Commons IO revision 1681000.</li>
  * <li>Pick up Javadoc updates from revision 1722253.</li>

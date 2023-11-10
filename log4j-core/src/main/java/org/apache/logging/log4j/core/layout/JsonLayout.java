@@ -39,7 +39,7 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
  *
  * Appends a series of JSON events as strings serialized as bytes.
  *
- * <h3>Complete well-formed JSON vs. fragment JSON</h3>
+ * <h2>Complete well-formed JSON vs. fragment JSON</h2>
  * <p>
  * If you configure {@code complete="true"}, the appender outputs a well-formed JSON document. By default, with
  * {@code complete="false"}, you should include the output as an <em>external file</em> in a separate file to form a
@@ -49,18 +49,18 @@ import org.apache.logging.log4j.core.util.KeyValuePair;
  * If {@code complete="false"}, the appender does not write the JSON open array character "[" at the start
  * of the document, "]" and the end, nor comma "," between records.
  * </p>
- * <h3>Encoding</h3>
+ * <h2>Encoding</h2>
  * <p>
  * Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
  * events containing non ASCII characters could result in corrupted log files.
  * </p>
- * <h3>Pretty vs. compact JSON</h3>
+ * <h2>Pretty vs. compact JSON</h2>
  * <p>
  * By default, the JSON layout is not compact (a.k.a. "pretty") with {@code compact="false"}, which means the
  * appender uses end-of-line characters and indents lines to format the text. If {@code compact="true"}, then no
  * end-of-line or indentation is used. Message content may contain, of course, escaped end-of-lines.
  * </p>
- * <h3>Additional Fields</h3>
+ * <h2>Additional Fields</h2>
  * <p>
  * This property allows addition of custom fields into generated JSON.
  * {@code <JsonLayout><KeyValuePair key="foo" value="bar"/></JsonLayout>} inserts {@code "foo":"bar"} directly

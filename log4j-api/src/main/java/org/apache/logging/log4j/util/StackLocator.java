@@ -22,7 +22,9 @@ import java.util.Deque;
 import java.util.function.Predicate;
 
 /**
- * <em>Consider this class private.</em> Provides various methods to determine the caller class. <h3>Background</h3>
+ * <em>Consider this class private.</em> Provides various methods to determine the caller class.
+ *
+ * <h2>Background</h2>
  * <p>
  * This method, available only in the Oracle/Sun/OpenJDK implementations of the Java Virtual Machine, is a much more
  * efficient mechanism for determining the {@link Class} of the caller of a particular method. When it is not available,
