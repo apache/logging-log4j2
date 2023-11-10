@@ -533,6 +533,7 @@ public interface ExtendedLogger extends Logger {
      * @param message The message format.
      * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
      */
+    @SuppressWarnings("deprecation")
     void logIfEnabled(String fqcn, Level level, Marker marker, String message, Supplier<?>... paramSuppliers);
 
     /**
@@ -545,6 +546,7 @@ public interface ExtendedLogger extends Logger {
      * @param msgSupplier A function, which when called, produces the desired log message.
      * @param t the exception to log, including its stack trace.
      */
+    @SuppressWarnings("deprecation")
     void logIfEnabled(String fqcn, Level level, Marker marker, Supplier<?> msgSupplier, Throwable t);
 
 }

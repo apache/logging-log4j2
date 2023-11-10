@@ -222,8 +222,13 @@ public class Provider {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Provider)) {
+            return false;
+        }
+
         final Provider provider = (Provider) o;
         return Objects.equals(priority, provider.priority) &&
                 Objects.equals(className, provider.className) &&

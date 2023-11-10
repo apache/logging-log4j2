@@ -64,6 +64,7 @@ public class Unbox {
      * Such memory leaks will not occur if only JDK classes are stored in ThreadLocals.
      * </p>
      */
+    @SuppressWarnings("ThreadLocalUsage")
     private static class WebSafeState {
         private final ThreadLocal<StringBuilder[]> ringBuffer = new ThreadLocal<>();
         private final ThreadLocal<int[]> current = new ThreadLocal<>();
@@ -84,18 +85,6 @@ public class Unbox {
             return result;
         }
 
-        public boolean isBoxedPrimitive(final StringBuilder text) {
-            final StringBuilder[] array = ringBuffer.get();
-            if (array == null) {
-                return false;
-            }
-            for (int i = 0; i < array.length; i++) {
-                if (text == array[i]) {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 
     private static class State {
@@ -113,14 +102,7 @@ public class Unbox {
             return result;
         }
 
-        public boolean isBoxedPrimitive(final StringBuilder text) {
-            for (int i = 0; i < ringBuffer.length; i++) {
-                if (text == ringBuffer[i]) {
-                    return true;
-                }
-            }
-            return false;
-        }
+
     }
     private static final ThreadLocal<State> threadLocalState = new ThreadLocal<>();
     private static final WebSafeState webSafeState = new WebSafeState();

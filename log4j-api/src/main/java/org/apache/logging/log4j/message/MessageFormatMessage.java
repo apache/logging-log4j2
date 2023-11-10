@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
- * Handles messages that consist of a format string conforming to {@link MessageFormat}.
+ * Handles messages that consist of a format string conforming to java.text.MessageFormat.
  */
 public class MessageFormatMessage implements Message {
 
@@ -108,8 +108,13 @@ public class MessageFormatMessage implements Message {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MessageFormatMessage)) {
+            return false;
+        }
+
         final MessageFormatMessage that = (MessageFormatMessage) o;
         return Objects.equals(messagePattern, that.messagePattern) && Arrays.equals(parameters, that.parameters);
     }

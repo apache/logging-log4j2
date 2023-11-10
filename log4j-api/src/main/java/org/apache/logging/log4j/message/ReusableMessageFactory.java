@@ -33,6 +33,7 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
+@SuppressWarnings("ThreadLocalUsage")
 public final class ReusableMessageFactory implements MessageFactory {
 
     /**

@@ -86,9 +86,15 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
     }
 
     @Override
+    @SuppressWarnings("UndefinedEquals")
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SimpleMessage)) {
+            return false;
+        }
+
         final SimpleMessage that = (SimpleMessage) o;
         return Objects.equals(getFormattedMessage(), that.getFormattedMessage());
     }

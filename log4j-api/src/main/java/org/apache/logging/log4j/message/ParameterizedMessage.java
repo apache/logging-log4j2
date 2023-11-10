@@ -222,11 +222,15 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final ParameterizedMessage that = (ParameterizedMessage) o;
-        return Objects.equals(messagePattern, that.messagePattern) && Arrays.equals(argArray, that.argArray);
+    public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof ParameterizedMessage)) {
+            return false;
+        }
+        final ParameterizedMessage that = (ParameterizedMessage) object;
+        return Objects.equals(pattern, that.pattern) && Arrays.equals(args, that.args);
     }
 
     @Override
@@ -237,10 +241,8 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     }
 
     /**
-     * Counts the number of unescaped placeholders in the given messagePattern.
-     *
-     * @param messagePattern the message pattern to be analyzed.
-     * @return the number of unescaped placeholders.
+     * Returns the number of argument placeholders.
+     * @param pattern the message pattern to be analyzed
      */
     public static int countArgumentPlaceholders(final String messagePattern) {
         return ParameterFormatter.countArgumentPlaceholders(messagePattern);

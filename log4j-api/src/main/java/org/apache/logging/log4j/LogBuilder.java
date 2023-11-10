@@ -25,15 +25,15 @@ import org.apache.logging.log4j.util.Supplier;
  * by calling one of the Logger methods that return a LogBuilder.
  */
 public interface LogBuilder {
-
-    LogBuilder NOOP = new LogBuilder() {};
+    /** NOOP Logbuilder */
+    LogBuilder NOOP = new LogBuilder() { };
 
     /**
      * Includes a Marker in the log event. Interface default method does nothing.
      * @param marker The Marker to log.
      * @return The LogBuilder.
      */
-    default LogBuilder withMarker(final Marker marker) {
+    default LogBuilder withMarker(Marker marker) {
         return this;
     }
 
@@ -42,7 +42,7 @@ public interface LogBuilder {
      * @param throwable The Throwable to log.
      * @return the LogBuilder.
      */
-    default LogBuilder withThrowable(final Throwable throwable) {
+    default LogBuilder withThrowable(Throwable throwable) {
         return this;
     }
 
@@ -60,7 +60,7 @@ public interface LogBuilder {
      * @param location The stack trace element to include in the log event.
      * @return The LogBuilder.
      */
-    default LogBuilder withLocation(final StackTraceElement location) {
+    default LogBuilder withLocation(StackTraceElement location) {
         return this;
     }
 
@@ -68,14 +68,14 @@ public interface LogBuilder {
      * Causes all the data collected to be logged along with the message. Interface default method does nothing.
      * @param message The message to log.
      */
-    default void log(final CharSequence message) {
+    default void log(CharSequence message) {
     }
 
     /**
      * Causes all the data collected to be logged along with the message. Interface default method does nothing.
      * @param message The message to log.
      */
-    default void log(final String message) {
+    default void log(String message) {
     }
 
     /**
@@ -86,7 +86,7 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object... params) {
+    default void log(String message, Object... params) {
     }
 
     /**
@@ -95,21 +95,23 @@ public interface LogBuilder {
      * @param message The message.
      * @param params Parameters to the message.
      */
-    default void log(final String message, final Supplier<?>... params) {
+    @SuppressWarnings("deprecation")
+    default void log(String message, Supplier<?>... params) {
     }
 
     /**
      * Causes all the data collected to be logged along with the message. Interface default method does nothing.
      * @param message The message to log.
      */
-    default void log(final Message message) {
+    default void log(Message message) {
     }
 
     /**
      * Causes all the data collected to be logged along with the message. Interface default method does nothing.
      * @param messageSupplier The supplier of the message to log.
      */
-    default void log(final Supplier<Message> messageSupplier) {
+    @SuppressWarnings("deprecation")
+    default void log(Supplier<Message> messageSupplier) {
     }
 
     /**
@@ -119,6 +121,7 @@ public interface LogBuilder {
      * @return the message logger or {@code null} if no logging occurred.
      * @since 2.20
      */
+    @SuppressWarnings("deprecation")
     default Message logAndGet(final Supplier<Message> messageSupplier) {
         return null;
     }
@@ -127,7 +130,7 @@ public interface LogBuilder {
      * Causes all the data collected to be logged along with the message. Interface default method does nothing.
      * @param message The message to log.
      */
-    default void log(final Object message) {
+    default void log(Object message) {
     }
 
     /**
@@ -138,7 +141,7 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0) {
+    default void log(String message, Object p0) {
     }
 
     /**
@@ -150,7 +153,7 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1) {
+    default void log(String message, Object p0, Object p1) {
     }
 
     /**
@@ -163,7 +166,7 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2) {
+    default void log(String message, Object p0, Object p1, Object p2) {
     }
 
     /**
@@ -177,7 +180,7 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3) {
+    default void log(String message, Object p0, Object p1, Object p2, Object p3) {
     }
 
     /**
@@ -192,7 +195,7 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4) {
+    default void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4) {
     }
 
     /**
@@ -208,7 +211,7 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5) {
+    default void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5) {
     }
 
     /**
@@ -225,7 +228,7 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6) {
+    default void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6) {
     }
 
     /**
@@ -243,8 +246,8 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6,
-                     final Object p7) {
+    default void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+            Object p7) {
     }
 
     /**
@@ -263,8 +266,8 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6,
-                     final Object p7, final Object p8) {
+    default void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+            Object p7, Object p8) {
     }
 
     /**
@@ -284,12 +287,12 @@ public interface LogBuilder {
      *
      * @see org.apache.logging.log4j.util.Unbox
      */
-    default void log(final String message, final Object p0, final Object p1, final Object p2, final Object p3, final Object p4, final Object p5, final Object p6,
-                     final Object p7, final Object p8, final Object p9) {
+    default void log(String message, Object p0, Object p1, Object p2, Object p3, Object p4, Object p5, Object p6,
+            Object p7, Object p8, Object p9) {
     }
 
     /**
-     * Causes all the data collected to be logged. Default implementation does nothing.
+     * Causes all the data collected to be logged. Default implementatoin does nothing.
      */
     default void log() {
     }

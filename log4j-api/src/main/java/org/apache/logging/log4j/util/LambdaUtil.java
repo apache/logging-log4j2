@@ -37,6 +37,7 @@ public final class LambdaUtil {
      * @return an array containing the results of evaluating the lambda expressions (or {@code null} if the suppliers
      *         array was {@code null}
      */
+    @SuppressWarnings("deprecation")
     public static Object[] getAll(final Supplier<?>... suppliers) {
         if (suppliers == null) {
             return null;
@@ -55,6 +56,7 @@ public final class LambdaUtil {
      * @return the results of evaluating the lambda expression (or {@code null} if the supplier
      *         was {@code null}
      */
+    @SuppressWarnings("deprecation")
     public static Object get(final Supplier<?> supplier) {
         if (supplier == null) {
             return null;
@@ -84,6 +86,7 @@ public final class LambdaUtil {
      * @return the Message resulting from evaluating the lambda expression or the Message created by the factory for
      * supplied values that are not of type Message
      */
+    @SuppressWarnings("deprecation")
     public static Message getMessage(final Supplier<?> supplier, final MessageFactory messageFactory) {
         if (supplier == null) {
             return null;

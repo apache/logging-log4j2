@@ -27,10 +27,8 @@ class BasicThreadInformation implements ThreadInformation {
     private static final int HASH_MULTIPLIER = 31;
     private final long id;
     private final String name;
-    private final String longName;
     private final Thread.State state;
     private final int priority;
-    private final boolean isAlive;
     private final boolean isDaemon;
     private final String threadGroupName;
 
@@ -41,10 +39,10 @@ class BasicThreadInformation implements ThreadInformation {
     BasicThreadInformation(final Thread thread) {
         this.id = thread.getId();
         this.name = thread.getName();
-        this.longName = thread.toString();
+
         this.state = thread.getState();
         this.priority = thread.getPriority();
-        this.isAlive = thread.isAlive();
+
         this.isDaemon = thread.isDaemon();
         final ThreadGroup group = thread.getThreadGroup();
         threadGroupName = group == null ? null : group.getName();
@@ -55,7 +53,7 @@ class BasicThreadInformation implements ThreadInformation {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof BasicThreadInformation)) {
             return false;
         }
 

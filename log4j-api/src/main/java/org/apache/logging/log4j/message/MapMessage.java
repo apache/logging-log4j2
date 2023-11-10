@@ -478,8 +478,13 @@ public class MapMessage<M extends MapMessage<M, V>, V> implements MultiFormatStr
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MapMessage)) {
+            return false;
+        }
+
         final MapMessage<?, ?> that = (MapMessage<?, ?>) o;
         return Objects.equals(data, that.data);
     }

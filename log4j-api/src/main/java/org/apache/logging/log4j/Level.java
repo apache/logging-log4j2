@@ -121,6 +121,8 @@ public final class Level implements Comparable<Level> {
     public static final String NAMESPACE = "Level";
 
     /**
+     * Category to be used by custom levels.
+     *
      * @since 2.1
      */
     public static final String CATEGORY = NAMESPACE;

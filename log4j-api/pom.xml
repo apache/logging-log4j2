@@ -23,15 +23,11 @@
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
-
   <artifactId>log4j-api</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j API</name>
   <description>The Apache Log4j API</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>API Documentation</docLabel>
-    <projectDir>/api</projectDir>
     <maven.javadoc.skip>false</maven.javadoc.skip>
 
     <!--

@@ -16,11 +16,24 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogBuilder;
+import org.apache.logging.log4j.LoggingException;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.internal.DefaultLogBuilder;
-import org.apache.logging.log4j.message.*;
+import org.apache.logging.log4j.message.EntryMessage;
+import org.apache.logging.log4j.message.FlowMessageFactory;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.*;
+import org.apache.logging.log4j.util.Cast;
+import org.apache.logging.log4j.util.LambdaUtil;
+import org.apache.logging.log4j.util.MessageSupplier;
+import org.apache.logging.log4j.util.PerformanceSensitive;
+import org.apache.logging.log4j.util.StackLocatorUtil;
+import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
@@ -268,31 +281,37 @@ public abstract class AbstractLogger implements ExtendedLogger {
     }
 
     @Override
-    public void debug(final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, Level.DEBUG, null, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void debug(final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, Level.DEBUG, null, messageSupplier, (Throwable) null);
     }
 
     @Override
-    public void debug(final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, Level.DEBUG, null, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void debug(final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, Level.DEBUG, null, messageSupplier, throwable);
     }
 
     @Override
-    public void debug(final Marker marker, final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, Level.DEBUG, marker, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void debug(final Marker marker, final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, Level.DEBUG, marker, messageSupplier, (Throwable) null);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void debug(final Marker marker, final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, Level.DEBUG, marker, message, paramSuppliers);
     }
 
     @Override
-    public void debug(final Marker marker, final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, Level.DEBUG, marker, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void debug(final Marker marker, final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, Level.DEBUG, marker, messageSupplier, throwable);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void debug(final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, Level.DEBUG, null, message, paramSuppliers);
     }
@@ -445,6 +464,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
      * @param paramSuppliers The Suppliers of the parameters.
      * @return The EntryMessage.
      */
+    @SuppressWarnings("deprecation")
     protected EntryMessage enter(final String fqcn, final String format, final Supplier<?>... paramSuppliers) {
         EntryMessage entryMsg = null;
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
@@ -493,6 +513,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
      * @param fqcn The fully qualified class name of the <b>caller</b>.
      * @param params The parameters to the method.
      */
+    @SuppressWarnings("deprecation")
     protected void entry(final String fqcn, final Object... params) {
         if (isEnabled(Level.TRACE, ENTRY_MARKER, (Object) null, null)) {
             if (params == null) {
@@ -516,6 +537,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
         return entryMsg(format, params);
     }
 
+    @SuppressWarnings("deprecation")
     protected EntryMessage entryMsg(final String format, final Supplier<?>... paramSuppliers) {
         return entryMsg(format, LambdaUtil.getAll(paramSuppliers));
     }
@@ -611,31 +633,37 @@ public abstract class AbstractLogger implements ExtendedLogger {
     }
 
     @Override
-    public void error(final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, Level.ERROR, null, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void error(final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, Level.ERROR, null, messageSupplier, (Throwable) null);
     }
 
     @Override
-    public void error(final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, Level.ERROR, null, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void error(final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, Level.ERROR, null, messageSupplier, throwable);
     }
 
     @Override
-    public void error(final Marker marker, final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, Level.ERROR, marker, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void error(final Marker marker, final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, Level.ERROR, marker, messageSupplier, (Throwable) null);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void error(final Marker marker, final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, Level.ERROR, marker, message, paramSuppliers);
     }
 
     @Override
-    public void error(final Marker marker, final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, Level.ERROR, marker, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void error(final Marker marker, final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, Level.ERROR, marker, messageSupplier, throwable);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void error(final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, Level.ERROR, null, message, paramSuppliers);
     }
@@ -903,31 +931,37 @@ public abstract class AbstractLogger implements ExtendedLogger {
     }
 
     @Override
-    public void fatal(final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, Level.FATAL, null, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void fatal(final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, Level.FATAL, null, messageSupplier, (Throwable) null);
     }
 
     @Override
-    public void fatal(final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, Level.FATAL, null, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void fatal(final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, Level.FATAL, null, messageSupplier, throwable);
     }
 
     @Override
-    public void fatal(final Marker marker, final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, Level.FATAL, marker, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void fatal(final Marker marker, final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, Level.FATAL, marker, messageSupplier, (Throwable) null);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void fatal(final Marker marker, final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, Level.FATAL, marker, message, paramSuppliers);
     }
 
     @Override
-    public void fatal(final Marker marker, final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, Level.FATAL, marker, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void fatal(final Marker marker, final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, Level.FATAL, marker, messageSupplier, throwable);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void fatal(final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, Level.FATAL, null, message, paramSuppliers);
     }
@@ -1174,31 +1208,37 @@ public abstract class AbstractLogger implements ExtendedLogger {
     }
 
     @Override
-    public void info(final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, Level.INFO, null, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void info(final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, Level.INFO, null, messageSupplier, (Throwable) null);
     }
 
     @Override
-    public void info(final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, Level.INFO, null, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void info(final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, Level.INFO, null, messageSupplier, throwable);
     }
 
     @Override
-    public void info(final Marker marker, final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, Level.INFO, marker, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void info(final Marker marker, final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, Level.INFO, marker, messageSupplier, (Throwable) null);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void info(final Marker marker, final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, Level.INFO, marker, message, paramSuppliers);
     }
 
     @Override
-    public void info(final Marker marker, final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, Level.INFO, marker, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void info(final Marker marker, final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, Level.INFO, marker, messageSupplier, throwable);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void info(final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, Level.INFO, null, message, paramSuppliers);
     }
@@ -1506,31 +1546,37 @@ public abstract class AbstractLogger implements ExtendedLogger {
     }
 
     @Override
-    public void log(final Level level, final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, level, null, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void log(final Level level, final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, level, null, messageSupplier, (Throwable) null);
     }
 
     @Override
-    public void log(final Level level, final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, level, null, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void log(final Level level, final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, level, null, messageSupplier, throwable);
     }
 
     @Override
-    public void log(final Level level, final Marker marker, final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, level, marker, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void log(final Level level, final Marker marker, final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, level, marker, messageSupplier, (Throwable) null);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void log(final Level level, final Marker marker, final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, level, marker, message, paramSuppliers);
     }
 
     @Override
-    public void log(final Level level, final Marker marker, final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, level, marker, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void log(final Level level, final Marker marker, final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, level, marker, messageSupplier, throwable);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void log(final Level level, final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, level, null, message, paramSuppliers);
     }
@@ -1705,10 +1751,11 @@ public abstract class AbstractLogger implements ExtendedLogger {
     }
 
     @Override
-    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final Supplier<?> msgSupplier,
-            final Throwable t) {
-        if (isEnabled(level, marker, msgSupplier, t)) {
-            logMessage(fqcn, level, marker, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final Supplier<?> messageSupplier,
+            final Throwable throwable) {
+        if (isEnabled(level, marker, messageSupplier, throwable)) {
+            logMessage(fqcn, level, marker, messageSupplier, throwable);
         }
     }
 
@@ -1720,6 +1767,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void logIfEnabled(final String fqcn, final Level level, final Marker marker, final String message,
             final Supplier<?>... paramSuppliers) {
         if (isEnabled(level, marker, message)) {
@@ -1843,10 +1891,14 @@ public abstract class AbstractLogger implements ExtendedLogger {
         logMessageSafely(fqcn, level, marker, message, (t == null && message != null) ? message.getThrowable() : t);
     }
 
-    protected void logMessage(final String fqcn, final Level level, final Marker marker, final Supplier<?> msgSupplier,
-            final Throwable t) {
-        final Message message = LambdaUtil.getMessage(msgSupplier, messageFactory);
-        logMessageSafely(fqcn, level, marker, message, (t == null && message != null) ? message.getThrowable() : t);
+    @SuppressWarnings("deprecation")
+    protected void logMessage(final String fqcn, final Level level, final Marker marker, final Supplier<?> messageSupplier,
+            final Throwable throwable) {
+        final Message message = LambdaUtil.getMessage(messageSupplier, messageFactory);
+        final Throwable effectiveThrowable = (throwable == null && message != null)
+                ? message.getThrowable()
+                : throwable;
+        logMessageSafely(fqcn, level, marker, message, effectiveThrowable);
     }
 
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
@@ -1929,6 +1981,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
         logMessageSafely(fqcn, level, marker, msg, msg.getThrowable());
     }
 
+    @SuppressWarnings("deprecation")
     protected void logMessage(final String fqcn, final Level level, final Marker marker, final String message,
             final Supplier<?>... paramSuppliers) {
         final Message msg = messageFactory.newMessage(message, LambdaUtil.getAll(paramSuppliers));
@@ -2188,31 +2241,37 @@ public abstract class AbstractLogger implements ExtendedLogger {
     }
 
     @Override
-    public void trace(final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, Level.TRACE, null, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void trace(final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, Level.TRACE, null, messageSupplier, (Throwable) null);
     }
 
     @Override
-    public void trace(final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, Level.TRACE, null, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void trace(final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, Level.TRACE, null, messageSupplier, throwable);
     }
 
     @Override
-    public void trace(final Marker marker, final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, Level.TRACE, marker, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void trace(final Marker marker, final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, Level.TRACE, marker, messageSupplier, (Throwable) null);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void trace(final Marker marker, final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, Level.TRACE, marker, message, paramSuppliers);
     }
 
     @Override
-    public void trace(final Marker marker, final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, Level.TRACE, marker, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void trace(final Marker marker, final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, Level.TRACE, marker, messageSupplier, throwable);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void trace(final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, Level.TRACE, null, message, paramSuppliers);
     }
@@ -2363,11 +2422,13 @@ public abstract class AbstractLogger implements ExtendedLogger {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public EntryMessage traceEntry(final Supplier<?>... paramSuppliers) {
         return enter(FQCN, null, paramSuppliers);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public EntryMessage traceEntry(final String format, final Supplier<?>... paramSuppliers) {
         return enter(FQCN, format, paramSuppliers);
     }
@@ -2509,31 +2570,37 @@ public abstract class AbstractLogger implements ExtendedLogger {
     }
 
     @Override
-    public void warn(final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, Level.WARN, null, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void warn(final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, Level.WARN, null, messageSupplier, (Throwable) null);
     }
 
     @Override
-    public void warn(final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, Level.WARN, null, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void warn(final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, Level.WARN, null, messageSupplier, throwable);
     }
 
     @Override
-    public void warn(final Marker marker, final Supplier<?> msgSupplier) {
-        logIfEnabled(FQCN, Level.WARN, marker, msgSupplier, (Throwable) null);
+    @SuppressWarnings("deprecation")
+    public void warn(final Marker marker, final Supplier<?> messageSupplier) {
+        logIfEnabled(FQCN, Level.WARN, marker, messageSupplier, (Throwable) null);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void warn(final Marker marker, final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, Level.WARN, marker, message, paramSuppliers);
     }
 
     @Override
-    public void warn(final Marker marker, final Supplier<?> msgSupplier, final Throwable t) {
-        logIfEnabled(FQCN, Level.WARN, marker, msgSupplier, t);
+    @SuppressWarnings("deprecation")
+    public void warn(final Marker marker, final Supplier<?> messageSupplier, final Throwable throwable) {
+        logIfEnabled(FQCN, Level.WARN, marker, messageSupplier, throwable);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void warn(final String message, final Supplier<?>... paramSuppliers) {
         logIfEnabled(FQCN, Level.WARN, null, message, paramSuppliers);
     }

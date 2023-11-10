@@ -130,6 +130,20 @@ public class FormattedMessage implements Message {
         this.throwable = throwable;
     }
 
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FormattedMessage)) {
+            return false;
+        }
+
+        final FormattedMessage that = (FormattedMessage) o;
+        return Objects.equals(messagePattern, that.messagePattern) && Arrays.equals(argArray, that.argArray);
+    }
+
     /**
      * Gets the message pattern.
      * @return the message pattern.
@@ -192,14 +206,6 @@ public class FormattedMessage implements Message {
             message = getMessage(messagePattern, argArray, null);
         }
         return message.getThrowable();
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final FormattedMessage that = (FormattedMessage) o;
-        return Objects.equals(messagePattern, that.messagePattern) && Arrays.equals(argArray, that.argArray);
     }
 
     @Override

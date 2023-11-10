@@ -106,6 +106,7 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public Message logAndGet(final Supplier<Message> messageSupplier) {
         Message message = null;
         if (isEnabled(message = messageSupplier.get())) {
@@ -136,7 +137,8 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
     }
 
     @Override
-    public void log(final String message, final Supplier<?>... params) {
+    @SuppressWarnings("deprecation")
+    public void log(String message, Supplier<?>... params) {
         final Object[] objs;
         if (isEnabled(message, objs = LambdaUtil.getAll(params))) {
             logMessage(logger.getMessageFactory().newMessage(message, objs));
@@ -144,6 +146,7 @@ public class DefaultLogBuilder implements BridgeAware, LogBuilder, RecyclerAware
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void log(final Supplier<Message> messageSupplier) {
         logAndGet(messageSupplier);
     }

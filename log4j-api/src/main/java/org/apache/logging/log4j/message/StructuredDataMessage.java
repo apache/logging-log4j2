@@ -413,9 +413,13 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StructuredDataMessage)) {
+            return false;
+        }
+
         final StructuredDataMessage that = (StructuredDataMessage) o;
         return Objects.equals(id, that.id) && Objects.equals(message, that.message) && Objects.equals(type, that.type);
     }

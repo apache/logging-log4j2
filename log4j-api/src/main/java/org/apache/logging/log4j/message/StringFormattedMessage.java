@@ -118,8 +118,13 @@ public class StringFormattedMessage implements Message {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StringFormattedMessage)) {
+            return false;
+        }
+
         final StringFormattedMessage that = (StringFormattedMessage) o;
         return Objects.equals(messagePattern, that.messagePattern) && Arrays.equals(argArray, that.argArray);
     }

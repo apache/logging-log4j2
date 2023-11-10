@@ -23,15 +23,11 @@
     <version>${revision}</version>
     <relativePath>../log4j-parent</relativePath>
   </parent>
-
   <artifactId>log4j-core</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j Core</name>
   <description>The Apache Log4j Implementation</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>Core Documentation</docLabel>
-    <projectDir>/core</projectDir>
     <maven.javadoc.skip>false</maven.javadoc.skip>
 
     <!--
@@ -207,6 +203,41 @@
         </configuration>
       </plugin>
 
+      <!-- Remove the following plugin executions after `2.22.0` release!
+     In `2.22.0`, we have removed *unused* `FastDateParser` due to LOG4J2-3672 and #1848.
+     Though `bnd-baseline-m-p` doesn't allow such breaking changes in non-major version upgrades.
+     Hence, we suppress it until `2.22.0` gets released. -->
+      <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-baseline-maven-plugin</artifactId>
+        <configuration>
+          <diffpackages>
+            <diffpackage>!org.apache.logging.log4j.core.util.datetime</diffpackage>
+            <diffpackage>*</diffpackage>
+          </diffpackages>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>remove-after-release</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireProperty>
+                  <property>revision</property>
+                  <regex>2\.22\.0(-SNAPSHOT)?</regex>
+                  <regexMessage>Remove `bnd-baseline-maven-plugin` config in `log4j-core`.</regexMessage>
+                </requireProperty>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>
