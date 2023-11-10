@@ -40,12 +40,12 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Appends a series of YAML events as strings serialized as bytes.
  *
- * <h3>Encoding</h3>
+ * <h2>Encoding</h2>
  * <p>
  * Appenders using this layout should have their {@code charset} set to {@code UTF-8} or {@code UTF-16}, otherwise
  * events containing non ASCII characters could result in corrupted log files.
  * </p>
- * <h3>Additional Fields</h3>
+ * <h2>Additional Fields</h2>
  * <p>
  * This property allows addition of custom fields into generated JSON.
  * {@code <YamlLayout><KeyValuePair key="foo" value="bar"/></YamlLayout>} inserts {@code foo: "bar"} directly into YAML
