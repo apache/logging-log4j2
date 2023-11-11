@@ -32,3 +32,9 @@ reason = "log4j:log4j is a test dependency used in performance comparisons"
 [[IgnoredVulns]]
 id = "GHSA-59j4-wjwp-mw9m"
 reason = "Velocity templates are only used at build time and modifiable by committers."
+[[IgnoredVulns]]
+id = "GHSA-m9p2-j4hg-g373"
+reason = "The CVE doesn't even mention Cassandra 3.x."
+[[IgnoredVulns]]
+id = "GHSA-w77p-8cfg-2x43"
+reason = "Risk is tolerable for the project. Users need to use functionality explicitly."
