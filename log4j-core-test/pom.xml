@@ -379,6 +379,22 @@
           </annotationProcessorPaths>
         </configuration>
       </plugin>
+      <!--
+      https://junit-pioneer.org/docs/environment-variables/#warnings-for-reflective-access
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>
+            <!-- for environment variable access -->
+            --add-opens java.base/java.util=ALL-UNNAMED
+            --add-opens java.base/java.lang=ALL-UNNAMED
+            <!-- for URLStreamHandlerFactory access -->
+            --add-opens java.base/java.net=ALL-UNNAMED
+          </argLine>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>
