@@ -18,7 +18,6 @@ package org.apache.logging.log4j.test.junit;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -154,9 +153,9 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
         }
 
         private static String formatLocalTime(final long epochMilli) {
-            final Instant instant = Instant.ofEpochMilli(epochMilli);
-            final LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-            return localDateTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
+            return DateTimeFormatter.ISO_LOCAL_TIME
+                    .withZone(ZoneId.systemDefault())
+                    .format(Instant.ofEpochMilli(epochMilli));
         }
     }
 
