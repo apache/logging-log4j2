@@ -424,7 +424,7 @@ public class RingBufferLogEvent implements LogEvent, ReusableMessage, CharSequen
         }
 
         // ensure that excessively long char[] arrays are not kept in memory forever
-        if (Constants.ENABLE_THREADLOCALS) {
+        if (org.apache.logging.log4j.util.Constants.isUseThreadLocals()) {
             StringBuilders.trimToMaxSize(messageText, Constants.MAX_REUSABLE_MESSAGE_SIZE);
 
             if (parameters != null) {

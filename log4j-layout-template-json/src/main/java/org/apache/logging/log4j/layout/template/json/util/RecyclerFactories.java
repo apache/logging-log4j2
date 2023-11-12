@@ -25,7 +25,6 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.jctools.queues.MpmcArrayQueue;
@@ -60,7 +59,7 @@ public final class RecyclerFactories {
 
         // TLA-, MPMC-, or ABQ-based queueing factory -- if nothing is specified.
         if (recyclerFactorySpec == null) {
-            if (Constants.ENABLE_THREADLOCALS) {
+            if (org.apache.logging.log4j.util.Constants.isUseThreadLocals()) {
                 return ThreadLocalRecyclerFactory.getInstance();
             } else {
                 final Supplier<Queue<Object>> queueSupplier =

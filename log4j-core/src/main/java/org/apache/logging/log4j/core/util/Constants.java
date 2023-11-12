@@ -76,8 +76,10 @@ public final class Constants {
      * {@code true} if we think we are running in a web container, based on the boolean value of system property
      * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
      * is present in the classpath.
+     * @deprecated use {@link org.apache.logging.log4j.util.Constants#isWebApp()}
      */
-    public static final boolean IS_WEB_APP = org.apache.logging.log4j.util.Constants.IS_WEB_APP;
+    @Deprecated
+    public static final boolean IS_WEB_APP = org.apache.logging.log4j.util.Constants.isWebApp();
 
     /**
      * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
@@ -86,8 +88,10 @@ public final class Constants {
      * "log4j2.enable.threadlocals" to "false".
      *
      * @since 2.6
+     * @deprecated use {@link org.apache.logging.log4j.util.Constants#isUseThreadLocals()}
      */
-    public static final boolean ENABLE_THREADLOCALS = org.apache.logging.log4j.util.Constants.ENABLE_THREADLOCALS;
+    @Deprecated
+    public static final boolean ENABLE_THREADLOCALS = org.apache.logging.log4j.util.Constants.isUseThreadLocals();
 
     /**
      * Kill switch for garbage-free Layout behaviour that encodes LogEvents directly into

@@ -197,7 +197,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
             final Class<ReusableMessageFactory> reusableParameterizedMessageFactoryClass,
             final Class<ParameterizedMessageFactory> parameterizedMessageFactoryClass) {
         try {
-            final String fallback = Constants.ENABLE_THREADLOCALS ? reusableParameterizedMessageFactoryClass.getName()
+            final String fallback = Constants.isUseThreadLocals() ? reusableParameterizedMessageFactoryClass.getName()
                     : parameterizedMessageFactoryClass.getName();
             final String clsName = PropertiesUtil.getProperties().getStringProperty(property, fallback);
             return LoaderUtil.loadClass(clsName).asSubclass(MessageFactory.class);
@@ -2889,7 +2889,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
      * @since 2.20.0
      */
     protected LogBuilder getLogBuilder(final Level level) {
-        if (Constants.ENABLE_THREADLOCALS) {
+        if (Constants.isUseThreadLocals()) {
             final DefaultLogBuilder builder = logBuilder.get();
             if (!builder.isInUse()) {
                 return builder.reset(this, level);

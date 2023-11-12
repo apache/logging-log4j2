@@ -18,11 +18,13 @@ package org.apache.logging.log4j.core.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.core.time.PreciseClock;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.InternalApi;
+import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.Supplier;
 
 /**
  * Factory for {@code Clock} objects.
@@ -35,6 +37,7 @@ public final class ClockFactory {
      */
     public static final String PROPERTY_NAME = "log4j.Clock";
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
+    private static final Lazy<Clock> CLOCK = Lazy.lazy(ClockFactory::createClock);
 
     // private static final Clock clock = createClock();
 
@@ -64,7 +67,12 @@ public final class ClockFactory {
      * @return a {@code Clock} instance
      */
     public static Clock getClock() {
-        return createClock();
+        return CLOCK.get();
+    }
+
+    @InternalApi
+    public static void setClock(final Clock clock) {
+        CLOCK.set(clock);
     }
 
     private static Map<String, Supplier<Clock>> aliases() {

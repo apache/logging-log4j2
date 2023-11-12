@@ -28,6 +28,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.util.Constants;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -48,7 +50,12 @@ public class NestedLoggingFromThrowableMessageTest {
     public static void beforeClass() {
         file1.delete();
         file2.delete();
-        System.setProperty("log4j2.is.webapp", "false");
+        Constants.setWebApp(false);
+    }
+
+    @AfterClass
+    public static void afterClass() throws Exception {
+        Constants.resetWebApp();
     }
 
     @Rule

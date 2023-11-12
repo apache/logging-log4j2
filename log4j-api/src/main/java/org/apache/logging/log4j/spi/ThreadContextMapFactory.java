@@ -27,7 +27,7 @@ import org.apache.logging.log4j.util.ProviderUtil;
 /**
  * Creates the ThreadContextMap instance used by the ThreadContext.
  * <p>
- * If {@link Constants#ENABLE_THREADLOCALS Log4j can use ThreadLocals}, a garbage-free StringMap-based context map can
+ * If {@linkplain Constants#isUseThreadLocals() Log4j can use ThreadLocals}, a garbage-free StringMap-based context map can
  * be installed by setting system property {@code log4j2.garbagefree.threadContextMap} to {@code true}.
  * </p><p>
  * Furthermore, any custom {@code ThreadContextMap} can be installed by setting system property
@@ -121,7 +121,7 @@ public final class ThreadContextMapFactory {
     }
 
     private static ThreadContextMap createDefaultThreadContextMap() {
-        if (Constants.ENABLE_THREADLOCALS) {
+        if (Constants.isUseThreadLocals()) {
             if (GcFreeThreadContextKey) {
                 return new GarbageFreeSortedArrayThreadContextMap();
             }

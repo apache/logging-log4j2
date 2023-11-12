@@ -49,7 +49,7 @@ public class Log4jContextFactory implements LoggerContextFactory, ShutdownCallba
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
     private static final boolean SHUTDOWN_HOOK_ENABLED =
         PropertiesUtil.getProperties().getBooleanProperty(ShutdownCallbackRegistry.SHUTDOWN_HOOK_ENABLED, true) &&
-                !Constants.IS_WEB_APP;
+                !org.apache.logging.log4j.util.Constants.isWebApp();
 
     private final ContextSelector selector;
     private final ShutdownCallbackRegistry shutdownCallbackRegistry;

@@ -56,7 +56,6 @@ import org.apache.logging.log4j.util.Strings;
 public class Log4jLogEvent implements LogEvent {
 
     private static final long serialVersionUID = -8393305700508709443L;
-    private static final Clock CLOCK = ClockFactory.getClock();
     private static volatile NanoClock nanoClock = new DummyNanoClock();
     private static final ContextDataInjector CONTEXT_DATA_INJECTOR = ContextDataInjectorFactory.createInjector();
 
@@ -274,7 +273,7 @@ public class Log4jLogEvent implements LogEvent {
 
         private void initTimeFields() {
             if (instant.getEpochMillisecond() == 0) {
-                instant.initFrom(CLOCK);
+                instant.initFrom(ClockFactory.getClock());
             }
         }
     }
@@ -289,7 +288,7 @@ public class Log4jLogEvent implements LogEvent {
 
     public Log4jLogEvent() {
         this(Strings.EMPTY, null, Strings.EMPTY, null, null, (Throwable) null, null, null, null, 0, null,
-                0, null, CLOCK, nanoClock.nanoTime());
+                0, null, ClockFactory.getClock(), nanoClock.nanoTime());
     }
 
     /**
@@ -337,7 +336,7 @@ public class Log4jLogEvent implements LogEvent {
            null, // thread name
            0, // thread priority
            null, // StackTraceElement source
-           CLOCK, //
+           ClockFactory.getClock(), //
            nanoClock.nanoTime());
    }
 
@@ -361,7 +360,7 @@ public class Log4jLogEvent implements LogEvent {
             null, // thread name
             0, // thread priority
             source, // StackTraceElement source
-            CLOCK, //
+            ClockFactory.getClock(), //
             nanoClock.nanoTime());
     }
 

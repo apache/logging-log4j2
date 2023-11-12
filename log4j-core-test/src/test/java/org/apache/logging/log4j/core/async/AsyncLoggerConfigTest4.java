@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
+import org.apache.logging.log4j.util.Constants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,13 +41,13 @@ public class AsyncLoggerConfigTest4 {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.is.webapp", "false");
+        Constants.setWebApp(false);
         System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, "AsyncLoggerConfigTest4.xml");
     }
 
     @AfterClass
     public static void afterClass() {
-        System.clearProperty("log4j2.is.webapp");
+        Constants.resetWebApp();
     }
 
     @Test

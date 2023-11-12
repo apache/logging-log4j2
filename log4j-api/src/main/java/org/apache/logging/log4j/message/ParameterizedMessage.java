@@ -83,7 +83,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
 
     private static final long serialVersionUID = -665975803997290697L;
 
-    private static final ThreadLocal<StringBuilder> STRING_BUILDER_HOLDER = Constants.ENABLE_THREADLOCALS
+    private static final ThreadLocal<StringBuilder> STRING_BUILDER_HOLDER = Constants.isUseThreadLocals()
             ? ThreadLocal.withInitial(() -> new StringBuilder(Constants.MAX_REUSABLE_MESSAGE_SIZE))
             : null;
 

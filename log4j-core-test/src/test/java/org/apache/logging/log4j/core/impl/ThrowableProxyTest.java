@@ -47,6 +47,8 @@ import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -151,6 +153,7 @@ public class ThrowableProxyTest {
     }
 
     @Test
+    @DisabledForJreRange(min = JRE.JAVA_21, disabledReason = "The Security Manager is deprecated and will be removed in a future release")
     public void testLogStackTraceWithClassThatWillCauseSecurityException() throws IOException {
         final SecurityManager sm = System.getSecurityManager();
         try {
@@ -178,6 +181,7 @@ public class ThrowableProxyTest {
     }
 
     @Test
+    @DisabledForJreRange(min = JRE.JAVA_21, disabledReason = "The Security Manager is deprecated and will be removed in a future release")
     public void testLogStackTraceWithClassLoaderThatWithCauseSecurityException() throws Exception {
         final SecurityManager sm = System.getSecurityManager();
         try {

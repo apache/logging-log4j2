@@ -94,7 +94,7 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
             }
         }
         if (LOG_EVENT_FACTORY == null) {
-            LOG_EVENT_FACTORY = Constants.ENABLE_THREADLOCALS
+            LOG_EVENT_FACTORY = org.apache.logging.log4j.util.Constants.isUseThreadLocals()
                     ? new ReusableLogEventFactory()
                     : new DefaultLogEventFactory();
         }

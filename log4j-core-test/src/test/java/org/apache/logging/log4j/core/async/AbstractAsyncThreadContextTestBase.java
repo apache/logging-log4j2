@@ -40,6 +40,7 @@ import org.apache.logging.log4j.test.TestProperties;
 import org.apache.logging.log4j.test.junit.Resources;
 import org.apache.logging.log4j.test.junit.UsingStatusListener;
 import org.apache.logging.log4j.test.junit.UsingTestProperties;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.Unbox;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -58,7 +59,7 @@ public abstract class AbstractAsyncThreadContextTestBase {
 
     @BeforeAll
     public static void beforeClass() {
-        props.setProperty("log4j2.is.webapp", false);
+        Constants.setWebApp(false);
         props.setProperty("AsyncLogger.RingBufferSize", 128); // minimum ringbuffer size
         props.setProperty("AsyncLoggerConfig.RingBufferSize", 128); // minimum ringbuffer size
     }

@@ -22,24 +22,20 @@ package org.apache.logging.log4j.util;
  * @since 2.6.2
  */
 public final class Constants {
-    /**
-     * {@code true} if we think we are running in a web container, based on the boolean value of system property
-     * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
-     * is present in the classpath.
-     */
-    public static final boolean IS_WEB_APP = PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.is.webapp", isClassAvailable("javax.servlet.Servlet")
-                    || isClassAvailable("jakarta.servlet.Servlet"));
+    private static final LazyBoolean WEB_APP = new LazyBoolean(() -> isWebApp(PropertiesUtil.getProperties()));
+    private static final LazyBoolean USE_THREAD_LOCALS = new LazyBoolean(() -> isUseThreadLocals(PropertiesUtil.getProperties()));
 
     /**
-     * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
-     * <p>
-     * {@code True} for non-{@link #IS_WEB_APP web apps}, disable by setting system property
-     * "log4j2.enable.threadlocals" to "false".
-     * </p>
+     * @deprecated use {@link #isWebApp()}
      */
-    public static final boolean ENABLE_THREADLOCALS = !IS_WEB_APP && PropertiesUtil.getProperties().getBooleanProperty(
-            "log4j2.enable.threadlocals", true);
+    @Deprecated
+    public static final boolean IS_WEB_APP = WEB_APP.getAsBoolean();
+
+    /**
+     * @deprecated use {@link #isUseThreadLocals()}
+     */
+    @Deprecated
+    public static final boolean ENABLE_THREADLOCALS = USE_THREAD_LOCALS.getAsBoolean();
 
     /**
      * Java major version.
@@ -72,18 +68,17 @@ public final class Constants {
         return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
     }
 
-    /**
-     * Determines if a named Class can be loaded or not.
-     *
-     * @param className The class name.
-     * @return {@code true} if the class could be found or {@code false} otherwise.
-     */
-    private static boolean isClassAvailable(final String className) {
-        try {
-            return LoaderUtil.loadClass(className) != null;
-        } catch (final Throwable e) {
-            return false;
-        }
+    private static boolean isServletApiAvailable() {
+        return LoaderUtil.isClassAvailable("javax.servlet.Servlet")
+                || LoaderUtil.isClassAvailable("jakarta.servlet.Servlet");
+    }
+
+    private static boolean isWebApp(final PropertiesUtil properties) {
+        return properties.getBooleanProperty("log4j2.is.webapp", isServletApiAvailable());
+    }
+
+    private static boolean isUseThreadLocals(final PropertiesUtil properties) {
+        return isWebApp(properties) && properties.getBooleanProperty("log4j2.enable.threadlocals", true);
     }
 
     /**
@@ -119,5 +114,45 @@ public final class Constants {
         } catch (final Exception ex) {
             return 0;
         }
+    }
+
+    /**
+     * {@code true} if we think we are running in a web container, based on the boolean value of system property
+     * "log4j2.is.webapp", or (if this system property is not set) whether the  {@code javax.servlet.Servlet} class
+     * is present in the classpath.
+     */
+    public static boolean isWebApp() {
+        return WEB_APP.getAsBoolean();
+    }
+
+    @InternalApi
+    public static void setWebApp(final boolean webApp) {
+        WEB_APP.setAsBoolean(webApp);
+    }
+
+    @InternalApi
+    public static void resetWebApp() {
+        WEB_APP.reset();
+    }
+
+    /**
+     * Kill switch for object pooling in ThreadLocals that enables much of the LOG4J2-1270 no-GC behaviour.
+     * <p>
+     * {@code True} for non-{@linkplain #isWebApp() web apps}, disable by setting system property
+     * "log4j2.enable.threadlocals" to "false".
+     * </p>
+     */
+    public static boolean isUseThreadLocals() {
+        return USE_THREAD_LOCALS.getAsBoolean();
+    }
+
+    @InternalApi
+    public static void setUseThreadLocals(final boolean useThreadLocals) {
+        USE_THREAD_LOCALS.setAsBoolean(useThreadLocals);
+    }
+
+    @InternalApi
+    public static void resetUseThreadLocals() {
+        USE_THREAD_LOCALS.reset();
     }
 }

@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.async.AsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
 import org.apache.logging.log4j.perf.util.BenchmarkMessageParams;
+import org.apache.logging.log4j.util.Constants;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -93,7 +94,7 @@ public class ConcurrentAsyncLoggerToFileBenchmark {
         @Setup
         public final void before() {
             new File("target/ConcurrentAsyncLoggerToFileBenchmark.log").delete();
-            System.setProperty("log4j2.is.webapp", "false");
+            Constants.setWebApp(false);
             asyncLoggerType.setProperties();
             queueFullPolicy.setProperties();
             logger = LogManager.getLogger(ConcurrentAsyncLoggerToFileBenchmark.class);

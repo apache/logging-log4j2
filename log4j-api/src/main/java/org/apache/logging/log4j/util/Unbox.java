@@ -263,7 +263,7 @@ public class Unbox {
     }
 
     private static StringBuilder getSB() {
-        return Constants.ENABLE_THREADLOCALS ? getState().getStringBuilder() : webSafeState.getStringBuilder();
+        return Constants.isUseThreadLocals() ? getState().getStringBuilder() : webSafeState.getStringBuilder();
     }
 
     /** For testing. */

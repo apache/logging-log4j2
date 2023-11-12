@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.pattern;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -29,20 +27,21 @@ import org.apache.logging.log4j.core.AbstractLogEvent;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat;
 import org.apache.logging.log4j.core.util.datetime.FixedDateFormat.FixedTimeZoneFormat;
+import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(Parameterized.class)
 public class DatePatternConverterTest {
 
-    private class MyLogEvent extends AbstractLogEvent {
+    private static class MyLogEvent extends AbstractLogEvent {
         private static final long serialVersionUID = 0;
 
         @Override
@@ -88,18 +87,8 @@ public class DatePatternConverterTest {
         return Arrays.asList(new Object[][]{{Boolean.TRUE}, {Boolean.FALSE}});
     }
 
-    public DatePatternConverterTest(final Boolean threadLocalEnabled) throws Exception {
-        // Setting the system property does not work: the Constant field has already been initialized...
-        //System.setProperty("log4j2.enable.threadlocals", threadLocalEnabled.toString());
-
-        final Field field = Constants.class.getDeclaredField("ENABLE_THREADLOCALS");
-        field.setAccessible(true); // make non-private
-
-        final Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL); // make non-final
-
-        field.setBoolean(null, threadLocalEnabled.booleanValue());
+    public DatePatternConverterTest(final Boolean threadLocalEnabled) {
+        Constants.setUseThreadLocals(threadLocalEnabled);
     }
 
     private static Date date(final int year, final int month, final int date) {

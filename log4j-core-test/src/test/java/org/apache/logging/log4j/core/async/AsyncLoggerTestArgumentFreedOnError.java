@@ -38,9 +38,9 @@ public class AsyncLoggerTestArgumentFreedOnError {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.enable.threadlocals", "true");
+        org.apache.logging.log4j.util.Constants.setUseThreadLocals(true);
+        org.apache.logging.log4j.util.Constants.setWebApp(false);
         System.setProperty("log4j2.enable.direct.encoders", "true");
-        System.setProperty("log4j2.is.webapp", "false");
         System.setProperty("log4j.format.msg.async", "true");
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
                 AsyncLoggerContextSelector.class.getName());
@@ -48,6 +48,8 @@ public class AsyncLoggerTestArgumentFreedOnError {
 
     @AfterClass
     public static void afterClass() {
+        org.apache.logging.log4j.util.Constants.resetWebApp();
+        org.apache.logging.log4j.util.Constants.resetUseThreadLocals();
         System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR, Strings.EMPTY);
     }
 

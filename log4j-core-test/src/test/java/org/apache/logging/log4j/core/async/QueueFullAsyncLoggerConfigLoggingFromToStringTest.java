@@ -21,16 +21,21 @@ import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
 import org.apache.logging.log4j.test.junit.SetTestProperty;
 import org.apache.logging.log4j.util.Constants;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 /**
  * Tests queue full scenarios with AsyncLoggers in configuration.
  */
-@SetTestProperty(key = "log4j2.enableThreadlocals", value = "true")
-@SetTestProperty(key = "log4j2.isWebapp", value= "false")
 @SetTestProperty(key = "log4j2.asyncLoggerConfigRingBufferSize", value = "128")
 public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFullAbstractTest {
+
+    @BeforeEach
+    void setUp() {
+        Constants.setWebApp(false);
+        Constants.setUseThreadLocals(true);
+    }
 
     @Override
     @Test
@@ -44,7 +49,7 @@ public class QueueFullAsyncLoggerConfigLoggingFromToStringTest extends QueueFull
     @Override
     protected void checkConfig(final LoggerContext ctx) throws ReflectiveOperationException {
         assertAsyncLoggerConfig(ctx, 128);
-        assertThat(Constants.IS_WEB_APP).isFalse();
-        assertThat(Constants.ENABLE_THREADLOCALS).isTrue();
+        assertThat(Constants.isWebApp()).isFalse();
+        assertThat(Constants.isUseThreadLocals()).isTrue();
     }
 }

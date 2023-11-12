@@ -141,7 +141,7 @@ public class ResponseTimeTest {
         runLatencyTest(logger, WARMUP_DURATION_MILLIS, WARMUP_COUNT, loadMessagesPerSec, idleStrategy,
                 warmupServiceTmHistograms, warmupResponseTmHistograms, threadCount);
         System.out.println("-----------------Warmup done. load=" + loadMessagesPerSec);
-        if (!Constants.ENABLE_DIRECT_ENCODERS || !Constants.ENABLE_THREADLOCALS) {
+        if (!Constants.ENABLE_DIRECT_ENCODERS || !org.apache.logging.log4j.util.Constants.isUseThreadLocals()) {
             //System.gc();
             //Thread.sleep(5000);
         }

@@ -33,7 +33,6 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.config.ReliabilityStrategy;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.ContextDataInjectorFactory;
-import org.apache.logging.log4j.core.util.Clock;
 import org.apache.logging.log4j.core.util.ClockFactory;
 import org.apache.logging.log4j.core.util.NanoClock;
 import org.apache.logging.log4j.message.Message;
@@ -70,7 +69,6 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
     // immediate inlining instead of waiting until they are designated "hot enough".
 
     private static final StatusLogger LOGGER = StatusLogger.getLogger();
-    private static final Clock CLOCK = ClockFactory.getClock(); // not reconfigurable
     private static final ContextDataInjector CONTEXT_DATA_INJECTOR = ContextDataInjectorFactory.createInjector();
 
     private static final ThreadNameCachingStrategy THREAD_NAME_CACHING_STRATEGY = ThreadNameCachingStrategy.create();
@@ -269,7 +267,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
             ThreadContext.getImmutableStack(), //
 
             location,
-            CLOCK, //
+            ClockFactory.getClock(), //
             nanoClock //
         );
     }
@@ -286,7 +284,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
 
                 // location (expensive to calculate)
                 calcLocationIfRequested(fqcn), //
-                CLOCK, //
+                ClockFactory.getClock(), //
                 nanoClock //
         );
     }
@@ -415,7 +413,7 @@ public class AsyncLogger extends Logger implements EventTranslatorVararg<RingBuf
                 // in the AsyncLogger#actualAsyncLog method
                 CONTEXT_DATA_INJECTOR.injectContextData(null, (StringMap) event.getContextData()),
                 contextStack, currentThread.getId(), threadName, currentThread.getPriority(), location,
-                CLOCK, nanoClock);
+                ClockFactory.getClock(), nanoClock);
     }
 
     /**
