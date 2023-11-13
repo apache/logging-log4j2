@@ -91,7 +91,7 @@ public class AsyncQueueFullPolicyFactoryTest {
         }
     }
 
-    static class CustomRouterDefaultConstructor implements AsyncQueueFullPolicy {
+    public static class CustomRouterDefaultConstructor implements AsyncQueueFullPolicy {
         public CustomRouterDefaultConstructor() {
         }
 
@@ -101,7 +101,7 @@ public class AsyncQueueFullPolicyFactoryTest {
         }
     }
 
-    static class DoesNotImplementInterface {
+    public static class DoesNotImplementInterface {
     }
 
     @Test
