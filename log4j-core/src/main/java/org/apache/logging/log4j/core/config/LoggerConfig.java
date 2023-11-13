@@ -53,6 +53,7 @@ import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StackLocatorUtil;
@@ -82,21 +83,15 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
     private final ReliabilityStrategy reliabilityStrategy;
 
     static {
-        final String factory = PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_LOG_EVENT_FACTORY);
-        if (factory != null) {
-            try {
-                final Class<?> clazz = Loader.loadClass(factory);
-                if (clazz != null && LogEventFactory.class.isAssignableFrom(clazz)) {
-                    LOG_EVENT_FACTORY = (LogEventFactory) clazz.newInstance();
-                }
-            } catch (final Exception ex) {
-                LOGGER.error("Unable to create LogEventFactory {}", factory, ex);
-            }
+        try {
+            LOG_EVENT_FACTORY =
+                    LoaderUtil.newCheckedInstanceOfProperty(Constants.LOG4J_LOG_EVENT_FACTORY, LogEventFactory.class);
+        } catch (final Exception ex) {
+            LOGGER.error("Unable to create LogEventFactory: {}", ex.getMessage(), ex);
         }
         if (LOG_EVENT_FACTORY == null) {
-            LOG_EVENT_FACTORY = Constants.ENABLE_THREADLOCALS
-                    ? new ReusableLogEventFactory()
-                    : new DefaultLogEventFactory();
+            LOG_EVENT_FACTORY =
+                    Constants.ENABLE_THREADLOCALS ? new ReusableLogEventFactory() : new DefaultLogEventFactory();
         }
     }
 

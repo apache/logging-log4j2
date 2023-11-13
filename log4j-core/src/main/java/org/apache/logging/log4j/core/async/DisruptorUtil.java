@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -36,6 +37,8 @@ final class DisruptorUtil {
     private static final int RINGBUFFER_MIN_SIZE = 128;
     private static final int RINGBUFFER_DEFAULT_SIZE = 256 * 1024;
     private static final int RINGBUFFER_NO_GC_DEFAULT_SIZE = 4 * 1024;
+    public static final String LOGGER_EXCEPTION_HANDLER_PROPERTY = "AsyncLogger.ExceptionHandler";
+    public static final String LOGGER_CONFIG_EXCEPTION_HANDLER_PROPERTY = "AsyncLoggerConfig.ExceptionHandler";
 
     /**
      * LOG4J2-2606: Users encountered excessive CPU utilization with Disruptor v3.4.2 when the application
@@ -82,35 +85,31 @@ final class DisruptorUtil {
     }
 
     static ExceptionHandler<RingBufferLogEvent> getAsyncLoggerExceptionHandler() {
-        final String cls = PropertiesUtil.getProperties().getStringProperty("AsyncLogger.ExceptionHandler");
-        if (cls == null) {
-            return new AsyncLoggerDefaultExceptionHandler();
-        }
+        ExceptionHandler<RingBufferLogEvent> handler = null;
         try {
-            @SuppressWarnings("unchecked")
-            final Class<? extends ExceptionHandler<RingBufferLogEvent>> klass =
-                (Class<? extends ExceptionHandler<RingBufferLogEvent>>) Loader.loadClass(cls);
-            return klass.newInstance();
-        } catch (final Exception ignored) {
-            LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: error creating {}: ", cls, ignored);
-            return new AsyncLoggerDefaultExceptionHandler();
+            handler =
+                    LoaderUtil.newCheckedInstanceOfProperty(LOGGER_EXCEPTION_HANDLER_PROPERTY, ExceptionHandler.class);
+        } catch (final ReflectiveOperationException e) {
+            LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: {}", e.getMessage(), e);
         }
+        if (handler != null) {
+            return handler;
+        }
+        return new AsyncLoggerDefaultExceptionHandler();
     }
 
     static ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper> getAsyncLoggerConfigExceptionHandler() {
-        final String cls = PropertiesUtil.getProperties().getStringProperty("AsyncLoggerConfig.ExceptionHandler");
-        if (cls == null) {
-            return new AsyncLoggerConfigDefaultExceptionHandler();
-        }
+        ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper> handler = null;
         try {
-            @SuppressWarnings("unchecked")
-            final Class<? extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>> klass =
-                    (Class<? extends ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper>>) Loader.loadClass(cls);
-            return klass.newInstance();
-        } catch (final Exception ignored) {
-            LOGGER.debug("Invalid AsyncLoggerConfig.ExceptionHandler value: error creating {}: ", cls, ignored);
-            return new AsyncLoggerConfigDefaultExceptionHandler();
+            handler = LoaderUtil.newCheckedInstanceOfProperty(
+                    LOGGER_CONFIG_EXCEPTION_HANDLER_PROPERTY, ExceptionHandler.class);
+        } catch (final ReflectiveOperationException e) {
+            LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: {}", e.getMessage(), e);
         }
+        if (handler != null) {
+            return handler;
+        }
+        return new AsyncLoggerConfigDefaultExceptionHandler();
     }
 
     /**

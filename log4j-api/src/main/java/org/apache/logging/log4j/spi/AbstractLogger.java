@@ -218,8 +218,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
 
     private static MessageFactory2 createDefaultMessageFactory() {
         try {
-            final MessageFactory result =
-                    DEFAULT_MESSAGE_FACTORY_CLASS.getDeclaredConstructor().newInstance();
+            final MessageFactory result = LoaderUtil.newInstanceOf(DEFAULT_MESSAGE_FACTORY_CLASS);
             return narrow(result);
         } catch (final ReflectiveOperationException e) {
             throw new IllegalStateException(e);
@@ -235,7 +234,7 @@ public abstract class AbstractLogger implements ExtendedLogger, LocationAwareLog
 
     private static FlowMessageFactory createDefaultFlowMessageFactory() {
         try {
-            return DEFAULT_FLOW_MESSAGE_FACTORY_CLASS.getDeclaredConstructor().newInstance();
+            return LoaderUtil.newInstanceOf(DEFAULT_FLOW_MESSAGE_FACTORY_CLASS);
         } catch (final ReflectiveOperationException e) {
             throw new IllegalStateException(e);
         }

@@ -77,6 +77,7 @@ import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.core.util.WatcherFactory;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -501,7 +502,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
             if (type != null) {
                 final Class<? extends Advertiser> clazz = type.getPluginClass().asSubclass(Advertiser.class);
                 try {
-                    advertiser = clazz.newInstance();
+                    advertiser = LoaderUtil.newInstanceOf(clazz);
                     advertisement = advertiser.advertise(advertiserNode.getAttributes());
                 } catch (final ReflectiveOperationException e) {
                     LOGGER.error("{} attempting to instantiate advertiser: {}", e.getClass().getSimpleName(), nodeName, e);

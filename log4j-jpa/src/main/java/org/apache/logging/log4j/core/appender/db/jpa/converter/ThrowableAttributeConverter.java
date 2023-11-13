@@ -232,7 +232,7 @@ public class ThrowableAttributeConverter implements AttributeConverter<Throwable
 
     private Throwable getThrowable(final Class<Throwable> throwableClass) {
         try {
-            return throwableClass.newInstance();
+            return LoaderUtil.newInstanceOf(throwableClass);
         } catch (final Exception e) {
             return null;
         }

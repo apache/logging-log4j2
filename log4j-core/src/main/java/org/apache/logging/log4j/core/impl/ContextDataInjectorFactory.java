@@ -24,6 +24,7 @@ import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
@@ -41,6 +42,8 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
  * @since 2.7
  */
 public class ContextDataInjectorFactory {
+
+    public static final String CONTEXT_DATA_INJECTOR_PROPERTY = "log4j2.ContextDataInjector";
 
     /**
      * Returns a new {@code ContextDataInjector} instance based on the value of system property
@@ -66,21 +69,17 @@ public class ContextDataInjectorFactory {
      * @see ContextDataInjector
      */
     public static ContextDataInjector createInjector() {
-        final String className = PropertiesUtil.getProperties().getStringProperty("log4j2.ContextDataInjector");
-        if (className == null) {
-            return createDefaultInjector();
-        }
+        ContextDataInjector injector = null;
         try {
-            final Class<? extends ContextDataInjector> cls = Loader.loadClass(className).asSubclass(
-                    ContextDataInjector.class);
-            return cls.newInstance();
-        } catch (final Exception dynamicFailed) {
-            final ContextDataInjector result = createDefaultInjector();
-            StatusLogger.getLogger().warn(
-                    "Could not create ContextDataInjector for '{}', using default {}: {}",
-                    className, result.getClass().getName(), dynamicFailed);
-            return result;
+            injector =
+                    LoaderUtil.newCheckedInstanceOfProperty(CONTEXT_DATA_INJECTOR_PROPERTY, ContextDataInjector.class);
+        } catch (final ReflectiveOperationException e) {
+            StatusLogger.getLogger().warn("Could not create ContextDataInjector: {}", e.getMessage(), e);
         }
+        if (injector != null) {
+            return injector;
+        }
+        return createDefaultInjector();
     }
 
     private static ContextDataInjector createDefaultInjector() {

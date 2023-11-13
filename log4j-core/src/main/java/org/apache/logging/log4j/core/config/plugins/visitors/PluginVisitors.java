@@ -21,6 +21,7 @@ import java.lang.annotation.Annotation;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.PluginVisitorStrategy;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Utility class to locate an appropriate {@link PluginVisitor} implementation for an annotation.
@@ -46,7 +47,7 @@ public final class PluginVisitors {
             return null;
         }
         try {
-            return strategy.value().newInstance();
+            return LoaderUtil.newInstanceOf(strategy.value());
         } catch (final Exception e) {
             LOGGER.error("Error loading PluginVisitor [{}] for annotation [{}].", strategy.value(), annotation, e);
             return null;

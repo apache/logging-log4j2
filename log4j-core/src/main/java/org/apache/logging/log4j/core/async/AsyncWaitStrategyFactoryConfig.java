@@ -25,6 +25,7 @@ import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * This class allows users to configure the factory used to create
@@ -85,17 +86,17 @@ public class AsyncWaitStrategyFactoryConfig {
 
     public AsyncWaitStrategyFactory createWaitStrategyFactory() {
         try {
-            @SuppressWarnings("unchecked")
-            final Class<? extends AsyncWaitStrategyFactory> klass = (Class<? extends AsyncWaitStrategyFactory>) Loader.loadClass(factoryClassName);
-            if (AsyncWaitStrategyFactory.class.isAssignableFrom(klass)) {
-                return klass.newInstance();
-            }
+            return LoaderUtil.newCheckedInstanceOf(factoryClassName, AsyncWaitStrategyFactory.class);
+        } catch (final ClassCastException e) {
             LOGGER.error("Ignoring factory '{}': it is not assignable to AsyncWaitStrategyFactory", factoryClassName);
             return null;
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            LOGGER.info("Invalid implementation class name value: error creating AsyncWaitStrategyFactory {}: {}", factoryClassName, e);
+        } catch (ReflectiveOperationException e) {
+            LOGGER.info(
+                    "Invalid implementation class name value: error creating AsyncWaitStrategyFactory {}: {}",
+                    factoryClassName,
+                    e.getMessage(),
+                    e);
             return null;
         }
-
     }
 }

@@ -19,6 +19,7 @@ package org.apache.logging.log4j.message;
 import java.io.Serializable;
 
 import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.Strings;
@@ -58,7 +59,7 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory, Serializab
 
     private static MessageFactory createDefaultMessageFactory() {
         try {
-            return AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS.getDeclaredConstructor().newInstance();
+            return LoaderUtil.newInstanceOf(AbstractLogger.DEFAULT_MESSAGE_FACTORY_CLASS);
         } catch (final ReflectiveOperationException e) {
             throw new IllegalStateException(e);
         }

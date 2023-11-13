@@ -60,6 +60,7 @@ import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.SecretKeyProvider;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -449,7 +450,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
                                 found = true;
                                 final Class<?> cl = entry.getValue().getPluginClass();
                                 try {
-                                    final SecretKeyProvider provider = (SecretKeyProvider) cl.newInstance();
+                                    final SecretKeyProvider provider = (SecretKeyProvider) LoaderUtil.newInstanceOf(cl);
                                     secretKey = provider.getSecretKey();
                                     LOGGER.debug("Persisting events using SecretKeyProvider {}", cl.getName());
                                 } catch (final Exception ex) {
