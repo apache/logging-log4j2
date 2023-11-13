@@ -73,7 +73,7 @@ public class ManagerRegistry {
         final String name = manager.getName();
         registryLock.lock();
         try {
-            if (--manager.count <= 0 && managers.remove(name, manager)) {
+            if (--manager.count <= 0 && removeManager(name, manager)) {
                 final String simpleName = manager.getClass().getSimpleName();
                 LOGGER.debug("Shutting down {} {}", simpleName, name);
                 final boolean stopped = manager.releaseSub(timeout, unit);
@@ -85,4 +85,9 @@ public class ManagerRegistry {
             registryLock.unlock();
         }
     }
+
+    boolean removeManager(final String name, final AbstractManager manager) {
+        return managers.remove(name, manager);
+    }
+
 }
