@@ -144,6 +144,11 @@ public class StatusData implements Serializable {
             sb.append(SPACE);
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             t.printStackTrace(new PrintStream(baos));
+            /*
+             * https://errorprone.info/bugpattern/DefaultCharset
+             *
+             * Since Java 9 we'll be able to provide a charset.
+             */
             sb.append(baos.toString());
         }
         return sb.toString();

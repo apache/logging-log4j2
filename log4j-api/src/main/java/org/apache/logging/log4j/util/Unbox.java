@@ -62,6 +62,10 @@ public class Unbox {
      * Such memory leaks will not occur if only JDK classes are stored in ThreadLocals.
      * </p>
      */
+    /*
+     * https://errorprone.info/bugpattern/ThreadLocalUsage
+     * Instance thread locals are not a problem here, since this class is a singleton.
+     */
     @SuppressWarnings("ThreadLocalUsage")
     private static class WebSafeState {
         private final ThreadLocal<StringBuilder[]> ringBuffer = new ThreadLocal<>();

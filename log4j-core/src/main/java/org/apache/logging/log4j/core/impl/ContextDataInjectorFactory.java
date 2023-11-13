@@ -19,13 +19,11 @@ package org.apache.logging.log4j.core.impl;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.spi.CopyOnWrite;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 
 /**
@@ -43,7 +41,7 @@ import org.apache.logging.log4j.util.ReadOnlyStringMap;
  */
 public class ContextDataInjectorFactory {
 
-    public static final String CONTEXT_DATA_INJECTOR_PROPERTY = "log4j2.ContextDataInjector";
+    private static final String CONTEXT_DATA_INJECTOR_PROPERTY = "log4j2.ContextDataInjector";
 
     /**
      * Returns a new {@code ContextDataInjector} instance based on the value of system property

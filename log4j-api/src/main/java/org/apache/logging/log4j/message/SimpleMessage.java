@@ -19,6 +19,7 @@ package org.apache.logging.log4j.message;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Objects;
 
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
@@ -100,7 +101,13 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
 
         final SimpleMessage that = (SimpleMessage) o;
 
-        return !(charSequence != null ? !charSequence.equals(that.charSequence) : that.charSequence != null);
+        /*
+         * https://errorprone.info/bugpattern/UndefinedEquals
+         *
+         * If the char sequences are different, we fall back on string comparison.
+         */
+        return Objects.equals(this.charSequence, that.charSequence)
+                || Objects.equals(this.getFormattedMessage(), that.getFormattedMessage());
     }
 
     @Override

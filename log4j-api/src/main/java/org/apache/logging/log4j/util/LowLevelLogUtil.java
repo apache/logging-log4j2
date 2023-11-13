@@ -32,6 +32,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 final class LowLevelLogUtil {
 
+    /*
+     * https://errorprone.info/bugpattern/DefaultCharset
+     *
+     * We intentionally use the system encoding.
+     */
     @SuppressWarnings("DefaultCharset")
     private static PrintWriter writer = new PrintWriter(System.err, true);
 
@@ -69,6 +74,11 @@ final class LowLevelLogUtil {
      */
     @SuppressWarnings("DefaultCharset")
     public static void setOutputStream(final OutputStream out) {
+        /*
+         * https://errorprone.info/bugpattern/DefaultCharset
+         *
+         * We intentionally use the system encoding.
+         */
         LowLevelLogUtil.writer = new PrintWriter(Objects.requireNonNull(out), true);
     }
 
