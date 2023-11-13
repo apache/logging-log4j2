@@ -92,7 +92,7 @@ public class LogManager {
                     final Class<? extends LoggerContextFactory> factoryClass = provider.loadLoggerContextFactory();
                     if (factoryClass != null) {
                         try {
-                            factories.put(provider.getPriority(), factoryClass.getDeclaredConstructor().newInstance());
+                            factories.put(provider.getPriority(), LoaderUtil.newInstanceOf(factoryClass));
                         } catch (final Exception e) {
                             LOGGER.error("Unable to create class {} specified in provider URL {}",
                                     factoryClass.getName(), provider.getUrl(), e);

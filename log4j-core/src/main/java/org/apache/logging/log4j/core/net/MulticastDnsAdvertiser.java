@@ -135,7 +135,7 @@ public class MulticastDnsAdvertiser implements Advertiser {
 
     private static Object createJmDnsVersion1() {
         try {
-            return jmDNSClass.getConstructor().newInstance();
+            return LoaderUtil.newInstanceOf(jmDNSClass);
         } catch (final InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             LOGGER.warn("Unable to instantiate JMDNS", e);
         }

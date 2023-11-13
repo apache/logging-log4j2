@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.ProviderUtil;
 
@@ -103,7 +104,7 @@ public final class ThreadContextMapFactory {
                     final Class<? extends ThreadContextMap> clazz = provider.loadThreadContextMap();
                     if (clazz != null) {
                         try {
-                            result = clazz.getDeclaredConstructor().newInstance();
+                            result = LoaderUtil.newInstanceOf(clazz);
                             break;
                         } catch (final Exception e) {
                             LOGGER.error("Unable to locate or load configured ThreadContextMap {}",
