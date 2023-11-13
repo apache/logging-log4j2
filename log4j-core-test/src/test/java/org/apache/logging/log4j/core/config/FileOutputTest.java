@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +39,8 @@ public class FileOutputTest {
     public void testConfig() throws IOException {
         final Path logFile = loggingPath.resolve("status.log");
         assertThat(logFile).exists().isNotEmptyFile();
+        // Closes the current listeners
+        StatusLogger.getLogger().reset();
     }
 
 }
