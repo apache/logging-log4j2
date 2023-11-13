@@ -57,8 +57,8 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 * Set the default `minLevel` and `maxLevel` of `LevelRangeFilter` to `OFF` and `ALL`, respectively (https://github.com/apache/logging-log4j2/pull/1503[1503])
 * Removed additional `isFiltered` checks in `AsyncLoggerConfig` (https://github.com/apache/logging-log4j2/pull/1550[1550])
 * Use Java version-specific warnings in `StackLocator` (https://github.com/apache/logging-log4j2/pull/1760[1760])
-* Started logging a status error event instead of an NPE in `OsgiServiceLocator.loadServices(Class, Lookup, boolean)` when a bundle has no valid `BundleContext` for a service type
 * Implemented a CI-based release process
+* Started logging a status error event instead of an NPE in `OsgiServiceLocator.loadServices(Class, Lookup, boolean)` when a bundle has no valid `BundleContext` for a service type
 * Update Eclipse Angus Activation to version https://github.com/eclipse-ee4j/angus-activation/releases/tag/2.0.1[2.0.1] (https://github.com/apache/logging-log4j2/issues/1591[1591])
 * Update Eclipse Angus Mail to version https://github.com/eclipse-ee4j/angus-mail/releases/tag/2.0.2[2.0.2] (https://github.com/apache/logging-log4j2/issues/1591[1591])
 * Update `com.datastax.cassandra:cassandra-driver-core` to version 3.11.5 (https://github.com/apache/logging-log4j2/issues/1591[1591])

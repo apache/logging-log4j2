@@ -74,5 +74,6 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 
 * Export missing OSGi & JPMS modules in `log4j-layout-template-json` and `log4j-1.2-api` (https://github.com/apache/logging-log4j2/issues/1895[1895])
 * Fix `spring-test` dependency scope change (https://issues.apache.org/jira/browse/LOG4J2-3675[LOG4J2-3675])
+* Fix Javadoc inheritDoc tags
 * Fix JPMS descriptors causing `jlink` issues (https://github.com/apache/logging-log4j2/issues/1896[1896])
 * Add missing `Implementation-` and `Specification-` entries to `MANIFEST.MF` (implemented by `logging-parent` version `10.3.0` update) (https://github.com/apache/logging-log4j2/issues/1923[1923])

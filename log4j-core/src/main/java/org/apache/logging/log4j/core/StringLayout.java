@@ -19,7 +19,7 @@ package org.apache.logging.log4j.core;
 import java.nio.charset.Charset;
 
 /**
- * Instantiates the @{link Layout} type for String-based layouts.
+ * Instantiates the {@link Layout} type for String-based layouts.
  */
 public interface StringLayout extends Layout<String> {
 

@@ -155,7 +155,7 @@ public class AbstractDriverManagerConnectionSource extends AbstractConnectionSou
         } else {
             connection = DriverManager.getConnection(actualConnectionString, toString(userName), toString(password));
         }
-        LOGGER.debug("{} acquired connection for '{}': {} ({}@{})", getClass().getSimpleName(), actualConnectionString,
+        LOGGER.debug("{} acquired connection for '{}': {} ({}{@})", getClass().getSimpleName(), actualConnectionString,
                 connection, connection.getClass().getName(), Integer.toHexString(connection.hashCode()));
         return connection;
     }

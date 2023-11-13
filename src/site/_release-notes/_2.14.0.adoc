@@ -67,10 +67,10 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 * Add date pattern support for HTML layout. (https://issues.apache.org/jira/browse/LOG4J2-2889[LOG4J2-2889])
 * Allow GelfLayout to produce newline delimited events. (https://issues.apache.org/jira/browse/LOG4J2-2892[LOG4J2-2892])
-* Update MongoDB tests to require Java 8 unconditionally now that Log4j requires Java 8.
 * Update com.fasterxml.jackson.* 2.10.2 -> 2.11.0.
 * Update jackson 2.11.0 -> 2.11.2.
 * Update mongodb3.version from 3.12.1 to 3.12.6.
+* Update MongoDB tests to require Java 8 unconditionally now that Log4j requires Java 8.
 * Update org.apache.activemq:activemq-broker 5.15.11 -> 5.16.0.
 * Update org.apache.commons:commons-compress 1.19 -> 1.20.
 * Update org.apache.commons:commons-csv 1.7 -> 1.8.

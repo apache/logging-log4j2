@@ -30,20 +30,20 @@ public class LayoutTest extends TestCase {
      */
     private static final class MockLayout extends Layout {
         /**
-         * @{inheritDoc}
+         * {@inheritDoc}
          */
         public void activateOptions() {
         }
 
         /**
-         * @{inheritDoc}
+         * {@inheritDoc}
          */
         public String format(final LoggingEvent event) {
             return "Mock";
         }
 
         /**
-         * @{inheritDoc}
+         * {@inheritDoc}
          */
         public boolean ignoresThrowable() {
             return true;

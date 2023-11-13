@@ -54,7 +54,7 @@ public class DateLayoutTest extends LayoutTest {
     }
 
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     protected Layout createLayout() {
         return new MockLayout();
@@ -264,20 +264,20 @@ public class DateLayoutTest extends LayoutTest {
         }
 
         /**
-         * @{inheritDoc}
+         * {@inheritDoc}
          */
         public String format(final LoggingEvent event) {
             return "Mock";
         }
 
         /**
-         * @{inheritDoc}
+         * {@inheritDoc}
          */
         public void activateOptions() {
         }
 
         /**
-         * @{inheritDoc}
+         * {@inheritDoc}
          */
         public boolean ignoresThrowable() {
             return true;
