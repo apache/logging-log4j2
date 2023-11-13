@@ -250,7 +250,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         // lazily instantiate only when requested by AsyncLoggers:
         // loading AsyncLoggerConfigDisruptor requires LMAX Disruptor jar on classpath
         if (asyncLoggerConfigDisruptor == null) {
-            asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor(asyncWaitStrategyFactory);
+            asyncLoggerConfigDisruptor = new AsyncLoggerConfigDisruptor(asyncWaitStrategyFactory, this);
         }
         return asyncLoggerConfigDisruptor;
     }

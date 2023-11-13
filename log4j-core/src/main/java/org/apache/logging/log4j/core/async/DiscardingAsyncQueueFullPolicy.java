@@ -17,10 +17,12 @@
 package org.apache.logging.log4j.core.async;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.metrics.LongCounter;
+import org.apache.logging.log4j.core.metrics.NoopLongCounter;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -33,22 +35,26 @@ public class DiscardingAsyncQueueFullPolicy extends DefaultAsyncQueueFullPolicy 
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final Level thresholdLevel;
-    private final AtomicLong discardCount = new AtomicLong();
+    private final LongCounter discardCounter;
+    private final AtomicBoolean triggered = new AtomicBoolean();
 
     /**
      * Constructs a router that will discard events {@linkplain Level#isLessSpecificThan(Level) equal or less specific}
      * than the specified threshold level when the queue is full.
      *
      * @param thresholdLevel level of events to discard
+     * @param discardCounter counter for tracking discarded log events
      */
-    public DiscardingAsyncQueueFullPolicy(final Level thresholdLevel) {
+    public DiscardingAsyncQueueFullPolicy(final Level thresholdLevel, final LongCounter discardCounter) {
         this.thresholdLevel = Objects.requireNonNull(thresholdLevel, "thresholdLevel");
+        this.discardCounter = discardCounter != null ? discardCounter : NoopLongCounter.INSTANCE;
     }
 
     @Override
     public EventRoute getRoute(final long backgroundThreadId, final Level level) {
         if (level.isLessSpecificThan(thresholdLevel)) {
-            if (discardCount.getAndIncrement() == 0) {
+            discardCounter.increment();
+            if (triggered.compareAndSet(false, true)) {
                 LOGGER.warn("Async queue is full, discarding event with level {}. " +
                         "This message will only appear once; future events from {} " +
                         "are silently discarded until queue capacity becomes available.",
@@ -61,7 +67,7 @@ public class DiscardingAsyncQueueFullPolicy extends DefaultAsyncQueueFullPolicy 
 
     public static long getDiscardCount(final AsyncQueueFullPolicy router) {
         if (router instanceof DiscardingAsyncQueueFullPolicy) {
-            return ((DiscardingAsyncQueueFullPolicy) router).discardCount.get();
+            return ((DiscardingAsyncQueueFullPolicy) router).discardCounter.count();
         }
         return 0;
     }

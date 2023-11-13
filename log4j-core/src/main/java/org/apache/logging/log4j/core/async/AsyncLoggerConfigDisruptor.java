@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.Map;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -34,6 +35,7 @@ import com.lmax.disruptor.dsl.ProducerType;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
@@ -44,6 +46,7 @@ import org.apache.logging.log4j.core.util.Log4jThread;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.message.ReusableMessage;
+import org.apache.logging.log4j.plugins.di.Key;
 
 /**
  * Helper class decoupling the {@code AsyncLoggerConfig} class from the LMAX Disruptor library.
@@ -169,13 +172,16 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     private EventTranslatorTwoArg<Log4jEventWrapper, LogEvent, AsyncLoggerConfig> translator;
     private volatile boolean alreadyLoggedWarning;
     private final AsyncWaitStrategyFactory asyncWaitStrategyFactory;
+    private final Configuration configuration;
     private WaitStrategy waitStrategy;
 
     private final Lock startLock = new ReentrantLock();
     private final Lock queueFullEnqueueLock = new ReentrantLock();
 
-    public AsyncLoggerConfigDisruptor(final AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
+    public AsyncLoggerConfigDisruptor(
+            final AsyncWaitStrategyFactory asyncWaitStrategyFactory, final Configuration configuration) {
         this.asyncWaitStrategyFactory = asyncWaitStrategyFactory; // may be null
+        this.configuration = configuration;
     }
 
     // package-protected for testing
@@ -219,7 +225,11 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
                     return result;
                 }
             };
-            asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
+            final AsyncQueueFullPolicyFactory policyFactory =
+                    configuration.getComponent(Key.forClass(AsyncQueueFullPolicyFactory.class));
+            asyncQueueFullPolicy = policyFactory.create(Map.of(
+                    "configuration.name", configuration.getName(),
+                    "type", "AsyncLoggerConfig"));
 
             translator = mutable ? MUTABLE_TRANSLATOR : TRANSLATOR;
             factory = mutable ? MUTABLE_FACTORY : FACTORY;

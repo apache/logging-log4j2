@@ -39,14 +39,15 @@ import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.util.InternalApi;
@@ -115,7 +116,12 @@ public final class AsyncAppender extends AbstractAppender {
         } else if (errorRef == null) {
             throw new ConfigurationException("No appenders are available for AsyncAppender " + getName());
         }
-        asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
+        final AsyncQueueFullPolicyFactory policyFactory =
+                config.getComponent(Key.forClass(AsyncQueueFullPolicyFactory.class));
+        asyncQueueFullPolicy = policyFactory.create(Map.of(
+                "configuration.name", config.getName(),
+                "type", "AsyncAppender",
+                "appender.name", getName()));
 
         dispatcher.start();
         super.start();
@@ -234,13 +240,13 @@ public final class AsyncAppender extends AbstractAppender {
         }
     }
 
-    @PluginBuilderFactory
-    public static Builder newBuilder() {
-        return new Builder();
+    @Factory
+    public static <B extends Builder<B>> B newBuilder() {
+        return new Builder<B>().asBuilder();
     }
 
     public static class Builder<B extends Builder<B>> extends AbstractFilterable.Builder<B>
-            implements org.apache.logging.log4j.core.util.Builder<AsyncAppender> {
+            implements org.apache.logging.log4j.plugins.util.Builder<AsyncAppender> {
 
         @PluginElement("AppenderRef")
         @Required(message = "No appender references provided to AsyncAppender")
@@ -266,7 +272,6 @@ public final class AsyncAppender extends AbstractAppender {
         @PluginBuilderAttribute
         private boolean includeLocation = false;
 
-        @PluginConfiguration
         private Configuration configuration;
 
         @PluginBuilderAttribute
@@ -275,54 +280,55 @@ public final class AsyncAppender extends AbstractAppender {
         @PluginElement(BlockingQueueFactory.ELEMENT_TYPE)
         private BlockingQueueFactory<LogEvent> blockingQueueFactory = new ArrayBlockingQueueFactory<>();
 
-        public Builder setAppenderRefs(final AppenderRef[] appenderRefs) {
+        public B setAppenderRefs(final AppenderRef[] appenderRefs) {
             this.appenderRefs = appenderRefs;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setErrorRef(final String errorRef) {
+        public B setErrorRef(final String errorRef) {
             this.errorRef = errorRef;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setBlocking(final boolean blocking) {
+        public B setBlocking(final boolean blocking) {
             this.blocking = blocking;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setShutdownTimeout(final long shutdownTimeout) {
+        public B setShutdownTimeout(final long shutdownTimeout) {
             this.shutdownTimeout = shutdownTimeout;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setBufferSize(final int bufferSize) {
+        public B setBufferSize(final int bufferSize) {
             this.bufferSize = bufferSize;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setName(final String name) {
+        public B setName(final String name) {
             this.name = name;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setIncludeLocation(final boolean includeLocation) {
+        public B setIncludeLocation(final boolean includeLocation) {
             this.includeLocation = includeLocation;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setConfiguration(final Configuration configuration) {
+        @Inject
+        public B setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setIgnoreExceptions(final boolean ignoreExceptions) {
+        public B setIgnoreExceptions(final boolean ignoreExceptions) {
             this.ignoreExceptions = ignoreExceptions;
-            return this;
+            return asBuilder();
         }
 
-        public Builder setBlockingQueueFactory(final BlockingQueueFactory<LogEvent> blockingQueueFactory) {
+        public B setBlockingQueueFactory(final BlockingQueueFactory<LogEvent> blockingQueueFactory) {
             this.blockingQueueFactory = blockingQueueFactory;
-            return this;
+            return asBuilder();
         }
 
         @Override

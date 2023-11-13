@@ -35,7 +35,6 @@ import org.apache.log4j.xml.XmlConfiguration;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AsyncAppender;
-import org.apache.logging.log4j.core.appender.AsyncAppender.Builder;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -46,7 +45,9 @@ import org.w3c.dom.Element;
 import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.config.Log4j1Configuration.APPENDER_REF_TAG;
 import static org.apache.log4j.config.Log4j1Configuration.THRESHOLD_PARAM;
-import static org.apache.log4j.xml.XmlConfiguration.*;
+import static org.apache.log4j.xml.XmlConfiguration.FILTER_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
+import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
 
 /**
  * Build an Async Appender
@@ -145,14 +146,15 @@ public class AsyncAppenderBuilder extends AbstractBuilder implements AppenderBui
         for (final String appenderRef : appenderRefs) {
             refs[index++] = AppenderRef.createAppenderRef(appenderRef, logLevel, null);
         }
-        final Builder builder = AsyncAppender.newBuilder();
-        builder.setFilter(FilterAdapter.adapt(filter));
-        return AppenderWrapper.adapt(builder.setName(name)
+        final AsyncAppender appender = AsyncAppender.newBuilder()
+                .setFilter(FilterAdapter.adapt(filter))
+                .setName(name)
                 .setAppenderRefs(refs)
                 .setBlocking(blocking)
                 .setBufferSize(bufferSize)
                 .setIncludeLocation(includeLocation)
                 .setConfiguration(configuration)
-                .build());
+                .build();
+        return AppenderWrapper.adapt(appender);
     }
 }

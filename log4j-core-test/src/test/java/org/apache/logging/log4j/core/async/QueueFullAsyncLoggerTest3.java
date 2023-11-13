@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.Logger;
@@ -46,7 +48,9 @@ public class QueueFullAsyncLoggerTest3 extends QueueFullAbstractTest {
     protected void checkConfig(final LoggerContext ctx) {
         assertAsyncLogger(ctx, 128);
         assertFormatMessagesInBackground();
-        assertThat(AsyncQueueFullPolicyFactory.create()).isInstanceOf(DiscardingAsyncQueueFullPolicy.class);
+        final AsyncQueueFullPolicyFactory policyFactory = new AsyncQueueFullPolicyFactory(ctx.getProperties(), Optional.empty());
+        final AsyncQueueFullPolicy policy = policyFactory.create(Map.of());
+        assertThat(policy).isInstanceOf(DiscardingAsyncQueueFullPolicy.class);
     }
 
     @Test
