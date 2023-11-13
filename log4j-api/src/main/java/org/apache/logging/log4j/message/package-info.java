@@ -19,7 +19,7 @@
  * Public Message Types used for Log4j 2. Users may implement their own Messages.
  */
 @Export
-@Version("2.20.1")
+@Version("2.22.0")
 package org.apache.logging.log4j.message;
 
 import org.osgi.annotation.bundle.Export;
