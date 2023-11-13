@@ -63,17 +63,20 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Allow reconfiguration when Log4j 1 configuration files are updated. (https://issues.apache.org/jira/browse/LOG4J2-2893[LOG4J2-2893])
 * Add Rollover Listener to aid in unit test validation. (https://issues.apache.org/jira/browse/LOG4J2-2923[LOG4J2-2923])
 * Replace outdated PatternLayout.createLayout() calls in docs with createDefaultLayout(). (https://issues.apache.org/jira/browse/LOG4J2-2977[LOG4J2-2977])
-* Update commons-codec:commons-codec 1.14 -> 1.15.
-* Update commons-io:commons-io 2.7 -> 2.8.0.
-* Update com.fasterxml.jackson.*:* 2.11.2 - 2.11.3.
-* Update de.flapdoodle.embed:de.flapdoodle.embed.mongo 2.2.0 -> 3.0.0.
-* Update JaCoCo 0.8.3 -> 0.8.6.
 * Update JSON Unit 2.21.0 -> 2.22.0.
-* Update junit:junit 4.13 -> 4.13.1.
+* Update JaCoCo 0.8.3 -> 0.8.6.
 * Update Mockito 3.6.0 -> 3.7.0.
-* Update mongodb4.version 4.1.1 -> 4.2.0.
 * Update MongoDB 3 plugin: org.mongodb:mongodb-driver 3.12.6 -> 3.12.7.
 * Update MongoDB 4 plugin: org.mongodb:* 4.1.0 -> 4.1.1.
+* Update Spring dependencies to 5.3.2, Spring Boot to 2.3.6, and Spring Cloud to Hoxton.SR9
+* Update Woodstox 5.0.3 -> 6.2.3 to match Jackson 2.12.1.
+* Update XML Unit 2.8.0 -> 2.8.2.
+* Update com.fasterxml.jackson.*:* 2.11.2 - 2.11.3.
+* Update commons-codec:commons-codec 1.14 -> 1.15.
+* Update commons-io:commons-io 2.7 -> 2.8.0.
+* Update de.flapdoodle.embed:de.flapdoodle.embed.mongo 2.2.0 -> 3.0.0.
+* Update junit:junit 4.13 -> 4.13.1.
+* Update mongodb4.version 4.1.1 -> 4.2.0.
 * Update net.javacrumbs.json-unit:json-unit 1.31.1 -> 2.22.0.
 * Update net.javacrumbs.json-unit:json-unit 2.22.0 -> 2.23.0.
 * Update org.apache.activemq:* 5.16.0 -> 5.16.1.
@@ -93,9 +96,6 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Update org.springframework:* 5.2.8.RELEASE -> 5.3.1.
 * Update org.springframework:* 5.3.2 -> 5.3.3.
 * Update org.xmlunit:* 2.7.0 -> 2.8.0.
-* Update Spring dependencies to 5.3.2, Spring Boot to 2.3.6, and Spring Cloud to Hoxton.SR9
-* Update Woodstox 5.0.3 -> 6.2.3 to match Jackson 2.12.1.
-* Update XML Unit 2.8.0 -> 2.8.2.
 * - com.fasterxml.jackson.core:jackson-annotations ................. 2.12.1 -> 2.12.2 - com.fasterxml.jackson.core:jackson-core ........................ 2.12.1 -> 2.12.2 - com.fasterxml.jackson.core:jackson-databind .................... 2.12.1 -> 2.12.2 - com.fasterxml.jackson.dataformat:jackson-dataformat-xml ........ 2.12.1 -> 2.12.2 - com.fasterxml.jackson.dataformat:jackson-dataformat-yaml ....... 2.12.1 -> 2.12.2 - com.fasterxml.jackson.module:jackson-module-jaxb-annotations ... 2.12.1 -> 2.12.2 - org.apache.commons:commons-lang3 ............................... 3.11 -> 3.12.0 - org.junit.jupiter:junit-jupiter-engine ......................... 5.7.0 -> 5.7.1 - org.junit.jupiter:junit-jupiter-migrationsupport ............... 5.7.0 -> 5.7.1 - org.junit.jupiter:junit-jupiter-params ......................... 5.7.0 -> 5.7.1 - org.junit.vintage:junit-vintage-engine ......................... 5.7.0 -> 5.7.1 - org.mockito:mockito-core ....................................... 3.7.7 -> 3.8.0 - org.mockito:mockito-junit-jupiter .............................. 3.7.7 -> 3.8.0 - org.mongodb:bson ............................................... 4.2.0 -> 4.2.2 - org.mongodb:mongodb-driver-sync ................................ 4.2.0 -> 4.2.2
 
 === Fixed

@@ -79,11 +79,12 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 
 === Changed
 
+* Bump Jackson from 2.12.4 to 2.13.1.
+* Bump Mockito from 3.11.2 to 4.2.0.
+* Bump Woodstox 6.2.6 to 6.2.8.
 * Bump awaitility from 4.0.3 to 4.1.1 #663.
 * Bump de.flapdoodle.embed:de.flapdoodle.embed.mongo from 3.0.0 to 3.4.1. Update tests for binary incompatibilities in APIs.
-* Bump Jackson from 2.12.4 to 2.13.1.
 * Bump maven-compiler-plugin from 3.8.1 to 3.9.0.
-* Bump Mockito from 3.11.2 to 4.2.0.
 * Bump mongodb3.version from 3.12.4 to 3.12.10 #605.
 * Bump net.javacrumbs.json-unit:json-unit from 2.27.0 to 2.28.0.
 * Bump org.apache.activemq:activemq-broker from 5.16.3 to 5.16.4.
@@ -99,7 +100,6 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Bump org.mongodb:mongodb-driver-sync from 4.2.2 to 4.5.0.
 * Bump org.springframework:spring-* from 5.3.13 to 5.3.15.
 * Bump org.xmlunit:xmlunit-* from 2.8.3 to 2.8.4.
-* Bump Woodstox 6.2.6 to 6.2.8.
 * Replace usages of "compile" with "implementation" in the Gradle docs. (https://issues.apache.org/jira/browse/LOG4J2-3215[LOG4J2-3215])
 * Change modifier of method org.apache.logging.log4j.core.tools.Generate#generate to public (was package private) to facilitate automated code generation. (https://issues.apache.org/jira/browse/LOG4J2-3267[LOG4J2-3267])
 * log4j-jpl formats message parameters correctly using MessageFormat. (https://issues.apache.org/jira/browse/LOG4J2-3345[LOG4J2-3345])
@@ -129,10 +129,10 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Log4j 1.2 bridge Check for non-existent appender when parsing properties #761. (https://issues.apache.org/jira/browse/LOG4J2-3407[LOG4J2-3407])
 * Log4j 1.2 bridge supports global threshold #764. (https://issues.apache.org/jira/browse/LOG4J2-3407[LOG4J2-3407])
 * Log4j 1.2 bridge throws a ClassCastException when logging a Map with non-String keys. (https://issues.apache.org/jira/browse/LOG4J2-3410[LOG4J2-3410])
+* Log4j 1.2 bridge adds org.apache.log4j.Hierarchy.
 * Log4j 1.2 bridge adds org.apache.log4j.component.helpers.Constants.
 * Log4j 1.2 bridge adds org.apache.log4j.helpers.Loader.
 * Log4j 1.2 bridge adds org.apache.log4j.helpers.LogLog.
-* Log4j 1.2 bridge adds org.apache.log4j.Hierarchy.
 * Log4j 1.2 bridge adds org.apache.log4j.spi.DefaultRepositorySelector.
 * Log4j 1.2 bridge adds org.apache.log4j.spi.NOPLoggerRepository and NOPLogger.
 * Log4j 1.2 bridge adds org.apache.log4j.spi.RootLogger.
@@ -146,25 +146,25 @@ For complete information on Apache Log4j 2, including instructions on how to sub
 * Log4j 1.2 bridge creates a SocketAppender instead of a SyslogAppender.
 * Log4j 1.2 bridge implements LogManager.getCurrentLoggers() fully.
 * Log4j 1.2 bridge implements most of DOMConfigurator.
-* Log4j 1.2 bridge interfaces missing from package org.apache.log4j.spi: ThrowableRenderer, ThrowableRendererSupport, TriggeringEventEvaluator.
 * Log4j 1.2 bridge interface Configurator doConfigure() methods should use LoggerRepository, not LoggerContext.
 * Log4j 1.2 bridge interface org.apache.log4j.spi.RendererSupport was in the wrong package and incomplete.
+* Log4j 1.2 bridge interfaces missing from package org.apache.log4j.spi: ThrowableRenderer, ThrowableRendererSupport, TriggeringEventEvaluator.
 * Log4j 1.2 bridge issues with filters #753.
-* Log4j 1.2 bridge methods Category.getChainedPriority() and getEffectiveLevel() should not be final.
-* Log4j 1.2 bridge methods missing in org.apache.log4j.Category: getDefaultHierarchy(), getHierarchy(), getLoggerRepository().
 * Log4j 1.2 bridge method Category.exists(String) should be static.
 * Log4j 1.2 bridge method NDC.inherit(Stack) should not use generics to provide source compatibility.
+* Log4j 1.2 bridge methods Category.getChainedPriority() and getEffectiveLevel() should not be final.
+* Log4j 1.2 bridge methods missing in org.apache.log4j.Category: getDefaultHierarchy(), getHierarchy(), getLoggerRepository().
 * Log4j 1.2 bridge missed
 * Log4j 1.2 bridge missed org.apache.log4j.pattern.FormattingInfo.
 * Log4j 1.2 bridge missed org.apache.log4j.pattern.NameAbbreviator.
-* Log4j 1.2 bridge missing class org.apache.log4j.or.RendererMap.
 * Log4j 1.2 bridge missing DefaultThrowableRenderer.
 * Log4j 1.2 bridge missing FormattingInfo.
 * Log4j 1.2 bridge missing PatternConverter.
 * Log4j 1.2 bridge missing PatternParser.
+* Log4j 1.2 bridge missing UtilLoggingLevel.
+* Log4j 1.2 bridge missing class org.apache.log4j.or.RendererMap.
 * Log4j 1.2 bridge missing some LocationInfo constructors.
 * Log4j 1.2 bridge missing some ThrowableInformation constructors.
-* Log4j 1.2 bridge missing UtilLoggingLevel.
 * Log4j 1.2 bridge now logs a warning instead of throwing an NullPointerException when building a Syslog appender with a missing "SyslogHost" param.
 * Log4j 1.2 bridge should allow property and XML attributes to start with either an upper-case or lower-case letter.
 * Log4j 1.2 bridge supports the SocketAppender.
