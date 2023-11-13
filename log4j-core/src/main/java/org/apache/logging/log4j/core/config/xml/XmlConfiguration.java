@@ -45,7 +45,6 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.plugins.util.ResolverUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -64,7 +63,6 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             "http://apache.org/xml/features/xinclude/fixup-language";
     private static final String XINCLUDE_FIXUP_BASE_URIS =
             "http://apache.org/xml/features/xinclude/fixup-base-uris";
-    private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
     private static final String LOG4J_XSD = "Log4j-config.xsd";
 
     private final List<Status> status = new ArrayList<>();
@@ -108,8 +106,7 @@ public class XmlConfiguration extends AbstractConfiguration implements Reconfigu
             }
             rootElement = document.getDocumentElement();
             final Map<String, String> attrs = processAttributes(rootNode, rootElement);
-            final StatusConfiguration statusConfig = new StatusConfiguration().setVerboseClasses(VERBOSE_CLASSES)
-                    .setStatus(getDefaultStatus());
+            final StatusConfiguration statusConfig = new StatusConfiguration().setStatus(getDefaultStatus());
             int monitorIntervalSeconds = 0;
             for (final Map.Entry<String, String> entry : attrs.entrySet()) {
                 final String key = entry.getKey();

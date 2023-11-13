@@ -36,14 +36,12 @@ import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.plugins.util.ResolverUtil;
 
 /**
  * Creates a Node hierarchy from a JSON file.
  */
 public class JsonConfiguration extends AbstractConfiguration implements Reconfigurable {
 
-    private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
     private final List<Status> status = new ArrayList<>();
     private JsonNode root;
 
@@ -62,8 +60,7 @@ public class JsonConfiguration extends AbstractConfiguration implements Reconfig
                 }
             }
             processAttributes(rootNode, root);
-            final StatusConfiguration statusConfig = new StatusConfiguration().setVerboseClasses(VERBOSE_CLASSES)
-                    .setStatus(getDefaultStatus());
+            final StatusConfiguration statusConfig = new StatusConfiguration().setStatus(getDefaultStatus());
             int monitorIntervalSeconds = 0;
             for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
                 final String key = entry.getKey();

@@ -32,7 +32,6 @@ import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.plugins.Node;
-import org.apache.logging.log4j.plugins.util.ResolverUtil;
 
 import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
@@ -40,8 +39,6 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
  * A Composite Configuration.
  */
 public class CompositeConfiguration extends AbstractConfiguration implements Reconfigurable {
-
-    private static final String[] VERBOSE_CLASSES = new String[] {ResolverUtil.class.getName()};
 
     private final List<? extends AbstractConfiguration> configurations;
 
@@ -60,8 +57,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
         for (final AbstractConfiguration config : configurations) {
             mergeStrategy.mergeRootProperties(rootNode, config);
         }
-        final StatusConfiguration statusConfig = new StatusConfiguration().setVerboseClasses(VERBOSE_CLASSES)
-                .setStatus(getDefaultStatus());
+        final StatusConfiguration statusConfig = new StatusConfiguration().setStatus(getDefaultStatus());
         for (final Map.Entry<String, String> entry : rootNode.getAttributes().entrySet()) {
             final String key = entry.getKey();
             final String value = getConfigurationStrSubstitutor().replace(entry.getValue());

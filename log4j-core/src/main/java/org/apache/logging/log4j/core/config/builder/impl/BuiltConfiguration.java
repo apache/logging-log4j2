@@ -28,7 +28,6 @@ import org.apache.logging.log4j.core.config.builder.api.Component;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.plugins.util.ResolverUtil;
 
 /**
  * This is the general version of the Configuration created by the Builder. It may be extended to
@@ -37,7 +36,6 @@ import org.apache.logging.log4j.plugins.util.ResolverUtil;
  * @since 2.4
  */
 public class BuiltConfiguration extends AbstractConfiguration {
-    private static final String[] VERBOSE_CLASSES = new String[] { ResolverUtil.class.getName() };
     private final StatusConfiguration statusConfig;
     protected Component rootComponent;
     private Component loggersComponent;
@@ -50,7 +48,7 @@ public class BuiltConfiguration extends AbstractConfiguration {
 
     public BuiltConfiguration(final LoggerContext loggerContext, final ConfigurationSource source, final Component rootComponent) {
         super(loggerContext, source);
-        statusConfig = new StatusConfiguration().setVerboseClasses(VERBOSE_CLASSES).setStatus(getDefaultStatus());
+        statusConfig = new StatusConfiguration().setStatus(getDefaultStatus());
         for (final Component component : rootComponent.getComponents()) {
             switch (component.getPluginType()) {
                 case "Scripts": {

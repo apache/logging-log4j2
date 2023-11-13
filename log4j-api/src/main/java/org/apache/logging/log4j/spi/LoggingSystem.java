@@ -27,12 +27,9 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
@@ -43,7 +40,6 @@ import org.apache.logging.log4j.message.ParameterizedMessageFactory;
 import org.apache.logging.log4j.message.ReusableMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLoggerContextFactory;
 import org.apache.logging.log4j.util.Constants;
-import org.apache.logging.log4j.util.InternalApi;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.LowLevelLogUtil;
@@ -51,7 +47,14 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ServiceRegistry;
 
-import static org.apache.logging.log4j.spi.LoggingSystemProperty.*;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.LOGGER_FLOW_MESSAGE_FACTORY_CLASS;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.LOGGER_MESSAGE_FACTORY_CLASS;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_ENABLE;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_GARBAGE_FREE_ENABLED;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_INITIAL_CAPACITY;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_MAP_CLASS;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_MAP_INHERITABLE;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.THREAD_CONTEXT_STACK_ENABLED;
 
 /**
  * Handles initializing the Log4j API through {@link Provider} discovery. This keeps track of which
@@ -60,7 +63,7 @@ import static org.apache.logging.log4j.spi.LoggingSystemProperty.*;
  *
  * @since 3.0.0
  */
-@ServiceConsumer(value = Provider.class, resolution = Resolution.OPTIONAL)
+@ServiceConsumer(Provider.class)
 public class LoggingSystem {
     /**
      * Resource name for a Log4j 2 provider properties file.
@@ -73,8 +76,7 @@ public class LoggingSystem {
 
     private static final Lazy<LoggingSystem> SYSTEM = Lazy.relaxed(LoggingSystem::new);
 
-    private final Lock initializationLock = new ReentrantLock();
-    private volatile SystemProvider provider;
+    private final Lazy<SystemProvider> providerLazy = Lazy.relaxed(this::findProvider);
     private final Lazy<PropertyEnvironment> environmentLazy = Lazy.relaxed(PropertiesUtil::getProperties);
     private final Lazy<LoggerContextFactory> loggerContextFactoryLazy = environmentLazy.map(environment ->
             getProvider().createLoggerContextFactory(environment));
@@ -103,45 +105,11 @@ public class LoggingSystem {
     private final Lazy<Supplier<ThreadContextStack>> threadContextStackFactoryLazy = environmentLazy.map(environment ->
             () -> getProvider().createContextStack(environment));
 
-    /**
-     * Acquires a lock on the initialization of locating a logging system provider. This lock should be
-     * {@linkplain #releaseInitializationLock() released} once the logging system provider is loaded. This lock is
-     * provided to allow for lazy initialization via frameworks like OSGi to wait for a provider to be installed
-     * before allowing initialization to continue.
-     *
-     * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-373">LOG4J2-373</a>
-     */
-    @InternalApi
-    public void acquireInitializationLock() {
-        initializationLock.lock();
-    }
-
-    /**
-     * Releases a lock on the initialization phase of this logging system.
-     */
-    @InternalApi
-    public void releaseInitializationLock() {
-        initializationLock.unlock();
+    public LoggingSystem() {
     }
 
     private SystemProvider getProvider() {
-        var provider = this.provider;
-        if (provider == null) {
-            try {
-                initializationLock.lockInterruptibly();
-                provider = this.provider;
-                if (provider == null) {
-                    this.provider = provider = findProvider();
-                }
-            } catch (InterruptedException e) {
-                LowLevelLogUtil.logException("Interrupted before Log4j Providers could be loaded", e);
-                provider = new SystemProvider();
-                Thread.currentThread().interrupt();
-            } finally {
-                releaseInitializationLock();
-            }
-        }
-        return provider;
+        return providerLazy.get();
     }
 
     private SystemProvider findProvider() {
