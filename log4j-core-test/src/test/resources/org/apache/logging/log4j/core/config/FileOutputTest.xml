@@ -15,41 +15,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<Configuration status="warn" dest="target/status.log" name="XMLConfigTest">
-  <Properties>
-    <Property name="filename">target/test.log</Property>
-  </Properties>
-  <ThresholdFilter level="debug"/>
-
+<Configuration status="DEBUG" dest="${test:logging.path}/status.log" name="FileOutputTest">
   <Appenders>
-    <Console name="STDOUT">
-      <PatternLayout pattern="%m%n"/>
-    </Console>
-    <File name="File" fileName="${filename}" bufferedIO="false">
-      <PatternLayout>
-        <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>
-      </PatternLayout>
-    </File>
-    <List name="List">
-      <Filters>
-        <ThresholdFilter level="error"/>
-      </Filters>
-    </List>
+    <Console name="STDOUT"/>
   </Appenders>
 
   <Loggers>
-    <Logger name="org.apache.logging.log4j.test1" level="debug" additivity="false">
-        <ThreadContextMapFilter>
-          <KeyValuePair key="test" value="123"/>
-        </ThreadContextMapFilter>
-      <AppenderRef ref="STDOUT"/>
-    </Logger>
-
-    <Logger name="org.apache.logging.log4j.test2" level="debug" additivity="false">
-      <AppenderRef ref="File"/>
-    </Logger>
-
-    <Root level="error">
+    <Root level="ERROR">
       <AppenderRef ref="STDOUT"/>
     </Root>
   </Loggers>
