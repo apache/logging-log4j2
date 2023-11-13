@@ -33,6 +33,10 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
  * @since 2.6
  */
 @PerformanceSensitive("allocation")
+/*
+ * https://errorprone.info/bugpattern/ThreadLocalUsage
+ * Instance thread locals are not a problem here, since this class is almost a singleton.
+ */
 @SuppressWarnings("ThreadLocalUsage")
 public final class ReusableMessageFactory implements MessageFactory {
 

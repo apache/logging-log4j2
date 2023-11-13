@@ -885,7 +885,10 @@ public class PropertiesUtil implements PropertyEnvironment {
         HOURS("h,hour,hours", ChronoUnit.HOURS),
         DAYS("d,day,days", ChronoUnit.DAYS);
 
-        // descriptions is effectively immutable
+        /*
+         * https://errorprone.info/bugpattern/ImmutableEnumChecker
+         * This field is effectively immutable.
+         */
         @SuppressWarnings("ImmutableEnumChecker")
         private final String[] descriptions;
         private final ChronoUnit timeUnit;

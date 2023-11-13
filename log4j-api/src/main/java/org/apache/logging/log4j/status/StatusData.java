@@ -18,6 +18,7 @@ package org.apache.logging.log4j.status;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -119,7 +120,6 @@ public class StatusData {
             value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
             justification = "Log4j prints stacktraces only to logs, which should be private."
     )
-    @SuppressWarnings("DefaultCharset")
     public String getFormattedStatus() {
         final StringBuilder sb = new StringBuilder();
         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
@@ -141,7 +141,7 @@ public class StatusData {
             sb.append(SPACE);
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             t.printStackTrace(new PrintStream(baos));
-            sb.append(baos);
+            sb.append(baos.toString(Charset.defaultCharset()));
         }
         return sb.toString();
     }

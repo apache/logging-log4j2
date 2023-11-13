@@ -96,7 +96,14 @@ public class SimpleMessage implements Message, StringBuilderFormattable, CharSeq
         }
 
         final SimpleMessage that = (SimpleMessage) o;
-        return Objects.equals(getFormattedMessage(), that.getFormattedMessage());
+
+        /*
+         * https://errorprone.info/bugpattern/UndefinedEquals
+         *
+         * If the char sequences are different, we fall back on string comparison.
+         */
+        return Objects.equals(this.charSequence, that.charSequence)
+                || Objects.equals(this.getFormattedMessage(), that.getFormattedMessage());
     }
 
     @Override
