@@ -74,18 +74,6 @@
     </bnd-extra-module-options>
   </properties>
   <dependencies>
-    <!-- Used for OSGi bundle support -->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.framework</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <!-- Used for OSGi bundle support -->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.resource</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <!-- Naturally, all implementations require the log4j-api JAR -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

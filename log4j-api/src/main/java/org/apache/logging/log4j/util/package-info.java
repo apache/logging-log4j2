@@ -20,7 +20,7 @@
  * There are no guarantees for binary or logical compatibility in this package.
  */
 @Export
-@Version("2.20.1")
+@Version("3.0.0")
 package org.apache.logging.log4j.util;
 
 import org.osgi.annotation.bundle.Export;

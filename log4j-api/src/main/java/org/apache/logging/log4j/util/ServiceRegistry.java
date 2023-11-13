@@ -17,20 +17,16 @@
 package org.apache.logging.log4j.util;
 
 import java.lang.invoke.MethodHandles.Lookup;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Registry for service instances loaded from {@link ServiceLoader}. This abstracts the differences between using a flat
- * classpath, a module path, and OSGi modules.
+ * classpath versus a module path.
  *
  * @since 3.0.0
  */
@@ -46,8 +42,7 @@ public final class ServiceRegistry {
         return INSTANCE.get();
     }
 
-    private final Map<Class<?>, List<?>> mainServices = new ConcurrentHashMap<>();
-    private final Map<Long, Map<Class<?>, List<?>>> bundleServices = new ConcurrentHashMap<>();
+    private final Map<Class<?>, List<?>> registry = new ConcurrentHashMap<>();
 
     private ServiceRegistry() {
     }
@@ -73,76 +68,14 @@ public final class ServiceRegistry {
      * Set 'verbose' to false if the `StatusLogger` is not available yet.
      */
     <S> List<S> getServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator, final boolean verbose) {
-        final List<S> services = getMainServices(serviceType, lookup, validator, verbose);
-        return Stream.concat(services.stream(), bundleServices.values().stream().flatMap(map -> {
-            final Stream<S> stream = map.getOrDefault(serviceType, List.of()).stream().map(serviceType::cast);
-            return validator != null ? stream.filter(validator) : stream;
-        })).distinct().collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    <S> List<S> getMainServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator, final boolean verbose) {
-        final List<?> existing = mainServices.get(serviceType);
+        final List<?> existing = registry.get(serviceType);
         if (existing != null) {
             return Cast.cast(existing);
         }
         final List<S> services = ServiceLoaderUtil.loadServices(serviceType, lookup, false, verbose)
                 .filter(validator != null ? validator : unused -> true)
                 .collect(Collectors.toList());
-        final List<S> oldValue = Cast.cast(mainServices.putIfAbsent(serviceType, services));
+        final List<S> oldValue = Cast.cast(registry.putIfAbsent(serviceType, services));
         return oldValue != null ? oldValue : services;
-    }
-
-    /**
-     * Loads and registers services from an OSGi context.
-     *
-     * @param serviceType       service class
-     * @param bundleId          bundle id to load services from
-     * @param bundleClassLoader bundle ClassLoader to load services from
-     * @param <S>               type of service
-     */
-    public <S> void loadServicesFromBundle(
-            final Class<S> serviceType, final long bundleId, final ClassLoader bundleClassLoader) {
-        final List<S> services = new ArrayList<>();
-        try {
-            final ServiceLoader<S> serviceLoader = ServiceLoader.load(serviceType, bundleClassLoader);
-            final Iterator<S> iterator = serviceLoader.iterator();
-            while (iterator.hasNext()) {
-                try {
-                    services.add(iterator.next());
-                } catch (final ServiceConfigurationError sce) {
-                    final String message = String.format("Unable to load %s service in bundle id %d",
-                            serviceType.getName(), bundleId);
-                    LowLevelLogUtil.logException(message, sce);
-                }
-            }
-        } catch (final ServiceConfigurationError e) {
-            final String message = String.format("Unable to load any %s services in bundle id %d",
-                    serviceType.getName(), bundleId);
-            LowLevelLogUtil.logException(message, e);
-        }
-        registerBundleServices(serviceType, bundleId, services);
-    }
-
-    /**
-     * Registers a list of service instances from an OSGi context.
-     *
-     * @param serviceType service class
-     * @param bundleId    bundle id where services are being registered
-     * @param services    list of services to register for this bundle
-     * @param <S>         type of service
-     */
-    public <S> void registerBundleServices(final Class<S> serviceType, final long bundleId, final List<S> services) {
-        final List<S> currentServices = Cast.cast(bundleServices.computeIfAbsent(bundleId, ignored -> new ConcurrentHashMap<>())
-                .computeIfAbsent(serviceType, ignored -> new ArrayList<S>()));
-        currentServices.addAll(services);
-    }
-
-    /**
-     * Unregisters all services instances from an OSGi context.
-     *
-     * @param bundleId bundle id where services are being unregistered
-     */
-    public void unregisterBundleServices(final long bundleId) {
-        bundleServices.remove(bundleId);
     }
 }

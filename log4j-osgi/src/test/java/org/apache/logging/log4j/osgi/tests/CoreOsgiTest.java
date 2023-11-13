@@ -23,8 +23,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
-import org.apache.logging.log4j.core.osgi.BundleContextSelector;
-import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,17 +77,6 @@ public class CoreOsgiTest {
         assertEquals("Hello OSGI from Log4j 1.2!", event.getMessage().getFormattedMessage());
         assertEquals(Level.INFO, event.getLevel());
         custom.clearEvents();
-    }
-
-    /**
-     * Tests LOG4J2-920.
-     */
-    @Test
-    public void testBundleContextSelector() {
-        final LoggerContextFactory factory = LogManager.getFactory();
-        assertEquals(Log4jContextFactory.class, factory.getClass());
-        final ContextSelector selector = ((Log4jContextFactory) factory).getSelector();
-        assertEquals(BundleContextSelector.class, selector.getClass());
     }
 
     private static CustomConfiguration getConfiguration() {

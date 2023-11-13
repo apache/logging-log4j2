@@ -56,7 +56,7 @@ import org.apache.logging.log4j.util.StringMap;
 public class ThreadContextDataInjector {
 
     /**
-     * ContextDataProviders loaded via OSGi.
+     * ContextDataProviders loaded externally.
      */
     public static Collection<ContextDataProvider> contextDataProviders =
             new ConcurrentLinkedDeque<>();
