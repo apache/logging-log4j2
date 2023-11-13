@@ -17,13 +17,13 @@
 package org.apache.logging.log4j.core.appender;
 
 import java.lang.reflect.Field;
-import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.rolling.DirectWriteRolloverStrategy;
+import org.apache.logging.log4j.core.appender.rolling.RollingFileManager;
 import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
@@ -105,15 +105,12 @@ public class ReconfigureAppenderTest {
     {
         try
         {
-            final Field field = AbstractManager.class.getDeclaredField("MAP");
+            final Field field = AbstractManager.class.getDeclaredField("REGISTRY");
             field.setAccessible(true);
+            final ManagerRegistry registry = (ManagerRegistry) field.get(null);
 
-            // Retrieve the map itself.
-            final Map<String, AbstractManager> map =
-            (Map<String, AbstractManager>) field.get(null);
-
-            // Remove the file manager keyed on file pattern.
-            map.remove(appender.getFilePattern());
+            final RollingFileManager manager = appender.getManager();
+            registry.removeManager(manager.getName(), manager);
         }
         catch (Exception e)
         {
