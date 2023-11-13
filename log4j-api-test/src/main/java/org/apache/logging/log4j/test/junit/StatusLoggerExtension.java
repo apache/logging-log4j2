@@ -18,6 +18,7 @@ package org.apache.logging.log4j.test.junit;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,13 +136,12 @@ class StatusLoggerExtension extends TypeBasedParameterResolver<ListStatusListene
                     Level.ALL, null,
                     false);
             logger.error("Test {} failed.\nDumping status data:", context.getDisplayName());
+            final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_TIME.withZone(ZoneId.systemDefault());
             statusListener.getStatusData().forEach(data -> {
                 logger.atLevel(data.getLevel())
                         .withThrowable(data.getThrowable())
                         .withLocation(data.getStackTraceElement())
-                        .log("{} {}",
-                                DateTimeFormatter.ISO_LOCAL_TIME.format(Instant.ofEpochMilli(data.getTimestamp())),
-                                data.getMessage());
+                        .log("{} {}", formatter.format(Instant.ofEpochMilli(data.getTimestamp())), data.getMessage());
             });
         }
     }
