@@ -48,7 +48,6 @@ public class DefaultFlowMessageFactory implements FlowMessageFactory {
      * @param exitText the text to use for trace exit, like {@code "Exit"}.
      */
     public DefaultFlowMessageFactory(final String entryText, final String exitText) {
-        super();
         this.entryText = entryText;
         this.exitText = exitText;
         this.messageFactory = LoggingSystem.getMessageFactory();

@@ -25,6 +25,7 @@ import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
 
 import org.apache.log4j.Logger;
+import org.apache.logging.log4j.util.LoaderUtil;
 
 /**
  * Manages an instance of com.sun.jdmk.comm.HtmlAdapterServer which was provided for demonstration purposes in the Java
@@ -53,13 +54,9 @@ public class Agent {
     private static Object createServer() {
         Object newInstance = null;
         try {
-            newInstance = Class.forName("com.sun.jdmk.comm.HtmlAdapterServer").newInstance();
-        } catch (final ClassNotFoundException ex) {
-            throw new RuntimeException(ex.toString());
-        } catch (final InstantiationException ex) {
-            throw new RuntimeException(ex.toString());
-        } catch (final IllegalAccessException ex) {
-            throw new RuntimeException(ex.toString());
+            newInstance = LoaderUtil.newInstanceOf("com.sun.jdmk.comm.HtmlAdapterServer");
+        } catch (final ReflectiveOperationException ex) {
+            throw new RuntimeException(ex);
         }
         return newInstance;
     }

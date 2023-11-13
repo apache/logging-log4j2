@@ -24,6 +24,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
@@ -303,7 +304,7 @@ public final class OptionConverter {
                             superClass.getName(), superClass.getClassLoader(), classObj.getTypeName(), classObj.getName());
                     return defaultValue;
                 }
-                return classObj.newInstance();
+                return LoaderUtil.newInstanceOf(classObj);
             } catch (final Exception e) {
                 LOGGER.error("Could not instantiate class [{}].", className, e);
             }

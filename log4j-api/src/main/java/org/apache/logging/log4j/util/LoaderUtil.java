@@ -215,7 +215,7 @@ public final class LoaderUtil {
      * @throws ExceptionInInitializerError if an exception is thrown during class initialization
      * @throws LinkageError                if the linkage of the class fails for any other reason
      * @see #loadClass(String)
-     * @since 3.0.0
+     * @since 2.22.0
      */
     public static Class<?> loadClassUnchecked(final String className) {
         try {
@@ -259,7 +259,7 @@ public final class LoaderUtil {
      * @throws InternalException  if an exception is thrown by the constructor
      * @throws InstantiationError if the provided class is abstract or an interface
      * @throws IllegalAccessError if the class cannot be accessed
-     * @since 3.0.0
+     * @since 2.22.0
      */
     public static <T> T newInstanceOfUnchecked(final Class<T> clazz) {
         try {
@@ -306,6 +306,35 @@ public final class LoaderUtil {
     }
 
     /**
+     * Loads and instantiates a class given by a property name.
+     *
+     * @param propertyKey The property name to look up a class name for.
+     * @param clazz        The class to cast it to.
+     * @param defaultSupplier Supplier of a default value if the property is not present.
+     * @param <T>          The type to cast it to.
+     * @return new instance of the class given in the property or {@code null} if the property was unset.
+     * @throws ClassNotFoundException      if the class isn't available to the usual ClassLoaders
+     * @throws ExceptionInInitializerError if an exception was thrown while initializing the class
+     * @throws LinkageError                if the linkage of the class fails for any other reason
+     * @throws ClassCastException          if the class is not compatible with the generic type parameter provided
+     * @throws NoSuchMethodException       if no zero-arg constructor exists
+     * @throws SecurityException           if this class is not allowed to access declared members of the provided class
+     * @throws IllegalAccessException      if the class can't be instantiated through a public constructor
+     * @throws InstantiationException      if the provided class is abstract or an interface
+     * @throws InvocationTargetException   if an exception is thrown by the constructor
+     * @since 3.0.0
+     */
+    public static <T> T newCheckedInstanceOfProperty(
+            final PropertyKey propertyKey, final Class<T> clazz, final Supplier<T> defaultSupplier)
+            throws ReflectiveOperationException {
+        final String className = PropertiesUtil.getProperties().getStringProperty(propertyKey);
+        if (className == null) {
+            return defaultSupplier.get();
+        }
+        return newCheckedInstanceOf(className, clazz);
+    }
+
+    /**
      * Loads and instantiates a class by name using its default constructor. All checked reflective operation
      * exceptions are translated into corresponding {@link LinkageError} classes.
      *
@@ -321,6 +350,7 @@ public final class LoaderUtil {
      * @throws InstantiationError          if the provided class is abstract or an interface
      * @throws IllegalAccessError          if the class cannot be accessed
      * @throws LinkageError                if the linkage of the class fails for any other reason
+     * @since 2.22.0
      */
     public static <T> T newInstanceOfUnchecked(final String className) {
         final Class<T> clazz = Cast.cast(loadClassUnchecked(className));
@@ -367,7 +397,7 @@ public final class LoaderUtil {
      * @throws InstantiationError          if the provided class is abstract or an interface
      * @throws IllegalAccessError          if the class cannot be accessed
      * @throws LinkageError                if the linkage of the class fails for any other reason
-     * @since 3.0.0
+     * @since 2.22.0
      */
     public static <T> T newInstanceOfUnchecked(final String className, final Class<T> supertype) {
         final Class<? extends T> clazz = loadClassUnchecked(className).asSubclass(supertype);

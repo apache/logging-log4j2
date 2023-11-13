@@ -88,8 +88,15 @@ public class AsyncWaitStrategyFactoryConfig {
     public AsyncWaitStrategyFactory createWaitStrategyFactory() {
         try {
             return LoaderUtil.newCheckedInstanceOf(factoryClassName, AsyncWaitStrategyFactory.class);
+        } catch (final ClassCastException e) {
+            LOGGER.error("Ignoring factory '{}': it is not assignable to AsyncWaitStrategyFactory", factoryClassName);
+            return null;
         } catch (ReflectiveOperationException | LinkageError e) {
-            LOGGER.info("Invalid implementation class name value: error creating AsyncWaitStrategyFactory {}: {}", factoryClassName, e);
+            LOGGER.info(
+                    "Invalid implementation class name value: error creating AsyncWaitStrategyFactory {}: {}",
+                    factoryClassName,
+                    e.getMessage(),
+                    e);
             return null;
         }
     }
