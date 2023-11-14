@@ -25,6 +25,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
@@ -59,6 +60,7 @@ public class SyslogLayoutTest {
         // set up appender
         // @formatter:off
         final SyslogLayout layout = SyslogLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setFacility(Facility.LOCAL0)
                 .setIncludeNewLine(true)
                 .build();

@@ -23,7 +23,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.layout.template.json.util.*;
+import org.apache.logging.log4j.layout.template.json.util.CharSequencePointer;
+import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
+import org.apache.logging.log4j.layout.template.json.util.TruncatingBufferedPrintWriter;
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 
 /**
  * Exception stack trace to JSON string resolver used by {@link ExceptionResolver}.
@@ -52,7 +56,7 @@ final class StackTraceStringResolver implements StackTraceResolver {
         final Supplier<TruncatingBufferedPrintWriter> writerSupplier =
                 () -> TruncatingBufferedPrintWriter.ofCapacity(
                         context.getMaxStringByteCount());
-        final RecyclerFactory recyclerFactory = context.getRecyclerFactory();
+        final RecyclerFactory recyclerFactory = context.getConfiguration().getRecyclerFactory();
         this.srcWriterRecycler =
                 recyclerFactory.create(
                         writerSupplier, TruncatingBufferedPrintWriter::close);

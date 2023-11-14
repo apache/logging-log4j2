@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.layout.template.json.util.Recycler;
-import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
 import org.apache.logging.log4j.util.TriConsumer;
 
@@ -212,7 +212,7 @@ class ReadOnlyStringMapResolver implements EventResolver {
         if (key != null) {
             return createKeyResolver(key, stringified, mapAccessor);
         } else {
-            final RecyclerFactory recyclerFactory = context.getRecyclerFactory();
+            final RecyclerFactory recyclerFactory = context.getConfiguration().getRecyclerFactory();
             return createResolver(
                     recyclerFactory,
                     flatten,

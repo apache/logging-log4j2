@@ -140,7 +140,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
               final String mdcPrefix, final String eventPrefix, final String appName, final String messageId,
               final String excludes, final String includes, final String required, final Charset charset,
               final String exceptionPattern, final boolean useTLSMessageFormat, final LoggerFields[] loggerFields) {
-        super(charset);
+        super(config, charset);
         final PatternParser exceptionParser = createPatternParser(config, ThrowablePatternConverter.class);
         exceptionFormatters = exceptionPattern == null ? null : exceptionParser.parse(exceptionPattern);
         this.facility = facility;
@@ -245,7 +245,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
         PatternParser parser = config.getComponent(COMPONENT_KEY);
         if (parser == null) {
-            parser = new PatternParser(config, PatternLayout.KEY, ThrowablePatternConverter.class);
+            parser = new PatternParser(config, PatternLayout.KEY, LogEventPatternConverter.class);
             config.addComponent(COMPONENT_KEY, parser);
             parser = config.getComponent(COMPONENT_KEY);
         }
@@ -277,24 +277,28 @@ public final class Rfc5424Layout extends AbstractStringLayout {
      */
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buf = getStringBuilder();
-        appendPriority(buf, event.getLevel());
-        appendTimestamp(buf, event.getTimeMillis());
-        appendSpace(buf);
-        appendHostName(buf);
-        appendSpace(buf);
-        appendAppName(buf);
-        appendSpace(buf);
-        appendProcessId(buf);
-        appendSpace(buf);
-        appendMessageId(buf, event.getMessage());
-        appendSpace(buf);
-        appendStructuredElements(buf, event);
-        appendMessage(buf, event);
-        if (useTlsMessageFormat) {
-            return new TlsSyslogFrame(buf.toString()).toString();
+        final StringBuilder buf = stringBuilderRecycler.acquire();
+        try {
+            appendPriority(buf, event.getLevel());
+            appendTimestamp(buf, event.getTimeMillis());
+            appendSpace(buf);
+            appendHostName(buf);
+            appendSpace(buf);
+            appendAppName(buf);
+            appendSpace(buf);
+            appendProcessId(buf);
+            appendSpace(buf);
+            appendMessageId(buf, event.getMessage());
+            appendSpace(buf);
+            appendStructuredElements(buf, event);
+            appendMessage(buf, event);
+            if (useTlsMessageFormat) {
+                return new TlsSyslogFrame(buf.toString()).toString();
+            }
+            return buf.toString();
+        } finally {
+            stringBuilderRecycler.release(buf);
         }
-        return buf.toString();
     }
 
     private void appendPriority(final StringBuilder buffer, final Level logLevel) {

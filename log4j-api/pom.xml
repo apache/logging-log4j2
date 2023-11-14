@@ -55,5 +55,10 @@
       <artifactId>org.osgi.resource</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jctools</groupId>
+      <artifactId>jctools-core</artifactId>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 </project>

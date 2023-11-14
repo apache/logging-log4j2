@@ -14,24 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.spi;
 
 import java.util.function.Supplier;
 
-public class DummyRecycler<V> implements Recycler<V> {
+public abstract class AbstractRecycler<V> implements Recycler<V> {
 
     private final Supplier<V> supplier;
 
-    public DummyRecycler(final Supplier<V> supplier) {
+    public AbstractRecycler(final Supplier<V> supplier) {
         this.supplier = supplier;
     }
 
-    @Override
-    public V acquire() {
-        return supplier.get();
+    protected final V createInstance() {
+        final V instance = supplier.get();
+        if (instance instanceof RecyclerAware) {
+            @SuppressWarnings("unchecked")
+            RecyclerAware<V> recyclerAware = (RecyclerAware<V>) instance;
+            recyclerAware.setRecycler(this);
+        }
+        return instance;
     }
-
-    @Override
-    public void release(final V value) {}
 
 }

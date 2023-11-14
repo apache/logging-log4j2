@@ -19,7 +19,8 @@ package org.apache.logging.log4j.message;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.spi.Recycler;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.StringBuilders;
 
@@ -65,8 +66,12 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
      */
     public static final String ERROR_SUFFIX = ParameterFormatter.ERROR_SUFFIX;
 
-    // storing JDK classes in ThreadLocals does not cause memory leaks in web apps, so this is okay
-    private static final ThreadLocal<StringBuilder> threadLocalStringBuilder = new ThreadLocal<>();
+    private static final Recycler<StringBuilder> STRING_BUILDER_RECYCLER = LoggingSystem.getRecyclerFactory().create(
+            () -> new StringBuilder(DEFAULT_STRING_BUILDER_SIZE),
+            stringBuilder -> {
+                StringBuilders.trimToMaxSize(stringBuilder, DEFAULT_STRING_BUILDER_SIZE);
+                stringBuilder.setLength(0);
+            });
 
     private String messagePattern;
     private final Object[] argArray;
@@ -181,22 +186,15 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
     @Override
     public String getFormattedMessage() {
         if (formattedMessage == null) {
-            final StringBuilder buffer = getThreadLocalStringBuilder();
-            formatTo(buffer);
-            formattedMessage = buffer.toString();
-            StringBuilders.trimToMaxSize(buffer, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+            final StringBuilder buffer = STRING_BUILDER_RECYCLER.acquire();
+            try {
+                formatTo(buffer);
+                formattedMessage = buffer.toString();
+            } finally {
+                STRING_BUILDER_RECYCLER.release(buffer);
+            }
         }
         return formattedMessage;
-    }
-
-    private static StringBuilder getThreadLocalStringBuilder() {
-        StringBuilder buffer = threadLocalStringBuilder.get();
-        if (buffer == null) {
-            buffer = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-            threadLocalStringBuilder.set(buffer);
-        }
-        buffer.setLength(0);
-        return buffer;
     }
 
     @Override

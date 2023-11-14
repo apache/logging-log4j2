@@ -21,7 +21,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Equals pattern converter.
@@ -58,7 +57,7 @@ public final class RepeatPatternConverter extends LogEventPatternConverter {
         String result = options[0];
         try {
             count = Integer.parseInt(options[1].trim());
-            result = Strings.repeat(options[0], count);
+            result = options[0].repeat(count);
         } catch (final Exception ex) {
             LOGGER.error("The repeat count is not an integer: {}", options[1].trim());
         }

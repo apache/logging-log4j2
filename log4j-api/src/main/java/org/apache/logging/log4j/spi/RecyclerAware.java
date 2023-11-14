@@ -14,32 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.spi;
+/**
+ * Interface implemented by classes that need to interact with the {@link Recycler} that created them.
+ */
+public interface RecyclerAware<V> {
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-public class ThreadLocalRecycler<V> implements Recycler<V> {
-
-    private final Consumer<V> cleaner;
-
-    private final ThreadLocal<V> holder;
-
-    public ThreadLocalRecycler(
-            final Supplier<V> supplier,
-            final Consumer<V> cleaner) {
-        this.cleaner = cleaner;
-        this.holder = ThreadLocal.withInitial(supplier);
-    }
-
-    @Override
-    public V acquire() {
-        final V value = holder.get();
-        cleaner.accept(value);
-        return value;
-    }
-
-    @Override
-    public void release(final V value) {}
-
+    void setRecycler(Recycler<V> recycler);
 }

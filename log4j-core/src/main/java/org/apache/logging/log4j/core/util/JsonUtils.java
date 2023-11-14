@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.spi.Recycler;
 import org.apache.logging.log4j.util.Lazy;
 
 /**
@@ -55,52 +57,49 @@ public final class JsonUtils {
     /**
      * Temporary buffer used for composing quote/escape sequences
      */
-    private final static ThreadLocal<char[]> _qbufLocal = new ThreadLocal<>();
-
-    private static char[] getQBuf() {
-        char[] _qbuf = _qbufLocal.get();
-        if (_qbuf == null) {
-            _qbuf = new char[6];
-            _qbuf[0] = '\\';
-            _qbuf[2] = '0';
-            _qbuf[3] = '0';
-
-            _qbufLocal.set(_qbuf);
-        }
-        return _qbuf;
-    }
+    private final static Recycler<char[]> qbufRecycler = LoggingSystem.getRecyclerFactory().create(() -> {
+        char[] qbuf = new char[6];
+        qbuf[0] = '\\';
+        qbuf[2] = '0';
+        qbuf[3] = '0';
+        return qbuf;
+    });
 
     /**
      * Quote text contents using JSON standard quoting, and append results to a supplied {@link StringBuilder}.
      */
     public static void quoteAsString(final CharSequence input, final StringBuilder output) {
-        final char[] qbuf = getQBuf();
-        final int[] escCodes = ESC_CODES.value();
-        final int escCodeCount = escCodes.length;
-        int inPtr = 0;
-        final int inputLen = input.length();
+        final char[] qbuf = qbufRecycler.acquire();
+        try {
+            final int[] escCodes = ESC_CODES.value();
+            final int escCodeCount = escCodes.length;
+            int inPtr = 0;
+            final int inputLen = input.length();
 
-        outer:
-        while (inPtr < inputLen) {
-            tight_loop:
-            while (true) {
-                final char c = input.charAt(inPtr);
-                if (c < escCodeCount && escCodes[c] != 0) {
-                    break tight_loop;
+            outer:
+            while (inPtr < inputLen) {
+                tight_loop:
+                while (true) {
+                    final char c = input.charAt(inPtr);
+                    if (c < escCodeCount && escCodes[c] != 0) {
+                        break tight_loop;
+                    }
+                    output.append(c);
+                    if (++inPtr >= inputLen) {
+                        break outer;
+                    }
                 }
-                output.append(c);
-                if (++inPtr >= inputLen) {
-                    break outer;
-                }
+                // something to escape; 2 or 6-char variant?
+                final char d = input.charAt(inPtr++);
+                final int escCode = escCodes[d];
+                final int length = (escCode < 0)
+                        ? _appendNumeric(d, qbuf)
+                        : _appendNamed(escCode, qbuf);
+
+                output.append(qbuf, 0, length);
             }
-            // something to escape; 2 or 6-char variant?
-            final char d = input.charAt(inPtr++);
-            final int escCode = escCodes[d];
-            final int length = (escCode < 0)
-                    ? _appendNumeric(d, qbuf)
-                    : _appendNamed(escCode, qbuf);
-
-            output.append(qbuf, 0, length);
+        } finally {
+            qbufRecycler.release(qbuf);
         }
     }
 

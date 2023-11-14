@@ -29,6 +29,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.smtp.MimeMessageBuilder;
@@ -115,6 +116,7 @@ public class SmtpAppenderTest {
         ThreadContext.put(subjectKey, subjectValue);
         final int smtpPort = AvailablePortFinder.getNextAvailable();
         final SmtpAppender appender = SmtpAppender.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setName("Test")
                 .setTo("to@example.com")
                 .setCc("cc@example.com")

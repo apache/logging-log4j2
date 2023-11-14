@@ -55,15 +55,6 @@ public class StringsTest {
     }
 
     @Test
-    public void testConcat() {
-        assertEquals("ab", Strings.concat("a", "b"));
-        assertEquals("a", Strings.concat("a", ""));
-        assertEquals("a", Strings.concat("a", null));
-        assertEquals("b", Strings.concat("", "b"));
-        assertEquals("b", Strings.concat(null, "b"));
-    }
-
-    @Test
     public void testJoin() {
         assertNull(Strings.join((Iterable<?>) null, '.'));
         assertNull(Strings.join((Iterator<?>) null, '.'));

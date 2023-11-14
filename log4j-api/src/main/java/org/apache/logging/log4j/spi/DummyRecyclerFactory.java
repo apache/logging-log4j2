@@ -14,11 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.spi;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static java.util.Objects.requireNonNull;
+
+/**
+ * Recycler strategy which doesn't recycle anything; all instances are freshly created.
+ *
+ * @since 3.0.0
+ */
 public final class DummyRecyclerFactory implements RecyclerFactory {
 
     private static final DummyRecyclerFactory INSTANCE = new DummyRecyclerFactory();
@@ -30,10 +37,25 @@ public final class DummyRecyclerFactory implements RecyclerFactory {
     }
 
     @Override
-    public <V> Recycler<V> create(
-            final Supplier<V> supplier,
-            final Consumer<V> cleaner) {
+    public <V> Recycler<V> create(final Supplier<V> supplier, final Consumer<V> cleaner) {
+        requireNonNull(supplier, "supplier");
         return new DummyRecycler<>(supplier);
+    }
+
+    private static class DummyRecycler<V> extends AbstractRecycler<V> {
+
+        private DummyRecycler(final Supplier<V> supplier) {
+            super(supplier);
+        }
+
+        @Override
+        public V acquire() {
+            return createInstance();
+        }
+
+        @Override
+        public void release(final V value) {}
+
     }
 
 }

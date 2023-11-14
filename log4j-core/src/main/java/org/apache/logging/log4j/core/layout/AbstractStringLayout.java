@@ -17,19 +17,17 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
-import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.plugins.PluginAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
-import org.apache.logging.log4j.util.PropertyKey;
 import org.apache.logging.log4j.util.StringBuilders;
 
 /**
@@ -39,17 +37,15 @@ import org.apache.logging.log4j.util.StringBuilders;
  * performance: all characters are simply cast to bytes.
  * </p>
  */
-public abstract class AbstractStringLayout extends AbstractLayout {
+public abstract class AbstractStringLayout extends AbstractLayout implements StringLayout {
 
     public abstract static class Builder<B extends Builder<B>> extends AbstractLayout.Builder<B> {
 
-        private Charset charset;
+        @PluginElement("footerSerializer")
         private Serializer footerSerializer;
-        private Serializer headerSerializer;
 
-        public Charset getCharset() {
-            return charset;
-        }
+        @PluginElement("headerSerializer")
+        private Serializer headerSerializer;
 
         public Serializer getFooterSerializer() {
             return footerSerializer;
@@ -59,17 +55,12 @@ public abstract class AbstractStringLayout extends AbstractLayout {
             return headerSerializer;
         }
 
-        public B setCharset(@PluginAttribute final Charset charset) {
-            this.charset = charset;
-            return asBuilder();
-        }
-
-        public B setFooterSerializer(@PluginElement final Serializer footerSerializer) {
+        public B setFooterSerializer(final Serializer footerSerializer) {
             this.footerSerializer = footerSerializer;
             return asBuilder();
         }
 
-        public B setHeaderSerializer(@PluginElement final Serializer headerSerializer) {
+        public B setHeaderSerializer(final Serializer headerSerializer) {
             this.headerSerializer = headerSerializer;
             return asBuilder();
         }
@@ -77,6 +68,7 @@ public abstract class AbstractStringLayout extends AbstractLayout {
     }
 
     public interface Serializer extends Serializer2 {
+
         String toSerializable(final LogEvent event);
 
         default boolean requiresLocation() {
@@ -88,6 +80,7 @@ public abstract class AbstractStringLayout extends AbstractLayout {
             builder.append(toSerializable(event));
             return builder;
         }
+
     }
 
     /**
@@ -104,83 +97,78 @@ public abstract class AbstractStringLayout extends AbstractLayout {
      */
     protected static final int DEFAULT_STRING_BUILDER_SIZE = 1024;
 
-    protected static final int MAX_STRING_BUILDER_SIZE = Math.max(DEFAULT_STRING_BUILDER_SIZE,
-            size(Log4jPropertyKey.GC_LAYOUT_STRING_BUILDER_MAX_SIZE, 2 * 1024));
+    protected static final int MAX_STRING_BUILDER_SIZE = Math.max(
+            DEFAULT_STRING_BUILDER_SIZE,
+            PropertiesUtil
+                    .getProperties()
+                    .getIntegerProperty(
+                            Log4jPropertyKey.GC_LAYOUT_STRING_BUILDER_MAX_SIZE,
+                            Math.multiplyExact(2, DEFAULT_STRING_BUILDER_SIZE)));
 
-    private static final ThreadLocal<StringBuilder> threadLocal = new ThreadLocal<>();
-
-    /**
-     * Returns a {@code StringBuilder} that this Layout implementation can use to write the formatted log event to.
-     *
-     * @return a {@code StringBuilder}
-     */
-    protected static StringBuilder getStringBuilder() {
-        if (AbstractLogger.getRecursionDepth() > 1) { // LOG4J2-2368
-            // Recursive logging may clobber the cached StringBuilder.
-            return new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-        }
-        StringBuilder result = threadLocal.get();
-        if (result == null) {
-            result = new StringBuilder(DEFAULT_STRING_BUILDER_SIZE);
-            threadLocal.set(result);
-        }
-        trimToMaxSize(result);
-        result.setLength(0);
-        return result;
+    protected static Recycler<StringBuilder> createStringBuilderRecycler(final RecyclerFactory recyclerFactory) {
+        return recyclerFactory.create(
+                () -> new StringBuilder(DEFAULT_STRING_BUILDER_SIZE),
+                stringBuilder -> {
+                    StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_SIZE);
+                    stringBuilder.setLength(0);
+                });
     }
-
-    private static int size(final PropertyKey property, final int defaultValue) {
-        return PropertiesUtil.getProperties().getIntegerProperty(property, defaultValue);
-    }
-
-    protected static void trimToMaxSize(final StringBuilder stringBuilder) {
-        StringBuilders.trimToMaxSize(stringBuilder, MAX_STRING_BUILDER_SIZE);
-    }
-
-    private Encoder<StringBuilder> textEncoder;
-    /**
-     * The charset for the formatted message.
-     */
-    private final Charset charset;
 
     private final Serializer footerSerializer;
 
     private final Serializer headerSerializer;
 
-    protected AbstractStringLayout(final Charset charset) {
-        this(charset, (byte[]) null, (byte[]) null);
+    protected final Recycler<Encoder<StringBuilder>> stringBuilderEncoderRecycler;
+
+    protected final Recycler<StringBuilder> stringBuilderRecycler;
+
+    protected AbstractStringLayout(final Configuration configuration, final Charset charset) {
+        this(configuration, charset, null, (byte[]) null);
     }
 
     /**
      * Builds a new layout.
-     * @param aCharset the charset used to encode the header bytes, footer bytes and anything else that needs to be
-     *      converted from strings to bytes.
+     * @param configuration a configuration
      * @param header the header bytes
      * @param footer the footer bytes
      */
-    protected AbstractStringLayout(final Charset aCharset, final byte[] header, final byte[] footer) {
-        super(null, header, footer);
+    protected AbstractStringLayout(
+            final Configuration configuration,
+            final Charset charset,
+            final byte[] header,
+            final byte[] footer) {
+        super(configuration, charset, header, footer);
         this.headerSerializer = null;
         this.footerSerializer = null;
-        this.charset = aCharset == null ? StandardCharsets.UTF_8 : aCharset;
-        textEncoder = Constants.ENABLE_DIRECT_ENCODERS ? new StringBuilderEncoder(charset) : null;
+        final RecyclerFactory recyclerFactory = configuration.getRecyclerFactory();
+        this.stringBuilderEncoderRecycler = createStringBuilderEncoderRecycler(recyclerFactory, getCharset());
+        this.stringBuilderRecycler = createStringBuilderRecycler(recyclerFactory);
     }
 
     /**
      * Builds a new layout.
-     * @param config the configuration
-     * @param aCharset the charset used to encode the header bytes, footer bytes and anything else that needs to be
+     * @param configuration a configuration
+     * @param charset the charset used to encode the header bytes, footer bytes and anything else that needs to be
      *      converted from strings to bytes.
      * @param headerSerializer the header bytes serializer
      * @param footerSerializer the footer bytes serializer
      */
-    protected AbstractStringLayout(final Configuration config, final Charset aCharset,
-            final Serializer headerSerializer, final Serializer footerSerializer) {
-        super(config, null, null);
+    protected AbstractStringLayout(
+            final Configuration configuration,
+            final Charset charset,
+            final Serializer headerSerializer,
+            final Serializer footerSerializer) {
+        super(configuration, charset, null, null);
         this.headerSerializer = headerSerializer;
         this.footerSerializer = footerSerializer;
-        this.charset = aCharset == null ? StandardCharsets.UTF_8 : aCharset;
-        textEncoder = Constants.ENABLE_DIRECT_ENCODERS ? new StringBuilderEncoder(charset) : null;
+        this.stringBuilderEncoderRecycler = createStringBuilderEncoderRecycler(configuration.getRecyclerFactory(), getCharset());
+        this.stringBuilderRecycler = createStringBuilderRecycler(configuration.getRecyclerFactory());
+    }
+
+    private static Recycler<Encoder<StringBuilder>> createStringBuilderEncoderRecycler(
+            final RecyclerFactory recyclerFactory,
+            final Charset charset) {
+        return recyclerFactory.create(() -> new StringBuilderEncoder(charset));
     }
 
     protected byte[] getBytes(final String s) {
@@ -228,18 +216,6 @@ public abstract class AbstractStringLayout extends AbstractLayout {
         return headerSerializer;
     }
 
-    /**
-     * Returns a {@code Encoder<StringBuilder>} that this Layout implementation can use for encoding log events.
-     *
-     * @return a {@code Encoder<StringBuilder>}
-     */
-    protected Encoder<StringBuilder> getStringBuilderEncoder() {
-        if (textEncoder == null) {
-            textEncoder = new StringBuilderEncoder(getCharset());
-        }
-        return textEncoder;
-    }
-
     protected byte[] serializeToBytes(final Serializer serializer, final byte[] defaultValue) {
         final String serializable = serializeToString(serializer);
         if (serializable == null) {
@@ -260,8 +236,7 @@ public abstract class AbstractStringLayout extends AbstractLayout {
         final LoggerConfig rootLogger = config.getRootLogger();
         final LogEventFactory logEventFactory = config.getComponent(LogEventFactory.KEY);
         final String fqcn = getClass().getName();
-        final LogEvent logEvent = logEventFactory.createEvent(
-                rootLogger.getName(), null, fqcn, rootLogger.getLevel(), null, null, null);
+        final LogEvent logEvent = logEventFactory.createEvent(rootLogger.getName(), null, fqcn, rootLogger.getLevel(), null, null, null);
         return serializer.toSerializable(logEvent);
     }
 
@@ -278,4 +253,5 @@ public abstract class AbstractStringLayout extends AbstractLayout {
 
     @Override
     public abstract String toSerializable(LogEvent event);
+
 }

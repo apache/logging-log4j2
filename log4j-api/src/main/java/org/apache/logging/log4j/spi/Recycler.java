@@ -14,12 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.spi;
 
+/**
+ * Strategy for recycling objects. This is primarily useful for heavyweight objects and buffers.
+ *
+ * @param <V> the recyclable type
+ * @since 3.0.0
+ */
 public interface Recycler<V> {
 
+    /**
+     * Acquires an instance of V. This may either be a fresh instance of V or a recycled instance of V.
+     * Recycled instances will be modified by their cleanup function before being returned.
+     *
+     * @return an instance of V to be used
+     */
     V acquire();
 
+    /**
+     * Releases an instance of V. This allows the instance to be recycled and later reacquired for new
+     * purposes.
+     *
+     * @param value an instance of V no longer being used
+     */
     void release(V value);
 
 }

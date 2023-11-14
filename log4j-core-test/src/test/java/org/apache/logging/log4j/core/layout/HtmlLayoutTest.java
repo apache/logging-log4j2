@@ -29,11 +29,8 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.AbstractLogEvent;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.*;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
@@ -95,6 +92,7 @@ public class HtmlLayoutTest {
     @Test
     public void testContentType() {
         final HtmlLayout layout = HtmlLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
             .setContentType("text/html; charset=UTF-16")
             .build();
         assertEquals("text/html; charset=UTF-16", layout.getContentType());
@@ -128,6 +126,7 @@ public class HtmlLayoutTest {
         }
         // set up appender
         final HtmlLayout layout = HtmlLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
             .setLocationInfo(includeLocation)
             .build();
         final ListAppender appender = new ListAppender("List", null, layout, true, false);
@@ -181,7 +180,7 @@ public class HtmlLayoutTest {
 
     @Test
     public void testLayoutWithoutDataPattern() {
-        final HtmlLayout layout = HtmlLayout.newBuilder().build();
+        final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).build();
 
         final MyLogEvent event = new MyLogEvent();
         final String actual = getDateLine(layout.toSerializable(event));
@@ -192,7 +191,7 @@ public class HtmlLayoutTest {
 
     @Test
     public void testLayoutWithDatePatternJvmElapseTime() {
-        final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern("JVM_ELAPSE_TIME").build();
+        final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).setDatePattern("JVM_ELAPSE_TIME").build();
 
         final MyLogEvent event = new MyLogEvent();
         final String actual = getDateLine(layout.toSerializable(event));
@@ -203,7 +202,7 @@ public class HtmlLayoutTest {
 
     @Test
     public void testLayoutWithDatePatternUnix() {
-        final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern("UNIX").build();
+        final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).setDatePattern("UNIX").build();
 
         final MyLogEvent event = new MyLogEvent();
         final String actual = getDateLine(layout.toSerializable(event));
@@ -213,7 +212,7 @@ public class HtmlLayoutTest {
 
     @Test
     public void testLayoutWithDatePatternUnixMillis() {
-        final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern("UNIX_MILLIS").build();
+        final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).setDatePattern("UNIX_MILLIS").build();
 
         final MyLogEvent event = new MyLogEvent();
         final String actual = getDateLine(layout.toSerializable(event));
@@ -235,7 +234,7 @@ public class HtmlLayoutTest {
     }
 
     private void testLayoutWithDatePatternFixedFormat(final FixedFormat format, final String timezone) {
-        final HtmlLayout layout = HtmlLayout.newBuilder().setDatePattern(format.name()).setTimezone(timezone).build();
+        final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).setDatePattern(format.name()).setTimezone(timezone).build();
 
         final LogEvent event = new MyLogEvent();
         final String actual = getDateLine(layout.toSerializable(event));

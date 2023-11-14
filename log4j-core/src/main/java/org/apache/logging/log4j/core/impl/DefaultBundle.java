@@ -43,9 +43,7 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.SingletonFactory;
 import org.apache.logging.log4j.plugins.condition.ConditionalOnMissingBinding;
 import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
-import org.apache.logging.log4j.spi.CopyOnWrite;
-import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
+import org.apache.logging.log4j.spi.*;
 
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
@@ -63,6 +61,11 @@ import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
  * @see StrSubstitutor
  */
 public class DefaultBundle {
+
+    @SingletonFactory
+    public RecyclerFactory defaultRecyclerFactory() {
+        return LoggingSystem.getRecyclerFactory();
+    }
 
     @SingletonFactory
     @ConditionalOnMissingBinding
@@ -101,8 +104,8 @@ public class DefaultBundle {
     @SingletonFactory
     @ConditionalOnMissingBinding
     public LogEventFactory defaultLogEventFactory(
-            final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock) {
-        return isThreadLocalsEnabled() ? new ReusableLogEventFactory(injector, clock, nanoClock) :
+            final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock, final RecyclerFactory recyclerFactory) {
+        return isThreadLocalsEnabled() ? new ReusableLogEventFactory(injector, clock, nanoClock, recyclerFactory) :
                 new DefaultLogEventFactory(injector, clock, nanoClock);
     }
 

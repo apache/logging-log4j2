@@ -31,6 +31,7 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.GelfLayout.CompressionType;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
@@ -284,8 +285,9 @@ public class GelfLayoutTest {
     private void testRequiresLocation(final String messagePattern, final Boolean requiresLocation) {
 
         final GelfLayout layout = GelfLayout.newBuilder()
-        .setMessagePattern(messagePattern)
-        .build();
+                .setConfiguration(new DefaultConfiguration())
+                .setMessagePattern(messagePattern)
+                .build();
 
         assertEquals(layout.requiresLocation(), requiresLocation);
     }

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.SyslogLayout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.net.Protocol;
@@ -34,6 +35,7 @@ public class SyslogAppenderCustomLayoutTest extends SyslogAppenderTest {
     protected Builder<?> newSyslogAppenderBuilder(final Protocol protocol, final TlsSyslogMessageFormat format,
             final boolean newLine, final int port) {
         final Layout layout = SyslogLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setFacility(Facility.LOCAL3)
                 .setIncludeNewLine(true)
                 .build();

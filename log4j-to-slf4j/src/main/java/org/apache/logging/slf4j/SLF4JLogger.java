@@ -23,7 +23,8 @@ import org.apache.logging.log4j.message.LoggerNameAwareMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.util.Constants;
+import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.spi.Recycler;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MarkerFactory;
 import org.slf4j.spi.LocationAwareLogger;
@@ -33,16 +34,18 @@ import org.slf4j.spi.LocationAwareLogger;
  */
 public class SLF4JLogger extends AbstractLogger {
 
-    private static final long serialVersionUID = 1L;
     /**
      * Logback supports turbo filters, that can override the logger's level.
      * Therefore we can never return a no-op builder.
      */
     private static final boolean LAZY_LEVEL_CHECK = "ch.qos.logback.classic.LoggerContext"
             .equals(LoggerFactory.getILoggerFactory().getClass().getName());
-    private static final ThreadLocal<SLF4JLogBuilder> logBuilder = ThreadLocal.withInitial(SLF4JLogBuilder::new);
+
+    private static final Recycler<SLF4JLogBuilder> LOG_BUILDER_RECYCLER =
+            LoggingSystem.getRecyclerFactory().create(SLF4JLogBuilder::new);
 
     private final org.slf4j.Logger logger;
+
     private final LocationAwareLogger locationAwareLogger;
 
     public SLF4JLogger(final String name, final MessageFactory messageFactory, final org.slf4j.Logger logger) {
@@ -307,9 +310,8 @@ public class SLF4JLogger extends AbstractLogger {
 
     @Override
     protected LogBuilder getLogBuilder(final Level level) {
-        final SLF4JLogBuilder builder = logBuilder.get();
-        return Constants.isThreadLocalsEnabled() && !builder.isInUse() ? builder.reset(this, level)
-                : new SLF4JLogBuilder(this, level);
+        final SLF4JLogBuilder builder = LOG_BUILDER_RECYCLER.acquire();
+        return builder.reset(this, level);
     }
 
     @Override
@@ -320,4 +322,5 @@ public class SLF4JLogger extends AbstractLogger {
         }
         return super.atLevel(level);
     }
+
 }

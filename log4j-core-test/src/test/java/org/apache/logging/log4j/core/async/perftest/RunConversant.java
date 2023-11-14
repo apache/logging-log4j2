@@ -25,6 +25,6 @@ public class RunConversant extends AbstractRunQueue {
 
     @Override
     BlockingQueue<String> createQueue(final int capacity) {
-        return DisruptorBlockingQueueFactory.<String>createFactory(SpinPolicy.SPINNING).create(capacity);
+        return DisruptorBlockingQueueFactory.createFactory(SpinPolicy.SPINNING).create(capacity);
     }
 }

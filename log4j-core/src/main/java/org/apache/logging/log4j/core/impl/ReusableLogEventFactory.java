@@ -23,32 +23,43 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.ReusableLogEvent;
 import org.apache.logging.log4j.core.async.ThreadNameCachingStrategy;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.NanoClock;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.util.StringMap;
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 
 /**
- * Garbage-free LogEventFactory that reuses a single mutable log event.
+ * Garbage-free LogEventFactory that recycles mutable {@link LogEvent} instances.
  * @since 2.6
+ * @see Recycler
  */
 public class ReusableLogEventFactory implements LogEventFactory {
     private static final ThreadNameCachingStrategy THREAD_NAME_CACHING_STRATEGY = ThreadNameCachingStrategy.create();
 
-    private static final ThreadLocal<MutableLogEvent> mutableLogEventThreadLocal = new ThreadLocal<>();
-
     private final ContextDataInjector injector;
     private final Clock clock;
     private final NanoClock nanoClock;
+    private final Recycler<MutableLogEvent> recycler;
 
     @Inject
-    public ReusableLogEventFactory(final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock) {
+    public ReusableLogEventFactory(final ContextDataInjector injector, final Clock clock, final NanoClock nanoClock,
+                                   final RecyclerFactory recyclerFactory) {
         this.injector = injector;
         this.clock = clock;
         this.nanoClock = nanoClock;
+        this.recycler = recyclerFactory.create(() -> {
+            final MutableLogEvent event = new MutableLogEvent();
+            final Thread currentThread = Thread.currentThread();
+            event.setThreadId(currentThread.getId());
+            event.setThreadName(currentThread.getName());
+            event.setThreadPriority(currentThread.getPriority());
+            return event;
+        });
     }
 
     /**
@@ -86,8 +97,7 @@ public class ReusableLogEventFactory implements LogEventFactory {
     public LogEvent createEvent(final String loggerName, final Marker marker,
                                 final String fqcn, final StackTraceElement location, final Level level, final Message message,
                                 final List<Property> properties, final Throwable t) {
-        final MutableLogEvent result = getOrCreateMutableLogEvent();
-        result.reserved = true;
+        MutableLogEvent result = recycler.acquire();
         // No need to clear here, values are cleared in release when reserved is set to false.
         // If the event was dirty we'd create a new one.
 
@@ -99,7 +109,7 @@ public class ReusableLogEventFactory implements LogEventFactory {
         result.initTime(clock, nanoClock);
         result.setThrown(t);
         result.setSource(location);
-        result.setContextData(injector.injectContextData(properties, (StringMap) result.getContextData()));
+        result.setContextData(injector.injectContextData(properties, result.getContextData()));
         result.setContextStack(ThreadContext.getDepth() == 0 ? ThreadContext.EMPTY_STACK : ThreadContext.cloneStack());// mutable copy
 
         if (THREAD_NAME_CACHING_STRATEGY == ThreadNameCachingStrategy.UNCACHED) {
@@ -109,22 +119,14 @@ public class ReusableLogEventFactory implements LogEventFactory {
         return result;
     }
 
-    private static MutableLogEvent getOrCreateMutableLogEvent() {
-        final MutableLogEvent result = mutableLogEventThreadLocal.get();
-        return result == null || result.reserved ? createInstance(result) : result;
-    }
-
-    private static MutableLogEvent createInstance(final MutableLogEvent existing) {
-        final MutableLogEvent result = new MutableLogEvent();
-
-        // usually no need to re-initialize thread-specific fields since the event is stored in a ThreadLocal
-        result.setThreadId(Thread.currentThread().getId());
-        result.setThreadName(Thread.currentThread().getName()); // Thread.getName() allocates Objects on each call
-        result.setThreadPriority(Thread.currentThread().getPriority());
-        if (existing == null) {
-            mutableLogEventThreadLocal.set(result);
+    @Override
+    public void recycle(final LogEvent event) {
+        if (event instanceof ReusableLogEvent) {
+            ((ReusableLogEvent) event).clear();
+            if (event instanceof MutableLogEvent) {
+                recycler.release((MutableLogEvent) event);
+            }
         }
-        return result;
     }
 
     /**
@@ -132,12 +134,12 @@ public class ReusableLogEventFactory implements LogEventFactory {
      * This flag is used internally to verify that a reusable log event is no longer in use and can be reused.
      * @param logEvent the log event to make available again
      * @since 2.7
+     * @deprecated use {@link #recycle(LogEvent)}
      */
+    @Deprecated(since = "3.0.0")
     public static void release(final LogEvent logEvent) { // LOG4J2-1583
-        if (logEvent instanceof MutableLogEvent) {
-            final MutableLogEvent mutableLogEvent = (MutableLogEvent) logEvent;
-            mutableLogEvent.clear();
-            mutableLogEvent.reserved = false;
+        if (logEvent instanceof ReusableLogEvent) {
+            ((ReusableLogEvent) logEvent).clear();
         }
     }
 }

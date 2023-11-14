@@ -23,7 +23,7 @@ import java.util.concurrent.BlockingQueue;
  *
  * @since 2.7
  */
-public interface BlockingQueueFactory<E> {
+public interface BlockingQueueFactory {
 
     /**
      * The {@link org.apache.logging.log4j.plugins.Configurable#elementType() element type} to use for plugins
@@ -38,5 +38,5 @@ public interface BlockingQueueFactory<E> {
      * @param capacity maximum size of the queue if supported
      * @return a new BlockingQueue
      */
-    BlockingQueue<E> create(int capacity);
+    <E> BlockingQueue<E> create(int capacity);
 }

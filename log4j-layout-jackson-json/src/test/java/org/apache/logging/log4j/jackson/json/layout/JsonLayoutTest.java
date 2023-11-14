@@ -43,11 +43,7 @@ import org.apache.logging.log4j.core.time.internal.SystemClock;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
 import org.apache.logging.log4j.jackson.json.Log4jJsonObjectMapper;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.ObjectMessage;
-import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.message.ReusableMessageFactory;
-import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.*;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
@@ -142,6 +138,7 @@ public class JsonLayoutTest {
             .setTimeMillis(1).build();
         // @formatter:off
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setCompact(true)
                 .setObjectMessageAsJsonObject(objectMessageAsJsonObject)
                 .build();
@@ -153,6 +150,7 @@ public class JsonLayoutTest {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         // @formatter:off
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setCompact(true)
                 .setIncludeStacktrace(true)
                 .setStacktraceAsString(stacktraceAsString)
@@ -162,8 +160,9 @@ public class JsonLayoutTest {
     }
 
     @Test
-    public void testAdditionalFields() throws Exception {
+    public void testAdditionalFields() {
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setComplete(false)
@@ -182,8 +181,9 @@ public class JsonLayoutTest {
     }
 
     @Test
-    public void testMutableLogEvent() throws Exception {
+    public void testMutableLogEvent() {
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setComplete(false)
@@ -210,6 +210,7 @@ public class JsonLayoutTest {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         // @formatter:off
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(locationInfo)
                 .setProperties(includeContext)
                 .setPropertiesAsList(contextMapAslist)
@@ -353,8 +354,9 @@ public class JsonLayoutTest {
     }
 
     @Test
-    public void testIncludeNullDelimiterFalse() throws Exception {
+    public void testIncludeNullDelimiterFalse() {
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setCompact(true)
                 .setIncludeNullDelimiter(false)
                 .build();
@@ -363,8 +365,9 @@ public class JsonLayoutTest {
     }
 
     @Test
-    public void testIncludeNullDelimiterTrue() throws Exception {
+    public void testIncludeNullDelimiterTrue() {
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setCompact(true)
                 .setIncludeNullDelimiter(true)
                 .build();
@@ -376,7 +379,7 @@ public class JsonLayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void testLayout() throws Exception {
+    public void testLayout() {
         final Map<String, Appender> appenders = this.rootLogger.getAppenders();
         for (final Appender appender : appenders.values()) {
             this.rootLogger.removeAppender(appender);
@@ -440,6 +443,7 @@ public class JsonLayoutTest {
         final boolean propertiesAsList = false;
         // @formatter:off
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setPropertiesAsList(propertiesAsList)
@@ -470,6 +474,7 @@ public class JsonLayoutTest {
     public void testLayoutMessageWithCurlyBraces() throws Exception {
         final boolean propertiesAsList = false;
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setPropertiesAsList(propertiesAsList)
@@ -498,6 +503,7 @@ public class JsonLayoutTest {
     public void testReusableLayoutMessageWithCurlyBraces() throws Exception {
         final boolean propertiesAsList = false;
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setPropertiesAsList(propertiesAsList)
@@ -507,7 +513,8 @@ public class JsonLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setIncludeStacktrace(true)
                 .build();
-        final Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
+        final ReusableMessageFactory factory = ReusableMessageFactory.INSTANCE;
+        final Message message = factory.newMessage("Testing {}", new TestObj());
         try {
             final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
                     .setLoggerName("a.B")
@@ -524,7 +531,7 @@ public class JsonLayoutTest {
             final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
             assertEquals(expectedMessage, actual.getMessage().getFormattedMessage());
         } finally {
-            ReusableMessageFactory.release(message);
+            factory.recycle(message);
         }
     }
 
@@ -533,6 +540,7 @@ public class JsonLayoutTest {
     public void testLayoutRingBufferEventReusableMessageWithCurlyBraces() throws Exception {
         final boolean propertiesAsList = false;
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setPropertiesAsList(propertiesAsList)
@@ -542,7 +550,8 @@ public class JsonLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setIncludeStacktrace(true)
                 .build();
-        final Message message = ReusableMessageFactory.INSTANCE.newMessage("Testing {}", new TestObj());
+        final ReusableMessageFactory factory = ReusableMessageFactory.INSTANCE;
+        final Message message = factory.newMessage("Testing {}", new TestObj());
         try {
             final RingBufferLogEvent ringBufferEvent = new RingBufferLogEvent();
             ringBufferEvent.setValues(
@@ -555,7 +564,7 @@ public class JsonLayoutTest {
             final Log4jLogEvent actual = new Log4jJsonObjectMapper(propertiesAsList, true, false, false).readValue(str, Log4jLogEvent.class);
             assertEquals(expectedMessage, actual.getMessage().getFormattedMessage());
         } finally {
-            ReusableMessageFactory.release(message);
+            factory.recycle(message);
         }
     }
 

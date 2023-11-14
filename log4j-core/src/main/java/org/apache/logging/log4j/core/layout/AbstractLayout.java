@@ -16,14 +16,17 @@
  */
 package org.apache.logging.log4j.core.layout;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.PluginAttribute;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Cast;
 
@@ -32,6 +35,8 @@ import org.apache.logging.log4j.util.Cast;
  */
 public abstract class AbstractLayout implements StringLayout {
 
+    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+
     /**
      * Subclasses can extend this abstract Builder.
      *
@@ -39,8 +44,16 @@ public abstract class AbstractLayout implements StringLayout {
      */
     public abstract static class Builder<B extends Builder<B>> {
 
+        @PluginConfiguration
         private Configuration configuration;
+
+        @PluginBuilderAttribute
+        private Charset charset;
+
+        @PluginBuilderAttribute
         private byte[] footer;
+
+        @PluginBuilderAttribute
         private byte[] header;
 
         public B asBuilder() {
@@ -51,6 +64,10 @@ public abstract class AbstractLayout implements StringLayout {
             return configuration;
         }
 
+        public Charset getCharset() {
+            return charset;
+        }
+
         public byte[] getFooter() {
             return footer;
         }
@@ -59,18 +76,22 @@ public abstract class AbstractLayout implements StringLayout {
             return header;
         }
 
-        @Inject
         public B setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return asBuilder();
         }
 
-        public B setFooter(@PluginAttribute final byte[] footer) {
+        public B setCharset(final Charset charset) {
+            this.charset = charset;
+            return asBuilder();
+        }
+
+        public B setFooter(final byte[] footer) {
             this.footer = footer;
             return asBuilder();
         }
 
-        public B setHeader(@PluginAttribute final byte[] header) {
+        public B setHeader(final byte[] header) {
             this.header = header;
             return asBuilder();
         }
@@ -86,6 +107,11 @@ public abstract class AbstractLayout implements StringLayout {
      * The current Configuration.
      */
     protected final Configuration configuration;
+
+    /**
+     * The character set used for encoding log events.
+     */
+    protected final Charset charset;
 
     /**
      * The number of events successfully processed by this layout.
@@ -105,22 +131,30 @@ public abstract class AbstractLayout implements StringLayout {
     /**
      * Constructs a layout with an optional header and footer.
      *
-     * @param configuration
-     *            The configuration
-     * @param header
-     *            The header to include when the stream is opened. May be null.
-     * @param footer
-     *            The footer to add when the stream is closed. May be null.
+     * @param configuration a configuration
+     * @param charset a character set used for encoding log events; if null, UTF-8 will be used
+     * @param header a header to include when the stream is opened, may be null
+     * @param footer the footer to add when the stream is closed, may be null
      */
-    public AbstractLayout(final Configuration configuration, final byte[] header, final byte[] footer) {
+    public AbstractLayout(
+            final Configuration configuration,
+            final Charset charset,
+            final byte[] header,
+            final byte[] footer) {
         super();
-        this.configuration = configuration;
+        this.configuration = Objects.requireNonNull(configuration, "configuration");
+        this.charset = charset != null ? charset : DEFAULT_CHARSET;
         this.header = header;
         this.footer = footer;
     }
 
     public Configuration getConfiguration() {
         return configuration;
+    }
+
+    @Override
+    public Charset getCharset() {
+        return charset;
     }
 
     @Override
@@ -162,30 +196,39 @@ public abstract class AbstractLayout implements StringLayout {
      * Subclasses can override this method to provide a garbage-free implementation. For text-based layouts,
      * {@code AbstractStringLayout} provides various convenience methods to help with this:
      * </p>
-     * <pre>@Category(Node.CATEGORY)
+     * <pre>{@code
+     * &#064;Category(Node.CATEGORY)
      * &#064;Plugin(value = "MyLayout", elementType = Layout.ELEMENT_TYPE, printObject = true)
      * public final class MyLayout extends AbstractStringLayout {
      *     &#064;Override
      *     public void encode(LogEvent event, ByteBufferDestination destination) {
-     *         StringBuilder text = getStringBuilder();
-     *         convertLogEventToText(event, text);
-     *         getStringBuilderEncoder().encode(text, destination);
+     *         StringBuilder text = stringBuilderRecycler.acquire();
+     *         try {
+     *             convertLogEventToText(event, text);
+     *             StringBuilderEncoder encoder = stringBuilderEncoderRecycler.acquire();
+     *             try {
+     *                 encoder.encode(text, destination);
+     *             } finally {
+     *                 stringBuilderEncoderRecycler.release(encoder);
+     *             }
+     *         } finally {
+     *             stringBuilderRecycler.release(text);
+     *         }
      *     }
      *
      *     private void convertLogEventToText(LogEvent event, StringBuilder destination) {
      *         ... // append a text representation of the log event to the StringBuilder
      *     }
      * }
-     * </pre>
+     * }</pre>
      *
      * @param event the LogEvent to encode.
      * @param destination holds the ByteBuffer to write into.
-     * @see AbstractStringLayout#getStringBuilder()
-     * @see AbstractStringLayout#getStringBuilderEncoder()
      */
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
         final byte[] data = toByteArray(event);
         destination.writeBytes(data, 0, data.length);
     }
+
 }

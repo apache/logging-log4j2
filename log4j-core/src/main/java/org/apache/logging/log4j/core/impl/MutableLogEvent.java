@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.ReusableLogEvent;
 import org.apache.logging.log4j.core.async.InternalAsyncUtil;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.Instant;
@@ -34,17 +35,18 @@ import org.apache.logging.log4j.message.ParameterVisitable;
 import org.apache.logging.log4j.message.ReusableMessage;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.TimestampMessage;
-import org.apache.logging.log4j.util.ReadOnlyStringMap;
+import org.apache.logging.log4j.spi.Recycler;
 import org.apache.logging.log4j.util.StackLocatorUtil;
 import org.apache.logging.log4j.util.StringBuilders;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Mutable implementation of the {@code LogEvent} interface.
+ * Mutable implementation of the {@code ReusableLogEvent} interface.
  * @since 2.6
+ * @see Recycler
  */
-public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisitable {
+public class MutableLogEvent implements ReusableLogEvent, ReusableMessage, ParameterVisitable {
     private static final Message EMPTY = new SimpleMessage(Strings.EMPTY);
 
     private int threadPriority;
@@ -68,7 +70,6 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     private String loggerFqcn;
     private StackTraceElement source;
     private ThreadContext.ContextStack contextStack;
-    transient boolean reserved = false;
 
     public MutableLogEvent() {
         // messageText and the parameter array are lazily initialized
@@ -86,9 +87,9 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     }
 
     /**
-     * Initialize the fields of this {@code MutableLogEvent} from another event.
+     * Initialize the fields of this {@code ReusableLogEvent} from another event.
      * <p>
-     * This method is used on async logger ringbuffer slots holding MutableLogEvent objects in each slot.
+     * This method is used on async logger ringbuffer slots holding ReusableLogEvent objects in each slot.
      * </p>
      *
      * @param event the event to copy data from
@@ -119,9 +120,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         setMessage(event.getMessage());
     }
 
-    /**
-     * Clears all references this event has to other objects.
-     */
+    @Override
     public void clear() {
         loggerFqcn = null;
         marker = null;
@@ -166,6 +165,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return loggerFqcn;
     }
 
+    @Override
     public void setLoggerFqcn(final String loggerFqcn) {
         this.loggerFqcn = loggerFqcn;
     }
@@ -175,6 +175,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return marker;
     }
 
+    @Override
     public void setMarker(final Marker marker) {
         this.marker = marker;
     }
@@ -187,6 +188,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return level;
     }
 
+    @Override
     public void setLevel(final Level level) {
         this.level = level;
     }
@@ -196,6 +198,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return loggerName;
     }
 
+    @Override
     public void setLoggerName(final String loggerName) {
         this.loggerName = loggerName;
     }
@@ -208,6 +211,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return message;
     }
 
+    @Override
     public void setMessage(final Message msg) {
         if (msg instanceof ReusableMessage) {
             final ReusableMessage reusable = (ReusableMessage) msg;
@@ -312,6 +316,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return thrown;
     }
 
+    @Override
     public void setThrown(final Throwable thrown) {
         this.thrown = thrown;
     }
@@ -330,6 +335,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return instant.getEpochMillisecond();
     }
 
+    @Override
     public void setTimeMillis(final long timeMillis) {
         this.instant.initFromEpochMilli(timeMillis, 0);
     }
@@ -337,6 +343,11 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     @Override
     public Instant getInstant() {
         return instant;
+    }
+
+    @Override
+    public void setInstant(final Instant instant) {
+        this.instant.initFrom(instant);
     }
 
     /**
@@ -351,6 +362,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return thrownProxy;
     }
 
+    @Override
     public void setSource(final StackTraceElement source) {
         this.source = source;
     }
@@ -373,10 +385,11 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
     }
 
     @Override
-    public ReadOnlyStringMap getContextData() {
+    public StringMap getContextData() {
         return contextData;
     }
 
+    @Override
     public void setContextData(final StringMap mutableContextData) {
         this.contextData = mutableContextData;
     }
@@ -386,6 +399,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return contextStack;
     }
 
+    @Override
     public void setContextStack(final ThreadContext.ContextStack contextStack) {
         this.contextStack = contextStack;
     }
@@ -395,6 +409,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return threadId;
     }
 
+    @Override
     public void setThreadId(final long threadId) {
         this.threadId = threadId;
     }
@@ -404,6 +419,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return threadName;
     }
 
+    @Override
     public void setThreadName(final String threadName) {
         this.threadName = threadName;
     }
@@ -413,6 +429,7 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return threadPriority;
     }
 
+    @Override
     public void setThreadPriority(final int threadPriority) {
         this.threadPriority = threadPriority;
     }
@@ -442,14 +459,12 @@ public class MutableLogEvent implements LogEvent, ReusableMessage, ParameterVisi
         return nanoTime;
     }
 
+    @Override
     public void setNanoTime(final long nanoTime) {
         this.nanoTime = nanoTime;
     }
 
-    /**
-     * Initializes the specified {@code Log4jLogEvent.Builder} from this {@code MutableLogEvent}.
-     * @param builder the builder whose fields to populate
-     */
+    @Override
     public void initializeBuilder(final Log4jLogEvent.Builder builder) {
         builder.setContextData(contextData) //
                 .setContextStack(contextStack) //

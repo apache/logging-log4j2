@@ -63,11 +63,11 @@ public class SpyByteBufferDestination implements ByteBufferDestination {
 
     @Override
     public void writeBytes(final ByteBuffer data) {
-        unsynchronizedWrite(data);
+        ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
     }
 
     @Override
     public void writeBytes(final byte[] data, final int offset, final int length) {
-        unsynchronizedWrite(data, offset, length);
+        ByteBufferDestinationHelper.writeToUnsynchronized(data, offset, length, this);
     }
 }

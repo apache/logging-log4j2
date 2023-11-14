@@ -18,6 +18,7 @@ package org.apache.logging.log4j.smtp.appender;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MementoMessage;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
@@ -45,7 +46,7 @@ public class SmtpManagerTest {
     }
 
     private void testAdd(final LogEvent event) {
-        final SmtpManager smtpManager = SmtpManager.getSmtpManager(null, "to", "cc", "bcc", "from", "replyTo", "subject", "protocol", "host", 0, "username", "password", false, "filterName", 10, null);
+        final SmtpManager smtpManager = SmtpManager.getSmtpManager(new DefaultConfiguration(), "to", "cc", "bcc", "from", "replyTo", "subject", "protocol", "host", 0, "username", "password", false, "filterName", 10, null);
         smtpManager.removeAllBufferedEvents(); // in case this smtpManager is reused
         smtpManager.add(event);
 
