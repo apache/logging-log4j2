@@ -28,6 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import aQute.bnd.annotation.Cardinality;
 import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.baseline.BaselineIgnore;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +41,7 @@ import org.apache.logging.log4j.status.StatusLogger;
  * {@link #loadProvider(java.net.URL, ClassLoader)} a classpath accordingly.
  */
 @InternalApi
+@BaselineIgnore("2.22.0")
 @ServiceConsumer(value = Provider.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
 public final class ProviderUtil {
 

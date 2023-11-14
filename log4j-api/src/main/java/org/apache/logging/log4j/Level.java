@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import aQute.bnd.annotation.baseline.BaselineIgnore;
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.util.Strings;
 
@@ -75,6 +76,7 @@ import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
  * used in logging configurations.
  * </p>
  */
+@BaselineIgnore("2.22.0")
 public final class Level implements Comparable<Level>, Serializable {
 
     private static final Level[] EMPTY_ARRAY = {};

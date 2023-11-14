@@ -107,47 +107,6 @@
         </executions>
       </plugin>
 
-      <!--
-        ~ Remove the following plugin executions after `2.22.0` release!
-        ~ In `2.22.0`, we have removed protected methods from the final (or effectively final) classes:
-        ~  * org.apache.logging.log4j.Level,
-        ~  * org.apache.logging.log4j.util.ProviderUtil.
-        ~
-        ~ BND considers this a major API break.
-        -->
-      <plugin>
-        <groupId>biz.aQute.bnd</groupId>
-        <artifactId>bnd-baseline-maven-plugin</artifactId>
-        <configuration>
-          <diffpackages>
-            <diffpackage>!org.apache.logging.log4j</diffpackage>
-            <diffpackage>!org.apache.logging.log4j.util</diffpackage>
-            <diffpackage>*</diffpackage>
-          </diffpackages>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>remove-after-release</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireProperty>
-                  <property>revision</property>
-                  <regex>2\.22\.0(-SNAPSHOT)?</regex>
-                  <regexMessage>Remove `bnd-baseline-maven-plugin` config in `log4j-api`.</regexMessage>
-                </requireProperty>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
     </plugins>
   </build>
 </project>
