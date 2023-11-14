@@ -50,7 +50,6 @@ import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.util.CyclicBuffer;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.smtp.MimeMessageBuilder;
-import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -347,7 +346,7 @@ public class SmtpManager extends AbstractManager {
         public SmtpManager createManager(final String name, final FactoryData data) {
             final String prefix = "mail." + data.protocol;
 
-            final Properties properties = PropertiesUtil.getSystemProperties();
+            final Properties properties = System.getProperties();
             properties.setProperty("mail.transport.protocol", data.protocol);
             if (properties.getProperty("mail.host") == null) {
                 // Prevent an UnknownHostException in Java 7
