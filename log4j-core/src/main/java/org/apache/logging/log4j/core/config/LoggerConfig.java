@@ -82,15 +82,18 @@ public class LoggerConfig extends AbstractFilterable implements LocationAware {
 
     static {
         try {
-            LOG_EVENT_FACTORY =
-                    LoaderUtil.newCheckedInstanceOfProperty(Constants.LOG4J_LOG_EVENT_FACTORY, LogEventFactory.class);
+            LOG_EVENT_FACTORY = LoaderUtil.newCheckedInstanceOfProperty(
+                    Constants.LOG4J_LOG_EVENT_FACTORY,
+                    LogEventFactory.class,
+                    LoggerConfig::createDefaultLogEventFactory);
         } catch (final Exception ex) {
             LOGGER.error("Unable to create LogEventFactory: {}", ex.getMessage(), ex);
+            LOG_EVENT_FACTORY = createDefaultLogEventFactory();
         }
-        if (LOG_EVENT_FACTORY == null) {
-            LOG_EVENT_FACTORY =
-                    Constants.ENABLE_THREADLOCALS ? new ReusableLogEventFactory() : new DefaultLogEventFactory();
-        }
+    }
+
+    private static LogEventFactory createDefaultLogEventFactory() {
+        return Constants.ENABLE_THREADLOCALS ? new ReusableLogEventFactory() : new DefaultLogEventFactory();
     }
 
     @PluginBuilderFactory

@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * <em>Consider this class private.</em> Utility class for ClassLoaders.
@@ -328,11 +329,37 @@ public final class LoaderUtil {
      * @since 2.5
      */
     public static <T> T newCheckedInstanceOfProperty(final String propertyName, final Class<T> clazz)
-            throws ClassNotFoundException, InvocationTargetException, InstantiationException,
-            IllegalAccessException, NoSuchMethodException {
+            throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException,
+                    NoSuchMethodException {
+        return newCheckedInstanceOfProperty(propertyName, clazz, () -> null);
+    }
+
+    /**
+     * Loads and instantiates a class given by a property name.
+     *
+     * @param propertyName The property name to look up a class name for.
+     * @param clazz        The class to cast it to.
+     * @param defaultSupplier Supplier of a default value if the property is not present.
+     * @param <T>          The type to cast it to.
+     * @return new instance of the class given in the property or {@code null} if the property was unset.
+     * @throws ClassNotFoundException      if the class isn't available to the usual ClassLoaders
+     * @throws ExceptionInInitializerError if an exception was thrown while initializing the class
+     * @throws LinkageError                if the linkage of the class fails for any other reason
+     * @throws ClassCastException          if the class is not compatible with the generic type parameter provided
+     * @throws NoSuchMethodException       if no zero-arg constructor exists
+     * @throws SecurityException           if this class is not allowed to access declared members of the provided class
+     * @throws IllegalAccessException      if the class can't be instantiated through a public constructor
+     * @throws InstantiationException      if the provided class is abstract or an interface
+     * @throws InvocationTargetException   if an exception is thrown by the constructor
+     * @since 2.22
+     */
+    public static <T> T newCheckedInstanceOfProperty(
+            final String propertyName, final Class<T> clazz, final Supplier<T> defaultSupplier)
+            throws ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException,
+                    NoSuchMethodException {
         final String className = PropertiesUtil.getProperties().getStringProperty(propertyName);
         if (className == null) {
-            return null;
+            return defaultSupplier.get();
         }
         return newCheckedInstanceOf(className, clazz);
     }

@@ -84,31 +84,25 @@ final class DisruptorUtil {
     }
 
     static ExceptionHandler<RingBufferLogEvent> getAsyncLoggerExceptionHandler() {
-        ExceptionHandler<RingBufferLogEvent> handler = null;
         try {
-            handler =
-                    LoaderUtil.newCheckedInstanceOfProperty(LOGGER_EXCEPTION_HANDLER_PROPERTY, ExceptionHandler.class);
+            return LoaderUtil.newCheckedInstanceOfProperty(
+                    LOGGER_EXCEPTION_HANDLER_PROPERTY, ExceptionHandler.class, AsyncLoggerDefaultExceptionHandler::new);
         } catch (final ReflectiveOperationException e) {
             LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: {}", e.getMessage(), e);
+            return new AsyncLoggerDefaultExceptionHandler();
         }
-        if (handler != null) {
-            return handler;
-        }
-        return new AsyncLoggerDefaultExceptionHandler();
     }
 
     static ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper> getAsyncLoggerConfigExceptionHandler() {
-        ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper> handler = null;
         try {
-            handler = LoaderUtil.newCheckedInstanceOfProperty(
-                    LOGGER_CONFIG_EXCEPTION_HANDLER_PROPERTY, ExceptionHandler.class);
+            return LoaderUtil.newCheckedInstanceOfProperty(
+                    LOGGER_CONFIG_EXCEPTION_HANDLER_PROPERTY,
+                    ExceptionHandler.class,
+                    AsyncLoggerConfigDefaultExceptionHandler::new);
         } catch (final ReflectiveOperationException e) {
             LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: {}", e.getMessage(), e);
+            return new AsyncLoggerConfigDefaultExceptionHandler();
         }
-        if (handler != null) {
-            return handler;
-        }
-        return new AsyncLoggerConfigDefaultExceptionHandler();
     }
 
     /**
