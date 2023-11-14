@@ -47,6 +47,7 @@ The module name of four bridges (`log4j-slf4j-impl`, `log4j-slf4j2-impl`, `log4j
 === Changed
 
 * Change the order of evaluation of `FormattedMessage` formatters. Messages are evaluated using `java.util.Format` only if they don't comply to the `java.text.MessageFormat` or `ParameterizedMessage` format. (https://github.com/apache/logging-log4j2/issues/1223[1223])
+* Change default encoding of HTTP Basic Authentication to UTF-8 and add `log4j2.configurationAuthorizationEncoding` property to overwrite it. (https://github.com/apache/logging-log4j2/issues/1961[1961])
 * Fix MDC pattern converter causing issues for `%notEmpty` (https://github.com/apache/logging-log4j2/issues/1922[1922])
 * Fix `NotSerializableException` when `Logger` is serialized with a `ReusableMessageFactory` (https://github.com/apache/logging-log4j2/issues/1884[1884])
 * Update `co.elastic.clients:elasticsearch-java` to version `8.11.0` (https://github.com/apache/logging-log4j2/pull/1953[1953])

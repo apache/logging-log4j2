@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://logging.apache.org/log4j/changelog"
+       xsi:schemaLocation="http://logging.apache.org/log4j/changelog https://logging.apache.org/log4j/changelog-0.1.2.xsd"
+       type="changed">
+  <issue id="1970" link="https://github.com/apache/logging-log4j2/issues/1970"/>
+  <description format="asciidoc">
+    Change default encoding of HTTP Basic Authentication to UTF-8 and add `log4j2.configurationAuthorizationEncoding` property to overwrite it.
+  </description>
+</entry>
