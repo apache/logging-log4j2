@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 

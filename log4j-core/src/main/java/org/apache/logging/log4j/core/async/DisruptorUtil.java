@@ -16,11 +16,10 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-
 import com.lmax.disruptor.ExceptionHandler;
 import com.lmax.disruptor.WaitStrategy;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Integers;
@@ -29,6 +28,8 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyKey;
 
+import static org.apache.logging.log4j.core.impl.Log4jPropertyKey.ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME;
+import static org.apache.logging.log4j.core.impl.Log4jPropertyKey.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME;
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 
 /**
@@ -84,31 +85,27 @@ final class DisruptorUtil {
     }
 
     static ExceptionHandler<RingBufferLogEvent> getAsyncLoggerExceptionHandler() {
-        ExceptionHandler<RingBufferLogEvent> handler = null;
         try {
-            handler =
-                    LoaderUtil.newCheckedInstanceOfProperty(Log4jPropertyKey.ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME, ExceptionHandler.class);
+            return LoaderUtil.newCheckedInstanceOfProperty(
+                    ASYNC_LOGGER_EXCEPTION_HANDLER_CLASS_NAME,
+                    ExceptionHandler.class,
+                    AsyncLoggerDefaultExceptionHandler::new);
         } catch (final ReflectiveOperationException e) {
             LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: {}", e.getMessage(), e);
+            return new AsyncLoggerDefaultExceptionHandler();
         }
-        if (handler != null) {
-            return handler;
-        }
-        return new AsyncLoggerDefaultExceptionHandler();
     }
 
     static ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper> getAsyncLoggerConfigExceptionHandler() {
-        ExceptionHandler<AsyncLoggerConfigDisruptor.Log4jEventWrapper> handler = null;
         try {
-            handler = LoaderUtil.newCheckedInstanceOfProperty(
-                    Log4jPropertyKey.ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME, ExceptionHandler.class);
+            return LoaderUtil.newCheckedInstanceOfProperty(
+                    ASYNC_CONFIG_EXCEPTION_HANDLER_CLASS_NAME,
+                    ExceptionHandler.class,
+                    AsyncLoggerConfigDefaultExceptionHandler::new);
         } catch (final ReflectiveOperationException e) {
             LOGGER.debug("Invalid AsyncLogger.ExceptionHandler value: {}", e.getMessage(), e);
+            return new AsyncLoggerConfigDefaultExceptionHandler();
         }
-        if (handler != null) {
-            return handler;
-        }
-        return new AsyncLoggerConfigDefaultExceptionHandler();
     }
 
     /**

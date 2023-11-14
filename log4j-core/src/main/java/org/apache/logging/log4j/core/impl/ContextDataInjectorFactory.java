@@ -65,17 +65,15 @@ public class ContextDataInjectorFactory {
      * @see ContextDataInjector
      */
     public static ContextDataInjector createInjector() {
-        ContextDataInjector injector = null;
         try {
-            injector =
-                    LoaderUtil.newCheckedInstanceOfProperty(Log4jPropertyKey.THREAD_CONTEXT_DATA_INJECTOR_CLASS_NAME, ContextDataInjector.class);
+            return LoaderUtil.newCheckedInstanceOfProperty(
+                    Log4jPropertyKey.THREAD_CONTEXT_DATA_INJECTOR_CLASS_NAME,
+                    ContextDataInjector.class,
+                    ContextDataInjectorFactory::createDefaultInjector);
         } catch (final ReflectiveOperationException e) {
             StatusLogger.getLogger().warn("Could not create ContextDataInjector: {}", e.getMessage(), e);
+            return createDefaultInjector();
         }
-        if (injector != null) {
-            return injector;
-        }
-        return createDefaultInjector();
     }
 
     private static ContextDataInjector createDefaultInjector() {
