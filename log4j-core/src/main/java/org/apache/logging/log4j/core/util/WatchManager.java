@@ -17,21 +17,21 @@
 package org.apache.logging.log4j.core.util;
 
 import java.io.File;
-import java.lang.invoke.MethodHandles;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import aQute.bnd.annotation.Cardinality;
-import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.AbstractLifeCycle;
@@ -39,7 +39,7 @@ import org.apache.logging.log4j.core.config.ConfigurationScheduler;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.ServiceRegistry;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
 /**
  * Manages {@link FileWatcher}s.
@@ -48,7 +48,7 @@ import org.apache.logging.log4j.util.ServiceRegistry;
  * @see ConfigurationScheduler
  */
 @Singleton
-@ServiceConsumer(value = WatchEventService.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
+@ServiceConsumer(value = WatchEventService.class, cardinality = Cardinality.MULTIPLE)
 public class WatchManager extends AbstractLifeCycle {
 
     private static final class ConfigurationMonitor {
@@ -140,8 +140,8 @@ public class WatchManager extends AbstractLifeCycle {
     @Inject
     public WatchManager(final ConfigurationScheduler scheduler) {
         this.scheduler = Objects.requireNonNull(scheduler, "scheduler");
-        eventServiceList = ServiceRegistry.getInstance()
-                .getServices(WatchEventService.class, MethodHandles.lookup(), null);
+        eventServiceList = ServiceLoaderUtil.safeStream(ServiceLoader.load(WatchEventService.class, WatchManager.class.getClassLoader()))
+                .collect(Collectors.toList());
     }
 
     public void checkFiles() {

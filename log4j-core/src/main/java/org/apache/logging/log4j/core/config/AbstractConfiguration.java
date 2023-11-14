@@ -16,7 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.lang.invoke.MethodHandles;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -35,7 +35,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -88,12 +87,12 @@ import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.NameUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util.ServiceRegistry;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
 /**
  * The base Configuration. Many configuration implementations will extend this class.
  */
-@ServiceConsumer(value = ScriptManagerFactory.class, resolution = Resolution.OPTIONAL)
+@ServiceConsumer(ScriptManagerFactory.class)
 public abstract class AbstractConfiguration extends AbstractFilterable implements Configuration {
 
     /**
@@ -291,9 +290,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
 
     private void initializeScriptManager() {
         try {
-            ServiceRegistry.getInstance()
-                    .getServices(ScriptManagerFactory.class, MethodHandles.lookup(), null)
-                    .stream()
+            ServiceLoaderUtil.safeStream(ServiceLoader.load(ScriptManagerFactory.class, AbstractConfiguration.class.getClassLoader()))
                     .findFirst()
                     .ifPresent(factory -> setScriptManager(factory.createScriptManager(this, getWatchManager())));
         } catch (final LinkageError | Exception e) {

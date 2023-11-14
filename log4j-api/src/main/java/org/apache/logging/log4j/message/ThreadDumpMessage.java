@@ -16,16 +16,15 @@
  */
 package org.apache.logging.log4j.message;
 
-import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import aQute.bnd.annotation.Cardinality;
-import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
 import org.apache.logging.log4j.util.Lazy;
-import org.apache.logging.log4j.util.ServiceRegistry;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
@@ -33,13 +32,12 @@ import org.apache.logging.log4j.util.Strings;
  * Captures information about all running Threads.
  */
 @AsynchronouslyFormattable
-@ServiceConsumer(value = ThreadInfoFactory.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.SINGLE)
+@ServiceConsumer(value = ThreadInfoFactory.class, cardinality = Cardinality.SINGLE)
 public class ThreadDumpMessage implements Message, StringBuilderFormattable {
-    private static final Lazy<ThreadInfoFactory> FACTORY = Lazy.lazy(() -> {
-        final var services = ServiceRegistry.getInstance()
-                .getServices(ThreadInfoFactory.class, MethodHandles.lookup(), null);
-        return services.isEmpty() ? new BasicThreadInfoFactory() : services.get(0);
-    });
+    private static final Lazy<ThreadInfoFactory> FACTORY = Lazy.lazy(() ->
+            ServiceLoaderUtil.safeStream(ServiceLoader.load(ThreadInfoFactory.class, ThreadInfoFactory.class.getClassLoader()))
+                    .findFirst()
+                    .orElseGet(BasicThreadInfoFactory::new));
 
     private final Map<ThreadInformation, StackTraceElement[]> threads;
     private final String title;

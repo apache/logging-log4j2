@@ -16,10 +16,10 @@
  */
 package org.apache.logging.log4j.util;
 
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Level;
@@ -32,29 +32,30 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ServiceLoaderUtilTest {
 
     @Test
     public void testServiceResolution() {
-            final List<Object> services = new ArrayList<>();
-            assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(BetterService.class, MethodHandles.lookup(), false)
-                    .forEach(services::add));
-            assertThat(services).hasSize(1);
-            services.clear();
-            assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(PropertySource.class, MethodHandles.lookup(), false)
-                    .forEach(services::add));
-            assertThat(services).hasSize(3);
-        }
+        final List<Object> services = new ArrayList<>();
+        final ClassLoader classLoader = getClass().getClassLoader();
+        assertDoesNotThrow(() -> ServiceLoaderUtil.safeStream(ServiceLoader.load(BetterService.class, classLoader))
+                .forEach(services::add));
+        assertThat(services).hasSize(1);
+        services.clear();
+        assertDoesNotThrow(() -> ServiceLoaderUtil.safeStream(ServiceLoader.load(PropertySource.class, classLoader))
+                .forEach(services::add));
+        assertThat(services).hasSize(3);
+    }
 
     @Test
     @UsingStatusListener
     public void testBrokenServiceFile(final ListStatusListener listener) {
         final List<Service> services = new ArrayList<>();
-        assertDoesNotThrow(() -> ServiceLoaderUtil.loadServices(Service.class, MethodHandles.lookup(), false)
+        final ClassLoader classLoader = getClass().getClassLoader();
+        assertDoesNotThrow(() -> ServiceLoaderUtil.safeStream(ServiceLoader.load(Service.class, classLoader))
                 .forEach(services::add));
-        assertEquals(2, services.size());
+        assertThat(services).hasSize(2);
         // A warning for each broken service
         final List<Throwable> errors = listener.findStatusData(Level.WARN).map(StatusData::getThrowable)
                 .collect(Collectors.toList());

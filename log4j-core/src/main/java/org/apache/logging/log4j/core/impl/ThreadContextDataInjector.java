@@ -16,17 +16,16 @@
  */
 package org.apache.logging.log4j.core.impl;
 
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import aQute.bnd.annotation.Cardinality;
-import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
@@ -34,7 +33,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
-import org.apache.logging.log4j.util.ServiceRegistry;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 import org.apache.logging.log4j.util.StringMap;
 
 /**
@@ -52,7 +51,7 @@ import org.apache.logging.log4j.util.StringMap;
  * @see ContextDataInjectorFactory
  * @since 2.7
  */
-@ServiceConsumer(value = ContextDataProvider.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
+@ServiceConsumer(value = ContextDataProvider.class, cardinality = Cardinality.MULTIPLE)
 public class ThreadContextDataInjector {
 
     /**
@@ -65,13 +64,14 @@ public class ThreadContextDataInjector {
 
     private static List<ContextDataProvider> getServiceProviders() {
         final List<ContextDataProvider> providers = new ArrayList<>();
-        final List<ContextDataProvider> services = ServiceRegistry.getInstance()
-                .getServices(ContextDataProvider.class, MethodHandles.lookup(), null);
-        for (final ContextDataProvider provider : services) {
-            if (providers.stream().noneMatch((p) -> p.getClass().isAssignableFrom(provider.getClass()))) {
-                providers.add(provider);
-            }
-        }
+        final ServiceLoader<ContextDataProvider> serviceLoader =
+                ServiceLoader.load(ContextDataProvider.class, ThreadContextDataInjector.class.getClassLoader());
+        ServiceLoaderUtil.safeStream(serviceLoader)
+                .forEachOrdered(provider -> {
+                    if (providers.stream().noneMatch((p) -> p.getClass().isAssignableFrom(provider.getClass()))) {
+                        providers.add(provider);
+                    }
+                });
         return Collections.unmodifiableList(providers);
     }
 

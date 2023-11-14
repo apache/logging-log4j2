@@ -18,13 +18,13 @@ package org.apache.logging.log4j.spi;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.ServiceLoader;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Supplier;
@@ -45,7 +45,7 @@ import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.LowLevelLogUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
-import org.apache.logging.log4j.util.ServiceRegistry;
+import org.apache.logging.log4j.util.ServiceLoaderUtil;
 
 import static org.apache.logging.log4j.spi.LoggingSystemProperty.LOGGER_FLOW_MESSAGE_FACTORY_CLASS;
 import static org.apache.logging.log4j.spi.LoggingSystemProperty.LOGGER_MESSAGE_FACTORY_CLASS;
@@ -187,8 +187,9 @@ public class LoggingSystem {
     }
 
     private static List<Provider> loadDefaultProviders() {
-        return ServiceRegistry.getInstance()
-                .getServices(Provider.class, MethodHandles.lookup(), provider -> validVersion(provider.getVersions()));
+        return ServiceLoaderUtil.safeStream(ServiceLoader.load(Provider.class, Provider.class.getClassLoader()))
+                .filter(provider -> validVersion(provider.getVersions()))
+                .collect(Collectors.toList());
     }
 
     private static List<Provider> loadLegacyProviders() {

@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -38,9 +37,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 import aQute.bnd.annotation.Cardinality;
-import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.internal.CopyOnWriteNavigableSet;
 
@@ -58,7 +57,7 @@ import org.apache.logging.log4j.internal.CopyOnWriteNavigableSet;
  * @see PropertySource
  */
 @InternalApi
-@ServiceConsumer(value = PropertySource.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
+@ServiceConsumer(value = PropertySource.class, cardinality = Cardinality.MULTIPLE)
 public class PropertiesUtil implements PropertyEnvironment {
 
     private static final String LOG4J_NAMESPACE = "component";
@@ -66,6 +65,9 @@ public class PropertiesUtil implements PropertyEnvironment {
     private static final String DELIMITER = ".";
     private static final String META_INF = "META-INF/";
     private static final String LOG4J_SYSTEM_PROPERTIES_FILE_NAME = "log4j2.system.properties";
+    private static final Lazy<List<PropertySource>> SERVICE_PROPERTY_SOURCES = Lazy.lazy(() ->
+            ServiceLoaderUtil.safeStream(ServiceLoader.load(PropertySource.class, PropertiesUtil.class.getClassLoader()))
+                    .collect(Collectors.toList()));
     private static final Lazy<PropertiesUtil> COMPONENT_PROPERTIES = Lazy.lazy(PropertiesUtil::new);
 
     private static final ThreadLocal<PropertiesUtil> environments = new InheritableThreadLocal<>();
@@ -232,21 +234,6 @@ public class PropertiesUtil implements PropertyEnvironment {
     @Override
     public String getStringProperty(final String name) {
         return environment.getStringProperty(name);
-    }
-
-    /**
-     * Return the system properties or an empty Properties object if an error occurs.
-     *
-     * @return The system properties.
-     */
-    public static Properties getSystemProperties() {
-        try {
-            return new Properties(System.getProperties());
-        } catch (final SecurityException ex) {
-            LowLevelLogUtil.logException("Unable to access system properties.", ex);
-            // Sandboxed - can't read System Properties
-            return new Properties();
-        }
     }
 
     /**
@@ -438,20 +425,14 @@ public class PropertiesUtil implements PropertyEnvironment {
         private final String contextName;
 
         private Environment(final String contextName, final List<PropertySource> propertySources) {
-            try {
-                final Properties sysProps = PropertyFilePropertySource.loadPropertiesFile(LOG4J_SYSTEM_PROPERTIES_FILE_NAME);
-                for (String key : sysProps.stringPropertyNames()) {
-                    if (System.getProperty(key) == null) {
-                        System.setProperty(key, sysProps.getProperty(key));
-                    }
-                };
-            } catch (final SecurityException ex) {
-                // Access to System Properties is restricted so just skip it.
+            final Properties sysProps = PropertyFilePropertySource.loadPropertiesFile(LOG4J_SYSTEM_PROPERTIES_FILE_NAME);
+            for (String key : sysProps.stringPropertyNames()) {
+                if (System.getProperty(key) == null) {
+                    System.setProperty(key, sysProps.getProperty(key));
+                }
             }
             sources.addAll(propertySources);
-            final ServiceRegistry registry = ServiceRegistry.getInstance();
-            // Does not log errors using StatusLogger, which depends on PropertiesUtil being initialized.
-            sources.addAll(registry.getServices(PropertySource.class, MethodHandles.lookup(), null, /*verbose=*/false));
+            sources.addAll(SERVICE_PROPERTY_SOURCES.get());
             this.contextName = contextName;
             reload();
         }
