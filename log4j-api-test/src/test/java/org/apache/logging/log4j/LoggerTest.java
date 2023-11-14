@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j;
 
@@ -94,7 +94,7 @@ public class LoggerTest {
 
     @Test
     public void flowTracingMessage() {
-        Properties props = new Properties();
+        final Properties props = new Properties();
         props.setProperty("foo", "bar");
         logger.traceEntry(new JsonMessage(props));
         final Response response = new Response(-1, "Generic error");
@@ -279,7 +279,7 @@ public class LoggerTest {
         assertEquals(String.format(" DEBUG %,d", Integer.MAX_VALUE), testLogger.getEntries().get(0));
     }
 
-    private static void assertMessageFactoryInstanceOf(MessageFactory factory, final Class<?> cls) {
+    private static void assertMessageFactoryInstanceOf(final MessageFactory factory, final Class<?> cls) {
         assertTrue(factory.getClass().isAssignableFrom(cls));
     }
 
@@ -357,7 +357,7 @@ public class LoggerTest {
     }
 
     private void assertEqualMessageFactory(final MessageFactory messageFactory, final TestLogger testLogger) {
-        MessageFactory actual = testLogger.getMessageFactory();
+        final MessageFactory actual = testLogger.getMessageFactory();
         assertEquals(messageFactory, actual);
     }
 
@@ -571,7 +571,7 @@ public class LoggerTest {
     public void mdc() {
         ThreadContext.put("TestYear", Integer.valueOf(2010).toString());
         logger.debug("Debug message");
-        String testYear = ThreadContext.get("TestYear");
+        final String testYear = ThreadContext.get("TestYear");
         assertNotNull(testYear, "Test Year is null");
         assertEquals("2010", testYear, "Incorrect test year: " + testYear);
         ThreadContext.clearMap();

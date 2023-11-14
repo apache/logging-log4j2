@@ -1,24 +1,26 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j;
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -85,6 +87,8 @@ public final class MarkerManager {
 
         private volatile Marker[] parents;
 
+        private final Lock lock = new ReentrantLock();
+
         /**
          * Required by JAXB and Jackson for XML and JSON IO.
          */
@@ -108,73 +112,81 @@ public final class MarkerManager {
             this.parents = null;
         }
 
-        // TODO: use java.util.concurrent
-
         @Override
-        public synchronized Marker addParents(final Marker... parentMarkers) {
+        public Marker addParents(final Marker... parentMarkers) {
             requireNonNull(parentMarkers, "A parent marker must be specified");
-            // It is not strictly necessary to copy the variable here but it should perform better than
-            // Accessing a volatile variable multiple times.
-            final Marker[] localParents = this.parents;
-            // Don't add a parent that is already in the hierarchy.
-            int count = 0;
-            int size = parentMarkers.length;
-            if (localParents != null) {
+            lock.lock();
+            try {
+                // It is not strictly necessary to copy the variable here, but it should perform better than
+                // accessing a volatile variable multiple times.
+                final Marker[] localParents = this.parents;
+                // Don't add a parent that is already in the hierarchy.
+                int count = 0;
+                int size = parentMarkers.length;
+                if (localParents != null) {
+                    for (final Marker parent : parentMarkers) {
+                        if (!(contains(parent, localParents) || parent.isInstanceOf(this))) {
+                            ++count;
+                        }
+                    }
+                    if (count == 0) {
+                        return this;
+                    }
+                    size = localParents.length + count;
+                }
+                final Marker[] markers = new Marker[size];
+                if (localParents != null) {
+                    // It's perfectly OK to call arraycopy in a synchronized context; it's still faster
+                    // noinspection CallToNativeMethodWhileLocked
+                    System.arraycopy(localParents, 0, markers, 0, localParents.length);
+                }
+                int index = localParents == null ? 0 : localParents.length;
                 for (final Marker parent : parentMarkers) {
-                    if (!(contains(parent, localParents) || parent.isInstanceOf(this))) {
-                        ++count;
+                    if (localParents == null || !(contains(parent, localParents) || parent.isInstanceOf(this))) {
+                        markers[index++] = parent;
                     }
                 }
-                if (count == 0) {
-                    return this;
-                }
-                size = localParents.length + count;
+                this.parents = markers;
+            } finally {
+                lock.unlock();
             }
-            final Marker[] markers = new Marker[size];
-            if (localParents != null) {
-                // It's perfectly OK to call arraycopy in a synchronized context; it's still faster
-                // noinspection CallToNativeMethodWhileLocked
-                System.arraycopy(localParents, 0, markers, 0, localParents.length);
-            }
-            int index = localParents == null ? 0 : localParents.length;
-            for (final Marker parent : parentMarkers) {
-                if (localParents == null || !(contains(parent, localParents) || parent.isInstanceOf(this))) {
-                    markers[index++] = parent;
-                }
-            }
-            this.parents = markers;
             return this;
         }
 
         @Override
-        public synchronized boolean remove(final Marker parent) {
+        public boolean remove(final Marker parent) {
             requireNonNull(parent, "A parent marker must be specified");
-            final Marker[] localParents = this.parents;
-            if (localParents == null) {
-                return false;
-            }
-            final int localParentsLength = localParents.length;
-            if (localParentsLength == 1) {
-                if (localParents[0].equals(parent)) {
-                    parents = null;
-                    return true;
+            lock.lock();
+            try {
+                final Marker[] localParents = this.parents;
+                if (localParents == null) {
+                    return false;
                 }
-                return false;
-            }
-            int index = 0;
-            final Marker[] markers = new Marker[localParentsLength - 1];
-            // noinspection ForLoopReplaceableByForEach
-            for (int i = 0; i < localParentsLength; i++) {
-                final Marker marker = localParents[i];
-                if (!marker.equals(parent)) {
-                    if (index == localParentsLength - 1) {
-                        // no need to swap array
-                        return false;
+                final int localParentsLength = localParents.length;
+                if (localParentsLength == 1) {
+                    if (localParents[0].equals(parent)) {
+                        parents = null;
+                        return true;
                     }
-                    markers[index++] = marker;
+                    return false;
                 }
+                int index = 0;
+                final Marker[] markers = new Marker[localParentsLength - 1];
+                // noinspection ForLoopReplaceableByForEach
+                for (int i = 0; i < localParentsLength; i++) {
+                    final Marker marker = localParents[i];
+                    if (!marker.equals(parent)) {
+                        if (index == localParentsLength - 1) {
+                            // no need to swap array
+                            return false;
+                        }
+                        markers[index++] = marker;
+                    }
+                }
+                parents = markers;
+            } finally {
+                lock.unlock();
             }
-            parents = markers;
             return true;
         }
 
@@ -197,7 +209,7 @@ public final class MarkerManager {
 
         @Override
         public Marker[] getParents() {
-            Marker[] parentsSnapshot = parents;
+            final Marker[] parentsSnapshot = parents;
             if (parentsSnapshot == null) {
                 return null;
             }

@@ -1,35 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.rolling;
-
-import org.apache.logging.log4j.core.appender.rolling.action.Action;
-import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
-import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
-import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
-import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.util.Integers;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.plugins.PluginElement;
-import org.apache.logging.log4j.plugins.PluginFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +27,23 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.logging.log4j.core.appender.rolling.action.Action;
+import org.apache.logging.log4j.core.appender.rolling.action.CompositeAction;
+import org.apache.logging.log4j.core.appender.rolling.action.FileRenameAction;
+import org.apache.logging.log4j.core.appender.rolling.action.PathCondition;
+import org.apache.logging.log4j.core.appender.rolling.action.PosixViewAttributeAction;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.NullConfiguration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.core.util.Integers;
+import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
+import org.apache.logging.log4j.plugins.PluginFactory;
 
 /**
  * When rolling over, <code>DefaultRolloverStrategy</code> renames files according to an algorithm as described below.
@@ -143,9 +145,10 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             final String trimmedCompressionLevelStr = compressionLevelStr != null ? compressionLevelStr.trim() : compressionLevelStr;
             final int compressionLevel = Integers.parseInt(trimmedCompressionLevelStr, Deflater.DEFAULT_COMPRESSION);
             // The config object can be null when this object is built programmatically.
-            final StrSubstitutor nonNullStrSubstitutor = config != null ? config.getStrSubstitutor() : new StrSubstitutor();
+            final Configuration configuration = config != null ? config : new NullConfiguration();
+            final StrSubstitutor nonNullStrSubstitutor = configuration.getStrSubstitutor();
             return new DefaultRolloverStrategy(minIndex, maxIndex, useMax, compressionLevel, nonNullStrSubstitutor,
-                    customActions, stopCustomActionsOnError, tempCompressedFilePattern);
+                    customActions, stopCustomActionsOnError, tempCompressedFilePattern, configuration);
         }
 
         public String getMax() {
@@ -302,7 +305,8 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      */
     protected DefaultRolloverStrategy(final int minIndex, final int maxIndex, final boolean useMax,
             final int compressionLevel, final StrSubstitutor strSubstitutor, final Action[] customActions,
-            final boolean stopCustomActionsOnError, final String tempCompressedFilePatternString) {
+            final boolean stopCustomActionsOnError, final String tempCompressedFilePatternString,
+            final Configuration configuration) {
         super(strSubstitutor);
         this.minIndex = minIndex;
         this.maxIndex = maxIndex;
@@ -355,6 +359,10 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @param manager The RollingFileManager
      * @return true if purge was successful and rollover should be attempted.
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     private int purgeAscending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
         final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
         final int maxFiles = highIndex - lowIndex + 1;
@@ -412,6 +420,10 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @param manager The RollingFileManager
      * @return true if purge was successful and rollover should be attempted.
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     private int purgeDescending(final int lowIndex, final int highIndex, final RollingFileManager manager) {
         // Retrieve the files in descending order, so the highest key will be first.
         final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager, false);
@@ -463,13 +475,17 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
      * @throws SecurityException if an error occurs.
      */
     @Override
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
         final int fileIndex;
-		final StringBuilder buf = new StringBuilder(255);
+        final StringBuilder buf = new StringBuilder(255);
         if (minIndex == Integer.MIN_VALUE) {
             final SortedMap<Integer, Path> eligibleFiles = getEligibleFiles(manager);
             fileIndex = eligibleFiles.size() > 0 ? eligibleFiles.lastKey() + 1 : 1;
-			manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
+            manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
         } else {
             if (maxIndex < 0) {
                 return null;
@@ -479,7 +495,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
             if (fileIndex < 0) {
                 return null;
             }
-			manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
+            manager.getPatternProcessor().formatFileName(strSubstitutor, buf, fileIndex);
             if (LOGGER.isTraceEnabled()) {
                 final double durationMillis = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNanos);
                 LOGGER.trace("DefaultRolloverStrategy.purge() took {} milliseconds", durationMillis);

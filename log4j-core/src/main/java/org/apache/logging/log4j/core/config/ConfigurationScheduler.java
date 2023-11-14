@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.config;
 
@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.AbstractLifeCycle;
 import org.apache.logging.log4j.core.util.CronExpression;
 import org.apache.logging.log4j.core.util.Log4jThreadFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Lazy;
 
 /**
  *
@@ -39,7 +40,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     private static final String SIMPLE_NAME = "Log4j2 " + ConfigurationScheduler.class.getSimpleName();
     private static final int MAX_SCHEDULED_ITEMS = 5;
 
-    private volatile ScheduledExecutorService executorService;
+    private final Lazy<ScheduledExecutorService> executorServiceLazy;
     private int scheduledItems = 0;
     private final String name;
 
@@ -50,6 +51,20 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     public ConfigurationScheduler(final String name) {
         super();
         this.name = name;
+        executorServiceLazy = Lazy.lazy(() -> {
+            if (scheduledItems > 0) {
+                LOGGER.debug("{} starting {} threads", name, scheduledItems);
+                scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
+                final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(scheduledItems,
+                        Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
+                executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
+                executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
+                return executor;
+            } else {
+                LOGGER.debug("{}: No scheduled items", name);
+                return null;
+            }
+        });
     }
 
     @Override
@@ -60,8 +75,9 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     @Override
     public boolean stop(final long timeout, final TimeUnit timeUnit) {
         setStopping();
-        if (isExecutorServiceSet()) {
-            LOGGER.debug("{} shutting down threads in {}", name, getExecutorService());
+        if (executorServiceLazy.isInitialized()) {
+            final ScheduledExecutorService executorService = executorServiceLazy.get();
+            LOGGER.debug("{} shutting down threads in {}", name, executorService);
             executorService.shutdown();
             try {
                 executorService.awaitTermination(timeout, timeUnit);
@@ -81,7 +97,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
     }
 
     public boolean isExecutorServiceSet() {
-        return executorService != null;
+        return executorServiceLazy.isInitialized();
     }
 
     /**
@@ -114,7 +130,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      *
      */
     public <V> ScheduledFuture<V> schedule(final Callable<V> callable, final long delay, final TimeUnit unit) {
-        return getExecutorService().schedule(callable, delay, unit);
+        return executorServiceLazy.get().schedule(callable, delay, unit);
     }
 
     /**
@@ -126,7 +142,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * upon completion.
      */
     public ScheduledFuture<?> schedule(final Runnable command, final long delay, final TimeUnit unit) {
-        return getExecutorService().schedule(command, delay, unit);
+        return executorServiceLazy.get().schedule(command, delay, unit);
     }
 
 
@@ -170,7 +186,7 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * exception upon cancellation
      */
     public ScheduledFuture<?> scheduleAtFixedRate(final Runnable command, final long initialDelay, final long period, final TimeUnit unit) {
-        return getExecutorService().scheduleAtFixedRate(command, initialDelay, period, unit);
+        return executorServiceLazy.get().scheduleAtFixedRate(command, initialDelay, period, unit);
     }
 
     /**
@@ -184,33 +200,11 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
      * exception upon cancellation
      */
     public ScheduledFuture<?> scheduleWithFixedDelay(final Runnable command, final long initialDelay, final long delay, final TimeUnit unit) {
-        return getExecutorService().scheduleWithFixedDelay(command, initialDelay, delay, unit);
+        return executorServiceLazy.get().scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
 
     public long nextFireInterval(final Date fireDate) {
         return fireDate.getTime() - new Date().getTime();
-    }
-
-    private ScheduledExecutorService getExecutorService() {
-        if (executorService == null) {
-            synchronized (this) {
-                if (executorService == null) {
-                    if (scheduledItems > 0) {
-                        LOGGER.debug("{} starting {} threads", name, scheduledItems);
-                        scheduledItems = Math.min(scheduledItems, MAX_SCHEDULED_ITEMS);
-                        final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(scheduledItems,
-                                Log4jThreadFactory.createDaemonThreadFactory("Scheduled"));
-                        executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(false);
-                        executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
-                        this.executorService = executor;
-
-                    } else {
-                        LOGGER.debug("{}: No scheduled items", name);
-                    }
-                }
-            }
-        }
-        return executorService;
     }
 
     public class CronRunnable implements Runnable {
@@ -263,8 +257,8 @@ public class ConfigurationScheduler extends AbstractLifeCycle {
         final StringBuilder sb = new StringBuilder("ConfigurationScheduler [name=");
         sb.append(name);
         sb.append(", [");
-        if (executorService != null) {
-            final Queue<Runnable> queue = ((ScheduledThreadPoolExecutor) executorService).getQueue();
+        if (executorServiceLazy.isInitialized()) {
+            final Queue<Runnable> queue = ((ScheduledThreadPoolExecutor) executorServiceLazy.get()).getQueue();
             boolean first = true;
             for (final Runnable runnable : queue) {
                 if (!first) {

@@ -1,24 +1,32 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.util;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceProvider;
 
 /**
  * PropertySource backed by the current system properties. Other than having a
@@ -27,10 +35,23 @@ import java.util.Properties;
  *
  * @since 2.10.0
  */
-public class SystemPropertiesPropertySource implements PropertySource {
+@ServiceProvider(value = PropertySource.class, resolution = Resolution.OPTIONAL)
+public class SystemPropertiesPropertySource extends ContextAwarePropertySource implements PropertySource {
 
     private static final int DEFAULT_PRIORITY = 0;
     private static final String PREFIX = "log4j2.";
+
+    private static final String DELIM = ".";
+
+    private static volatile int hashcode = 0;
+
+    private static final Map<String, Properties> systemPropertiesMap = new ConcurrentHashMap<>();
+
+    private static final Lock RELOAD_LOCK = new ReentrantLock();
+
+    public SystemPropertiesPropertySource() {
+        super(null, SYSTEM_CONTEXT, true);
+    }
 
     /**
      * Used by bootstrap code to get system properties without loading PropertiesUtil.
@@ -51,26 +72,13 @@ public class SystemPropertiesPropertySource implements PropertySource {
 
     @Override
     public void forEach(final BiConsumer<String, String> action) {
-        final Properties properties;
-        try {
-            properties = System.getProperties();
-        } catch (final SecurityException e) {
-            // (1) There is no status logger.
-            // (2) LowLevelLogUtil also consults system properties ("line.separator") to
-            // open a BufferedWriter, so this may fail as well. Just having a hard reference
-            // in this code to LowLevelLogUtil would cause a problem.
-            // (3) We could log to System.err (nah) or just be quiet as we do now.
+        if (!refreshProperties()) {
             return;
         }
-        // Lock properties only long enough to get a thread-safe SAFE snapshot of its
-        // current keys, an array.
-        final Object[] keySet;
-        synchronized (properties) {
-            keySet = properties.keySet().toArray();
-        }
+        final Properties properties = systemPropertiesMap.get(SYSTEM_CONTEXT);
         // Then traverse for an unknown amount of time.
         // Some keys may now be absent, in which case, the value is null.
-        for (final Object key : keySet) {
+        for (final Object key : properties.stringPropertyNames()) {
             final String keyStr = Objects.toString(key, null);
             action.accept(keyStr, properties.getProperty(keyStr));
         }
@@ -83,25 +91,87 @@ public class SystemPropertiesPropertySource implements PropertySource {
 
     @Override
     public Collection<String> getPropertyNames() {
-        try {
-            return System.getProperties().stringPropertyNames();
-        } catch (final SecurityException e) {
-            return PropertySource.super.getPropertyNames();
+        return getPropertyNames(SYSTEM_CONTEXT);
+    }
+
+    @Override
+    public Collection<String> getPropertyNames(final String contextName) {
+        refreshProperties();
+        final Properties properties = propertiesMap.get(contextName);
+        return properties != null ? properties.stringPropertyNames() : Collections.emptyList();
+    }
+
+    @Override
+    public String getProperty(final String contextName, final String key) {
+        if (contextName != null && !contextName.equals(SYSTEM_CONTEXT)) {
+            return getSystemProperty(PREFIX + contextName + DELIM + key, null);
+        } else {
+            String result = getSystemProperty(PREFIX + SYSTEM_CONTEXT + DELIM + key, null);
+            if (result == null) {
+                result = getSystemProperty(key, null);
+            }
+            return result;
         }
     }
 
     @Override
-    public String getProperty(String key) {
-        try {
-            return System.getProperty(key);
-        } catch (final SecurityException e) {
-            return PropertySource.super.getProperty(key);
+    public boolean containsProperty(final String contextName, final String key) {
+        if (contextName != null && !contextName.equals(SYSTEM_CONTEXT)) {
+            return getSystemProperty(PREFIX + contextName + DELIM + key, null) != null;
+        } else {
+            return getSystemProperty(PREFIX + SYSTEM_CONTEXT + DELIM + key, null) != null
+                    || getSystemProperty(key, null) != null;
         }
     }
 
     @Override
-    public boolean containsProperty(String key) {
-        return getProperty(key) != null;
+    public Map<String, Properties> getPropertiesMap() {
+        return systemPropertiesMap;
+    }
+
+    private boolean refreshProperties() {
+        boolean refresh = false;
+        Properties sysProps;
+        /**
+         * Copy the properties while locked.
+         */
+        RELOAD_LOCK.lock();
+        try {
+            final Properties props = getProperties();
+            if (props == null) {
+                return false;
+            }
+            sysProps = new Properties();
+            sysProps.putAll(props);
+        } finally {
+            RELOAD_LOCK.unlock();
+        }
+        if (hashcode == 0) {
+            refresh = true;
+            hashcode = sysProps.hashCode();
+        } else {
+            final int hash = sysProps.hashCode();
+            if (hash != hashcode) {
+                refresh = true;
+                hashcode = hash;
+            }
+        }
+        if (refresh) {
+            final Map<String, Properties> map = parseProperties(sysProps, SYSTEM_CONTEXT, true);
+            systemPropertiesMap.putAll(map);
+        }
+        if (refresh) {
+            PropertiesUtil.getProperties().reload();
+        }
+        return true;
+    }
+
+    private static Properties getProperties() {
+        try {
+            return System.getProperties();
+        } catch (final SecurityException e) {
+            return null;
+        }
     }
 
 }

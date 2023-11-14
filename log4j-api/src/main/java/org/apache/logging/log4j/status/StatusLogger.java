@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.status;
 
@@ -32,7 +32,7 @@ import org.apache.logging.log4j.message.ParameterizedNoReferenceMessageFactory;
 import org.apache.logging.log4j.simple.SimpleLogger;
 import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.apache.logging.log4j.spi.AbstractLogger;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.util.LowLevelLogUtil;
 import org.apache.logging.log4j.util.QueueFactories;
 
@@ -40,7 +40,7 @@ import org.apache.logging.log4j.util.QueueFactories;
  * Records events that occur in the logging system. By default, only error messages are logged to {@link System#err}.
  * Normally, the Log4j StatusLogger is configured via the root {@code <Configuration status="LEVEL"/>} node in a Log4j
  * configuration file. However, this can be overridden via a system property named
- * {@value LoggingSystemProperties#STATUS_DEFAULT_LISTENER_LEVEL} and will work with any Log4j provider.
+ * {@link LoggingSystemProperty#STATUS_DEFAULT_LISTENER_LEVEL} and will work with any Log4j provider.
  *
  * @see SimpleLogger
  * @see SimpleLoggerContext
@@ -73,21 +73,21 @@ public final class StatusLogger extends AbstractLogger {
      * This is now the logger level is set:
      * </p>
      * <ol>
-     * <li>If the property {@value LoggingSystemProperties#SYSTEM_DEBUG} is {@code "true"}, then use {@link Level#TRACE}, otherwise,</li>
+     * <li>If the property {@link LoggingSystemProperty#STATUS_LOGGER_DEBUG} is {@code "true"}, then use {@link Level#TRACE}, otherwise,</li>
      * <li>Use {@link Level#ERROR}</li>
      * </ol>
      * <p>
      * This is now the listener level is set:
      * </p>
      * <ol>
-     * <li>If the property {@value LoggingSystemProperties#STATUS_DEFAULT_LISTENER_LEVEL} is set, then use <em>it</em>, otherwise,</li>
+     * <li>If the property {@link LoggingSystemProperty#STATUS_DEFAULT_LISTENER_LEVEL} is set, then use <em>it</em>, otherwise,</li>
      * <li>Use {@link Level#WARN}</li>
      * </ol>
      * <p>
      * See:
      * <ol>
      * <li>LOG4J2-1813 Provide shorter and more intuitive way to switch on Log4j internal debug logging. If system property
-     * {@value LoggingSystemProperties#SYSTEM_DEBUG} is defined, print all status logging.</li>
+     * {@link LoggingSystemProperty#STATUS_LOGGER_DEBUG} is defined, print all status logging.</li>
      * <li>LOG4J2-3340 StatusLogger's log Level cannot be changed as advertised.</li>
      * </ol>
      * </p>
@@ -369,7 +369,7 @@ public final class StatusLogger extends AbstractLogger {
         if (configuration.isDebugEnabled()) {
             return true;
         }
-        if (listeners.size() > 0) {
+        if (!listeners.isEmpty()) {
             return listenersLevel >= level.intLevel();
         }
         return logger.isEnabled(level, marker);

@@ -1,20 +1,24 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.async;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
@@ -24,16 +28,12 @@ import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.config.AppenderControl;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.core.test.appender.FailOnceAppender;
+import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Verifies {@link AsyncAppender} works after certain type of {@link Appender}
@@ -55,7 +55,7 @@ class AsyncAppenderExceptionHandlingTest {
             FailOnceAppender.ThrowableClassName.THROWABLE,
             FailOnceAppender.ThrowableClassName.THREAD_DEATH
     })
-    void AsyncAppender_should_not_stop_on_appender_failures(String throwableClassName) {
+    void AsyncAppender_should_not_stop_on_appender_failures(final String throwableClassName) {
 
         // Create the logger.
         final String throwableClassNamePropertyName = "throwableClassName";
@@ -72,8 +72,8 @@ class AsyncAppenderExceptionHandlingTest {
             logger.info(lastLogMessage);
 
             // Stop the AsyncAppender to drain the queued events.
-            Configuration configuration = loggerContext.getConfiguration();
-            AsyncAppender asyncAppender = configuration.getAppender("Async");
+            final Configuration configuration = loggerContext.getConfiguration();
+            final AsyncAppender asyncAppender = configuration.getAppender("Async");
             Assertions.assertNotNull(asyncAppender, "couldn't obtain the FailOnceAppender");
             asyncAppender.stop();
 

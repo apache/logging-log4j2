@@ -1,24 +1,23 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.util;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -27,22 +26,31 @@ import java.util.Properties;
  *
  * @since 2.10.0
  */
-public class PropertiesPropertySource implements PropertySource {
+public class PropertiesPropertySource extends ContextAwarePropertySource
+        implements ReloadablePropertySource {
 
-    private static final int DEFAULT_PRIORITY = 200;
-    private static final String PREFIX = "log4j2.";
-
-    private final Properties properties;
     private final int priority;
+    private final Properties properties;
 
     public PropertiesPropertySource(final Properties properties) {
-        this(properties, DEFAULT_PRIORITY);
+        this(properties, SYSTEM_CONTEXT, DEFAULT_PRIORITY, false);
     }
 
     public PropertiesPropertySource(final Properties properties, final int priority) {
-        this.properties = properties;
-        this.priority = priority;
+        this(properties, SYSTEM_CONTEXT, priority, false);
     }
+
+    public PropertiesPropertySource(final Properties properties, final String contextName, final int priority) {
+        this(properties, contextName, priority, false);
+    }
+
+    public PropertiesPropertySource(final Properties properties, final String contextName, final int priority,
+                                    final boolean includeInvalid) {
+        super(properties, contextName, includeInvalid);
+        this.priority = priority;
+        this.properties = properties;
+    }
+
 
     @Override
     public int getPriority() {
@@ -51,30 +59,36 @@ public class PropertiesPropertySource implements PropertySource {
 
     @Override
     public void forEach(final BiConsumer<String, String> action) {
-        for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
-            action.accept(((String) entry.getKey()), ((String) entry.getValue()));
+        final Properties properties = propertiesMap.get(SYSTEM_CONTEXT);
+        if (properties != null) {
+            for (final Map.Entry<Object, Object> entry : properties.entrySet()) {
+                action.accept(((String) entry.getKey()), ((String) entry.getValue()));
+            }
         }
     }
 
     @Override
     public CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
-        final CharSequence camelCase = Util.joinAsCamelCase(tokens);
-        return camelCase.length() > 0 ? PREFIX + camelCase : null;
+        final CharSequence result = Util.join(tokens);
+        return result.length() > 0 ? PREFIX + result : null;
     }
 
     @Override
-    public Collection<String> getPropertyNames() {
-        return properties.stringPropertyNames();
+    public void reload() {
+        final Map<String, Properties> map = parseProperties(properties);
+        propertiesMap.putAll(map);
     }
 
     @Override
-    public String getProperty(String key) {
-        return properties.getProperty(key);
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final PropertiesPropertySource that = (PropertiesPropertySource) o;
+        return priority == that.priority && propertiesMap.equals(that.propertiesMap);
     }
 
     @Override
-    public boolean containsProperty(String key) {
-        return getProperty(key) != null;
+    public int hashCode() {
+        return Objects.hash(propertiesMap, priority);
     }
-
 }

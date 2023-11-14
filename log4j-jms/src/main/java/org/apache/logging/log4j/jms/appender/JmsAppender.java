@@ -1,23 +1,24 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.jms.appender;
 
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+
 import javax.jms.JMSException;
 
 import org.apache.logging.log4j.core.Appender;
@@ -102,7 +103,7 @@ public class JmsAppender extends AbstractAppender {
             JmsManager actualJmsManager = jmsManager;
             JmsManagerConfiguration configuration = null;
             if (actualJmsManager == null) {
-                Properties additionalProperties = null;
+                final Properties additionalProperties = null;
                 final Properties jndiProperties = JmsManager.createJndiProperties(factoryName, providerUrl,
                         urlPkgPrefixes, securityPrincipalName, securityCredentials, additionalProperties);
                 configuration = new JmsManagerConfiguration(jndiProperties, factoryBindingName, destinationBindingName,
@@ -214,7 +215,7 @@ public class JmsAppender extends AbstractAppender {
      *             not thrown as of 2.9 but retained in the signature for compatibility, will be removed in 3.0.
      */
     protected JmsAppender(final String name, final Filter filter, final Layout layout,
-            final boolean ignoreExceptions, Property[] properties, final JmsManager manager) throws JMSException {
+            final boolean ignoreExceptions, final Property[] properties, final JmsManager manager) throws JMSException {
         super(name, filter, layout, ignoreExceptions, properties);
         this.manager = manager;
     }

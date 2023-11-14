@@ -17,6 +17,10 @@
 = Migrating from Log4j 1.x
 Ralph Goers <rgoers@apache.org>
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 [#Log4j1.2Bridge]
 == When to use this the Log4j 1.x bridge
 

@@ -1,23 +1,24 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.config;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Level;
@@ -35,10 +36,12 @@ import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
 import org.apache.logging.log4j.core.script.ScriptManager;
 import org.apache.logging.log4j.core.time.NanoClock;
+import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.spi.RecyclerFactory;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Interface that must be implemented to create a configuration.
@@ -103,14 +106,20 @@ public interface Configuration extends Filterable {
     void removeLogger(final String name);
 
     /**
-     * Returns the list of packages to scan for plugins for this Configuration.
-     *
-     * @return the list of plugin packages.
-     * @since 2.1
+     * Returns the configuration properties. These will initially include entries for {@code contextName}
+     * with the {@linkplain org.apache.logging.log4j.spi.LoggerContext#getName() context name} and
+     * {@code hostName} with the {@linkplain NetUtils#getLocalHostname() local host name}. Additional
+     * properties may be defined by plugins.
      */
-    List<String> getPluginPackages();
-
     Map<String, String> getProperties();
+
+    /**
+     * Returns the {@linkplain org.apache.logging.log4j.spi.LoggerContext#getProperties() context properties}
+     * associated with the logger context for this configuration.
+     *
+     * @return the context properties
+     */
+    PropertyEnvironment getContextProperties();
 
     /**
      * Returns the root Logger.
@@ -119,14 +128,14 @@ public interface Configuration extends Filterable {
      */
     LoggerConfig getRootLogger();
 
-    void addListener(ConfigurationListener listener);
+    void addListener(Consumer<Reconfigurable> listener);
 
-    void removeListener(ConfigurationListener listener);
+    void removeListener(Consumer<Reconfigurable> listener);
 
     StrSubstitutor getStrSubstitutor();
 
     default StrSubstitutor getConfigurationStrSubstitutor() {
-        StrSubstitutor defaultSubstitutor = getStrSubstitutor();
+        final StrSubstitutor defaultSubstitutor = getStrSubstitutor();
         if (defaultSubstitutor == null) {
             return new ConfigurationStrSubstitutor();
         }
@@ -235,7 +244,7 @@ public interface Configuration extends Filterable {
     void setNanoClock(NanoClock nanoClock);
 
     /**
-     * Gets the logger context.
+     * Gets the logger context. This may be {@code null} if the context has already been stopped and garbage collected.
      *
      * @return the logger context.
      */
@@ -248,4 +257,5 @@ public interface Configuration extends Filterable {
     default RecyclerFactory getRecyclerFactory() {
         return getComponent(Key.forClass(RecyclerFactory.class));
     }
+
 }

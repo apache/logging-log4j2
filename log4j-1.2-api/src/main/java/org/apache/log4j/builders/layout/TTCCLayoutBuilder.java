@@ -1,20 +1,24 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.log4j.builders.layout;
+
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.bridge.LayoutWrapper;
@@ -26,10 +30,6 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.xml.XmlConfiguration.PARAM_TAG;
@@ -51,12 +51,12 @@ public class TTCCLayoutBuilder extends AbstractBuilder<Layout> implements Layout
     public TTCCLayoutBuilder() {
     }
 
-    public TTCCLayoutBuilder(String prefix, Properties props) {
+    public TTCCLayoutBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
     @Override
-    public Layout parse(Element layoutElement, XmlConfiguration config) {
+    public Layout parse(final Element layoutElement, final XmlConfiguration config) {
         final AtomicBoolean threadPrinting = new AtomicBoolean(Boolean.TRUE);
         final AtomicBoolean categoryPrefixing = new AtomicBoolean(Boolean.TRUE);
         final AtomicBoolean contextPrinting = new AtomicBoolean(Boolean.TRUE);
@@ -88,20 +88,20 @@ public class TTCCLayoutBuilder extends AbstractBuilder<Layout> implements Layout
     }
 
     @Override
-    public Layout parse(PropertiesConfiguration config) {
-        boolean threadPrinting = getBooleanProperty(THREAD_PRINTING_PARAM, true);
-        boolean categoryPrefixing = getBooleanProperty(CATEGORY_PREFIXING_PARAM, true);
-        boolean contextPrinting = getBooleanProperty(CONTEXT_PRINTING_PARAM, true);
-        String dateFormat = getProperty(DATE_FORMAT_PARAM, RELATIVE);
-        String timezone = getProperty(TIMEZONE_FORMAT);
+    public Layout parse(final PropertiesConfiguration config) {
+        final boolean threadPrinting = getBooleanProperty(THREAD_PRINTING_PARAM, true);
+        final boolean categoryPrefixing = getBooleanProperty(CATEGORY_PREFIXING_PARAM, true);
+        final boolean contextPrinting = getBooleanProperty(CONTEXT_PRINTING_PARAM, true);
+        final String dateFormat = getProperty(DATE_FORMAT_PARAM, RELATIVE);
+        final String timezone = getProperty(TIMEZONE_FORMAT);
 
         return createLayout(threadPrinting, categoryPrefixing, contextPrinting,
                 dateFormat, timezone, config);
     }
 
-    private Layout createLayout(boolean threadPrinting, boolean categoryPrefixing, boolean contextPrinting,
-            String dateFormat, String timezone, Log4j1Configuration config) {
-        StringBuilder sb = new StringBuilder();
+    private Layout createLayout(final boolean threadPrinting, final boolean categoryPrefixing, final boolean contextPrinting,
+            final String dateFormat, final String timezone, final Log4j1Configuration config) {
+        final StringBuilder sb = new StringBuilder();
         if (dateFormat != null) {
             if (RELATIVE.equalsIgnoreCase(dateFormat)) {
                 sb.append("%r ");

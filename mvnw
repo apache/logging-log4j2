@@ -160,7 +160,7 @@ find_maven_basedir() {
 # concatenates all lines of a file
 concat_lines() {
   if [ -f "$1" ]; then
-    echo "$(tr -s '\n' ' ' < "$1")"
+    echo "$(tr -s '\r\n' '  ' < "$1")"
   fi
 }
 

@@ -1,33 +1,33 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.spi;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.test.TestLogger;
-import org.apache.logging.log4j.test.TestLoggerContext;
-import org.apache.logging.log4j.test.TestLoggerContextFactory;
-import org.apache.logging.log4j.simple.SimpleLoggerContext;
-import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.simple.SimpleLoggerContext;
+import org.apache.logging.log4j.test.TestLogger;
+import org.apache.logging.log4j.test.TestLoggerContext;
+import org.apache.logging.log4j.test.TestLoggerContextFactory;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -89,7 +89,7 @@ public class LoggerAdapterTest {
     private static class TestLoggerAdapter2 extends AbstractLoggerAdapter<Logger> {
 
         @Override
-        protected Logger newLogger(String name, LoggerContext context) {
+        protected Logger newLogger(final String name, final LoggerContext context) {
             return context.getLogger(name);
         }
 
@@ -98,14 +98,14 @@ public class LoggerAdapterTest {
             return null;
         }
 
-        public LoggerContext getContext(String fqcn) {
+        public LoggerContext getContext(final String fqcn) {
             for (LoggerContext lc : registry.keySet()) {
-                TestLoggerContext2 context = (TestLoggerContext2) lc;
+                final TestLoggerContext2 context = (TestLoggerContext2) lc;
                 if (fqcn.equals(context.getName())) {
                     return context;
                 }
             }
-            LoggerContext lc = new TestLoggerContext2(fqcn, this);
+            final LoggerContext lc = new TestLoggerContext2(fqcn, this);
             registry.put(lc, new ConcurrentHashMap<>());
             return lc;
         }
@@ -115,7 +115,7 @@ public class LoggerAdapterTest {
         private final String name;
         private final LoggerContextShutdownAware listener;
 
-        public TestLoggerContext2(String name, LoggerContextShutdownAware listener) {
+        public TestLoggerContext2(final String name, final LoggerContextShutdownAware listener) {
             this.name = name;
             this.listener = listener;
         }
@@ -134,11 +134,11 @@ public class LoggerAdapterTest {
         final LoggerContextFactory factory = new TestLoggerContextFactory();
         final TestLoggerAdapter2 adapter = new TestLoggerAdapter2();
         for (int i = 0; i < 5; ++i) {
-            LoggerContext lc = adapter.getContext(Integer.toString(i));
+            final LoggerContext lc = adapter.getContext(Integer.toString(i));
             lc.getLogger(Integer.toString(i));
         }
         assertEquals(5, adapter.registry.size(), "Expected 5 LoggerContexts");
-        Set<LoggerContext> contexts = new HashSet<>(adapter.registry.keySet());
+        final Set<LoggerContext> contexts = new HashSet<>(adapter.registry.keySet());
         for (LoggerContext context : contexts) {
             ((TestLoggerContext2) context).shutdown();
         }

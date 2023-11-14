@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.async;
 
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.GarbageCollectionHelper;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -32,8 +32,9 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("async")
-@SetSystemProperty(key = Log4jProperties.GC_ENABLE_DIRECT_ENCODERS, value = "true")
-@SetSystemProperty(key = Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, value = "true")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.CONFIG_LOCATION, value = "log4j2-console.xml")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.GC_ENABLE_DIRECT_ENCODERS, value = "true")
+@SetSystemProperty(key = Log4jPropertyKey.Constant.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, value = "true")
 @ContextSelectorType(AsyncLoggerContextSelector.class)
 public class AsyncLoggerTestArgumentFreedOnErrorTest {
 
@@ -41,9 +42,9 @@ public class AsyncLoggerTestArgumentFreedOnErrorTest {
     @Test
     public void testMessageIsGarbageCollected() throws Exception {
         final AsyncLogger log = (AsyncLogger) LogManager.getLogger("com.foo.Bar");
-        CountDownLatch garbageCollectionLatch = new CountDownLatch(1);
+        final CountDownLatch garbageCollectionLatch = new CountDownLatch(1);
         log.fatal(new ThrowingMessage(garbageCollectionLatch));
-        try (GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
+        try (final GarbageCollectionHelper gcHelper = new GarbageCollectionHelper()) {
             gcHelper.run();
             assertTrue(garbageCollectionLatch.await(30, TimeUnit.SECONDS),
                     "Parameter should have been garbage collected");
@@ -54,7 +55,7 @@ public class AsyncLoggerTestArgumentFreedOnErrorTest {
 
         private final CountDownLatch latch;
 
-        ThrowingMessage(CountDownLatch latch) {
+        ThrowingMessage(final CountDownLatch latch) {
             this.latch = latch;
         }
 
@@ -85,7 +86,7 @@ public class AsyncLoggerTestArgumentFreedOnErrorTest {
         }
 
         @Override
-        public void formatTo(StringBuilder buffer) {
+        public void formatTo(final StringBuilder buffer) {
             throw new Error("Expected");
         }
     }

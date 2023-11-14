@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.spring.boot;
 
@@ -31,14 +31,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AbstractConfiguration;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
@@ -46,6 +45,7 @@ import org.apache.logging.log4j.core.util.AuthorizationProvider;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.springframework.boot.logging.LogFile;
 import org.springframework.boot.logging.LoggingInitializationContext;
 import org.springframework.boot.logging.LoggingSystem;
@@ -65,7 +65,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     /**
      * Property that disables the usage of this {@link LoggingSystem}.
      */
-    public static final String LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM = "log4j2.disableCloudConfigLoggingSystem";
+    public static final String LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM = "SpringBoot.disableCloudConfigLoggingSystem";
 
     public static final String ENVIRONMENT_KEY = "SpringEnvironment";
     private static final String HTTPS = "https";
@@ -73,7 +73,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     private static final Logger LOGGER = StatusLogger.getLogger();
     private static final int PRECEDENCE = 0;
 
-    public Log4j2SpringBootLoggingSystem(ClassLoader loader) {
+    public Log4j2SpringBootLoggingSystem(final ClassLoader loader) {
         super(loader);
     }
 
@@ -86,8 +86,8 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
      * @param logFile the log file.
      */
     @Override
-    public void initialize(LoggingInitializationContext initializationContext, String configLocation, LogFile logFile) {
-        Environment environment = initializationContext.getEnvironment();
+    public void initialize(final LoggingInitializationContext initializationContext, final String configLocation, final LogFile logFile) {
+        final Environment environment = initializationContext.getEnvironment();
         PropertiesUtil.getProperties().addPropertySource(new SpringPropertySource(environment));
         getLoggerContext().putObjectIfAbsent(ENVIRONMENT_KEY, environment);
         super.initialize(initializationContext, configLocation, logFile);
@@ -96,10 +96,10 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     @Override
     protected String[] getStandardConfigLocations() {
         String[] locations = super.getStandardConfigLocations();
-        PropertiesUtil props = new PropertiesUtil(new Properties());
-        String location = props.getStringProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        final PropertiesUtil props = new PropertiesUtil(new Properties());
+        final String location = props.getStringProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
         if (location != null) {
-            List<String> list = new ArrayList<>(Arrays.asList(super.getStandardConfigLocations()));
+            final List<String> list = new ArrayList<>(Arrays.asList(super.getStandardConfigLocations()));
             list.add(location);
             locations = list.toArray(new String[0]);
         }
@@ -113,13 +113,13 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
      * @param logFile log file configuration
      */
     @Override
-    protected void loadConfiguration(String location, LogFile logFile) {
+    protected void loadConfiguration(final String location, final LogFile logFile) {
         loadConfiguration(location, logFile, Collections.emptyList());
     }
 
 
     @Override
-    protected void loadDefaults(LoggingInitializationContext initializationContext, LogFile logFile) {
+    protected void loadDefaults(final LoggingInitializationContext initializationContext, final LogFile logFile) {
         if (logFile != null) {
             this.loadConfiguration(this.getBootPackagedConfigFile("log4j2-file.xml"), logFile);
         } else {
@@ -127,7 +127,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
         }
     }
 
-    private String getBootPackagedConfigFile(String fileName) {
+    private String getBootPackagedConfigFile(final String fileName) {
         String defaultPath = ClassUtils.getPackageName(Log4J2LoggingSystem.class);
         defaultPath = defaultPath.replace('.', '/');
         defaultPath = defaultPath + "/" + fileName;
@@ -144,11 +144,11 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
      * @param overrides Any override files.
      */
     @Override
-    protected void loadConfiguration(String location, LogFile logFile, List<String> overrides) {
+    protected void loadConfiguration(final String location, final LogFile logFile, final List<String> overrides) {
         Assert.notNull(location, "Location must not be null");
         try {
-            LoggerContext ctx = getLoggerContext();
-            List<String> locations = parseConfigLocations(location);
+            final LoggerContext ctx = getLoggerContext();
+            final List<String> locations = parseConfigLocations(location);
             if (overrides != null) {
                 locations.addAll(overrides);
             }
@@ -156,7 +156,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
                 final URL url = ResourceUtils.getURL(location);
                 final ConfigurationSource source = getConfigurationSource(url);
                 if (source != null) {
-                    ctx.start(ConfigurationFactory.getInstance().getConfiguration(ctx, source));
+                    ctx.start(ctx.getConfiguration(source));
                 }
             } else {
                 final List<AbstractConfiguration> configs = new ArrayList<>();
@@ -165,7 +165,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
                     final ConfigurationSource source = getConfigurationSource(ResourceUtils.getURL(sourceLocation));
                     if (source != null) {
                         try {
-                            final Configuration config = ConfigurationFactory.getInstance().getConfiguration(ctx, source);
+                            final Configuration config = ctx.getConfiguration(source);
                             if (config instanceof AbstractConfiguration) {
                                 configs.add((AbstractConfiguration) config);
                             } else {
@@ -201,7 +201,7 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
         super.cleanUp();
     }
 
-    private List<String> parseConfigLocations(String configLocations) {
+    private List<String> parseConfigLocations(final String configLocations) {
         final String[] uris = configLocations.split("\\?");
         final List<String> locations = new ArrayList<>();
         locations.add(uris[0]);
@@ -225,14 +225,15 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
         return locations;
     }
 
-    private ConfigurationSource getConfigurationSource(URL url) throws IOException, URISyntaxException {
-        AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
-        SslConfiguration sslConfiguration = url.getProtocol().equals(HTTPS)
-                ? SslConfigurationFactory.getSslConfiguration() : null;
-        URLConnection urlConnection = UrlConnectionFactory.createConnection(url, 0, sslConfiguration,
-                provider);
+    private ConfigurationSource getConfigurationSource(final URL url) throws IOException, URISyntaxException {
+        final PropertyEnvironment props = PropertiesUtil.getProperties();
+        final AuthorizationProvider provider = AuthorizationProvider.getAuthorizationProvider(props);
+        final SslConfiguration sslConfiguration = url.getProtocol().equals(HTTPS)
+                ? SslConfigurationFactory.getSslConfiguration(props) : null;
+        final URLConnection urlConnection = UrlConnectionFactory.createConnection(url, 0, sslConfiguration,
+                provider, props);
 
-        File file = FileUtils.fileFromUri(url.toURI());
+        final File file = FileUtils.fileFromUri(url.toURI());
         try {
             if (file != null) {
                 return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
@@ -246,14 +247,14 @@ public class Log4j2SpringBootLoggingSystem extends Log4J2LoggingSystem {
     }
 
     private LoggerContext getLoggerContext() {
-        return (LoggerContext) LogManager.getContext(false);
+        return LoggerContext.getContext(false);
     }
 
     @Order(PRECEDENCE)
     public static class Factory implements LoggingSystemFactory {
 
         @Override
-        public LoggingSystem getLoggingSystem(ClassLoader classLoader) {
+        public LoggingSystem getLoggingSystem(final ClassLoader classLoader) {
             if (PropertiesUtil.getProperties().getBooleanProperty(LOG4J2_DISABLE_CLOUD_CONFIG_LOGGING_SYSTEM)) {
                 return null;
             }

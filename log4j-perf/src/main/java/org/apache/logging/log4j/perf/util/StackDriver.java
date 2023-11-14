@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.perf.util;
 
@@ -23,20 +23,21 @@ import java.util.function.Function;
  * Facilitates creating a Call Stack for testing the performance of walking it.
  */
 public class StackDriver {
-    public StackTraceElement deepCall(int initialDepth, Integer targetDepth, Function<String, StackTraceElement> supplier) {
-        if (--initialDepth == 0) {
-            Processor processor = new Processor();
+    public StackTraceElement deepCall(final int initialDepth, final Integer targetDepth, final Function<String, StackTraceElement> supplier) {
+        int depth = initialDepth;
+        if (--depth == 0) {
+            final Processor processor = new Processor();
             return processor.apply(targetDepth, supplier);
-        } else {
-            return deepCall(initialDepth, targetDepth, supplier);
         }
+        return deepCall(depth, targetDepth, supplier);
     }
 
     public static class Processor implements BiFunction<Integer, Function<String, StackTraceElement>, StackTraceElement> {
         private static final String FQCN = Processor.class.getName();
 
         @Override
-        public StackTraceElement apply(Integer depth, Function<String, StackTraceElement> function) {
+        public StackTraceElement apply(final Integer initialDepth, final Function<String, StackTraceElement> function) {
+            int depth = initialDepth;
             if (--depth == 0) {
                 return function.apply(FQCN);
             } else {

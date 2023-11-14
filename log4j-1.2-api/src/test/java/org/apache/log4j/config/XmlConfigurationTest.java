@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.log4j.config;
 
@@ -33,9 +33,8 @@ import org.apache.log4j.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -45,20 +44,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Test configuration from XML.
  */
+@ConfigurationFactoryType(XmlConfigurationFactory.class)
 public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
 
     private static final String SUFFIX = ".xml";
 
     @Override
-    Configuration getConfiguration(String configResourcePrefix) throws URISyntaxException, IOException {
+    Configuration getConfiguration(final String configResourcePrefix) throws URISyntaxException, IOException {
         final String configResource = configResourcePrefix + SUFFIX;
         final InputStream inputStream = ClassLoader.getSystemResourceAsStream(configResource);
+        assertNotNull(inputStream);
         final ConfigurationSource source = new ConfigurationSource(inputStream);
         final LoggerContext context = LoggerContext.getContext(false);
-        final Configuration configuration = context.getInjector()
-                .registerBinding(ConfigurationFactory.KEY, Lazy.lazy(XmlConfigurationFactory::new))
-                .getInstance(ConfigurationFactory.KEY)
-                .getConfiguration(context, source);
+        final Configuration configuration = context.getConfiguration(source);
         assertNotNull(configuration, "No configuration created");
         configuration.initialize();
         return configuration;
@@ -67,7 +65,7 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
     @Test
     public void testXML() throws Exception {
         configure("log4j1-file");
-        Logger logger = LogManager.getLogger("test");
+        final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
         File file = new File("target/temp.A1");
         assertTrue(file.exists(), "File A1 was not created");
@@ -79,11 +77,11 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
 
     @Test
     public void testListAppender() throws Exception {
-        LoggerContext loggerContext = configure("log4j1-list");
-        Logger logger = LogManager.getLogger("test");
+        final LoggerContext loggerContext = configure("log4j1-list");
+        final Logger logger = LogManager.getLogger("test");
         logger.debug("This is a test of the root logger");
-        Configuration configuration = loggerContext.getConfiguration();
-        Map<String, Appender> appenders = configuration.getAppenders();
+        final Configuration configuration = loggerContext.getConfiguration();
+        final Map<String, Appender> appenders = configuration.getAppenders();
         ListAppender eventAppender = null;
         ListAppender messageAppender = null;
         for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
@@ -95,9 +93,9 @@ public class XmlConfigurationTest extends AbstractLog4j1ConfigurationTest {
         }
         assertNotNull(eventAppender, "No Event Appender");
         assertNotNull(messageAppender, "No Message Appender");
-        List<LoggingEvent> events = eventAppender.getEvents();
+        final List<LoggingEvent> events = eventAppender.getEvents();
         assertTrue(events != null && events.size() > 0, "No events");
-        List<String> messages = messageAppender.getMessages();
+        final List<String> messages = messageAppender.getMessages();
         assertTrue(messages != null && messages.size() > 0, "No messages");
     }
 

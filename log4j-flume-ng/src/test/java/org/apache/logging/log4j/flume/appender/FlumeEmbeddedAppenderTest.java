@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.flume.appender;
 
@@ -34,6 +34,7 @@ import java.util.zip.GZIPInputStream;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import com.google.common.base.Preconditions;
 import org.apache.avro.ipc.Server;
 import org.apache.avro.ipc.netty.NettyServer;
 import org.apache.avro.ipc.specific.SpecificResponder;
@@ -46,19 +47,16 @@ import org.apache.logging.log4j.EventLogger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.core.test.AvailablePortFinder;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import com.google.common.base.Preconditions;
 
 import static org.junit.Assert.fail;
 
@@ -103,14 +101,14 @@ public class FlumeEmbeddedAppenderTest {
         System.setProperty("alternatePort", Integer.toString(altPort));
         primary = new EventCollector(primaryPort);
         alternate = new EventCollector(altPort);
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, CONFIG);
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), CONFIG);
         ctx = LoggerContext.getContext(false);
         ctx.reconfigure();
     }
 
     @After
     public void teardown() throws Exception {
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+        System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
         ctx.reconfigure();
         primary.stop();
         alternate.stop();
@@ -196,10 +194,9 @@ public class FlumeEmbeddedAppenderTest {
                 " Received: " + body, body.endsWith(expected));
         }
     }
-    /* Flume 1.4.0 does not support interceptors on the embedded agent */
-    @Test
-    @Ignore
-    public void testHeaderAddedByInterceptor() {
+    /* Flume 1.4.0 does not support interceptors on the embedded agent
+    @Test      */
+    private void testHeaderAddedByInterceptor() {
 
         final StructuredDataMessage msg = new StructuredDataMessage("Test", "Test Log4j", "Test");
         EventLogger.logEvent(msg);
@@ -210,9 +207,8 @@ public class FlumeEmbeddedAppenderTest {
         Assert.assertEquals("local", environmentHeader);
     }
 
-    @Test
-    @Ignore
-    public void testPerformance() throws Exception {
+    /* @Test */
+    private void testPerformance() throws Exception {
         final long start = System.currentTimeMillis();
         final int count = 10000;
         for (int i = 0; i < count; ++i) {
@@ -236,23 +232,23 @@ public class FlumeEmbeddedAppenderTest {
 
     }
 
-	private static boolean deleteFiles(final File file) {
-		boolean result = true;
-		if (file.isDirectory()) {
+    private static boolean deleteFiles(final File file) {
+        boolean result = true;
+        if (file.isDirectory()) {
 
-			final File[] files = file.listFiles();
-			if (files != null) {
-				for (final File child : files) {
-					result &= deleteFiles(child);
-				}
-			}
+            final File[] files = file.listFiles();
+            if (files != null) {
+                for (final File child : files) {
+                    result &= deleteFiles(child);
+                }
+            }
 
-		} else if (!file.exists()) {
-			return true;
-		}
+        } else if (!file.exists()) {
+            return true;
+        }
 
-		return result && file.delete();
-	}
+        return result && file.delete();
+    }
 
     private static class EventCollector implements AvroSourceProtocol {
         private final LinkedBlockingQueue<AvroFlumeEvent> eventQueue = new LinkedBlockingQueue<>();
@@ -268,7 +264,7 @@ public class FlumeEmbeddedAppenderTest {
             server.start();
         }
 
-        private Server createServer(AvroSourceProtocol protocol, final int port) throws InterruptedException {
+        private Server createServer(final AvroSourceProtocol protocol, final int port) throws InterruptedException {
 
             server = new NettyServer(new SpecificResponder(AvroSourceProtocol.class, protocol),
                     new InetSocketAddress(HOSTNAME, port));

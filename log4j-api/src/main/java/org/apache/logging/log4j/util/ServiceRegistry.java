@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.util;
 
@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  * @since 3.0.0
  */
 @InternalApi
-public class ServiceRegistry {
+public final class ServiceRegistry {
     private static final Lazy<ServiceRegistry> INSTANCE = Lazy.relaxed(ServiceRegistry::new);
 
 
@@ -72,7 +72,7 @@ public class ServiceRegistry {
     /**
      * Set 'verbose' to false if the `StatusLogger` is not available yet.
      */
-    <S> List<S> getServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator, boolean verbose) {
+    <S> List<S> getServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator, final boolean verbose) {
         final List<S> services = getMainServices(serviceType, lookup, validator, verbose);
         return Stream.concat(services.stream(), bundleServices.values().stream().flatMap(map -> {
             final Stream<S> stream = map.getOrDefault(serviceType, List.of()).stream().map(serviceType::cast);
@@ -80,7 +80,7 @@ public class ServiceRegistry {
         })).distinct().collect(Collectors.toCollection(ArrayList::new));
     }
 
-    <S> List<S> getMainServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator, boolean verbose) {
+    <S> List<S> getMainServices(final Class<S> serviceType, final Lookup lookup, final Predicate<S> validator, final boolean verbose) {
         final List<?> existing = mainServices.get(serviceType);
         if (existing != null) {
             return Cast.cast(existing);

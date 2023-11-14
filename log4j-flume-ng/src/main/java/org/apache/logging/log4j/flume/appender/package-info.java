@@ -17,4 +17,11 @@
 /**
  * Apache Flume Appender. Requires the user specifically include Flume and its dependencies.
  */
+@Export
+@Open("org.apache.logging.log4j.core")
+@Version("2.20.2")
 package org.apache.logging.log4j.flume.appender;
+
+import aQute.bnd.annotation.jpms.Open;
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

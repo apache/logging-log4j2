@@ -1,86 +1,77 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-@Tag("sleepy")
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@UsingStatusListener
 public class RollingAppenderDirectWriteTest {
 
-    private static final String CONFIG = "log4j-rolling-direct.xml";
+    private final Pattern FILE_PATTERN = Pattern.compile("test-\\d{4}-\\d{2}-\\d{2}T\\d{2}-\\d{2}-\\d+\\.log(\\.gz)?");
+    private final Pattern LINE_PATTERN = Pattern.compile("This is test message number \\d+\\.");
 
-    private static final String DIR = "target/rolling-direct";
+    @TempLoggingDir
+    private Path loggingPath;
 
     @Test
-    @CleanUpDirectories(DIR)
-    @LoggerContextSource(value = CONFIG, timeout = 10)
-    public void testAppender(final LoggerContext context) throws Exception {
-        final var logger = context.getLogger(getClass());
-        int count = 100;
+    @LoggerContextSource
+    public void testAppender(final LoggerContext ctx) throws Exception {
+        final Logger logger = ctx.getLogger(getClass());
+        final int count = 100;
         for (int i=0; i < count; ++i) {
-            logger.debug("This is test message number " + i);
+            logger.debug("This is test message number {}.", i);
         }
-        Thread.sleep(50);
-        final File dir = new File(DIR);
-        assertTrue(dir.exists() && dir.listFiles().length > 0, "Directory not created");
-        final File[] files = dir.listFiles();
-        assertNotNull(files);
-        assertThat(files, hasItemInArray(that(hasName(that(endsWith(".gz"))))));
+        ctx.stop(500, TimeUnit.MILLISECONDS);
         int found = 0;
-        for (File file: files) {
-            String actual = file.getName();
-            BufferedReader reader;
-            if (file.getName().endsWith(".gz")) {
-                reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file))));
-            } else {
-                reader = new BufferedReader(new FileReader(file));
+        try (final DirectoryStream<Path> stream = Files.newDirectoryStream(loggingPath)) {
+            for (final Path file: stream) {
+                final String fileName = file.getFileName().toString();
+                assertThat(fileName).matches(FILE_PATTERN);
+                try (final InputStream is = Files.newInputStream(file);
+                     final InputStream uncompressed = fileName.endsWith(".gz") ? new GZIPInputStream(is) : is;
+                     final BufferedReader reader = new BufferedReader(new InputStreamReader(uncompressed, UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        assertThat(line).matches(LINE_PATTERN);
+                        ++found;
+                    }
+                }
             }
-            String line;
-            while ((line = reader.readLine()) != null) {
-                assertNotNull(line, "No log event in file " + actual);
-                String[] parts = line.split((" "));
-                String expected = "test1-" + parts[0];
-                assertTrue(actual.startsWith(expected),
-                        "Incorrect file name. Expected file prefix: " + expected + " Actual: " + actual);
-                ++found;
-            }
-            reader.close();
         }
-        assertEquals(count, found, "Incorrect number of events read. Expected " + count + ", Actual " + found);
+
+        assertThat(found).as("Number of events.").isEqualTo(count);
     }
 }

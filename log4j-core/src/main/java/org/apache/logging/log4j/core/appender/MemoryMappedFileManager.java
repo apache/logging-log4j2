@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender;
 
@@ -32,10 +32,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.apache.logging.log4j.util.ReflectionUtil;
 
 //Lines too long...
@@ -123,21 +123,28 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     @Override
-    protected synchronized void write(final byte[] bytes, int offset, int length, final boolean immediateFlush) {
-        while (length > mappedBuffer.remaining()) {
-            final int chunk = mappedBuffer.remaining();
-            mappedBuffer.put(bytes, offset, chunk);
-            offset += chunk;
-            length -= chunk;
-            remap();
-        }
-        mappedBuffer.put(bytes, offset, length);
+    protected void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
+        writeLock.lock();
+        try {
+            int currentOffset = offset;
+            int currentLength = length;
+            while (currentLength > mappedBuffer.remaining()) {
+                final int chunk = mappedBuffer.remaining();
+                mappedBuffer.put(bytes, currentOffset, chunk);
+                currentOffset += chunk;
+                currentLength -= chunk;
+                remap();
+            }
+            mappedBuffer.put(bytes, currentOffset, currentLength);
 
-        // no need to call flush() if force is true,
-        // already done in AbstractOutputStreamAppender.append
+            // no need to call flush() if force is true,
+            // already done in AbstractOutputStreamAppender.append
+        } finally {
+            writeLock.unlock();
+        }
     }
 
-    private synchronized void remap() {
+    private void remap() {
         final long offset = this.mappingOffset + mappedBuffer.position();
         final int length = mappedBuffer.remaining() + regionLength;
         try {
@@ -161,28 +168,38 @@ public class MemoryMappedFileManager extends OutputStreamManager {
     }
 
     @Override
-    public synchronized void flush() {
-        mappedBuffer.force();
+    public void flush() {
+        writeLock.lock();
+        try {
+            mappedBuffer.force();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
-    public synchronized boolean closeOutputStream() {
-        final long position = mappedBuffer.position();
-        final long length = mappingOffset + position;
+    public boolean closeOutputStream() {
+        writeLock.lock();
         try {
-            unsafeUnmap(mappedBuffer);
-        } catch (final Exception ex) {
-            logError("Unable to unmap MappedBuffer", ex);
-        }
-        try {
-            LOGGER.debug("MMapAppender closing. Setting {} length to {} (offset {} + position {})", getFileName(),
-                    length, mappingOffset, position);
-            randomAccessFile.setLength(length);
-            randomAccessFile.close();
-            return true;
-        } catch (final IOException ex) {
-            logError("Unable to close MemoryMappedFile", ex);
-            return false;
+            final long position = mappedBuffer.position();
+            final long length = mappingOffset + position;
+            try {
+                unsafeUnmap(mappedBuffer);
+            } catch (final Exception ex) {
+                logError("Unable to unmap MappedBuffer", ex);
+            }
+            try {
+                LOGGER.debug("MMapAppender closing. Setting {} length to {} (offset {} + position {})",
+                        getFileName(), length, mappingOffset, position);
+                randomAccessFile.setLength(length);
+                randomAccessFile.close();
+                return true;
+            } catch (final IOException ex) {
+                logError("Unable to close MemoryMappedFile", ex);
+                return false;
+            }
+        } finally {
+            writeLock.unlock();
         }
     }
 
@@ -288,8 +305,13 @@ public class MemoryMappedFileManager extends OutputStreamManager {
 
     @Override
     public ByteBuffer drain(final ByteBuffer buf) {
-        remap();
-        return mappedBuffer;
+        writeLock.lock();
+        try {
+            remap();
+            return mappedBuffer;
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     /**
@@ -336,6 +358,10 @@ public class MemoryMappedFileManager extends OutputStreamManager {
          */
         @SuppressWarnings("resource")
         @Override
+        @SuppressFBWarnings(
+                value = "PATH_TRAVERSAL_IN",
+                justification = "The destination file should be specified in the configuration file."
+        )
         public MemoryMappedFileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
             if (!data.append) {
@@ -343,7 +369,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
             }
 
             final boolean writeHeader = !data.append || !file.exists();
-            final OutputStream os = NullOutputStream.getInstance();
+            final OutputStream os = OutputStream.nullOutputStream();
             RandomAccessFile raf = null;
             try {
                 FileUtils.makeParentDirs(file);

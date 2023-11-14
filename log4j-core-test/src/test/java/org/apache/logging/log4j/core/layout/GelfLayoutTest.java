@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.layout;
 
@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
+import com.fasterxml.jackson.core.io.JsonStringEncoder;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
@@ -30,29 +31,25 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.GelfLayout.CompressionType;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.EncodingListAppender;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.util.Chars;
-import org.apache.logging.log4j.util.Lazy;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import com.fasterxml.jackson.core.io.JsonStringEncoder;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @UsingAnyThreadContext
+@ConfigurationFactoryType(BasicConfigurationFactory.class)
 public class GelfLayoutTest {
 
     private static final String HOSTNAME = "TheHost";
@@ -66,18 +63,6 @@ public class GelfLayoutTest {
     private static final String MDCVALUE1 = "MdcValue1";
     private static final String MDCVALUE2 = "MdcValue2";
     private static final String VALUE1 = "Value1";
-
-    @AfterAll
-    public static void cleanupClass() {
-        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
-    }
-
-    @BeforeAll
-    public static void setupClass() {
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, Lazy.lazy(BasicConfigurationFactory::new)::value);
-        ctx.reconfigure();
-    }
 
     LoggerContext ctx = LoggerContext.getContext();
 
@@ -297,9 +282,9 @@ public class GelfLayoutTest {
         assertEquals("9223372036854775.807", GelfLayout.formatTimestamp(Long.MAX_VALUE).toString());
     }
 
-    private void testRequiresLocation(String messagePattern, Boolean requiresLocation) {
+    private void testRequiresLocation(final String messagePattern, final Boolean requiresLocation) {
 
-        GelfLayout layout = GelfLayout.newBuilder()
+        final GelfLayout layout = GelfLayout.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
                 .setMessagePattern(messagePattern)
                 .build();

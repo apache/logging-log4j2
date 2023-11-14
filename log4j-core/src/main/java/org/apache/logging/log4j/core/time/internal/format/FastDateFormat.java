@@ -1,25 +1,23 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.time.internal.format;
 
 import java.text.DateFormat;
 import java.text.FieldPosition;
-import java.text.ParseException;
-import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -72,7 +70,7 @@ import java.util.TimeZone;
  *
  * @since Apache Commons Lang 2.0
  */
-public class FastDateFormat extends Format implements DateParser, DatePrinter {
+public class FastDateFormat extends Format implements DatePrinter {
 
     /**
      * FULL locale dependent date or time style.
@@ -102,7 +100,6 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
     };
 
     private final FastDatePrinter printer;
-    private final FastDateParser parser;
 
     //-----------------------------------------------------------------------
     /**
@@ -405,7 +402,6 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
      */
     protected FastDateFormat(final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
         printer= new FastDatePrinter(pattern, timeZone, locale);
-        parser= new FastDateParser(pattern, timeZone, locale, centuryStart);
     }
 
     // Format methods
@@ -499,43 +495,6 @@ public class FastDateFormat extends Format implements DateParser, DatePrinter {
     @Override
     public <B extends Appendable> B format(final Calendar calendar, final B buf) {
         return printer.format(calendar, buf);
-    }
-
-    // Parsing
-    //-----------------------------------------------------------------------
-
-
-    /* (non-Javadoc)
-     * @see DateParser#parse(java.lang.String)
-     */
-    @Override
-    public Date parse(final String source) throws ParseException {
-        return parser.parse(source);
-    }
-
-    /* (non-Javadoc)
-     * @see DateParser#parse(java.lang.String, java.text.ParsePosition)
-     */
-    @Override
-    public Date parse(final String source, final ParsePosition pos) {
-        return parser.parse(source, pos);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.apache.commons.lang3.time.DateParser#parse(java.lang.String, java.text.ParsePosition, java.util.Calendar)
-     */
-    @Override
-    public boolean parse(final String source, final ParsePosition pos, final Calendar calendar) {
-        return parser.parse(source, pos, calendar);
-    }
-
-    /* (non-Javadoc)
-     * @see java.text.Format#parseObject(java.lang.String, java.text.ParsePosition)
-     */
-    @Override
-    public Object parseObject(final String source, final ParsePosition pos) {
-        return parser.parseObject(source, pos);
     }
 
     // Accessors

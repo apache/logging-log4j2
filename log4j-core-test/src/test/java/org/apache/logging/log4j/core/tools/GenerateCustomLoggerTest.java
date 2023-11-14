@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.tools;
 
@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
@@ -37,7 +38,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.test.TestLogger;
 import org.apache.logging.log4j.util.MessageSupplier;
 import org.apache.logging.log4j.util.Strings;
@@ -50,7 +51,7 @@ import org.junitpioneer.jupiter.SetSystemProperty;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("functional")
-@SetSystemProperty(key = LoggingSystemProperties.LOGGER_CONTEXT_FACTORY_CLASS, value = "org.apache.logging.log4j.test.TestLoggerContextFactory")
+@SetSystemProperty(key = LoggingSystemProperty.Constant.LOGGER_CONTEXT_FACTORY_CLASS, value = "org.apache.logging.log4j.test.TestLoggerContextFactory")
 public class GenerateCustomLoggerTest {
 
     private static final String TEST_SOURCE = "target/test-classes/org/apache/logging/log4j/core/MyCustomLogger.java";
@@ -58,7 +59,7 @@ public class GenerateCustomLoggerTest {
     @AfterAll
     public static void afterClass() {
         File file = new File(TEST_SOURCE);
-        File parent = file.getParentFile();
+        final File parent = file.getParentFile();
         if (file.exists()) {
             file.delete();
         }
@@ -69,6 +70,7 @@ public class GenerateCustomLoggerTest {
     }
 
     @Test
+    @SuppressWarnings("ReturnValueIgnored")
     public void testGenerateSource() throws Exception {
         final String CLASSNAME = "org.apache.logging.log4j.core.MyCustomLogger";
 
@@ -89,8 +91,8 @@ public class GenerateCustomLoggerTest {
         try (final StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
             final Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(
                     Collections.singletonList(f));
-            String classPath = System.getProperty("jdk.module.path");
-            List<String> optionList = new ArrayList<>();
+            final String classPath = System.getProperty("jdk.module.path");
+            final List<String> optionList = new ArrayList<>();
             if (Strings.isNotBlank(classPath)) {
                 optionList.add("-classpath");
                 optionList.add(classPath);

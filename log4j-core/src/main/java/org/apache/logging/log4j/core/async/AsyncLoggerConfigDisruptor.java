@@ -1,38 +1,25 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.async;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.AbstractLifeCycle;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.ReusableLogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
-import org.apache.logging.log4j.core.impl.LogEventFactory;
-import org.apache.logging.log4j.core.impl.MutableLogEvent;
-import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
-import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
-import org.apache.logging.log4j.core.util.Log4jThread;
-import org.apache.logging.log4j.core.util.Log4jThreadFactory;
-import org.apache.logging.log4j.core.util.Throwables;
-import org.apache.logging.log4j.message.ReusableMessage;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.EventTranslatorTwoArg;
@@ -44,6 +31,20 @@ import com.lmax.disruptor.TimeoutException;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.AbstractLifeCycle;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.ReusableLogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.impl.LogEventFactory;
+import org.apache.logging.log4j.core.impl.MutableLogEvent;
+import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
+import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
+import org.apache.logging.log4j.core.util.Log4jThread;
+import org.apache.logging.log4j.core.util.Log4jThreadFactory;
+import org.apache.logging.log4j.core.util.Throwables;
+import org.apache.logging.log4j.message.ReusableMessage;
 
 /**
  * Helper class decoupling the {@code AsyncLoggerConfig} class from the LMAX Disruptor library.
@@ -171,9 +172,10 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
     private final AsyncWaitStrategyFactory asyncWaitStrategyFactory;
     private WaitStrategy waitStrategy;
 
-    private final Object queueFullEnqueueLock = new Object();
+    private final Lock startLock = new ReentrantLock();
+    private final Lock queueFullEnqueueLock = new ReentrantLock();
 
-    public AsyncLoggerConfigDisruptor(AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
+    public AsyncLoggerConfigDisruptor(final AsyncWaitStrategyFactory asyncWaitStrategyFactory) {
         this.asyncWaitStrategyFactory = asyncWaitStrategyFactory; // may be null
     }
 
@@ -197,42 +199,47 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
      * @see #stop()
      */
     @Override
-    public synchronized void start() {
-        if (disruptor != null) {
-            LOGGER.trace("AsyncLoggerConfigDisruptor not starting new disruptor for this configuration, "
-                    + "using existing object.");
-            return;
-        }
-        LOGGER.trace("AsyncLoggerConfigDisruptor creating new disruptor for this configuration.");
-        ringBufferSize = DisruptorUtil.calculateRingBufferSize(Log4jProperties.ASYNC_CONFIG_RING_BUFFER_SIZE);
-        waitStrategy = DisruptorUtil.createWaitStrategy(
-                Log4jProperties.ASYNC_CONFIG_WAIT_STRATEGY, asyncWaitStrategyFactory);
-
-        final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLoggerConfig", true, Thread.NORM_PRIORITY) {
-            @Override
-            public Thread newThread(final Runnable r) {
-                final Thread result = super.newThread(r);
-                backgroundThreadId = result.getId();
-                return result;
+    public void start() {
+        startLock.lock();
+        try {
+            if (disruptor != null) {
+                LOGGER.trace("AsyncLoggerConfigDisruptor not starting new disruptor for this configuration, "
+                        + "using existing object.");
+                return;
             }
-        };
-        asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
+            LOGGER.trace("AsyncLoggerConfigDisruptor creating new disruptor for this configuration.");
+            ringBufferSize = DisruptorUtil.calculateRingBufferSize(Log4jPropertyKey.ASYNC_CONFIG_RING_BUFFER_SIZE);
+            waitStrategy = DisruptorUtil.createWaitStrategy(
+                    Log4jPropertyKey.ASYNC_CONFIG_WAIT_STRATEGY, asyncWaitStrategyFactory);
 
-        translator = mutable ? MUTABLE_TRANSLATOR : TRANSLATOR;
-        factory = mutable ? MUTABLE_FACTORY : FACTORY;
-        disruptor = new Disruptor<>(factory, ringBufferSize, threadFactory, ProducerType.MULTI, waitStrategy);
+            final ThreadFactory threadFactory = new Log4jThreadFactory("AsyncLoggerConfig", true, Thread.NORM_PRIORITY) {
+                @Override
+                public Thread newThread(final Runnable r) {
+                    final Thread result = super.newThread(r);
+                    backgroundThreadId = result.getId();
+                    return result;
+                }
+            };
+            asyncQueueFullPolicy = AsyncQueueFullPolicyFactory.create();
 
-        final ExceptionHandler<Log4jEventWrapper> errorHandler = DisruptorUtil.getAsyncLoggerConfigExceptionHandler();
-        disruptor.setDefaultExceptionHandler(errorHandler);
+            translator = mutable ? MUTABLE_TRANSLATOR : TRANSLATOR;
+            factory = mutable ? MUTABLE_FACTORY : FACTORY;
+            disruptor = new Disruptor<>(factory, ringBufferSize, threadFactory, ProducerType.MULTI, waitStrategy);
 
-        final Log4jEventWrapperHandler[] handlers = {new Log4jEventWrapperHandler()};
-        disruptor.handleEventsWith(handlers);
+            final ExceptionHandler<Log4jEventWrapper> errorHandler = DisruptorUtil.getAsyncLoggerConfigExceptionHandler();
+            disruptor.setDefaultExceptionHandler(errorHandler);
 
-        LOGGER.debug("Starting AsyncLoggerConfig disruptor for this configuration with ringbufferSize={}, "
-                + "waitStrategy={}, exceptionHandler={}...", disruptor.getRingBuffer().getBufferSize(), waitStrategy
-                .getClass().getSimpleName(), errorHandler);
-        disruptor.start();
-        super.start();
+            final Log4jEventWrapperHandler[] handlers = {new Log4jEventWrapperHandler()};
+            disruptor.handleEventsWith(handlers);
+
+            LOGGER.debug("Starting AsyncLoggerConfig disruptor for this configuration with ringbufferSize={}, "
+                    + "waitStrategy={}, exceptionHandler={}...", disruptor.getRingBuffer().getBufferSize(), waitStrategy
+                    .getClass().getSimpleName(), errorHandler);
+            disruptor.start();
+            super.start();
+        } finally {
+            startLock.unlock();
+        }
     }
 
     /**
@@ -364,8 +371,11 @@ public class AsyncLoggerConfigDisruptor extends AbstractLifeCycle implements Asy
 
     private void enqueue(final LogEvent logEvent, final AsyncLoggerConfig asyncLoggerConfig) {
         if (synchronizeEnqueueWhenQueueFull()) {
-            synchronized (queueFullEnqueueLock) {
+            queueFullEnqueueLock.lock();
+            try {
                 disruptor.getRingBuffer().publishEvent(translator, logEvent, asyncLoggerConfig);
+            } finally {
+                queueFullEnqueueLock.unlock();
             }
         } else {
             disruptor.getRingBuffer().publishEvent(translator, logEvent, asyncLoggerConfig);

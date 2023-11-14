@@ -17,22 +17,22 @@
 
 # Requirements
 
-* JDK 11
-* Apache Maven 3.x
+* JDK 11+
+* Apache Maven 3.x (optional)
 * A modern Linux, OSX, or Windows host
 
 <a name="building"></a>
 # Building the sources
 
 You can build and verify the sources as follows:
-
-    ./mvnw verify
-
+```sh
+./mvnw verify
+```
 `verify` goal runs validation and test steps next to building (i.e., compiling) the sources.
 To speed up the build, you can skip verification:
-
-    ./mvnw -DskipTests package
-
+```sh
+./mvnw -DskipTests package
+```
 If you want to install generated artifacts to your local Maven repository, replace above `verify` and/or `package` goals with `install`.
 
 <a name="dns"></a>
@@ -42,16 +42,18 @@ Note that if your `/etc/hosts` file does not include an entry for your computer'
 many unit tests may execute slow due to DNS lookups to translate your hostname to an IP address in
 [`InetAddress.getLocalHost()`](http://docs.oracle.com/javase/7/docs/api/java/net/InetAddress.html#getLocalHost()).
 To remedy this, you can execute the following:
-
-    printf '127.0.0.1 %s\n::1 %s\n' `hostname` `hostname` | sudo tee -a /etc/hosts
+```sh
+printf '127.0.0.1 %s\n::1 %s\n' `hostname` `hostname` | sudo tee -a /etc/hosts
+```
 
 <a name="website"></a>
 # Building the website and manual
 
 You can build the website and manual as follows:
-
-    ./mvnw site
-
+```sh
+./mvnw site
+```
 And view it using a simple HTTP server, e.g., the one comes with the Python:
-
-    python3 -m http.server -d target/site
+```sh
+python3 -m http.server -d target/site
+```

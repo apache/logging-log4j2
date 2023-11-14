@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.message;
 
@@ -27,8 +27,9 @@ import org.apache.logging.log4j.status.StatusLogger;
 /**
  * Handles messages that consist of a format string conforming to {@link java.util.Formatter}.
  *
- * <h3></h3>
- * <h4>Note to implementors</h4>
+ * <p>
+ * <strong>Note to implementors:</strong>
+ * </p>
  * <p>
  * This class implements the unrolled args API even though StringFormattedMessage does not. This leaves the room for
  * StringFormattedMessage to unroll itself later.
@@ -37,8 +38,6 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class StringFormattedMessage implements Message {
 
     private static final Logger LOGGER = StatusLogger.getLogger();
-
-    private static final int HASHVAL = 31;
 
     private final String messagePattern;
     private final Object[] argArray;
@@ -118,20 +117,19 @@ public class StringFormattedMessage implements Message {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StringFormattedMessage that = (StringFormattedMessage) o;
+        final StringFormattedMessage that = (StringFormattedMessage) o;
         return Objects.equals(messagePattern, that.messagePattern) && Arrays.equals(argArray, that.argArray);
     }
 
     @Override
     public int hashCode() {
-        int result = messagePattern != null ? messagePattern.hashCode() : 0;
-        result = HASHVAL * result + (argArray != null ? Arrays.hashCode(argArray) : 0);
+        int result = Objects.hash(messagePattern);
+        result = 31 * result + Arrays.hashCode(argArray);
         return result;
     }
-
 
     @Override
     public String toString() {

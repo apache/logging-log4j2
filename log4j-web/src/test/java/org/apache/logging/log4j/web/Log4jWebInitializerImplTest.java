@@ -1,25 +1,27 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.web;
 
 import java.net.URI;
 import java.net.URL;
 import java.util.HashSet;
+
 import javax.servlet.ServletContext;
+
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
@@ -34,6 +36,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -45,11 +48,11 @@ import static org.mockito.BDDMockito.then;
 
 @ExtendWith(MockitoExtension.class)
 public class Log4jWebInitializerImplTest {
-	/* Marking servletContext lenient because otherwise testCompositeLocationParameterWithEmptyUriListSetsDefaultConfiguration fails
-	 * when null is passed in as the initial param because Mockito deciced null isn't a String rather than the absence of a string.
-	 */
-	@Mock(lenient = true)
-	private ServletContext servletContext;
+    /* Marking servletContext lenient because otherwise testCompositeLocationParameterWithEmptyUriListSetsDefaultConfiguration fails
+     * when null is passed in as the initial param because Mockito deciced null isn't a String rather than the absence of a string.
+     */
+    @Mock(lenient = true)
+    private ServletContext servletContext;
     @Captor
     private ArgumentCaptor<Log4jWebLifeCycle> initializerCaptor;
     @Captor
@@ -73,9 +76,9 @@ public class Log4jWebInitializerImplTest {
 
     @Test
     public void testDeinitializeBeforeInitialize() {
-    	assertThrows(IllegalStateException.class, () -> {
-    		this.initializerImpl.stop();
-    	});
+        assertThrows(IllegalStateException.class, () -> {
+            this.initializerImpl.stop();
+        });
     }
 
     @Test
@@ -214,9 +217,9 @@ public class Log4jWebInitializerImplTest {
 
         then(servletContext).should().removeAttribute(eq(Log4jWebSupport.CONTEXT_ATTRIBUTE));
 
-    	assertThrows(IllegalStateException.class, () -> {
-    		this.initializerImpl.start();
-    	});
+        assertThrows(IllegalStateException.class, () -> {
+            this.initializerImpl.start();
+        });
     }
 
     @Test
@@ -248,9 +251,9 @@ public class Log4jWebInitializerImplTest {
         given(servletContext.getResourcePaths("/WEB-INF/")).willReturn(null);
         assertNull(ContextAnchor.THREAD_CONTEXT.get(), "The context should be null.");
 
-    	assertThrows(IllegalStateException.class, () -> {
-    		this.initializerImpl.start();
-    	});
+        assertThrows(IllegalStateException.class, () -> {
+            this.initializerImpl.start();
+        });
     }
 
     @Test

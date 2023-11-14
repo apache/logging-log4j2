@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.layout;
 
@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -125,6 +127,7 @@ public final class SyslogLayout extends AbstractStringLayout {
      * Date format used if header = true.
      */
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd HH:mm:ss", Locale.ENGLISH);
+    private final Lock dateFormatLock = new ReentrantLock();
 
     /**
      * Host name used to identify messages from this appender.
@@ -177,12 +180,17 @@ public final class SyslogLayout extends AbstractStringLayout {
         }
     }
 
-    private synchronized void addDate(final long timestamp, final StringBuilder buf) {
-        final int index = buf.length() + 4;
-        buf.append(dateFormat.format(new Date(timestamp)));
-        //  RFC 3164 says leading space, not leading zero on days 1-9
-        if (buf.charAt(index) == '0') {
-            buf.setCharAt(index, Chars.SPACE);
+    private void addDate(final long timestamp, final StringBuilder buf) {
+        dateFormatLock.lock();
+        try {
+            final int index = buf.length() + 4;
+            buf.append(dateFormat.format(new Date(timestamp)));
+            //  RFC 3164 says leading space, not leading zero on days 1-9
+            if (buf.charAt(index) == '0') {
+                buf.setCharAt(index, Chars.SPACE);
+            }
+        } finally {
+            dateFormatLock.unlock();
         }
     }
 

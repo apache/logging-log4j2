@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.log4j.bridge;
 
@@ -49,7 +49,7 @@ public class LogEventWrapper implements LogEvent {
     private final MutableThreadContextStack contextStack;
     private Thread thread;
 
-    public LogEventWrapper(LoggingEvent event) {
+    public LogEventWrapper(final LoggingEvent event) {
         this.event = event;
         this.contextData = new ContextDataMap(event.getProperties());
         this.contextStack = new MutableThreadContextStack(NDC.cloneStack());
@@ -104,14 +104,14 @@ public class LogEventWrapper implements LogEvent {
 
     @Override
     public Instant getInstant() {
-        MutableInstant mutable = new MutableInstant();
+        final MutableInstant mutable = new MutableInstant();
         mutable.initFromEpochMilli(event.getTimeStamp(), 0);
         return mutable;
     }
 
     @Override
     public StackTraceElement getSource() {
-        LocationInfo info = event.getLocationInformation();
+        final LocationInfo info = event.getLocationInformation();
         return new StackTraceElement(info.getClassName(), info.getMethodName(), info.getFileName(),
                 Integer.parseInt(info.getLineNumber()));
     }
@@ -123,13 +123,13 @@ public class LogEventWrapper implements LogEvent {
 
     @Override
     public long getThreadId() {
-        Thread thread = getThread();
+        final Thread thread = getThread();
         return thread != null ? thread.getId() : 0;
     }
 
     @Override
     public int getThreadPriority() {
-        Thread thread = getThread();
+        final Thread thread = getThread();
         return thread != null ? thread.getPriority() : 0;
     }
 
@@ -147,7 +147,7 @@ public class LogEventWrapper implements LogEvent {
 
     @Override
     public Throwable getThrown() {
-        ThrowableInformation throwableInformation = event.getThrowableInformation();
+        final ThrowableInformation throwableInformation = event.getThrowableInformation();
         return throwableInformation == null ? null : throwableInformation.getThrowable();
     }
 
@@ -167,12 +167,12 @@ public class LogEventWrapper implements LogEvent {
     }
 
     @Override
-    public void setEndOfBatch(boolean endOfBatch) {
+    public void setEndOfBatch(final boolean endOfBatch) {
 
     }
 
     @Override
-    public void setIncludeLocation(boolean locationRequired) {
+    public void setIncludeLocation(final boolean locationRequired) {
 
     }
 
@@ -183,7 +183,7 @@ public class LogEventWrapper implements LogEvent {
 
     private static class ContextDataMap extends HashMap<String, String> implements ReadOnlyStringMap {
 
-        ContextDataMap(Map<String, String> map) {
+        ContextDataMap(final Map<String, String> map) {
             if (map != null) {
                 super.putAll(map);
             }
@@ -195,22 +195,22 @@ public class LogEventWrapper implements LogEvent {
         }
 
         @Override
-        public boolean containsKey(String key) {
+        public boolean containsKey(final String key) {
             return super.containsKey(key);
         }
 
         @Override
-        public <V> void forEach(BiConsumer<String, ? super V> action) {
+        public <V> void forEach(final BiConsumer<String, ? super V> action) {
             super.forEach((k,v) -> action.accept(k, (V) v));
         }
 
         @Override
-        public <V, S> void forEach(TriConsumer<String, ? super V, S> action, S state) {
+        public <V, S> void forEach(final TriConsumer<String, ? super V, S> action, final S state) {
             super.forEach((k,v) -> action.accept(k, (V) v, state));
         }
 
         @Override
-        public <V> V getValue(String key) {
+        public <V> V getValue(final String key) {
             return (V) super.get(key);
         }
     }

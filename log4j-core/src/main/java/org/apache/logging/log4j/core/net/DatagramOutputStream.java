@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.net;
 
@@ -23,6 +23,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
@@ -51,6 +53,8 @@ public class DatagramOutputStream extends OutputStream {
     private final byte[] header;
     private final byte[] footer;
 
+    private final Lock writeLock = new ReentrantLock();
+
     /**
      * The Constructor.
      * @param host The host to connect to.
@@ -78,22 +82,38 @@ public class DatagramOutputStream extends OutputStream {
     }
 
     @Override
-    public synchronized void write(final byte[] bytes, final int offset, final int length) throws IOException {
-        copy(bytes, offset, length);
+    public void write(final byte[] bytes, final int offset, final int length) throws IOException {
+        writeLock.lock();
+        try {
+            copy(bytes, offset, length);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
-    public synchronized void write(final int i) throws IOException {
-        copy(new byte[] {(byte) (i >>> SHIFT_3), (byte) (i >>> SHIFT_2), (byte) (i >>> SHIFT_1), (byte) i}, 0, 4);
+    public void write(final int i) throws IOException {
+        writeLock.lock();
+        try {
+            copy(new byte[]{(byte) (i >>> SHIFT_3), (byte) (i >>> SHIFT_2), (byte) (i >>> SHIFT_1), (byte) i}, 0, 4);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
-    public synchronized void write(final byte[] bytes) throws IOException {
-        copy(bytes, 0, bytes.length);
+    public void write(final byte[] bytes) throws IOException {
+        writeLock.lock();
+        try {
+            copy(bytes, 0, bytes.length);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
-    public synchronized void flush() throws IOException {
+    public void flush() throws IOException {
+        writeLock.lock();
         try {
             if (this.data != null && this.datagramSocket != null && this.inetAddress != null) {
                 if (footer != null) {
@@ -104,20 +124,29 @@ public class DatagramOutputStream extends OutputStream {
             }
         } finally {
             data = null;
-            if (header != null) {
-                copy(header, 0, header.length);
+            try {
+                if (header != null) {
+                    copy(header, 0, header.length);
+                }
+            } finally {
+                writeLock.unlock();
             }
         }
     }
 
     @Override
-    public synchronized void close() throws IOException {
-        if (datagramSocket != null) {
-            if (data != null) {
-                flush();
+    public void close() throws IOException {
+        writeLock.lock();
+        try {
+            if (datagramSocket != null) {
+                if (data != null) {
+                    flush();
+                }
+                datagramSocket.close();
+                datagramSocket = null;
             }
-            datagramSocket.close();
-            datagramSocket = null;
+        } finally {
+            writeLock.unlock();
         }
     }
 

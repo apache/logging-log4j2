@@ -1,28 +1,32 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.plugins;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.util.Cast;
 
@@ -31,8 +35,9 @@ import org.apache.logging.log4j.util.Cast;
  * {@linkplain #getAttributes() attributes}, {@linkplain #getChildren() children nodes},
  * an {@linkplain #getValue() optional value} (which is a special kind of attribute for certain configuration file
  * formats which support the concept), and a {@linkplain #getName() name} which corresponds to a
- * {@link Plugin} class in the {@linkplain Configurable Core namespace}. Configuration factories parse a configuration
- * resource into a tree of Nodes with a single root Node.
+ * {@link Plugin} class in the {@linkplain Configurable Core namespace} and is specified via an element name or
+ * the {@code type} attribute. Configuration factories parse a configuration resource into a tree of Nodes with a
+ * single root Node.
  */
 public class Node {
 
@@ -44,6 +49,11 @@ public class Node {
      * @see Configurable
      */
     public static final String CORE_NAMESPACE = "Core";
+
+    /**
+     * Key describing the current node being configured.
+     */
+    public static final Key<Node> CURRENT_NODE = new @PluginNode Key<>() {};
 
     private Node parent;
     private final String name;
@@ -94,7 +104,7 @@ public class Node {
         this.object = node.object;
     }
 
-    public void setParent(Node parent) {
+    public void setParent(final Node parent) {
         this.parent = parent;
     }
 
@@ -104,6 +114,11 @@ public class Node {
 
     public List<Node> getChildren() {
         return children;
+    }
+
+    public void addChild(final Node child) {
+        children.add(child);
+        child.setParent(this);
     }
 
     public boolean hasChildren() {
@@ -134,7 +149,6 @@ public class Node {
         object = obj;
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T getObject() {
         return Cast.cast(object);
     }
@@ -194,5 +208,61 @@ public class Node {
         }
         return type.isObjectPrintable() ? object.toString() :
             type.getPluginClass().getName() + " with name " + name;
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder implements Supplier<Node> {
+
+        private final Map<String, String> attributes = new LinkedHashMap<>();
+        private final List<Builder> children = new ArrayList<>();
+        private String name;
+        private String value;
+        private PluginType<?> pluginType;
+
+        public Builder setName(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setValue(final String value) {
+            this.value = value;
+            return this;
+        }
+
+        public Builder setPluginType(final PluginType<?> pluginType) {
+            this.pluginType = pluginType;
+            return this;
+        }
+
+        public Builder setAttribute(final String name, final String value) {
+            attributes.put(name, value);
+            return this;
+        }
+
+        public Builder setAttributes(final Map<String, String> attributes) {
+            this.attributes.putAll(attributes);
+            return this;
+        }
+
+        public Builder addChild(final Consumer<Builder> child) {
+            final Builder builder = new Builder();
+            child.accept(builder);
+            this.children.add(builder);
+            return this;
+        }
+
+        @Override
+        public Node get() {
+            final Node node = new Node(null, name, pluginType);
+            node.setValue(value);
+            node.attributes.putAll(attributes);
+            for (final Builder child : children) {
+                node.addChild(child.get());
+            }
+            return node;
+        }
     }
 }

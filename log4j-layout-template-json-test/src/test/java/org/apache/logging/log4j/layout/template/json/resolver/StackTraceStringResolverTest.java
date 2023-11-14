@@ -1,28 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.layout.template.json.resolver;
-
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
-import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
-import org.assertj.core.api.AbstractStringAssert;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -36,6 +28,14 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout;
+import org.apache.logging.log4j.layout.template.json.JsonTemplateLayoutDefaults;
+import org.assertj.core.api.AbstractStringAssert;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,7 +91,7 @@ class StackTraceStringResolverTest {
                 : fallback;
     }
 
-    private static Throwable catchException(ThrowingRunnable runnable) {
+    private static Throwable catchException(final ThrowingRunnable runnable) {
         try {
             runnable.run();
             throw new AssertionError("should not have reached here");
@@ -133,8 +133,8 @@ class StackTraceStringResolverTest {
 
     private static String stackTrace(final Throwable throwable) {
         final String encoding = "UTF-8";
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-             PrintStream printStream = new PrintStream(outputStream, false, encoding)) {
+        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+             final PrintStream printStream = new PrintStream(outputStream, false, encoding)) {
             throwable.printStackTrace(printStream);
             printStream.flush();
             return outputStream.toString(encoding);
@@ -151,7 +151,7 @@ class StackTraceStringResolverTest {
 
         private final boolean truncated;
 
-        AbstractTestCases(boolean truncated) {
+        AbstractTestCases(final boolean truncated) {
             this.truncated = truncated;
         }
 
@@ -328,7 +328,7 @@ class StackTraceStringResolverTest {
 
             // Check the serialized event.
             usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
-                AbstractStringAssert<?> serializedExceptionAssert = assertThat(accessor.getString("output"));
+                final AbstractStringAssert<?> serializedExceptionAssert = assertThat(accessor.getString("output"));
                 serializedExceptionAsserter.accept(serializedExceptionAssert);
             });
 
@@ -391,7 +391,7 @@ class StackTraceStringResolverTest {
                     .build();
 
             // Create the log event.
-            Throwable exception = exception1();
+            final Throwable exception = exception1();
             final LogEvent logEvent = Log4jLogEvent
                     .newBuilder()
                     .setThrown(exception)
@@ -573,25 +573,25 @@ class StackTraceStringResolverTest {
 
         }
 
-        private String pointMatcherString(Throwable exception) {
+        private String pointMatcherString(final Throwable exception) {
             final StackTraceElement stackTraceElement = exception.getStackTrace()[0];
             final String moduleName = stackTraceElement.getModuleName();
             final String className = stackTraceElement.getClassName();
             return "at " + moduleName + "/" + className;
         }
 
-        private String pointMatcherRegex(Throwable exception) {
-            String string = pointMatcherString(exception);
+        private String pointMatcherRegex(final Throwable exception) {
+            final String string = pointMatcherString(exception);
             return matchingRegex(string);
         }
 
         /**
          * @return a regex matching the given input
          */
-        private String matchingRegex(String string) {
+        private String matchingRegex(final String string) {
             return "[" + string.charAt(0) + "]" + Pattern.quote(string.substring(1));
         }
-        
+
     }
 
     @Test
@@ -634,6 +634,7 @@ class StackTraceStringResolverTest {
         private static final NonAsciiUtf8MethodNameContainingException INSTANCE =
                 createInstance();
 
+        @SuppressWarnings("UnicodeInCode")
         private static NonAsciiUtf8MethodNameContainingException createInstance() {
             try {
                 throwException_அஆஇฬ๘();
@@ -643,7 +644,7 @@ class StackTraceStringResolverTest {
             }
         }
 
-        @SuppressWarnings("NonAsciiCharacters")
+        @SuppressWarnings({"NonAsciiCharacters", "UnicodeInCode"})
         private static void throwException_அஆஇฬ๘() {
             throw new NonAsciiUtf8MethodNameContainingException(
                     "exception with non-ASCII UTF-8 method name");

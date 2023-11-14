@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one or more
-  ~ contributor license agreements. See the NOTICE file distributed with
+  ~ contributor license agreements.  See the NOTICE file distributed with
   ~ this work for additional information regarding copyright ownership.
-  ~ The ASF licenses this file to You under the Apache license, Version 2.0
+  ~ The ASF licenses this file to you under the Apache License, Version 2.0
   ~ (the "License"); you may not use this file except in compliance with
-  ~ the License. You may obtain a copy of the License at
+  ~ the License.  You may obtain a copy of the License at
   ~
   ~      http://www.apache.org/licenses/LICENSE-2.0
   ~
   ~ Unless required by applicable law or agreed to in writing, software
   ~ distributed under the License is distributed on an "AS IS" BASIS,
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the license for the specific language governing permissions and
-  ~ limitations under the license.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
 
   <artifactId>log4j-layout-template-json-test</artifactId>
@@ -32,7 +31,12 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Tests for the JSON Template Layout of Apache Log4j</docLabel>
     <projectDir>/log4j-layout-template-json-test</projectDir>
-    <module.name>org.apache.logging.log4j.layout.template.json.test</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.logging.log4j.layout.template.json.test</bnd-module-name>
+    <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
   </properties>
 
   <dependencies>
@@ -108,88 +112,30 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Bundle-SymbolicName>org.apache.logging.log4j.layout.template.json.test</Bundle-SymbolicName>
-            <Export-Package>org.apache.logging.log4j.layout.template.json.test</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-          <release>${maven.compiler.release}</release>
-          <showDeprecation>true</showDeprecation>
-          <showWarnings>true</showWarnings>
-          <verbose>false</verbose>
-          <encoding>UTF-8</encoding>
-          <fork>false</fork>
-          <meminitial>256</meminitial>
-          <maxmem>1024</maxmem>
-          <compilerArgs>
-            <arg>-XDcompilePolicy=simple</arg>
-            <arg>-Xplugin:ErrorProne</arg>
-            <!-- Workaround to access JDK internals needed by Error Prone.
-                 Access is restricted in JEP 396 shipped with Java 16.
-                 For details: https://errorprone.info/docs/installation -->
-            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
-            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
-            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
-            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED</arg>
-            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
-            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED</arg>
-            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
-            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
-            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
-            <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
-          </compilerArgs>
-          <compilerArguments>
-            <Xmaxwarns>10000</Xmaxwarns>
-            <Xlint/>
-          </compilerArguments>
-          <annotationProcessorPaths>
+          <annotationProcessorPaths combine.children="append">
             <path>
               <groupId>org.apache.logging.log4j</groupId>
               <artifactId>log4j-plugin-processor</artifactId>
               <version>${project.version}</version>
             </path>
-            <path>
-              <groupId>com.google.errorprone</groupId>
-              <artifactId>error_prone_core</artifactId>
-              <version>${errorprone.version}</version>
-            </path>
           </annotationProcessorPaths>
-          <forceJavacCompilerUse>true</forceJavacCompilerUse>
-          <parameters>true</parameters>
         </configuration>
         <executions>
           <execution>
-            <id>default-compile</id>
-            <configuration>
-              <compilerArgs>
-                <arg>-ApluginPackage=org.apache.logging.log4j.layout.template.json</arg>
-              </compilerArgs>
-            </configuration>
-          </execution>
-          <execution>
             <id>default-testCompile</id>
             <configuration>
-              <compilerArgs>
+              <compilerArgs combine.children="append">
+                <!-- Disable automatic package discovery, which overwrites `log4j-layout-template-json` plugins. -->
                 <arg>-ApluginPackage=org.apache.logging.log4j.layout.template.json.test</arg>
               </compilerArgs>
             </configuration>
           </execution>
         </executions>
       </plugin>
-      <!-- Disable ITs, which are Docker-dependent, by default.
-           Running Docker on all expected environments (OSes, Docker-disabled CI hosts, etc.) still needs to be worked out.
-           Next to that, certain container images (e.g., ELK stack) require environment-specific limits (e.g., `nofile`). -->
+      <!-- Disable ITs, which are Docker-dependent, by default. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
@@ -202,35 +148,6 @@
               <goal>integration-test</goal>
               <goal>verify</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-jar</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration combine.self="override">
-              <archive>
-                <manifestFile>${manifestfile}</manifestFile>
-                <manifestEntries>
-                  <Specification-Title>${project.name}</Specification-Title>
-                  <Specification-Version>${project.version}</Specification-Version>
-                  <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                  <Implementation-Title>${project.name}</Implementation-Title>
-                  <Implementation-Version>${project.version}</Implementation-Version>
-                  <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                  <Implementation-Vendor-Id>org.apache</Implementation-Vendor-Id>
-                  <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                  <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                  <Multi-Release>true</Multi-Release>
-                </manifestEntries>
-              </archive>
-            </configuration>
           </execution>
         </executions>
       </plugin>

@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.jackson.yaml.layout;
 
@@ -26,12 +26,12 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
 import org.apache.logging.log4j.core.test.layout.LogEventFixtures;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
@@ -39,10 +39,7 @@ import org.apache.logging.log4j.jackson.yaml.Log4jYamlObjectMapper;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -53,19 +50,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests the YamlLayout class.
  */
 @UsingAnyThreadContext
+@ConfigurationFactoryType(BasicConfigurationFactory.class)
 public class YamlLayoutTest {
-
-    @AfterAll
-    public static void cleanupClass() {
-        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
-    }
-
-    @BeforeAll
-    public static void setupClass() {
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, Lazy.lazy(BasicConfigurationFactory::new));
-        ctx.reconfigure();
-    }
 
     LoggerContext ctx = LoggerContext.getContext();
 
@@ -115,6 +101,7 @@ public class YamlLayoutTest {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         // @formatter:off
         final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setConfiguration(ctx.getConfiguration())
                 .setIncludeStacktrace(true)
                 .setStacktraceAsString(stacktraceAsString)
                 .build();
@@ -151,7 +138,7 @@ public class YamlLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setConfiguration(ctx.getConfiguration())
                 .build();
-        Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
+        final Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
         final MutableLogEvent mutableEvent = new MutableLogEvent();
         mutableEvent.initFrom(logEvent);
         final String strLogEvent = layout.toSerializable(logEvent);
@@ -163,6 +150,7 @@ public class YamlLayoutTest {
             final boolean includeContext, final boolean contextMapAslist, final boolean includeStacktrace) throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setConfiguration(ctx.getConfiguration())
                 .setLocationInfo(includeSource)
                 .setProperties(includeContext)
                 .setIncludeStacktrace(includeStacktrace)
@@ -284,6 +272,7 @@ public class YamlLayoutTest {
     @Test
     public void testIncludeNullDelimiterFalse() throws Exception {
         final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setConfiguration(ctx.getConfiguration())
                 .setIncludeNullDelimiter(false)
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
@@ -293,6 +282,7 @@ public class YamlLayoutTest {
     @Test
     public void testIncludeNullDelimiterTrue() throws Exception {
         final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setConfiguration(ctx.getConfiguration())
                 .setIncludeNullDelimiter(true)
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
@@ -352,6 +342,7 @@ public class YamlLayoutTest {
     @Test
     public void testLayoutLoggerName() throws Exception {
         final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setConfiguration(ctx.getConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setIncludeStacktrace(true)

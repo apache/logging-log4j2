@@ -1,22 +1,21 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.log4j.bridge;
 
-import java.io.Serializable;
 
 import org.apache.log4j.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -29,7 +28,7 @@ import org.apache.logging.log4j.util.Strings;
 /**
  * Binds a Log4j 1.x Appender to Log4j 2.
  */
-public class AppenderAdapter {
+public final class AppenderAdapter {
 
     private final Appender appender;
     private final Adapter adapter;
@@ -43,7 +42,7 @@ public class AppenderAdapter {
      * @param appender a Log4j 1.x appender
      * @return a Log4j 2.x appender or {@code null} if the parameter is {@code null}
      */
-    public static org.apache.logging.log4j.core.Appender adapt(Appender appender) {
+    public static org.apache.logging.log4j.core.Appender adapt(final Appender appender) {
         if (appender instanceof org.apache.logging.log4j.core.Appender) {
             return (org.apache.logging.log4j.core.Appender) appender;
         }
@@ -60,7 +59,7 @@ public class AppenderAdapter {
      * Constructor.
      * @param appender The Appender to wrap.
      */
-    private AppenderAdapter(Appender appender) {
+    private AppenderAdapter(final Appender appender) {
         this.appender = appender;
         final org.apache.logging.log4j.core.Filter appenderFilter = FilterAdapter.adapt(appender.getFilter());
         String name = appender.getName();
@@ -82,7 +81,7 @@ public class AppenderAdapter {
         }
 
         @Override
-        public void append(LogEvent event) {
+        public void append(final LogEvent event) {
             appender.doAppend(new LogEventAdapter(event));
         }
 

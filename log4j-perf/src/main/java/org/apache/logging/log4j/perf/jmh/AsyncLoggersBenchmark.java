@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.perf.jmh;
 
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LifeCycle;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.perf.util.BenchmarkMessageParams;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -57,10 +57,10 @@ public class AsyncLoggersBenchmark {
 
     @Setup(Level.Trial)
     public void up() {
-        System.setProperty(Log4jProperties.CONFIG_LOCATION, "perf-WithoutAnyAppender.xml");
-        System.setProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME, "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE, "262144");
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_WAIT_STRATEGY, "Yield");
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "perf-WithoutAnyAppender.xml");
+        System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(), "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE.getSystemKey(), "262144");
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY.getSystemKey(), "Yield");
         //System.setProperty(LoggingSystemProperties.SYSTEM_THREAD_LOCALS_ENABLED, "true");
         //System.setProperty(Log4jProperties.ASYNC_LOGGER_FORMAT_MESSAGES_IN_BACKGROUND, "true");
 

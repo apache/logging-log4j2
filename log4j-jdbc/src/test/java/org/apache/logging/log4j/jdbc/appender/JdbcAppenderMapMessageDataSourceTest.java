@@ -1,28 +1,22 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.jdbc.appender;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -39,13 +33,17 @@ import org.apache.logging.log4j.core.util.Throwables;
 import org.apache.logging.log4j.jndi.test.junit.JndiRule;
 import org.apache.logging.log4j.message.MapMessage;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 /**
  * Unit tests {@link MapMessage}s for JdbcAppender using a {@link DataSource} configuration.
@@ -58,7 +56,7 @@ public class JdbcAppenderMapMessageDataSourceTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.enableJndiJdbc", "true");
+        System.setProperty("log4j2.*.JNDI.enableJDBC", "true");
     }
 
     public JdbcAppenderMapMessageDataSourceTest() {
@@ -77,16 +75,6 @@ public class JdbcAppenderMapMessageDataSourceTest {
                 .around(new LoggerContextRule("org/apache/logging/log4j/jdbc/appender/log4j2-data-source-map-message.xml"));
         // @formatter:on
         this.jdbcRule = jdbcRule;
-    }
-
-    @Before
-    public void afterEachDeleteDir() throws IOException {
-        JdbcH2TestHelper.deleteDir();
-    }
-
-    @Before
-    public void beforeEachDeleteDir() throws IOException {
-        JdbcH2TestHelper.deleteDir();
     }
 
     private DataSource createMockDataSource() {
@@ -115,7 +103,7 @@ public class JdbcAppenderMapMessageDataSourceTest {
             writer.close();
 
             final Logger logger = LogManager.getLogger(this.getClass().getName() + ".testDataSourceConfig");
-            MapMessage mapMessage = new MapMessage();
+            final MapMessage mapMessage = new MapMessage();
             mapMessage.with("Id", 1);
             mapMessage.with("ColumnA", "ValueA");
             mapMessage.with("ColumnB", "ValueB");

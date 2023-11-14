@@ -1,20 +1,24 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.log4j.builders.filter;
+
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.log4j.bridge.FilterWrapper;
 import org.apache.log4j.builders.AbstractBuilder;
@@ -27,10 +31,6 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.w3c.dom.Element;
-
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static org.apache.log4j.builders.BuilderManager.NAMESPACE;
 import static org.apache.log4j.xml.XmlConfiguration.forEachElement;
@@ -50,12 +50,12 @@ public class StringMatchFilterBuilder extends AbstractBuilder<Filter> implements
         super();
     }
 
-    public StringMatchFilterBuilder(String prefix, Properties props) {
+    public StringMatchFilterBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
     @Override
-    public Filter parse(Element filterElement, XmlConfiguration config) {
+    public Filter parse(final Element filterElement, final XmlConfiguration config) {
         final AtomicBoolean acceptOnMatch = new AtomicBoolean();
         final AtomicReference<String> text = new AtomicReference<>();
         forEachElement(filterElement.getElementsByTagName("param"), currentElement -> {
@@ -75,20 +75,20 @@ public class StringMatchFilterBuilder extends AbstractBuilder<Filter> implements
     }
 
     @Override
-    public Filter parse(PropertiesConfiguration config) {
-        String text = getProperty(STRING_TO_MATCH);
-        boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);
+    public Filter parse(final PropertiesConfiguration config) {
+        final String text = getProperty(STRING_TO_MATCH);
+        final boolean acceptOnMatch = getBooleanProperty(ACCEPT_ON_MATCH);
         return createFilter(text, acceptOnMatch);
     }
 
-    private Filter createFilter(String text, boolean acceptOnMatch) {
+    private Filter createFilter(final String text, final boolean acceptOnMatch) {
         if (text == null) {
             LOGGER.error("No text provided for StringMatchFilter");
             return null;
         }
-        org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
-                ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
-                : org.apache.logging.log4j.core.Filter.Result.DENY;
+        final org.apache.logging.log4j.core.Filter.Result onMatch = acceptOnMatch
+        ? org.apache.logging.log4j.core.Filter.Result.ACCEPT
+        : org.apache.logging.log4j.core.Filter.Result.DENY;
         return FilterWrapper.adapt(StringMatchFilter.newBuilder()
                 .setMatchString(text)
                 .setOnMatch(onMatch)

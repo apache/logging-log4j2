@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.pattern.ArrayPatternConverter;
 import org.apache.logging.log4j.core.pattern.DatePatternConverter;
@@ -82,14 +80,14 @@ public class PatternProcessor {
      */
     public PatternProcessor(final String pattern) {
         this.pattern = pattern;
-        final PatternParser parser = createPatternParser();
-        // FIXME: this seems to expect List<ArrayPatternConverter> in practice; types need to be fixed around this
+        final PatternParser parser = new PatternParser(null, KEY, ArrayPatternConverter.class);
         final List<PatternConverter> converters = new ArrayList<>();
         final List<FormattingInfo> fields = new ArrayList<>();
         parser.parse(pattern, converters, fields, false, false, false);
-        patternFields = fields.toArray(FormattingInfo.EMPTY_ARRAY);
-        final ArrayPatternConverter[] converterArray = new ArrayPatternConverter[converters.size()];
-        patternConverters = converters.toArray(converterArray);
+        patternFields = fields.toArray(FormattingInfo[]::new);
+        patternConverters = converters.stream()
+                .map(ArrayPatternConverter.class::cast)
+                .toArray(ArrayPatternConverter[]::new);
         this.fileExtension = FileExtension.lookupForFile(pattern);
 
         for (final ArrayPatternConverter converter : patternConverters) {
@@ -352,11 +350,6 @@ public class PatternProcessor {
             return RolloverFrequency.ANNUALLY;
         }
         return null;
-    }
-
-    private PatternParser createPatternParser() {
-
-        return new PatternParser(null, KEY, null);
     }
 
     private boolean patternContains(final String pattern, final char... chars) {

@@ -1,20 +1,19 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.apache.logging.log4j.jpl;
 
 import java.lang.System.Logger;
@@ -55,12 +54,12 @@ public class Log4jSystemLogger implements Logger {
     }
 
     @Override
-    public void log(Level level, String msg) {
+    public void log(final Level level, final String msg) {
         log(level, (ResourceBundle) null, msg, (Throwable) null);
     }
 
     @Override
-    public void log(Level level, Supplier<String> msgSupplier) {
+    public void log(final Level level, final Supplier<String> msgSupplier) {
         Objects.requireNonNull(msgSupplier);
         if (isLoggable(Objects.requireNonNull(level))) {
             log(level, (ResourceBundle) null, msgSupplier.get(), (Throwable) null);
@@ -68,7 +67,7 @@ public class Log4jSystemLogger implements Logger {
     }
 
     @Override
-    public void log(Level level, Object obj) {
+    public void log(final Level level, final Object obj) {
         Objects.requireNonNull(obj);
         if (isLoggable(Objects.requireNonNull(level))) {
             log(level, (ResourceBundle) null, obj.toString(), (Throwable) null);
@@ -76,12 +75,12 @@ public class Log4jSystemLogger implements Logger {
     }
 
     @Override
-    public void log(Level level, String msg, Throwable thrown) {
+    public void log(final Level level, final String msg, final Throwable thrown) {
         log(level, null, msg, thrown);
     }
 
     @Override
-    public void log(Level level, Supplier<String> msgSupplier, Throwable thrown) {
+    public void log(final Level level, final Supplier<String> msgSupplier, final Throwable thrown) {
         Objects.requireNonNull(msgSupplier);
         if (isLoggable(Objects.requireNonNull(level))) {
             log(level, null, msgSupplier.get(), thrown);
@@ -89,7 +88,7 @@ public class Log4jSystemLogger implements Logger {
     }
 
     @Override
-    public void log(Level level, String format, Object... params) {
+    public void log(final Level level, final String format, final Object... params) {
         log(level, null, format, params);
     }
 
@@ -100,7 +99,7 @@ public class Log4jSystemLogger implements Logger {
 
     @Override
     public void log(final Level level, final ResourceBundle bundle, final String format, final Object... params) {
-        Message message = createMessage(getResource(bundle, format), params);
+        final Message message = createMessage(getResource(bundle, format), params);
         logger.logIfEnabled(FQCN, getLevel(level), null, message, message.getThrowable());
     }
 
@@ -131,7 +130,7 @@ public class Log4jSystemLogger implements Logger {
         return org.apache.logging.log4j.Level.ERROR;
     }
 
-    private static String getResource(ResourceBundle bundle, String msg) {
+    private static String getResource(final ResourceBundle bundle, final String msg) {
         if (bundle == null || msg == null) {
             return msg;
         }

@@ -17,4 +17,9 @@
 /**
  * Log4j 2 adapter for Commons Logging.
  */
+@Export
+@Version("2.20.1")
 package org.apache.logging.log4j.jcl;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

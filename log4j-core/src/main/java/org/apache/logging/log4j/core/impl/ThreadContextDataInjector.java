@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.impl;
 
@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.config.Property;
@@ -49,6 +52,7 @@ import org.apache.logging.log4j.util.StringMap;
  * @see ContextDataInjectorFactory
  * @since 2.7
  */
+@ServiceConsumer(value = ContextDataProvider.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.MULTIPLE)
 public class ThreadContextDataInjector {
 
     /**
@@ -100,11 +104,11 @@ public class ThreadContextDataInjector {
          * specified reusable StringMap.
          *
          * @param props list of configuration properties, may be {@code null}
-         * @param contextData a {@code StringMap} instance from the log event
+         * @param ignore a {@code StringMap} instance from the log event
          * @return a {@code StringMap} combining configuration properties with thread context data
          */
         @Override
-        public StringMap injectContextData(final List<Property> props, final StringMap contextData) {
+        public StringMap injectContextData(final List<Property> props, final StringMap ignore) {
 
             final Map<String, String> copy;
 

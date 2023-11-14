@@ -1,26 +1,27 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.log4j.xml;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +32,7 @@ import java.util.Properties;
 
 import javax.xml.parsers.FactoryConfigurationError;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.config.PropertySetter;
 import org.apache.log4j.helpers.OptionConverter;
@@ -40,7 +42,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.net.UrlConnectionFactory;
-import org.apache.logging.log4j.core.util.IOUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -70,11 +71,15 @@ public class DOMConfigurator {
     public static void configure(final Element element) {
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The filename comes from a system property."
+    )
     public static void configure(final String fileName) throws FactoryConfigurationError {
         final Path path = Paths.get(fileName);
         try (final InputStream inputStream = Files.newInputStream(path)) {
             final ConfigurationSource source = new ConfigurationSource(inputStream, path);
-            final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
+            final LoggerContext context = LoggerContext.getContext(false);
             Configuration configuration;
             configuration = new XmlConfigurationFactory().getConfiguration(context, source);
             LogManager.getRootLogger().removeAllAppenders();
@@ -94,7 +99,7 @@ public class DOMConfigurator {
     }
 
     public static void configureAndWatch(final String fileName, final long delay) {
-        XMLWatchdog xdog = new XMLWatchdog(fileName);
+        final XMLWatchdog xdog = new XMLWatchdog(fileName);
         xdog.setDelay(delay);
         xdog.start();
     }
@@ -112,7 +117,7 @@ public class DOMConfigurator {
     }
 
     private void doConfigure(final ConfigurationSource source) {
-        final LoggerContext context = (LoggerContext) org.apache.logging.log4j.LogManager.getContext(false);
+        final LoggerContext context = LoggerContext.getContext(false);
         Configuration configuration;
         configuration = new XmlConfigurationFactory().getConfiguration(context, source);
         Configurator.reconfigure(configuration);
@@ -131,9 +136,11 @@ public class DOMConfigurator {
 
     public void doConfigure(final Reader reader, final LoggerRepository repository) throws FactoryConfigurationError {
         try {
-            final StringWriter sw = new StringWriter();
-            IOUtils.copy(reader, sw);
-            doConfigure(new ConfigurationSource(new ByteArrayInputStream(sw.toString().getBytes(StandardCharsets.UTF_8))));
+            final ByteArrayOutputStream out = new ByteArrayOutputStream();
+            final OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8);
+            reader.transferTo(writer);
+            final ByteArrayInputStream inputStream = new ByteArrayInputStream(out.toByteArray());
+            doConfigure(new ConfigurationSource(inputStream));
         } catch (final IOException e) {
             throw new FactoryConfigurationError(e);
         }
@@ -146,7 +153,7 @@ public class DOMConfigurator {
     public void doConfigure(final URL url, final LoggerRepository repository) {
         try {
             final URLConnection connection = UrlConnectionFactory.createConnection(url);
-            try (InputStream inputStream = connection.getInputStream()) {
+            try (final InputStream inputStream = connection.getInputStream()) {
                 doConfigure(new ConfigurationSource(inputStream, url));
             }
         } catch (final IOException e) {

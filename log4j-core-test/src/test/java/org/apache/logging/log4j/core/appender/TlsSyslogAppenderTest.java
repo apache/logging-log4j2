@@ -1,29 +1,29 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 
-import org.apache.logging.log4j.core.config.DefaultConfiguration;
-import org.apache.logging.log4j.core.net.Facility;
+import org.apache.logging.log4j.core.appender.SyslogAppender.Builder;
 import org.apache.logging.log4j.core.net.Protocol;
 import org.apache.logging.log4j.core.net.ssl.KeyStoreConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
@@ -33,13 +33,11 @@ import org.apache.logging.log4j.core.net.ssl.TrustStoreConfiguration;
 import org.apache.logging.log4j.core.test.net.mock.MockSyslogServerFactory;
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
 import org.apache.logging.log4j.core.test.net.ssl.TlsSyslogMessageFormat;
-import org.apache.logging.log4j.util.EnglishEnums;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TlsSyslogAppenderTest extends SyslogAppenderTest {
 
     private SSLServerSocketFactory serverSocketFactory;
-    private TlsSyslogMessageFormat messageFormat;
     private SslConfiguration sslConfiguration;
 
     public TlsSyslogAppenderTest() throws StoreConfigurationException {
@@ -81,72 +79,26 @@ public class TlsSyslogAppenderTest extends SyslogAppenderTest {
     }
 
     private void initServerSocketFactory() throws StoreConfigurationException {
-        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE, TestConstants.KEYSTORE_PWD(), null, null);
-        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE, TestConstants.TRUSTSTORE_PWD(), null, null);
+        final KeyStoreConfiguration ksc = new KeyStoreConfiguration(TestConstants.KEYSTORE_FILE,
+                TestConstants::KEYSTORE_PWD, null, null);
+        final TrustStoreConfiguration tsc = new TrustStoreConfiguration(TestConstants.TRUSTSTORE_FILE,
+                TestConstants::TRUSTSTORE_PWD, null, null);
         sslConfiguration = SslConfiguration.createSSLConfiguration(null, ksc, tsc);
         serverSocketFactory = sslConfiguration.getSslServerSocketFactory();
     }
 
-    private SyslogAppender createAppender() {
-        String format;
-
-        if (messageFormat == TlsSyslogMessageFormat.LEGACY_BSD) {
-            format = "LEGACY_BSD";
-        } else {
-            format = "RFC5424";
-        }
-        final SslConfiguration sslConfiguration1 = sslConfiguration;
-        final boolean newLine = includeNewLine;
-        final String format1 = format;
-
-        // @formatter:off
-        return SyslogAppender.newSyslogAppenderBuilder()
-                .setHost("localhost")
-                .setPort(PORTNUM)
-                .setProtocol(EnglishEnums.valueOf(Protocol.class, "SSL"))
-                .setSslConfiguration(sslConfiguration1)
-                .setConnectTimeoutMillis(0)
-                .setReconnectDelayMillis(-1)
-                .setImmediateFail(true)
-                .setName("TestApp")
-                .setImmediateFlush(true)
-                .setIgnoreExceptions(false).setFilter(null)
-                .setConfiguration(new DefaultConfiguration())
-                .setAdvertise(false)
-                .setFacility(Facility.LOCAL0)
-                .setId("Audit")
-                .setEnterpriseNumber(18060)
-                .setIncludeMdc(true)
-                .setMdcId("RequestContext")
-                .setMdcPrefix(null)
-                .setEventPrefix(null)
-                .setNewLine(newLine)
-                .setAppName("TestApp")
-                .setMsgId("Test")
-                .setExcludes(null)
-                .setIncludeMdc(true)
-                .setRequired(null)
-                .setFormat(format1)
-                .setCharsetName(null)
-                .setExceptionPattern(null)
-                .setLoggerFields(null)
-                .build();
-        // @formatter:on
-    }
-
     private void initTlsTestEnvironment(final int numberOfMessages, final TlsSyslogMessageFormat messageFormat) throws IOException {
-        this.messageFormat = messageFormat;
-        final SSLServerSocket sslServerSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(PORTNUM);
+        final SSLServerSocket sslServerSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(0);
 
         syslogServer = MockSyslogServerFactory.createTLSSyslogServer(numberOfMessages, messageFormat, sslServerSocket);
         syslogServer.start();
-        initAppender();
+        initAppender(Protocol.SSL, messageFormat, syslogServer.getLocalPort());
     }
 
-    protected void initAppender() {
-        appender = createAppender();
-        validate(appender);
-        appender.start();
-        initRootLogger(appender);
+    @Override
+    protected Builder<?> newSyslogAppenderBuilder(final Protocol protocol, final TlsSyslogMessageFormat format,
+            final boolean newLine, final int port) {
+        return super.newSyslogAppenderBuilder(protocol, format, newLine, port)
+                .setSslConfiguration(protocol == Protocol.SSL ? sslConfiguration : null);
     }
 }

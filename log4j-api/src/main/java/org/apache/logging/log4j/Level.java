@@ -1,22 +1,21 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -24,9 +23,12 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.logging.log4j.spi.StandardLevel;
 import org.apache.logging.log4j.util.Strings;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 /**
  * Levels used for identifying the severity of an event. Levels are organized from most specific to least:
  * <table>
+ * <caption>Levels</caption>
  * <tr>
  * <th>Name</th>
  * <th>Description</th>
@@ -137,7 +139,7 @@ public final class Level implements Comparable<Level> {
         this.name = name;
         this.intLevel = intLevel;
         this.standardLevel = StandardLevel.getStandardLevel(intLevel);
-        if (LEVELS.putIfAbsent(toUpperCase(name.trim()), this) != null) {
+        if (LEVELS.putIfAbsent(toRootUpperCase(name.trim()), this) != null) {
             throw new IllegalStateException("Level " + name + " has already been defined.");
         }
     }
@@ -260,7 +262,7 @@ public final class Level implements Comparable<Level> {
         if (Strings.isEmpty(name)) {
             throw new IllegalArgumentException("Illegal null or empty Level name.");
         }
-        final String normalizedName = toUpperCase(name.trim());
+        final String normalizedName = toRootUpperCase(name.trim());
         final Level level = LEVELS.get(normalizedName);
         if (level != null) {
             return level;
@@ -285,7 +287,7 @@ public final class Level implements Comparable<Level> {
         if (Strings.isEmpty(name)) {
             throw new IllegalArgumentException("Illegal null or empty Level name.");
         }
-        return LEVELS.get(toUpperCase(name.trim()));
+        return LEVELS.get(toRootUpperCase(name.trim()));
     }
 
     /**
@@ -311,12 +313,8 @@ public final class Level implements Comparable<Level> {
         if (name == null) {
             return defaultLevel;
         }
-        final Level level = LEVELS.get(toUpperCase(name.trim()));
+        final Level level = LEVELS.get(toRootUpperCase(name.trim()));
         return level == null ? defaultLevel : level;
-    }
-
-    private static String toUpperCase(final String name) {
-        return name.toUpperCase(Locale.ENGLISH);
     }
 
     /**
@@ -338,7 +336,7 @@ public final class Level implements Comparable<Level> {
      */
     public static Level valueOf(final String name) {
         Objects.requireNonNull(name, "No level name given.");
-        final String levelName = toUpperCase(name.trim());
+        final String levelName = toRootUpperCase(name.trim());
         final Level level = LEVELS.get(levelName);
         if (level != null) {
             return level;

@@ -1,32 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.net;
-
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,9 +32,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.sun.management.UnixOperatingSystemMXBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.ConfigurationSourceTest;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -56,12 +47,25 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 
-import com.sun.management.UnixOperatingSystemMXBean;
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_MODIFIED;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests the UrlConnectionFactory
  */
+@Isolated
 public class UrlConnectionFactoryTest {
 
     private static final Logger LOGGER = LogManager.getLogger(UrlConnectionFactoryTest.class);
@@ -70,7 +74,6 @@ public class UrlConnectionFactoryTest {
     private static Server server;
     private static final Base64.Decoder decoder = Base64.getDecoder();
     private static int port;
-    private static final int BUF_SIZE = 1024;
 
     @BeforeAll
     public static void startServer() throws Exception {
@@ -115,7 +118,7 @@ public class UrlConnectionFactoryTest {
         final URI uri = new URI("http://localhost:" + port + "/log4j2-config.xml");
         final ConfigurationSource source = ConfigurationSource.fromUri(uri);
         assertNotNull(source, "No ConfigurationSource returned");
-        InputStream is = source.getInputStream();
+        final InputStream is = source.getInputStream();
         assertNotNull(is, "No data returned");
         is.close();
         final long lastModified = source.getLastModified();
@@ -131,7 +134,7 @@ public class UrlConnectionFactoryTest {
 
     private int verifyNotModified(final URI uri, final long lastModifiedMillis) throws Exception {
         final HttpURLConnection urlConnection = UrlConnectionFactory.createConnection(uri.toURL(),
-                lastModifiedMillis, null, null);
+                lastModifiedMillis, null, null, PropertiesUtil.getProperties());
         urlConnection.connect();
 
         try {
@@ -144,6 +147,7 @@ public class UrlConnectionFactoryTest {
 
     @Test
     public void testNoJarFileLeak() throws Exception {
+        ConfigurationSourceTest.prepareJarConfigURL();
         final URL url = new File("target/test-classes/jarfile.jar").toURI().toURL();
         // Retrieve using 'file:'
         URL jarUrl = new URL("jar:" + url.toString() + "!/config/console.xml");
@@ -171,17 +175,17 @@ public class UrlConnectionFactoryTest {
         private static final long serialVersionUID = -2885158530511450659L;
 
         @Override
-        protected void doGet(HttpServletRequest request,
-                HttpServletResponse response) throws ServletException, IOException {
-            Enumeration<String> headers = request.getHeaders(HttpHeader.AUTHORIZATION.toString());
+        protected void doGet(final HttpServletRequest request,
+                final HttpServletResponse response) throws ServletException, IOException {
+            final Enumeration<String> headers = request.getHeaders(HttpHeader.AUTHORIZATION.toString());
             if (headers == null) {
                 response.sendError(SC_UNAUTHORIZED, "No Auth header");
                 return;
             }
             while (headers.hasMoreElements()) {
-                String authData = headers.nextElement();
+                final String authData = headers.nextElement();
                 assertTrue(authData.startsWith(BASIC), "Not a Basic auth header");
-                String credentials = new String(decoder.decode(authData.substring(BASIC.length())));
+                final String credentials = new String(decoder.decode(authData.substring(BASIC.length())));
                 if (!expectedCreds.equals(credentials)) {
                     response.sendError(SC_UNAUTHORIZED, "Invalid credentials");
                     return;
@@ -189,13 +193,16 @@ public class UrlConnectionFactoryTest {
             }
             final String servletPath = request.getServletPath();
             if (servletPath != null) {
-                final File file = new File("target/test-classes" + servletPath);
+                File file = new File("target/classes" + servletPath);
+                if (!file.exists()) {
+                    file = new File("target/test-classes" + servletPath);
+                }
                 if (!file.exists()) {
                     response.sendError(SC_NOT_FOUND);
                     return;
                 }
-                long modifiedSince = request.getDateHeader(HttpHeader.IF_MODIFIED_SINCE.toString());
-                long lastModified = (file.lastModified() / 1000) * 1000;
+                final long modifiedSince = request.getDateHeader(HttpHeader.IF_MODIFIED_SINCE.toString());
+                final long lastModified = (file.lastModified() / 1000) * 1000;
                 LOGGER.debug("LastModified: {}, modifiedSince: {}", lastModified, modifiedSince);
                 if (modifiedSince > 0 && lastModified <= modifiedSince) {
                     response.setStatus(SC_NOT_MODIFIED);

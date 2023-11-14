@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
@@ -23,6 +23,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.file.Paths;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
@@ -30,7 +31,6 @@ import org.apache.logging.log4j.core.appender.ConfigurationFactoryData;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.util.FileUtils;
-import org.apache.logging.log4j.core.util.NullOutputStream;
 
 /**
  * Extends RollingFileManager but instead of using a buffered output stream, this class uses a {@code ByteBuffer} and a
@@ -120,13 +120,14 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
 
     // override to make visible for unit tests
     @Override
-    protected synchronized void write(final byte[] bytes, final int offset, final int length,
+    protected void write(final byte[] bytes, final int offset, final int length,
             final boolean immediateFlush) {
         super.write(bytes, offset, length, immediateFlush);
     }
 
     @Override
-    protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
+    protected void writeToDestination(final byte[] bytes, final int offset, final int length) {
+        writeLock.lock();
         try {
             if (randomAccessFile == null) {
                 final String fileName = getFileName();
@@ -139,14 +140,24 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
         } catch (final IOException ex) {
             final String msg = "Error writing to RandomAccessFile " + getName();
             throw new AppenderLoggingException(msg, ex);
+        } finally {
+            writeLock.unlock();
         }
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     protected void createFileAfterRollover() throws IOException {
         createFileAfterRollover(getFileName());
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     private void createFileAfterRollover(final String fileName) throws IOException {
         this.randomAccessFile = new RandomAccessFile(fileName, "rw");
         if (isAttributeViewEnabled()) {
@@ -159,23 +170,33 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
     }
 
     @Override
-    public synchronized void flush() {
-        flushBuffer(byteBuffer);
+    public void flush() {
+        writeLock.lock();
+        try {
+            flushBuffer(byteBuffer);
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     @Override
-    public synchronized boolean closeOutputStream() {
-        flush();
-        if (randomAccessFile != null) {
-            try {
-                randomAccessFile.close();
-                return true;
-            } catch (final IOException e) {
-                logError("Unable to close RandomAccessFile", e);
-                return false;
+    public boolean closeOutputStream() {
+        writeLock.lock();
+        try {
+            flush();
+            if (randomAccessFile != null) {
+                try {
+                    randomAccessFile.close();
+                    return true;
+                } catch (final IOException e) {
+                    logError("Unable to close RandomAccessFile", e);
+                    return false;
+                }
             }
+            return true;
+        } finally {
+            writeLock.unlock();
         }
-        return true;
     }
 
     /**
@@ -202,6 +223,10 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
          * @return a RollingFileManager.
          */
         @Override
+        @SuppressFBWarnings(
+                value = "PATH_TRAVERSAL_IN",
+                justification = "The name of the accessed files is based on a configuration value."
+        )
         public RollingRandomAccessFileManager createManager(final String name, final FactoryData data) {
             File file = null;
             long size = 0;
@@ -243,7 +268,7 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
             final boolean writeHeader = !data.append || file == null || !file.exists();
 
             final RollingRandomAccessFileManager rrm = new RollingRandomAccessFileManager(data.getLoggerContext(), raf, name, data.pattern,
-                    NullOutputStream.getInstance(), data.append, data.immediateFlush, data.bufferSize, size, initialTime, data.policy,
+                    OutputStream.nullOutputStream(), data.append, data.immediateFlush, data.bufferSize, size, initialTime, data.policy,
                     data.strategy, data.advertiseURI, data.layout, data.filePermissions, data.fileOwner, data.fileGroup, writeHeader);
             if (rrm.isAttributeViewEnabled()) {
                 rrm.defineAttributeView(file.toPath());

@@ -17,6 +17,10 @@
 = Appenders
 Ralph Goers; Gary Gregory; Nick Williams; Matt Sicker
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 Appenders are responsible for delivering LogEvents to their destination.
 Every Appender must implement the
 link:../log4j-core/apidocs/org/apache/logging/log4j/core/Appender.html[`Appender`]
@@ -66,7 +70,7 @@ become worse when more threads are logging concurrently. Consider using
 link:async.html[lock-free Async Loggers] for optimal performance.
 
 .AsyncAppender Parameters
-[width="100%",cols="34%,33%,33%",options="header",]
+[width="100%",cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |AppenderRef |String |The name of the Appenders to invoke
@@ -174,7 +178,7 @@ plugin inside an `<Async/>` element like so:
 Log4j ships with the following implementations:
 
 .BlockingQueueFactory Implementations
-[cols=",",options="header",]
+[cols="25%,75%",options="header",]
 |=======================================================================
 |Plugin Name |Description
 |ArrayBlockingQueue |This is the default implementation that uses
@@ -214,7 +218,7 @@ use the log event timestamp converted to that type (e.g., use
 `java.util.Date` to fill a `timestamp` column type in Cassandra).
 
 .CassandraAppender Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |batched |boolean |Whether or not to use batch statements to write log
@@ -339,7 +343,7 @@ System.out or System.err with System.out being the default target. A
 Layout must be provided to format the LogEvent.
 
 .ConsoleAppender Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |filter |Filter |A Filter to determine if the event should be handled by
@@ -402,7 +406,7 @@ fails the secondary appenders will be tried in order until one succeeds
 or there are no more secondaries to try.
 
 .FailoverAppender Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |filter |Filter |A Filter to determine if the event should be handled by
@@ -471,7 +475,7 @@ safely write to the same file if Log4j is in a ClassLoader that is
 common to both of them.
 
 .FileAppender Parameters
-[width="100%",cols="34%,33%,33%",options="header",]
+[width="100%",cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |append |boolean |When true - the default, records will be appended to
@@ -620,7 +624,7 @@ in the appender configuration will also cause the embedded agent to be
 used.
 
 .FlumeAppender Parameters
-[width="100%",cols="34%,33%,33%",options="header",]
+[width="100%",cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |agents |Agent[] |An array of Agents to which the logging events should
@@ -868,7 +872,7 @@ connection string, a user name, and a password. Optionally, you can also
 use properties.
 
 .JDBCAppender Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |name |String |_Required._ The name of the Appender.
@@ -944,7 +948,7 @@ to provide connection pooling.
 
 [#JDBCDataSource]
 .DataSource Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |jndiName |String |_Required._ The full, prefixed JNDI name that the
@@ -955,7 +959,7 @@ by a connection pool; otherwise, logging will be very slow.
 
 [#JDBCConnectionFactory]
 .ConnectionFactory Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |class |Class |_Required._ The fully qualified name of a class
@@ -973,7 +977,7 @@ be backed by a connection pool for the same reasons.
 
 [#JDBCDriverManager]
 .DriverManager Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |connectionString |String |_Required._ The driver-specific JDBC
@@ -994,7 +998,7 @@ properties and a user name or password.
 
 [#JDBCPoolingDriver]
 .PoolingDriver Parameters (Apache Commons DBCP)
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |DriverManager parameters |DriverManager parameters |This connection
@@ -1011,7 +1015,7 @@ a pooled connection elsewhere. For example:
 
 [#JDBCPoolableConnectionFactory]
 .PoolableConnectionFactory Parameters (Apache Commons DBCP)
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |autoCommitOnReturn |boolean | See http://commons.apache.org/proper/commons-dbcp/api-2.5.0/org/apache/commons/dbcp2/PoolableConnectionFactory.html[Apache Commons DBCP PoolableConnectionFactory.]
@@ -1039,7 +1043,7 @@ to them. The JDBCAppender uses this information to formulate a
 vulnerability.
 
 .Column Parameters
-[width="100%",cols="34%,33%,33%",options="header",]
+[width="100%",cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |name |String |_Required._ The name of the database column.
@@ -1091,7 +1095,7 @@ the value will be inserted as a VARCHAR or NVARCHAR (`setString` or
 |=======================================================================
 
 .ColumnMapping Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |name |String |_Required._ The name of the database column.
@@ -1270,7 +1274,7 @@ and topics. However, configurations written for 2.0 which use the
 new `<JMS/>` configuration element.
 
 .JMS Appender Parameters
-[cols=",,,",options="header",]
+[cols="15%,15%,15%,55%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Default |Description
 |allowdLdapClasses|String|null|A comma separated list of fully qualified class names that may be accessed by LDAP.
@@ -1411,7 +1415,7 @@ source code of these two classes as an example of how to implement the
 entity.
 
 .JPAAppender Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |name |String |_Required._ The name of the Appender.
@@ -1593,7 +1597,7 @@ Implemented with
 https://docs.oracle.com/javase/7/docs/api/java/net/HttpURLConnection.html[HttpURLConnection].
 
 .HttpAppender Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |name |String |The name of the Appender.
@@ -1660,7 +1664,7 @@ The KafkaAppender logs events to an https://kafka.apache.org/[Apache
 Kafka] topic. Each log event is sent as a Kafka record.
 
 .KafkaAppender Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |topic |String |The Kafka topic to use. Required.
@@ -1776,7 +1780,7 @@ the same file if Log4j is in a ClassLoader that is common to both of
 them.
 
 .MemoryMappedFileAppender Parameters
-[width="100%",cols="34%,33%,33%",options="header",]
+[width="100%",cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |append |boolean |When true - the default, records will be appended to
@@ -1856,7 +1860,7 @@ currently exist for MongoDB and Apache CouchDB, and writing a custom
 provider is quite simple.
 
 .NoSQLAppender Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |name |String |_Required._ The name of the Appender.
@@ -1967,7 +1971,7 @@ MongoDB driver version 3. The NoSQLAppender Appender writes log events
 to a NoSQL database using an internal lightweight provider interface.
 
 .MongoDB3 Provider Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |collectionName |String |_Required._ The name of the MongoDB collection
@@ -2072,7 +2076,7 @@ MongoDB driver version 4. The NoSQLAppender Appender writes log events
 to a NoSQL database using an internal lightweight provider interface.
 
 .MongoDB3 Provider Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |connection |String |_Required._ The MongoDB 
@@ -2140,7 +2144,7 @@ NoSQLAppender writes log events to a NoSQL database using an internal
 lightweight provider interface.
 
 .CouchDB Provider Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |factoryClassName |Class |To provide a connection to the CouchDB
@@ -2224,7 +2228,7 @@ to the same file if Log4j is in a ClassLoader that is common to both of
 them.
 
 .RandomAccessFileAppender Parameters
-[width="100%",cols="34%,33%,33%",options="header",]
+[width="100%",cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |append |boolean |When true - the default, records will be appended to
@@ -2303,7 +2307,7 @@ RewriteAppender should be configured after any Appenders it references
 to allow it to shut down properly.
 
 .RewriteAppender Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |AppenderRef |String |The name of the Appenders to call after the
@@ -2340,7 +2344,7 @@ MapRewritePolicy
 MapRewritePolicy will evaluate LogEvents that contain a MapMessage and
 will add or update elements of the Map.
 
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |================================================================
 |Parameter Name |Type |Description
 |mode |String |"Add" or "Update"
@@ -2381,7 +2385,7 @@ the actual ThreadContext Map. The property values may contain variables
 that will be evaluated when the configuration is processed as well as
 when the event is logged.
 
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |properties |Property[] |One of more Property elements to define the
@@ -2423,7 +2427,7 @@ log event levels for a given logger name prefix. You configure a
 LoggerNameLevelRewritePolicy with a logger name prefix and a pairs of
 levels, where a pair defines a source level and a target level.
 
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |logger |String |A logger name used as a prefix to test each event's
@@ -2495,7 +2499,7 @@ RollingFileAppender will be applied.
 File locking is not supported by the RollingFileAppender.
 
 .RollingFileAppender Parameters
-[width="100%",cols="34%,33%,33%",options="header",]
+[width="100%",cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |append |boolean |When true - the default, records will be appended to
@@ -2639,7 +2643,7 @@ The filePattern attribute of the Appender should contain a timestamp otherwise t
 overwritten on each rollover.
 
 .CronTriggeringPolicy Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |schedule |String |The cron expression. The expression is the same as
@@ -2660,7 +2664,7 @@ is older than the current JVM's start time and the minimum file size is
 met or exceeded.
 
 .OnStartupTriggeringPolicy Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |minSize |long |The minimum size the file must have to roll over. A size
@@ -2695,7 +2699,7 @@ pattern no longer applies to the active file. This policy accepts an
 occur based on the time pattern and a `modulate` boolean attribute.
 
 .TimeBasedTriggeringPolicy Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |interval |integer |How often a rollover should occur based on the most
@@ -2748,7 +2752,7 @@ the counter. To illustrate how it works, suppose that the min attribute
 is set to 1, the max attribute is set to 3, the file name is "foo.log", 
 and the file name pattern is "foo-%i.log".
 
-[cols=",,,",options="header",]
+[cols="15%,15%,15%,55%",options="header",]
 |=======================================================================
 |Number of rollovers |Active output target |Archived log files
 |Description
@@ -2775,7 +2779,7 @@ By way of contrast, when the fileIndex attribute is set to "min" but all
 the other settings are the same the "fixed window" strategy will be 
 performed.
 
-[cols=",,,",options="header",]
+[cols="15%,15%,15%,55%",options="header",]
 |=======================================================================
 |Number of rollovers |Active output target |Archived log files
 |Description
@@ -2805,7 +2809,7 @@ increment by 1 and each rollover will have an incrementally higher value
 with no maximum number of files.
 
 .DefaultRolloverStrategy Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |fileIndex |String |If set to "max" (the default), files with a higher
@@ -2846,7 +2850,7 @@ pattern no longer matches the current file it will not be compressed at
 startup either.
 
 .DirectWriteRolloverStrategy Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |maxFiles |String |The maximum number of files to allow in the time
@@ -3022,7 +3026,7 @@ can test your configuration without accidentally deleting the wrong
 files.
 
 .Delete Parameters
-[width="100%",cols="34%,33%,33%",options="header",]
+[width="100%",cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |basePath |String |_Required._ Base path from where to start scanning
@@ -3101,7 +3105,7 @@ and must return a list with the paths to delete.
 == DeleteIfFileName
 
 .IfFileName Condition Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |glob |String |_Required if regex not specified._ Matches the relative
@@ -3127,7 +3131,7 @@ the path name matches).
 == DeleteIfLastModified
 
 .IfLastModified Condition Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |age |String |_Required._ Specifies a
@@ -3146,7 +3150,7 @@ the file is old enough).
 == DeleteIfAccumulatedFileCount
 
 .IfAccumulatedFileCount Condition Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |exceeds |int |_Required._ The threshold count from which files will be
@@ -3163,7 +3167,7 @@ the threshold count has been exceeded).
 == DeleteIfAccumulatedFileSize
 
 .IfAccumulatedFileSize Condition Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |exceeds |String |_Required._ The threshold accumulated file size from
@@ -3265,7 +3269,7 @@ comes first.
 == ScriptCondition
 
 .ScriptCondition Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |script |Script, ScriptFile or ScriptRef |The Script element that
@@ -3280,7 +3284,7 @@ how ScriptFiles and ScriptRefs can be configured.
 == ScriptParameters
 
 .Script Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |basePath |`java.nio.file.Path` |The directory from where the Delete
@@ -3380,7 +3384,7 @@ applied. The PosixViewAttribute action lets users configure one or more
 conditions that select the eligible files relative to a base directory.
 
 .PosixViewAttribute Parameters
-[width="100%",cols="34%,33%,33%",options="header",]
+[width="100%",cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |basePath |String |_Required._ Base path from where to start scanning
@@ -3499,7 +3503,7 @@ in the DefaultRolloverStrategy to run at rollover.
 File locking is not supported by the RollingRandomAccessFileAppender.
 
 .RollingRandomAccessFileAppender Parameters
-[width="100%",cols="34%,33%,33%",options="header",]
+[width="100%",cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |append |boolean |When true - the default, records will be appended to
@@ -3706,7 +3710,7 @@ script when the appender starts and when a route is chosen for an log
 event.
 
 .RoutingAppender Parameters
-[width="100%",cols="34%,33%,33%",options="header",]
+[width="100%",cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |Filter |Filter |A Filter to determine if the event should be handled by
@@ -3728,7 +3732,7 @@ String Route key to determine the default Route.
 This script is passed the following variables:
 
 .RoutingAppender Script Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |configuration |Configuration |The active Configuration.
@@ -3804,7 +3808,7 @@ a Route.
 This script is passed the following variables:
 
 .RoutingAppender Routes Script Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |configuration |Configuration |The active Configuration.
@@ -3943,7 +3947,7 @@ or more filters on the Appender. As with other Appenders, the formatting
 can be controlled by specifying a Layout for the Appender.
 
 .SMTPAppender Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |name |String |The name of the Appender.
@@ -4064,7 +4068,7 @@ is raised, causing those events to be lost. If guaranteed delivery is
 required a protocol that requires acknowledgements must be used.
 
 .`SocketAppender` Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |name |String |The name of the Appender.
@@ -4171,7 +4175,7 @@ connection or a Secure Socket Layer (SSL) connection. This section
 documents the parameters available for SSL configuration.
 
 .SSL Configuration Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |protocol |String |The SSL protocol to use, `TLS` if omitted. A single value
@@ -4194,7 +4198,7 @@ The keystore is meant to contain your private keys and certificates, and
 determines which authentication credentials to send to the remote host.
 
 .KeyStore Configuration Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |location |String |Path to the keystore file.
@@ -4234,7 +4238,7 @@ better practice to use distinct stores (especially when they are
 file-based).
 
 .TrustStore Configuration Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |location |String |Path to the keystore file.
@@ -4283,7 +4287,7 @@ conforms with either the BSD Syslog format or the RFC 5424 format. The
 data can be sent over either TCP or UDP.
 
 .`SyslogAppender` Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |advertise |boolean |Indicates whether the appender should be
@@ -4479,7 +4483,7 @@ The table below describes all options. Please consult the JeroMQ and
 ZeroMQ documentation for details.
 
 .JeroMQ Parameters
-[cols=",,",options="header",]
+[cols="20%,20%,60%",options="header",]
 |=======================================================================
 |Parameter Name |Type |Description
 |name |String |The name of the Appender. Required.

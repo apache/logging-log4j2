@@ -2,19 +2,18 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j;
 
 import java.io.File;
@@ -22,6 +21,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.Writer;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.log4j.helpers.CountingQuietWriter;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
@@ -29,7 +29,7 @@ import org.apache.log4j.spi.LoggingEvent;
 
 /**
  * RollingFileAppender extends FileAppender to backup the log files when they reach a certain size.
- * 
+ *
  * The log4j extras companion includes alternatives which should be considered for new deployments and which are
  * discussed in the documentation for org.apache.log4j.rolling.RollingFileAppender.
  */
@@ -57,25 +57,25 @@ public class RollingFileAppender extends FileAppender {
     /**
      * Constructs a RollingFileAppender and open the file designated by <code>filename</code>. The opened filename will
      * become the ouput destination for this appender.
-     * 
+     *
      * <p>
      * If the <code>append</code> parameter is true, the file will be appended to. Otherwise, the file desginated by
      * <code>filename</code> will be truncated before being opened.
      * </p>
      */
-    public RollingFileAppender(Layout layout, String filename, boolean append) throws IOException {
+    public RollingFileAppender(final Layout layout, final String filename, final boolean append) throws IOException {
         super(layout, filename, append);
     }
 
     /**
      * Constructs a FileAppender and open the file designated by <code>filename</code>. The opened filename will become the
      * output destination for this appender.
-     * 
+     *
      * <p>
      * The file will be appended to.
      * </p>
      */
-    public RollingFileAppender(Layout layout, String filename) throws IOException {
+    public RollingFileAppender(final Layout layout, final String filename) throws IOException {
         super(layout, filename);
     }
 
@@ -88,7 +88,7 @@ public class RollingFileAppender extends FileAppender {
 
     /**
      * Gets the maximum size that the output file is allowed to reach before being rolled over to backup files.
-     * 
+     *
      * @since 1.1
      */
     public long getMaximumFileSize() {
@@ -108,13 +108,17 @@ public class RollingFileAppender extends FileAppender {
      * created.
      * </p>
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The filename comes from a system property."
+    )
     public // synchronization not necessary since doAppend is alreasy synched
     void rollOver() {
         File target;
         File file;
 
         if (qw != null) {
-            long size = ((CountingQuietWriter) qw).getCount();
+            final long size = ((CountingQuietWriter) qw).getCount();
             LogLog.debug("rolling over count=" + size);
             // if operation fails, do not roll again until
             // maxFileSize more bytes are written
@@ -183,36 +187,40 @@ public class RollingFileAppender extends FileAppender {
         }
     }
 
-    public synchronized void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize) throws IOException {
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The file name comes from a configuration file."
+    )
+    public synchronized void setFile(final String fileName, final boolean append, final boolean bufferedIO, final int bufferSize) throws IOException {
         super.setFile(fileName, append, this.bufferedIO, this.bufferSize);
         if (append) {
-            File f = new File(fileName);
+            final File f = new File(fileName);
             ((CountingQuietWriter) qw).setCount(f.length());
         }
     }
 
     /**
      * Sets the maximum number of backup files to keep around.
-     * 
+     *
      * <p>
      * The <b>MaxBackupIndex</b> option determines how many backup files are kept before the oldest is erased. This option
      * takes a positive integer value. If set to zero, then there will be no backup files and the log file will be truncated
      * when it reaches <code>MaxFileSize</code>.
      * </p>
      */
-    public void setMaxBackupIndex(int maxBackups) {
+    public void setMaxBackupIndex(final int maxBackups) {
         this.maxBackupIndex = maxBackups;
     }
 
     /**
      * Sets the maximum size that the output file is allowed to reach before being rolled over to backup files.
-     * 
+     *
      * <p>
      * This method is equivalent to {@link #setMaxFileSize} except that it is required for differentiating the setter taking
      * a <code>long</code> argument from the setter taking a <code>String</code> argument by the JavaBeans
      * {@link java.beans.Introspector Introspector}.
      * </p>
-     * 
+     *
      * @see #setMaxFileSize(String)
      */
     public void setMaximumFileSize(long maxFileSize) {
@@ -221,30 +229,30 @@ public class RollingFileAppender extends FileAppender {
 
     /**
      * Sets the maximum size that the output file is allowed to reach before being rolled over to backup files.
-     * 
+     *
      * <p>
      * In configuration files, the <b>MaxFileSize</b> option takes an long integer in the range 0 - 2^63. You can specify
      * the value with the suffixes "KB", "MB" or "GB" so that the integer is interpreted being expressed respectively in
      * kilobytes, megabytes or gigabytes. For example, the value "10KB" will be interpreted as 10240.
      * </p>
      */
-    public void setMaxFileSize(String value) {
+    public void setMaxFileSize(final String value) {
         maxFileSize = OptionConverter.toFileSize(value, maxFileSize + 1);
     }
 
-    protected void setQWForFiles(Writer writer) {
+    protected void setQWForFiles(final Writer writer) {
         this.qw = new CountingQuietWriter(writer, errorHandler);
     }
 
     /**
      * This method differentiates RollingFileAppender from its super class.
-     * 
+     *
      * @since 0.9.0
      */
-    protected void subAppend(LoggingEvent event) {
+    protected void subAppend(final LoggingEvent event) {
         super.subAppend(event);
         if (fileName != null && qw != null) {
-            long size = ((CountingQuietWriter) qw).getCount();
+            final long size = ((CountingQuietWriter) qw).getCount();
             if (size >= maxFileSize && size >= nextRollover) {
                 rollOver();
             }

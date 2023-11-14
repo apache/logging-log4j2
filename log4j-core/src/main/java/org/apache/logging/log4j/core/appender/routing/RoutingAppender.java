@@ -1,20 +1,30 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.routing;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
@@ -32,14 +42,6 @@ import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * This Appender "routes" between various Appenders, some of which can be references to
@@ -86,7 +88,7 @@ public final class RoutingAppender extends AbstractAppender {
                 return null;
             }
             if (defaultRouteScript != null) {
-                ScriptManager scriptManager = getConfiguration().getScriptManager();
+                final ScriptManager scriptManager = getConfiguration().getScriptManager();
                 if (scriptManager == null) {
                     LOGGER.error("Script support is not enabled");
                     return null;
@@ -167,6 +169,7 @@ public final class RoutingAppender extends AbstractAppender {
     private final Script defaultRouteScript;
     private final ConcurrentMap<Object, Object> scriptStaticVariables = new ConcurrentHashMap<>();
     private final Boolean requiresLocation;
+    private final Lock lock = new ReentrantLock();
 
     private RoutingAppender(final String name, final Filter filter, final boolean ignoreExceptions, final Routes routes,
             final RewritePolicy rewritePolicy, final Configuration configuration, final PurgePolicy purgePolicy,
@@ -253,7 +256,13 @@ public final class RoutingAppender extends AbstractAppender {
         final String pattern = routes.getPattern(event, scriptStaticVariables);
         final String key = pattern != null ? configuration.getStrSubstitutor().replace(event, pattern) :
                 defaultRoute.getKey() != null ? defaultRoute.getKey() : DEFAULT_KEY;
-        final RouteAppenderControl control = getControl(key, event);
+        final RouteAppenderControl control;
+        lock.lock();
+        try {
+            control = getControl(key, event);
+        } finally {
+            lock.unlock();
+        }
         if (control != null) {
             try {
                 control.callAppender(event);
@@ -273,7 +282,8 @@ public final class RoutingAppender extends AbstractAppender {
         }
     }
 
-    private synchronized RouteAppenderControl getControl(final String key, final LogEvent event) {
+    // should be called with a lock
+    private RouteAppenderControl getControl(final String key, final LogEvent event) {
         RouteAppenderControl control = getAppender(key);
         if (control != null) {
             control.checkout();
@@ -358,8 +368,11 @@ public final class RoutingAppender extends AbstractAppender {
             LOGGER.debug("Stopping route with {} key", key);
             // Synchronize with getControl to avoid triggering stopAppender before RouteAppenderControl.checkout
             // can be invoked.
-            synchronized (this) {
+            lock.lock();
+            try {
                 control.pendingDeletion = true;
+            } finally {
+                lock.unlock();
             }
             // Don't attempt to stop the appender in a synchronized block, since it may block flushing events
             // to disk.

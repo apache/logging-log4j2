@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.message;
 
@@ -20,6 +20,10 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.Map;
 
+import aQute.bnd.annotation.Cardinality;
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
+import org.apache.logging.log4j.message.ThreadDumpMessage.ThreadInfoFactory;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.ServiceRegistry;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
@@ -29,6 +33,7 @@ import org.apache.logging.log4j.util.Strings;
  * Captures information about all running Threads.
  */
 @AsynchronouslyFormattable
+@ServiceConsumer(value = ThreadInfoFactory.class, resolution = Resolution.OPTIONAL, cardinality = Cardinality.SINGLE)
 public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     private static final Lazy<ThreadInfoFactory> FACTORY = Lazy.lazy(() -> {
         final var services = ServiceRegistry.getInstance()
@@ -67,7 +72,7 @@ public class ThreadDumpMessage implements Message, StringBuilderFormattable {
     @Override
     public void formatTo(final StringBuilder sb) {
         sb.append(title);
-        if (title.length() > 0) {
+        if (!title.isEmpty()) {
             sb.append('\n');
         }
         for (final Map.Entry<ThreadInformation, StackTraceElement[]> entry : threads.entrySet()) {

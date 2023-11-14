@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.slf4j;
 
@@ -29,9 +29,10 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogBuilder;
 import org.apache.logging.log4j.Logger;
 import org.slf4j.Marker;
+import org.slf4j.spi.CallerBoundaryAware;
 import org.slf4j.spi.LoggingEventBuilder;
 
-public class Log4jEventBuilder implements LoggingEventBuilder {
+public class Log4jEventBuilder implements LoggingEventBuilder, CallerBoundaryAware {
 
     private static final String FQCN = Log4jEventBuilder.class.getName();
 
@@ -43,6 +44,7 @@ public class Log4jEventBuilder implements LoggingEventBuilder {
     private Throwable throwable = null;
     private Map<String, String> keyValuePairs = null;
     private final Level level;
+    private String fqcn = FQCN;
 
     public Log4jEventBuilder(final Log4jMarkerFactory markerFactory, final Logger logger, final Level level) {
         this.markerFactory = markerFactory;
@@ -51,31 +53,31 @@ public class Log4jEventBuilder implements LoggingEventBuilder {
     }
 
     @Override
-    public LoggingEventBuilder setCause(Throwable cause) {
+    public LoggingEventBuilder setCause(final Throwable cause) {
         this.throwable = cause;
         return this;
     }
 
     @Override
-    public LoggingEventBuilder addMarker(Marker marker) {
+    public LoggingEventBuilder addMarker(final Marker marker) {
         this.marker = markerFactory.getLog4jMarker(marker);
         return this;
     }
 
     @Override
-    public LoggingEventBuilder addArgument(Object p) {
+    public LoggingEventBuilder addArgument(final Object p) {
         arguments.add(p);
         return this;
     }
 
     @Override
-    public LoggingEventBuilder addArgument(Supplier<?> objectSupplier) {
+    public LoggingEventBuilder addArgument(final Supplier<?> objectSupplier) {
         arguments.add(objectSupplier.get());
         return this;
     }
 
     @Override
-    public LoggingEventBuilder addKeyValue(String key, Object value) {
+    public LoggingEventBuilder addKeyValue(final String key, final Object value) {
         if (keyValuePairs == null) {
             keyValuePairs = new HashMap<>();
         }
@@ -84,7 +86,7 @@ public class Log4jEventBuilder implements LoggingEventBuilder {
     }
 
     @Override
-    public LoggingEventBuilder addKeyValue(String key, Supplier<Object> valueSupplier) {
+    public LoggingEventBuilder addKeyValue(final String key, final Supplier<Object> valueSupplier) {
         if (keyValuePairs == null) {
             keyValuePairs = new HashMap<>();
         }
@@ -93,13 +95,13 @@ public class Log4jEventBuilder implements LoggingEventBuilder {
     }
 
     @Override
-    public LoggingEventBuilder setMessage(String message) {
+    public LoggingEventBuilder setMessage(final String message) {
         this.message = message;
         return this;
     }
 
     @Override
-    public LoggingEventBuilder setMessage(Supplier<String> messageSupplier) {
+    public LoggingEventBuilder setMessage(final Supplier<String> messageSupplier) {
         this.message = messageSupplier.get();
         return this;
     }
@@ -110,32 +112,32 @@ public class Log4jEventBuilder implements LoggingEventBuilder {
                 .withMarker(marker)
                 .withThrowable(throwable);
         if (logBuilder instanceof BridgeAware) {
-            ((BridgeAware) logBuilder).setEntryPoint(FQCN);
+            ((BridgeAware) logBuilder).setEntryPoint(fqcn);
         }
         if (keyValuePairs == null || keyValuePairs.isEmpty()) {
             logBuilder.log(message, arguments.toArray());
         } else {
-            try (Instance c = CloseableThreadContext.putAll(keyValuePairs)) {
+            try (final Instance c = CloseableThreadContext.putAll(keyValuePairs)) {
                 logBuilder.log(message, arguments.toArray());
             }
         }
     }
 
     @Override
-    public void log(String message) {
+    public void log(final String message) {
         setMessage(message);
         log();
     }
 
     @Override
-    public void log(String message, Object arg) {
+    public void log(final String message, final Object arg) {
         setMessage(message);
         addArgument(arg);
         log();
     }
 
     @Override
-    public void log(String message, Object arg0, Object arg1) {
+    public void log(final String message, final Object arg0, final Object arg1) {
         setMessage(message);
         addArgument(arg0);
         addArgument(arg1);
@@ -143,7 +145,7 @@ public class Log4jEventBuilder implements LoggingEventBuilder {
     }
 
     @Override
-    public void log(String message, Object... args) {
+    public void log(final String message, final Object... args) {
         setMessage(message);
         for (final Object arg : args) {
             addArgument(arg);
@@ -152,9 +154,13 @@ public class Log4jEventBuilder implements LoggingEventBuilder {
     }
 
     @Override
-    public void log(Supplier<String> messageSupplier) {
+    public void log(final Supplier<String> messageSupplier) {
         setMessage(messageSupplier);
         log();
     }
 
+    @Override
+    public void setCallerBoundary(String fqcn) {
+        this.fqcn = fqcn;
+    }
 }

@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.net;
 
@@ -29,13 +29,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.appender.AppenderLoggingException;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.Log4jThread;
-import org.apache.logging.log4j.core.util.NullOutputStream;
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -141,7 +142,6 @@ public class TcpSocketManager extends AbstractSocketManager {
                 connectTimeoutMillis, reconnectDelayMillis, immediateFail, layout, bufferSize, socketOptions), FACTORY);
     }
 
-    @SuppressWarnings("sync-override") // synchronization on "this" is done within the method
     @Override
     protected void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
         if (socket == null) {
@@ -152,35 +152,36 @@ public class TcpSocketManager extends AbstractSocketManager {
                 throw new AppenderLoggingException("Error writing to " + getName() + ": socket not available");
             }
         }
-        synchronized (this) {
-            try {
-                writeAndFlush(bytes, offset, length, immediateFlush);
-            } catch (final IOException causeEx) {
-                final String config = inetAddress + ":" + port;
-                if (retry && reconnector == null) {
-                    reconnector = createReconnector();
-                    try {
-                        reconnector.reconnect();
-                    } catch (final IOException reconnEx) {
-                        LOGGER.debug("Cannot reestablish socket connection to {}: {}; starting reconnector thread {}",
-                                config, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
-                        reconnector.start();
-                        throw new AppenderLoggingException(
-                                String.format("Error sending to %s for %s", getName(), config), causeEx);
-                    }
-                    try {
-                        writeAndFlush(bytes, offset, length, immediateFlush);
-                    } catch (final IOException e) {
-                        throw new AppenderLoggingException(
-                                String.format("Error writing to %s after reestablishing connection for %s", getName(),
-                                        config),
-                                causeEx);
-                    }
-                    return;
+        writeLock.lock();
+        try {
+            writeAndFlush(bytes, offset, length, immediateFlush);
+        } catch (final IOException causeEx) {
+            final String config = inetAddress + ":" + port;
+            if (retry && reconnector == null) {
+                reconnector = createReconnector();
+                try {
+                    reconnector.reconnect();
+                } catch (final IOException reconnEx) {
+                    LOGGER.debug("Cannot reestablish socket connection to {}: {}; starting reconnector thread {}",
+                            config, reconnEx.getLocalizedMessage(), reconnector.getName(), reconnEx);
+                    reconnector.start();
+                    throw new AppenderLoggingException(
+                            String.format("Error sending to %s for %s", getName(), config), causeEx);
                 }
-                final String message = String.format("Error writing to %s for connection %s", getName(), config);
-                throw new AppenderLoggingException(message, causeEx);
+                try {
+                    writeAndFlush(bytes, offset, length, immediateFlush);
+                } catch (final IOException e) {
+                    throw new AppenderLoggingException(
+                            String.format("Error writing to %s after reestablishing connection for %s", getName(),
+                                    config),
+                            causeEx);
+                }
+                return;
             }
+            final String message = String.format("Error writing to %s for connection %s", getName(), config);
+            throw new AppenderLoggingException(message, causeEx);
+        } finally {
+            writeLock.unlock();
         }
     }
 
@@ -195,24 +196,29 @@ public class TcpSocketManager extends AbstractSocketManager {
     }
 
     @Override
-    protected synchronized boolean closeOutputStream() {
-        final boolean closed = super.closeOutputStream();
-        if (reconnector != null) {
-            reconnector.shutdown();
-            reconnector.interrupt();
-            reconnector = null;
-        }
-        final Socket oldSocket = socket;
-        socket = null;
-        if (oldSocket != null) {
-            try {
-                oldSocket.close();
-            } catch (final IOException e) {
-                LOGGER.error("Could not close socket {}", socket);
-                return false;
+    protected boolean closeOutputStream() {
+        writeLock.lock();
+        try {
+            final boolean closed = super.closeOutputStream();
+            if (reconnector != null) {
+                reconnector.shutdown();
+                reconnector.interrupt();
+                reconnector = null;
             }
+            final Socket oldSocket = socket;
+            socket = null;
+            if (oldSocket != null) {
+                try {
+                    oldSocket.close();
+                } catch (final IOException e) {
+                    LOGGER.error("Could not close socket {}", socket);
+                    return false;
+                }
+            }
+            return closed;
+        } finally {
+            writeLock.unlock();
         }
-        return closed;
     }
 
     public int getConnectTimeoutMillis() {
@@ -245,7 +251,7 @@ public class TcpSocketManager extends AbstractSocketManager {
 
         private boolean shutdown = false;
 
-        private final Object owner;
+        private final OutputStreamManager owner;
 
         public Reconnector(final OutputStreamManager owner) {
             super("TcpSocketManager-Reconnector");
@@ -307,12 +313,16 @@ public class TcpSocketManager extends AbstractSocketManager {
             @SuppressWarnings("resource") // newOS is managed by the enclosing Manager.
             final OutputStream newOS = sock.getOutputStream();
             final InetAddress prev = socket != null ? socket.getInetAddress() : null;
-            synchronized (owner) {
-                Closer.closeSilently(getOutputStream());
+            final OutputStream oldOS = getOutputStream();
+            writeLock.lock();
+            try {
+                Closer.closeSilently(oldOS);
                 setOutputStream(newOS);
                 socket = sock;
                 reconnector = null;
                 shutdown = true;
+            } finally {
+                writeLock.unlock();
             }
             final String type = prev != null && prev.getHostAddress().equals(socketAddress.getAddress().getHostAddress()) ?
                     "reestablished" : "established";
@@ -336,6 +346,9 @@ public class TcpSocketManager extends AbstractSocketManager {
         return createSocket(socketAddress, socketOptions, connectTimeoutMillis);
     }
 
+    @SuppressFBWarnings(
+            value = "UNENCRYPTED_SOCKET"
+    )
     protected static Socket createSocket(final InetSocketAddress socketAddress, final SocketOptions socketOptions,
             final int connectTimeoutMillis) throws IOException {
         LOGGER.debug("Creating socket {}", socketAddress.toString());
@@ -419,7 +432,7 @@ public class TcpSocketManager extends AbstractSocketManager {
                 return createManager(name, os, socket, inetAddress, data);
             } catch (final IOException ex) {
                 LOGGER.error("TcpSocketManager ({}) caught exception and will continue:", name, ex);
-                os = NullOutputStream.getInstance();
+                os = OutputStream.nullOutputStream();
             }
             if (data.reconnectDelayMillis == 0) {
                 Closer.closeSilently(socket);
@@ -428,11 +441,10 @@ public class TcpSocketManager extends AbstractSocketManager {
             return createManager(name, os, null, inetAddress, data);
         }
 
-        @SuppressWarnings("unchecked")
         M createManager(final String name, final OutputStream os, final Socket socket, final InetAddress inetAddress, final T data) {
-            return (M) new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
+            return Cast.cast(new TcpSocketManager(name, os, socket, inetAddress, data.host, data.port,
                     data.connectTimeoutMillis, data.reconnectDelayMillis, data.immediateFail, data.layout,
-                    data.bufferSize, data.socketOptions);
+                    data.bufferSize, data.socketOptions));
         }
 
         Socket createSocket(final T data) throws IOException {
@@ -474,7 +486,7 @@ public class TcpSocketManager extends AbstractSocketManager {
      * This method is only for unit testing. It is not Thread-safe.
      * @param resolver the HostResolver.
      */
-    public static void setHostResolver(HostResolver resolver) {
+    public static void setHostResolver(final HostResolver resolver) {
         TcpSocketManagerFactory.RESOLVER = resolver;
     }
 

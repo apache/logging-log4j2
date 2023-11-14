@@ -1,20 +1,24 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.perf.jmh;
+
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.perf.util.StackDriver;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -25,11 +29,6 @@ import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
-
-import java.lang.StackWalker;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 /**
  * Benchmark logging with logging disabled.
@@ -62,7 +61,7 @@ public class StackWalkBenchmark {
     private int callDepth;
 
     @Benchmark
-    public void throwableSearch(Blackhole bh)  {
+    public void throwableSearch(final Blackhole bh)  {
 
         stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> {
             final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
@@ -82,7 +81,7 @@ public class StackWalkBenchmark {
     }
 
     @Benchmark
-    public void stackWalkerWalk(Blackhole bh) {
+    public void stackWalkerWalk(final Blackhole bh) {
         stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> walker.walk(
                 s -> s.dropWhile(f -> !f.getClassName().equals(fqcn)) // drop the top frames until we reach the logger
                         .dropWhile(f -> f.getClassName().equals(fqcn)) // drop the logger frames
@@ -92,13 +91,13 @@ public class StackWalkBenchmark {
     }
 
     @Benchmark
-    public void baseline(Blackhole bh)  {
+    public void baseline(final Blackhole bh)  {
 
         stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> null);
     }
 
     @Benchmark
-    public void stackWalkerArray(Blackhole bh)  {
+    public void stackWalkerArray(final Blackhole bh)  {
 
         stackDriver.deepCall(initialDepth, callDepth, (fqcn) -> {
             FQCN.set(fqcn);
@@ -112,10 +111,10 @@ public class StackWalkBenchmark {
     static final class FqcnCallerLocator implements Function<Stream<StackWalker.StackFrame>, StackWalker.StackFrame> {
 
         @Override
-        public StackWalker.StackFrame apply(Stream<StackWalker.StackFrame> stackFrameStream) {
-            String fqcn = FQCN.get();
+        public StackWalker.StackFrame apply(final Stream<StackWalker.StackFrame> stackFrameStream) {
+            final String fqcn = FQCN.get();
             boolean foundFqcn = false;
-            Object[] frames = stackFrameStream.toArray();
+            final Object[] frames = stackFrameStream.toArray();
             for (int i = 0; i < frames.length ; ++i) {
                 final String className = ((StackWalker.StackFrame) frames[i]).getClassName();
                 if (!foundFqcn) {

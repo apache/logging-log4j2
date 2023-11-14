@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.jpa.converter;
 
@@ -44,11 +44,11 @@ public class InstantAttributeConverter implements AttributeConverter<Instant, St
             return null;
         }
 
-        int pos = s.indexOf(",");
-        long epochSecond = Long.parseLong(s.substring(0, pos));
-        int nanos = Integer.parseInt(s.substring(pos + 1, s.length()));
+        final int pos = s.indexOf(",");
+        final long epochSecond = Long.parseLong(s.substring(0, pos));
+        final int nanos = Integer.parseInt(s.substring(pos + 1, s.length()));
 
-        MutableInstant result = new MutableInstant();
+        final MutableInstant result = new MutableInstant();
         result.initFromEpochSecond(epochSecond, nanos);
         return result;
     }

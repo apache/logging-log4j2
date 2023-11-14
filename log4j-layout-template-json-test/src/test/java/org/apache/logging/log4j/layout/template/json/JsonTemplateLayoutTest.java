@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.layout.template.json;
 
@@ -33,6 +33,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
@@ -54,10 +57,6 @@ import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.junit.jupiter.api.Test;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.apache.logging.log4j.layout.template.json.TestHelpers.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -683,7 +682,7 @@ class JsonTemplateLayoutTest {
 
         };
         layout.encode(logEvent, byteBufferDestination);
-        String encodeOutput = new String(
+        final String encodeOutput = new String(
                 byteBuffer.array(),
                 0,
                 byteBuffer.position(),
@@ -1278,7 +1277,7 @@ class JsonTemplateLayoutTest {
         final int charOffset = totalCharCount / messageCount;
 
         // Populate messages.
-        List<SimpleMessage> messages = new ArrayList<>(messageCount);
+        final List<SimpleMessage> messages = new ArrayList<>(messageCount);
         for (int messageIndex = 0; messageIndex < messageCount; messageIndex++) {
             final StringBuilder stringBuilder = new StringBuilder(messageIndex + "@");
             for (int charIndex = 0; charIndex < charOffset; charIndex++) {
@@ -1470,7 +1469,7 @@ class JsonTemplateLayoutTest {
         // Check the serialized event.
         usingSerializedLogEventAccessor(layout, logEvent, accessor -> {
             assertThat(accessor.getObject("po*")).isEqualTo(Arrays.asList(parameters));
-            List<String> stringifiedParameters = Arrays
+            final List<String> stringifiedParameters = Arrays
                     .stream(parameters)
                     .map(String::valueOf)
                     .collect(Collectors.toList());

@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
@@ -73,7 +73,7 @@ public class RollingAppenderSizeMaxWidthTest implements RolloverListener {
     private Logger logger;
     private int rolloverCount = 0;
 
-    private static int powerOfTen(int pow) {
+    private static int powerOfTen(final int pow) {
         if (pow > POWERS_OF_10.length) {
             throw new IllegalArgumentException("Max width is too large");
         }
@@ -88,19 +88,19 @@ public class RollingAppenderSizeMaxWidthTest implements RolloverListener {
     @Before
     public void setUp() throws Exception {
         this.logger = loggerContextRule.getLogger(RollingAppenderSizeMaxWidthTest.class.getName());
-        RollingFileAppender app = (RollingFileAppender) loggerContextRule.getRequiredAppender("RollingFile");
+        final RollingFileAppender app = (RollingFileAppender) loggerContextRule.getRequiredAppender("RollingFile");
         app.getManager().addRolloverListener(this);
-        ArrayPatternConverter[] patternConverters = app.getManager().getPatternProcessor().getPatternConverters();
-        int index = IntStream.range(0, patternConverters.length)
-                .filter(i -> patternConverters[i] instanceof IntegerPatternConverter).findFirst().orElse(-1);
+        final ArrayPatternConverter[] patternConverters = app.getManager().getPatternProcessor().getPatternConverters();
+        final int index = IntStream.range(0, patternConverters.length)
+        .filter(i -> patternConverters[i] instanceof IntegerPatternConverter).findFirst().orElse(-1);
         if (index < 0) {
             fail("Could not find integer pattern converter in " + app.getFilePattern());
         }
-        FormattingInfo formattingInfo = app.getManager().getPatternProcessor().getPatternFields()[index];
+        final FormattingInfo formattingInfo = app.getManager().getPatternProcessor().getPatternFields()[index];
         minWidth = formattingInfo.getMinLength();
         maxWidth = formattingInfo.getMaxLength();
         isZeroPad = formattingInfo.isZeroPad();
-        DefaultRolloverStrategy strategy = (DefaultRolloverStrategy) app.getManager().getRolloverStrategy();
+        final DefaultRolloverStrategy strategy = (DefaultRolloverStrategy) app.getManager().getRolloverStrategy();
         min = strategy.getMinIndex();
         max = strategy.getMaxIndex();
         SizeBasedTriggeringPolicy policy;
@@ -127,7 +127,7 @@ public class RollingAppenderSizeMaxWidthTest implements RolloverListener {
         }
         long bytes = 0;
         for (int i = 0; i < 10000; ++i) {
-            String message = MESSAGE + i;
+            final String message = MESSAGE + i;
             logger.debug(message);
             bytes += message.length() + 1;
         }
@@ -141,19 +141,19 @@ public class RollingAppenderSizeMaxWidthTest implements RolloverListener {
                 rolloverCount + 1 >= minExpected);
         assertTrue("Too many rollovers: expected: " + maxExpected + ", actual: " + rolloverCount,
                 rolloverCount <= maxExpected);
-        int maxFiles = max - min + 1;
-        int maxExpectedFiles = Math.min(maxFiles, rolloverCount);
+        final int maxFiles = max - min + 1;
+        final int maxExpectedFiles = Math.min(maxFiles, rolloverCount);
         assertEquals("More files than expected. expected: " + maxExpectedFiles + ", actual: " + files.length,
                 maxExpectedFiles, files.length);
     }
 
     @Override
-    public void rolloverTriggered(String fileName) {
+    public void rolloverTriggered(final String fileName) {
         ++rolloverCount;
     }
 
     @Override
-    public void rolloverComplete(String fileName) {
+    public void rolloverComplete(final String fileName) {
         rolledFileNames.add(fileName);
     }
 }

@@ -1,93 +1,81 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import static org.apache.logging.log4j.core.test.hamcrest.Descriptors.that;
-import static org.apache.logging.log4j.core.test.hamcrest.FileMatchers.hasName;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItemInArray;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
+import java.net.URL;
+import java.nio.file.Path;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Test;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * LOG4J2-1725.
  */
+@UsingStatusListener
 public class RollingAppenderReconfigureTest {
 
-    private static final String DIR = "target/rolling1";
+    private static final URL CONFIG = RollingAppenderReconfigureTest.class
+            .getResource("RollingAppenderReconfigureTest.xml");
+    private static final File CONFIG_FILE = FileUtils.toFile(CONFIG);
 
-    private static final String CONFIG = "log4j-rolling-reconfigure.xml";
-
-    private static final File CONFIG_FILE = new File("target/test-classes/", CONFIG);
-
-    public static LoggerContextRule loggerContextRule = LoggerContextRule
-            .createShutdownTimeoutLoggerContextRule(CONFIG);
-
-    @Rule
-    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
-
-    private Logger logger;
-
-    @Before
-    public void setUp() throws Exception {
-        this.logger = loggerContextRule.getLogger(RollingAppenderReconfigureTest.class.getName());
-    }
+    @TempLoggingDir
+    private static Path loggingPath;
 
     @Test
-    public void testReconfigure() throws Exception {
+    @LoggerContextSource
+    public void testReconfigure(final LoggerContext context) throws Exception {
+        final Logger logger = context.getLogger(getClass());
         for (int i = 0; i < 500; ++i) {
-            final String message = "This is test message number " + i;
-            logger.debug(message);
+            logger.debug("This is test message number {}", i);
         }
 
-        final File dir = new File(DIR);
-        assertTrue("Directory not created", dir.exists());
-        final File[] files = dir.listFiles();
-        assertThat(files, hasItemInArray(that(hasName(that(endsWith(".current"))))));
-        assertThat(files, hasItemInArray(that(hasName(that(endsWith(".rolled"))))));
+        assertThat(loggingPath)
+                .isDirectoryContaining("glob:**/*.current")
+                .isDirectoryContaining("glob:**/*.rolled");
 
-        final String originalXmlConfig = FileUtils.readFileToString(CONFIG_FILE, "UTF-8");
+        final String originalXmlConfig = FileUtils.readFileToString(CONFIG_FILE, UTF_8);
         try {
-            final String updatedXmlConfig = originalXmlConfig.replace("target/rolling1/rollingtest.%i.rolled",
-                    "target/rolling1/rollingtest.%i.reconfigured");
-            FileUtils.write(CONFIG_FILE, updatedXmlConfig, "UTF-8");
+            final String updatedXmlConfig = originalXmlConfig.replace("rollingtest.%i.rolled",
+                    "rollingtest.%i.reconfigured");
+            FileUtils.write(CONFIG_FILE, updatedXmlConfig, UTF_8);
 
             // Reconfigure
-            loggerContextRule.getLoggerContext().reconfigure();
+            context.reconfigure();
 
             for (int i = 0; i < 500; ++i) {
-                final String message = "This is test message number " + i;
-                logger.debug(message);
+                logger.debug("This is test message number {}", i);
             }
 
-            final File[] filesAfterReconfigured = dir.listFiles();
-            assertThat(filesAfterReconfigured, hasItemInArray(that(hasName(that(endsWith(".reconfigured"))))));
-            assertThat(filesAfterReconfigured, hasItemInArray(that(hasName(that(endsWith(".current"))))));
-            assertThat(filesAfterReconfigured, hasItemInArray(that(hasName(that(endsWith(".rolled"))))));
+            assertThat(loggingPath)
+                    .isDirectoryContaining("glob:**/*.reconfigured")
+                    .isDirectoryContaining("glob:**/*.current")
+                    .isDirectoryContaining("glob:**/*.rolled");
         } finally {
-            FileUtils.write(CONFIG_FILE, originalXmlConfig, "UTF-8");
+            FileUtils.write(CONFIG_FILE, originalXmlConfig, UTF_8);
         }
     }
 }

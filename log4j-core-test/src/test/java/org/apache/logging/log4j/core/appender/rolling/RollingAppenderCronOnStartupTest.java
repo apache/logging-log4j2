@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
@@ -50,7 +50,7 @@ public class RollingAppenderCronOnStartupTest {
 
     @AfterAll
     public static void after() {
-        File dir = new File(DIR);
+        final File dir = new File(DIR);
         if (dir.exists()) {
             cleanDir(dir);
             dir.delete();
@@ -74,7 +74,7 @@ public class RollingAppenderCronOnStartupTest {
             dir.mkdirs();
         }
         final File file = new File(FILE);
-        String today = formatter.format(LocalDate.now());
+        final String today = formatter.format(LocalDate.now());
         final File rolled = new File(DIR + "/test1-" + today + ".log");
         PrintStream ps = new PrintStream(new FileOutputStream(file));
         ps.println("This is a line2");
@@ -84,10 +84,10 @@ public class RollingAppenderCronOnStartupTest {
         ps.close();
         assertTrue("Log file does not exist", file.exists());
         assertTrue("Log file does not exist", rolled.exists());
-        LoggerContext lc = Configurator.initialize("Test", CONFIG);
+        final LoggerContext lc = Configurator.initialize("Test", CONFIG);
         final Logger logger = lc.getLogger(RollingAppenderCronOnStartupTest.class);
         logger.info("This is line 3");
-        File[] files = dir.listFiles();
+        final File[] files = dir.listFiles();
         assertNotNull("No files", files);
         assertEquals("Unexpected number of files. Expected 2 but found " + files.length, 2,
                 files.length);
@@ -97,8 +97,8 @@ public class RollingAppenderCronOnStartupTest {
         assertEquals("Unexpected number of lines. Expected 1: Actual: " + lines.size(), 1, lines.size());
     }
 
-    private static void cleanDir(File dir) {
-        File[] files = dir.listFiles();
+    private static void cleanDir(final File dir) {
+        final File[] files = dir.listFiles();
         if (files != null) {
             Arrays.stream(files).forEach(File::delete);
         }

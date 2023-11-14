@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.lookup;
 
@@ -28,6 +28,7 @@ import java.util.Properties;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationAware;
+import org.apache.logging.log4j.plugins.di.spi.StringValueResolver;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
@@ -140,7 +141,7 @@ import org.apache.logging.log4j.util.Strings;
  * property to <b>true</b>.
  * </p>
  */
-public class StrSubstitutor implements ConfigurationAware {
+public class StrSubstitutor implements ConfigurationAware, StringValueResolver {
 
     /**
      * Constant for the default escape character.
@@ -457,9 +458,14 @@ public class StrSubstitutor implements ConfigurationAware {
         return map;
     }
 
-    private static String handleFailedReplacement(String input, Throwable throwable) {
+    private static String handleFailedReplacement(final String input, final Throwable throwable) {
         StatusLogger.getLogger().error("Replacement failed on {}", input, throwable);
         return input;
+    }
+
+    @Override
+    public String resolve(final String input) {
+        return replace(null, input);
     }
 
     //-----------------------------------------------------------------------
@@ -814,7 +820,7 @@ public class StrSubstitutor implements ConfigurationAware {
         if (source == null) {
             return null;
         }
-        String stringValue = String.valueOf(source);
+        final String stringValue = String.valueOf(source);
         final StringBuilder buf = new StringBuilder(stringValue.length()).append(stringValue);
         try {
             substitute(event, buf, 0, buf.length());
@@ -1063,9 +1069,9 @@ public class StrSubstitutor implements ConfigurationAware {
                                         break;
                                     }
                                     if (valueEscapeDelimiterMatcher != null) {
-                                        int matchLen = valueEscapeDelimiterMatcher.isMatch(varNameExprChars, i);
+                                        final int matchLen = valueEscapeDelimiterMatcher.isMatch(varNameExprChars, i);
                                         if (matchLen != 0) {
-                                            String varNamePrefix = varNameExpr.substring(0, i) + Interpolator.PREFIX_SEPARATOR;
+                                            final String varNamePrefix = varNameExpr.substring(0, i) + Interpolator.PREFIX_SEPARATOR;
                                             varName = varNamePrefix + varNameExpr.substring(i + matchLen - 1);
                                             for (int j = i + matchLen; j < varNameExprChars.length; ++j){
                                                 if ((valueDelimiterMatchLen = valueDelimiterMatcher.isMatch(varNameExprChars, j)) != 0) {
@@ -1095,7 +1101,7 @@ public class StrSubstitutor implements ConfigurationAware {
                             }
 
                             // handle cyclic substitution
-                            boolean isCyclic = isCyclicSubstitution(varName, priorVariables);
+                            final boolean isCyclic = isCyclicSubstitution(varName, priorVariables);
 
                             // resolve the variable
                             String varValue = isCyclic ? null : resolveVariable(event, varName, buf, startPos, endPos);
@@ -1423,7 +1429,7 @@ public class StrSubstitutor implements ConfigurationAware {
             setValueDelimiterMatcher(null);
             return this;
         }
-        String escapeValue = valueDelimiter.substring(0, valueDelimiter.length() - 1) + "\\"
+        final String escapeValue = valueDelimiter.substring(0, valueDelimiter.length() - 1) + "\\"
                 + valueDelimiter.substring(valueDelimiter.length() - 1);
         valueEscapeDelimiterMatcher = StrMatcher.stringMatcher(escapeValue);
         return setValueDelimiterMatcher(StrMatcher.stringMatcher(valueDelimiter));

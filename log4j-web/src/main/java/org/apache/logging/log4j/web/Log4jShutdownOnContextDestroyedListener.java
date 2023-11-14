@@ -1,30 +1,32 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.web;
+
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 public class Log4jShutdownOnContextDestroyedListener implements ServletContextListener {
 
@@ -42,12 +44,12 @@ public class Log4jShutdownOnContextDestroyedListener implements ServletContextLi
     @Override
     public void contextInitialized(final ServletContextEvent event) {
         LOGGER.debug(Log4jShutdownOnContextDestroyedListener.class.getSimpleName() +
-        		" ensuring that Log4j started up properly.");
+                " ensuring that Log4j started up properly.");
         servletContext = event.getServletContext();
         if (null == servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)) {
-        	throw new IllegalStateException(
-        			"Context did not contain required Log4jWebLifeCycle in the "
-        			+ Log4jWebSupport.SUPPORT_ATTRIBUTE + " attribute.");
+            throw new IllegalStateException(
+                    "Context did not contain required Log4jWebLifeCycle in the "
+                    + Log4jWebSupport.SUPPORT_ATTRIBUTE + " attribute.");
         }
         this.initializer = WebLoggerContextUtils.getWebLifeCycle(servletContext);
     }
@@ -59,7 +61,7 @@ public class Log4jShutdownOnContextDestroyedListener implements ServletContextLi
             return;
         }
         LOGGER.debug(Log4jShutdownOnContextDestroyedListener.class.getSimpleName() +
-        		" ensuring that Log4j shuts down properly.");
+                " ensuring that Log4j shuts down properly.");
 
         this.initializer.clearLoggerContext(); // the application is finished
         // shutting down now
@@ -68,7 +70,7 @@ public class Log4jShutdownOnContextDestroyedListener implements ServletContextLi
                 : Long.parseLong(stopTimeoutStr);
         final String timeoutTimeUnitStr = servletContext.getInitParameter(KEY_STOP_TIMEOUT_TIMEUNIT);
         final TimeUnit timeoutTimeUnit = Strings.isEmpty(timeoutTimeUnitStr) ? DEFAULT_STOP_TIMEOUT_TIMEUNIT
-                : TimeUnit.valueOf(timeoutTimeUnitStr.toUpperCase(Locale.ROOT));
+                : TimeUnit.valueOf(toRootUpperCase(timeoutTimeUnitStr));
         this.initializer.stop(stopTimeout, timeoutTimeUnit);
     }
 }

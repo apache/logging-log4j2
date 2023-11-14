@@ -1,22 +1,23 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.jndi.lookup;
 
 import java.io.Serializable;
+
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.Reference;
@@ -53,53 +54,57 @@ public class JndiRestrictedLookupTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty("log4j2.enableJndiLookup", "true");
+        System.setProperty("log4j2.*.JNDI.enableLookup", "true");
     }
 
     @Test
+    @SuppressWarnings("BanJNDI")
     public void testBadUriLookup() throws Exception {
-        int port = embeddedLdapRule.embeddedServerPort();
-        Context context = embeddedLdapRule.context();
+        final int port = embeddedLdapRule.embeddedServerPort();
+        final Context context = embeddedLdapRule.context();
         context.bind(   "cn=" + RESOURCE +"," + DOMAIN_DSN, new Fruit("Test Message"));
         final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN
-                + "?Type=A Type&Name=1100110&Char=!");
+        final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN
+            + "?Type=A Type&Name=1100110&Char=!");
         if (result != null) {
             fail("Lookup returned an object");
         }
     }
 
     @Test
+    @SuppressWarnings("BanJNDI")
     public void testReferenceLookup() throws Exception {
-        int port = embeddedLdapRule.embeddedServerPort();
-        Context context = embeddedLdapRule.context();
+        final int port = embeddedLdapRule.embeddedServerPort();
+        final Context context = embeddedLdapRule.context();
         context.bind(   "cn=" + RESOURCE +"," + DOMAIN_DSN, new Fruit("Test Message"));
         final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN);
+        final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + RESOURCE + "," + DOMAIN_DSN);
         if (result != null) {
             fail("Lookup returned an object");
         }
     }
 
     @Test
+    @SuppressWarnings("BanJNDI")
     public void testSerializableLookup() throws Exception {
-        int port = embeddedLdapRule.embeddedServerPort();
-        Context context = embeddedLdapRule.context();
+        final int port = embeddedLdapRule.embeddedServerPort();
+        final Context context = embeddedLdapRule.context();
         context.bind(   "cn=" + TEST_STRING +"," + DOMAIN_DSN, "Test Message");
         final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_STRING + "," + DOMAIN_DSN);
+        final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_STRING + "," + DOMAIN_DSN);
         if (result != null) {
             fail("LDAP is enabled");
         }
     }
 
     @Test
+    @SuppressWarnings("BanJNDI")
     public void testBadSerializableLookup() throws Exception {
-        int port = embeddedLdapRule.embeddedServerPort();
-        Context context = embeddedLdapRule.context();
+        final int port = embeddedLdapRule.embeddedServerPort();
+        final Context context = embeddedLdapRule.context();
         context.bind(   "cn=" + TEST_MESSAGE +"," + DOMAIN_DSN, new SerializableMessage("Test Message"));
         final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_MESSAGE + "," + DOMAIN_DSN);
+        final String result = lookup.lookup(LDAP_URL + port + "/" + "cn=" + TEST_MESSAGE + "," + DOMAIN_DSN);
         if (result != null) {
             fail("Lookup returned an object");
         }
@@ -108,7 +113,7 @@ public class JndiRestrictedLookupTest {
     @Test
     public void testDnsLookup() throws Exception {
         final StrLookup lookup = new JndiLookup();
-        String result = lookup.lookup("dns:/" + DOMAIN);
+        final String result = lookup.lookup("dns:/" + DOMAIN);
         if (result != null) {
             fail("No DNS data returned");
         }
@@ -116,7 +121,7 @@ public class JndiRestrictedLookupTest {
 
     static class Fruit implements Referenceable {
         String fruit;
-        public Fruit(String f) {
+        public Fruit(final String f) {
             fruit = f;
         }
 
@@ -134,7 +139,7 @@ public class JndiRestrictedLookupTest {
     static class SerializableMessage implements Serializable, Message {
         private final String message;
 
-        SerializableMessage(String message) {
+        SerializableMessage(final String message) {
             this.message = message;
         }
 

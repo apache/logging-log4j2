@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -14,11 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +28,9 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Tests Jira3410.
  */
@@ -39,10 +38,10 @@ public class LoggerJira3410Test {
 
     @Test
     public void test() throws Exception {
-        try (LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-list.properties")) {
+        try (final LoggerContext loggerContext = TestConfigurator.configure("target/test-classes/log4j1-list.properties")) {
             final Logger logger = LogManager.getLogger("test");
             //
-            Map<Object, Integer> map = new HashMap<>(1);
+            final Map<Object, Integer> map = new HashMap<>(1);
             map.put(Long.MAX_VALUE, 1);
             logger.debug(map);
             //
@@ -71,8 +70,8 @@ public class LoggerJira3410Test {
             //
             // TODO Should be 1, not "1".
             // TODO Should be null, not "null".
-            // TODO Where are the {} characters? 
-            // TODO Where is the , characters? 
+            // TODO Where are the {} characters?
+            // TODO Where is the , characters?
             assertTrue(msg1, msg1.trim().endsWith("null=\"null\" " + Long.MAX_VALUE + "=\"1\""));
             //
             assertTrue(msg2, msg2.trim().endsWith("{null=null, " + Long.MAX_VALUE + "=1}"));

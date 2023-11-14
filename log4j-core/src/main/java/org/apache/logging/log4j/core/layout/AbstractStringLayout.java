@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.layout;
 
@@ -22,7 +22,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.plugins.PluginElement;
@@ -30,7 +30,6 @@ import org.apache.logging.log4j.spi.Recycler;
 import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.StringBuilders;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Abstract base class for Layouts that result in a String.
@@ -104,7 +103,7 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
             PropertiesUtil
                     .getProperties()
                     .getIntegerProperty(
-                            Log4jProperties.GC_LAYOUT_STRING_BUILDER_MAX_SIZE,
+                            Log4jPropertyKey.GC_LAYOUT_STRING_BUILDER_MAX_SIZE,
                             Math.multiplyExact(2, DEFAULT_STRING_BUILDER_SIZE)));
 
     protected static Recycler<StringBuilder> createStringBuilderRecycler(final RecyclerFactory recyclerFactory) {
@@ -230,11 +229,14 @@ public abstract class AbstractStringLayout extends AbstractLayout implements Str
         if (serializer == null) {
             return null;
         }
-        final LoggerConfig rootLogger = configuration.getRootLogger();
-        final LogEventFactory logEventFactory = configuration.getLogEventFactory();
-        // Using "" for the FQCN, does it matter?
-        final LogEvent logEvent = logEventFactory.createEvent(rootLogger.getName(), null, Strings.EMPTY,
-                rootLogger.getLevel(), null, null, null);
+        final Configuration config = getConfiguration();
+        if (config == null) {
+            return null;
+        }
+        final LoggerConfig rootLogger = config.getRootLogger();
+        final LogEventFactory logEventFactory = config.getComponent(LogEventFactory.KEY);
+        final String fqcn = getClass().getName();
+        final LogEvent logEvent = logEventFactory.createEvent(rootLogger.getName(), null, fqcn, rootLogger.getLevel(), null, null, null);
         return serializer.toSerializable(logEvent);
     }
 

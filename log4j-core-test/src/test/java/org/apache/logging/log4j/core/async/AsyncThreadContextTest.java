@@ -1,73 +1,70 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.async;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.ThreadContextTestAccess;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.jmx.RingBufferAdmin;
 import org.apache.logging.log4j.core.selector.ClassLoaderContextSelector;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.plugins.di.Binding;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.spi.DefaultThreadContextMap;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.spi.ReadOnlyThreadContextMap;
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.apache.logging.log4j.test.TestProperties;
+import org.apache.logging.log4j.test.junit.InitializesThreadContext;
+import org.apache.logging.log4j.test.junit.SetTestProperty;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Unbox;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.waitAtMost;
 
 @Tag("sleepy")
-@SetSystemProperty(key = Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE, value = "128") // minimum ringbuffer size
-@SetSystemProperty(key = Log4jProperties.ASYNC_CONFIG_RING_BUFFER_SIZE, value = "128") // minimum ringbuffer size
+@SetTestProperty(key = Log4jPropertyKey.Constant.ASYNC_LOGGER_RING_BUFFER_SIZE, value = "128") // minimum ringbuffer size
+@SetTestProperty(key = Log4jPropertyKey.Constant.ASYNC_CONFIG_RING_BUFFER_SIZE, value = "128") // minimum ringbuffer size
+@InitializesThreadContext
 public class AsyncThreadContextTest {
 
     private final static int LINE_COUNT = 130;
-    public static final File[] FILES = {
-            new File("target", "AsyncLoggerTest.log"), //
-            new File("target", "SynchronousContextTest.log"), //
-            new File("target", "AsyncLoggerAndAsyncAppenderTest.log"), //
-            new File("target", "AsyncAppenderContextTest.log"), //
-    };
 
-    @AfterAll
-    public static void afterClass() {
-        System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_GARBAGE_FREE_ENABLED);
-        System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS);
-    }
+    private static TestProperties props;
+
+    @TempLoggingDir
+    private static Path loggingPath;
 
     enum Mode {
         ALL_ASYNC(AsyncLoggerContextSelector.class, "AsyncLoggerThreadContextTest.xml"),
@@ -87,9 +84,9 @@ public class AsyncThreadContextTest {
         WEBAPP, GARBAGE_FREE, COPY_ON_WRITE;
 
         void init() {
-            System.clearProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS);
+            System.clearProperty(LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_CLASS);
             final String PACKAGE = "org.apache.logging.log4j.spi.";
-            System.setProperty(LoggingSystemProperties.THREAD_CONTEXT_MAP_CLASS, PACKAGE + implClassSimpleName());
+            System.setProperty(LoggingSystemProperty.Constant.THREAD_CONTEXT_MAP_CLASS, PACKAGE + implClassSimpleName());
             PropertiesUtil.getProperties().reload();
             ThreadContextTestAccess.init();
         }
@@ -118,30 +115,32 @@ public class AsyncThreadContextTest {
             "GARBAGE_FREE, ALL_ASYNC",
             "GARBAGE_FREE, BOTH_ALL_ASYNC_AND_MIXED",
     })
-    @CleanUpFiles({
-            "target/AsyncLoggerTest.log",
-            "target/SynchronousContextTest.log",
-            "target/AsyncLoggerAndAsyncAppenderTest.log",
-            "target/AsyncAppenderContextTest.log",
-    })
     public void testAsyncLogWritesToLog(final ContextImpl contextImpl, final Mode asyncMode) throws Exception {
-        doTestAsyncLogWritesToLog(contextImpl, asyncMode, getClass());
+        doTestAsyncLogWritesToLog(contextImpl, asyncMode, getClass(), loggingPath, props);
     }
 
-    static void doTestAsyncLogWritesToLog(final ContextImpl contextImpl, final Mode asyncMode, final Class<?> testClass) throws Exception {
-        final Injector injector = DI.createInjector();
-        injector.registerBinding(ContextSelector.KEY, injector.getFactory(asyncMode.contextSelectorType));
-        injector.init();
-        final Log4jContextFactory factory = new Log4jContextFactory(injector);
+    static void doTestAsyncLogWritesToLog(final ContextImpl contextImpl, final Mode asyncMode, final Class<?> testClass, final Path loggingPath, final TestProperties props) throws Exception {
+        final Path testLoggingPath = loggingPath.resolve(contextImpl.toString()).resolve(asyncMode.toString());
+        props.setProperty("logging.path", testLoggingPath.toString());
+        final ConfigurableInstanceFactory instanceFactory = DI.createFactory();
+        instanceFactory.registerBinding(Binding.from(ContextSelector.KEY).to(instanceFactory.getFactory(asyncMode.contextSelectorType)));
+        DI.initializeFactory(instanceFactory);
+        final Log4jContextFactory factory = new Log4jContextFactory(instanceFactory);
         final String fqcn = testClass.getName();
         final ClassLoader classLoader = testClass.getClassLoader();
         final String name = contextImpl.toString() + ' ' + asyncMode;
         contextImpl.init();
         final LoggerContext context = factory.getContext(fqcn, classLoader, null, false, asyncMode.configUri, name);
-        runTest(context, contextImpl, asyncMode);
+        runTest(context, contextImpl, asyncMode, testLoggingPath);
     }
 
-    private static void runTest(final LoggerContext context, final ContextImpl contextImpl, final Mode asyncMode) throws Exception {
+    private static void runTest(final LoggerContext context, final ContextImpl contextImpl, final Mode asyncMode, final Path loggingPath) throws Exception {
+        final Path[] files = new Path[] {
+                loggingPath.resolve("AsyncLoggerTest.log"),
+                loggingPath.resolve("SynchronousContextTest.log"),
+                loggingPath.resolve("AsyncLoggerAndAsyncAppenderTest.log"),
+                loggingPath.resolve("AsyncAppenderContextTest.log"),
+        };
         ThreadContext.push("stackvalue");
         ThreadContext.put("KEY", "mapvalue");
 
@@ -155,8 +154,11 @@ public class AsyncThreadContextTest {
         }
 
         for (int i = 0; i < LINE_COUNT; i++) {
-            while (i >= 128 && ring.getRemainingCapacity() == 0) { // buffer may be full
-                Thread.sleep(1);
+            // buffer may be full
+            if (i >= 128) {
+                waitAtMost(500, TimeUnit.MILLISECONDS)
+                        .pollDelay(10, TimeUnit.MILLISECONDS)
+                        .until(() -> ring.getRemainingCapacity() > 0);
             }
             if ((i & 1) == 1) {
                 ThreadContext.put("count", String.valueOf(i));
@@ -167,12 +169,12 @@ public class AsyncThreadContextTest {
         }
         ThreadContext.pop();
         context.stop();
-        CoreLoggerContexts.stopLoggerContext(FILES[0]); // stop async thread
+        CoreLoggerContexts.stopLoggerContext(files[0].toFile()); // stop async thread
 
-        checkResult(FILES[0], loggerContextName, contextImpl);
+        checkResult(files[0], loggerContextName, contextImpl);
         if (asyncMode == Mode.MIXED || asyncMode == Mode.BOTH_ALL_ASYNC_AND_MIXED) {
-            for (int i = 1; i < FILES.length; i++) {
-                checkResult(FILES[i], loggerContextName, contextImpl);
+            for (int i = 1; i < files.length; i++) {
+                checkResult(files[i], loggerContextName, contextImpl);
             }
         }
     }
@@ -182,9 +184,9 @@ public class AsyncThreadContextTest {
         return impl == null ? ContextImpl.WEBAPP.implClassSimpleName() : impl.getClass().getSimpleName();
     }
 
-    private static void checkResult(final File file, final String loggerContextName, final ContextImpl contextImpl) throws IOException {
+    private static void checkResult(final Path file, final String loggerContextName, final ContextImpl contextImpl) throws IOException {
         final String contextDesc = contextImpl + " " + contextImpl.implClassSimpleName() + " " + loggerContextName;
-        try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try (final BufferedReader reader = Files.newBufferedReader(file)) {
             String expect;
             for (int i = 0; i < LINE_COUNT; i++) {
                 final String line = reader.readLine();
@@ -194,12 +196,9 @@ public class AsyncThreadContextTest {
                 } else {
                     expect = "INFO c.f.Bar mapvalue [stackvalue] {KEY=mapvalue, configProp=configValue, configProp2=configValue2} " + contextDesc + " i=" + i;
                 }
-                assertEquals(expect, line, file.getName() + ": line " + i);
+                assertThat(line).as("Log file '%s'", file.getFileName()).isEqualTo(expect);
             }
-            final String noMoreLines = reader.readLine();
-            assertNull(noMoreLines, "done");
-        } finally {
-            file.delete();
+            assertThat(reader.readLine()).as("Last line").isNull();
         }
     }
 }

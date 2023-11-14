@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.plugins.internal.util;
 
@@ -22,19 +22,23 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.logging.log4j.plugins.Factory;
 import org.apache.logging.log4j.plugins.FactoryType;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.QualifierType;
 import org.apache.logging.log4j.plugins.di.AmbiguousInjectConstructorException;
-import org.apache.logging.log4j.plugins.di.DependencyChain;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.di.NotInjectableException;
+import org.apache.logging.log4j.plugins.di.spi.DependencyChain;
+import org.apache.logging.log4j.plugins.di.spi.ResolvableKey;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.InternalApi;
@@ -47,11 +51,11 @@ public final class BeanUtils {
     private BeanUtils() {
     }
 
-    public static String decapitalize(String string) {
+    public static String decapitalize(final String string) {
         if (string.isEmpty()) {
             return string;
         }
-        char[] chars = string.toCharArray();
+        final char[] chars = string.toCharArray();
         if (chars.length >= 2 && Character.isUpperCase(chars[0]) && Character.isUpperCase(chars[1])) {
             return string;
         }
@@ -60,6 +64,19 @@ public final class BeanUtils {
     }
 
     public static Executable getInjectableFactory(final Class<?> clazz) {
+        return findStaticFactoryMethod(clazz)
+                .or(() -> findInjectableConstructor(clazz))
+                .orElseThrow(() -> new NotInjectableException(clazz));
+    }
+
+    public static Executable getInjectableFactory(final ResolvableKey<?> resolvableKey) {
+        final Class<?> rawType = resolvableKey.getKey().getRawType();
+        return findStaticFactoryMethod(rawType)
+                .or(() -> findInjectableConstructor(rawType))
+                .orElseThrow(() -> new NotInjectableException(resolvableKey));
+    }
+
+    private static Optional<Executable> findStaticFactoryMethod(final Class<?> clazz) {
         return Stream.of(clazz.getDeclaredMethods())
                 .filter(method -> Modifier.isStatic(method.getModifiers()) &&
                         AnnotationUtil.isMetaAnnotationPresent(method, FactoryType.class))
@@ -74,24 +91,48 @@ public final class BeanUtils {
                         return c1.getName().compareTo(c2.getName());
                     }
                 }))
-                .map(Executable.class::cast)
-                .orElseGet(() -> getInjectableConstructor(clazz));
-    }
-
-    public static <T> Constructor<T> getInjectableConstructor(final Class<T> clazz) {
-        final Constructor<T> constructor = findInjectableConstructor(clazz);
-        if (constructor == null) {
-            throw new NotInjectableException(clazz);
-        }
-        return constructor;
+                .map(Executable.class::cast);
     }
 
     public static <T> Constructor<T> getInjectableConstructor(final Key<T> key, final DependencyChain chain) {
-        final Constructor<T> constructor = findInjectableConstructor(key.getRawType());
-        if (constructor == null) {
-            throw new NotInjectableException(key, chain);
+        return findInjectableConstructor(key.getRawType())
+                .orElseThrow(() -> new NotInjectableException(key, chain));
+    }
+
+    public static List<Field> getInjectableFields(final Class<?> clazz) {
+        final List<Field> fields = new ArrayList<>();
+        for (Class<?> cls = clazz; cls != Object.class; cls = cls.getSuperclass()) {
+            for (final Field field : cls.getDeclaredFields()) {
+                if (isInjectable(field)) {
+                    fields.add(field);
+                }
+            }
         }
-        return constructor;
+        return fields;
+    }
+
+    public static List<Method> getInjectableMethods(final Class<?> clazz) {
+        final List<Method> methods = new ArrayList<>();
+        for (Class<?> cls = clazz; cls != Object.class; cls = cls.getSuperclass()) {
+            for (final Method method : cls.getDeclaredMethods()) {
+                if (isInjectable(method)) {
+                    methods.add(method);
+                }
+            }
+        }
+        return methods;
+    }
+
+    /**
+     * Checks the given class to see if it is {@linkplain Inject injectable}. An injectable class can be explicitly
+     * injectable with a single {@link Inject}-annotated constructor, implicitly injectable with a no-args
+     * constructor, or provided by a static {@link Factory}-annotated method in the class.
+     *
+     * @param clazz class to check support for injection
+     * @return whether the class is injectable
+     */
+    public static boolean isInjectable(final Class<?> clazz) {
+        return findInjectableConstructor(clazz).isPresent() || findStaticFactoryMethod(clazz).isPresent();
     }
 
     public static boolean isInjectable(final Field field) {
@@ -112,7 +153,7 @@ public final class BeanUtils {
         return false;
     }
 
-    private static <T> Constructor<T> findInjectableConstructor(final Class<T> clazz) {
+    private static <T> Optional<Constructor<T>> findInjectableConstructor(final Class<T> clazz) {
         final List<Constructor<?>> constructors = Stream.of(clazz.getDeclaredConstructors())
                 .filter(constructor -> constructor.isAnnotationPresent(Inject.class))
                 .collect(Collectors.toList());
@@ -121,16 +162,16 @@ public final class BeanUtils {
             throw new AmbiguousInjectConstructorException(clazz);
         }
         if (size == 1) {
-            return Cast.cast(constructors.get(0));
+            return Optional.of(Cast.cast(constructors.get(0)));
         }
         try {
-            return clazz.getDeclaredConstructor();
+            return Optional.of(clazz.getDeclaredConstructor());
         } catch (final NoSuchMethodException ignored) {
         }
         try {
-            return clazz.getConstructor();
+            return Optional.of(clazz.getConstructor());
         } catch (final NoSuchMethodException ignored) {
         }
-        return null;
+        return Optional.empty();
     }
 }

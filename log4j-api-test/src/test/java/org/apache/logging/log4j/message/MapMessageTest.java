@@ -1,26 +1,32 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.message;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.junit.jupiter.api.Test;
 
@@ -112,6 +118,16 @@ public class MapMessageTest {
 
     @Test
     public void testJsonFormatterNestedObjectSupport() {
+        final Map<String, Object> map = new LinkedHashMap<>();
+        map.put("chars", new char[]{'a', 'b', 'c'});
+        map.put("booleans", new boolean[]{true, false});
+        map.put("bytes", new byte[]{1, 2});
+        map.put("shorts", new short[]{3, 4});
+        map.put("ints", new int[]{256, 257});
+        map.put("longs", new long[]{2147483648L, 2147483649L});
+        map.put("floats", new float[]{1.0F, 1.1F});
+        map.put("doubles", new double[]{2.0D, 2.1D});
+        map.put("objects", new Object[]{"foo", "bar"});
         final String actualJson = new ObjectMapMessage()
                 .with("key1", "val1")
                 .with("key2", Collections.singletonMap("key2.1", "val2.1"))
@@ -123,17 +139,7 @@ public class MapMessageTest {
                         Arrays.asList(true, false),
                         new BigDecimal(30),
                         Collections.singletonMap("key3.3", "val3.3")))
-                .with("key4", new LinkedHashMap<String, Object>() {{
-                    put("chars", new char[]{'a', 'b', 'c'});
-                    put("booleans", new boolean[]{true, false});
-                    put("bytes", new byte[]{1, 2});
-                    put("shorts", new short[]{3, 4});
-                    put("ints", new int[]{256, 257});
-                    put("longs", new long[]{2147483648L, 2147483649L});
-                    put("floats", new float[]{1.0F, 1.1F});
-                    put("doubles", new double[]{2.0D, 2.1D});
-                    put("objects", new Object[]{"foo", "bar"});
-                }})
+                .with("key4", map)
                 .getFormattedMessage(new String[]{"JSON"});
         final String expectedJson = ("{" +
                 "'key1':'val1'," +
@@ -170,16 +176,21 @@ public class MapMessageTest {
 
     @Test
     public void testJsonFormatterMaxDepthConformance() {
-        int depth = MapMessageJsonFormatter.MAX_DEPTH - 2;
-        String expectedJson = String.format("{'key':%s1%s}", "[".repeat(depth), "]".repeat(depth)).replace('\'', '"');
-        String actualJson = testJsonFormatterMaxDepth(depth);
+        final int depth = MapMessageJsonFormatter.MAX_DEPTH - 2;
+        final String expectedJson = String
+                .format("{'key':%s1%s}",
+                        StringUtils.repeat("[", depth),
+                        StringUtils.repeat("]", depth))
+                .replace('\'', '"');
+        final String actualJson = testJsonFormatterMaxDepth(depth);
         assertEquals(expectedJson, actualJson);
     }
 
-    public static String testJsonFormatterMaxDepth(int depth) {
+    public static String testJsonFormatterMaxDepth(final int depth) {
         List<Object> list = new LinkedList<>();
         list.add(1);
-        while (--depth > 0) {
+        int currentDepth = depth;
+        while (--currentDepth > 0) {
             list = new LinkedList<>(Collections.singletonList(list));
         }
         return new ObjectMapMessage()
@@ -329,7 +340,7 @@ public class MapMessageTest {
         }
 
         @Override
-        public void formatTo(StringBuilder buffer) {
+        public void formatTo(final StringBuilder buffer) {
             buffer.append("formatTo");
         }
     }

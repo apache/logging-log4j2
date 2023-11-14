@@ -1,20 +1,25 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.rolling;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.concurrent.CountDownLatch;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -25,14 +30,6 @@ import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.test.junit.CleanUpDirectories;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -56,11 +53,11 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
         final Logger logger = context.getLogger(RollingDirectTimeNewDirectoryTest.class.getName());
 
         for (int count = 0; count < 2; ++count) {
-            long start = System.currentTimeMillis();
+            final long start = System.currentTimeMillis();
             for (int i = 0; i < 50; i++) {
                 logger.info("nHq6p9kgfvWfjzDRYbZp");
             }
-            long end = System.currentTimeMillis();
+            final long end = System.currentTimeMillis();
             if (end < start + 1000) {
                 Thread.sleep(start + 1000 - end);
             }
@@ -71,9 +68,9 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
 
         rollover.await();
 
-        File logDir = new File(DIR);
+        final File logDir = new File(DIR);
         assertThat(logDir).isNotEmptyDirectory();
-        File[] logFolders = logDir.listFiles();
+        final File[] logFolders = logDir.listFiles();
         assertNotNull(logFolders);
         Arrays.sort(logFolders);
 
@@ -88,7 +85,7 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
                 if (ignored != null && logFolder.getAbsolutePath().equals(ignored)) {
                     continue;
                 }
-                File[] logFiles = logFolder.listFiles();
+                final File[] logFiles = logFolder.listFiles();
                 if (logFiles != null) {
                     Arrays.sort(logFiles);
                 }
@@ -96,7 +93,7 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
             }
 
         } catch (AssertionError error) {
-            StringBuilder sb = new StringBuilder(error.getMessage()).append(" log directory (").append(DIR).append(") contents: [");
+            final StringBuilder sb = new StringBuilder(error.getMessage()).append(" log directory (").append(DIR).append(") contents: [");
             final Iterator<File> fileIterator =
                     FileUtils.iterateFilesAndDirs(
                             logDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
@@ -116,12 +113,12 @@ public class RollingDirectTimeNewDirectoryTest implements RolloverListener {
     }
 
     @Override
-    public void rolloverTriggered(String fileName) {
+    public void rolloverTriggered(final String fileName) {
     }
 
     @Override
     public void rolloverComplete(final String fileName) {
-        File file = new File(fileName);
+        final File file = new File(fileName);
         if (isFirst && file.length() == 0) {
             isFirst = false;
             ignored = file.getParentFile().getAbsolutePath();

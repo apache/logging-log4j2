@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j.xml;
 
 import org.apache.log4j.Level;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * This class introduces a new level called TRACE. TRACE has lower level than DEBUG.
@@ -28,8 +29,8 @@ public class XLevel extends Level {
     public static final int TRACE_INT = Level.DEBUG_INT - 1;
     public static final int LETHAL_INT = Level.FATAL_INT + 1;
 
-    private static String TRACE_STR = "TRACE";
-    private static String LETHAL_STR = "LETHAL";
+    private static final String TRACE_STR = "TRACE";
+    private static final String LETHAL_STR = "LETHAL";
 
     public static final XLevel TRACE = new XLevel(TRACE_INT, TRACE_STR, 7);
     public static final XLevel LETHAL = new XLevel(LETHAL_INT, LETHAL_STR, 0);
@@ -56,7 +57,7 @@ public class XLevel extends Level {
         if (sArg == null) {
             return defaultValue;
         }
-        final String stringVal = sArg.toUpperCase();
+        final String stringVal = toRootUpperCase(sArg);
 
         if (stringVal.equals(TRACE_STR)) {
             return XLevel.TRACE;

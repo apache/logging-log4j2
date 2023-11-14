@@ -1,24 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.tools.picocli;
-
-import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.IStyle;
-import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Style;
-import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -68,10 +64,16 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
-import static java.util.Locale.ENGLISH;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.IStyle;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Style;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Ansi.Text;
+
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.SPAN;
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.TRUNCATE;
 import static org.apache.logging.log4j.core.tools.picocli.CommandLine.Help.Column.Overflow.WRAP;
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * <p>
@@ -2631,30 +2633,37 @@ public class CommandLine {
             return (result == 0) ? Range.parameterArity(o1).compareTo(Range.parameterArity(o2)) : result;
         }
     }
+
     /**
      * Inner class to group the built-in {@link ITypeConverter} implementations.
      */
-    private static class BuiltIn {
+    private static final class BuiltIn {
+        @SuppressFBWarnings("PATH_TRAVERSAL_IN")
         static class PathConverter implements ITypeConverter<Path> {
             @Override public Path convert(final String value) { return Paths.get(value); }
         }
+
         static class StringConverter implements ITypeConverter<String> {
             @Override
             public String convert(final String value) { return value; }
         }
+
         static class StringBuilderConverter implements ITypeConverter<StringBuilder> {
             @Override
             public StringBuilder convert(final String value) { return new StringBuilder(value); }
         }
+
         static class CharSequenceConverter implements ITypeConverter<CharSequence> {
             @Override
             public String convert(final String value) { return value; }
         }
+
         /** Converts text to a {@code Byte} by delegating to {@link Byte#valueOf(String)}.*/
         static class ByteConverter implements ITypeConverter<Byte> {
             @Override
             public Byte convert(final String value) { return Byte.valueOf(value); }
         }
+
         /** Converts {@code "true"} or {@code "false"} to a {@code Boolean}. Other values result in a ParameterException.*/
         static class BooleanConverter implements ITypeConverter<Boolean> {
             @Override
@@ -2666,6 +2675,7 @@ public class CommandLine {
                 }
             }
         }
+
         static class CharacterConverter implements ITypeConverter<Character> {
             @Override
             public Character convert(final String value) {
@@ -2675,41 +2685,51 @@ public class CommandLine {
                 return value.charAt(0);
             }
         }
+
         /** Converts text to a {@code Short} by delegating to {@link Short#valueOf(String)}.*/
         static class ShortConverter implements ITypeConverter<Short> {
             @Override
             public Short convert(final String value) { return Short.valueOf(value); }
         }
+
         /** Converts text to an {@code Integer} by delegating to {@link Integer#valueOf(String)}.*/
         static class IntegerConverter implements ITypeConverter<Integer> {
             @Override
             public Integer convert(final String value) { return Integer.valueOf(value); }
         }
+
         /** Converts text to a {@code Long} by delegating to {@link Long#valueOf(String)}.*/
         static class LongConverter implements ITypeConverter<Long> {
             @Override
             public Long convert(final String value) { return Long.valueOf(value); }
         }
+
         static class FloatConverter implements ITypeConverter<Float> {
             @Override
             public Float convert(final String value) { return Float.valueOf(value); }
         }
+
         static class DoubleConverter implements ITypeConverter<Double> {
             @Override
             public Double convert(final String value) { return Double.valueOf(value); }
         }
+
+        @SuppressFBWarnings("PATH_TRAVERSAL_IN")
         static class FileConverter implements ITypeConverter<File> {
             @Override
             public File convert(final String value) { return new File(value); }
         }
+
         static class URLConverter implements ITypeConverter<URL> {
             @Override
             public URL convert(final String value) throws MalformedURLException { return new URL(value); }
         }
+
         static class URIConverter implements ITypeConverter<URI> {
             @Override
             public URI convert(final String value) throws URISyntaxException { return new URI(value); }
         }
+
         /** Converts text in {@code yyyy-mm-dd} format to a {@code java.util.Date}. ParameterException on failure. */
         static class ISO8601DateConverter implements ITypeConverter<Date> {
             @Override
@@ -2721,6 +2741,7 @@ public class CommandLine {
                 }
             }
         }
+
         /** Converts text in any of the following formats to a {@code java.sql.Time}: {@code HH:mm}, {@code HH:mm:ss},
          * {@code HH:mm:ss.SSS}, {@code HH:mm:ss,SSS}. Other formats result in a ParameterException. */
         static class ISO8601TimeConverter implements ITypeConverter<Time> {
@@ -2744,27 +2765,33 @@ public class CommandLine {
                 throw new TypeConversionException("'" + value + "' is not a HH:mm[:ss[.SSS]] time");
             }
         }
+
         static class BigDecimalConverter implements ITypeConverter<BigDecimal> {
             @Override
             public BigDecimal convert(final String value) { return new BigDecimal(value); }
         }
+
         static class BigIntegerConverter implements ITypeConverter<BigInteger> {
             @Override
             public BigInteger convert(final String value) { return new BigInteger(value); }
         }
+
         static class CharsetConverter implements ITypeConverter<Charset> {
             @Override
             public Charset convert(final String s) { return Charset.forName(s); }
         }
+
         /** Converts text to a {@code InetAddress} by delegating to {@link InetAddress#getByName(String)}. */
         static class InetAddressConverter implements ITypeConverter<InetAddress> {
             @Override
             public InetAddress convert(final String s) throws Exception { return InetAddress.getByName(s); }
         }
+
         static class PatternConverter implements ITypeConverter<Pattern> {
             @Override
             public Pattern convert(final String s) { return Pattern.compile(s); }
         }
+
         static class UUIDConverter implements ITypeConverter<UUID> {
             @Override
             public UUID convert(final String s) throws Exception { return UUID.fromString(s); }
@@ -2775,7 +2802,7 @@ public class CommandLine {
     /**
      * A collection of methods and inner classes that provide fine-grained control over the contents and layout of
      * the usage help message to display to end users when help is requested or invalid input values were specified.
-     * <h3>Layered API</h3>
+     * <h2>Layered API</h2>
      * <p>The {@link Command} annotation provides the easiest way to customize usage help messages. See
      * the <a href="https://remkop.github.io/picocli/index.html#_usage_help">Manual</a> for details.</p>
      * <p>This Help class provides high-level functions to create sections of the usage help message and headings
@@ -2783,7 +2810,7 @@ public class CommandLine {
      * method, application authors may want to create a custom usage help message by reorganizing sections in a
      * different order and/or adding custom sections.</p>
      * <p>Finally, the Help class contains inner classes and interfaces that can be used to create custom help messages.</p>
-     * <h4>IOptionRenderer and IParameterRenderer</h4>
+     * <h3>IOptionRenderer and IParameterRenderer</h3>
      * <p>Renders a field annotated with {@link Option} or {@link Parameters} to an array of {@link Text} values.
      * By default, these values are</p><ul>
      * <li>mandatory marker character (if the option/parameter is {@link Option#required() required})</li>
@@ -2793,15 +2820,15 @@ public class CommandLine {
      * <li>description</li>
      * </ul>
      * <p>Other components rely on this ordering.</p>
-     * <h4>Layout</h4>
+     * <h3>Layout</h3>
      * <p>Delegates to the renderers to create {@link Text} values for the annotated fields, and uses a
      * {@link TextTable} to display these values in tabular format. Layout is responsible for deciding which values
      * to display where in the table. By default, Layout shows one option or parameter per table row.</p>
-     * <h4>TextTable</h4>
+     * <h3>TextTable</h3>
      * <p>Responsible for spacing out {@link Text} values according to the {@link Column} definitions the table was
      * created with. Columns have a width, indentation, and an overflow policy that decides what to do if a value is
      * longer than the column's width.</p>
-     * <h4>Text</h4>
+     * <h3>Text</h3>
      * <p>Encapsulates rich text with styles and colors in a way that other components like {@link TextTable} are
      * unaware of the embedded ANSI escape codes.</p>
      */
@@ -3853,7 +3880,7 @@ public class CommandLine {
                 if (o1 == null) { return 1; } else if (o2 == null) { return -1; } // options before params
                 final String[] names1 = ShortestFirst.sort(o1.names());
                 final String[] names2 = ShortestFirst.sort(o2.names());
-                int result = names1[0].toUpperCase().compareTo(names2[0].toUpperCase()); // case insensitive sort
+                int result = toRootUpperCase(names1[0]).compareTo(toRootUpperCase(names2[0])); // case insensitive sort
                 result = result == 0 ? -names1[0].compareTo(names2[0]) : result; // lower case before upper case
                 return o1.help() == o2.help() ? result : o2.help() ? -1 : 1; // help options come last
             }
@@ -4306,7 +4333,7 @@ public class CommandLine {
                 @Override
                 public String off() { return CSI + endCode + "m"; }
 
-				/** Returns the concatenated ANSI escape codes for turning all specified styles on.
+                /** Returns the concatenated ANSI escape codes for turning all specified styles on.
                  * @param styles the styles to generate ANSI escape codes for
                  * @return the concatenated ANSI escape codes for turning all specified styles on */
                 public static String on(final IStyle... styles) {
@@ -4316,7 +4343,7 @@ public class CommandLine {
                     }
                     return result.toString();
                 }
-				/** Returns the concatenated ANSI escape codes for turning all specified styles off.
+                /** Returns the concatenated ANSI escape codes for turning all specified styles off.
                  * @param styles the styles to generate ANSI escape codes for
                  * @return the concatenated ANSI escape codes for turning all specified styles off */
                 public static String off(final IStyle... styles) {
@@ -4326,28 +4353,28 @@ public class CommandLine {
                     }
                     return result.toString();
                 }
-				/** Parses the specified style markup and returns the associated style.
-				 *  The markup may be one of the Style enum value names, or it may be one of the Style enum value
-				 *  names when {@code "fg_"} is prepended, or it may be one of the indexed colors in the 256 color palette.
+                /** Parses the specified style markup and returns the associated style.
+                 *  The markup may be one of the Style enum value names, or it may be one of the Style enum value
+                 *  names when {@code "fg_"} is prepended, or it may be one of the indexed colors in the 256 color palette.
                  * @param str the case-insensitive style markup to convert, e.g. {@code "blue"} or {@code "fg_blue"},
                  *          or {@code "46"} (indexed color) or {@code "0;5;0"} (RGB components of an indexed color)
-				 * @return the IStyle for the specified converter
-				 */
+                 * @return the IStyle for the specified converter
+                 */
                 public static IStyle fg(final String str) {
-                    try { return Style.valueOf(str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
-                    try { return Style.valueOf("fg_" + str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
+                    try { return Style.valueOf(toRootLowerCase(str)); } catch (final Exception ignored) {}
+                    try { return Style.valueOf("fg_" + toRootLowerCase(str)); } catch (final Exception ignored) {}
                     return new Palette256Color(true, str);
                 }
-				/** Parses the specified style markup and returns the associated style.
-				 *  The markup may be one of the Style enum value names, or it may be one of the Style enum value
-				 *  names when {@code "bg_"} is prepended, or it may be one of the indexed colors in the 256 color palette.
-				 * @param str the case-insensitive style markup to convert, e.g. {@code "blue"} or {@code "bg_blue"},
+                /** Parses the specified style markup and returns the associated style.
+                 *  The markup may be one of the Style enum value names, or it may be one of the Style enum value
+                 *  names when {@code "bg_"} is prepended, or it may be one of the indexed colors in the 256 color palette.
+                 * @param str the case-insensitive style markup to convert, e.g. {@code "blue"} or {@code "bg_blue"},
                  *          or {@code "46"} (indexed color) or {@code "0;5;0"} (RGB components of an indexed color)
-				 * @return the IStyle for the specified converter
-				 */
+                 * @return the IStyle for the specified converter
+                 */
                 public static IStyle bg(final String str) {
-                    try { return Style.valueOf(str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
-                    try { return Style.valueOf("bg_" + str.toLowerCase(ENGLISH)); } catch (final Exception ignored) {}
+                    try { return Style.valueOf(toRootLowerCase(str)); } catch (final Exception ignored) {}
+                    try { return Style.valueOf("bg_" + toRootLowerCase(str)); } catch (final Exception ignored) {}
                     return new Palette256Color(false, str);
                 }
                 /** Parses the specified comma-separated sequence of style descriptors and returns the associated
@@ -4360,10 +4387,10 @@ public class CommandLine {
                     final String[] codes = commaSeparatedCodes.split(",");
                     final IStyle[] styles = new IStyle[codes.length];
                     for(int i = 0; i < codes.length; ++i) {
-                        if (codes[i].toLowerCase(ENGLISH).startsWith("fg(")) {
+                        if (toRootLowerCase(codes[i]).startsWith("fg(")) {
                             final int end = codes[i].indexOf(')');
                             styles[i] = Style.fg(codes[i].substring(3, end < 0 ? codes[i].length() : end));
-                        } else if (codes[i].toLowerCase(ENGLISH).startsWith("bg(")) {
+                        } else if (toRootLowerCase(codes[i]).startsWith("bg(")) {
                             final int end = codes[i].indexOf(')');
                             styles[i] = Style.bg(codes[i].substring(3, end < 0 ? codes[i].length() : end));
                         } else {

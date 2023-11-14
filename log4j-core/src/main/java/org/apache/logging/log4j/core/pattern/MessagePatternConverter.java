@@ -1,24 +1,23 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.pattern;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -33,12 +32,14 @@ import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
 
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
+
 /**
  * Returns the event's rendered message in a StringBuilder.
  */
 @Namespace(PatternConverter.CATEGORY)
 @Plugin("MessagePatternConverter")
-@ConverterKeys({ "m", "msg", "message" })
+@ConverterKeys({"m", "msg", "message"})
 @PerformanceSensitive("allocation")
 public class MessagePatternConverter extends LogEventPatternConverter {
 
@@ -52,7 +53,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
     private static TextRenderer loadMessageRenderer(final String[] options) {
         if (options != null) {
             for (final String option : options) {
-                switch (option.toUpperCase(Locale.ROOT)) {
+                switch (toRootUpperCase(option)) {
                 case "ANSI":
                     if (Loader.isJansiAvailable()) {
                         return new JAnsiTextRenderer(options, JAnsiTextRenderer.DefaultMessageStyleMap);
@@ -78,8 +79,8 @@ public class MessagePatternConverter extends LogEventPatternConverter {
      * @return instance of pattern converter.
      */
     public static MessagePatternConverter newInstance(final Configuration config, final String[] options) {
-        String[] formats = withoutLookupOptions(options);
-        TextRenderer textRenderer = loadMessageRenderer(formats);
+        final String[] formats = withoutLookupOptions(options);
+        final TextRenderer textRenderer = loadMessageRenderer(formats);
         MessagePatternConverter result = formats == null || formats.length == 0
                 ? SimpleMessagePatternConverter.INSTANCE
                 : new FormattedMessagePatternConverter(formats);
@@ -93,7 +94,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
         if (options == null || options.length == 0) {
             return options;
         }
-        List<String> results = new ArrayList<>(options.length);
+        final List<String> results = new ArrayList<>(options.length);
         for (String option : options) {
             if (LOOKUPS.equalsIgnoreCase(option) || NOLOOKUPS.equalsIgnoreCase(option)) {
                 LOGGER.info("The {} option will be ignored. Message Lookups are no longer supported.", option);
@@ -117,7 +118,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
          */
         @Override
         public void format(final LogEvent event, final StringBuilder toAppendTo) {
-            Message msg = event.getMessage();
+            final Message msg = event.getMessage();
             if (msg instanceof StringBuilderFormattable) {
                 ((StringBuilderFormattable) msg).formatTo(toAppendTo);
             } else if (msg != null) {
@@ -139,7 +140,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
          */
         @Override
         public void format(final LogEvent event, final StringBuilder toAppendTo) {
-            Message msg = event.getMessage();
+            final Message msg = event.getMessage();
             if (msg instanceof StringBuilderFormattable) {
                 if (msg instanceof MultiFormatStringBuilderFormattable) {
                     ((MultiFormatStringBuilderFormattable) msg).formatTo(formats, toAppendTo);
@@ -169,7 +170,7 @@ public class MessagePatternConverter extends LogEventPatternConverter {
          */
         @Override
         public void format(final LogEvent event, final StringBuilder toAppendTo) {
-            StringBuilder workingBuilder = new StringBuilder(80);
+            final StringBuilder workingBuilder = new StringBuilder(80);
             delegate.format(event, workingBuilder);
             textRenderer.render(workingBuilder, toAppendTo);
         }

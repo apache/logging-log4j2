@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.pattern;
 
@@ -46,7 +46,7 @@ public class PatternParserTest {
     LoggerContext ctx = LoggerContext.getContext();
     Logger root = ctx.getRootLogger();
 
-    private static String msgPattern = "%m%n";
+    private static final String msgPattern = "%m%n";
     private final String mdcMsgPattern1 = "%m : %X%n";
     private final String mdcMsgPattern2 = "%m : %X{key1}%n";
     private final String mdcMsgPattern3 = "%m : %X{key2}%n";
@@ -54,19 +54,19 @@ public class PatternParserTest {
     private final String mdcMsgPattern5 = "%m : %X{key1},%X{key2},%X{key3}%n";
     private final String deeplyNestedPattern = "%notEmpty{ %maxLen{%X{var}}{3} }";
 
-    private static String badPattern = "[%d{yyyyMMdd HH:mm:ss,SSS] %-5p [%c{10}] - %m%n";
-    private static String customPattern = "[%d{yyyyMMdd HH:mm:ss,SSS}] %-5p [%-25.25c{1}:%-4L] - %m%n";
-    private static String patternTruncateFromEnd = "%d; %-5p %5.-5c %m%n";
-    private static String patternTruncateFromBeginning = "%d; %-5p %5.5c %m%n";
-    private static String nestedPatternHighlight =
-            "%highlight{%d{dd MMM yyyy HH:mm:ss,SSS}{GMT+0} [%t] %-5level: %msg%n%throwable}";
+    private static final String badPattern = "[%d{yyyyMMdd HH:mm:ss,SSS] %-5p [%c{10}] - %m%n";
+    private static final String customPattern = "[%d{yyyyMMdd HH:mm:ss,SSS}] %-5p [%-25.25c{1}:%-4L] - %m%n";
+    private static final String patternTruncateFromEnd = "%d; %-5p %5.-5c %m%n";
+    private static final String patternTruncateFromBeginning = "%d; %-5p %5.5c %m%n";
+    private static final String nestedPatternHighlight =
+    "%highlight{%d{dd MMM yyyy HH:mm:ss,SSS}{GMT+0} [%t] %-5level: %msg%n%throwable}";
 
     private static final String KEY = "Converter";
     private PatternParser parser;
 
     @BeforeEach
     public void setup() {
-        parser = new PatternParser(KEY);
+        parser = new PatternParser(ctx.getConfiguration(), KEY, null);
     }
 
     private void validateConverter(final List<PatternFormatter> formatter, final int index, final String name) {
@@ -204,7 +204,6 @@ public class PatternParserTest {
         final List<PatternFormatter> formatters = parser.parse(nestedPatternHighlight);
         assertNotNull(formatters);
         final Throwable t = new Throwable();
-        t.getStackTrace();
         final LogEvent event = Log4jLogEvent.newBuilder() //
                 .setLoggerName("org.apache.logging.log4j.PatternParserTest") //
                 .setMarker(MarkerManager.getMarker("TEST")) //
@@ -407,7 +406,7 @@ public class PatternParserTest {
         final List<PatternFormatter> formatters = parser.parse("%K");
         assertNotNull(formatters);
         assertEquals(formatters.size(), 1);
-        PatternFormatter formatter = formatters.get(0);
+        final PatternFormatter formatter = formatters.get(0);
         assertTrue(formatter.getConverter() instanceof MapPatternConverter, "Expected a MapPatternConverter");
     }
 }

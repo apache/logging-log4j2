@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j.helpers;
 
 import java.text.DateFormat;
@@ -25,6 +24,8 @@ import java.util.TimeZone;
 
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * This abstract layout takes care of all the date related options and formatting work.
@@ -157,7 +158,7 @@ abstract public class DateLayout extends Layout {
     @Deprecated
     public void setOption(final String option, final String value) {
         if (option.equalsIgnoreCase(DATE_FORMAT_OPTION)) {
-            dateFormatOption = value.toUpperCase();
+            dateFormatOption = toRootUpperCase(value);
         } else if (option.equalsIgnoreCase(TIMEZONE_OPTION)) {
             timeZoneID = value;
         }

@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.kafka.appender;
 
@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -138,7 +137,7 @@ public class KafkaAppenderTest {
         final ProducerRecord<byte[], byte[]> item = history.get(0);
         assertNotNull(item);
         assertEquals(TOPIC_NAME, item.topic());
-        byte[] keyValue = "key".getBytes(StandardCharsets.UTF_8);
+        final byte[] keyValue = "key".getBytes(StandardCharsets.UTF_8);
         assertEquals(Long.valueOf(logEvent.getTimeMillis()), item.timestamp());
         assertArrayEquals(item.key(), keyValue);
         assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
@@ -148,15 +147,15 @@ public class KafkaAppenderTest {
     public void testAppendWithKeyLookup() throws Exception {
         final Appender appender = ctx.getRequiredAppender("KafkaAppenderWithKeyLookup");
         final LogEvent logEvent = createLogEvent();
-        Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        final Date date = new Date();
+        final SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         appender.append(logEvent);
         final List<ProducerRecord<byte[], byte[]>> history = kafka.history();
         assertEquals(1, history.size());
         final ProducerRecord<byte[], byte[]> item = history.get(0);
         assertNotNull(item);
         assertEquals(TOPIC_NAME, item.topic());
-        byte[] keyValue = format.format(date).getBytes(StandardCharsets.UTF_8);
+        final byte[] keyValue = format.format(date).getBytes(StandardCharsets.UTF_8);
         assertEquals(Long.valueOf(logEvent.getTimeMillis()), item.timestamp());
         assertArrayEquals(item.key(), keyValue);
         assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
@@ -173,7 +172,7 @@ public class KafkaAppenderTest {
         final ProducerRecord<byte[], byte[]> item = history.get(0);
         assertNotNull(item);
         assertEquals(TOPIC_NAME, item.topic());
-        byte[] keyValue = "key".getBytes(StandardCharsets.UTF_8);
+        final byte[] keyValue = "key".getBytes(StandardCharsets.UTF_8);
         assertArrayEquals(item.key(), keyValue);
         assertNotEquals(Long.valueOf(logEvent.getTimeMillis()), item.timestamp());
         assertEquals(LOG_MESSAGE, new String(item.value(), StandardCharsets.UTF_8));
@@ -181,7 +180,7 @@ public class KafkaAppenderTest {
 
     private LogEvent deserializeLogEvent(final byte[] data) throws IOException, ClassNotFoundException {
         final ByteArrayInputStream bis = new ByteArrayInputStream(data);
-        try (ObjectInput ois = new FilteredObjectInputStream(bis)) {
+        try (final ObjectInput ois = new FilteredObjectInputStream(bis)) {
             return (LogEvent) ois.readObject();
         }
     }

@@ -1,38 +1,31 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender;
 
-import org.apache.logging.log4j.core.Appender;
+import java.io.Writer;
+
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.StringLayout;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.CloseShieldWriter;
-import org.apache.logging.log4j.plugins.Configurable;
-import org.apache.logging.log4j.plugins.Plugin;
-import org.apache.logging.log4j.plugins.PluginFactory;
-
-import java.io.Writer;
 
 /**
  * Appends log events to a {@link Writer}.
  */
-@Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
-@Plugin("Writer")
 public final class WriterAppender extends AbstractWriterAppender<WriterManager> {
 
     /**
@@ -47,9 +40,8 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
         @Override
         public WriterAppender build() {
-            final StringLayout layout = (StringLayout) getLayout();
-            final StringLayout actualLayout = layout != null ? layout : PatternLayout.createDefaultLayout();
-            return new WriterAppender(getName(), actualLayout, getFilter(), getManager(target, follow, actualLayout),
+            final StringLayout layout = (StringLayout) getOrCreateLayout();
+            return new WriterAppender(getName(), layout, getFilter(), getManager(target, follow, layout),
                     isIgnoreExceptions(), getPropertyArray());
         }
 
@@ -107,39 +99,6 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
 
     private static final WriterManagerFactory factory = new WriterManagerFactory();
 
-    /**
-     * Creates a WriterAppender.
-     *
-     * @param layout
-     *            The layout to use or null to get the default layout.
-     * @param filter
-     *            The Filter or null.
-     * @param target
-     *            The target Writer
-     * @param follow
-     *            If true will follow changes to the underlying output stream.
-     *            Use false as the default.
-     * @param name
-     *            The name of the Appender (required).
-     * @param ignore
-     *            If {@code "true"} (default) exceptions encountered when
-     *            appending events are logged; otherwise they are propagated to
-     *            the caller. Use true as the default.
-     * @return The ConsoleAppender.
-     */
-    @PluginFactory
-    public static WriterAppender createAppender(StringLayout layout, final Filter filter, final Writer target,
-            final String name, final boolean follow, final boolean ignore) {
-        if (name == null) {
-            LOGGER.error("No name provided for WriterAppender");
-            return null;
-        }
-        if (layout == null) {
-            layout = PatternLayout.createDefaultLayout();
-        }
-        return new WriterAppender(name, layout, filter, getManager(target, follow, layout), ignore, Property.EMPTY_ARRAY);
-    }
-
     private static WriterManager getManager(final Writer target, final boolean follow, final StringLayout layout) {
         final Writer writer = new CloseShieldWriter(target);
         final String managerName = target.getClass().getName() + "@" + Integer.toHexString(target.hashCode()) + '.'
@@ -147,7 +106,6 @@ public final class WriterAppender extends AbstractWriterAppender<WriterManager> 
         return WriterManager.getManager(managerName, new FactoryData(writer, managerName, layout), factory);
     }
 
-    @PluginFactory
     public static <B extends Builder<B>> B newBuilder() {
         return new Builder<B>().asBuilder();
     }

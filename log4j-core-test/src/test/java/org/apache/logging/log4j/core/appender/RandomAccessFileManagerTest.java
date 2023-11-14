@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender;
 
@@ -22,11 +22,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 
-import org.apache.logging.log4j.core.util.NullOutputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * Tests the RandomAccessFileManager class.
@@ -44,7 +44,7 @@ public class RandomAccessFileManagerTest {
     public void testWrite_multiplesOfBufferSize() throws IOException {
         final File file = new File(tempDir, "testWrite_multiplesOfBufferSize.bin");
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.getInstance();
+            final OutputStream os = OutputStream.nullOutputStream();
             try (final RandomAccessFileManager manager = new RandomAccessFileManager(
                     null, raf, file.getName(), os,
                     RandomAccessFileManager.DEFAULT_BUFFER_SIZE, null, null, true)) {
@@ -66,7 +66,7 @@ public class RandomAccessFileManagerTest {
     public void testWrite_dataExceedingBufferSize() throws IOException {
         final File file = new File(tempDir, "testWrite_dataExceedingBufferSize.bin");
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.getInstance();
+            final OutputStream os = OutputStream.nullOutputStream();
             final int size = RandomAccessFileManager.DEFAULT_BUFFER_SIZE * 3 + 1;
             try (final RandomAccessFileManager manager = new RandomAccessFileManager(
                     null, raf, file.getName(), os,
@@ -84,7 +84,7 @@ public class RandomAccessFileManagerTest {
     public void testConfigurableBufferSize() throws IOException {
         final File file = new File(tempDir, "testConfigurableBufferSize.bin");
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.getInstance();
+            final OutputStream os = OutputStream.nullOutputStream();
             final int bufferSize = 4 * 1024;
             assertNotEquals(bufferSize, RandomAccessFileManager.DEFAULT_BUFFER_SIZE);
             try (final RandomAccessFileManager manager = new RandomAccessFileManager(
@@ -99,7 +99,7 @@ public class RandomAccessFileManagerTest {
     public void testWrite_dataExceedingMinBufferSize() throws IOException {
         final File file = new File(tempDir, "testWrite_dataExceedingMinBufferSize.bin");
         try (final RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
-            final OutputStream os = NullOutputStream.getInstance();
+            final OutputStream os = OutputStream.nullOutputStream();
             final int bufferSize = 1;
             final int size = bufferSize * 3 + 1;
             try (final RandomAccessFileManager manager = new RandomAccessFileManager(
@@ -122,7 +122,7 @@ public class RandomAccessFileManagerTest {
         final byte[] bytes = new byte[4 * 1024];
 
         // create existing file
-        try (FileOutputStream fos = new FileOutputStream(file)) {
+        try (final FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(bytes, 0, bytes.length);
             fos.flush();
         }

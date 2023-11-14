@@ -3,11 +3,11 @@
   ~ Licensed to the Apache Software Foundation (ASF) under one or more
   ~ contributor license agreements.  See the NOTICE file distributed with
   ~ this work for additional information regarding copyright ownership.
-  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ The ASF licenses this file to you under the Apache License, Version 2.0
   ~ (the "License"); you may not use this file except in compliance with
   ~ the License.  You may obtain a copy of the License at
   ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~      http://www.apache.org/licenses/LICENSE-2.0
   ~
   ~ Unless required by applicable law or agreed to in writing, software
   ~ distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,13 +16,12 @@
   ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
 
   <artifactId>log4j-appserver</artifactId>
@@ -34,7 +33,26 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Web Documentation</docLabel>
     <projectDir>/log4j-appserver</projectDir>
-    <module.name>org.apache.logging.log4j.appserver</module.name>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-extra-package-options>
+      <!--
+        ~ The Tomcat Log interface hasn't changed in a long time. Since 8.x ServiceLoader is used.
+        -->
+      org.apache.juli.logging;version="[8.0,12)";resolution:=optional,
+      <!--
+        ~ Jetty's AbstractLogger is available since version 7.6.
+        ~ Jetty 10.x uses SLF4J.
+        -->
+      org.eclipse.jetty.util.log;version="[7.6,10)";resolution:=optional
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Non-transitive -->
+      org.apache.tomcat.juli;transitive=false,
+      org.eclipse.jetty.util;transitive=false
+    </bnd-extra-module-options>
   </properties>
 
   <dependencies>
@@ -53,22 +71,5 @@
       <artifactId>log4j-api</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <!-- we compile against 3.0, but require 2.5 minimum -->
-            <Fragment-Host>org.apache.logging.log4j.core</Fragment-Host>
-            <Import-Package>javax.servlet;version="[2.5,4)",*</Import-Package>
-            <Export-Package>org.apache.logging.log4j.web</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

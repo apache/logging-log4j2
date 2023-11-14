@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j.helpers;
 
 import java.text.DateFormat;
@@ -33,7 +32,7 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Construct a new instance of LayoutTest.
-     * 
+     *
      * @param testName test name.
      */
     public DateLayoutTest(final String testName) {
@@ -42,7 +41,7 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Constructor for use by derived tests.
-     * 
+     *
      * @param testName name of test.
      * @param expectedContentType expected value for getContentType().
      * @param expectedIgnoresThrowable expected value for ignoresThrowable().
@@ -77,7 +76,7 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Tests DateLayout.DATE_FORMAT_OPTION constant.
-     * 
+     *
      * @deprecated since constant is deprecated
      */
     public void testDateFormatOption() {
@@ -86,7 +85,7 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Tests DateLayout.TIMEZONE_OPTION constant.
-     * 
+     *
      * @deprecated since constant is deprecated
      */
     public void testTimeZoneOption() {
@@ -95,33 +94,33 @@ public class DateLayoutTest extends LayoutTest {
 
     /**
      * Tests getOptionStrings().
-     * 
+     *
      * @deprecated since getOptionStrings is deprecated.
      *
      */
     public void testGetOptionStrings() {
-        String[] options = ((DateLayout) createLayout()).getOptionStrings();
+        final String[] options = ((DateLayout) createLayout()).getOptionStrings();
         assertEquals(2, options.length);
     }
 
     /**
      * Tests setting DateFormat through setOption method.
-     * 
+     *
      * @deprecated since setOption is deprecated.
      */
     public void testSetOptionDateFormat() {
-        DateLayout layout = (DateLayout) createLayout();
+        final DateLayout layout = (DateLayout) createLayout();
         layout.setOption("dAtefOrmat", "foobar");
         assertEquals("FOOBAR", layout.getDateFormat());
     }
 
     /**
      * Tests setting TimeZone through setOption method.
-     * 
+     *
      * @deprecated since setOption is deprecated.
      */
     public void testSetOptionTimeZone() {
-        DateLayout layout = (DateLayout) createLayout();
+        final DateLayout layout = (DateLayout) createLayout();
         layout.setOption("tImezOne", "+05:00");
         assertEquals("+05:00", layout.getTimeZone());
     }
@@ -130,7 +129,7 @@ public class DateLayoutTest extends LayoutTest {
      * Tests setDateFormat.
      */
     public void testSetDateFormat() {
-        DateLayout layout = (DateLayout) createLayout();
+        final DateLayout layout = (DateLayout) createLayout();
         layout.setDateFormat("ABSOLUTE");
         assertEquals("ABSOLUTE", layout.getDateFormat());
     }
@@ -139,7 +138,7 @@ public class DateLayoutTest extends LayoutTest {
      * Tests setTimeZone.
      */
     public void testSetTimeZone() {
-        DateLayout layout = (DateLayout) createLayout();
+        final DateLayout layout = (DateLayout) createLayout();
         layout.setTimeZone("+05:00");
         assertEquals("+05:00", layout.getTimeZone());
     }
@@ -148,7 +147,7 @@ public class DateLayoutTest extends LayoutTest {
      * Tests 2 parameter setDateFormat with null.
      */
     public void testSetDateFormatNull() {
-        DateLayout layout = (DateLayout) createLayout();
+        final DateLayout layout = (DateLayout) createLayout();
         layout.setDateFormat((String) null, null);
     }
 
@@ -156,7 +155,7 @@ public class DateLayoutTest extends LayoutTest {
      * Tests 2 parameter setDateFormat with "NULL".
      */
     public void testSetDateFormatNullString() {
-        DateLayout layout = (DateLayout) createLayout();
+        final DateLayout layout = (DateLayout) createLayout();
         layout.setDateFormat("NuLL", null);
     }
 
@@ -164,7 +163,7 @@ public class DateLayoutTest extends LayoutTest {
      * Tests 2 parameter setDateFormat with "RELATIVE".
      */
     public void testSetDateFormatRelative() {
-        DateLayout layout = (DateLayout) createLayout();
+        final DateLayout layout = (DateLayout) createLayout();
         layout.setDateFormat("rElatIve", TimeZone.getDefault());
     }
 
@@ -172,7 +171,7 @@ public class DateLayoutTest extends LayoutTest {
      * Tests 2 parameter setDateFormat with "ABSOLUTE".
      */
     public void testSetDateFormatAbsolute() {
-        DateLayout layout = (DateLayout) createLayout();
+        final DateLayout layout = (DateLayout) createLayout();
         layout.setDateFormat("aBsolUte", TimeZone.getDefault());
     }
 
@@ -180,7 +179,7 @@ public class DateLayoutTest extends LayoutTest {
      * Tests 2 parameter setDateFormat with "DATETIME".
      */
     public void testSetDateFormatDateTime() {
-        DateLayout layout = (DateLayout) createLayout();
+        final DateLayout layout = (DateLayout) createLayout();
         layout.setDateFormat("dAte", TimeZone.getDefault());
     }
 
@@ -188,7 +187,7 @@ public class DateLayoutTest extends LayoutTest {
      * Tests 2 parameter setDateFormat with "ISO8601".
      */
     public void testSetDateFormatISO8601() {
-        DateLayout layout = (DateLayout) createLayout();
+        final DateLayout layout = (DateLayout) createLayout();
         layout.setDateFormat("iSo8601", TimeZone.getDefault());
     }
 
@@ -196,7 +195,7 @@ public class DateLayoutTest extends LayoutTest {
      * Tests 2 parameter setDateFormat with "HH:mm:ss".
      */
     public void testSetDateFormatSimple() {
-        DateLayout layout = (DateLayout) createLayout();
+        final DateLayout layout = (DateLayout) createLayout();
         layout.setDateFormat("HH:mm:ss", TimeZone.getDefault());
     }
 
@@ -204,7 +203,7 @@ public class DateLayoutTest extends LayoutTest {
      * Tests activateOptions.
      */
     public void testActivateOptions() {
-        DateLayout layout = (DateLayout) createLayout();
+        final DateLayout layout = (DateLayout) createLayout();
         layout.setDateFormat("HH:mm:ss");
         layout.setTimeZone("+05:00");
         layout.activateOptions();
@@ -214,38 +213,38 @@ public class DateLayoutTest extends LayoutTest {
      * Tests setDateFormat(DateFormat, TimeZone).
      */
     public void testSetDateFormatWithFormat() {
-        DateFormat format = new SimpleDateFormat("HH:mm");
-        DateLayout layout = (DateLayout) createLayout();
+        final DateFormat format = new SimpleDateFormat("HH:mm");
+        final DateLayout layout = (DateLayout) createLayout();
         layout.setDateFormat(format, TimeZone.getDefault());
     }
 
     /**
      * Tests IS08601DateFormat class.
-     * 
+     *
      * @deprecated since ISO8601DateFormat is deprecated
      */
     public void testISO8601Format() {
-        DateFormat format = new ISO8601DateFormat();
-        Calendar calendar = Calendar.getInstance();
+        final DateFormat format = new ISO8601DateFormat();
+        final Calendar calendar = Calendar.getInstance();
         calendar.clear();
         calendar.set(1970, 0, 1, 0, 0, 0);
-        String actual = format.format(calendar.getTime());
+        final String actual = format.format(calendar.getTime());
         assertEquals("1970-01-01 00:00:00,000", actual);
     }
 
     /**
      * Tests DateTimeDateFormat class.
-     * 
+     *
      * @deprecated since DateTimeDateFormat is deprecated
      */
     public void testDateTimeFormat() {
-        DateFormat format = new DateTimeDateFormat();
-        Calendar calendar = Calendar.getInstance();
+        final DateFormat format = new DateTimeDateFormat();
+        final Calendar calendar = Calendar.getInstance();
         calendar.clear();
         calendar.set(1970, 0, 1, 0, 0, 0);
-        String actual = format.format(calendar.getTime());
-        SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy HH:mm:ss,SSS");
-        String expected = df.format(calendar.getTime());
+        final String actual = format.format(calendar.getTime());
+        final SimpleDateFormat df = new SimpleDateFormat("dd MMM yyyy HH:mm:ss,SSS");
+        final String expected = df.format(calendar.getTime());
         assertEquals(expected, actual);
     }
 

@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j.pattern;
 
 import junit.framework.TestCase;
@@ -40,7 +39,7 @@ public class FormattingInfoTest extends TestCase {
      *
      */
     public void testConstructor() {
-        FormattingInfo field = new FormattingInfo(true, 3, 6);
+        final FormattingInfo field = new FormattingInfo(true, 3, 6);
         assertNotNull(field);
         assertEquals(3, field.getMinLength());
         assertEquals(6, field.getMaxLength());
@@ -52,7 +51,7 @@ public class FormattingInfoTest extends TestCase {
      *
      */
     public void testGetDefault() {
-        FormattingInfo field = FormattingInfo.getDefault();
+        final FormattingInfo field = FormattingInfo.getDefault();
         assertNotNull(field);
         assertEquals(0, field.getMinLength());
         assertEquals(Integer.MAX_VALUE, field.getMaxLength());
@@ -63,8 +62,8 @@ public class FormattingInfoTest extends TestCase {
      * Add padding to left since field is not minimum width.
      */
     public void testPadLeft() {
-        StringBuffer buf = new StringBuffer("foobar");
-        FormattingInfo field = new FormattingInfo(false, 5, 10);
+        final StringBuffer buf = new StringBuffer("foobar");
+        final FormattingInfo field = new FormattingInfo(false, 5, 10);
         field.format(2, buf);
         assertEquals("fo obar", buf.toString());
     }
@@ -73,8 +72,8 @@ public class FormattingInfoTest extends TestCase {
      * Add padding to right since field is not minimum width.
      */
     public void testPadRight() {
-        StringBuffer buf = new StringBuffer("foobar");
-        FormattingInfo field = new FormattingInfo(true, 5, 10);
+        final StringBuffer buf = new StringBuffer("foobar");
+        final FormattingInfo field = new FormattingInfo(true, 5, 10);
         field.format(2, buf);
         assertEquals("foobar ", buf.toString());
     }
@@ -83,8 +82,8 @@ public class FormattingInfoTest extends TestCase {
      * Field exceeds maximum width
      */
     public void testTruncate() {
-        StringBuffer buf = new StringBuffer("foobar");
-        FormattingInfo field = new FormattingInfo(true, 0, 3);
+        final StringBuffer buf = new StringBuffer("foobar");
+        final FormattingInfo field = new FormattingInfo(true, 0, 3);
         field.format(2, buf);
         assertEquals("fobar", buf.toString());
     }

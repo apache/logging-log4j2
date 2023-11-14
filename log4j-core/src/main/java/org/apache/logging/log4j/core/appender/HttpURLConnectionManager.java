@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender;
 
@@ -24,8 +24,10 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+
 import javax.net.ssl.HttpsURLConnection;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -34,7 +36,6 @@ import org.apache.logging.log4j.core.config.ConfigurationException;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
-import org.apache.logging.log4j.core.util.IOUtils;
 
 public class HttpURLConnectionManager extends HttpManager {
 
@@ -73,6 +74,10 @@ public class HttpURLConnectionManager extends HttpManager {
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = "URLCONNECTION_SSRF_FD",
+            justification = "This connection URL is specified in a configuration file."
+    )
     public void send(final Layout layout, final LogEvent event) throws IOException {
         final HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
         urlConnection.setAllowUserInteraction(false);
@@ -107,11 +112,8 @@ public class HttpURLConnectionManager extends HttpManager {
             os.write(msg);
         }
 
-        final byte[] buffer = new byte[1024];
         try (final InputStream is = urlConnection.getInputStream()) {
-            while (IOUtils.EOF != is.read(buffer)) {
-                // empty
-            }
+            is.readAllBytes();
         } catch (final IOException e) {
             final StringBuilder errorMessage = new StringBuilder();
             try (final InputStream es = urlConnection.getErrorStream()) {
@@ -121,10 +123,7 @@ public class HttpURLConnectionManager extends HttpManager {
                 }
                 if (es != null) {
                     errorMessage.append(" - ");
-                    int n;
-                    while (IOUtils.EOF != (n = es.read(buffer))) {
-                        errorMessage.append(new String(buffer, 0, n, CHARSET));
-                    }
+                    errorMessage.append(new String(es.readAllBytes(), CHARSET));
                 }
             }
             if (urlConnection.getResponseCode() > -1) {

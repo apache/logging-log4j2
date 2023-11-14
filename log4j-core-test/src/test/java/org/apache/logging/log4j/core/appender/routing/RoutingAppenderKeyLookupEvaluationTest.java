@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.routing;
 
@@ -39,8 +39,8 @@ public class RoutingAppenderKeyLookupEvaluationTest {
     private final ListAppender app;
 
     public RoutingAppenderKeyLookupEvaluationTest(
-            LoggerContext context,
-            @Named("List") ListAppender app) {
+            final LoggerContext context,
+            @Named("List") final ListAppender app) {
         this.context = context;
         this.app = app.clear();
     }
@@ -58,14 +58,14 @@ public class RoutingAppenderKeyLookupEvaluationTest {
 
     @Test
     public void testRoutingNoUser() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         logger.warn("no user");
         assertThat(app.getMessages()).contains("WARN ${ctx:user} no user");
     }
 
     @Test
     public void testRoutingDoesNotMatchRoute() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         ThreadContext.put(KEY, "noRouteExists");
         logger.warn("unmatched user");
         assertThat(app.getMessages()).isEmpty();
@@ -73,7 +73,7 @@ public class RoutingAppenderKeyLookupEvaluationTest {
 
     @Test
     public void testRoutingContainsLookup() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         ThreadContext.put(KEY, "${java:version}");
         logger.warn("naughty user");
         assertThat(app.getMessages()).contains("WARN ${java:version} naughty user");
@@ -81,7 +81,7 @@ public class RoutingAppenderKeyLookupEvaluationTest {
 
     @Test
     public void testRoutingMatchesEscapedLookup() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         ThreadContext.put(KEY, "${upper:name}");
         logger.warn("naughty user");
         assertThat(app.getMessages()).contains("WARN ${upper:name} naughty user");
@@ -89,7 +89,7 @@ public class RoutingAppenderKeyLookupEvaluationTest {
 
     @Test
     public void testRoutesThemselvesNotEvaluated() {
-        Logger logger = context.getLogger(getClass());
+        final Logger logger = context.getLogger(getClass());
         ThreadContext.put(KEY, "NAME");
         logger.warn("unmatched user");
         assertThat(app.getMessages()).isEmpty();

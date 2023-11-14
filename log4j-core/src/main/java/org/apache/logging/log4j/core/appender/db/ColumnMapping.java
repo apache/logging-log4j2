@@ -1,23 +1,22 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.db;
 
 import java.util.Date;
-import java.util.Locale;
 import java.util.function.Supplier;
 
 import org.apache.logging.log4j.Logger;
@@ -32,12 +31,14 @@ import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.convert.TypeConverterFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.spi.ThreadContextMap;
 import org.apache.logging.log4j.spi.ThreadContextStack;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.ReadOnlyStringMap;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * A configuration element for specifying a database column name mapping.
@@ -79,7 +80,7 @@ public class ColumnMapping {
         @Required(message = "No conversion type provided")
         private Class<?> type = String.class;
 
-        private Injector injector;
+        private TypeConverterFactory typeConverterFactory;
 
         @Override
         public ColumnMapping build() {
@@ -103,7 +104,7 @@ public class ColumnMapping {
                 LOGGER.error("Only one of 'literal' or 'parameter' can be set on the column mapping {}", this);
                 return null;
             }
-            return new ColumnMapping(name, source, layout, literal, parameter, type, () -> injector.getTypeConverter(type));
+            return new ColumnMapping(name, source, layout, literal, parameter, type, () -> typeConverterFactory.getTypeConverter(type));
         }
 
         public Builder setConfiguration(final Configuration configuration) {
@@ -189,8 +190,8 @@ public class ColumnMapping {
         }
 
         @Inject
-        public Builder setInjector(final Injector injector) {
-            this.injector = injector;
+        public Builder setTypeConverterFactory(final TypeConverterFactory typeConverterFactory) {
+            this.typeConverterFactory = typeConverterFactory;
             return this;
         }
 
@@ -209,7 +210,7 @@ public class ColumnMapping {
     }
 
     public static String toKey(final String name) {
-        return name.toUpperCase(Locale.ROOT);
+        return toRootUpperCase(name);
     }
 
     private final StringLayout layout;

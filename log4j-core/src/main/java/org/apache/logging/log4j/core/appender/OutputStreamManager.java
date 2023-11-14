@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender;
 
@@ -215,24 +215,30 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @param immediateFlush flushes immediately after writing.
      * @throws AppenderLoggingException if an error occurs.
      */
-    protected synchronized void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
-        if (immediateFlush && byteBuffer.position() == 0) {
-            writeToDestination(bytes, offset, length);
-            flushDestination();
-            return;
-        }
-        if (length >= byteBuffer.capacity()) {
-            // if request length exceeds buffer capacity, flush the buffer and write the data directly
-            flush();
-            writeToDestination(bytes, offset, length);
-        } else {
-            if (length > byteBuffer.remaining()) {
+    protected void write(final byte[] bytes, final int offset, final int length, final boolean immediateFlush) {
+        // TODO: consider only locking from public methods?
+        writeLock.lock();
+        try {
+            if (immediateFlush && byteBuffer.position() == 0) {
+                writeToDestination(bytes, offset, length);
+                flushDestination();
+                return;
+            }
+            if (length >= byteBuffer.capacity()) {
+                // if request length exceeds buffer capacity, flush the buffer and write the data directly
+                flush();
+                writeToDestination(bytes, offset, length);
+            } else {
+                if (length > byteBuffer.remaining()) {
+                    flush();
+                }
+                byteBuffer.put(bytes, offset, length);
+            }
+            if (immediateFlush) {
                 flush();
             }
-            byteBuffer.put(bytes, offset, length);
-        }
-        if (immediateFlush) {
-            flush();
+        } finally {
+            writeLock.unlock();
         }
     }
 
@@ -244,11 +250,14 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @param length how many bytes to write
      * @since 2.6
      */
-    protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
+    protected void writeToDestination(final byte[] bytes, final int offset, final int length) {
+        writeLock.lock();
         try {
             getOutputStream().write(bytes, offset, length);
         } catch (final IOException ex) {
             throw new AppenderLoggingException("Error writing to stream " + getName(), ex);
+        } finally {
+            writeLock.unlock();
         }
     }
 
@@ -256,13 +265,16 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * Calls {@code flush()} on the underlying output stream.
      * @since 2.6
      */
-    protected synchronized void flushDestination() {
+    protected void flushDestination() {
         final OutputStream stream = outputStream; // access volatile field only once per method
         if (stream != null) {
+            writeLock.lock();
             try {
                 stream.flush();
             } catch (final IOException ex) {
                 throw new AppenderLoggingException("Error flushing stream " + getName(), ex);
+            } finally {
+                writeLock.unlock();
             }
         }
     }
@@ -275,39 +287,51 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @see #flushDestination()
      * @since 2.6
      */
-    protected synchronized void flushBuffer(final ByteBuffer buf) {
+    protected void flushBuffer(final ByteBuffer buf) {
         ((Buffer) buf).flip();
+        writeLock.lock();
         try {
-            if (buf.remaining() > 0) {
+            if (buf.hasRemaining()) {
                 writeToDestination(buf.array(), buf.arrayOffset() + buf.position(), buf.remaining());
             }
         } finally {
             buf.clear();
+            writeLock.unlock();
         }
     }
 
     /**
      * Flushes any buffers.
      */
-    public synchronized void flush() {
-        flushBuffer(byteBuffer);
-        flushDestination();
+    public void flush() {
+        writeLock.lock();
+        try {
+            flushBuffer(byteBuffer);
+            flushDestination();
+        } finally {
+            writeLock.unlock();
+        }
     }
 
-    protected synchronized boolean closeOutputStream() {
-        flush();
-        final OutputStream stream = outputStream; // access volatile field only once per method
-        if (stream == null || stream == System.out || stream == System.err) {
-            return true;
-        }
+    protected boolean closeOutputStream() {
+        writeLock.lock();
         try {
-            stream.close();
-            LOGGER.debug("OutputStream closed");
-        } catch (final IOException ex) {
-            logError("Unable to close stream", ex);
-            return false;
+            flush();
+            final OutputStream stream = outputStream; // access volatile field only once per method
+            if (stream == null || stream == System.out || stream == System.err) {
+                return true;
+            }
+            try {
+                stream.close();
+                LOGGER.debug("OutputStream closed");
+            } catch (final IOException ex) {
+                logError("Unable to close stream", ex);
+                return false;
+            }
+            return true;
+        } finally {
+            writeLock.unlock();
         }
-        return true;
     }
 
     /**
@@ -348,8 +372,11 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         if (data.remaining() == 0) {
           return;
         }
-        synchronized (this) {
-          ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
+        writeLock.lock();
+        try {
+            ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
+        } finally {
+            writeLock.unlock();
         }
     }
 }

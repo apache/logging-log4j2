@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -52,11 +52,12 @@ public class MapRewritePolicy implements RewritePolicy {
      */
     @Override
     public LoggingEvent rewrite(final LoggingEvent source) {
-        Object msg = source.getMessage();
+        final Object msg = source.getMessage();
         if (msg instanceof MapMessage || msg instanceof Map) {
-            Map<String, String> props = source.getProperties() != null ? new HashMap<>(source.getProperties())
-                    : new HashMap<>();
+            final Map<String, String> props = source.getProperties() != null ? new HashMap<>(source.getProperties())
+            : new HashMap<>();
             @SuppressWarnings("unchecked")
+            final
             Map<String, Object> eventProps = msg instanceof Map ? (Map) msg : ((MapMessage) msg).getData();
             //
             //   if the map sent in the logging request
@@ -64,7 +65,7 @@ public class MapRewritePolicy implements RewritePolicy {
             //      otherwise, use the entire map.
             //
             Message newMessage = null;
-            Object newMsg = eventProps.get("message");
+            final Object newMsg = eventProps.get("message");
             if (newMsg != null) {
                 newMessage = new SimpleMessage(newMsg.toString());
                 for (Map.Entry<String, Object> entry : eventProps.entrySet()) {
@@ -83,12 +84,12 @@ public class MapRewritePolicy implements RewritePolicy {
                         .setContextData(new SortedArrayStringMap(props))
                         .build();
             } else {
-                LocationInfo info = source.getLocationInformation();
-                StackTraceElement element = new StackTraceElement(info.getClassName(), info.getMethodName(),
-                        info.getFileName(), Integer.parseInt(info.getLineNumber()));
-                Thread thread = getThread(source.getThreadName());
-                long threadId = thread != null ? thread.getId() : 0;
-                int threadPriority = thread != null ? thread.getPriority() : 0;
+                final LocationInfo info = source.getLocationInformation();
+                final StackTraceElement element = new StackTraceElement(info.getClassName(), info.getMethodName(),
+                info.getFileName(), Integer.parseInt(info.getLineNumber()));
+                final Thread thread = getThread(source.getThreadName());
+                final long threadId = thread != null ? thread.getId() : 0;
+                final int threadPriority = thread != null ? thread.getPriority() : 0;
                 event = Log4jLogEvent.newBuilder()
                         .setContextData(new SortedArrayStringMap(props))
                         .setLevel(OptionConverter.convertLevel(source.getLevel()))
@@ -112,7 +113,7 @@ public class MapRewritePolicy implements RewritePolicy {
 
     }
 
-    private Thread getThread(String name) {
+    private Thread getThread(final String name) {
         for (Thread thread : Thread.getAllStackTraces().keySet()) {
             if (thread.getName().equals(name)) {
                 return thread;

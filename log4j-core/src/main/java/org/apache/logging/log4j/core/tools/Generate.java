@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.tools;
 
@@ -20,6 +20,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Generates source code for custom or extended logger wrappers.
@@ -1104,6 +1106,10 @@ public final class Generate {
         out.println("       For each custom log level, specify NAME=intLevel (without spaces).");
     }
 
+    @SuppressFBWarnings(
+            value = "FORMAT_STRING_MANIPULATION",
+            justification = "The format strings come from constants. The replacement is done for readability."
+    )
     static String generateSource(final String classNameFQN, final List<LevelInfo> levels, final Type type) {
         final StringBuilder sb = new StringBuilder(10000 * levels.size());
         final int lastDot = classNameFQN.lastIndexOf('.');

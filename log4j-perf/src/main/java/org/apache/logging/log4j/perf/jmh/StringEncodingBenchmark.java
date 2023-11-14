@@ -1,20 +1,19 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.apache.logging.log4j.perf.jmh;
 
 import java.nio.ByteBuffer;
@@ -201,26 +200,28 @@ public class StringEncodingBenchmark {
         return i;
     }
 
-    private int encode(final String charArray, int charOffset, int charLength, final byte[] byteArray) {
+    private int encode(final String charArray, final int charOffset, final int charLength, final byte[] byteArray) {
         int offset = 0;
         int length = Math.min(charLength, byteArray.length);
         int charDoneIndex = charOffset + length;
-        while (charOffset < charDoneIndex) {
-            final int m = encodeISOArray(charArray, charOffset, byteArray, offset, length);
-            charOffset += m;
+        int currentCharOffset = charOffset;
+        int currentCharLength = charLength;
+        while (currentCharOffset < charDoneIndex) {
+            final int m = encodeISOArray(charArray, currentCharOffset, byteArray, offset, length);
+            currentCharOffset += m;
             offset += m;
             if (m != length) {
-                final char c = charArray.charAt(charOffset++);
-                if ((Character.isHighSurrogate(c)) && (charOffset < charDoneIndex)
-                        && (Character.isLowSurrogate(charArray.charAt(charOffset)))) {
-                    if (charLength > byteArray.length) {
+                final char c = charArray.charAt(currentCharOffset++);
+                if ((Character.isHighSurrogate(c)) && (currentCharOffset < charDoneIndex)
+                        && (Character.isLowSurrogate(charArray.charAt(currentCharOffset)))) {
+                    if (currentCharLength > byteArray.length) {
                         charDoneIndex++;
-                        charLength--;
+                        currentCharLength--;
                     }
-                    charOffset++;
+                    currentCharOffset++;
                 }
                 byteArray[(offset++)] = '?';
-                length = Math.min(charDoneIndex - charOffset, byteArray.length - offset);
+                length = Math.min(charDoneIndex - currentCharOffset, byteArray.length - offset);
             }
         }
         return offset;
@@ -249,26 +250,28 @@ public class StringEncodingBenchmark {
         return i;
     }
 
-    private int encode0(final char[] charArray, int charOffset, int charLength, final byte[] byteArray) {
+    private int encode0(final char[] charArray, final int charOffset, final int charLength, final byte[] byteArray) {
         int offset = 0;
         int length = Math.min(charLength, byteArray.length);
         int charDoneIndex = charOffset + length;
-        while (charOffset < charDoneIndex) {
-            final int m = encodeISOArray0(charArray, charOffset, byteArray, offset, length);
-            charOffset += m;
+        int currentCharOffset = charOffset;
+        int currentCharLength = charLength;
+        while (currentCharOffset < charDoneIndex) {
+            final int m = encodeISOArray0(charArray, currentCharOffset, byteArray, offset, length);
+            currentCharOffset += m;
             offset += m;
             if (m != length) {
-                final char c = charArray[(charOffset++)];
-                if ((Character.isHighSurrogate(c)) && (charOffset < charDoneIndex)
-                        && (Character.isLowSurrogate(charArray[(charOffset)]))) {
-                    if (charLength > byteArray.length) {
+                final char c = charArray[(currentCharOffset++)];
+                if ((Character.isHighSurrogate(c)) && (currentCharOffset < charDoneIndex)
+                        && (Character.isLowSurrogate(charArray[(currentCharOffset)]))) {
+                    if (currentCharLength > byteArray.length) {
                         charDoneIndex++;
-                        charLength--;
+                        currentCharLength--;
                     }
-                    charOffset++;
+                    currentCharOffset++;
                 }
                 byteArray[(offset++)] = '?';
-                length = Math.min(charDoneIndex - charOffset, byteArray.length - offset);
+                length = Math.min(charDoneIndex - currentCharOffset, byteArray.length - offset);
             }
         }
         return offset;

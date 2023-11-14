@@ -1,26 +1,24 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.apache.logging.log4j.plugins.convert;
 
 import org.apache.logging.log4j.plugins.Ordered;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -67,10 +65,9 @@ class TypeConverterRegistryTest {
 
     @Test
     public void testMultipleComparableConverters() {
-        final Injector injector = DI.createInjector();
-        injector.init();
-        final TypeConverter<?> converter = injector.getTypeConverter(CustomTestClass1.class);
-        assertThat(converter, instanceOf(CustomTestClass1Converter2.class));
+        final TypeConverter<CustomTestClass1> typeConverter = DI.createInitializedFactory()
+                .getTypeConverter(CustomTestClass1.class);
+        assertThat(typeConverter, instanceOf(CustomTestClass1Converter2.class));
     }
 
     public static final class CustomTestClass2 {
@@ -105,10 +102,9 @@ class TypeConverterRegistryTest {
 
     @Test
     public void testMultipleIncomparableConverters() {
-        final Injector injector = DI.createInjector();
-        injector.init();
-        final TypeConverter<?> converter = injector.getTypeConverter(CustomTestClass2.class);
-        assertThat(converter, instanceOf(CustomTestClass2Converter1.class));
+        final TypeConverter<CustomTestClass2> typeConverter = DI.createInitializedFactory()
+                .getTypeConverter(CustomTestClass2.class);
+        assertThat(typeConverter, instanceOf(CustomTestClass2Converter1.class));
     }
 
 }

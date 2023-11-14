@@ -16,6 +16,10 @@
 ////
 = Apache Log4j Project Guidelines
 
+++++
+<link rel="stylesheet" type="text/css" href="css/tables.css">
+++++
+
 This document defines the guidelines for the
 https://logging.apache.org/log4j/2.x[Apache Log4j Project]. It includes
 definitions of how conflict is resolved by voting, who is able to vote,

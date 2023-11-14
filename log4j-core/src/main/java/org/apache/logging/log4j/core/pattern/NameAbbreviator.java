@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.pattern;
 
@@ -56,7 +56,7 @@ public abstract class NameAbbreviator {
                 return DEFAULT;
             }
 
-            NameAbbreviator dwa = DynamicWordAbbreviator.create(trimmed);
+            final NameAbbreviator dwa = DynamicWordAbbreviator.create(trimmed);
             if (dwa != null) {
                 return dwa;
             }
@@ -308,7 +308,7 @@ public abstract class NameAbbreviator {
             // information as possible for best performance on new runtimes, with the
             // possibility that such optimizations may be back-ported.
             // See https://bugs.openjdk.java.net/browse/JDK-8173585
-            int nextDot = input.indexOf('.', inputIndex);
+            final int nextDot = input.indexOf('.', inputIndex);
             if (nextDot < 0) {
                 buf.append(input, inputIndex, input.length());
                 return nextDot;
@@ -367,13 +367,13 @@ public abstract class NameAbbreviator {
             // non-terminal patterns are executed once
             int originalIndex = 0;
             int iteration = 0;
-            int originalLength = original.length();
+            final int originalLength = original.length();
             while (originalIndex >= 0 && originalIndex < originalLength) {
                 originalIndex = fragment(iteration++).abbreviate(original, originalIndex, destination);
             }
         }
 
-        PatternAbbreviatorFragment fragment(int index) {
+        PatternAbbreviatorFragment fragment(final int index) {
             return fragments[Math.min(index, fragments.length - 1)];
         }
 

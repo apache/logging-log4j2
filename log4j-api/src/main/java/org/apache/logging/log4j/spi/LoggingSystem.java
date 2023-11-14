@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.spi;
 
@@ -32,6 +32,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import aQute.bnd.annotation.Resolution;
+import aQute.bnd.annotation.spi.ServiceConsumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.message.DefaultFlowMessageFactory;
@@ -49,7 +51,7 @@ import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.ServiceRegistry;
 
-import static org.apache.logging.log4j.spi.LoggingSystemProperties.*;
+import static org.apache.logging.log4j.spi.LoggingSystemProperty.*;
 
 /**
  * Handles initializing the Log4j API through {@link Provider} discovery. This keeps track of which
@@ -58,6 +60,7 @@ import static org.apache.logging.log4j.spi.LoggingSystemProperties.*;
  *
  * @since 3.0.0
  */
+@ServiceConsumer(value = Provider.class, resolution = Resolution.OPTIONAL)
 public class LoggingSystem {
     /**
      * Resource name for a Log4j 2 provider properties file.
@@ -230,7 +233,7 @@ public class LoggingSystem {
     }
 
     private static List<Provider> loadLegacyProviders() {
-        return LoaderUtil.findUrlResources(PROVIDER_RESOURCE, false)
+        return LoaderUtil.findUrlResources(PROVIDER_RESOURCE)
                 .stream()
                 .map(urlResource -> loadLegacyProvider(urlResource.getUrl(), urlResource.getClassLoader()))
                 .filter(Objects::nonNull)
@@ -299,7 +302,7 @@ public class LoggingSystem {
         }
     }
 
-    private static class SystemProvider {
+    private static final class SystemProvider {
         private final Provider provider;
 
         private SystemProvider() {
@@ -311,7 +314,8 @@ public class LoggingSystem {
         }
 
         public LoggerContextFactory createLoggerContextFactory(final PropertyEnvironment environment) {
-            final String customFactoryClass = environment.getStringProperty(LogManager.FACTORY_PROPERTY_NAME);
+            final String customFactoryClass =
+                    environment.getStringProperty(LoggingSystemProperty.LOGGER_CONTEXT_FACTORY_CLASS);
             if (customFactoryClass != null) {
                 final LoggerContextFactory customFactory = createInstance(customFactoryClass, LoggerContextFactory.class);
                 if (customFactory != null) {
@@ -337,10 +341,10 @@ public class LoggingSystem {
          * Creates the ThreadContextMap instance used by the ThreadContext.
          * <p>
          * If {@linkplain Constants#isThreadLocalsEnabled() Log4j can use ThreadLocals}, a garbage-free StringMap-based context map can
-         * be installed by setting system property {@value LoggingSystemProperties#THREAD_CONTEXT_GARBAGE_FREE_ENABLED} to {@code true}.
+         * be installed by setting system property {@link LoggingSystemProperty#THREAD_CONTEXT_GARBAGE_FREE_ENABLED} to {@code true}.
          * </p><p>
          * Furthermore, any custom {@code ThreadContextMap} can be installed by setting system property
-         * {@value LoggingSystemProperties#THREAD_CONTEXT_MAP_CLASS} to the fully qualified class name of the class implementing the
+         * {@link LoggingSystemProperty#THREAD_CONTEXT_MAP_CLASS} to the fully qualified class name of the class implementing the
          * {@code ThreadContextMap} interface. (Also implement the {@code ReadOnlyThreadContextMap} interface if your custom
          * {@code ThreadContextMap} implementation should be accessible to applications via the
          * {@link ThreadContext#getThreadContextMap()} method.)
@@ -361,9 +365,9 @@ public class LoggingSystem {
                     return customContextMap;
                 }
             }
-            final boolean disableMap = environment.getBooleanProperty(THREAD_CONTEXT_MAP_DISABLED,
-                    environment.getBooleanProperty(THREAD_CONTEXT_DISABLED));
-            if (disableMap) {
+            final boolean enableMap = environment.getBooleanProperty(LoggingSystemProperty.THREAD_CONTEXT_MAP_ENABLED,
+                    environment.getBooleanProperty(LoggingSystemProperty.THREAD_CONTEXT_ENABLE, true));
+            if (!enableMap) {
                 return new NoOpThreadContextMap();
             }
             final Class<? extends ThreadContextMap> mapClass = provider.loadThreadContextMap();
@@ -388,9 +392,9 @@ public class LoggingSystem {
         }
 
         public ThreadContextStack createContextStack(final PropertyEnvironment environment) {
-            final boolean disableStack = environment.getBooleanProperty(THREAD_CONTEXT_STACK_DISABLED,
-                    environment.getBooleanProperty(THREAD_CONTEXT_DISABLED));
-            return new DefaultThreadContextStack(!disableStack);
+            final boolean enableStack = environment.getBooleanProperty(THREAD_CONTEXT_STACK_ENABLED,
+                    environment.getBooleanProperty(THREAD_CONTEXT_ENABLE, true));
+            return new DefaultThreadContextStack(enableStack);
         }
     }
 }

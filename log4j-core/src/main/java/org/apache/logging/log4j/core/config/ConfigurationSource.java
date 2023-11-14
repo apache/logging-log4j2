@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.config;
 
@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,8 +31,10 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+
 import javax.net.ssl.HttpsURLConnection;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
@@ -41,6 +44,7 @@ import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Represents the source for the logging configuration.
@@ -127,7 +131,7 @@ public class ConfigurationSource {
      * @param url the URL where the input stream originated
      * @param lastModified when the source was last modified.
      */
-    public ConfigurationSource(final InputStream stream, final URL url, long lastModified) {
+    public ConfigurationSource(final InputStream stream, final URL url, final long lastModified) {
         this.stream = Objects.requireNonNull(stream, "stream is null");
         this.data = null;
         this.lastModified = lastModified;
@@ -175,15 +179,15 @@ public class ConfigurationSource {
     }
 
     private boolean isFile() {
-        return source == null ? false : source.getFile() != null;
+        return source != null && source.getFile() != null;
     }
 
     private boolean isURL() {
-        return source == null ? false : source.getURI() != null;
+        return source != null && source.getURI() != null;
     }
 
     private boolean isLocation() {
-        return source == null ? false : source.getLocation() != null;
+        return source != null && source.getLocation() != null;
     }
 
     /**
@@ -194,14 +198,6 @@ public class ConfigurationSource {
      */
     public URL getURL() {
         return source == null ? null : source.getURL();
-    }
-
-    /**
-     * @deprecated Not used internally, no replacement. TODO remove and make source final.
-     */
-    @Deprecated
-    public void setSource(Source source) {
-        this.source = source;
     }
 
     public void setData(final byte[] data) {
@@ -329,15 +325,20 @@ public class ConfigurationSource {
         return getConfigurationSource(url);
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The name of the accessed files is based on a configuration value."
+    )
     private static ConfigurationSource getConfigurationSource(final URL url) {
         try {
             final URLConnection urlConnection = url.openConnection();
             // A "jar:" URL file remains open after the stream is closed, so do not cache it.
             urlConnection.setUseCaches(false);
-            final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
+            final PropertyEnvironment props = PropertiesUtil.getProperties();
+            final AuthorizationProvider provider = AuthorizationProvider.getAuthorizationProvider(props);
             provider.addAuthorization(urlConnection);
             if (url.getProtocol().equals(HTTPS)) {
-                final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration();
+                final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(props);
                 if (sslConfiguration != null) {
                     ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslConfiguration.getSslSocketFactory());
                     if (!sslConfiguration.isVerifyHostName()) {
@@ -349,6 +350,12 @@ public class ConfigurationSource {
             try {
                 if (file != null) {
                     return new ConfigurationSource(urlConnection.getInputStream(), FileUtils.fileFromUri(url.toURI()));
+                } else if (urlConnection instanceof JarURLConnection) {
+                    // Work around https://bugs.openjdk.java.net/browse/JDK-6956385.
+                    URL jarFileUrl = ((JarURLConnection)urlConnection).getJarFileURL();
+                    File jarFile = new File(jarFileUrl.getFile());
+                    long lastModified = jarFile.lastModified();
+                    return new ConfigurationSource(urlConnection.getInputStream(), url, lastModified);
                 } else {
                     return new ConfigurationSource(urlConnection.getInputStream(), url, urlConnection.getLastModified());
                 }

@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.log4j.builders;
 
@@ -50,7 +50,7 @@ public class Log4j2ListAppenderBuilder extends AbstractBuilder implements Append
     }
 
     @Override
-    public Appender parseAppender(Element element, XmlConfiguration configuration) {
+    public Appender parseAppender(final Element element, final XmlConfiguration configuration) {
         final String name = getNameAttribute(element);
         final AtomicReference<Layout> layout = new AtomicReference<>();
         final AtomicReference<Filter> filter = new AtomicReference<>();
@@ -69,14 +69,14 @@ public class Log4j2ListAppenderBuilder extends AbstractBuilder implements Append
     }
 
     @Override
-    public Appender parseAppender(String name, String appenderPrefix, String layoutPrefix, String filterPrefix,
-            Properties props, PropertiesConfiguration configuration) {
+    public Appender parseAppender(final String name, final String appenderPrefix, final String layoutPrefix, final String filterPrefix,
+            final Properties props, final PropertiesConfiguration configuration) {
         final Layout layout = configuration.parseLayout(layoutPrefix, name, props);
         final Filter filter = configuration.parseAppenderFilters(props, filterPrefix, name);
         return createAppender(name, layout, filter);
     }
 
-    private Appender createAppender(String name, Layout layout, Filter filter) {
+    private Appender createAppender(final String name, final Layout layout, final Filter filter) {
         final org.apache.logging.log4j.core.Layout log4j2Layout = LayoutAdapter.adapt(layout);
         return AppenderWrapper.adapt(
                 ListAppender.newBuilder()

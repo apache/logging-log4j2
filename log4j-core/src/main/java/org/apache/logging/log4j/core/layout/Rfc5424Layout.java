@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.layout;
 
@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -126,7 +128,8 @@ public final class Rfc5424Layout extends AbstractStringLayout {
     private final boolean useTlsMessageFormat;
 
     private long lastTimestamp = -1;
-    private String timestamppStr;
+    private String timestampStr;
+    private final Lock timestampComputationLock = new ReentrantLock();
 
     private final List<PatternFormatter> exceptionFormatters;
     private final Map<String, FieldFormatter> fieldFormatters;
@@ -242,7 +245,7 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         }
         PatternParser parser = config.getComponent(COMPONENT_KEY);
         if (parser == null) {
-            parser = new PatternParser(config, PatternLayout.KEY, ThrowablePatternConverter.class);
+            parser = new PatternParser(config, PatternLayout.KEY, LogEventPatternConverter.class);
             config.addComponent(COMPONENT_KEY, parser);
             parser = config.getComponent(COMPONENT_KEY);
         }
@@ -457,11 +460,14 @@ public final class Rfc5424Layout extends AbstractStringLayout {
 
     private String computeTimeStampString(final long now) {
         final long last;
-        synchronized (this) {
+        timestampComputationLock.lock();
+        try {
             last = lastTimestamp;
             if (now == lastTimestamp) {
-                return timestamppStr;
+                return timestampStr;
             }
+        } finally {
+            timestampComputationLock.unlock();
         }
 
         final StringBuilder buffer = new StringBuilder();
@@ -497,11 +503,14 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             buffer.append(':');
             pad(tzmin, TWO_DIGITS, buffer);
         }
-        synchronized (this) {
+        timestampComputationLock.lock();
+        try {
             if (last == lastTimestamp) {
                 lastTimestamp = now;
-                timestamppStr = buffer.toString();
+                timestampStr = buffer.toString();
             }
+        } finally {
+            timestampComputationLock.unlock();
         }
         return buffer.toString();
     }
@@ -671,67 +680,67 @@ public final class Rfc5424Layout extends AbstractStringLayout {
         private boolean useTLSMessageFormat;
         private LoggerFields[] loggerFields;
 
-        public Rfc5424LayoutBuilder setConfig(Configuration config) {
+        public Rfc5424LayoutBuilder setConfig(final Configuration config) {
             this.config = config;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setFacility(Facility facility) {
+        public Rfc5424LayoutBuilder setFacility(final Facility facility) {
             this.facility = facility;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setId(String id) {
+        public Rfc5424LayoutBuilder setId(final String id) {
             this.id = id;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setEin(String ein) {
+        public Rfc5424LayoutBuilder setEin(final String ein) {
             this.ein = ein;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setIncludeMDC(boolean includeMDC) {
+        public Rfc5424LayoutBuilder setIncludeMDC(final boolean includeMDC) {
             this.includeMDC = includeMDC;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setIncludeNL(boolean includeNL) {
+        public Rfc5424LayoutBuilder setIncludeNL(final boolean includeNL) {
             this.includeNL = includeNL;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setEscapeNL(String escapeNL) {
+        public Rfc5424LayoutBuilder setEscapeNL(final String escapeNL) {
             this.escapeNL = escapeNL;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setMdcId(String mdcId) {
+        public Rfc5424LayoutBuilder setMdcId(final String mdcId) {
             this.mdcId = mdcId;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setMdcPrefix(String mdcPrefix) {
+        public Rfc5424LayoutBuilder setMdcPrefix(final String mdcPrefix) {
             this.mdcPrefix = mdcPrefix;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setEventPrefix(String eventPrefix) {
+        public Rfc5424LayoutBuilder setEventPrefix(final String eventPrefix) {
             this.eventPrefix = eventPrefix;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setAppName(String appName) {
+        public Rfc5424LayoutBuilder setAppName(final String appName) {
             this.appName = appName;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setMessageId(String messageId) {
+        public Rfc5424LayoutBuilder setMessageId(final String messageId) {
             this.messageId = messageId;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setExcludes(String excludes) {
+        public Rfc5424LayoutBuilder setExcludes(final String excludes) {
             this.excludes = excludes;
             return this;
         }
@@ -741,27 +750,27 @@ public final class Rfc5424Layout extends AbstractStringLayout {
             return this;
         }
 
-        public Rfc5424LayoutBuilder setRequired(String required) {
+        public Rfc5424LayoutBuilder setRequired(final String required) {
             this.required = required;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setCharset(Charset charset) {
+        public Rfc5424LayoutBuilder setCharset(final Charset charset) {
             this.charset = charset;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setExceptionPattern(String exceptionPattern) {
+        public Rfc5424LayoutBuilder setExceptionPattern(final String exceptionPattern) {
             this.exceptionPattern = exceptionPattern;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setUseTLSMessageFormat(boolean useTLSMessageFormat) {
+        public Rfc5424LayoutBuilder setUseTLSMessageFormat(final boolean useTLSMessageFormat) {
             this.useTLSMessageFormat = useTLSMessageFormat;
             return this;
         }
 
-        public Rfc5424LayoutBuilder setLoggerFields(LoggerFields[] loggerFields) {
+        public Rfc5424LayoutBuilder setLoggerFields(final LoggerFields[] loggerFields) {
             this.loggerFields = loggerFields;
             return this;
         }

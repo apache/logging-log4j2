@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.plugins.util;
 
@@ -28,6 +28,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
@@ -164,6 +165,10 @@ public class ResolverUtil {
      * @param packageName
      *        the name of the package from which to start scanning for classes, e.g. {@code net.sourceforge.stripes}
      */
+    @SuppressFBWarnings(
+            value = {"URLCONNECTION_SSRF_FD", "PATH_TRAVERSAL_IN"},
+            justification = "The URLs used come from the classloader."
+    )
     public void findInPackage(final Test test, String packageName) {
         packageName = packageName.replace('.', '/');
         final ClassLoader loader = getClassLoader();
@@ -236,6 +241,10 @@ public class ResolverUtil {
         }
     }
 
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The URLs used come from the classloader."
+    )
     String extractPath(final URL url) throws UnsupportedEncodingException, URISyntaxException {
         String urlPath = url.getPath(); // same as getFile but without the Query portion
         // System.out.println(url.getProtocol() + "->" + urlPath);
@@ -371,10 +380,10 @@ public class ResolverUtil {
         try {
             connection = (JarURLConnection) url.openConnection();
             if (connection != null) {
-                try (JarFile jarFile = connection.getJarFile()) {
-                    Enumeration<JarEntry> entries = jarFile.entries();
+                try (final JarFile jarFile = connection.getJarFile()) {
+                    final Enumeration<JarEntry> entries = jarFile.entries();
                     while (entries.hasMoreElements()) {
-                        JarEntry entry = entries.nextElement();
+                        final JarEntry entry = entries.nextElement();
                         final String name = entry.getName();
                         if (!entry.isDirectory() && name.startsWith(parent) && isTestApplicable(test, name)) {
                             addIfMatching(test, name);

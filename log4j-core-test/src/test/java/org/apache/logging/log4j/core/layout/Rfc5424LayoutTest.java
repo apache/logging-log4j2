@@ -1,65 +1,59 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.layout;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Function;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.Core;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.*;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationProcessor;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.core.util.ProcessIdUtil;
+import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.message.StructuredDataCollectionMessage;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.plugins.Node;
+import org.apache.logging.log4j.plugins.di.Binding;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.plugins.di.Keys;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
-import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
+@ConfigurationFactoryType(BasicConfigurationFactory.class)
 public class Rfc5424LayoutTest {
     LoggerContext ctx = LoggerContext.getContext();
     Logger root = ctx.getRootLogger();
@@ -82,20 +76,6 @@ public class Rfc5424LayoutTest {
     private static final String collectionLine2 = "[Extra@18060 Item1=\"Hello\" Item2=\"World\"]";
     private static final String collectionLine3 = "[RequestContext@3692 ipAddress=\"192.168.0.120\" loginId=\"JohnDoe\"]";
     private static final String collectionEndOfLine = "Transfer Complete";
-
-
-    @BeforeAll
-    public static void setupClass() {
-        StatusLogger.getLogger().setLevel(Level.OFF);
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, Lazy.lazy(BasicConfigurationFactory::new));
-        ctx.reconfigure();
-    }
-
-    @AfterAll
-    public static void cleanupClass() {
-        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
-    }
 
     /**
      * Test case for MDC conversion pattern.
@@ -210,8 +190,8 @@ public class Rfc5424LayoutTest {
 
             root.info(MarkerManager.getMarker("EVENT"), collectionMessage);
 
-            List<String> list = appender.getMessages();
-            String result = list.get(0);
+            final List<String> list = appender.getMessages();
+            final String result = list.get(0);
             assertTrue(
                     result.contains(collectionLine1), "Expected line to contain " + collectionLine1 + ", Actual " + result);
             assertTrue(
@@ -348,11 +328,7 @@ public class Rfc5424LayoutTest {
      * Test case for MDC logger field inclusion.
      */
     @Test
-    public void testMDCLoggerFields() throws Exception {
-        for (final Appender appender : root.getAppenders().values()) {
-            root.removeAppender(appender);
-        }
-
+    public void testMDCLoggerFields() {
         final LoggerFields[] loggerFields = new LoggerFields[] {
                 LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("source", "%C.%M")}, null, null, false),
                 LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("source2", "%C.%M")}, null, null, false)
@@ -361,41 +337,23 @@ public class Rfc5424LayoutTest {
         // set up layout/appender
         final AbstractStringLayout layout = Rfc5424Layout.createLayout(Facility.LOCAL0, "Event", 3692, true, "RequestContext",
             null, null, true, null, "ATM", null, "key1, key2, locale", null, null, null, true, loggerFields, new DefaultConfiguration());
-        final ListAppender appender = new ListAppender("List", null, layout, true, false);
-        appender.start();
-
-        // set appender on root and set level to debug
-        root.addAppender(appender);
-        root.setLevel(Level.DEBUG);
-
-        // output starting message
-        root.info("starting logger fields test");
-
-        try {
-
-            final List<String> list = appender.getMessages();
-            assertTrue(list.size() > 0, "Not enough list entries");
-            assertTrue(list.get(0).contains("Rfc5424LayoutTest.testMDCLoggerFields"), "No class/method");
-
-            appender.clear();
-        } finally {
-            root.removeAppender(appender);
-            appender.stop();
-        }
+        final LogEvent event = Log4jLogEvent
+                .newBuilder()
+                .setLevel(Level.INFO)
+                .setMessage(new SimpleMessage("starting logger fields test"))
+                .setSource(new RuntimeException().getStackTrace()[0])
+                .build();
+        final String serializedEvent = layout.toSerializable(event);
+        assertTrue(serializedEvent.contains("Rfc5424LayoutTest.testMDCLoggerFields"), "No class/method");
     }
 
     @Test
     public void testLoggerFields() {
-        final String[] fields = new String[] {
+        final String[] expectedToContain = new String[] {
                 "[BAZ@32473 baz=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]",
                 "[RequestContext@3692 bar=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]",
                 "[SD-ID@32473 source=\"org.apache.logging.log4j.core.layout.Rfc5424LayoutTest.testLoggerFields\"]"
         };
-        final List<String> expectedToContain = Arrays.asList(fields);
-
-        for (final Appender appender : root.getAppenders().values()) {
-            root.removeAppender(appender);
-        }
 
         final LoggerFields[] loggerFields = new LoggerFields[] {
                 LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("source", "%C.%M")}, "SD-ID",
@@ -405,30 +363,20 @@ public class Rfc5424LayoutTest {
                 LoggerFields.createLoggerFields(new KeyValuePair[] { new KeyValuePair("bar", "%C.%M")}, null, null, false)
         };
 
-        final AbstractStringLayout layout = Rfc5424Layout.createLayout(Facility.LOCAL0, "Event", 3692, true, "RequestContext",
+        final StringLayout layout = Rfc5424Layout.createLayout(Facility.LOCAL0, "Event", 3692, true, "RequestContext",
                 null, null, true, null, "ATM", null, "key1, key2, locale", null, null, null, false, loggerFields, new DefaultConfiguration());
-        final ListAppender appender = new ListAppender("List", null, layout, true, false);
-        appender.start();
-
-        root.addAppender(appender);
-        root.setLevel(Level.DEBUG);
-
-        root.info("starting logger fields test");
-
-        try {
-
-            final List<String> list = appender.getMessages();
-            assertTrue(list.size() > 0, "Not enough list entries");
-            final String message =  list.get(0);
-            assertTrue(message.contains("Rfc5424LayoutTest.testLoggerFields"), "No class/method");
-            for (final String value : expectedToContain) {
-                assertTrue(message.contains(value), "Message expected to contain " + value + " but did not");
-            }
-            appender.clear();
-        } finally {
-            root.removeAppender(appender);
-            appender.stop();
+        final LogEvent event = Log4jLogEvent
+                .newBuilder()
+                .setLevel(Level.INFO)
+                .setMessage(new SimpleMessage("starting logger fields test"))
+                .setSource(new RuntimeException().getStackTrace()[0])
+                .build();
+        final String serializedEvent = layout.toSerializable(event);
+        assertTrue(serializedEvent.contains("Rfc5424LayoutTest.testLoggerFields"), "No class/method");
+        for (final String value : expectedToContain) {
+            assertTrue(serializedEvent.contains(value), "Message expected to contain " + value + " but did not");
         }
+
     }
 
     @Test
@@ -571,21 +519,22 @@ public class Rfc5424LayoutTest {
 
     @Test
     public void testLayoutBuilderDefaultValues() {
-        final Rfc5424Layout layout = new Rfc5424Layout.Rfc5424LayoutBuilder().setConfig(new DefaultConfiguration()).build();
+        final Configuration configuration = ctx.getConfiguration();
+        final Rfc5424Layout layout = new Rfc5424Layout.Rfc5424LayoutBuilder().setConfig(configuration).build();
         checkDefaultValues(layout);
 
-        final PluginNamespace corePlugins = ctx.getInjector().getInstance(Core.PLUGIN_NAMESPACE_KEY);
+        final PluginNamespace corePlugins = ctx.getInstanceFactory().getInstance(Core.PLUGIN_NAMESPACE_KEY);
         final PluginType<?> pluginType = corePlugins.get("Rfc5424Layout");
         assertNotNull(pluginType);
         final Node node = new Node(null, "Rfc5424Layout", pluginType);
         node.getAttributes().put("name", "Rfc5242Layout");
 
-        final Injector injector = DI.createInjector()
-                .registerBinding(Keys.SUBSTITUTOR_KEY, Function::identity)
-                .registerBinding(Configuration.KEY, () -> ctx.getConfiguration());
-        final Object obj = injector.configure(node);
-        assertThat(obj).isInstanceOf(Rfc5424Layout.class);
-        checkDefaultValues((Rfc5424Layout) obj);
+        final ConfigurableInstanceFactory factory = DI.createInitializedFactory();
+        factory.registerBinding(Binding.from(Configuration.KEY).toInstance(configuration));
+        final ConfigurationProcessor processor = new ConfigurationProcessor(factory);
+        final Rfc5424Layout object = processor.processNodeTree(node);
+        assertNotNull(object);
+        checkDefaultValues(object);
     }
 
     private void checkDefaultValues(final Rfc5424Layout layout) {
@@ -599,7 +548,7 @@ public class Rfc5424LayoutTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "123456789", "0", "2147483647", "123.45.6.78.9", "0.0.0.0.0.0.0.0.0.0.0.0.0.0" })
-    void testLayoutBuilderValidEids(String eid) {
+    void testLayoutBuilderValidEids(final String eid) {
         final AbstractStringLayout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
                 .setConfig(new DefaultConfiguration())
                 .setEin(eid)
@@ -610,7 +559,7 @@ public class Rfc5424LayoutTest {
 
     @ParameterizedTest
     @ValueSource(strings = { "abc", "someEid", "-1" })
-    void testLayoutBuilderInvalidEids(String eid) {
+    void testLayoutBuilderInvalidEids(final String eid) {
         final AbstractStringLayout layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
                 .setConfig(new DefaultConfiguration())
                 .setEin(eid)

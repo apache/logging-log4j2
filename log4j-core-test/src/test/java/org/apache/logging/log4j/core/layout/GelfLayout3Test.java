@@ -1,35 +1,35 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.layout;
+
+import java.io.IOException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
 import org.apache.logging.log4j.core.test.junit.Named;
-import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.apache.logging.log4j.message.StringMapMessage;
-import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,7 +54,7 @@ public class GelfLayout3Test {
         assertEquals("rgoers", json.get("_mdc.loginId").asText());
         assertNull(json.get("_mdc.internalId"));
         assertNull(json.get("_mdc.requestId"));
-        String message = json.get("full_message").asText();
+        final String message = json.get("full_message").asText();
         assertTrue(message.contains("loginId=rgoers"));
         assertTrue(message.contains("GelfLayout3Test"));
         assertNull(json.get("_map.arg1"));
@@ -69,7 +69,7 @@ public class GelfLayout3Test {
         final Logger logger = context.getLogger(getClass());
         ThreadContext.put("loginId", "rgoers");
         ThreadContext.put("internalId", "12345");
-        StringMapMessage message = new StringMapMessage();
+        final StringMapMessage message = new StringMapMessage();
         message.put("arg1", "test1");
         message.put("arg2", "");
         message.put("arg3", "test3");
@@ -85,7 +85,7 @@ public class GelfLayout3Test {
         assertEquals("rgoers", json.get("_mdc.loginId").asText());
         assertNull(json.get("_mdc.internalId"));
         assertNull(json.get("_mdc.requestId"));
-        String msg = json.get("full_message").asText();
+        final String msg = json.get("full_message").asText();
         assertTrue(msg.contains("loginId=rgoers"));
         assertTrue(msg.contains("GelfLayout3Test"));
         assertTrue(msg.contains("arg1=\"test1\""));
@@ -97,4 +97,3 @@ public class GelfLayout3Test {
     }
 
 }
-

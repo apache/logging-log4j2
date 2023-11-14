@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.pattern;
 
@@ -34,14 +34,14 @@ import java.util.regex.Pattern;
  * </pre>
  * @since 2.19.1
  */
-class DynamicWordAbbreviator extends NameAbbreviator {
+final class DynamicWordAbbreviator extends NameAbbreviator {
 
     /** Right-most number of words (at least one) that will not be abbreviated. */
     private final int rightWordCount;
 
-    static DynamicWordAbbreviator create(String pattern) {
+    static DynamicWordAbbreviator create(final String pattern) {
         if (pattern != null) {
-            Matcher matcher = Pattern.compile("1\\.([1-9][0-9]*)\\*").matcher(pattern);
+            final Matcher matcher = Pattern.compile("1\\.([1-9][0-9]*)\\*").matcher(pattern);
             if (matcher.matches()) {
                 return new DynamicWordAbbreviator(Integer.parseInt(matcher.group(1)));
             }
@@ -49,7 +49,7 @@ class DynamicWordAbbreviator extends NameAbbreviator {
         return null;
     }
 
-    private DynamicWordAbbreviator(int rightWordCount) {
+    private DynamicWordAbbreviator(final int rightWordCount) {
         this.rightWordCount = rightWordCount;
     }
 
@@ -90,7 +90,7 @@ class DynamicWordAbbreviator extends NameAbbreviator {
             return new String[0];
         }
 
-        int countDelim = input.chars().filter(c -> c == delim).map(c -> 1).sum();
+        final int countDelim = input.chars().filter(c -> c == delim).map(c -> 1).sum();
         final String[] tokens = new String[countDelim + 1];
 
         int countToken = 0;

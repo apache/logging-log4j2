@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.config.composite;
 
@@ -28,6 +28,9 @@ import org.apache.logging.log4j.core.filter.CompositeFilter;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
+
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * The default merge strategy for composite configurations.
@@ -75,8 +78,8 @@ public class DefaultMergeStrategy implements MergeStrategy {
             for (final Map.Entry<String, String> targetAttribute : rootNode.getAttributes().entrySet()) {
                 if (targetAttribute.getKey().equalsIgnoreCase(attribute.getKey())) {
                     if (attribute.getKey().equalsIgnoreCase(STATUS)) {
-                        final Level targetLevel = Level.getLevel(targetAttribute.getValue().toUpperCase());
-                        final Level sourceLevel = Level.getLevel(attribute.getValue().toUpperCase());
+                        final Level targetLevel = Level.getLevel(toRootUpperCase(targetAttribute.getValue()));
+                        final Level sourceLevel = Level.getLevel(toRootUpperCase(attribute.getValue()));
                         if (targetLevel != null && sourceLevel != null) {
                             if (sourceLevel.isLessSpecificThan(targetLevel)) {
                                 targetAttribute.setValue(attribute.getValue());
@@ -131,7 +134,7 @@ public class DefaultMergeStrategy implements MergeStrategy {
                     continue;
                 }
 
-                switch (targetChildNode.getName().toLowerCase()) {
+                switch (toRootLowerCase(targetChildNode.getName())) {
                     case PROPERTIES:
                     case SCRIPTS:
                     case APPENDERS: {

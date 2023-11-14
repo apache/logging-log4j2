@@ -1,22 +1,24 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.test.junit;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -25,9 +27,11 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.LoggerContextAccessor;
 import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.impl.Log4jContextFactory;
+import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.plugins.di.Binding;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.test.junit.TypeBasedParameterResolver;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
@@ -35,6 +39,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ExtensionContext.Namespace;
 import org.junit.jupiter.api.extension.ExtensionContext.Store;
+import org.junit.jupiter.api.extension.ExtensionContextException;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -51,14 +56,14 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     }
 
     @Override
-    public void beforeAll(ExtensionContext context) throws Exception {
+    public void beforeAll(final ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
         AnnotationSupport.findAnnotation(testClass, LoggerContextSource.class)
                 .ifPresent(testSource -> setUpLoggerContext(testSource, context));
     }
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(final ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
         if (AnnotationSupport.isAnnotated(testClass, LoggerContextSource.class)) {
             final Store testClassStore = context.getStore(BASE_NAMESPACE.append(testClass));
@@ -82,7 +87,7 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
+    public void afterEach(final ExtensionContext context) throws Exception {
         final Class<?> testClass = context.getRequiredTestClass();
         if (AnnotationSupport.isAnnotated(testClass, LoggerContextSource.class)) {
             final Store testClassStore = getTestStore(context);
@@ -94,11 +99,11 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
 
     @Override
     public LoggerContext resolveParameter(
-            ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+            final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
         return getLoggerContext(extensionContext);
     }
 
-    static LoggerContext getLoggerContext(ExtensionContext context) {
+    static LoggerContext getLoggerContext(final ExtensionContext context) {
         final Store store = getTestStore(context);
         final LoggerContextAccessor accessor = store.get(LoggerContextAccessor.class, LoggerContextAccessor.class);
         assertNotNull(accessor);
@@ -111,25 +116,30 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
 
     private static LoggerContext setUpLoggerContext(final LoggerContextSource source, final ExtensionContext extensionContext) {
         final String displayName = extensionContext.getDisplayName();
-        final Injector injector = extensionContext.getTestInstance().map(DI::createInjector).orElseGet(DI::createInjector);
-        injector.init();
+        final ConfigurableInstanceFactory instanceFactory = DI.createFactory();
+        extensionContext.getTestInstance().ifPresent(instanceFactory::registerBundle);
+        final Class<? extends ContextSelector> contextSelectorClass = source.selector();
+        if (contextSelectorClass != ContextSelector.class) {
+            instanceFactory.registerBinding(Binding.from(ContextSelector.KEY).to(instanceFactory.getFactory(contextSelectorClass)));
+        }
+        DI.initializeFactory(instanceFactory);
         final Log4jContextFactory loggerContextFactory;
         if (source.bootstrap()) {
-            loggerContextFactory = new Log4jContextFactory(injector);
+            loggerContextFactory = new Log4jContextFactory(instanceFactory);
             LogManager.setFactory(loggerContextFactory);
         } else {
             loggerContextFactory = (Log4jContextFactory) LogManager.getFactory();
         }
         final Class<?> testClass = extensionContext.getRequiredTestClass();
         final ClassLoader classLoader = testClass.getClassLoader();
-        final Map.Entry<String, Object> injectorContext = Map.entry(Injector.class.getName(), injector);
-        final String configLocation = source.value();
+        final Map.Entry<String, Object> injectorContext = Map.entry(ConfigurableInstanceFactory.class.getName(), instanceFactory);
+        final String configLocation = getConfigLocation(source, extensionContext);
         final URI configUri;
         if (source.v1config()) {
-            System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY, configLocation);
+            System.setProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY.getSystemKey(), configLocation);
             configUri = null; // handled by system property
         } else {
-            configUri = configLocation.isEmpty() ? null : NetUtils.toURI(configLocation);
+            configUri = NetUtils.toURI(configLocation);
         }
         final LoggerContext context = loggerContextFactory.getContext(FQCN, classLoader, injectorContext, false, configUri, displayName);
         assertNotNull(context, () -> "No LoggerContext created for " + testClass + " and config file " + configLocation);
@@ -139,7 +149,28 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
         return context;
     }
 
-    private static class ContextHolder implements Store.CloseableResource, LoggerContextAccessor {
+        private static String getConfigLocation(final LoggerContextSource source,
+                                                final ExtensionContext extensionContext) {
+            final String value = source.value();
+            if (value.isEmpty()) {
+                Class<?> clazz = extensionContext.getRequiredTestClass();
+                while (clazz != null) {
+                    final URL url = clazz.getResource(clazz.getSimpleName() + ".xml");
+                    if (url != null) {
+                        try {
+                            return url.toURI().toString();
+                        } catch (URISyntaxException e) {
+                            throw new ExtensionContextException("An error occurred accessing the configuration.", e);
+                        }
+                    }
+                    clazz = clazz.getSuperclass();
+                }
+                return extensionContext.getRequiredTestClass().getName().replaceAll("[.$]", "/") + ".xml";
+            }
+            return value;
+        }
+
+    private static final class ContextHolder implements Store.CloseableResource, LoggerContextAccessor {
         private final LoggerContext context;
         private final long shutdownTimeout;
         private final TimeUnit unit;
@@ -160,8 +191,8 @@ class LoggerContextResolver extends TypeBasedParameterResolver<LoggerContext> im
             try {
                 context.stop(shutdownTimeout, unit);
             } finally {
-                System.clearProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL);
-                System.clearProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY);
+                System.clearProperty(ConfigurationFactory.LOG4J1_EXPERIMENTAL.getSystemKey());
+                System.clearProperty(ConfigurationFactory.LOG4J1_CONFIGURATION_FILE_PROPERTY.getSystemKey());
             }
         }
     }

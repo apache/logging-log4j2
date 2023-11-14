@@ -1,20 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
- Licensed to the Apache Software Foundation (ASF) under one or more
- contributor license agreements.  See the NOTICE file distributed with
- this work for additional information regarding copyright ownership.
- The ASF licenses this file to You under the Apache license, Version 2.0
- (the "License"); you may not use this file except in compliance with
- the License.  You may obtain a copy of the license at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the license.
-
--->
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to you under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <project name="Log4j"
          xmlns="http://maven.apache.org/DECORATION/1.4.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -25,7 +25,7 @@
   </bannerLeft>
   <bannerRight>
     <src>images/logo.png</src>
-    <href>http://logging.apache.org/log4j/2.x</href>
+    <href>http://logging.apache.org/log4j/3.x</href>
   </bannerRight>
   <skin>
     <groupId>org.apache.maven.skins</groupId>
@@ -41,7 +41,7 @@
       <item name="GitHub" href="https://github.com/apache/logging-log4j2"/>
     </links>
 
-    <menu name="Apache Log4j™ 2" inherit="top" img="img/glyphicons/home.png">
+    <menu name="Apache Log4j™ 3.x" inherit="top" img="img/glyphicons/home.png">
       <item name="About" href="/index.html"/>
       <item name="Download" href="/download.html"/>
       <item name="Javadoc" href="/javadoc.html"/>
@@ -55,7 +55,7 @@
         <item name="Snapshot builds" href="/maven-artifacts.html#Snapshot_builds" />
       </item>
       <item name="Runtime Dependencies" href="/runtime-dependencies.html"/>
-      <item name="Release Notes" href="/release-notes/"/>
+      <item name="Release Notes" href="/release-notes/index.html"/>
       <item name="FAQ" href="/faq.html"/>
       <item name="Performance" href="/performance.html" collapse="true">
         <item name="Benchmarks" href="/performance.html#benchmarks" />
@@ -118,7 +118,7 @@
         <item name="Composite Configurations" href="/manual/configuration.html#CompositeConfiguration"/>
         <item name="Status Messages" href="/manual/configuration.html#StatusMessages"/>
         <item name="Unit Testing in Maven" href="/manual/configuration.html#UnitTestingInMaven"/>
-        <item name="System Properties" href="/manual/configuration.html#SystemProperties"/>
+        <item name="System Properties" href="/manual/systemProperties.html"/>
       </item>
 
       <item name="Usage" href="/manual/usage.html" collapse="true">
@@ -294,10 +294,11 @@
       <item name="Log4j-Scala" href="http://logging.apache.org/log4j/scala/index.html"/>
     </menu>
 
-    <menu name="Legacy" inherit="top" img="img/glyphicons/link.png">
+    <menu name="Older Releases" inherit="top" img="img/glyphicons/link.png">
       <item name="Log4j 1.2 - End of Life" href="http://logging.apache.org/log4j/1.2/"/>
       <item name="Log4j 2.3 - Java 6" href="http://logging.apache.org/log4j/log4j-2.3/"/>
       <item name="Log4j 2.12.1 - Java 7" href="http://logging.apache.org/log4j/log4j-2.12.1/"/>
+      <item name="Log4j 2.x - Latest release for Java 8" href="http://logging.apache.org/log4j/2.x/"/>
     </menu>
 
     <menu name="Components" inherit="top" img="img/glyphicons/cog.png">
@@ -323,21 +324,17 @@
       <item name="MongoDB4 appender" href="log4j-mongodb4.html"/>
       <item name="Cassandra appender" href="log4j-cassandra.html"/>
       <item name="IO Streams" href="log4j-iostreams.html"/>
-      <item name="Liquibase Binding" href="log4j-liquibase.html"/>
       <item name="Docker Support" href="log4j-docker.html"/>
       <item name="Kubernetes Support" href="log4j-kubernetes.html"/>
+      <item name="Log4j Spring Boot" href="log4j-spring-boot.html"/>
       <item name="Spring Cloud Config Client" href="log4j-spring-cloud-config-client.html"/>
+      <item name="Log4j Transformation Tools" href="log4j-transform"/>
     </menu>
 
     <menu name="Project Information" img="img/glyphicons/info.png">
-      <item name="Dependency Convergence" href="/dependency-convergence.html" />
-      <item name="Dependency Management" href="/dependency-management.html" />
-      <item name="Project Team" href="/team-list.html" />
-      <item name="Mailing Lists" href="/mail-lists.html" />
-      <item name="Issue Tracking" href="/issue-tracking.html" />
-      <item name="Project License" href="/license.html" />
-      <item name="Source Repository" href="/source-repository.html" />
-      <item name="Project Summary" href="/project-summary.html" />
+      <item name="Project Team" href="/team.html" />
+      <item name="Project License" href="https://www.apache.org/licenses/LICENSE-2.0" />
+      <item name="Source Repository" href="https://github.com/apache/logging-log4j2/tree/main" />
     </menu>
 
     <menu name="Project Reports" img="img/glyphicons/layers.png">

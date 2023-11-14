@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.util;
 
@@ -72,7 +72,7 @@ public class PropertiesUtilTest {
         final Properties p = new Properties();
         p.setProperty("e.1", StandardCharsets.US_ASCII.name());
         p.setProperty("e.2", "wrong-charset-name");
-        final PropertiesUtil pu = new PropertiesUtil(p);
+        final PropertiesUtil pu = new PropertiesUtil(p, true);
 
         assertEquals(Charset.defaultCharset(), pu.getCharsetProperty("e.0"));
         assertEquals(StandardCharsets.US_ASCII, pu.getCharsetProperty("e.1"));
@@ -83,7 +83,7 @@ public class PropertiesUtilTest {
     @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     public void testGetMappedProperty_sun_stdout_encoding() {
         final PropertiesUtil pu = new PropertiesUtil(System.getProperties());
-        Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
+        final Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
         assertEquals(expected, pu.getCharsetProperty("sun.stdout.encoding"));
     }
 
@@ -91,15 +91,15 @@ public class PropertiesUtilTest {
     @ResourceLock(value = Resources.SYSTEM_PROPERTIES, mode = ResourceAccessMode.READ)
     public void testGetMappedProperty_sun_stderr_encoding() {
         final PropertiesUtil pu = new PropertiesUtil(System.getProperties());
-        Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
+        final Charset expected = System.console() == null ? Charset.defaultCharset() : StandardCharsets.UTF_8;
         assertEquals(expected, pu.getCharsetProperty("sun.err.encoding"));
     }
 
     @Test
     @ResourceLock(Resources.SYSTEM_PROPERTIES)
     public void testNonStringSystemProperties() {
-        Object key1 = "1";
-        Object key2 = new Object();
+        final Object key1 = "1";
+        final Object key2 = new Object();
         System.getProperties().put(key1, new Object());
         System.getProperties().put(key2, "value-2");
         try {
@@ -114,12 +114,22 @@ public class PropertiesUtilTest {
     @Test
     @ResourceLock(Resources.SYSTEM_PROPERTIES)
     public void testJsonProperties() {
-        final PropertiesUtil util = new PropertiesUtil("PropertiesUtilTest.json");
-        assertNull(util.getStringProperty("log4j2"));
-        assertEquals(true, util.getBooleanProperty("log4j2.My-App.JNDI.enableJMS"));
-        assertEquals("Groovy,JavaScript", util.getStringProperty("log4j2.My-App.Script.enableLanguages"));
-        assertEquals("com.acme.log4j.CustomMergeStrategy", util.getStringProperty("log4j2.My-App.Configuration.mergeStrategy"));
-        assertEquals("Info", util.getStringProperty("log4j2.*.StatusLogger.defaultStatusLevel"));
+        final PropertiesUtil util = new PropertiesUtil("my-app", "PropertiesUtilTest.json");
+        assertNull(util.getStringProperty("log4j2", null));
+        assertEquals(true, util.getBooleanProperty("JNDI.enableJMS", false));
+        assertEquals("Groovy,JavaScript", util.getStringProperty("Script.enableLanguages"));
+        assertEquals("com.acme.log4j.CustomMergeStrategy", util.getStringProperty("Configuration.mergeStrategy"));
+        assertEquals("Info", util.getStringProperty("StatusLogger.defaultStatusLevel"));
+    }
+
+    @Test
+    @ResourceLock(Resources.SYSTEM_PROPERTIES)
+    public void testEnhancedJsonProperties() {
+        final PropertiesUtil util = PropertiesUtil.getContextProperties("my-app");
+        assertEquals(true, util.getBooleanProperty("JNDI.enableJMS"));
+        assertEquals("Groovy,JavaScript", util.getStringProperty("Script.enableLanguages"));
+        assertEquals("com.acme.log4j.CustomMergeStrategy", util.getStringProperty("Configuration.mergeStrategy"));
+
     }
 
     @Test
@@ -127,7 +137,7 @@ public class PropertiesUtilTest {
     public void testPublish() {
         final Properties props = new Properties();
         final PropertiesUtil util = new PropertiesUtil(props);
-        String value = System.getProperty("Application");
+        final String value = System.getProperty("Application");
         assertNotNull(value, "System property was not published");
         assertEquals("Log4j", value);
     }
@@ -136,15 +146,15 @@ public class PropertiesUtilTest {
             { null, "org.apache.logging.log4j.level" },
             { null, "Log4jAnotherProperty" },
             { null, "log4j2.catalinaBase" },
-            { "ok", "log4j2.configurationFile" },
-            { "ok", "log4j2.defaultStatusLevel" },
-            { "ok", "log4j2.newLevel" },
-            { "ok", "log4j2.asyncLoggerTimeout" },
-            { "ok", "log4j2.asyncLoggerConfigRingBufferSize" },
-            { "ok", "log4j2.disableThreadContext" },
-            { "ok", "log4j2.disableThreadContextStack" },
-            { "ok", "log4j2.disableThreadContextMap" },
-            { "ok", "log4j2.isThreadContextMapInheritable" }
+            { "ok", "Configuration.file" },
+            { "ok", "Configuration.level" },
+            { null, "log4j2.newLevel" },
+            { "ok", "AsyncLogger.timeout" },
+            { "ok", "AsyncLoggerConfig.ringBufferSize" },
+            { "ok", "ThreadContext.enable" },
+            { "ok", "ThreadContext.enableStack" },
+            { "ok", "ThreadContext.enableMap" },
+            { "ok", "ThreadContext.mapInheritable" }
             };
 
     /**
@@ -156,13 +166,14 @@ public class PropertiesUtilTest {
     public void testResolvesOnlyLog4jProperties() {
         final PropertiesUtil util = new PropertiesUtil("Jira3413Test.properties");
         for (final String[] pair : data) {
-            assertEquals(pair[0], util.getStringProperty(pair[1]));
+            final String value = util.getStringProperty(pair[1]);
+            assertEquals(pair[0], value, "Unexpected value for " + pair[1]);
         }
     }
 
     /**
-     * LOG4J2-3559: the fix for LOG4J2-3413 returns the value of 'log4j2.' for each
-     * property not starting with 'log4j'.
+     * LOG4J2-3559 - no longer applies
+     * This changes in Log4j 3.0. incorrect properties are no longer include in the results by default.
      */
     @Test
     @ReadsSystemProperty
@@ -173,6 +184,6 @@ public class PropertiesUtilTest {
         props.setProperty(incorrect, incorrect);
         props.setProperty(correct, correct);
         final PropertiesUtil util = new PropertiesUtil(props);
-        assertEquals(correct, util.getStringProperty(correct));
+        assertNull(util.getStringProperty(correct));
     }
 }

@@ -19,4 +19,12 @@
  * this is intentional. The two JARs should <em>not</em> be used at the same time! Thus, in an OSGi environment
  * where split packages are not allowed, this error is prevented due to both JARs sharing an exported package name.
  */
+@Export
+@Header(name = Constants.BUNDLE_ACTIVATIONPOLICY, value = Constants.ACTIVATION_LAZY)
+@Version("2.21.0")
 package org.apache.logging.slf4j;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.bundle.Header;
+import org.osgi.annotation.versioning.Version;
+import org.osgi.framework.Constants;

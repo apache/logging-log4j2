@@ -1,25 +1,24 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.util;
 
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.logging.log4j.Level;
@@ -27,6 +26,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * A convenience class to convert property values to specific types.
@@ -165,7 +166,7 @@ public final class OptionConverter {
 
         value = value.trim();
 
-        int hashIndex = value.indexOf('#');
+        final int hashIndex = value.indexOf('#');
         if (hashIndex == -1) {
             if("NULL".equalsIgnoreCase(value)) {
                 return null;
@@ -177,8 +178,8 @@ public final class OptionConverter {
 
         Level result = defaultValue;
 
-        String clazz = value.substring(hashIndex+1);
-        String levelName = value.substring(0, hashIndex);
+        final String clazz = value.substring(hashIndex + 1);
+        final String levelName = value.substring(0, hashIndex);
 
         // This is degenerate case but you never know.
         if("NULL".equalsIgnoreCase(levelName)) {
@@ -189,17 +190,17 @@ public final class OptionConverter {
                 + ":pri=[" + levelName + "]");
 
         try {
-            Class<?> customLevel = Loader.loadClass(clazz);
+            final Class<?> customLevel = Loader.loadClass(clazz);
 
             // get a ref to the specified class' static method
             // toLevel(String, org.apache.log4j.Level)
-            Class<?>[] paramTypes = new Class[] { String.class, Level.class };
-            java.lang.reflect.Method toLevelMethod =
+            final Class<?>[] paramTypes = new Class[]{String.class, Level.class};
+            final java.lang.reflect.Method toLevelMethod =
                     customLevel.getMethod("toLevel", paramTypes);
 
             // now call the toLevel method, passing level string + default
-            Object[] params = new Object[] {levelName, defaultValue};
-            Object o = toLevelMethod.invoke(null, params);
+            final Object[] params = new Object[]{levelName, defaultValue};
+            final Object o = toLevelMethod.invoke(null, params);
 
             result = (Level) o;
         } catch(ClassNotFoundException e) {
@@ -234,7 +235,7 @@ public final class OptionConverter {
             return defaultValue;
         }
 
-        String str = value.trim().toUpperCase(Locale.ENGLISH);
+        String str = toRootUpperCase(value.trim());
         long multiplier = 1;
         int index;
 
@@ -352,7 +353,7 @@ public final class OptionConverter {
         return substVars(val, props, new ArrayList<>());
     }
 
-    private static String substVars(final String val, final Properties props, List<String> keys)
+    private static String substVars(final String val, final Properties props, final List<String> keys)
             throws IllegalArgumentException {
 
         final StringBuilder sbuf = new StringBuilder();
@@ -396,7 +397,7 @@ public final class OptionConverter {
                 // x1=p1
                 // x2=${x1}
                 if (!keys.contains(key)) {
-                    List<String> usedKeys = new ArrayList<>(keys);
+                    final List<String> usedKeys = new ArrayList<>(keys);
                     usedKeys.add(key);
                     final String recursiveReplacement = substVars(replacement, props, usedKeys);
                     sbuf.append(recursiveReplacement);

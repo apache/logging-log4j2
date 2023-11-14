@@ -1,22 +1,23 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.message;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.logging.log4j.util.EnglishEnums;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -412,34 +413,16 @@ public class StructuredDataMessage extends MapMessage<StructuredDataMessage, Str
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         final StructuredDataMessage that = (StructuredDataMessage) o;
-
-        if (!super.equals(o)) {
-            return false;
-        }
-        if (type != null ? !type.equals(that.type) : that.type != null) {
-            return false;
-        }
-        if (id != null ? !id.equals(that.id) : that.id != null) {
-            return false;
-        }
-        return message != null ? message.equals(that.message) : that.message == null;
+        return Objects.equals(id, that.id) && Objects.equals(message, that.message) && Objects.equals(type, that.type);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = HASHVAL * result + (type != null ? type.hashCode() : 0);
-        result = HASHVAL * result + (id != null ? id.hashCode() : 0);
-        result = HASHVAL * result + (message != null ? message.hashCode() : 0);
-        return result;
+        return Objects.hash(super.hashCode(), id, message, type);
     }
 
     @Override

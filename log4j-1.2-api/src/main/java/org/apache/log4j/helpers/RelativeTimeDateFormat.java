@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j.helpers;
 
 import java.text.DateFormat;
@@ -29,7 +28,7 @@ import java.util.Date;
  * @since 0.7.5
  */
 public class RelativeTimeDateFormat extends DateFormat {
-    
+
     private static final long serialVersionUID = 7055751607085611984L;
 
     protected final long startTime;

@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.log4j.helpers;
 
@@ -36,6 +36,8 @@ import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.Strings;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * A convenience class to convert property values to specific types.
@@ -121,7 +123,7 @@ public class OptionConverter {
         return StandardLevel.ALL.intLevel();
     }
 
-    static int toLog4j1Level(int v2Level) {
+    static int toLog4j1Level(final int v2Level) {
         if (v2Level == StandardLevel.ALL.intLevel()) {
             return Priority.ALL_INT;
         }
@@ -139,7 +141,7 @@ public class OptionConverter {
         return Priority.OFF_INT;
     }
 
-    static int toSyslogLevel(int v2Level) {
+    static int toSyslogLevel(final int v2Level) {
         if (v2Level <= StandardLevel.FATAL.intLevel()) {
             return 0;
         }
@@ -158,7 +160,7 @@ public class OptionConverter {
     }
 
     public static org.apache.logging.log4j.Level createLevel(final Priority level) {
-        final String name = level.toString().toUpperCase() + "#" + level.getClass().getName();
+        final String name = toRootUpperCase(level.toString()) + "#" + level.getClass().getName();
         return org.apache.logging.log4j.Level.forName(name, toLog4j2Level(level.toInt()));
     }
 
@@ -493,7 +495,7 @@ public class OptionConverter {
             return defaultValue;
         }
 
-        String s = value.trim().toUpperCase();
+        String s = toRootUpperCase(value.trim());
         long multiplier = 1;
         int index;
 
@@ -627,7 +629,7 @@ public class OptionConverter {
 
         // Support for levels defined in Log4j2.
         if (LOG4J2_LEVEL_CLASS.equals(clazz)) {
-            final org.apache.logging.log4j.Level v2Level = org.apache.logging.log4j.Level.getLevel(levelName.toUpperCase());
+            final org.apache.logging.log4j.Level v2Level = org.apache.logging.log4j.Level.getLevel(toRootUpperCase(levelName));
             if (v2Level != null) {
                 return new LevelWrapper(v2Level);
             }
@@ -682,7 +684,7 @@ public class OptionConverter {
 
         private static final long serialVersionUID = -7693936267612508528L;
 
-        protected LevelWrapper(org.apache.logging.log4j.Level v2Level) {
+        protected LevelWrapper(final org.apache.logging.log4j.Level v2Level) {
             super(toLog4j1Level(v2Level.intLevel()), v2Level.name(), toSyslogLevel(v2Level.intLevel()), v2Level);
         }
 

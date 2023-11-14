@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.filter;
 
@@ -25,6 +25,7 @@ import java.util.Base64;
 import java.util.Enumeration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,8 +75,8 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
     public static void startServer() throws Exception {
         try {
             server = new Server(0);
-            ServletContextHandler context = new ServletContextHandler();
-            ServletHolder defaultServ = new ServletHolder("default", TestServlet.class);
+            final ServletContextHandler context = new ServletContextHandler();
+            final ServletHolder defaultServ = new ServletHolder("default", TestServlet.class);
             defaultServ.setInitParameter("resourceBase", System.getProperty("user.dir"));
             defaultServ.setInitParameter("dirAllowed", "true");
             context.addServlet(defaultServ, "/");
@@ -119,17 +120,17 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
         ThreadContext.put("loginId", "rgoers");
         Path source = new File("target/test-classes/emptyConfig.json").toPath();
         Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
-        long fileTime = targetFile.lastModified() - 2000;
+        final long fileTime = targetFile.lastModified() - 2000;
         assertTrue(targetFile.setLastModified(fileTime));
         loggerContext = Configurator.initialize(null, CONFIG);
         assertNotNull(loggerContext);
-        Appender app = loggerContext.getConfiguration().getAppender("List");
+        final Appender app = loggerContext.getConfiguration().getAppender("List");
         assertNotNull(app);
         assertTrue(app instanceof ListAppender);
-        MutableThreadContextMapFilter filter = (MutableThreadContextMapFilter) loggerContext.getConfiguration().getFilter();
+        final MutableThreadContextMapFilter filter = (MutableThreadContextMapFilter) loggerContext.getConfiguration().getFilter();
         assertNotNull(filter);
         filter.registerListener(this);
-        Logger logger = loggerContext.getLogger("Test");
+        final Logger logger = loggerContext.getLogger("Test");
         logger.debug("This is a test");
         Assertions.assertEquals(0, ((ListAppender) app).getEvents().size());
         source = new File("target/test-classes/filterConfig.json").toPath();
@@ -152,30 +153,30 @@ public class HttpThreadContextMapFilterTest implements MutableThreadContextMapFi
         private static final long serialVersionUID = -2885158530511450659L;
 
         @Override
-        protected void doGet(HttpServletRequest request,
-                HttpServletResponse response) throws ServletException, IOException {
-            Enumeration<String> headers = request.getHeaders(HttpHeader.AUTHORIZATION.toString());
+        protected void doGet(final HttpServletRequest request,
+                final HttpServletResponse response) throws ServletException, IOException {
+            final Enumeration<String> headers = request.getHeaders(HttpHeader.AUTHORIZATION.toString());
             if (headers == null) {
                 response.sendError(401, "No Auth header");
                 return;
             }
             while (headers.hasMoreElements()) {
-                String authData = headers.nextElement();
+                final String authData = headers.nextElement();
                 Assert.assertTrue("Not a Basic auth header", authData.startsWith(BASIC));
-                String credentials = new String(decoder.decode(authData.substring(BASIC.length())));
+                final String credentials = new String(decoder.decode(authData.substring(BASIC.length())));
                 if (!expectedCreds.equals(credentials)) {
                     response.sendError(401, "Invalid credentials");
                     return;
                 }
             }
             if (request.getServletPath().equals("/testConfig.json")) {
-                File file = new File("target/test-classes/testConfig.json");
+                final File file = new File("target/test-classes/testConfig.json");
                 if (!file.exists()) {
                     response.sendError(404, "File not found");
                     return;
                 }
-                long modifiedSince = request.getDateHeader(HttpHeader.IF_MODIFIED_SINCE.toString());
-                long lastModified = (file.lastModified() / 1000) * 1000;
+                final long modifiedSince = request.getDateHeader(HttpHeader.IF_MODIFIED_SINCE.toString());
+                final long lastModified = (file.lastModified() / 1000) * 1000;
                 if (modifiedSince > 0 && lastModified <= modifiedSince) {
                     response.setStatus(304);
                     return;

@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -24,7 +24,7 @@ import junit.framework.TestCase;
  * Tests {@link ThrowableInformation}.
  */
 public class ThrowableInformationTest extends TestCase {
-    
+
     /**
      * Create ThrowableInformationTest.
      *
@@ -69,8 +69,8 @@ public class ThrowableInformationTest extends TestCase {
      * earlier.
      */
     public void testOverriddenBehavior() {
-        ThrowableInformation ti = new ThrowableInformation(new OverriddenThrowable());
-        String[] rep = ti.getThrowableStrRep();
+        final ThrowableInformation ti = new ThrowableInformation(new OverriddenThrowable());
+        final String[] rep = ti.getThrowableStrRep();
         assertEquals(4, rep.length);
         assertEquals("print(Object)print(char[])print(String)println(Object)", rep[0]);
         assertEquals("println(char[])", rep[1]);
@@ -117,10 +117,10 @@ public class ThrowableInformationTest extends TestCase {
      * earlier.
      */
     public void testNotOverriddenBehavior() {
-        ThrowableInformation ti = new ThrowableInformation(new NotOverriddenThrowable());
-        String[] rep = ti.getThrowableStrRep();
+        final ThrowableInformation ti = new ThrowableInformation(new NotOverriddenThrowable());
+        final String[] rep = ti.getThrowableStrRep();
         assertEquals(7, rep.length);
-        StringBuffer buf = new StringBuffer(String.valueOf(true));
+        final StringBuffer buf = new StringBuffer(String.valueOf(true));
         buf.append('a');
         buf.append(String.valueOf(1));
         buf.append(String.valueOf(2L));
@@ -166,10 +166,10 @@ public class ThrowableInformationTest extends TestCase {
      */
 
     public void testNull() {
-        ThrowableInformation ti = new ThrowableInformation(new NullThrowable());
-        String[] rep = ti.getThrowableStrRep();
+        final ThrowableInformation ti = new ThrowableInformation(new NullThrowable());
+        final String[] rep = ti.getThrowableStrRep();
         assertEquals(2, rep.length);
-        String nullStr = String.valueOf((Object) null);
+        final String nullStr = String.valueOf((Object) null);
         assertEquals(nullStr + nullStr + nullStr, rep[0]);
         assertEquals(nullStr, rep[1]);
     }
@@ -200,8 +200,8 @@ public class ThrowableInformationTest extends TestCase {
      */
 
     public void testEmpty() {
-        ThrowableInformation ti = new ThrowableInformation(new EmptyThrowable());
-        String[] rep = ti.getThrowableStrRep();
+        final ThrowableInformation ti = new ThrowableInformation(new EmptyThrowable());
+        final String[] rep = ti.getThrowableStrRep();
         assertEquals(0, rep.length);
     }
 
@@ -217,7 +217,7 @@ public class ThrowableInformationTest extends TestCase {
 
         /**
          * Create new instance.
-         * 
+         *
          * @param trace stack trace.
          */
         public StringThrowable(final String trace) {
@@ -238,8 +238,8 @@ public class ThrowableInformationTest extends TestCase {
      * Test capturing stack trace from throwable that just has a line feed.
      */
     public void testLineFeed() {
-        ThrowableInformation ti = new ThrowableInformation(new StringThrowable("\n"));
-        String[] rep = ti.getThrowableStrRep();
+        final ThrowableInformation ti = new ThrowableInformation(new StringThrowable("\n"));
+        final String[] rep = ti.getThrowableStrRep();
         assertEquals(1, rep.length);
         assertEquals("", rep[0]);
     }
@@ -248,8 +248,8 @@ public class ThrowableInformationTest extends TestCase {
      * Test capturing stack trace from throwable that just has a carriage return.
      */
     public void testCarriageReturn() {
-        ThrowableInformation ti = new ThrowableInformation(new StringThrowable("\r"));
-        String[] rep = ti.getThrowableStrRep();
+        final ThrowableInformation ti = new ThrowableInformation(new StringThrowable("\r"));
+        final String[] rep = ti.getThrowableStrRep();
         assertEquals(1, rep.length);
         assertEquals("", rep[0]);
     }
@@ -258,8 +258,8 @@ public class ThrowableInformationTest extends TestCase {
      * Test parsing of line breaks.
      */
     public void testParsing() {
-        ThrowableInformation ti = new ThrowableInformation(new StringThrowable("Line1\rLine2\nLine3\r\nLine4\n\rLine6"));
-        String[] rep = ti.getThrowableStrRep();
+        final ThrowableInformation ti = new ThrowableInformation(new StringThrowable("Line1\rLine2\nLine3\r\nLine4\n\rLine6"));
+        final String[] rep = ti.getThrowableStrRep();
         assertEquals(6, rep.length);
         assertEquals("Line1", rep[0]);
         assertEquals("Line2", rep[1]);
@@ -273,8 +273,8 @@ public class ThrowableInformationTest extends TestCase {
      * Test capturing stack trace from throwable that a line feed followed by blank.
      */
     public void testLineFeedBlank() {
-        ThrowableInformation ti = new ThrowableInformation(new StringThrowable("\n "));
-        String[] rep = ti.getThrowableStrRep();
+        final ThrowableInformation ti = new ThrowableInformation(new StringThrowable("\n "));
+        final String[] rep = ti.getThrowableStrRep();
         assertEquals(2, rep.length);
         assertEquals("", rep[0]);
         assertEquals(" ", rep[1]);
@@ -284,8 +284,8 @@ public class ThrowableInformationTest extends TestCase {
      * Test that getThrowable returns the throwable provided to the constructor.
      */
     public void testGetThrowable() {
-        Throwable t = new StringThrowable("Hello, World");
-        ThrowableInformation ti = new ThrowableInformation(t);
+        final Throwable t = new StringThrowable("Hello, World");
+        final ThrowableInformation ti = new ThrowableInformation(t);
         assertSame(t, ti.getThrowable());
     }
 
@@ -294,11 +294,11 @@ public class ThrowableInformationTest extends TestCase {
      * earlier did not isolate initial call. See bug 44032.
      */
     public void testIsolation() {
-        ThrowableInformation ti = new ThrowableInformation(new StringThrowable("Hello, World"));
-        String[] rep = ti.getThrowableStrRep();
+        final ThrowableInformation ti = new ThrowableInformation(new StringThrowable("Hello, World"));
+        final String[] rep = ti.getThrowableStrRep();
         assertEquals("Hello, World", rep[0]);
         rep[0] = "Bonjour, Monde";
-        String[] rep2 = ti.getThrowableStrRep();
+        final String[] rep2 = ti.getThrowableStrRep();
         assertEquals("Hello, World", rep2[0]);
     }
 
@@ -330,8 +330,8 @@ public class ThrowableInformationTest extends TestCase {
      *
      */
     public void testNastyException() {
-        ThrowableInformation ti = new ThrowableInformation(new NastyThrowable());
-        String[] rep = ti.getThrowableStrRep();
+        final ThrowableInformation ti = new ThrowableInformation(new NastyThrowable());
+        final String[] rep = ti.getThrowableStrRep();
         assertEquals("NastyException", rep[0]);
     }
 

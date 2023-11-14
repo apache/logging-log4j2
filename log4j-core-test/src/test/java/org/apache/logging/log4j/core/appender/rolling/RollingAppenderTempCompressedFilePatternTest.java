@@ -1,40 +1,26 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
-import org.apache.commons.compress.compressors.CompressorException;
-import org.apache.commons.compress.compressors.CompressorStreamFactory;
-import org.apache.commons.compress.utils.IOUtils;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
-import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.test.junit.CleanUpDirectories;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnOs;
-import org.junit.jupiter.api.condition.OS;
-
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
@@ -43,74 +29,74 @@ import java.nio.file.WatchService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.commons.compress.utils.IOUtils;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
+
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * LOG4J2-1766.
  */
-@DisabledOnOs(value = OS.MAC, disabledReason = "FileWatcher is not fast enough on macOS for this test")
-@Tag("sleepy")
+@UsingStatusListener
 public class RollingAppenderTempCompressedFilePatternTest {
 
-    private static final String CONFIG = "log4j-rolling-gz-tmp-compress.xml";
+    private static Logger LOGGER = StatusLogger.getLogger();
 
-    private static final String DIR = "target/rolling2";
-    private static final String DIR_TMP = "target/rolling-tmp";
+    @TempLoggingDir
+    private static Path loggingPath;
 
     @Test
-    @CleanUpDirectories({ DIR, DIR_TMP })
-    @LoggerContextSource(CONFIG)
-    public void testAppender(final Logger logger, final LoggerContext context) throws Exception {
-        final File dirTmp = new File(DIR_TMP);
-        dirTmp.mkdirs();
+    @DisabledOnOs(value = OS.MAC, disabledReason = "FileWatcher isn't fast enough to work properly.")
+    @LoggerContextSource
+    public void testAppender(final LoggerContext context) throws Exception {
+        final Logger logger = context.getLogger(getClass());
+        final Path logsDir = loggingPath.resolve("logs");
+        final Path tmpDir = loggingPath.resolve("tmp");
+        Files.createDirectories(tmpDir);
         try (final WatchService watcher = FileSystems.getDefault().newWatchService()) {
-            WatchKey key = dirTmp.toPath().register(watcher, StandardWatchEventKinds.ENTRY_CREATE);
+            WatchKey key = tmpDir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE);
 
             final List<String> messages = new ArrayList<>();
             for (int i = 0; i < 500; ++i) {
                 final String message = "This is test message number " + i;
                 messages.add(message);
                 logger.debug(message);
-                if (i % 100 == 0) {
-                    Thread.sleep(500);
-                }
             }
-            assertTrue(context.stop(30, TimeUnit.SECONDS), () -> "Could not stop cleanly " + context + " for " + this);
-            final File dir = new File(DIR);
-            assertTrue(dir.exists(), "Directory not created");
-            final File[] files = dir.listFiles();
-            assertNotNull(files);
+            if (!context.stop(30, TimeUnit.SECONDS)) {
+                LOGGER.error("Could not stop logger context {} cleanly in {}.", context.getName(),
+                        getClass().getSimpleName());
+            }
+
             int gzippedFiles = 0;
-            for (final File file : files) {
+            final List<Path> files = StreamSupport.stream(Files.newDirectoryStream(logsDir).spliterator(), false)
+                    .collect(Collectors.toList());
+            for (final Path file : files) {
                 final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                InputStream in = null;
-                final FileExtension ext = FileExtension.lookupForFile(file.getName());
-                try {
-                    try (FileInputStream fis = new FileInputStream(file)) {
-                        if (ext != null) {
-                            gzippedFiles++;
-                            try {
-                                in = new CompressorStreamFactory().createCompressorInputStream(ext.name().toLowerCase(),
-                                        fis);
-                            } catch (final CompressorException ce) {
-                                ce.printStackTrace();
-                                fail(
-                                        "Error creating intput stream from " + file.toString() + ": " + ce.getMessage());
-                            }
-                        } else {
-                            in = new FileInputStream(file);
-                        }
-                        assertNotNull(in, "No input stream for " + file.getName());
-                        try {
-                            IOUtils.copy(in, baos);
-                        } catch (final Exception ex) {
-                            ex.printStackTrace();
-                            fail("Unable to decompress " + file.getAbsolutePath());
-                        }
-                    }
-                } finally {
-                    Closer.close(in);
+                final FileExtension ext = FileExtension.lookupForFile(file.getFileName().toString());
+                if (ext != null) {
+                    gzippedFiles++;
+                }
+                try (final InputStream fis = Files.newInputStream(file);
+                        final InputStream in = ext != null ? new CompressorStreamFactory()
+                                .createCompressorInputStream(toRootLowerCase(ext.name()),
+                                        fis)
+                                : fis) {
+                    assertThat(in).as("compressed input stream").isNotNull();
+                    assertDoesNotThrow(() -> IOUtils.copy(in, baos));
                 }
                 final String text = baos.toString(Charset.defaultCharset());
                 final String[] lines = text.split("[\\r\\n]+");
@@ -118,9 +104,9 @@ public class RollingAppenderTempCompressedFilePatternTest {
                     messages.remove(line);
                 }
             }
-            assertTrue(messages.isEmpty(), "Log messages lost : " + messages.size());
-            assertTrue(files.length > 2, "Files not rolled : " + files.length);
-            assertTrue(gzippedFiles > 0, "Files gzipped not rolled : " + gzippedFiles);
+            assertThat(messages).as("Lost messages").isEmpty();
+            assertThat(files).as("Log files").hasSizeGreaterThan(16);
+            assertThat(gzippedFiles).as("Compressed log file count").isGreaterThan(16);
 
             int temporaryFilesCreated = 0;
             key = watcher.take();
@@ -132,10 +118,7 @@ public class RollingAppenderTempCompressedFilePatternTest {
                     temporaryFilesCreated++;
                 }
             }
-            assertTrue(temporaryFilesCreated > 0, "No temporary file created during compression");
-            assertEquals(gzippedFiles, temporaryFilesCreated,
-                    "Temporarys file created not equals to compressed files " + temporaryFilesCreated + "/"
-                            + gzippedFiles);
+            assertThat(temporaryFilesCreated).as("Temporary files created").isGreaterThan(0).isEqualTo(gzippedFiles);
         }
     }
 }

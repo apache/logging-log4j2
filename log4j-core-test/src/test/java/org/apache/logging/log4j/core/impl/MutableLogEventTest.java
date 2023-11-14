@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.impl;
 
@@ -117,7 +117,7 @@ public class MutableLogEventTest {
 
     @Test
     public void testInitFromReusableCopiesFormatString() {
-        Message message = ReusableMessageFactory.INSTANCE.newMessage("msg in a {}", "bottle");
+        final Message message = ReusableMessageFactory.INSTANCE.newMessage("msg in a {}", "bottle");
         final Log4jLogEvent source = Log4jLogEvent.newBuilder() //
                 .setContextData(CONTEXT_DATA) //
                 .setContextStack(STACK) //
@@ -139,17 +139,17 @@ public class MutableLogEventTest {
         assertEquals("msg in a {}", mutable.getFormat(), "format");
         assertEquals("msg in a bottle", mutable.getFormattedMessage(), "formatted");
         assertArrayEquals(new String[] {"bottle"}, mutable.getParameters(), "parameters");
-        Message memento = mutable.memento();
+        final Message memento = mutable.memento();
         assertEquals("msg in a {}", memento.getFormat(), "format");
         assertEquals("msg in a bottle", memento.getFormattedMessage(), "formatted");
         assertArrayEquals(new String[] {"bottle"}, memento.getParameters(), "parameters");
 
-        Message eventMementoMessage = mutable.toMemento().getMessage();
+        final Message eventMementoMessage = mutable.toMemento().getMessage();
         assertEquals("msg in a {}", eventMementoMessage.getFormat(), "format");
         assertEquals("msg in a bottle", eventMementoMessage.getFormattedMessage(), "formatted");
         assertArrayEquals(new String[] {"bottle"}, eventMementoMessage.getParameters(), "parameters");
 
-        Message log4JLogEventMessage = new Log4jLogEvent.Builder(mutable).build().getMessage();
+        final Message log4JLogEventMessage = new Log4jLogEvent.Builder(mutable).build().getMessage();
         assertEquals("msg in a {}", log4JLogEventMessage.getFormat(), "format");
         assertEquals("msg in a bottle", log4JLogEventMessage.getFormattedMessage(), "formatted");
         assertArrayEquals(new String[] {"bottle"}, log4JLogEventMessage.getParameters(), "parameters");
@@ -157,8 +157,8 @@ public class MutableLogEventTest {
 
     @Test
     public void testInitFromReusableObjectCopiesParameter() {
-        Object param = new Object();
-        Message message = ReusableMessageFactory.INSTANCE.newMessage(param);
+        final Object param = new Object();
+        final Message message = ReusableMessageFactory.INSTANCE.newMessage(param);
         final Log4jLogEvent source = Log4jLogEvent.newBuilder()
                 .setContextData(CONTEXT_DATA)
                 .setContextStack(STACK)
@@ -181,7 +181,7 @@ public class MutableLogEventTest {
         assertNull(mutable.getFormat(), "format");
         assertEquals(param.toString(), mutable.getFormattedMessage(), "formatted");
         assertArrayEquals(new Object[] {param}, mutable.getParameters(), "parameters");
-        Message memento = mutable.memento();
+        final Message memento = mutable.memento();
         assertNull(memento.getFormat(), "format");
         assertEquals(param.toString(), memento.getFormattedMessage(), "formatted");
         assertArrayEquals(new Object[] {param}, memento.getParameters(), "parameters");
@@ -191,7 +191,7 @@ public class MutableLogEventTest {
     public void testClear() {
         final MutableLogEvent mutable = new MutableLogEvent();
         // initialize the event with an empty message
-        ReusableSimpleMessage simpleMessage = new ReusableSimpleMessage();
+        final ReusableSimpleMessage simpleMessage = new ReusableSimpleMessage();
         simpleMessage.set("");
         mutable.setMessage(simpleMessage);
         assertEquals(0, mutable.getContextData().size(), "context data");

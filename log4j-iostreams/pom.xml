@@ -3,11 +3,11 @@
   ~ Licensed to the Apache Software Foundation (ASF) under one or more
   ~ contributor license agreements.  See the NOTICE file distributed with
   ~ this work for additional information regarding copyright ownership.
-  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ The ASF licenses this file to you under the Apache License, Version 2.0
   ~ (the "License"); you may not use this file except in compliance with
   ~ the License.  You may obtain a copy of the License at
   ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~      http://www.apache.org/licenses/LICENSE-2.0
   ~
   ~ Unless required by applicable law or agreed to in writing, software
   ~ distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,8 +20,10 @@
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
+
   <artifactId>log4j-iostreams</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j Streaming Interface</name>
@@ -30,7 +32,6 @@
     <log4jParentDir>${basedir}/..</log4jParentDir>
     <docLabel>Streaming Documentation</docLabel>
     <projectDir>/log4j-iostreams</projectDir>
-    <module.name>org.apache.logging.log4j.iostreams</module.name>
   </properties>
   <dependencies>
     <dependency>
@@ -75,24 +76,24 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-baseline-maven-plugin</artifactId>
         <configuration>
-          <instructions>
-            <Export-Package>org.apache.logging.log4j.io.*</Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <reuseForks>true</reuseForks>
+          <!--
+            ~ This package is documented as internal and was removed
+            ~ from the public OSGi exports.
+            -->
+          <diffpackages>
+            <diffpackage>!org.apache.logging.log4j.io.internal</diffpackage>
+            <diffpackage>*</diffpackage>
+          </diffpackages>
         </configuration>
       </plugin>
     </plugins>
   </build>
+
 </project>

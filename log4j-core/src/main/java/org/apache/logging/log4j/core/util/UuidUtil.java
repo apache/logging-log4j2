@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.util;
 
@@ -22,7 +22,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.util.PropertiesUtil;
 
 /**
@@ -38,7 +38,8 @@ public final class UuidUtil {
     private static final byte VARIANT = (byte) 0x80;
     private static final int SEQUENCE_MASK = 0x3FFF;
     private static final long NUM_100NS_INTERVALS_SINCE_UUID_EPOCH = 0x01b21dd213814000L;
-    private static final long INITIAL_UUID_SEQNO = PropertiesUtil.getProperties().getLongProperty(Log4jProperties.UUID_SEQUENCE, 0);
+    private static final long INITIAL_UUID_SEQNO =
+            PropertiesUtil.getProperties().getLongProperty(Log4jPropertyKey.UUID_SEQUENCE, 0);
 
     private static final long LOW_MASK = 0xffffffffL;
     private static final long MID_MASK = 0xffff00000000L;

@@ -16,6 +16,10 @@
 ////
 = Java Style Guidelines
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 [#intro]
 == Introduction
 

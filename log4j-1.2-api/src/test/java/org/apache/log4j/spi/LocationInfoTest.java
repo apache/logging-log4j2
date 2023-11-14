@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -31,7 +31,7 @@ public class LocationInfoTest extends TestCase {
         final String methodName = "testFourParamConstructor";
         final String fileName = "LocationInfoTest.java";
         final String lineNumber = "41";
-        LocationInfo li = new LocationInfo(fileName, className, methodName, lineNumber);
+        final LocationInfo li = new LocationInfo(fileName, className, methodName, lineNumber);
         assertEquals(className, li.getClassName());
         assertEquals(methodName, li.getMethodName());
         assertEquals(fileName, li.getFileName());
@@ -45,7 +45,7 @@ public class LocationInfoTest extends TestCase {
     private static class NameSubstring {
         /**
          * Construct a LocationInfo. Location should be immediate caller of this method.
-         * 
+         *
          * @return location info.
          */
         public static LocationInfo getInfo() {
@@ -60,7 +60,7 @@ public class LocationInfoTest extends TestCase {
     private static class NameSubstringCaller {
         /**
          * Construct a locationInfo. Location should be this location.
-         * 
+         *
          * @return location info.
          */
         public static LocationInfo getInfo() {
@@ -74,7 +74,7 @@ public class LocationInfoTest extends TestCase {
      * trace. See bug 44888.
      */
     public void testLocationInfo() {
-        LocationInfo li = NameSubstringCaller.getInfo();
+        final LocationInfo li = NameSubstringCaller.getInfo();
         assertEquals(NameSubstringCaller.class.getName(), li.getClassName());
         assertEquals("getInfo", li.getMethodName());
     }

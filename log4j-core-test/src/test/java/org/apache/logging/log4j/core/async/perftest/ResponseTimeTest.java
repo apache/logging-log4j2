@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.async.perftest;
 
@@ -29,7 +29,7 @@ import org.HdrHistogram.Histogram;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.async.DefaultAsyncQueueFullPolicy;
 import org.apache.logging.log4j.core.async.EventRoute;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.core.util.Loader;
 
@@ -108,12 +108,12 @@ public class ResponseTimeTest {
         final String loggerLib = args.length > 2 ? args[2] : "Log4j2";
 
         // print to console if ringbuffer is full
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_QUEUE_FULL_POLICY, PrintingAsyncQueueFullPolicy.class.getName());
-        System.setProperty(Log4jProperties.ASYNC_LOGGER_RING_BUFFER_SIZE, String.valueOf(256 * 1024));
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_QUEUE_FULL_POLICY.getKey(), PrintingAsyncQueueFullPolicy.class.getName());
+        System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_RING_BUFFER_SIZE.getKey(), String.valueOf(256 * 1024));
         //System.setProperty(Log4jProperties.CONTEXT_SELECTOR_CLASS_NAME, AsyncLoggerContextSelector.class.getName());
         //System.setProperty(Log4jProperties.CONFIG_LOCATION, "perf3PlainNoLoc.xml");
-        if (System.getProperty(Log4jProperties.ASYNC_LOGGER_WAIT_STRATEGY) == null) {
-            System.setProperty(Log4jProperties.ASYNC_LOGGER_WAIT_STRATEGY, "Yield");
+        if (System.getProperty(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY.getKey()) == null) {
+            System.setProperty(Log4jPropertyKey.ASYNC_LOGGER_WAIT_STRATEGY.getKey(), "Yield");
         }
         //for (Object key : System.getProperties().keySet()) {
         //    System.out.println(key + "=" + System.getProperty((String) key));
@@ -178,7 +178,7 @@ public class ResponseTimeTest {
 
     private static void writeToFile(final String suffix, final Histogram hist, final int thousandMsgPerSec,
             final double scale) throws IOException {
-        try (PrintStream pout = new PrintStream(new FileOutputStream(thousandMsgPerSec + "k" + suffix))) {
+        try (final PrintStream pout = new PrintStream(new FileOutputStream(thousandMsgPerSec + "k" + suffix))) {
             hist.outputPercentileDistribution(pout, scale);
         }
     }

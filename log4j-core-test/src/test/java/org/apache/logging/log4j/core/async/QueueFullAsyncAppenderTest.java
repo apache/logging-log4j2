@@ -1,87 +1,44 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.async;
 
-import java.util.Stack;
-import java.util.concurrent.CountDownLatch;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.test.categories.AsyncLoggers;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
-import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.core.test.junit.Named;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
 
 /**
  * Tests queue full scenarios with AsyncAppender.
  */
-@RunWith(BlockJUnit4ClassRunner.class)
-@Category(AsyncLoggers.class)
 public class QueueFullAsyncAppenderTest extends QueueFullAbstractTest {
 
-    @Rule
-    public LoggerContextRule context = new LoggerContextRule(
-            "log4j2-queueFullAsyncAppender.xml");
-
-    @Before
-    public void before() throws Exception {
-        blockingAppender = context.getRequiredAppender("Blocking", BlockingAppender.class);
+    @Override
+    @Test
+    @LoggerContextSource
+    protected void testNormalQueueFullKeepsMessagesInOrder(final LoggerContext ctx,
+                                                           final @Named(APPENDER_NAME) BlockingAppender blockingAppender)
+            throws Exception {
+        super.testNormalQueueFullKeepsMessagesInOrder(ctx, blockingAppender);
     }
 
-
-    @Test(timeout = 5000)
-    public void testNormalQueueFullKeepsMessagesInOrder() {
-        final Logger logger = context.getLogger(this.getClass());
-
-        blockingAppender.countDownLatch = new CountDownLatch(1);
-        unlocker = new Unlocker(new CountDownLatch(129));
-        unlocker.start();
-
-        asyncAppenderTest(logger, unlocker, blockingAppender);
-    }
-
-    static void asyncAppenderTest(final Logger logger,
-                                  final Unlocker unlocker,
-                                  final BlockingAppender blockingAppender) {
-        for (int i = 0; i < 130; i++) {
-            TRACE("Test logging message " + i  + ". Remaining capacity=" + asyncRemainingCapacity(logger));
-            TRACE("Test decrementing unlocker countdown latch. Count=" + unlocker.countDownLatch.getCount());
-            unlocker.countDownLatch.countDown();
-            final String param = "I'm innocent";
-            logger.info(new ParameterizedMessage("logging innocent object #{} {}", i, param));
-        }
-        TRACE("Before stop() blockingAppender.logEvents.count=" + blockingAppender.logEvents.size());
-        //CoreLoggerContexts.stopLoggerContext(false); // stop async thread
-        while (blockingAppender.logEvents.size() < 130) { Thread.yield(); }
-        TRACE("After  stop() blockingAppender.logEvents.count=" + blockingAppender.logEvents.size());
-
-        final Stack<String> actual = transform(blockingAppender.logEvents);
-        for (int i = 0; i < 130; i++) {
-            assertEquals("logging innocent object #" + i + " I'm innocent", actual.pop());
-        }
-        assertTrue(actual.isEmpty());
+    @Override
+    protected void checkConfig(final LoggerContext ctx) {
+        assertAsyncAppender(ctx);
     }
 }

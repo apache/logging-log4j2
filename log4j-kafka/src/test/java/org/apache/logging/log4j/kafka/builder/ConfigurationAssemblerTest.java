@@ -1,25 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.kafka.builder;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +27,6 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.CustomLevelConfig;
 import org.apache.logging.log4j.core.config.LoggerConfig;
@@ -40,10 +34,15 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.filter.ThresholdFilter;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.layout.GelfLayout;
-import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.kafka.appender.KafkaAppender;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -53,32 +52,32 @@ public class ConfigurationAssemblerTest {
     @Test
     public void testBuildConfiguration() throws Exception {
         try {
-            System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+            System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
                     "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
             final ConfigurationBuilder<BuiltConfiguration> builder = ConfigurationBuilderFactory
                     .newConfigurationBuilder();
             CustomConfigurationFactory.addTestFixtures("config name", builder);
             final Configuration configuration = builder.build();
-            try (LoggerContext ctx = Configurator.initialize(configuration)) {
+            try (final LoggerContext ctx = Configurator.initialize(configuration)) {
                 validate(configuration);
             }
         } finally {
-            System.getProperties().remove(Constants.LOG4J_CONTEXT_SELECTOR);
+            System.getProperties().remove(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey());
         }
     }
 
     @Test
     public void testCustomConfigurationFactory() throws Exception {
         try {
-            System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY,
+            System.setProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
                     "org.apache.logging.log4j.kafka.builder.CustomConfigurationFactory");
-            System.setProperty(Constants.LOG4J_CONTEXT_SELECTOR,
+            System.setProperty(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey(),
                     "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");
             final Configuration config = ((LoggerContext) LogManager.getContext(false)).getConfiguration();
             validate(config);
         } finally {
-            System.getProperties().remove(Constants.LOG4J_CONTEXT_SELECTOR);
-            System.getProperties().remove(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY);
+            System.getProperties().remove(Log4jPropertyKey.CONTEXT_SELECTOR_CLASS_NAME.getSystemKey());
+            System.getProperties().remove(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey());
         }
     }
 

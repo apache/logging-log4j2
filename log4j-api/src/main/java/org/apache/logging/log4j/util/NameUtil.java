@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.util;
 
@@ -20,6 +20,8 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  *
@@ -49,6 +51,11 @@ public final class NameUtil {
      * @param input string to be hashed
      * @return string composed of 32 hexadecimal digits of the calculated hash
      */
+    @SuppressFBWarnings(
+            value = "WEAK_MESSAGE_DIGEST_MD5",
+            justification = "Used to create unique identifiers."
+    )
+    @Deprecated
     public static String md5(final String input) {
         Objects.requireNonNull(input, "input");
         try {
@@ -57,11 +64,8 @@ public final class NameUtil {
             final byte[] bytes = digest.digest(inputBytes);
             final StringBuilder md5 = new StringBuilder(bytes.length * 2);
             for (final byte b : bytes) {
-                final String hex = Integer.toHexString(0xFF & b);
-                if (hex.length() == 1) {
-                    md5.append('0');
-                }
-                md5.append(hex);
+                md5.append(Character.forDigit((0xFF & b) >> 4, 16));
+                md5.append(Character.forDigit(0x0F & b, 16));
             }
             return md5.toString();
         }

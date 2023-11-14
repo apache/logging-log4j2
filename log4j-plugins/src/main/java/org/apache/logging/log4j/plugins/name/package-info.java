@@ -18,4 +18,9 @@
 /**
  * Strategies for extracting names and aliases from annotations.
  */
+@Export
+@Version("1.0.0")
 package org.apache.logging.log4j.plugins.name;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

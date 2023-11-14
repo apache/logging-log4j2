@@ -17,6 +17,10 @@
 = Lookups
 Ralph Goers <rgoers@apache.org>
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 Lookups provide a way to add values to the Log4j configuration at
 arbitrary places. They are a particular type of Plugin that implements
 the

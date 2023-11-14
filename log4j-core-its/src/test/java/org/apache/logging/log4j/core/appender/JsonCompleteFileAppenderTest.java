@@ -1,22 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender;
-
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -24,13 +22,13 @@ import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.Layouts;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.CoreContextSelectors;
-import org.apache.logging.log4j.core.test.util.FixedTimeClock;
-import org.apache.logging.log4j.core.time.ClockFactory;
-import org.apache.logging.log4j.test.junit.CleanFiles;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.core.test.util.FixedTimeClock;
+import org.apache.logging.log4j.test.junit.CleanFiles;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -40,6 +38,8 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests a "complete" JSON file.
@@ -56,12 +56,12 @@ public class JsonCompleteFileAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ClockFactory.PROPERTY_NAME, FixedTimeClock.class.getName());
+        System.setProperty(Log4jPropertyKey.CONFIG_CLOCK.getKey(), FixedTimeClock.class.getName());
     }
 
     @AfterClass
     public static void afterClass() {
-        System.clearProperty(ClockFactory.PROPERTY_NAME);
+        System.clearProperty(Log4jPropertyKey.CONFIG_CLOCK.getKey());
     }
 
     @Parameters(name = "{0}")
@@ -84,24 +84,24 @@ public class JsonCompleteFileAppenderTest {
         logger.error(logMsg, new IllegalArgumentException("badarg"));
         this.loggerContextRule.getLoggerContext().stop(); // stops async thread
 
-        List<String> lines = Files.readAllLines(logFile.toPath(), Charset.forName("UTF8"));
+        final List<String> lines = Files.readAllLines(logFile.toPath(), Charset.forName("UTF8"));
 
-        String[] expected = {
-                "[", // equals
-                "{", // equals
-                "  \"thread\" : \"main\",", //
-                "  \"level\" : \"INFO\",", //
-                "  \"loggerName\" : \"com.foo.Bar\",", //
-                "  \"message\" : \"Message flushed with immediate flush=true\",", //
-                "  \"endOfBatch\" : false,", //
-                "  \"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLogger\",", //
-                "  \"instant\" : {", //
-                "    \"epochSecond\" : 1234567,", //
-                "    \"nanoOfSecond\" : 890000000", //
-                "  },", //
+        final String[] expected = {
+            "[", // equals
+            "{", // equals
+            "  \"thread\" : \"main\",", //
+            "  \"level\" : \"INFO\",", //
+            "  \"loggerName\" : \"com.foo.Bar\",", //
+            "  \"message\" : \"Message flushed with immediate flush=true\",", //
+            "  \"endOfBatch\" : false,", //
+            "  \"loggerFqcn\" : \"org.apache.logging.log4j.spi.AbstractLogger\",", //
+            "  \"instant\" : {", //
+            "    \"epochSecond\" : 1234567,", //
+            "    \"nanoOfSecond\" : 890000000", //
+            "  },", //
         };
         for (int i = 0; i < expected.length; i++) {
-            String line = lines.get(i);
+            final String line = lines.get(i);
             assertTrue("line " + i + " incorrect: [" + line + "], does not contain: [" + expected[i] + ']', line.contains(expected[i]));
         }
         final String location = "testFlushAtEndOfBatch";

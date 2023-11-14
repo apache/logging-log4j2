@@ -17,6 +17,10 @@
 = Garbage-free Steady State Logging
 Remko Popma <rpopma@apache.org>
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 ////
 Different applications have different performance requirements.
 Some only need to worry about throughput, but for many

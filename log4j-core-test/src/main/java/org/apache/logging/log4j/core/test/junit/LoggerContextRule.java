@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.test.junit;
 
@@ -31,8 +31,9 @@ import org.apache.logging.log4j.core.impl.Log4jContextFactory;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.util.NetUtils;
+import org.apache.logging.log4j.plugins.di.Binding;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.junit.CleanFiles;
 import org.apache.logging.log4j.test.junit.CleanFolders;
@@ -123,12 +124,12 @@ public class LoggerContextRule implements TestRule, LoggerContextAccessor {
                 System.setProperty(SYS_PROP_KEY_CLASS_NAME, description.getClassName());
                 final String displayName = description.getDisplayName();
                 System.setProperty(SYS_PROP_KEY_DISPLAY_NAME, displayName);
-                final Injector injector = DI.createInjector();
+                final ConfigurableInstanceFactory instanceFactory = DI.createFactory();
                 if (contextSelectorClass != null) {
-                    injector.registerBinding(ContextSelector.KEY, injector.getFactory(contextSelectorClass));
+                    instanceFactory.registerBinding(Binding.from(ContextSelector.KEY).to(instanceFactory.getFactory(contextSelectorClass)));
                 }
-                injector.init();
-                final Log4jContextFactory factory = new Log4jContextFactory(injector);
+                DI.initializeFactory(instanceFactory);
+                final Log4jContextFactory factory = new Log4jContextFactory(instanceFactory);
                 LogManager.setFactory(factory);
                 final String fqcn = getClass().getName();
                 final ClassLoader classLoader = description.getTestClass().getClassLoader();

@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.jpa.appender;
 
@@ -27,8 +27,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.categories.Appenders;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -53,8 +53,7 @@ public abstract class AbstractJpaAppenderTest {
 
         final String resource = "org/apache/logging/log4j/jpa/appender/" + configFileName;
         assertNotNull(getClass().getClassLoader().getResource(resource));
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
-                resource);
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), resource);
         ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
         final LoggerContext context = LoggerContext.getContext(false);
         if (context.getConfiguration() instanceof DefaultConfiguration) {
@@ -66,18 +65,18 @@ public abstract class AbstractJpaAppenderTest {
     public void tearDown() throws SQLException {
         final LoggerContext context = LoggerContext.getContext(false);
         try {
-            String appenderName = "databaseAppender";
+            final String appenderName = "databaseAppender";
             final Appender appender = context.getConfiguration().getAppender(appenderName);
             assertNotNull("The appender '" + appenderName + "' should not be null.", appender);
             assertTrue("The appender should be a JpaAppender.", appender instanceof JpaAppender);
             ((JpaAppender) appender).getManager().close();
         } finally {
-            System.clearProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY);
+            System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
             ((PropertiesUtil) PropertiesUtil.getProperties()).reload();
             context.reconfigure();
             StatusLogger.getLogger().reset();
 
-            try (Statement statement = this.connection.createStatement();) {
+            try (final Statement statement = this.connection.createStatement();) {
                 statement.execute("SHUTDOWN");
             }
 

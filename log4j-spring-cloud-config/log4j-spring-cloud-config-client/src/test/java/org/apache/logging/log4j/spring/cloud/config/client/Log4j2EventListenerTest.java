@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.spring.cloud.config.client;
 
@@ -20,12 +20,12 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
-import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.Watcher;
-import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -36,7 +36,6 @@ import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -59,8 +58,8 @@ public class Log4j2EventListenerTest {
 
     @Test
     public void test() throws Exception {
-        AtomicInteger count = new AtomicInteger(0);
-       Source source = new Source(new File("test.java"));
+        final AtomicInteger count = new AtomicInteger(0);
+        final Source source = new Source(new File("test.java"));
         loggerContextRule.getLoggerContext().getConfiguration().getWatchManager()
                 .watch(source, new TestWatcher(count));
         publisher.publishEvent(new EnvironmentChangeEvent(new HashSet<>()));
@@ -71,12 +70,12 @@ public class Log4j2EventListenerTest {
 
         private final AtomicInteger count;
 
-        public TestWatcher(AtomicInteger count) {
+        public TestWatcher(final AtomicInteger count) {
             this.count = count;
         }
 
         @Override
-        public List<ConfigurationListener> getListeners() {
+        public List<Consumer<Reconfigurable>> getListeners() {
             return null;
         }
 
@@ -97,7 +96,7 @@ public class Log4j2EventListenerTest {
         }
 
         @Override
-        public void watching(Source source) {
+        public void watching(final Source source) {
 
         }
 
@@ -107,7 +106,7 @@ public class Log4j2EventListenerTest {
         }
 
         @Override
-        public Watcher newWatcher(Reconfigurable reconfigurable, List<ConfigurationListener> listeners, long lastModifiedMillis) {
+        public Watcher newWatcher(final Reconfigurable reconfigurable, final List<Consumer<Reconfigurable>> listeners, final long lastModifiedMillis) {
             return this;
         }
     }

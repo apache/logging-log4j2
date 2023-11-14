@@ -1,20 +1,19 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.apache.logging.log4j.jndi;
 
 import java.net.URI;
@@ -26,10 +25,11 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.appender.AbstractManager;
 import org.apache.logging.log4j.core.appender.ManagerFactory;
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.jndi.util.JndiCloser;
+import org.apache.logging.log4j.jndi.internal.JndiCloser;
 
 /**
  * Manages a JNDI {@link javax.naming.Context}.
@@ -191,13 +191,17 @@ public class JndiManager extends AbstractManager {
      * @return the named object if it could be located.
      * @throws  NamingException if a naming exception is encountered
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "BanJNDI"})
+    @SuppressFBWarnings(
+            value = "LDAP_INJECTION",
+            justification = "This method only accepts an empty or 'java:' URI scheme."
+    )
     public <T> T lookup(final String name) throws NamingException {
         if (context == null) {
             return null;
         }
         try {
-            URI uri = new URI(name);
+            final URI uri = new URI(name);
             if (uri.getScheme() == null || uri.getScheme().equals(JAVA_SCHEME)) {
                 return (T) this.context.lookup(name);
             }
@@ -213,7 +217,8 @@ public class JndiManager extends AbstractManager {
         @Override
         public JndiManager createManager(final String name, final Properties data) {
             if (!isJndiEnabled()) {
-                throw new IllegalStateException(String.format("JNDI must be enabled by setting one of the %s* properties to true", Constants.JNDI_PREFIX));
+                throw new IllegalStateException(String.format("JNDI must be enabled by setting one of the %s* properties to true",
+                        "JNDI.enable{SubKey}"));
             }
             try {
                 return new JndiManager(name, new InitialContext(data));

@@ -1,35 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one or more
-  ~ contributor license agreements. See the NOTICE file distributed with
+  ~ contributor license agreements.  See the NOTICE file distributed with
   ~ this work for additional information regarding copyright ownership.
-  ~ The ASF licenses this file to You under the Apache license, Version 2.0
+  ~ The ASF licenses this file to you under the Apache License, Version 2.0
   ~ (the "License"); you may not use this file except in compliance with
-  ~ the License. You may obtain a copy of the License at
+  ~ the License.  You may obtain a copy of the License at
   ~
   ~      http://www.apache.org/licenses/LICENSE-2.0
   ~
   ~ Unless required by applicable law or agreed to in writing, software
   ~ distributed under the License is distributed on an "AS IS" BASIS,
   ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the license for the specific language governing permissions and
-  ~ limitations under the license.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.logging.log4j</groupId>
     <artifactId>log4j</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>${revision}</version>
+    <relativePath>../log4j-parent</relativePath>
   </parent>
+
   <artifactId>log4j-core-test</artifactId>
   <packaging>jar</packaging>
   <name>Apache Log4j Core Tests</name>
   <description>The Apache Log4j Implementation Tests</description>
   <properties>
-    <log4jParentDir>${basedir}/..</log4jParentDir>
-    <docLabel>Core Documentation</docLabel>
-    <projectDir>/log4j-core-test</projectDir>
+    <!-- Ignore less important (high rank) bugs for test artifacts -->
+    <spotbugs.maxRank>9</spotbugs.maxRank>
+
+    <!-- Dependency versions -->
+    <slf4j-ext.version>${slf4j.version}</slf4j-ext.version>
+
+    <!--
+      ~ OSGi and JPMS options
+      -->
+    <bnd-module-name>org.apache.logging.log4j.core.test</bnd-module-name>
+    <bnd-extra-package-options>
+      <!-- Both JUnit 4 and JUnit 5 are not required -->
+      org.junit.*;resolution:=optional,
+      org.hamcrest.*;resolution:=optional,
+      org.junitpioneer.*;resolution:=optional,
+      com.google.monitoring.*;resolution:=optional,
+      javax.tools;resolution:=optional,
+      org.assertj.*;resolution:=optional,
+      org.awaitility.*;resolution:=optional,
+      org.springframework.mock.*;resolution:=optional
+    </bnd-extra-package-options>
+    <bnd-extra-module-options>
+      <!-- Non-transitive modules -->
+      junit;transitive=false,
+      org.hamcrest;transitive=false,
+      org.junit.jupiter.api;transitive=false,
+      <!-- Name changes -->
+      org.assertj.core;substitute="assertj-core",
+      java.allocation.instrumenter;substitute="java-allocation-instrumenter",
+      spring.test;substitute="spring-test"
+    </bnd-extra-module-options>
   </properties>
   <dependencies>
     <!-- Used for OSGi bundle support -->
@@ -62,7 +92,6 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-plugins</artifactId>
     </dependency>
-    <!-- And test plugins -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-plugins-test</artifactId>
@@ -259,6 +288,11 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
+      <artifactId>mockito-subclass</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
@@ -304,95 +338,32 @@
   </dependencies>
   <build>
     <plugins>
-      <!-- We add the module descriptor to the source path -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${project.basedir}/src/main/module</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>org.apache.logging.log4j.core</Bundle-SymbolicName>
-            <!-- TODO: exclude internal classes from export -->
-            <Export-Package>org.apache.logging.log4j.core.*</Export-Package>
-            <Import-Package>sun.reflect;resolution:=optional,
-              org.apache.logging.log4j.util,
-              org.apache.logging.log4j.plugins,
-              org.apache.logging.log4j.plugins.convert,
-              org.apache.logging.log4j.plugins.processor,
-              org.apache.logging.log4j.plugins.util,
-              org.apache.logging.log4j.plugins.validation,
-              org.apache.logging.log4j.plugins.inject,
-              *</Import-Package>
-            <Bundle-Activator>org.apache.logging.log4j.core.osgi.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-      <!-- We delete the module descriptor to prevent compiling tests as a module -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>remove-module-info</id>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-            <phase>process-classes</phase>
-            <configuration>
-              <excludeDefaultDirectories>true</excludeDefaultDirectories>
-              <filesets>
-                <fileset>
-                  <directory>${project.build.outputDirectory}</directory>
-                  <includes>
-                    <include>module-info.class</include>
-                  </includes>
-                </fileset>
-              </filesets>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>org.apache.logging.log4j</groupId>
+              <artifactId>log4j-plugin-processor</artifactId>
+              <version>${project.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
         <executions>
           <execution>
             <id>default-testCompile</id>
             <configuration>
-              <compilerArgs>
-                <arg>-ApluginPackage=org.apache.logging.log4j.core.junit</arg>
+              <compilerArgs combine.children="append">
+                <!-- Disable automatic package discovery, which overwrites `log4j-core` plugins. -->
+                <arg>-ApluginPackage=org.apache.logging.log4j.core.test2</arg>
               </compilerArgs>
-            </configuration>
-          </execution>
-          <execution>
-            <id>compile-module-info</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>prepare-package</phase>
-            <configuration>
-              <compileSourceRoots>
-                <compileSourceRoot>${project.basedir}/src/main/module</compileSourceRoot>
-              </compileSourceRoots>
             </configuration>
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
@@ -400,17 +371,27 @@
           <skipTests>true</skipTests>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <argLine>
+            <!--
+              ~ Allow environment modification:
+              ~   https://junit-pioneer.org/docs/environment-variables/#warnings-for-reflective-access
+            -->
+            --add-opens java.base/java.util=ALL-UNNAMED
+            --add-opens java.base/java.lang=ALL-UNNAMED
+          </argLine>
           <runOrder>random</runOrder>
           <systemPropertyVariables>
-            <log4j2.is.webapp>false</log4j2.is.webapp>
+            <Web.isWebApp>false</Web.isWebApp>
           </systemPropertyVariables>
           <useModulePath>false</useModulePath>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
   <profiles>

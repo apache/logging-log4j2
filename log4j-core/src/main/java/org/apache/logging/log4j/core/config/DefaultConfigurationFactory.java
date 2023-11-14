@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.config;
 
@@ -27,12 +27,13 @@ import java.util.Optional;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.composite.CompositeConfiguration;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.util.Loader;
 import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.plugins.Inject;
-import org.apache.logging.log4j.plugins.di.Injector;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.PropertiesUtil;
@@ -48,10 +49,12 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     private static final String OVERRIDE_PARAM = "override";
 
     private final Lazy<List<ConfigurationFactory>> configurationFactories;
+    private final StrSubstitutor substitutor;
 
     @Inject
-    public DefaultConfigurationFactory(final Injector injector) {
-        configurationFactories = Lazy.lazy(() -> loadConfigurationFactories(injector));
+    public DefaultConfigurationFactory(final ConfigurableInstanceFactory instanceFactory, final StrSubstitutor substitutor) {
+        configurationFactories = Lazy.lazy(() -> loadConfigurationFactories(instanceFactory));
+        this.substitutor = substitutor;
     }
 
     /**
@@ -65,8 +68,12 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
     public Configuration getConfiguration(final LoggerContext loggerContext, final String name, final URI configLocation) {
 
         if (configLocation == null) {
-            final PropertyEnvironment properties = PropertiesUtil.getProperties();
-            final String configLocationStr = substitutor.replace(properties.getStringProperty(CONFIGURATION_FILE_PROPERTY));
+            PropertyEnvironment properties = loggerContext.getProperties();
+            if (properties == null) {
+                properties = PropertiesUtil.getProperties();
+            }
+            final String configLocationStr =
+                    substitutor.replace(properties.getStringProperty(Log4jPropertyKey.CONFIG_LOCATION));
             if (configLocationStr != null) {
                 final String[] sources = parseConfigLocations(configLocationStr);
                 if (sources.length > 1) {
@@ -95,7 +102,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 final String log4j1ConfigStr =
                         substitutor.replace(properties.getStringProperty(LOG4J1_CONFIGURATION_FILE_PROPERTY));
                 if (log4j1ConfigStr != null) {
-                    System.setProperty(LOG4J1_EXPERIMENTAL, "true");
+                    System.setProperty(LOG4J1_EXPERIMENTAL.getSystemKey(), "true");
                     return getConfiguration(LOG4J1_VERSION, loggerContext, log4j1ConfigStr);
                 }
             }
@@ -163,7 +170,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 "Set system property 'log4j2.*.{}' " +
                 "to show Log4j 2 internal initialization logging. " +
                 "See https://logging.apache.org/log4j/2.x/manual/configuration.html for instructions on how to configure Log4j 2",
-                LoggingSystemProperties.SYSTEM_DEBUG);
+                LoggingSystemProperty.STATUS_LOGGER_DEBUG);
         return new DefaultConfiguration();
     }
 
@@ -293,14 +300,14 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         return new String[] { configLocations };
     }
 
-    private static List<ConfigurationFactory> loadConfigurationFactories(final Injector injector) {
+    private static List<ConfigurationFactory> loadConfigurationFactories(final ConfigurableInstanceFactory instanceFactory) {
         final List<ConfigurationFactory> factories = new ArrayList<>();
 
-        Optional.ofNullable(PropertiesUtil.getProperties().getStringProperty(Log4jProperties.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME))
+        Optional.ofNullable(PropertiesUtil.getProperties().getStringProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME))
                 .flatMap(DefaultConfigurationFactory::tryLoadFactoryClass)
                 .map(clazz -> {
                     try {
-                        return injector.getInstance(clazz);
+                        return instanceFactory.getInstance(clazz);
                     } catch (final Exception ex) {
                         LOGGER.error("Unable to create instance of {}", clazz, ex);
                         return null;
@@ -309,7 +316,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
                 .ifPresent(factories::add);
 
         final List<Class<? extends ConfigurationFactory>> configurationFactoryPluginClasses = new ArrayList<>();
-        injector.getInstance(PLUGIN_CATEGORY_KEY).forEach(type -> {
+        instanceFactory.getInstance(PLUGIN_NAMESPACE_KEY).forEach(type -> {
             try {
                 configurationFactoryPluginClasses.add(type.getPluginClass().asSubclass(ConfigurationFactory.class));
             } catch (final Exception ex) {
@@ -319,7 +326,7 @@ public class DefaultConfigurationFactory extends ConfigurationFactory {
         configurationFactoryPluginClasses.sort(OrderComparator.getInstance());
         configurationFactoryPluginClasses.forEach(clazz -> {
             try {
-                factories.add(injector.getInstance(clazz));
+                factories.add(instanceFactory.getInstance(clazz));
             } catch (final Exception ex) {
                 LOGGER.error("Unable to create instance of {}", clazz, ex);
             }

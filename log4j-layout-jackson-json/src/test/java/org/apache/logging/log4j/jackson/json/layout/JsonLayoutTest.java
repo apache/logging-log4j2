@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.jackson.json.layout;
 
@@ -29,7 +29,6 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.async.RingBufferLogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.impl.ContextDataFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
@@ -37,25 +36,19 @@ import org.apache.logging.log4j.core.impl.MutableLogEvent;
 import org.apache.logging.log4j.core.lookup.JavaLookup;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
 import org.apache.logging.log4j.core.test.layout.LogEventFixtures;
 import org.apache.logging.log4j.core.time.internal.DummyNanoClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
 import org.apache.logging.log4j.core.util.KeyValuePair;
 import org.apache.logging.log4j.jackson.AbstractJacksonLayout;
 import org.apache.logging.log4j.jackson.json.Log4jJsonObjectMapper;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.ObjectMessage;
-import org.apache.logging.log4j.message.ParameterizedMessage;
-import org.apache.logging.log4j.message.ReusableMessageFactory;
-import org.apache.logging.log4j.message.SimpleMessage;
+import org.apache.logging.log4j.message.*;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.util.Lazy;
 import org.apache.logging.log4j.util.SortedArrayStringMap;
 import org.apache.logging.log4j.util.StringMap;
 import org.apache.logging.log4j.util.Strings;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -66,6 +59,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests the JsonLayout class.
  */
 @UsingAnyThreadContext
+@ConfigurationFactoryType(BasicConfigurationFactory.class)
 public class JsonLayoutTest {
     private static class TestClass {
         private int value;
@@ -80,18 +74,6 @@ public class JsonLayoutTest {
     }
 
     private static final String DQUOTE = "\"";
-
-    @AfterAll
-    public static void cleanupClass() {
-        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
-    }
-
-    @BeforeAll
-    public static void setupClass() {
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, Lazy.lazy(BasicConfigurationFactory::new)::value);
-        ctx.reconfigure();
-    }
 
     LoggerContext ctx = LoggerContext.getContext();
 
@@ -156,6 +138,7 @@ public class JsonLayoutTest {
             .setTimeMillis(1).build();
         // @formatter:off
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setCompact(true)
                 .setObjectMessageAsJsonObject(objectMessageAsJsonObject)
                 .build();
@@ -167,6 +150,7 @@ public class JsonLayoutTest {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         // @formatter:off
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setCompact(true)
                 .setIncludeStacktrace(true)
                 .setStacktraceAsString(stacktraceAsString)
@@ -176,8 +160,9 @@ public class JsonLayoutTest {
     }
 
     @Test
-    public void testAdditionalFields() throws Exception {
+    public void testAdditionalFields() {
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setComplete(false)
@@ -196,8 +181,9 @@ public class JsonLayoutTest {
     }
 
     @Test
-    public void testMutableLogEvent() throws Exception {
+    public void testMutableLogEvent() {
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setComplete(false)
@@ -210,7 +196,7 @@ public class JsonLayoutTest {
                 .setCharset(StandardCharsets.UTF_8)
                 .setConfiguration(ctx.getConfiguration())
                 .build();
-        Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
+        final Log4jLogEvent logEvent = LogEventFixtures.createLogEvent();
         final MutableLogEvent mutableEvent = new MutableLogEvent();
         mutableEvent.initFrom(logEvent);
         final String strLogEvent = layout.toSerializable(logEvent);
@@ -224,6 +210,7 @@ public class JsonLayoutTest {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         // @formatter:off
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(locationInfo)
                 .setProperties(includeContext)
                 .setPropertiesAsList(contextMapAslist)
@@ -367,8 +354,9 @@ public class JsonLayoutTest {
     }
 
     @Test
-    public void testIncludeNullDelimiterFalse() throws Exception {
+    public void testIncludeNullDelimiterFalse() {
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setCompact(true)
                 .setIncludeNullDelimiter(false)
                 .build();
@@ -377,8 +365,9 @@ public class JsonLayoutTest {
     }
 
     @Test
-    public void testIncludeNullDelimiterTrue() throws Exception {
+    public void testIncludeNullDelimiterTrue() {
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setCompact(true)
                 .setIncludeNullDelimiter(true)
                 .build();
@@ -390,7 +379,7 @@ public class JsonLayoutTest {
      * Test case for MDC conversion pattern.
      */
     @Test
-    public void testLayout() throws Exception {
+    public void testLayout() {
         final Map<String, Appender> appenders = this.rootLogger.getAppenders();
         for (final Appender appender : appenders.values()) {
             this.rootLogger.removeAppender(appender);
@@ -454,6 +443,7 @@ public class JsonLayoutTest {
         final boolean propertiesAsList = false;
         // @formatter:off
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setPropertiesAsList(propertiesAsList)
@@ -484,6 +474,7 @@ public class JsonLayoutTest {
     public void testLayoutMessageWithCurlyBraces() throws Exception {
         final boolean propertiesAsList = false;
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setPropertiesAsList(propertiesAsList)
@@ -512,6 +503,7 @@ public class JsonLayoutTest {
     public void testReusableLayoutMessageWithCurlyBraces() throws Exception {
         final boolean propertiesAsList = false;
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setPropertiesAsList(propertiesAsList)
@@ -522,7 +514,7 @@ public class JsonLayoutTest {
                 .setIncludeStacktrace(true)
                 .build();
         final ReusableMessageFactory factory = ReusableMessageFactory.INSTANCE;
-        Message message = factory.newMessage("Testing {}", new TestObj());
+        final Message message = factory.newMessage("Testing {}", new TestObj());
         try {
             final Log4jLogEvent expected = Log4jLogEvent.newBuilder()
                     .setLoggerName("a.B")
@@ -531,7 +523,7 @@ public class JsonLayoutTest {
                     .setMessage(message)
                     .setThreadName("threadName")
                     .setTimeMillis(1).build();
-            MutableLogEvent mutableLogEvent = new MutableLogEvent();
+            final MutableLogEvent mutableLogEvent = new MutableLogEvent();
             mutableLogEvent.initFrom(expected);
             final String str = layout.toSerializable(mutableLogEvent);
             final String expectedMessage = "Testing " + TestObj.TO_STRING_VALUE;
@@ -548,6 +540,7 @@ public class JsonLayoutTest {
     public void testLayoutRingBufferEventReusableMessageWithCurlyBraces() throws Exception {
         final boolean propertiesAsList = false;
         final AbstractJacksonLayout layout = JsonLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setPropertiesAsList(propertiesAsList)
@@ -558,9 +551,9 @@ public class JsonLayoutTest {
                 .setIncludeStacktrace(true)
                 .build();
         final ReusableMessageFactory factory = ReusableMessageFactory.INSTANCE;
-        Message message = factory.newMessage("Testing {}", new TestObj());
+        final Message message = factory.newMessage("Testing {}", new TestObj());
         try {
-            RingBufferLogEvent ringBufferEvent = new RingBufferLogEvent();
+            final RingBufferLogEvent ringBufferEvent = new RingBufferLogEvent();
             ringBufferEvent.setValues(
                     null, "a.B", null, "f.q.c.n", Level.DEBUG, message,
                     null, new SortedArrayStringMap(), ThreadContext.EMPTY_STACK, 1L,
@@ -654,29 +647,25 @@ public class JsonLayoutTest {
     public void jsonLayout_should_substitute_lookups() {
 
         // Create the layout.
-        KeyValuePair[] additionalFields = {
-                KeyValuePair
-                        .newBuilder()
-                        .setKey("who")
-                        .setValue("${ctx:WHO}")
-                        .build()
+        final KeyValuePair[] additionalFields = {
+                new KeyValuePair("who", "${ctx:WHO}")
         };
-        JsonLayout layout = JsonLayout
+        final JsonLayout layout = JsonLayout
                 .newBuilder()
                 .setConfiguration(new DefaultConfiguration())
                 .setAdditionalFields(additionalFields)
                 .build();
 
         // Create a log event containing `WHO` key in MDC.
-        StringMap contextData = ContextDataFactory.createContextData();
+        final StringMap contextData = ContextDataFactory.createContextData();
         contextData.putValue("WHO", "mduft");
-        LogEvent logEvent = Log4jLogEvent
+        final LogEvent logEvent = Log4jLogEvent
                 .newBuilder()
                 .setContextData(contextData)
                 .build();
 
         // Verify the `WHO` key.
-        String serializedLogEvent = layout.toSerializable(logEvent);
+        final String serializedLogEvent = layout.toSerializable(logEvent);
         assertThat(serializedLogEvent, containsString("\"who\" : \"mduft\""));
 
     }

@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.impl;
 
@@ -66,7 +66,7 @@ public class MementoLogEvent implements LogEvent {
         nanoTime = event.getNanoTime();
         level = event.getLevel();
         marker = event.getMarker();
-        boolean includeLocation = event.isIncludeLocation();
+        final boolean includeLocation = event.isIncludeLocation();
         locationRequired = includeLocation;
         endOfBatch = event.isEndOfBatch();
         message = mementoOfMessage(event);
@@ -112,7 +112,7 @@ public class MementoLogEvent implements LogEvent {
     }
 
     @Override
-    public LogEvent toMemento(boolean includeLocation) {
+    public LogEvent toMemento(final boolean includeLocation) {
         if (locationRequired || !includeLocation) {
             return this;
         }
@@ -225,10 +225,10 @@ public class MementoLogEvent implements LogEvent {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MementoLogEvent that = (MementoLogEvent) o;
+        final MementoLogEvent that = (MementoLogEvent) o;
         return nanoTime == that.nanoTime && locationRequired == that.locationRequired &&
                 endOfBatch == that.endOfBatch && threadId == that.threadId && threadPriority == that.threadPriority &&
                 Objects.equals(loggerFqcn, that.loggerFqcn) && Objects.equals(loggerName, that.loggerName) &&
@@ -254,7 +254,7 @@ public class MementoLogEvent implements LogEvent {
 
     private static ReadOnlyStringMap memento(final ReadOnlyStringMap readOnlyMap) {
         if (readOnlyMap instanceof StringMap && !((StringMap) readOnlyMap).isFrozen()) {
-            StringMap data = ContextDataFactory.createContextData(readOnlyMap);
+            final StringMap data = ContextDataFactory.createContextData(readOnlyMap);
             data.freeze();
             return data;
         }
@@ -263,7 +263,7 @@ public class MementoLogEvent implements LogEvent {
     }
 
     private static Message mementoOfMessage(final LogEvent event) {
-        Message message = event.getMessage();
+        final Message message = event.getMessage();
         if (message instanceof LoggerNameAwareMessage) {
             ((LoggerNameAwareMessage) message).setLoggerName(event.getLoggerName());
         }

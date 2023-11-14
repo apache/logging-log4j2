@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.log4j;
 
@@ -30,6 +30,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.log4j.bridge.FilterAdapter;
 import org.apache.log4j.config.Log4j1Configuration;
 import org.apache.log4j.config.PropertiesConfiguration;
@@ -356,8 +357,12 @@ public class PropertyConfigurator implements Configurator {
      * @param fileName The configuration file
      * @param loggerRepository The hierarchy
      */
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The filename comes from a system property."
+    )
     Configuration doConfigure(final String fileName, final LoggerRepository loggerRepository, final ClassLoader classLoader) {
-        try (InputStream inputStream = Files.newInputStream(Paths.get(fileName))) {
+        try (final InputStream inputStream = Files.newInputStream(Paths.get(fileName))) {
             return doConfigure(inputStream, loggerRepository, classLoader);
         } catch (final Exception e) {
             if (e instanceof InterruptedIOException || e instanceof InterruptedException) {
@@ -384,7 +389,7 @@ public class PropertyConfigurator implements Configurator {
         LogLog.debug("Reading configuration from URL " + url);
         try {
             final URLConnection urlConnection = UrlConnectionFactory.createConnection(url);
-            try (InputStream inputStream = urlConnection.getInputStream()) {
+            try (final InputStream inputStream = urlConnection.getInputStream()) {
                 return doConfigure(inputStream, loggerRepository, classLoader);
             }
         } catch (final IOException e) {

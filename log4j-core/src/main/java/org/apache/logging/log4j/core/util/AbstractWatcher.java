@@ -1,25 +1,27 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.util;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 
 /**
@@ -28,30 +30,31 @@ import org.apache.logging.log4j.core.config.Reconfigurable;
 public abstract class AbstractWatcher implements Watcher {
 
     private final Reconfigurable reconfigurable;
-    private final List<ConfigurationListener> configurationListeners;
-    private final Log4jThreadFactory threadFactory;
+    private final List<Consumer<Reconfigurable>> reconfigurableListeners;
+    private final Executor executor;
     private final Configuration configuration;
     private Source source;
 
     public AbstractWatcher(final Configuration configuration, final Reconfigurable reconfigurable,
-            final List<ConfigurationListener> configurationListeners) {
+                           final List<Consumer<Reconfigurable>> reconfigurableListeners) {
         this.configuration = configuration;
         this.reconfigurable = reconfigurable;
-        this.configurationListeners = configurationListeners;
-        this.threadFactory = configurationListeners != null ?
-            Log4jThreadFactory.createDaemonThreadFactory("ConfigurationFileWatcher") : null;
+        this.reconfigurableListeners = reconfigurableListeners;
+        this.executor =
+                reconfigurableListeners != null
+                        ? Executors.newCachedThreadPool(Log4jThreadFactory.createDaemonThreadFactory("ConfigurationFileWatcher"))
+                        : null;
     }
 
     @Override
-    public List<ConfigurationListener> getListeners() {
-        return configurationListeners;
+    public List<Consumer<Reconfigurable>> getListeners() {
+        return reconfigurableListeners;
     }
 
     @Override
     public void modified() {
-        for (final ConfigurationListener configurationListener : configurationListeners) {
-            final Thread thread = threadFactory.newThread(new ReconfigurationRunnable(configurationListener, reconfigurable));
-            thread.start();
+        for (final Consumer<Reconfigurable> reconfigurableListener : reconfigurableListeners) {
+            executor.execute(() -> reconfigurableListener.accept(reconfigurable));
         }
     }
 
@@ -73,22 +76,4 @@ public abstract class AbstractWatcher implements Watcher {
         return source;
     }
 
-    /**
-     * Helper class for triggering a reconfiguration in a background thread.
-     */
-    public static class ReconfigurationRunnable implements Runnable {
-
-        private final ConfigurationListener configurationListener;
-        private final Reconfigurable reconfigurable;
-
-        public ReconfigurationRunnable(final ConfigurationListener configurationListener, final Reconfigurable reconfigurable) {
-            this.configurationListener = configurationListener;
-            this.reconfigurable = reconfigurable;
-        }
-
-        @Override
-        public void run() {
-            configurationListener.onChange(reconfigurable);
-        }
-    }
 }

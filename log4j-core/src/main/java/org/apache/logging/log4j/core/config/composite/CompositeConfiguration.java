@@ -1,24 +1,23 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.config.composite;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -29,12 +28,13 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Reconfigurable;
 import org.apache.logging.log4j.core.config.status.StatusConfiguration;
-import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.core.util.Source;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.core.util.Watcher;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.util.ResolverUtil;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * A Composite Configuration.
@@ -66,7 +66,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
             final String key = entry.getKey();
             final String value = getConfigurationStrSubstitutor().replace(entry.getValue());
             if ("status".equalsIgnoreCase(key)) {
-                statusConfig.setStatus(value.toUpperCase());
+                statusConfig.setStatus(toRootUpperCase(value));
             } else if ("dest".equalsIgnoreCase(key)) {
                 statusConfig.setDestination(value);
             } else if ("shutdownHook".equalsIgnoreCase(key)) {
@@ -127,7 +127,7 @@ public class CompositeConfiguration extends AbstractConfiguration implements Rec
     public Configuration reconfigure() {
         LOGGER.debug("Reconfiguring composite configuration");
         final List<AbstractConfiguration> configs = new ArrayList<>();
-        final ConfigurationFactory factory = injector.getInstance(ConfigurationFactory.KEY);
+        final ConfigurationFactory factory = instanceFactory.getInstance(ConfigurationFactory.KEY);
         for (final AbstractConfiguration config : configurations) {
             final ConfigurationSource source = config.getConfigurationSource();
             final URI sourceURI = source.getURI();

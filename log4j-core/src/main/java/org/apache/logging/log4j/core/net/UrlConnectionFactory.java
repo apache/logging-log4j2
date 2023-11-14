@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.net;
 
@@ -24,17 +24,20 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
+
 import javax.net.ssl.HttpsURLConnection;
 
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.net.ssl.LaxHostnameVerifier;
 import org.apache.logging.log4j.core.net.ssl.SslConfiguration;
 import org.apache.logging.log4j.core.net.ssl.SslConfigurationFactory;
 import org.apache.logging.log4j.core.util.AuthorizationProvider;
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 import org.apache.logging.log4j.util.Strings;
+
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * Constructs an HTTPURLConnection. This class should be considered to be internal
@@ -55,13 +58,17 @@ public class UrlConnectionFactory {
     private static final String NO_PROTOCOLS = "_none";
     public static final String ALLOWED_PROTOCOLS = "log4j2.Configuration.allowedProtocols";
 
-    @SuppressWarnings("unchecked")
+    @SuppressFBWarnings(
+            value = "URLCONNECTION_SSRF_FD",
+            justification = "The URL parameter originates only from secure sources."
+    )
     public static <T extends URLConnection> T createConnection(final URL url, final long lastModifiedMillis,
-            final SslConfiguration sslConfiguration, final AuthorizationProvider authorizationProvider)
+                                                               final SslConfiguration sslConfiguration,
+                                                               final AuthorizationProvider authorizationProvider,
+                                                               final PropertyEnvironment props)
         throws IOException {
-        final PropertyEnvironment props = PropertiesUtil.getProperties();
-        final List<String> allowed = Arrays.asList(Strings.splitList(props
-                .getStringProperty(ALLOWED_PROTOCOLS, DEFAULT_ALLOWED_PROTOCOLS).toLowerCase(Locale.ROOT)));
+        final List<String> allowed = Arrays.asList(Strings.splitList(toRootLowerCase(props
+                .getStringProperty(ALLOWED_PROTOCOLS, DEFAULT_ALLOWED_PROTOCOLS))));
         if (allowed.size() == 1 && NO_PROTOCOLS.equals(allowed.get(0))) {
             throw new ProtocolException("No external protocols have been enabled");
         }
@@ -72,7 +79,7 @@ public class UrlConnectionFactory {
         if (!allowed.contains(protocol)) {
             throw new ProtocolException("Protocol " + protocol + " has not been enabled as an allowed protocol");
         }
-        URLConnection urlConnection;
+        final URLConnection urlConnection;
         if (url.getProtocol().equals(HTTP) || url.getProtocol().equals(HTTPS)) {
             final HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             if (authorizationProvider != null) {
@@ -108,14 +115,20 @@ public class UrlConnectionFactory {
         } else {
             urlConnection = url.openConnection();
         }
-        return (T) urlConnection;
+        return Cast.cast(urlConnection);
     }
 
+    @SuppressFBWarnings(
+            value = "URLCONNECTION_SSRF_FD",
+            justification = "This method sanitizes the usage of the provided URL."
+    )
     public static URLConnection createConnection(final URL url) throws IOException {
-        URLConnection urlConnection = null;
+        final URLConnection urlConnection;
         if (url.getProtocol().equals(HTTPS) || url.getProtocol().equals(HTTP)) {
-            final AuthorizationProvider provider = ConfigurationFactory.authorizationProvider(PropertiesUtil.getProperties());
-            urlConnection = createConnection(url, 0, SslConfigurationFactory.getSslConfiguration(), provider);
+            final PropertyEnvironment props = PropertiesUtil.getProperties();
+            final AuthorizationProvider provider = AuthorizationProvider.getAuthorizationProvider(props);
+            final SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(props);
+            urlConnection = createConnection(url, 0, sslConfiguration, provider, props);
         } else {
             urlConnection = url.openConnection();
             if (urlConnection instanceof JarURLConnection) {

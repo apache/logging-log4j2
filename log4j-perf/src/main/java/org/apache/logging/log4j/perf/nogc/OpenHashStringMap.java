@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.perf.nogc;
 
@@ -797,7 +797,7 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
         return sb.toString();
     }
 
-    private static class HashCommon {
+    private static final class HashCommon {
         private HashCommon() {}
 
         /** 2<sup>32</sup> &middot; &phi;, &phi; = (&#x221A;5 &minus; 1)/2. */
@@ -815,13 +815,14 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
          * @param x an integer.
          * @return a hash value with good avalanching properties.
          */
-        public static int murmurHash3(int x) {
-            x ^= x >>> 16;
-            x *= 0x85ebca6b;
-            x ^= x >>> 13;
-            x *= 0xc2b2ae35;
-            x ^= x >>> 16;
-            return x;
+        public static int murmurHash3(final int x) {
+            int h = x;
+            h ^= h >>> 16;
+            h *= 0x85ebca6b;
+            h ^= h >>> 13;
+            h *= 0xc2b2ae35;
+            h ^= h >>> 16;
+            return h;
         }
 
         /**
@@ -857,16 +858,17 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
          * @param x an integer smaller than or equal to 2<sup>30</sup>.
          * @return the least power of two greater than or equal to the specified value.
          */
-        public static int nextPowerOfTwo(int x) {
+        public static int nextPowerOfTwo(final int x) {
             if (x == 0) {
                 return 1;
             }
-            x--;
-            x |= x >> 1;
-            x |= x >> 2;
-            x |= x >> 4;
-            x |= x >> 8;
-            return (x | x >> 16) + 1;
+            int r = x;
+            r--;
+            r |= r >> 1;
+            r |= r >> 2;
+            r |= r >> 4;
+            r |= r >> 8;
+            return (r | r >> 16) + 1;
         }
 
         /** Return the least power of two greater than or equal to the specified value.
@@ -876,17 +878,18 @@ public class OpenHashStringMap<K, V> implements StringMap, ThreadContextMap {
          * @param x a long integer smaller than or equal to 2<sup>62</sup>.
          * @return the least power of two greater than or equal to the specified value.
          */
-        public static long nextPowerOfTwo(long x) {
+        public static long nextPowerOfTwo(final long x) {
             if (x == 0) {
                 return 1;
             }
-            x--;
-            x |= x >> 1;
-            x |= x >> 2;
-            x |= x >> 4;
-            x |= x >> 8;
-            x |= x >> 16;
-            return (x | x >> 32) + 1;
+            long r = x;
+            r--;
+            r |= r >> 1;
+            r |= r >> 2;
+            r |= r >> 4;
+            r |= r >> 8;
+            r |= r >> 16;
+            return (r | r >> 32) + 1;
         }
 
 

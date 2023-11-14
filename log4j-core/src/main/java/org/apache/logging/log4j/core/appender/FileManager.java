@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender;
 
@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
@@ -64,6 +65,10 @@ public class FileManager extends OutputStreamManager {
     /**
      * @since 2.9
      */
+    @SuppressFBWarnings(
+            value = "OVERLY_PERMISSIVE_FILE_PERMISSION",
+            justification = "File permissions are specified in the configuration file."
+    )
     protected FileManager(final LoggerContext loggerContext, final String fileName, final OutputStream os, final boolean append, final boolean locking,
             final boolean createOnDemand, final String advertiseURI, final Layout layout,
             final String filePermissions, final String fileOwner, final String fileGroup, final boolean writeHeader,
@@ -133,6 +138,10 @@ public class FileManager extends OutputStreamManager {
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The destination file is specified in the configuration file."
+    )
     protected OutputStream createOutputStream() throws IOException {
         final String filename = getFileName();
         LOGGER.debug("Now writing to {} at {}", filename, new Date());
@@ -169,11 +178,11 @@ public class FileManager extends OutputStreamManager {
     }
 
     @Override
-    protected synchronized void write(final byte[] bytes, final int offset, final int length,
+    protected void write(final byte[] bytes, final int offset, final int length,
             final boolean immediateFlush) {
         if (isLocking) {
+            writeLock.lock();
             try {
-                @SuppressWarnings("resource")
                 final FileChannel channel = ((FileOutputStream) getOutputStream()).getChannel();
                 /*
                  * Lock the whole file. This could be optimized to only lock from the current file position. Note that
@@ -183,11 +192,13 @@ public class FileManager extends OutputStreamManager {
                  * Hopefully, that will be avoided since every file should have a single file manager - unless two
                  * different files strings are configured that somehow map to the same file.
                  */
-                try (final FileLock lock = channel.lock(0, Long.MAX_VALUE, false)) {
+                try (final FileLock ignored = channel.lock(0, Long.MAX_VALUE, false)) {
                     super.write(bytes, offset, length, immediateFlush);
                 }
             } catch (final IOException ex) {
                 throw new AppenderLoggingException("Unable to obtain lock on " + getName(), ex);
+            } finally {
+                writeLock.unlock();
             }
         } else {
             super.write(bytes, offset, length, immediateFlush);
@@ -203,10 +214,10 @@ public class FileManager extends OutputStreamManager {
      * @since 2.8
      */
     @Override
-    protected synchronized void writeToDestination(final byte[] bytes, final int offset, final int length) {
+    protected void writeToDestination(final byte[] bytes, final int offset, final int length) {
         if (isLocking) {
+            writeLock.lock();
             try {
-                @SuppressWarnings("resource")
                 final FileChannel channel = ((FileOutputStream) getOutputStream()).getChannel();
                 /*
                  * Lock the whole file. This could be optimized to only lock from the current file position. Note that
@@ -216,11 +227,13 @@ public class FileManager extends OutputStreamManager {
                  * Hopefully, that will be avoided since every file should have a single file manager - unless two
                  * different files strings are configured that somehow map to the same file.
                  */
-                try (final FileLock lock = channel.lock(0, Long.MAX_VALUE, false)) {
+                try (final FileLock ignored = channel.lock(0, Long.MAX_VALUE, false)) {
                     super.writeToDestination(bytes, offset, length);
                 }
             } catch (final IOException ex) {
                 throw new AppenderLoggingException("Unable to obtain lock on " + getName(), ex);
+            } finally {
+                writeLock.unlock();
             }
         } else {
             super.writeToDestination(bytes, offset, length);
@@ -377,6 +390,10 @@ public class FileManager extends OutputStreamManager {
          * @return The FileManager for the File.
          */
         @Override
+        @SuppressFBWarnings(
+                value = "PATH_TRAVERSAL_IN",
+                justification = "The destination file should be specified in the configuration file."
+        )
         public FileManager createManager(final String name, final FactoryData data) {
             final File file = new File(name);
             try {

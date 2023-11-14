@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.log4j.bridge;
 
@@ -34,7 +34,7 @@ public class LayoutWrapper extends Layout {
      * @param layout a Log4j 2.x layout
      * @return a Log4j 1.x layout or {@code null} if the parameter is {@code null}
      */
-    public static Layout adapt(org.apache.logging.log4j.core.Layout layout) {
+    public static Layout adapt(final org.apache.logging.log4j.core.Layout layout) {
         if (layout instanceof LayoutAdapter) {
             return ((LayoutAdapter) layout).getLayout();
         }
@@ -49,12 +49,12 @@ public class LayoutWrapper extends Layout {
      *
      * @param layout The layout to wrap.
      */
-    public LayoutWrapper(org.apache.logging.log4j.core.Layout layout) {
+    public LayoutWrapper(final org.apache.logging.log4j.core.Layout layout) {
         this.layout = layout;
     }
 
     @Override
-    public String format(LoggingEvent event) {
+    public String format(final LoggingEvent event) {
         return layout.toSerializable(((LogEventAdapter)event).getEvent()).toString();
     }
 

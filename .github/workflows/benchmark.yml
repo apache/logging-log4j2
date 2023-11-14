@@ -1,17 +1,19 @@
+#
 # Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements. See the NOTICE file distributed with
+# contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache license, Version 2.0
+# The ASF licenses this file to you under the Apache License, Version 2.0
 # (the "License"); you may not use this file except in compliance with
-# the License. You may obtain a copy of the License at
+# the License.  You may obtain a copy of the License at
 #
 #      http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the license for the specific language governing permissions and
-# limitations under the license.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 name: benchmark
 
@@ -28,10 +30,10 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab   # 3.5.2
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11   # 4.1.1
 
       - name: Set up JDK 11
-        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98   # 3.10.0
+        uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0   # 3.13.0
         with:
           distribution: temurin
           java-version: 11
@@ -73,7 +75,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab   # 3.5.2
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11   # 4.1.1
 
       - name: Download built sources
         uses: actions/download-artifact@v3
@@ -83,7 +85,7 @@ jobs:
 
       - name: Set up JDK ${{ matrix.jdk }}
         if: matrix.jdk != 11
-        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98   # 3.10.0
+        uses: actions/setup-java@0ab4596768b603586c0de567f2430c30f5b0d2b0   # 3.13.0
         with:
           distribution: temurin
           java-version: ${{ matrix.jdk }}
@@ -179,12 +181,12 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab   # 3.5.2
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11   # 4.1.1
         with:
           ref: gh-pages
 
       - name: Setup Python 3
-        uses: actions/setup-python@57ded4d7d5e986d7296eab16560982c6dd7c923b   # 4.6.0
+        uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236   # 4.7.1
         with:
           python-version: 3.x
 

@@ -18,7 +18,12 @@
 
 # Log4j Spring Boot Support
 
-This module provides enhanced support for Spring Boot beyond what Spring Boot itself provides. 
+This module provides enhanced support for Spring Boot beyond what Spring Boot 2.x itself provides. 
+
+
+> **Note:** This module is unnecessary with Spring Boot 3.0 as all the components documented here have been 
+integrated into Spring Boot.
+
 
 ## Overview
 
@@ -51,7 +56,7 @@ Log4j implementation to be chosen, would not be available.
 
 ### Spring Profile Arbiter
 
-New with Log4j 2.15.0 are "Arbiters" which are conditionals that can cause a portion of the Log4j configuration to
+"Arbiters" which are conditionals that can cause a portion of the Log4j configuration to
 be included or excluded. log4j-spring-boot provides an Arbiter that allows a Spring profile value to be used for
 this purpose. Below is an example:
 ```
@@ -82,6 +87,6 @@ this purpose. Below is an example:
 
 ## Requirements
 
-The Log4j 2 Spring Cloud Configuration integration has a dependency on Log4j 2 API, Log4j 2 Core, and 
+The Log4j 3.x Spring Cloud Configuration integration has a dependency on Log4j 3.x API, Log4j 3.x Core, and 
 Spring Boot versions 2.0.3.RELEASE or 2.1.1.RELEASE or later versions it either release series.
 For more information, see [Runtime Dependencies](runtime-dependencies.html).

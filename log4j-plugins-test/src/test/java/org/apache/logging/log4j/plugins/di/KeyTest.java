@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.plugins.di;
 
@@ -31,6 +31,7 @@ import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.name.NameProvider;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -49,7 +50,7 @@ class KeyTest {
         assertEquals("namespace", key.getNamespace());
         assertEquals("name", key.getName());
         assertEquals(Named.class, key.getQualifierType());
-        assertEquals(42, key.getOrder());
+        assertThat(key.getOrder()).isPresent().hasValue(42);
         assertEquals(AnnotatedClass.class, key.getType());
         assertEquals(AnnotatedClass.class, key.getRawType());
     }
@@ -67,7 +68,7 @@ class KeyTest {
         assertEquals("foo", key.getNamespace());
         assertEquals("bar", key.getName());
         assertEquals(Named.class, key.getQualifierType());
-        assertEquals(10, key.getOrder());
+        assertThat(key.getOrder()).isPresent().hasValue(10);
         assertEquals(String.class, key.getType());
         assertEquals(String.class, key.getRawType());
     }
@@ -83,7 +84,7 @@ class KeyTest {
         assertEquals("foo", key.getNamespace());
         assertEquals("bar", key.getName());
         assertEquals(Named.class, key.getQualifierType());
-        assertEquals(0, key.getOrder());
+        assertThat(key.getOrder()).isEmpty();
         assertEquals(String.class, key.getType());
         assertEquals(String.class, key.getRawType());
     }
@@ -101,7 +102,7 @@ class KeyTest {
         assertEquals("foo", key.getNamespace());
         assertEquals("bar", key.getName());
         assertEquals(Named.class, key.getQualifierType());
-        assertEquals(0, key.getOrder());
+        assertThat(key.getOrder()).isEmpty();
         assertEquals(String.class, key.getType());
         assertEquals(String.class, key.getRawType());
     }
@@ -134,7 +135,7 @@ class KeyTest {
         assertEquals("logical", key.getNamespace());
         assertEquals("class", key.getName());
         assertEquals(CustomQualifier.class, key.getQualifierType());
-        assertEquals(0, key.getOrder());
+        assertThat(key.getOrder()).isEmpty();
         assertEquals(LogicallyAnnotatedClass.class, key.getType());
         assertEquals(LogicallyAnnotatedClass.class, key.getRawType());
     }
@@ -152,7 +153,7 @@ class KeyTest {
         assertEquals("logical", key.getNamespace());
         assertEquals("method", key.getName());
         assertEquals(CustomQualifier.class, key.getQualifierType());
-        assertEquals(0, key.getOrder());
+        assertThat(key.getOrder()).isEmpty();
         assertEquals(String.class, key.getType());
         assertEquals(String.class, key.getRawType());
     }
@@ -169,7 +170,7 @@ class KeyTest {
         assertEquals("logical", key.getNamespace());
         assertEquals("parameter", key.getName());
         assertEquals(CustomQualifier.class, key.getQualifierType());
-        assertEquals(0, key.getOrder());
+        assertThat(key.getOrder()).isEmpty();
         assertEquals(String.class, key.getType());
         assertEquals(String.class, key.getRawType());
     }

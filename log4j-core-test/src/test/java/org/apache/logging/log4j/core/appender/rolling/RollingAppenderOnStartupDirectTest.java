@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
@@ -58,7 +58,7 @@ public class RollingAppenderOnStartupDirectTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         if (Files.exists(Paths.get("target/onStartup"))) {
-            try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+            try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
                 for (final Path path : directoryStream) {
                     Files.delete(path);
                 }
@@ -66,10 +66,10 @@ public class RollingAppenderOnStartupDirectTest {
             }
         }
         Files.createDirectory(new File(DIR).toPath());
-        String fileName = ROLLED + formatter.format(LocalDate.now()) + "-1.log";
-        Path target = Paths.get(DIR, fileName);
+        final String fileName = ROLLED + formatter.format(LocalDate.now()) + "-1.log";
+        final Path target = Paths.get(DIR, fileName);
         Files.copy(Paths.get(SOURCE, FILENAME), target, StandardCopyOption.COPY_ATTRIBUTES);
-        FileTime newTime = FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS));
+        final FileTime newTime = FileTime.from(Instant.now().minus(1, ChronoUnit.DAYS));
         Files.getFileAttributeView(target, BasicFileAttributeView.class).setTimes(newTime, newTime, newTime);
     }
 
@@ -81,11 +81,11 @@ public class RollingAppenderOnStartupDirectTest {
             logger.debug(PREFIX + i);
         }
         int fileCount = 0;
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {
                 ++fileCount;
                 if (path.toFile().getName().startsWith(ROLLED)) {
-                    List<String> lines = Files.readAllLines(path);
+                    final List<String> lines = Files.readAllLines(path);
                     assertTrue("No messages in " + path.toFile().getName(), lines.size() > 0);
                     assertTrue("Missing message for " + path.toFile().getName(),
                             lines.get(0).startsWith(PREFIX));
@@ -98,7 +98,7 @@ public class RollingAppenderOnStartupDirectTest {
     @AfterClass
     public static void afterClass() throws Exception {
         Configurator.shutdown(loggerContext);
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DIR))) {
             for (final Path path : directoryStream) {
                 Files.delete(path);
             }

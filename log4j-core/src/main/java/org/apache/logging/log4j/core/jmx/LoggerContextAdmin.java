@@ -1,35 +1,21 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.jmx;
 
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.util.Closer;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Strings;
-
-import javax.management.MBeanNotificationInfo;
-import javax.management.Notification;
-import javax.management.NotificationBroadcasterSupport;
-import javax.management.ObjectName;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,11 +34,23 @@ import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.management.MBeanNotificationInfo;
+import javax.management.Notification;
+import javax.management.NotificationBroadcasterSupport;
+import javax.management.ObjectName;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.util.Closer;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Strings;
+
 /**
  * Implementation of the {@code LoggerContextAdminMBean} interface.
  */
-public class LoggerContextAdmin extends NotificationBroadcasterSupport implements LoggerContextAdminMBean,
-        PropertyChangeListener {
+public class LoggerContextAdmin extends NotificationBroadcasterSupport implements LoggerContextAdminMBean {
     private static final int PAGE = 4 * 1024;
     private static final int TEXT_BUFFER = 64 * 1024;
     private static final int BUFFER_SIZE = 2048;
@@ -66,7 +64,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
      * Constructs a new {@code LoggerContextAdmin} with the {@code Executor} to be used for sending {@code Notification}
      * s asynchronously to listeners.
      *
-     * @param executor used to send notifications asynchronously
+     * @param executor      used to send notifications asynchronously
      * @param loggerContext the instrumented object
      */
     public LoggerContextAdmin(final LoggerContext loggerContext, final Executor executor) {
@@ -79,14 +77,19 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
         } catch (final Exception e) {
             throw new IllegalStateException(e);
         }
-        loggerContext.addPropertyChangeListener(this);
+        loggerContext.addConfigurationStartedListener(ignored -> sendReconfiguredNotification());
     }
 
     private static MBeanNotificationInfo createNotificationInfo() {
-        final String[] notifTypes = new String[] { NOTIF_TYPE_RECONFIGURED };
+        final String[] notifTypes = new String[]{NOTIF_TYPE_RECONFIGURED};
         final String name = Notification.class.getName();
         final String description = "Configuration reconfigured";
         return new MBeanNotificationInfo(notifTypes, name, description);
+    }
+
+    private void sendReconfiguredNotification() {
+        final var notification = new Notification(NOTIF_TYPE_RECONFIGURED, objectName, sequenceNo.getAndIncrement());
+        sendNotification(notification);
     }
 
     @Override
@@ -104,6 +107,10 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = "PATH_TRAVERSAL_IN",
+            justification = "The location of the configuration comes from a running configuration."
+    )
     public String getConfigLocationUri() {
         if (loggerContext.getConfigLocation() != null) {
             return String.valueOf(loggerContext.getConfigLocation());
@@ -115,6 +122,10 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = {"URLCONNECTION_SSRF_FD", "PATH_TRAVERSAL_IN"},
+            justification = "This method should only be called by a secure JMX connection."
+    )
     public void setConfigLocationUri(final String configLocation) throws URISyntaxException, IOException {
         if (configLocation == null || configLocation.isEmpty()) {
             throw new IllegalArgumentException("Missing configuration location");
@@ -131,19 +142,9 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
             LOGGER.debug("Opening config URL {}", configURL);
             configSource = new ConfigurationSource(configURL.openStream(), configURL);
         }
-        final Configuration config =
-                loggerContext.getInjector().getInstance(ConfigurationFactory.KEY).getConfiguration(loggerContext, configSource);
+        final Configuration config = loggerContext.getConfiguration(configSource);
         loggerContext.start(config);
         LOGGER.debug("Completed remote request to reconfigure.");
-    }
-
-    @Override
-    public void propertyChange(final PropertyChangeEvent evt) {
-        if (!LoggerContext.PROPERTY_CONFIG.equals(evt.getPropertyName())) {
-            return;
-        }
-        final Notification notif = new Notification(NOTIF_TYPE_RECONFIGURED, getObjectName(), nextSeqNo(), now(), null);
-        sendNotification(notif);
     }
 
     @Override
@@ -152,6 +153,10 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
     }
 
     @Override
+    @SuppressFBWarnings(
+            value = "INFORMATION_EXPOSURE_THROUGH_AN_ERROR_MESSAGE",
+            justification = "JMX should be considered a trusted channel."
+    )
     public String getConfigText(final String charsetName) throws IOException {
         try {
             final ConfigurationSource source = loggerContext.getConfiguration().getConfigurationSource();
@@ -167,7 +172,8 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
 
     /**
      * Returns the contents of the specified input stream as a String.
-     * @param in stream to read from
+     *
+     * @param in      stream to read from
      * @param charset MUST not be null
      * @return stream contents
      * @throws IOException if a problem occurred reading from the stream.
@@ -197,8 +203,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
         try {
             final InputStream in = new ByteArrayInputStream(configText.getBytes(charsetName));
             final ConfigurationSource source = new ConfigurationSource(in);
-            final Configuration updated =
-                    loggerContext.getInjector().getInstance(ConfigurationFactory.KEY).getConfiguration(loggerContext, source);
+            final Configuration updated = loggerContext.getConfiguration(source);
             loggerContext.start(updated);
             LOGGER.debug("Completed remote request to reconfigure from config text.");
         } catch (final Exception ex) {
@@ -239,11 +244,4 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
         return objectName;
     }
 
-    private long nextSeqNo() {
-        return sequenceNo.getAndIncrement();
-    }
-
-    private long now() {
-        return System.currentTimeMillis();
-    }
 }

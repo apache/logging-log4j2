@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.config;
 
@@ -21,18 +21,14 @@ import java.net.URI;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
-import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.util.AuthorizationProvider;
-import org.apache.logging.log4j.core.util.BasicAuthorizationProvider;
-import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.plugins.Namespace;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.Key;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
-import org.apache.logging.log4j.util.PropertyEnvironment;
+import org.apache.logging.log4j.util.PropertyKey;
 
 /**
  * Factory class for parsed {@link Configuration} objects from a configuration file.
@@ -41,7 +37,7 @@ import org.apache.logging.log4j.util.PropertyEnvironment;
  * <ol>
  * <li>A system property named "log4j.configurationFactory" can be set with the
  * name of the ConfigurationFactory to be used.</li>
- * <li>An {@link Injector} binding for ConfigurationFactory may be registered.</li>
+ * <li>A {@link ConfigurableInstanceFactory} binding for ConfigurationFactory may be registered.</li>
  * <li>
  * A ConfigurationFactory implementation can be added to the classpath and configured as a plugin in the
  * {@link #NAMESPACE ConfigurationFactory} category. The {@link Order} annotation should be used to configure the
@@ -61,19 +57,9 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
         // TEMP For breakpoints
     }
 
-    /**
-     * Allows the ConfigurationFactory class to be specified as a system property.
-     */
-    public static final String CONFIGURATION_FACTORY_PROPERTY = Log4jProperties.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME;
+    public static final PropertyKey LOG4J1_CONFIGURATION_FILE_PROPERTY = Log4jPropertyKey.CONFIG_V1_FILE_NAME;
 
-    /**
-     * Allows the location of the configuration file to be specified as a system property.
-     */
-    public static final String CONFIGURATION_FILE_PROPERTY = Log4jProperties.CONFIG_LOCATION;
-
-    public static final String LOG4J1_CONFIGURATION_FILE_PROPERTY = Log4jProperties.CONFIG_V1_FILE_NAME;
-
-    public static final String LOG4J1_EXPERIMENTAL = Log4jProperties.CONFIG_V1_COMPATIBILITY_ENABLED;
+    public static final PropertyKey LOG4J1_EXPERIMENTAL = Log4jPropertyKey.CONFIG_V1_COMPATIBILITY_ENABLED;
 
     /**
      * Plugin category used to inject a ConfigurationFactory {@link org.apache.logging.log4j.plugins.Plugin}
@@ -85,7 +71,7 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
 
     public static final Key<ConfigurationFactory> KEY = new Key<>() {};
 
-    public static final Key<PluginNamespace> PLUGIN_CATEGORY_KEY = new @Namespace(NAMESPACE) Key<>() {};
+    public static final Key<PluginNamespace> PLUGIN_NAMESPACE_KEY = new @Namespace(NAMESPACE) Key<>() {};
 
     /**
      * Allows subclasses access to the status logger without creating another instance.
@@ -114,41 +100,6 @@ public abstract class ConfigurationFactory extends ConfigurationBuilderFactory {
      * The name of the classpath URI scheme, synonymous with the classloader URI scheme.
      */
     private static final String CLASS_PATH_SCHEME = "classpath";
-
-    private static final String[] PREFIXES = {"log4j2.", "log4j2.Configuration."};
-
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static ConfigurationFactory getInstance() {
-        return LoggerContext.getContext(false).getInjector().getInstance(KEY);
-    }
-
-    public static AuthorizationProvider authorizationProvider(final PropertyEnvironment props) {
-        final String authClass = props.getStringProperty(PREFIXES, "authorizationProvider", null);
-        AuthorizationProvider provider = null;
-        if (authClass != null) {
-            try {
-                final Object obj = LoaderUtil.newInstanceOf(authClass);
-                if (obj instanceof AuthorizationProvider) {
-                    provider = (AuthorizationProvider) obj;
-                } else {
-                    LOGGER.warn("{} is not an AuthorizationProvider, using default", obj.getClass().getName());
-                }
-            } catch (final Exception ex) {
-                LOGGER.warn("Unable to create {}, using default: {}", authClass, ex.getMessage());
-            }
-        }
-        if (provider == null) {
-            provider = new BasicAuthorizationProvider(props);
-        }
-        return provider;
-    }
-
-    protected StrSubstitutor substitutor;
-
-    @Inject
-    public void setSubstitutor(final StrSubstitutor substitutor) {
-        this.substitutor = substitutor;
-    }
 
     protected abstract String[] getSupportedTypes();
 

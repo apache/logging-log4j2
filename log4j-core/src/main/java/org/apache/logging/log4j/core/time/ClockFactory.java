@@ -1,28 +1,35 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.time;
 
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.time.internal.CachedClock;
 import org.apache.logging.log4j.core.time.internal.CoarseCachedClock;
 import org.apache.logging.log4j.core.time.internal.SystemClock;
+import org.apache.logging.log4j.core.time.internal.SystemMillisClock;
+import org.apache.logging.log4j.plugins.SingletonFactory;
+import org.apache.logging.log4j.plugins.condition.ConditionalOnMissingBinding;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.plugins.di.DI;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.InstanceFactory;
+import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
+import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
  * Factory for {@code Clock} objects.
@@ -30,22 +37,17 @@ import org.apache.logging.log4j.util.Lazy;
  * @since 2.11
  */
 public final class ClockFactory {
+    private static final Logger LOGGER = StatusLogger.getLogger();
 
-    /**
-     * Name of the system property that can be used to specify a {@code Clock}
-     * implementation class. The value of this property is {@value}.
-     */
-    public static final String PROPERTY_NAME = Log4jProperties.CONFIG_CLOCK;
     private static final Lazy<Clock> FALLBACK = Lazy.lazy(() -> {
-        // TODO(ms): split out clock bindings for smaller fallback init
-        final Injector injector = DI.createInjector();
-        injector.init();
-        return injector.getInstance(Clock.KEY);
+        ConfigurableInstanceFactory factory = DI.createFactory();
+        factory.registerBundle(new ClockFactory());
+        return factory.getInstance(Clock.KEY);
     });
 
     /**
      * Returns a {@code Clock} instance depending on the value of system
-     * property {@link #PROPERTY_NAME}.
+     * property {@link Log4jPropertyKey#CONFIG_CLOCK}.
      * <p>
      * If system property {@code log4j.Clock=CachedClock} is specified,
      * this method returns an instance of {@link CachedClock}. If system
@@ -64,10 +66,47 @@ public final class ClockFactory {
      * </p>
      *
      * @return a {@code Clock} instance
+     * @deprecated use dependency injection instead to obtain a {@link Clock} instance
      */
     @Deprecated
     public static Clock getClock() {
         return FALLBACK.value();
     }
 
+    @ConditionalOnMissingBinding
+    @SingletonFactory
+    public Clock clock(
+            final PropertyEnvironment environment,
+            final InstanceFactory instanceFactory,
+            final ClassLoader classLoader) throws ClassNotFoundException {
+        final String customClock = environment.getStringProperty(Log4jPropertyKey.CONFIG_CLOCK);
+        if (customClock == null) {
+            return logSupportedPrecision(new SystemClock());
+        }
+        switch (customClock) {
+            case "SystemClock":
+                return logSupportedPrecision(new SystemClock());
+
+            case "SystemMillisClock":
+                return logSupportedPrecision(new SystemMillisClock());
+
+            case "CachedClock":
+            case "org.apache.logging.log4j.core.time.internal.CachedClock":
+                return logSupportedPrecision(CachedClock.instance());
+
+            case "CoarseCachedClock":
+            case "org.apache.logging.log4j.core.time.internal.CoarseCachedClock":
+                return logSupportedPrecision(CoarseCachedClock.instance());
+
+            default:
+                final Class<? extends Clock> clockClass = classLoader.loadClass(customClock).asSubclass(Clock.class);
+                return logSupportedPrecision(instanceFactory.getInstance(clockClass));
+        }
+    }
+
+    private static Clock logSupportedPrecision(final Clock clock) {
+        final String support = clock instanceof PreciseClock ? "supports" : "does not support";
+        LOGGER.debug("{} {} precise timestamps.", clock.getClass().getName(), support);
+        return clock;
+    }
 }

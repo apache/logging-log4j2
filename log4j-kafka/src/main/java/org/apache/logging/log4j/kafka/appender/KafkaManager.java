@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.kafka.appender;
 
@@ -36,7 +36,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.Integers;
 import org.apache.logging.log4j.core.util.Log4jThread;
 
-public class KafkaManager extends AbstractManager {
+public final class KafkaManager extends AbstractManager {
 
     public static final String DEFAULT_TIMEOUT_MILLIS = "30000";
 
@@ -152,7 +152,7 @@ public class KafkaManager extends AbstractManager {
 
     static KafkaManager getManager(final LoggerContext loggerContext, final String name, final String topic,
             final boolean syncSend, final boolean sendTimestamp, final Property[] properties, final String key) {
-        StringBuilder sb = new StringBuilder(name);
+        final StringBuilder sb = new StringBuilder(name);
         sb.append(" ")
             .append(topic)
             .append(" ")
@@ -188,7 +188,7 @@ public class KafkaManager extends AbstractManager {
 
     private static class KafkaManagerFactory implements ManagerFactory<KafkaManager, FactoryData> {
         @Override
-        public KafkaManager createManager(String name, FactoryData data) {
+        public KafkaManager createManager(final String name, final FactoryData data) {
             return new KafkaManager(data.loggerContext, name, data.topic, data.syncSend, data.sendTimestamp,
                     data.properties, data.key);
         }

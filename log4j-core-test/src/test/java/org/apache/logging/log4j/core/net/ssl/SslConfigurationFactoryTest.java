@@ -1,23 +1,24 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.net.ssl;
 
 import java.util.Properties;
 
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.net.ssl.TestConstants;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.junit.jupiter.api.Test;
@@ -27,14 +28,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class SslConfigurationFactoryTest {
 
-    private static void addKeystoreConfiguration(Properties props) {
-        props.setProperty("log4j2.keyStoreLocation", TestConstants.KEYSTORE_FILE_RESOURCE);
-        props.setProperty("log4j2.keyStoreKeyStoreType", TestConstants.KEYSTORE_TYPE);
+    private static void addKeystoreConfiguration(final Properties props) {
+        props.setProperty(Log4jPropertyKey.Constant.TRANSPORT_SECURITY_KEY_STORE_LOCATION, TestConstants.KEYSTORE_FILE_RESOURCE);
+        props.setProperty(Log4jPropertyKey.Constant.TRANSPORT_SECURITY_KEY_STORE_TYPE, TestConstants.KEYSTORE_TYPE);
     }
 
-    private static void addTruststoreConfiguration(Properties props) {
-        props.setProperty("log4j2.trustStoreLocation", TestConstants.TRUSTSTORE_FILE_RESOURCE);
-        props.setProperty("log4j2.trustStoreKeyStoreType", TestConstants.TRUSTSTORE_TYPE);
+    private static void addTruststoreConfiguration(final Properties props) {
+        props.setProperty(Log4jPropertyKey.Constant.TRANSPORT_SECURITY_TRUST_STORE_LOCATION, TestConstants.TRUSTSTORE_FILE_RESOURCE);
+        props.setProperty(Log4jPropertyKey.Constant.TRANSPORT_SECURITY_TRUST_STORE_TYPE, TestConstants.TRUSTSTORE_TYPE);
     }
 
     @Test
@@ -42,13 +43,13 @@ public class SslConfigurationFactoryTest {
         final Properties props = new Properties();
         final PropertiesUtil util = new PropertiesUtil(props);
         // No keystore and truststore -> no SslConfiguration
-        SslConfiguration sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
+        SslConfiguration sslConfiguration = SslConfigurationFactory.getSslConfiguration(util);
         assertNull(sslConfiguration);
         // Only keystore
         props.clear();
         addKeystoreConfiguration(props);
         util.reload();
-        sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
+        sslConfiguration = SslConfigurationFactory.getSslConfiguration(util);
         assertNotNull(sslConfiguration);
         assertNotNull(sslConfiguration.getKeyStoreConfig());
         assertNull(sslConfiguration.getTrustStoreConfig());
@@ -56,7 +57,7 @@ public class SslConfigurationFactoryTest {
         props.clear();
         addTruststoreConfiguration(props);
         util.reload();
-        sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
+        sslConfiguration = SslConfigurationFactory.getSslConfiguration(util);
         assertNotNull(sslConfiguration);
         assertNull(sslConfiguration.getKeyStoreConfig());
         assertNotNull(sslConfiguration.getTrustStoreConfig());
@@ -65,7 +66,7 @@ public class SslConfigurationFactoryTest {
         addKeystoreConfiguration(props);
         addTruststoreConfiguration(props);
         util.reload();
-        sslConfiguration = SslConfigurationFactory.createSslConfiguration(util);
+        sslConfiguration = SslConfigurationFactory.getSslConfiguration(util);
         assertNotNull(sslConfiguration);
         assertNotNull(sslConfiguration.getKeyStoreConfig());
         assertNotNull(sslConfiguration.getTrustStoreConfig());

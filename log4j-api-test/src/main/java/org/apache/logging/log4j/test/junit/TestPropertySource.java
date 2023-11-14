@@ -1,20 +1,21 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.test.junit;
+
 
 import org.apache.logging.log4j.test.TestProperties;
 import org.apache.logging.log4j.util.PropertySource;
@@ -34,7 +35,7 @@ public class TestPropertySource implements PropertySource {
         return Integer.MIN_VALUE;
     }
 
-    public static TestProperties createProperties(ExtensionContext context) {
+    public static TestProperties createProperties(final ExtensionContext context) {
         TestProperties props = getProperties(context);
         // Make sure that the properties do not come from the parent ExtensionContext
         if (props instanceof JUnitTestProperties && context.equals(((JUnitTestProperties) props).getContext())) {
@@ -49,10 +50,10 @@ public class TestPropertySource implements PropertySource {
         return getProperties(null);
     }
 
-    private static TestProperties getProperties(ExtensionContext context) {
+    private static TestProperties getProperties(final ExtensionContext context) {
         final ExtensionContext actualContext = context != null ? context : ExtensionContextAnchor.getContext();
         if (actualContext != null) {
-            TestProperties props = ExtensionContextAnchor.getAttribute(TestProperties.class, TestProperties.class,
+            final TestProperties props = ExtensionContextAnchor.getAttribute(TestProperties.class, TestProperties.class,
                     actualContext);
             if (props != null) {
                 return props;
@@ -62,19 +63,19 @@ public class TestPropertySource implements PropertySource {
     }
 
     @Override
-    public CharSequence getNormalForm(Iterable<? extends CharSequence> tokens) {
+    public CharSequence getNormalForm(final Iterable<? extends CharSequence> tokens) {
         final CharSequence camelCase = Util.joinAsCamelCase(tokens);
         // Do not use Strings to prevent recursive initialization
         return camelCase.length() > 0 ? PREFIX + camelCase.toString() : null;
     }
 
     @Override
-    public String getProperty(String key) {
+    public String getProperty(final String key) {
         return getProperties().getProperty(key);
     }
 
     @Override
-    public boolean containsProperty(String key) {
+    public boolean containsProperty(final String key) {
         return getProperties().containsProperty(key);
     }
 
@@ -83,7 +84,7 @@ public class TestPropertySource implements PropertySource {
         private final ExtensionContext context;
         private final Store store;
 
-        public JUnitTestProperties(ExtensionContext context) {
+        public JUnitTestProperties(final ExtensionContext context) {
             this.context = context;
             this.store = context.getStore(NAMESPACE);
         }
@@ -93,22 +94,22 @@ public class TestPropertySource implements PropertySource {
         }
 
         @Override
-        public String getProperty(String key) {
+        public String getProperty(final String key) {
             return store.get(key, String.class);
         }
 
         @Override
-        public boolean containsProperty(String key) {
+        public boolean containsProperty(final String key) {
             return getProperty(key) != null;
         }
 
         @Override
-        public void setProperty(String key, String value) {
+        public void setProperty(final String key, final String value) {
             store.put(key, value);
         }
 
         @Override
-        public void clearProperty(String key) {
+        public void clearProperty(final String key) {
             store.remove(key, String.class);
         }
 
@@ -117,22 +118,22 @@ public class TestPropertySource implements PropertySource {
     private static class EmptyTestProperties implements TestProperties {
 
         @Override
-        public String getProperty(String key) {
+        public String getProperty(final String key) {
             return null;
         }
 
         @Override
-        public boolean containsProperty(String key) {
+        public boolean containsProperty(final String key) {
             return false;
         }
 
         @Override
-        public void setProperty(String key, String value) {
+        public void setProperty(final String key, final String value) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void clearProperty(String key) {
+        public void clearProperty(final String key) {
             throw new UnsupportedOperationException();
         }
 

@@ -1,33 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.async;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.selector.ContextSelector;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
-import org.apache.logging.log4j.plugins.Singleton;
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junitpioneer.jupiter.SetSystemProperty;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,14 +23,37 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
+import org.apache.logging.log4j.core.selector.ContextSelector;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.junit.ContextSelectorType;
+import org.apache.logging.log4j.plugins.Singleton;
+import org.apache.logging.log4j.test.junit.CleanUpFiles;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Tag("async")
 @ContextSelectorType(AsyncLoggerCustomSelectorLocationTest.CustomAsyncContextSelector.class)
 @CleanUpFiles("target/AsyncLoggerCustomSelectorLocationTest.log")
-@SetSystemProperty(key = ConfigurationFactory.CONFIGURATION_FILE_PROPERTY, value = "AsyncLoggerCustomSelectorLocationTest.xml")
 public class AsyncLoggerCustomSelectorLocationTest {
+
+    @BeforeEach
+    public void beforeEach() throws Exception {
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), "AsyncLoggerCustomSelectorLocationTest.xml");
+    }
+
+    @AfterEach
+    public void afterEach() throws Exception {
+        System.clearProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey());
+    }
 
     @Test
     public void testCustomAsyncSelectorLocation() throws Exception {
@@ -74,12 +84,12 @@ public class AsyncLoggerCustomSelectorLocationTest {
     public static final class CustomAsyncContextSelector implements ContextSelector {
         private static final LoggerContext CONTEXT = new AsyncLoggerContext("AsyncDefault");
         @Override
-        public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext) {
+        public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext) {
             return CONTEXT;
         }
 
         @Override
-        public LoggerContext getContext(String fqcn, ClassLoader loader, boolean currentContext, URI configLocation) {
+        public LoggerContext getContext(final String fqcn, final ClassLoader loader, final boolean currentContext, final URI configLocation) {
             return CONTEXT;
         }
 
@@ -89,7 +99,7 @@ public class AsyncLoggerCustomSelectorLocationTest {
         }
 
         @Override
-        public void removeContext(LoggerContext context) {
+        public void removeContext(final LoggerContext context) {
             // does not remove anything
         }
 

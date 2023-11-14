@@ -1,30 +1,12 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
- */
-
-// Where the above is the copyright notice of the derivate work,
-// below is the copyright notice of the original source of this work:
-/*
- * Copyright 2011 LMAX Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,13 +16,18 @@
  */
 package org.apache.logging.log4j.core.async;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import com.lmax.disruptor.AlertException;
+import com.lmax.disruptor.BatchEventProcessor;
+import com.lmax.disruptor.EventProcessor;
 import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceBarrier;
 import com.lmax.disruptor.TimeoutException;
 import com.lmax.disruptor.WaitStrategy;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Blocking strategy that uses a lock and condition variable for {@link EventProcessor}s waiting on a barrier.
@@ -57,8 +44,12 @@ import java.util.concurrent.TimeUnit;
 // This class is package-protected, so that it can be used internally as the default WaitStrategy
 // by Log4j Async Loggers, but can be removed in a future Log4j release without impacting binary compatibility.
 // (disruptor-4.0.0-RC1 requires Java 11 and has other incompatible changes so cannot be used in Log4j 2.x.)
+//
+// Log4j 3.0.0 NOTE:
+// Implementation was updated to use Lock/Condition API for https://github.com/apache/logging-log4j2/issues/1532
 class TimeoutBlockingWaitStrategy implements WaitStrategy {
-    private final Object mutex = new Object();
+    private final Lock mutex = new ReentrantLock();
+    private final Condition condition = mutex.newCondition();
     private final long timeoutInNanos;
 
     /**
@@ -80,14 +71,17 @@ class TimeoutBlockingWaitStrategy implements WaitStrategy {
 
         long availableSequence;
         if (cursorSequence.get() < sequence) {
-            synchronized (mutex) {
+            mutex.lock();
+            try {
                 while (cursorSequence.get() < sequence) {
                     barrier.checkAlert();
-                    timeoutNanos = awaitNanos(mutex, timeoutNanos);
+                    timeoutNanos = condition.awaitNanos(timeoutNanos);
                     if (timeoutNanos <= 0) {
                         throw TimeoutException.INSTANCE;
                     }
                 }
+            } finally {
+                mutex.unlock();
             }
         }
 
@@ -100,8 +94,11 @@ class TimeoutBlockingWaitStrategy implements WaitStrategy {
 
     @Override
     public void signalAllWhenBlocking() {
-        synchronized (mutex) {
-            mutex.notifyAll();
+        mutex.lock();
+        try {
+            condition.signalAll();
+        } finally {
+            mutex.unlock();
         }
     }
 
@@ -113,23 +110,4 @@ class TimeoutBlockingWaitStrategy implements WaitStrategy {
                 '}';
     }
 
-    // below code is from com.lmax.disruptor.util.Util class in disruptor 4.0.0-RC1
-    private static final int ONE_MILLISECOND_IN_NANOSECONDS = 1_000_000;
-
-    /**
-     * @param mutex        The object to wait on
-     * @param timeoutNanos The number of nanoseconds to wait for
-     * @return the number of nanoseconds waited (approximately)
-     * @throws InterruptedException if the underlying call to wait is interrupted
-     */
-    private static long awaitNanos(final Object mutex, final long timeoutNanos) throws InterruptedException {
-        long millis = timeoutNanos / ONE_MILLISECOND_IN_NANOSECONDS;
-        long nanos = timeoutNanos % ONE_MILLISECOND_IN_NANOSECONDS;
-
-        long t0 = System.nanoTime();
-        mutex.wait(millis, (int) nanos);
-        long t1 = System.nanoTime();
-
-        return timeoutNanos - (t1 - t0);
-    }
 }

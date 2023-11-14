@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.log4j.builders.layout;
 
@@ -49,13 +49,13 @@ public class HtmlLayoutBuilder extends AbstractBuilder<Layout> implements Layout
     public HtmlLayoutBuilder() {
     }
 
-    public HtmlLayoutBuilder(String prefix, Properties props) {
+    public HtmlLayoutBuilder(final String prefix, final Properties props) {
         super(prefix, props);
     }
 
 
     @Override
-    public Layout parse(Element layoutElement, XmlConfiguration config) {
+    public Layout parse(final Element layoutElement, final XmlConfiguration config) {
         final AtomicReference<String> title = new AtomicReference<>("Log4J Log Messages");
         final AtomicBoolean locationInfo = new AtomicBoolean();
         forEachElement(layoutElement.getElementsByTagName("param"), currentElement -> {
@@ -71,13 +71,13 @@ public class HtmlLayoutBuilder extends AbstractBuilder<Layout> implements Layout
     }
 
     @Override
-    public Layout parse(PropertiesConfiguration config) {
-        String title = getProperty(TITLE_PARAM, DEFAULT_TITLE);
-        boolean locationInfo = getBooleanProperty(LOCATION_INFO_PARAM);
+    public Layout parse(final PropertiesConfiguration config) {
+        final String title = getProperty(TITLE_PARAM, DEFAULT_TITLE);
+        final boolean locationInfo = getBooleanProperty(LOCATION_INFO_PARAM);
         return createLayout(title, locationInfo);
     }
 
-    private Layout createLayout(String title, boolean locationInfo) {
+    private Layout createLayout(final String title, final boolean locationInfo) {
         return LayoutWrapper.adapt(HtmlLayout.newBuilder()
                 .setConfiguration(new DefaultConfiguration())
                 .setTitle(title)

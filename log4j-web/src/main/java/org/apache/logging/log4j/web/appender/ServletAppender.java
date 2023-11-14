@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.web.appender;
 
@@ -24,8 +24,6 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
-import org.apache.logging.log4j.core.layout.AbstractStringLayout;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
@@ -37,7 +35,7 @@ import org.apache.logging.log4j.web.WebLoggerContextUtils;
  */
 @Configurable(elementType = Appender.ELEMENT_TYPE, printObject = true)
 @Plugin("Servlet")
-public class ServletAppender extends AbstractAppender {
+public final class ServletAppender extends AbstractAppender {
 
     public static class Builder<B extends Builder<B>> extends AbstractAppender.Builder<B>
             implements org.apache.logging.log4j.plugins.util.Builder<ServletAppender> {
@@ -56,13 +54,7 @@ public class ServletAppender extends AbstractAppender {
                 LOGGER.error("No servlet context is available");
                 return null;
             }
-            Layout layout = getLayout();
-            if (layout == null) {
-                layout = PatternLayout.createDefaultLayout();
-            } else if (!(layout instanceof AbstractStringLayout)) {
-                LOGGER.error("Layout must be a StringLayout to log to ServletContext");
-                return null;
-            }
+            Layout layout = getOrCreateLayout();
             return new ServletAppender(name, layout, getFilter(), servletContext, isIgnoreExceptions(), logThrowables,
                     getPropertyArray());
         }
@@ -103,7 +95,7 @@ public class ServletAppender extends AbstractAppender {
 
     @Override
     public void append(final LogEvent event) {
-        final String serialized = ((AbstractStringLayout) getLayout()).toSerializable(event);
+        final String serialized = getLayout().toSerializable(event);
         if (logThrowables) {
             servletContext.log(serialized, event.getThrown());
         } else {

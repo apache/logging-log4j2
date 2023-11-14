@@ -1,24 +1,23 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.layout;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +26,7 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.impl.Log4jProperties;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.pattern.FormattingInfo;
 import org.apache.logging.log4j.core.pattern.LogEventPatternConverter;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
@@ -95,7 +94,7 @@ public final class PatternLayout extends AbstractStringLayout {
      * @param eventPattern conversion pattern.
      * @param patternSelector The PatternSelector.
      * @param charset The character set.
-     * @param alwaysWriteExceptions Whether or not exceptions should always be handled in this pattern (if {@code true},
+     * @param alwaysWriteExceptions Whether exceptions should always be handled in this pattern (if {@code true},
      *                         exceptions will be written even if the pattern does not specify so).
      * @param disableAnsi
      *            If {@code "true"}, do not output ANSI escape codes
@@ -171,11 +170,11 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     @Override
     public Map<String, String> getContentFormat() {
-        final Map<String, String> result = new HashMap<>();
-        result.put("structured", "false");
-        result.put("formatType", "conversion");
-        result.put("format", conversionPattern);
-        return result;
+        return Map.of(
+                "structured", "false",
+                "formatType", "conversion",
+                "format", conversionPattern
+        );
     }
 
     /**
@@ -217,7 +216,7 @@ public final class PatternLayout extends AbstractStringLayout {
      */
     public static PatternParser createPatternParser(final Configuration config) {
         if (config == null) {
-            return new PatternParser(config, KEY, LogEventPatternConverter.class);
+            return new PatternParser(null, KEY, LogEventPatternConverter.class);
         }
         PatternParser parser = config.getComponent(KEY);
         if (parser == null) {
@@ -344,7 +343,7 @@ public final class PatternLayout extends AbstractStringLayout {
 
         @Override
         public StringBuilder toSerializable(final LogEvent event, final StringBuilder buf) {
-            StringBuilder buffer = delegate.toSerializable(event, buf);
+            final StringBuilder buffer = delegate.toSerializable(event, buf);
             String str = buffer.toString();
             str = replace.format(str);
             buffer.setLength(0);
@@ -395,13 +394,13 @@ public final class PatternLayout extends AbstractStringLayout {
                     final PatternFormatter[] formatters = list.toArray(new PatternFormatter[0]);
                     boolean hasFormattingInfo = false;
                     for (PatternFormatter formatter : formatters) {
-                        FormattingInfo info = formatter.getFormattingInfo();
+                        final FormattingInfo info = formatter.getFormattingInfo();
                         if (info != null && info != FormattingInfo.getDefault()) {
                             hasFormattingInfo = true;
                             break;
                         }
                     }
-                    PatternSerializer serializer = hasFormattingInfo
+                    final PatternSerializer serializer = hasFormattingInfo
                             ? new PatternFormatterPatternSerializer(formatters, recycler)
                             : new NoFormatPatternSerializer(formatters, recycler);
                     return replace == null ? serializer : new PatternSerializerWithReplacement(serializer, replace, recycler);
@@ -586,7 +585,7 @@ public final class PatternLayout extends AbstractStringLayout {
         private boolean useAnsiEscapeCodes() {
             final PropertyEnvironment properties = PropertiesUtil.getProperties();
             final boolean isPlatformSupportsAnsi = !properties.isOsWindows();
-            final boolean isJansiRequested = !properties.getBooleanProperty(Log4jProperties.JANSI_DISABLED, true);
+            final boolean isJansiRequested = !properties.getBooleanProperty(Log4jPropertyKey.CONSOLE_JANSI_ENABLED, false);
             return isPlatformSupportsAnsi || isJansiRequested;
         }
 

@@ -1,36 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.net;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.AppenderLoggingException;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
-import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
-import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
-import org.apache.logging.log4j.core.net.TcpSocketManager.HostResolver;
-import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -51,8 +35,29 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AppenderLoggingException;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
+import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
+import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
+import org.apache.logging.log4j.core.net.TcpSocketManager.HostResolver;
+import org.apache.logging.log4j.core.test.ListErrorHandler;
+import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.test.junit.StatusLoggerLevel;
+import org.apache.logging.log4j.test.junit.UsingStatusListener;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests reconnection support of {@link org.apache.logging.log4j.core.appender.SocketAppender}.
@@ -62,6 +67,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SocketAppenderReconnectTest {
 
     private static final long DEFAULT_POLL_MILLIS = 1_000L;
+    private static final long DEFAULT_STOP_MILLIS = 5_000L;
     private static final int EPHEMERAL_PORT = 0;
     private static final Logger LOGGER = StatusLogger.getLogger();
 
@@ -71,33 +77,35 @@ class SocketAppenderReconnectTest {
      * @see <a href="https://issues.apache.org/jira/browse/LOG4J2-2829">LOG4J2-2829</a>
      */
     @Test
+    @UsingStatusListener
     void repeating_reconnect_failures_should_be_propagated() throws Exception {
+        final ListErrorHandler handler = new ListErrorHandler();
         try (final LineReadingTcpServer server = new LineReadingTcpServer()) {
 
             // Start the server.
             server.start("Main", EPHEMERAL_PORT);
             final int port = server.serverSocket.getLocalPort();
-            
+
             // Initialize the logger context.
-            final LoggerContext loggerContext = initContext(port);
+            final LoggerContext loggerContext = initContext(port, handler);
             try {
 
                 // Verify the initial working state.
-                verifyLoggingSuccess(server);
+                verifyLoggingSuccess(server, handler);
 
                 // Stop the server, and verify the logging failure.
                 server.close();
-                verifyLoggingFailure();
+                verifyLoggingFailure(handler);
 
                 // Start the server again, and verify the logging success.
                 server.start("Main", port);
-                verifyLoggingSuccess(server);
+                verifyLoggingSuccess(server, handler);
 
             }
 
             // Shutdown the logger context.
             finally {
-                Configurator.shutdown(loggerContext);
+                assertTrue(loggerContext.stop(DEFAULT_STOP_MILLIS, TimeUnit.MILLISECONDS));
             }
 
         }
@@ -107,7 +115,10 @@ class SocketAppenderReconnectTest {
      * Tests if all the {@link InetSocketAddress}es returned by an {@link HostResolver} is used for fallback on reconnect attempts.
      */
     @Test
-    void reconnect_should_fallback_when_there_are_multiple_resolved_hosts() throws Exception {
+    @UsingStatusListener
+    void reconnect_should_fallback_when_there_are_multiple_resolved_hosts()
+            throws Exception {
+        final ListErrorHandler handler = new ListErrorHandler();
         try (final LineReadingTcpServer primaryServer = new LineReadingTcpServer();
              final LineReadingTcpServer secondaryServer = new LineReadingTcpServer()) {
 
@@ -124,21 +135,21 @@ class SocketAppenderReconnectTest {
                 final LoggerContext loggerContext = initContext(
                         // Passing an invalid port, since the resolution is supposed to be performed by the mocked host resolver anyway.
                         // Here, 0 does NOT mean an ephemeral port.
-                        0);
+                        0, handler);
                 try {
 
                     // Verify the initial working state on the primary server.
-                    verifyLoggingSuccess(primaryServer);
+                    verifyLoggingSuccess(primaryServer, handler);
 
                     // Stop the primary server, and verify the logging success due to fallback on to the secondary server.
                     primaryServer.close();
-                    verifyLoggingSuccess(secondaryServer);
+                    verifyLoggingSuccess(secondaryServer, handler);
 
                 }
 
                 // Shutdown the logger context.
                 finally {
-                    Configurator.shutdown(loggerContext);
+                    assertTrue(loggerContext.stop(DEFAULT_STOP_MILLIS, TimeUnit.MILLISECONDS));
                 }
 
             } finally {
@@ -149,7 +160,7 @@ class SocketAppenderReconnectTest {
         }
     }
 
-    private static LoggerContext initContext(final int port) {
+    private static LoggerContext initContext(final int port, final ListErrorHandler handler) {
 
         // Create the configuration builder.
         final ConfigurationBuilder<BuiltConfiguration> configBuilder = ConfigurationBuilderFactory
@@ -175,14 +186,17 @@ class SocketAppenderReconnectTest {
                 .add(configBuilder
                         .newRootLogger(Level.ERROR)
                         .add(configBuilder.newAppenderRef(appenderName)))
-                .build(false);
+                .setStatusLevel(Level.OFF)
+                .build(true);
 
+        config.getAppender("Socket").setHandler(handler);
         // Initialize the configuration.
         return Configurator.initialize(config);
 
     }
 
-    private static void verifyLoggingSuccess(final LineReadingTcpServer server) throws Exception {
+    private static void verifyLoggingSuccess(final LineReadingTcpServer server, final ListErrorHandler handler)
+            throws Exception {
         final int messageCount = 100;
         // noinspection ConstantConditions
         assertTrue(messageCount > 1, "was expecting messageCount to be bigger than 1 due to LOG4J2-2829, found: " + messageCount);
@@ -191,18 +205,16 @@ class SocketAppenderReconnectTest {
                 .mapToObj(messageIndex -> String.format("m%02d", messageIndex))
                 .collect(Collectors.toList());
         final Logger logger = LogManager.getLogger();
-        for (int messageIndex = 0; messageIndex < expectedMessages.size(); messageIndex++) {
-            final String message = expectedMessages.get(messageIndex);
-            // Due to socket initialization, the first write() might need some extra effort.
-            if (messageIndex == 0) {
-                awaitUntilSucceeds(() -> logger.info(message));
-            } else {
-                logger.info(message);
-            }
+        // Due to socket initialization, the first write() might need some extra effort.
+        awaitUntilSucceeds(() -> logger.info(expectedMessages.get(0)));
+        handler.clear();
+        for (int messageIndex = 1; messageIndex < expectedMessages.size(); messageIndex++) {
+            logger.info(expectedMessages.get(messageIndex));
         }
         expectedMessages.forEach(logger::info);
         final List<String> actualMessages = server.pollLines(messageCount);
-        assertEquals(expectedMessages, actualMessages);
+        assertThat(actualMessages).containsExactlyElementsOf(expectedMessages);
+        assertThat(handler.getStatusData()).isEmpty();
     }
 
     private static void awaitUntilSucceeds(final Runnable runnable) {
@@ -218,17 +230,20 @@ class SocketAppenderReconnectTest {
                 });
     }
 
-    private static void verifyLoggingFailure() {
+    private static void verifyLoggingFailure(final ListErrorHandler listener) {
         final Logger logger = LogManager.getLogger();
-        int retryCount = 3;
+        final int retryCount = 3;
         // noinspection ConstantConditions
         assertTrue(retryCount > 1, "was expecting retryCount to be bigger than 1 due to LOG4J2-2829, found: " + retryCount);
         for (int i = 0; i < retryCount; i++) {
             try {
                 logger.info("should fail #" + i);
                 fail("should have failed #" + i);
-            } catch (final AppenderLoggingException ignored) {}
+            } catch (final AppenderLoggingException ignored) {
+                assertThat(listener.getStatusData()).hasSize(2 * (i + 1));
+            }
         }
+        listener.clear();
     }
 
     /**
@@ -404,23 +419,22 @@ class SocketAppenderReconnectTest {
 
         private final List<InetSocketAddress> addresses;
 
-        private FixedHostResolver(List<InetSocketAddress> addresses) {
+        private FixedHostResolver(final List<InetSocketAddress> addresses) {
             this.addresses = addresses;
         }
 
-        private static FixedHostResolver ofServers(LineReadingTcpServer... servers) {
-            List<InetSocketAddress> addresses = Arrays
-                    .stream(servers)
-                    .map(server -> (InetSocketAddress) server.serverSocket.getLocalSocketAddress())
-                    .collect(Collectors.toList());
+        private static FixedHostResolver ofServers(final LineReadingTcpServer... servers) {
+            final List<InetSocketAddress> addresses = Arrays
+            .stream(servers)
+            .map(server -> (InetSocketAddress) server.serverSocket.getLocalSocketAddress())
+            .collect(Collectors.toList());
             return new FixedHostResolver(addresses);
         }
 
         @Override
-        public List<InetSocketAddress> resolveHost(String ignoredHost, int ignoredPort) {
+        public List<InetSocketAddress> resolveHost(final String ignoredHost, final int ignoredPort) {
             return addresses;
         }
 
     }
-
 }

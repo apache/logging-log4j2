@@ -1,24 +1,30 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.mongodb3;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
+import com.mongodb.client.MongoDatabase;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.appender.nosql.NoSqlProvider;
 import org.apache.logging.log4j.core.filter.AbstractFilterable;
@@ -28,23 +34,15 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginFactory;
 import org.apache.logging.log4j.plugins.convert.TypeConverter;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.convert.TypeConverterFactory;
 import org.apache.logging.log4j.plugins.validation.constraints.Required;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidHost;
 import org.apache.logging.log4j.plugins.validation.constraints.ValidPort;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
-
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.WriteConcern;
-import com.mongodb.client.MongoDatabase;
 
 /**
  * The MongoDB implementation of {@link NoSqlProvider} using the MongoDB driver version 3 API.
@@ -59,7 +57,8 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
         // @formatter:off
         private static final CodecRegistry CODEC_REGISTRIES = CodecRegistries.fromRegistries(
                         CodecRegistries.fromCodecs(MongoDb3LevelCodec.INSTANCE),
-                        MongoClient.getDefaultCodecRegistry());
+                        MongoClient.getDefaultCodecRegistry(),
+                        CodecRegistries.fromCodecs(new MongoDb3DocumentObjectCodec()));
         // @formatter:on
 
         private static WriteConcern toWriteConcern(final String writeConcernConstant,
@@ -129,7 +128,7 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
         @PluginBuilderAttribute
         private String writeConcernConstantClassName;
 
-        private Injector injector;
+        private TypeConverterFactory typeConverterFactory;
 
         @SuppressWarnings("resource")
         @Override
@@ -186,7 +185,7 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
                     mongoCredential = MongoCredential.createCredential(userName, databaseName, password.toCharArray());
                 }
                 try {
-                    final TypeConverter<Integer> converter = Cast.cast(injector.getTypeConverter(Integer.class));
+                    final TypeConverter<Integer> converter = typeConverterFactory.getTypeConverter(Integer.class);
                     final int portInt = converter.convert(port, DEFAULT_PORT);
                     description += ", server=" + server + ", port=" + portInt;
                     final WriteConcern writeConcern = toWriteConcern(writeConcernConstant, writeConcernConstantClassName);
@@ -295,8 +294,8 @@ public final class MongoDb3Provider implements NoSqlProvider<MongoDb3Connection>
         }
 
         @Inject
-        public B setInjector(final Injector injector) {
-            this.injector = injector;
+        public B setTypeConverterFactory(final TypeConverterFactory typeConverterFactory) {
+            this.typeConverterFactory = typeConverterFactory;
             return asBuilder();
         }
     }

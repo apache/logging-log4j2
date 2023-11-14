@@ -1,21 +1,27 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.apache.logging.log4j.core.config;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
@@ -24,35 +30,27 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.filter.ThreadContextMapFilter;
-import org.apache.logging.log4j.test.junit.CleanUpFiles;
 import org.apache.logging.log4j.core.test.junit.LoggerContextSource;
+import org.apache.logging.log4j.test.junit.TempLoggingDir;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import static org.apache.logging.log4j.util.Unbox.box;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@CleanUpFiles({
-        "target/test-xml.log",
-        "target/test-xinclude.log",
-        "target/test-json.log",
-        "target/test-yaml.log",
-        "target/test-properties.log"
-})
 class ConfigurationFactoryTest {
 
     static final String LOGGER_NAME = "org.apache.logging.log4j.test1.Test";
     static final String FILE_LOGGER_NAME = "org.apache.logging.log4j.test2.Test";
     static final String APPENDER_NAME = "STDOUT";
+
+    @TempLoggingDir
+    private static Path loggingPath;
 
     /**
      * Runs various configuration checks on a configured LoggerContext that should match the equivalent configuration in
@@ -94,7 +92,7 @@ class ConfigurationFactoryTest {
     @LoggerContextSource("log4j-test1.xml")
     void xml(final LoggerContext context) throws IOException {
         checkConfiguration(context);
-        final Path logFile = Paths.get("target", "test-xml.log");
+        final Path logFile = loggingPath.resolve("test-xml.log");
         checkFileLogger(context, logFile);
     }
 
@@ -102,7 +100,7 @@ class ConfigurationFactoryTest {
     @LoggerContextSource("log4j-xinclude.xml")
     void xinclude(final LoggerContext context) throws IOException {
         checkConfiguration(context);
-        final Path logFile = Paths.get("target", "test-xinclude.log");
+        final Path logFile = loggingPath.resolve("test-xinclude.log");
         checkFileLogger(context, logFile);
     }
 
@@ -111,7 +109,7 @@ class ConfigurationFactoryTest {
     @LoggerContextSource("log4j-test1.json")
     void json(final LoggerContext context) throws IOException {
         checkConfiguration(context);
-        final Path logFile = Paths.get("target", "test-json.log");
+        final Path logFile = loggingPath.resolve("test-json.log");
         checkFileLogger(context, logFile);
     }
 
@@ -120,7 +118,7 @@ class ConfigurationFactoryTest {
     @LoggerContextSource("log4j-test1.yaml")
     void yaml(final LoggerContext context) throws IOException {
         checkConfiguration(context);
-        final Path logFile = Paths.get("target", "test-yaml.log");
+        final Path logFile = loggingPath.resolve("test-yaml.log");
         checkFileLogger(context, logFile);
     }
 
@@ -128,7 +126,7 @@ class ConfigurationFactoryTest {
     @LoggerContextSource("log4j-test1.properties")
     void properties(final LoggerContext context) throws IOException {
         checkConfiguration(context);
-        final Path logFile = Paths.get("target", "test-properties.log");
+        final Path logFile = loggingPath.resolve("test-properties.log");
         checkFileLogger(context, logFile);
     }
 }

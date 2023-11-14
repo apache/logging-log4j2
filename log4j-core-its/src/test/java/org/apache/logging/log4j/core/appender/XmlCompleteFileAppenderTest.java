@@ -1,24 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,12 +24,12 @@ import java.nio.file.Files;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.Layouts;
-import org.apache.logging.log4j.core.test.CoreLoggerContexts;
 import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.apache.logging.log4j.core.selector.CoreContextSelectors;
-import org.apache.logging.log4j.test.junit.CleanFiles;
+import org.apache.logging.log4j.core.test.CoreLoggerContexts;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
+import org.apache.logging.log4j.test.junit.CleanFiles;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -41,6 +37,10 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
@@ -142,30 +142,30 @@ public class XmlCompleteFileAppenderTest {
         logger.info(secondLogMsg);
         CoreLoggerContexts.stopLoggerContext(false, logFile); // stop async thread
 
-        int[] indentations = {
-                0, //"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                0, //"<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">\n"
-                -1, // empty
-                2, //"  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\" loggerName=\"com.foo.Bar\" endOfBatch=\"true\" loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n"
-                4, //"    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\" nanoOfMillisecond=\"0\"/>\n"
-                4, //"    <Message>First Msg tag must be in level 2 after correct indentation</Message>\n" +
-                2, //"  </Event>\n"
-                -1, // empty
-                2, //"  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\" loggerName=\"com.foo.Bar\" endOfBatch=\"true\" loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n" +
-                4, //"    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\" nanoOfMillisecond=\"0\"/>\n" +
-                4, //"    <Message>Second Msg tag must also be in level 2 after correct indentation</Message>\n" +
-                2, //"  </Event>\n" +
-                0, //"</Events>\n";
+        final int[] indentations = {
+            0, //"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            0, //"<Events xmlns=\"http://logging.apache.org/log4j/2.0/events\">\n"
+            -1, // empty
+            2, //"  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\" loggerName=\"com.foo.Bar\" endOfBatch=\"true\" loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n"
+            4, //"    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\" nanoOfMillisecond=\"0\"/>\n"
+            4, //"    <Message>First Msg tag must be in level 2 after correct indentation</Message>\n" +
+            2, //"  </Event>\n"
+            -1, // empty
+            2, //"  <Event xmlns=\"http://logging.apache.org/log4j/2.0/events\" thread=\"main\" level=\"INFO\" loggerName=\"com.foo.Bar\" endOfBatch=\"true\" loggerFqcn=\"org.apache.logging.log4j.spi.AbstractLogger\" threadId=\"12\" threadPriority=\"5\">\n" +
+            4, //"    <Instant epochSecond=\"1515889414\" nanoOfSecond=\"144000000\" epochMillisecond=\"1515889414144\" nanoOfMillisecond=\"0\"/>\n" +
+            4, //"    <Message>Second Msg tag must also be in level 2 after correct indentation</Message>\n" +
+            2, //"  </Event>\n" +
+            0, //"</Events>\n";
         };
-        List<String> lines1 = Files.readAllLines(logFile.toPath(), Charset.forName("UTF-8"));
+        final List<String> lines1 = Files.readAllLines(logFile.toPath(), Charset.forName("UTF-8"));
 
         assertEquals("number of lines", indentations.length, lines1.size());
         for (int i = 0; i < indentations.length; i++) {
-            String line = lines1.get(i);
+            final String line = lines1.get(i);
             if (line.trim().isEmpty()) {
                 assertEquals(-1, indentations[i]);
             } else {
-                String padding = "        ".substring(0, indentations[i]);
+                final String padding = "        ".substring(0, indentations[i]);
                 assertTrue("Expected " + indentations[i] + " leading spaces but got: " + line, line.startsWith(padding));
             }
         }

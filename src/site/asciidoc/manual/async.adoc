@@ -17,6 +17,10 @@
 = Lock-free Asynchronous Loggers for Low-Latency Logging
 Remko Popma <rpopma@apache.org>
 
+++++
+<link rel="stylesheet" type="text/css" href="../css/tables.css">
+++++
+
 Asynchronous logging can improve your application's performance by
 executing the I/O operations in a separate thread. Log4j 2 makes a
 number of improvements in this area.

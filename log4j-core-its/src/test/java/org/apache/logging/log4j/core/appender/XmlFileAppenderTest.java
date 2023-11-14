@@ -1,22 +1,20 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.appender;
-
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -25,12 +23,14 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.test.categories.Layouts;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.test.CoreLoggerContexts;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests a "complete" XML file a.k.a. a well-formed XML file.
@@ -40,7 +40,7 @@ public class XmlFileAppenderTest {
 
     @BeforeClass
     public static void beforeClass() {
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FILE_PROPERTY,
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(),
                 "XmlFileAppenderTest.xml");
     }
 
@@ -54,11 +54,11 @@ public class XmlFileAppenderTest {
         log.info(logMsg);
         CoreLoggerContexts.stopLoggerContext(false, file); // stop async thread
 
-        List<String> lines = Files.readAllLines(file.toPath(), Charset.forName("UTF8"));
+        final List<String> lines = Files.readAllLines(file.toPath(), Charset.forName("UTF8"));
         file.delete();
 
-        String[] expect = {
-                "", // ? unsure why initial empty line...
+        final String[] expect = {
+            "", // ? unsure why initial empty line...
             "<Event ", //
             "<Instant epochSecond=", //
             logMsg, //

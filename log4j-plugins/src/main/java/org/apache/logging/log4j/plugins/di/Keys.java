@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.plugins.di;
 
@@ -25,15 +25,14 @@ import java.lang.reflect.Parameter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
-import org.apache.logging.log4j.plugins.Named;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.internal.util.BeanUtils;
 import org.apache.logging.log4j.plugins.name.AliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementAliasesProvider;
 import org.apache.logging.log4j.plugins.name.AnnotatedElementNameProvider;
 import org.apache.logging.log4j.plugins.name.NameProvider;
+import org.apache.logging.log4j.plugins.util.AnnotatedAnnotation;
 import org.apache.logging.log4j.plugins.util.AnnotationUtil;
 import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.ReflectionUtil;
@@ -44,9 +43,12 @@ public final class Keys {
         throw new IllegalStateException("Utility class");
     }
 
-    public static final String SUBSTITUTOR_NAME = "StringSubstitutor";
-    public static final Key<Function<String, String>> SUBSTITUTOR_KEY = new @Named(SUBSTITUTOR_NAME) Key<>() {};
-
+    /**
+     * Gets the {@linkplain Namespace namespace} of the annotated element.
+     *
+     * @param element annotated element to find namespace for
+     * @return annotated namespace of element
+     */
     public static String getNamespace(final AnnotatedElement element) {
         return Optional.ofNullable(AnnotationUtil.getLogicalAnnotation(element, Namespace.class))
                 .map(Namespace::value)
@@ -142,37 +144,33 @@ public final class Keys {
         return hasName(type) ? getSpecifiedName(type).orElseGet(type::getSimpleName) : Strings.EMPTY;
     }
 
+    // TODO(ms): these name and alias providers should work via DI
     private static Optional<String> getSpecifiedName(final AnnotatedElement element) {
-        for (final Annotation annotation : element.getAnnotations()) {
-            final Optional<String> name = getSpecifiedNameForAnnotation(annotation);
-            if (name.isPresent()) {
-                return name;
-            }
-        }
-        return Optional.empty();
+        return AnnotationUtil.findAnnotatedAnnotations(element, NameProvider.class)
+                .findFirst()
+                .flatMap(Keys::getSpecifiedName);
     }
 
-    private static <A extends Annotation> Optional<String> getSpecifiedNameForAnnotation(final A annotation) {
-        return Optional.ofNullable(annotation.annotationType().getAnnotation(NameProvider.class))
-                .map(NameProvider::value)
-                .map(Cast::<Class<? extends AnnotatedElementNameProvider<A>>>cast)
-                .map(ReflectionUtil::instantiate)
-                .flatMap(provider -> provider.getSpecifiedName(annotation));
+    private static <A extends Annotation> Optional<String> getSpecifiedName(
+            final AnnotatedAnnotation<A, NameProvider> annotatedAnnotation) {
+        final Class<? extends AnnotatedElementNameProvider<A>> providerType =
+                Cast.cast(annotatedAnnotation.getMetaAnnotation().value());
+        final AnnotatedElementNameProvider<A> provider = ReflectionUtil.instantiate(providerType);
+        return provider.getSpecifiedName(annotatedAnnotation.getAnnotation());
     }
 
     public static Collection<String> getAliases(final AnnotatedElement element) {
-        for (final Annotation annotation : element.getAnnotations()) {
-            if (annotation.annotationType().isAnnotationPresent(AliasesProvider.class)) {
-                return getAliasesForAnnotation(annotation);
-            }
-        }
-        return List.of();
+        return AnnotationUtil.findAnnotatedAnnotations(element, AliasesProvider.class)
+                .findFirst()
+                .map(Keys::getAliases)
+                .orElseGet(List::of);
     }
 
-    private static <A extends Annotation> Collection<String> getAliasesForAnnotation(final A annotation) {
-        @SuppressWarnings("unchecked") final var providerType = (Class<AnnotatedElementAliasesProvider<A>>)
-                annotation.annotationType().getAnnotation(AliasesProvider.class).value();
+    private static <A extends Annotation> Collection<String> getAliases(
+            final AnnotatedAnnotation<A, AliasesProvider> annotatedAnnotation) {
+        final Class<? extends AnnotatedElementAliasesProvider<A>> providerType =
+                Cast.cast(annotatedAnnotation.getMetaAnnotation().value());
         final AnnotatedElementAliasesProvider<A> provider = ReflectionUtil.instantiate(providerType);
-        return provider.getAliases(annotation);
+        return provider.getAliases(annotatedAnnotation.getAnnotation());
     }
 }

@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j;
 
 import java.io.IOException;
@@ -79,7 +78,7 @@ public class WriterAppender extends AppenderSkeleton {
      * @param layout The Layout.
      * @param os The OutputStream.
      */
-    public WriterAppender(Layout layout, OutputStream os) {
+    public WriterAppender(final Layout layout, final OutputStream os) {
         this(layout, new OutputStreamWriter(os));
     }
 
@@ -93,7 +92,7 @@ public class WriterAppender extends AppenderSkeleton {
      * @param layout The Layout.
      * @param writer The Writer.
      */
-    public WriterAppender(Layout layout, Writer writer) {
+    public WriterAppender(final Layout layout, final Writer writer) {
         this.layout = layout;
         this.setWriter(writer);
     }
@@ -122,7 +121,7 @@ public class WriterAppender extends AppenderSkeleton {
      *
      * @param value the value to set the immediate flush setting to.
      */
-    public void setImmediateFlush(boolean value) {
+    public void setImmediateFlush(final boolean value) {
         immediateFlush = value;
     }
 
@@ -146,7 +145,7 @@ public class WriterAppender extends AppenderSkeleton {
      * layout.
      */
     @Override
-    public void append(LoggingEvent event) {
+    public void append(final LoggingEvent event) {
 
         // Reminder: the nesting of calls is:
         //
@@ -236,10 +235,10 @@ public class WriterAppender extends AppenderSkeleton {
      * @param os The OutputStream.
      * @return The OutputStreamWriter.
      */
-    protected OutputStreamWriter createWriter(OutputStream os) {
+    protected OutputStreamWriter createWriter(final OutputStream os) {
         OutputStreamWriter retval = null;
 
-        String enc = getEncoding();
+        final String enc = getEncoding();
         if (enc != null) {
             try {
                 retval = new OutputStreamWriter(os, enc);
@@ -261,7 +260,7 @@ public class WriterAppender extends AppenderSkeleton {
         return encoding;
     }
 
-    public void setEncoding(String value) {
+    public void setEncoding(final String value) {
         encoding = value;
     }
 
@@ -271,7 +270,7 @@ public class WriterAppender extends AppenderSkeleton {
      * underlying {@link QuietWriter} if any.
      */
     @Override
-    public synchronized void setErrorHandler(ErrorHandler eh) {
+    public synchronized void setErrorHandler(final ErrorHandler eh) {
         if (eh == null) {
             LOGGER.warn("You have tried to set a null error-handler.");
         } else {
@@ -296,7 +295,7 @@ public class WriterAppender extends AppenderSkeleton {
      *
      * @param writer An already opened Writer.
      */
-    public synchronized void setWriter(Writer writer) {
+    public synchronized void setWriter(final Writer writer) {
         reset();
         this.qw = new QuietWriter(writer, errorHandler);
         //this.tp = new TracerPrintWriter(qw);
@@ -313,13 +312,13 @@ public class WriterAppender extends AppenderSkeleton {
      *
      * @since 0.9.0
      */
-    protected void subAppend(LoggingEvent event) {
+    protected void subAppend(final LoggingEvent event) {
         this.qw.write(this.layout.format(event));
 
         if (layout.ignoresThrowable()) {
-            String[] s = event.getThrowableStrRep();
+            final String[] s = event.getThrowableStrRep();
             if (s != null) {
-                int len = s.length;
+                final int len = s.length;
                 for (int i = 0; i < len; i++) {
                     this.qw.write(s[i]);
                     this.qw.write(Layout.LINE_SEP);
@@ -361,7 +360,7 @@ public class WriterAppender extends AppenderSkeleton {
      */
     protected void writeFooter() {
         if (layout != null) {
-            String f = layout.getFooter();
+            final String f = layout.getFooter();
             if (f != null && this.qw != null) {
                 this.qw.write(f);
                 this.qw.flush();
@@ -375,7 +374,7 @@ public class WriterAppender extends AppenderSkeleton {
      */
     protected void writeHeader() {
         if (layout != null) {
-            String h = layout.getHeader();
+            final String h = layout.getHeader();
             if (h != null && this.qw != null) {
                 this.qw.write(h);
             }

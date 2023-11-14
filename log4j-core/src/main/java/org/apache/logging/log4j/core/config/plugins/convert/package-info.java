@@ -19,4 +19,9 @@
  * TypeConverter plugins for converter strings into various types. These plugins are used for parsing plugin
  * attributes in plugin factory methods.
  */
+@Export
+@Version("2.20.2")
 package org.apache.logging.log4j.core.config.plugins.convert;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

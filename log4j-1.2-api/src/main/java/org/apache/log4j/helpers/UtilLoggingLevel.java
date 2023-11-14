@@ -2,7 +2,7 @@
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.log4j.helpers;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Level;
+
+import static org.apache.logging.log4j.util.Strings.toRootUpperCase;
 
 /**
  * An extension of the Level class that provides support for java.util.logging Levels.
@@ -52,17 +53,17 @@ public class UtilLoggingLevel extends Level {
      * Numerical value for FINE.
      */
     public static final int FINE_INT = 13000;
-    
+
     /**
      * Numerical value for FINER.
      */
     public static final int FINER_INT = 12000;
-    
+
     /**
      * Numerical value for FINEST.
      */
     public static final int FINEST_INT = 11000;
-    
+
     /**
      * Numerical value for UNKNOWN.
      */
@@ -72,33 +73,33 @@ public class UtilLoggingLevel extends Level {
      * SEVERE.
      */
     public static final UtilLoggingLevel SEVERE = new UtilLoggingLevel(SEVERE_INT, "SEVERE", 0);
-    
+
     /**
      * WARNING.
      */
     public static final UtilLoggingLevel WARNING = new UtilLoggingLevel(WARNING_INT, "WARNING", 4);
-    
+
     /**
      * INFO.
      */
     // note: we've aligned the int values of the java.util.logging INFO level with log4j's level
     public static final UtilLoggingLevel INFO = new UtilLoggingLevel(INFO_INT, "INFO", 5);
-    
+
     /**
      * CONFIG.
      */
     public static final UtilLoggingLevel CONFIG = new UtilLoggingLevel(CONFIG_INT, "CONFIG", 6);
-    
+
     /**
      * FINE.
      */
     public static final UtilLoggingLevel FINE = new UtilLoggingLevel(FINE_INT, "FINE", 7);
-    
+
     /**
      * FINER.
      */
     public static final UtilLoggingLevel FINER = new UtilLoggingLevel(FINER_INT, "FINER", 8);
-    
+
     /**
      * FINEST.
      */
@@ -200,7 +201,7 @@ public class UtilLoggingLevel extends Level {
             return defaultLevel;
         }
 
-        final String s = sArg.toUpperCase();
+        final String s = toRootUpperCase(sArg);
 
         if (s.equals("SEVERE")) {
             return SEVERE;

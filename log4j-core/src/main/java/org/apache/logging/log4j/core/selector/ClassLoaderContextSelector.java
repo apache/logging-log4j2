@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.selector;
 
@@ -31,7 +31,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.impl.ContextAnchor;
 import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Singleton;
-import org.apache.logging.log4j.plugins.di.Injector;
+import org.apache.logging.log4j.plugins.di.ConfigurableInstanceFactory;
 import org.apache.logging.log4j.spi.LoggerContextShutdownAware;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Lazy;
@@ -56,11 +56,11 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     protected final Lazy<LoggerContext> defaultContext = Lazy.lazy(() -> createContext(defaultContextName(), null));
     protected final Map<String, AtomicReference<WeakReference<LoggerContext>>> contextMap = new ConcurrentHashMap<>();
 
-    protected final Injector injector;
+    protected final ConfigurableInstanceFactory instanceFactory;
 
     @Inject
-    public ClassLoaderContextSelector(final Injector injector) {
-        this.injector = injector;
+    public ClassLoaderContextSelector(final ConfigurableInstanceFactory instanceFactory) {
+        this.instanceFactory = instanceFactory;
     }
 
     @Override
@@ -188,15 +188,14 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
         return Collections.unmodifiableList(list);
     }
 
-    private Injector getOrCopyInjector(final Map.Entry<String, Object> entry) {
+    private ConfigurableInstanceFactory getConfigurableInstanceFactory(final Map.Entry<String, Object> entry) {
         if (entry != null) {
             final Object value = entry.getValue();
-            if (value instanceof Injector) {
-                return (Injector) value;
+            if (value instanceof ConfigurableInstanceFactory) {
+                return (ConfigurableInstanceFactory) value;
             }
         }
-        final Injector injector = this.injector;
-        return injector != null ? injector.copy() : null;
+        return instanceFactory;
     }
 
     private LoggerContext locateContext(
@@ -239,7 +238,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
                     } */
                 }
             }
-            final LoggerContext ctx = createContext(name, configLocation, getOrCopyInjector(entry));
+            final LoggerContext ctx = createContext(name, configLocation, getConfigurableInstanceFactory(entry));
             if (entry != null) {
                 ctx.putObject(entry.getKey(), entry.getValue());
             }
@@ -266,7 +265,7 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
             }
             return ctx;
         }
-        ctx = createContext(name, configLocation, getOrCopyInjector(entry));
+        ctx = createContext(name, configLocation, getConfigurableInstanceFactory(entry));
         if (entry != null) {
             ctx.putObject(entry.getKey(), entry.getValue());
         }
@@ -277,13 +276,12 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
     }
 
     protected LoggerContext createContext(final String name, final URI configLocation) {
-        final Injector injector = this.injector;
-        return createContext(name, configLocation, injector != null ? injector.copy() : null);
+        final ConfigurableInstanceFactory instanceFactory = this.instanceFactory;
+        return createContext(name, configLocation, instanceFactory);
     }
 
-    protected LoggerContext createContext(final String name, final URI configLocation, final Injector injector) {
-
-        return new LoggerContext(name, null, configLocation, injector);
+    protected LoggerContext createContext(final String name, final URI configLocation, final ConfigurableInstanceFactory instanceFactory) {
+        return new LoggerContext(name, null, configLocation, instanceFactory);
     }
 
     protected String toContextMapKey(final ClassLoader loader) {
@@ -296,5 +294,10 @@ public class ClassLoaderContextSelector implements ContextSelector, LoggerContex
 
     protected String defaultContextName() {
         return "Default";
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
     }
 }

@@ -21,4 +21,9 @@
  * @see org.apache.logging.log4j.core.test.junit.LoggerContextSource JUnit 5 extension
  * @see org.apache.logging.log4j.core.test.junit.LoggerContextRule JUnit 4 test rule
  */
+@Export
+@Version("2.20.1")
 package org.apache.logging.log4j.core.test.junit;
+
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

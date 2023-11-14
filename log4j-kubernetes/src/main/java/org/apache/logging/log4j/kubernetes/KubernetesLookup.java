@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.kubernetes;
 
@@ -23,6 +23,11 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import io.fabric8.kubernetes.api.model.Container;
+import io.fabric8.kubernetes.api.model.ContainerStatus;
+import io.fabric8.kubernetes.api.model.Pod;
+import io.fabric8.kubernetes.client.Config;
+import io.fabric8.kubernetes.client.KubernetesClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -32,12 +37,6 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.apache.logging.log4j.util.Strings;
-
-import io.fabric8.kubernetes.api.model.Container;
-import io.fabric8.kubernetes.api.model.ContainerStatus;
-import io.fabric8.kubernetes.api.model.Pod;
-import io.fabric8.kubernetes.client.Config;
-import io.fabric8.kubernetes.client.KubernetesClient;
 
 
 /**
@@ -80,9 +79,9 @@ public class KubernetesLookup extends AbstractLookup {
         if (kubernetesInfo == null || (isSpringIncluded && !kubernetesInfo.isSpringActive)) {
             initLock.lock();
             try {
-                boolean isSpringActive = isSpringActive();
+                final boolean isSpringActive = isSpringActive();
                 if (kubernetesInfo == null || (!kubernetesInfo.isSpringActive && isSpringActive)) {
-                    KubernetesInfo info = new KubernetesInfo();
+                    final KubernetesInfo info = new KubernetesInfo();
                     KubernetesClient client = null;
                     info.isSpringActive = isSpringActive;
                     if (pod == null) {
@@ -119,11 +118,11 @@ public class KubernetesLookup extends AbstractLookup {
                         info.podIp = pod.getStatus().getPodIP();
                         info.podName = pod.getMetadata().getName();
                         ContainerStatus containerStatus = null;
-                        List<ContainerStatus> statuses = pod.getStatus().getContainerStatuses();
+                        final List<ContainerStatus> statuses = pod.getStatus().getContainerStatuses();
                         if (statuses.size() == 1) {
                             containerStatus = statuses.get(0);
                         } else if (statuses.size() > 1) {
-                            String containerId = ContainerUtil.getContainerId();
+                            final String containerId = ContainerUtil.getContainerId();
                             if (containerId != null) {
                                 containerStatus = statuses.stream()
                                         .filter(cs -> cs.getContainerID().contains(containerId))
@@ -139,7 +138,7 @@ public class KubernetesLookup extends AbstractLookup {
                             containerName = null;
                         }
                         Container container = null;
-                        List<Container> containers = pod.getSpec().getContainers();
+                        final List<Container> containers = pod.getSpec().getContainers();
                         if (containers.size() == 1) {
                             container = containers.get(0);
                         } else if (containers.size() > 1 && containerName != null) {
@@ -162,7 +161,7 @@ public class KubernetesLookup extends AbstractLookup {
     }
 
     @Override
-    public String lookup(LogEvent event, String key) {
+    public String lookup(final LogEvent event, final String key) {
         if (kubernetesInfo == null) {
             return null;
         }
@@ -243,7 +242,7 @@ public class KubernetesLookup extends AbstractLookup {
         return System.getenv(HOSTNAME);
     }
 
-    private Pod getCurrentPod(String hostName, KubernetesClient kubernetesClient) {
+    private Pod getCurrentPod(final String hostName, final KubernetesClient kubernetesClient) {
         try {
             if (isServiceAccount() && Strings.isNotBlank(hostName)) {
                 return kubernetesClient.pods().withName(hostName).get();

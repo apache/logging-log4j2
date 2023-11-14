@@ -17,6 +17,6 @@
 
 = Release Notes
 
-<#list releases as release>
+<#list releases as release><#if release.changelogEntryCount gt 0>
 * xref:${release.version}.adoc[${release.version}]<#if release.date?has_content> (${release.date})</#if>
-</#list>
+</#if></#list>

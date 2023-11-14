@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.slf4j;
 
@@ -21,6 +21,8 @@ import java.lang.reflect.Proxy;
 import java.util.Date;
 import java.util.List;
 
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.testUtil.StringListAppender;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -32,9 +34,6 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.MDC;
-
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.testUtil.StringListAppender;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -133,7 +132,7 @@ public class LoggerTest {
         if (messageFactory == null) {
             assertSame(LoggingSystem.getMessageFactory(), testLogger.getMessageFactory());
         } else {
-            MessageFactory actual = testLogger.getMessageFactory();
+            final MessageFactory actual = testLogger.getMessageFactory();
             assertEquals(messageFactory, actual);
         }
     }
@@ -148,7 +147,7 @@ public class LoggerTest {
     public void debugWithParms() {
         logger.debug("Hello, {}", "World");
         assertThat(list.strList, hasSize(1));
-        String message = list.strList.get(0);
+        final String message = list.strList.get(0);
         assertEquals("Hello, World", message);
     }
 
@@ -156,28 +155,28 @@ public class LoggerTest {
     public void paramIncludesSubstitutionMarker_locationAware() {
         logger.info("Hello, {}", "foo {} bar");
         assertThat(list.strList, hasSize(1));
-        String message = list.strList.get(0);
+        final String message = list.strList.get(0);
         assertEquals("Hello, foo {} bar", message);
     }
 
     @Test
     public void paramIncludesSubstitutionMarker_nonLocationAware() {
         final org.slf4j.Logger slf4jLogger = CTX.getLogger();
-        Logger nonLocationAwareLogger = new SLF4JLogger(
-                slf4jLogger.getName(),
-                (org.slf4j.Logger) Proxy.newProxyInstance(
-                        getClass().getClassLoader(),
-                        new Class<?>[]{org.slf4j.Logger.class},
-                        (proxy, method, args) -> {
-                            try {
-                                return method.invoke(slf4jLogger, args);
-                            } catch (InvocationTargetException e) {
-                                throw e.getCause();
-                            }
-                        }));
+        final Logger nonLocationAwareLogger = new SLF4JLogger(
+        slf4jLogger.getName(),
+        (org.slf4j.Logger) Proxy.newProxyInstance(
+        getClass().getClassLoader(),
+        new Class<?>[]{org.slf4j.Logger.class},
+        (proxy, method, args) -> {
+            try {
+                return method.invoke(slf4jLogger, args);
+            } catch (InvocationTargetException e) {
+                throw e.getCause();
+            }
+        }));
         nonLocationAwareLogger.info("Hello, {}", "foo {} bar");
         assertThat(list.strList, hasSize(1));
-        String message = list.strList.get(0);
+        final String message = list.strList.get(0);
         assertEquals("Hello, foo {} bar", message);
     }
 

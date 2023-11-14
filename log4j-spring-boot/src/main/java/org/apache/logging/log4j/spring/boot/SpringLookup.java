@@ -1,20 +1,23 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.spring.boot;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
@@ -26,8 +29,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.springframework.core.env.Environment;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static org.apache.logging.log4j.util.Strings.toRootLowerCase;
 
 /**
  * Lookup for Spring properties.
@@ -46,9 +48,9 @@ public class SpringLookup implements LoggerContextAware, StrLookup {
     private Environment environment = null;
 
     @Override
-    public String lookup(String key) {
+    public String lookup(final String key) {
         if (environment != null) {
-            String lowerKey = key.toLowerCase();
+            final String lowerKey = toRootLowerCase(key);
             if (lowerKey.startsWith(ACTIVE)) {
                 switch (environment.getActiveProfiles().length) {
                     case 0: {
@@ -58,10 +60,10 @@ public class SpringLookup implements LoggerContextAware, StrLookup {
                         return environment.getActiveProfiles()[0];
                     }
                     default: {
-                        Matcher matcher = ACTIVE_PATTERN.matcher(key);
+                        final Matcher matcher = ACTIVE_PATTERN.matcher(key);
                         if (matcher.matches()) {
                             try {
-                                int index = Integer.parseInt(matcher.group(1));
+                                final int index = Integer.parseInt(matcher.group(1));
                                 if (index < environment.getActiveProfiles().length) {
                                     return environment.getActiveProfiles()[index];
                                 } else {
@@ -74,7 +76,7 @@ public class SpringLookup implements LoggerContextAware, StrLookup {
                             }
 
                         } else {
-                            StringBuilder sb = new StringBuilder();
+                            final StringBuilder sb = new StringBuilder();
                             for (String profile : environment.getActiveProfiles()) {
                                 if (sb.length() > 0) {
                                     sb.append(",");
@@ -94,10 +96,10 @@ public class SpringLookup implements LoggerContextAware, StrLookup {
                         return environment.getDefaultProfiles()[0];
                     }
                     default: {
-                        Matcher matcher = DEFAULT_PATTERN.matcher(key);
+                        final Matcher matcher = DEFAULT_PATTERN.matcher(key);
                         if (matcher.matches()) {
                             try {
-                                int index = Integer.parseInt(matcher.group(1));
+                                final int index = Integer.parseInt(matcher.group(1));
                                 if (index < environment.getDefaultProfiles().length) {
                                     return environment.getDefaultProfiles()[index];
                                 } else {
@@ -110,7 +112,7 @@ public class SpringLookup implements LoggerContextAware, StrLookup {
                             }
 
                         } else {
-                            StringBuilder sb = new StringBuilder();
+                            final StringBuilder sb = new StringBuilder();
                             for (String profile : environment.getDefaultProfiles()) {
                                 if (sb.length() > 0) {
                                     sb.append(",");
@@ -130,7 +132,7 @@ public class SpringLookup implements LoggerContextAware, StrLookup {
     }
 
     @Override
-    public String lookup(LogEvent event, String key) {
+    public String lookup(final LogEvent event, final String key) {
         return lookup((key));
     }
 

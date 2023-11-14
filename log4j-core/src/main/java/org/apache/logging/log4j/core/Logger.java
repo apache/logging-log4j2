@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core;
 
@@ -74,8 +74,14 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
      * @return The parent Logger.
      */
     public Logger getParent() {
-        final LoggerConfig lc = privateConfig.loggerConfig.getName().equals(getName()) ? privateConfig.loggerConfig
-                .getParent() : privateConfig.loggerConfig;
+        return getParent(privateConfig);
+    }
+
+    private Logger getParent(final PrivateConfig config) {
+        final LoggerConfig lc =
+                config.loggerConfig.getName().equals(getName())
+                        ? config.loggerConfig.getParent()
+                        : config.loggerConfig;
         if (lc == null) {
             return null;
         }
@@ -104,18 +110,19 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
      *
      * @param level The Level to use on this Logger, may be null.
      */
-    public synchronized void setLevel(final Level level) {
-        if (level == getLevel()) {
+    public void setLevel(final Level level) {
+        var currentConfig = privateConfig;
+        if (level == currentConfig.loggerConfigLevel) {
             return;
         }
         final Level actualLevel;
         if (level != null) {
             actualLevel = level;
         } else {
-            final Logger parent = getParent();
-            actualLevel = parent != null ? parent.getLevel() : privateConfig.loggerConfigLevel;
+            final Logger parent = getParent(currentConfig);
+            actualLevel = parent != null ? parent.getLevel() : currentConfig.loggerConfigLevel;
         }
-        privateConfig = new PrivateConfig(privateConfig, actualLevel);
+        privateConfig = new PrivateConfig(currentConfig, actualLevel);
     }
 
     /*
@@ -347,7 +354,7 @@ public class Logger extends AbstractLogger implements Supplier<LoggerConfig> {
     }
 
     @Override
-    public LogBuilder atLevel(Level level) {
+    public LogBuilder atLevel(final Level level) {
         // A global filter might accept messages less specific than level.
         // Therefore we return always a functional builder.
         if (privateConfig.hasFilter()) {

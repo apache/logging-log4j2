@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.util;
 
@@ -20,12 +20,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.ConfigurationFileWatcher;
-import org.apache.logging.log4j.core.config.ConfigurationListener;
 import org.apache.logging.log4j.core.config.Reconfigurable;
+import org.apache.logging.log4j.plugins.Inject;
+import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.model.PluginNamespace;
 import org.apache.logging.log4j.plugins.model.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
@@ -39,12 +41,13 @@ public class WatcherFactory {
 
     private final PluginNamespace plugins;
 
-    public WatcherFactory(final PluginNamespace watcherPlugins) {
+    @Inject
+    public WatcherFactory(@Namespace(Watcher.CATEGORY) final PluginNamespace watcherPlugins) {
         plugins = watcherPlugins;
     }
 
     public Watcher newWatcher(final Source source, final Configuration configuration, final Reconfigurable reconfigurable,
-                              final List<ConfigurationListener> configurationListeners, final long lastModifiedMillis) {
+                              final List<Consumer<Reconfigurable>> configurationListeners, final long lastModifiedMillis) {
         if (source.getFile() != null) {
             return new ConfigurationFileWatcher(configuration, reconfigurable, configurationListeners,
                 lastModifiedMillis);
@@ -62,7 +65,7 @@ public class WatcherFactory {
 
     public static <T extends Watcher> T instantiate(final String name, final Class<T> clazz,
                                                     final Configuration configuration, final Reconfigurable reconfigurable,
-                                                    final List<ConfigurationListener> listeners, final long lastModifiedMillis) {
+                                                    final List<Consumer<Reconfigurable>> listeners, final long lastModifiedMillis) {
         Objects.requireNonNull(clazz, "No class provided");
         try {
             final Constructor<T> constructor = clazz

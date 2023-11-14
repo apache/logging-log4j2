@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.plugins.convert;
 
@@ -30,6 +30,7 @@ import org.apache.logging.log4j.plugins.util.TypeUtil;
 import org.apache.logging.log4j.spi.RecyclerFactories;
 import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Cast;
 import org.apache.logging.log4j.util.EnglishEnums;
 
 @Singleton
@@ -38,7 +39,7 @@ public class TypeConverterFactory {
     private final Map<Type, TypeConverter<?>> typeConverters = new ConcurrentHashMap<>();
 
     @Inject
-    public TypeConverterFactory(@TypeConverters List<TypeConverter<?>> typeConverters) {
+    public TypeConverterFactory(@TypeConverters final List<TypeConverter<?>> typeConverters) {
         typeConverters.forEach(converter -> registerTypeConverter(getTypeConverterSupportedType(converter.getClass()), converter));
         registerTypeConverter(Boolean.class, Boolean::valueOf);
         registerTypeAlias(Boolean.class, Boolean.TYPE);
@@ -65,17 +66,17 @@ public class TypeConverterFactory {
         registerTypeConverter(String.class, s -> s);
     }
 
-    public TypeConverter<?> getTypeConverter(final Type type) {
+    public <T> TypeConverter<T> getTypeConverter(final Type type) {
         final TypeConverter<?> primary = typeConverters.get(type);
         // cached type converters
         if (primary != null) {
-            return primary;
+            return Cast.cast(primary);
         }
         // dynamic enum support
         if (type instanceof Class<?>) {
             final Class<?> clazz = (Class<?>) type;
             if (clazz.isEnum()) {
-                return registerTypeConverter(type, s -> EnglishEnums.valueOf(clazz.asSubclass(Enum.class), s));
+                return Cast.cast(registerTypeConverter(type, s -> EnglishEnums.valueOf(clazz.asSubclass(Enum.class), s)));
             }
         }
         // look for compatible converters
@@ -84,7 +85,7 @@ public class TypeConverterFactory {
             if (TypeUtil.isAssignable(type, key)) {
                 LOGGER.debug("Found compatible TypeConverter<{}> for type [{}].", key, type);
                 final TypeConverter<?> value = entry.getValue();
-                return registerTypeConverter(type, value);
+                return Cast.cast(registerTypeConverter(type, value));
             }
         }
         throw new UnknownFormatConversionException(type.toString());

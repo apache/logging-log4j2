@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.core.layout;
 
@@ -29,38 +29,30 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.ThreadContext;
-import org.apache.logging.log4j.core.AbstractLogEvent;
-import org.apache.logging.log4j.core.Appender;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.*;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.test.BasicConfigurationFactory;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
+import org.apache.logging.log4j.core.test.junit.ConfigurationFactoryType;
 import org.apache.logging.log4j.core.time.Instant;
 import org.apache.logging.log4j.core.time.MutableInstant;
 import org.apache.logging.log4j.core.time.internal.format.FixedDateFormat;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.test.junit.UsingAnyThreadContext;
-import org.apache.logging.log4j.util.Lazy;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.apache.logging.log4j.core.time.internal.format.FixedDateFormat.FixedFormat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @UsingAnyThreadContext
+@ConfigurationFactoryType(BasicConfigurationFactory.class)
 public class HtmlLayoutTest {
     private static class MyLogEvent extends AbstractLogEvent {
 
         @Override
         public Instant getInstant() {
-            MutableInstant result = new MutableInstant();
+            final MutableInstant result = new MutableInstant();
             result.initFromEpochMilli(getTimeMillis(), 456789);
             return result;
         }
@@ -86,18 +78,6 @@ public class HtmlLayoutTest {
 
     private final LoggerContext ctx = LoggerContext.getContext();
     private final Logger root = ctx.getRootLogger();
-
-    @BeforeAll
-    public static void setupClass() {
-        final LoggerContext ctx = LoggerContext.getContext();
-        ctx.getInjector().registerBinding(ConfigurationFactory.KEY, Lazy.lazy(BasicConfigurationFactory::new)::value);
-        ctx.reconfigure();
-    }
-
-    @AfterAll
-    public static void cleanupClass() {
-        LoggerContext.getContext().getInjector().removeBinding(ConfigurationFactory.KEY);
-    }
 
     private static final String body = "<tr><td bgcolor=\"#993300\" style=\"color:White; font-size : small;\" colspan=\"6\">java.lang.NullPointerException: test";
 
@@ -202,10 +182,10 @@ public class HtmlLayoutTest {
     public void testLayoutWithoutDataPattern() {
         final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).build();
 
-        MyLogEvent event = new MyLogEvent();
-        String actual = getDateLine(layout.toSerializable(event));
+        final MyLogEvent event = new MyLogEvent();
+        final String actual = getDateLine(layout.toSerializable(event));
 
-        long jvmStratTime = ManagementFactory.getRuntimeMXBean().getStartTime();
+        final long jvmStratTime = ManagementFactory.getRuntimeMXBean().getStartTime();
         assertEquals("<td>" + (event.getTimeMillis() - jvmStratTime) + "</td>", actual, "Incorrect date:" + actual);
     }
 
@@ -213,10 +193,10 @@ public class HtmlLayoutTest {
     public void testLayoutWithDatePatternJvmElapseTime() {
         final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).setDatePattern("JVM_ELAPSE_TIME").build();
 
-        MyLogEvent event = new MyLogEvent();
-        String actual = getDateLine(layout.toSerializable(event));
+        final MyLogEvent event = new MyLogEvent();
+        final String actual = getDateLine(layout.toSerializable(event));
 
-        long jvmStratTime = ManagementFactory.getRuntimeMXBean().getStartTime();
+        final long jvmStratTime = ManagementFactory.getRuntimeMXBean().getStartTime();
         assertEquals("<td>" + (event.getTimeMillis() - jvmStratTime) + "</td>", actual, "Incorrect date:" + actual);
     }
 
@@ -224,8 +204,8 @@ public class HtmlLayoutTest {
     public void testLayoutWithDatePatternUnix() {
         final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).setDatePattern("UNIX").build();
 
-        MyLogEvent event = new MyLogEvent();
-        String actual = getDateLine(layout.toSerializable(event));
+        final MyLogEvent event = new MyLogEvent();
+        final String actual = getDateLine(layout.toSerializable(event));
 
         assertEquals("<td>" + event.getInstant().getEpochSecond() + "</td>", actual, "Incorrect date:" + actual);
     }
@@ -234,8 +214,8 @@ public class HtmlLayoutTest {
     public void testLayoutWithDatePatternUnixMillis() {
         final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).setDatePattern("UNIX_MILLIS").build();
 
-        MyLogEvent event = new MyLogEvent();
-        String actual = getDateLine(layout.toSerializable(event));
+        final MyLogEvent event = new MyLogEvent();
+        final String actual = getDateLine(layout.toSerializable(event));
 
         assertEquals("<td>" + event.getTimeMillis() + "</td>", actual, "Incorrect date:" + actual);
     }
@@ -249,19 +229,19 @@ public class HtmlLayoutTest {
         }
     }
 
-    private String getDateLine(String logEventString) {
+    private String getDateLine(final String logEventString) {
         return logEventString.split(System.lineSeparator())[2];
     }
 
-    private void testLayoutWithDatePatternFixedFormat(FixedFormat format, String timezone) {
+    private void testLayoutWithDatePatternFixedFormat(final FixedFormat format, final String timezone) {
         final HtmlLayout layout = HtmlLayout.newBuilder().setConfiguration(new DefaultConfiguration()).setDatePattern(format.name()).setTimezone(timezone).build();
 
-        LogEvent event = new MyLogEvent();
-        String actual = getDateLine(layout.toSerializable(event));
+        final LogEvent event = new MyLogEvent();
+        final String actual = getDateLine(layout.toSerializable(event));
 
         // build expected date string
-        java.time.Instant instant =
-            java.time.Instant.ofEpochSecond(event.getInstant().getEpochSecond(), event.getInstant().getNanoOfSecond());
+        final java.time.Instant instant =
+        java.time.Instant.ofEpochSecond(event.getInstant().getEpochSecond(), event.getInstant().getNanoOfSecond());
         ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
         if (timezone != null) {
             zonedDateTime = zonedDateTime.withZoneSameInstant(ZoneId.of(timezone));
@@ -278,11 +258,11 @@ public class HtmlLayoutTest {
         // Pattern letter 'S' means fraction-of-second, 'n' means nano-of-second. Log4j2 needs S.
         // Pattern letter 'X' (upper case) will output 'Z' when the offset to be output would be zero,
         // whereas pattern letter 'x' (lower case) will output '+00', '+0000', or '+00:00'. Log4j2 needs x.
-        DateTimeFormatter dateTimeFormatter =
-            DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'), locale);
+        final DateTimeFormatter dateTimeFormatter =
+        DateTimeFormatter.ofPattern(format.getPattern().replace('n', 'S').replace('X', 'x'), locale);
         String expected = zonedDateTime.format(dateTimeFormatter);
 
-        String offset = zonedDateTime.getOffset().toString();
+        final String offset = zonedDateTime.getOffset().toString();
 
         //Truncate minutes if timeZone format is HH and timeZone has minutes. This is required because according to DateTimeFormatter,
         //One letter outputs just the hour, such as '+01', unless the minute is non-zero in which case the minute is also output, such as '+0130'

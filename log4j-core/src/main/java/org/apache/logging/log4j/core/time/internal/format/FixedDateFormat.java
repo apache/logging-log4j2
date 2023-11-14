@@ -1,20 +1,19 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package org.apache.logging.log4j.core.time.internal.format;
 
 import java.util.Arrays;
@@ -22,8 +21,11 @@ import java.util.Calendar;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.core.time.Instant;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * Custom time formatter that trades flexibility for performance. This formatter only supports the date patterns defined
@@ -33,6 +35,7 @@ import org.apache.logging.log4j.core.time.Instant;
  * /log4j-perf/src/main/java/org/apache/logging/log4j/perf/jmh/ThreadsafeDateFormatBenchmark.java
  * </p>
  */
+@ProviderType
 public class FixedDateFormat {
 
     /**
@@ -357,35 +360,35 @@ public class FixedDateFormat {
 
         // Profiling showed this method is important to log4j performance. Modify with care!
         // 262 bytes (will be inlined when hot enough: <= -XX:FreqInlineSize=325 bytes on Linux)
-        private int write(final int offset, final char[] buffer, int pos) {
+        private int write(final int offset, final char[] buffer, final int pos) {
             // This method duplicates part of writeTime()
-
-            buffer[pos++] = offset < 0 ? '-' : '+';
+            int p = pos;
+            buffer[p++] = offset < 0 ? '-' : '+';
             final int absOffset = Math.abs(offset);
             final int hours = absOffset / 3600000;
             int ms = absOffset - (3600000 * hours);
 
             // Hour
             int temp = hours / 10;
-            buffer[pos++] = ((char) (temp + '0'));
+            buffer[p++] = ((char) (temp + '0'));
 
             // Do subtract to get remainder instead of doing % 10
-            buffer[pos++] = ((char) (hours - 10 * temp + '0'));
+            buffer[p++] = ((char) (hours - 10 * temp + '0'));
 
             // Minute
             if (useMinutes) {
-                buffer[pos] = timeSeparatorChar;
-                pos += timeSeparatorCharLen;
+                buffer[p] = timeSeparatorChar;
+                p += timeSeparatorCharLen;
                 final int minutes = ms / 60000;
                 ms -= 60000 * minutes;
 
                 temp = minutes / 10;
-                buffer[pos++] = ((char) (temp + '0'));
+                buffer[p++] = ((char) (temp + '0'));
 
                 // Do subtract to get remainder instead of doing % 10
-                buffer[pos++] = ((char) (minutes - 10 * temp + '0'));
+                buffer[p++] = ((char) (minutes - 10 * temp + '0'));
             }
-            return pos;
+            return p;
         }
 
      }
@@ -414,6 +417,7 @@ public class FixedDateFormat {
     // See http://g.oswego.edu/dl/jmm/cookbook.html
     private char[] cachedDate; // may be null
     private int dateLength;
+    private final Lock cacheLock = new ReentrantLock();
 
     /**
      * Constructs a FixedDateFormat for the specified fixed format.
@@ -514,6 +518,15 @@ public class FixedDateFormat {
     }
 
     /**
+     * Returns the length of the resulting formatted date and time strings.
+     *
+     * @return the length of the resulting formatted date and time strings
+     */
+    public final int getLength() {
+        return length;
+    }
+
+    /**
      * Returns the time zone.
      *
      * @return the time zone
@@ -543,12 +556,15 @@ public class FixedDateFormat {
 
     private void updateMidnightMillis(final long now) {
         if (now >= midnightTomorrow || now < midnightToday) {
-            synchronized (this) {
+            cacheLock.lock();
+            try {
                 updateCachedDate(now);
                 midnightToday = calcMidnightMillis(now, 0);
                 midnightTomorrow = calcMidnightMillis(now, 1);
 
                 updateDaylightSavingTime();
+            } finally {
+                cacheLock.unlock();
             }
         }
     }
@@ -724,7 +740,7 @@ public class FixedDateFormat {
      * Returns {@code true} if the old and new date values will result in the same formatted output, {@code false}
      * if results <i>may</i> differ.
      */
-    public boolean isEquivalent(long oldEpochSecond, int oldNanoOfSecond, long epochSecond, int nanoOfSecond) {
+    public boolean isEquivalent(final long oldEpochSecond, final int oldNanoOfSecond, final long epochSecond, final int nanoOfSecond) {
         if (oldEpochSecond == epochSecond) {
             if (secondFractionDigits <= 3) {
                 // Convert nanos to milliseconds for comparison if the format only requires milliseconds.

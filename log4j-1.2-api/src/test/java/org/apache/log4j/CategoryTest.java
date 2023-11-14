@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.log4j;
 
@@ -28,7 +28,7 @@ import org.apache.log4j.bridge.AppenderWrapper;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.message.MapMessage;
@@ -52,20 +52,21 @@ public class CategoryTest {
 
     private static final String VERSION1_APPENDER_NAME = "Version1List";
     private static final String VERSION2_APPENDER_NAME = "List";
-    private static ListAppender appender = new ListAppender(VERSION2_APPENDER_NAME);
-    private static org.apache.log4j.ListAppender version1Appender = new org.apache.log4j.ListAppender();
+    private static final ListAppender appender = new ListAppender(VERSION2_APPENDER_NAME);
+    private static final org.apache.log4j.ListAppender version1Appender = new org.apache.log4j.ListAppender();
 
     @BeforeAll
     public static void setupClass() {
         appender.start();
         version1Appender.setName(VERSION1_APPENDER_NAME);
-        System.setProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY, BasicConfigurationFactory.class.getName());
+        System.setProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey(),
+                BasicConfigurationFactory.class.getName());
     }
 
     @AfterAll
     public static void cleanupClass() {
         appender.stop();
-        System.clearProperty(ConfigurationFactory.CONFIGURATION_FACTORY_PROPERTY);
+        System.clearProperty(Log4jPropertyKey.CONFIG_CONFIGURATION_FACTORY_CLASS_NAME.getSystemKey());
     }
 
     @BeforeEach
@@ -376,7 +377,7 @@ public class CategoryTest {
             assertTrue(rootAppenders.get(0) instanceof org.apache.log4j.ListAppender, "appender is a v1 ListAppender");
             assertEquals(VERSION1_APPENDER_NAME, rootLogger.getAppender(VERSION1_APPENDER_NAME).getName(),
                     "explicitly named appender");
-            Appender v2ListAppender = rootLogger.getAppender(VERSION2_APPENDER_NAME);
+            final Appender v2ListAppender = rootLogger.getAppender(VERSION2_APPENDER_NAME);
             assertTrue(v2ListAppender instanceof AppenderWrapper, "explicitly named appender");
             assertTrue(((AppenderWrapper) v2ListAppender).getAppender() instanceof ListAppender,
                     "appender is a v2 ListAppender");

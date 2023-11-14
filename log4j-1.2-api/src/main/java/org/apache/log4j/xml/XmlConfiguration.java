@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.log4j.xml;
 
@@ -24,10 +24,12 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Level;
@@ -111,7 +113,7 @@ public class XmlConfiguration extends Log4j1Configuration {
     private final Properties props = null;
 
     public XmlConfiguration(final LoggerContext loggerContext, final ConfigurationSource source,
-            int monitorIntervalSeconds) {
+            final int monitorIntervalSeconds) {
         super(loggerContext, source, monitorIntervalSeconds);
         appenderMap = new HashMap<>();
     }
@@ -126,11 +128,16 @@ public class XmlConfiguration extends Log4j1Configuration {
      */
     @Override
     public void doConfigure() throws FactoryConfigurationError {
-        ConfigurationSource source = getConfigurationSource();
-        ParseAction action = new ParseAction() {
+        final ConfigurationSource source = getConfigurationSource();
+        final ParseAction action = new ParseAction() {
             @Override
+            @SuppressFBWarnings(
+                    value = "XXE_DOCUMENT",
+                    justification = "The `DocumentBuilder` is configured to not resolve external entities."
+            )
             public Document parse(final DocumentBuilder parser) throws SAXException, IOException {
-                @SuppressWarnings("resource") // The ConfigurationSource and its caller manages the InputStream.
+                @SuppressWarnings("resource")
+                final // The ConfigurationSource and its caller manages the InputStream.
                 InputSource inputSource = new InputSource(source.getInputStream());
                 inputSource.setSystemId("dummy://log4j.dtd");
                 return parser.parse(inputSource);
@@ -152,7 +159,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             LOGGER.debug("Standard DocumentBuilderFactory search succeeded.");
             LOGGER.debug("DocumentBuilderFactory is: " + dbf.getClass().getName());
         } catch (FactoryConfigurationError fce) {
-            Exception e = fce.getException();
+            final Exception e = fce.getException();
             LOGGER.debug("Could not instantiate a DocumentBuilderFactory.", e);
             throw fce;
         }
@@ -160,12 +167,12 @@ public class XmlConfiguration extends Log4j1Configuration {
         try {
             dbf.setValidating(true);
 
-            DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+            final DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 
             docBuilder.setErrorHandler(new SAXErrorHandler());
             docBuilder.setEntityResolver(new Log4jEntityResolver());
 
-            Document doc = action.parse(docBuilder);
+            final Document doc = action.parse(docBuilder);
             parse(doc.getDocumentElement());
         } catch (Exception e) {
             if (e instanceof InterruptedException || e instanceof InterruptedIOException) {
@@ -263,7 +270,7 @@ public class XmlConfiguration extends Log4j1Configuration {
      * @since 1.2.15
      */
     public void setParameter(final Element elem, final PropertySetter propSetter, final Properties props) {
-        String name = subst(elem.getAttribute("name"), props);
+        final String name = subst(elem.getAttribute("name"), props);
         String value = (elem.getAttribute("value"));
         value = subst(OptionConverter.convertSpecialChars(value), props);
         propSetter.setProperty(name, value);
@@ -285,20 +292,20 @@ public class XmlConfiguration extends Log4j1Configuration {
      */
     public Object parseElement(final Element element, final Properties props,
             @SuppressWarnings("rawtypes") final Class expectedClass) throws Exception {
-        String clazz = subst(element.getAttribute("class"), props);
-        Object instance = OptionConverter.instantiateByClassName(clazz,
-                expectedClass, null);
+        final String clazz = subst(element.getAttribute("class"), props);
+        final Object instance = OptionConverter.instantiateByClassName(clazz,
+        expectedClass, null);
 
         if (instance != null) {
-            PropertySetter propSetter = new PropertySetter(instance);
-            NodeList children = element.getChildNodes();
+            final PropertySetter propSetter = new PropertySetter(instance);
+            final NodeList children = element.getChildNodes();
             final int length = children.getLength();
 
             for (int loop = 0; loop < length; loop++) {
-                Node currentNode = children.item(loop);
+                final Node currentNode = children.item(loop);
                 if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element currentElement = (Element) currentNode;
-                    String tagName = currentElement.getTagName();
+                    final Element currentElement = (Element) currentNode;
+                    final String tagName = currentElement.getTagName();
                     if (tagName.equals("param")) {
                         setParameter(currentElement, propSetter, props);
                     } else {
@@ -314,7 +321,7 @@ public class XmlConfiguration extends Log4j1Configuration {
     /**
      * Used internally to parse appenders by IDREF name.
      */
-    private Appender findAppenderByName(Document doc, String appenderName) {
+    private Appender findAppenderByName(final Document doc, final String appenderName) {
         Appender appender = appenderMap.get(appenderName);
 
         if (appender != null) {
@@ -322,11 +329,11 @@ public class XmlConfiguration extends Log4j1Configuration {
         }
         // Endre's hack:
         Element element = null;
-        NodeList list = doc.getElementsByTagName("appender");
+        final NodeList list = doc.getElementsByTagName("appender");
         for (int t = 0; t < list.getLength(); t++) {
-            Node node = list.item(t);
-            NamedNodeMap map = node.getAttributes();
-            Node attrNode = map.getNamedItem("name");
+            final Node node = list.item(t);
+            final NamedNodeMap map = node.getAttributes();
+            final Node attrNode = map.getNamedItem("name");
             if (appenderName.equals(attrNode.getNodeValue())) {
                 element = (Element) node;
                 break;
@@ -351,9 +358,9 @@ public class XmlConfiguration extends Log4j1Configuration {
      * @param appenderRef The Appender Reference Element.
      * @return The Appender.
      */
-    public Appender findAppenderByReference(Element appenderRef) {
-        String appenderName = subst(appenderRef.getAttribute(REF_ATTR));
-        Document doc = appenderRef.getOwnerDocument();
+    public Appender findAppenderByReference(final Element appenderRef) {
+        final String appenderName = subst(appenderRef.getAttribute(REF_ATTR));
+        final Document doc = appenderRef.getOwnerDocument();
         return findAppenderByName(doc, appenderName);
     }
 
@@ -362,8 +369,8 @@ public class XmlConfiguration extends Log4j1Configuration {
      * @param appenderElement The Appender Element.
      * @return The Appender.
      */
-    public Appender parseAppender(Element appenderElement) {
-        String className = subst(appenderElement.getAttribute(CLASS_ATTR));
+    public Appender parseAppender(final Element appenderElement) {
+        final String className = subst(appenderElement.getAttribute(CLASS_ATTR));
         LOGGER.debug("Class name: [" + className + ']');
         Appender appender = manager.parseAppender(className, appenderElement, this);
         if (appender == null) {
@@ -372,10 +379,10 @@ public class XmlConfiguration extends Log4j1Configuration {
         return appender;
     }
 
-    private Appender buildAppender(String className, Element appenderElement) {
+    private Appender buildAppender(final String className, final Element appenderElement) {
         try {
-            Appender appender = LoaderUtil.newInstanceOf(className);
-            PropertySetter propSetter = new PropertySetter(appender);
+            final Appender appender = LoaderUtil.newInstanceOf(className);
+            final PropertySetter propSetter = new PropertySetter(appender);
 
             appender.setName(subst(appenderElement.getAttribute(NAME_ATTR)));
             final AtomicReference<Filter> filterChain = new AtomicReference<>();
@@ -395,10 +402,10 @@ public class XmlConfiguration extends Log4j1Configuration {
                         parseErrorHandler(currentElement, appender);
                         break;
                     case APPENDER_REF_TAG:
-                        String refName = subst(currentElement.getAttribute(REF_ATTR));
+                        final String refName = subst(currentElement.getAttribute(REF_ATTR));
                         if (appender instanceof AppenderAttachable) {
-                            AppenderAttachable aa = (AppenderAttachable) appender;
-                            Appender child = findAppenderByReference(currentElement);
+                            final AppenderAttachable aa = (AppenderAttachable) appender;
+                            final Appender child = findAppenderByReference(currentElement);
                             LOGGER.debug("Attaching appender named [{}] to appender named [{}].", refName,
                                     appender.getName());
                             aa.addAppender(child);
@@ -423,7 +430,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             propSetter.activate();
             return appender;
         } catch (ConsumerException ex) {
-            Throwable t = ex.getCause();
+            final Throwable t = ex.getCause();
             if (t instanceof InterruptedException || t instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
@@ -437,8 +444,8 @@ public class XmlConfiguration extends Log4j1Configuration {
         return null;
     }
 
-    public RewritePolicy parseRewritePolicy(Element rewritePolicyElement) {
-        String className = subst(rewritePolicyElement.getAttribute(CLASS_ATTR));
+    public RewritePolicy parseRewritePolicy(final Element rewritePolicyElement) {
+        final String className = subst(rewritePolicyElement.getAttribute(CLASS_ATTR));
         LOGGER.debug("Class name: [" + className + ']');
         RewritePolicy policy = manager.parseRewritePolicy(className, rewritePolicyElement, this);
         if (policy == null) {
@@ -449,8 +456,8 @@ public class XmlConfiguration extends Log4j1Configuration {
 
     private RewritePolicy buildRewritePolicy(String className, Element element) {
         try {
-            RewritePolicy policy = LoaderUtil.newInstanceOf(className);
-            PropertySetter propSetter = new PropertySetter(policy);
+            final RewritePolicy policy = LoaderUtil.newInstanceOf(className);
+            final PropertySetter propSetter = new PropertySetter(policy);
 
             forEachElement(element.getChildNodes(), currentElement -> {
                 if (currentElement.getTagName().equalsIgnoreCase(PARAM_TAG)) {
@@ -460,7 +467,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             propSetter.activate();
             return policy;
         } catch (ConsumerException ex) {
-            Throwable t = ex.getCause();
+            final Throwable t = ex.getCause();
             if (t instanceof InterruptedException || t instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
@@ -478,17 +485,17 @@ public class XmlConfiguration extends Log4j1Configuration {
      * Used internally to parse an {@link ErrorHandler} element.
      */
     private void parseErrorHandler(Element element, Appender appender) {
-        ErrorHandler eh = (ErrorHandler) OptionConverter.instantiateByClassName(
-                subst(element.getAttribute(CLASS_ATTR)),
-                ErrorHandler.class,
-                null);
+        final ErrorHandler eh = (ErrorHandler) OptionConverter.instantiateByClassName(
+        subst(element.getAttribute(CLASS_ATTR)),
+        ErrorHandler.class,
+        null);
 
         if (eh != null) {
             eh.setAppender(appender);
 
-            PropertySetter propSetter = new PropertySetter(eh);
+            final PropertySetter propSetter = new PropertySetter(eh);
             forEachElement(element.getChildNodes(), currentElement -> {
-                String tagName = currentElement.getTagName();
+                final String tagName = currentElement.getTagName();
                 if (tagName.equals(PARAM_TAG)) {
                     setParameter(currentElement, propSetter);
                 }
@@ -511,8 +518,8 @@ public class XmlConfiguration extends Log4j1Configuration {
     /**
      * Used internally to parse a filter element.
      */
-    public Filter parseFilters(Element filterElement) {
-        String className = subst(filterElement.getAttribute(CLASS_ATTR));
+    public Filter parseFilters(final Element filterElement) {
+        final String className = subst(filterElement.getAttribute(CLASS_ATTR));
         LOGGER.debug("Class name: [" + className + ']');
         Filter filter = manager.parseFilter(className, filterElement, this);
         if (filter == null) {
@@ -523,8 +530,8 @@ public class XmlConfiguration extends Log4j1Configuration {
 
     private Filter buildFilter(final String className, final Element filterElement) {
         try {
-            Filter filter = LoaderUtil.newInstanceOf(className);
-            PropertySetter propSetter = new PropertySetter(filter);
+            final Filter filter = LoaderUtil.newInstanceOf(className);
+            final PropertySetter propSetter = new PropertySetter(filter);
 
             forEachElement(filterElement.getChildNodes(), currentElement -> {
                 // Parse appender parameters
@@ -537,7 +544,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             propSetter.activate();
             return filter;
         } catch (ConsumerException ex) {
-            Throwable t = ex.getCause();
+            final Throwable t = ex.getCause();
             if (t instanceof InterruptedException || t instanceof InterruptedIOException) {
                 Thread.currentThread().interrupt();
             }
@@ -554,10 +561,10 @@ public class XmlConfiguration extends Log4j1Configuration {
     /**
      * Used internally to parse an category element.
      */
-    private void parseCategory(Element loggerElement) {
+    private void parseCategory(final Element loggerElement) {
         // Create a new org.apache.log4j.Category object from the <category> element.
-        String catName = subst(loggerElement.getAttribute(NAME_ATTR));
-        boolean additivity = OptionConverter.toBoolean(subst(loggerElement.getAttribute(ADDITIVITY_ATTR)), true);
+        final String catName = subst(loggerElement.getAttribute(NAME_ATTR));
+        final boolean additivity = OptionConverter.toBoolean(subst(loggerElement.getAttribute(ADDITIVITY_ATTR)), true);
         LoggerConfig loggerConfig = getLogger(catName);
         if (loggerConfig == null) {
             loggerConfig = new LoggerConfig(catName, org.apache.logging.log4j.Level.ERROR, additivity);
@@ -571,8 +578,8 @@ public class XmlConfiguration extends Log4j1Configuration {
     /**
      * Used internally to parse the root category element.
      */
-    private void parseRoot(Element rootElement) {
-        LoggerConfig root = getRootLogger();
+    private void parseRoot(final Element rootElement) {
+        final LoggerConfig root = getRootLogger();
         parseChildrenOfLoggerElement(rootElement, root, true);
     }
 
@@ -586,8 +593,8 @@ public class XmlConfiguration extends Log4j1Configuration {
         forEachElement(catElement.getChildNodes(), currentElement -> {
             switch (currentElement.getTagName()) {
                 case APPENDER_REF_TAG: {
-                    Appender appender = findAppenderByReference(currentElement);
-                    String refName = subst(currentElement.getAttribute(REF_ATTR));
+                    final Appender appender = findAppenderByReference(currentElement);
+                    final String refName = subst(currentElement.getAttribute(REF_ATTR));
                     if (appender != null) {
                         LOGGER.debug("Adding appender named [{}] to loggerConfig [{}].", refName,
                                 loggerConfig.getName());
@@ -618,8 +625,8 @@ public class XmlConfiguration extends Log4j1Configuration {
      * @param layoutElement The Layout Element.
      * @return The Layout.
      */
-    public Layout parseLayout(Element layoutElement) {
-        String className = subst(layoutElement.getAttribute(CLASS_ATTR));
+    public Layout parseLayout(final Element layoutElement) {
+        final String className = subst(layoutElement.getAttribute(CLASS_ATTR));
         LOGGER.debug("Parsing layout of class: \"{}\"", className);
         Layout layout = manager.parseLayout(className, layoutElement, this);
         if (layout == null) {
@@ -628,12 +635,12 @@ public class XmlConfiguration extends Log4j1Configuration {
         return layout;
     }
 
-    private Layout buildLayout(String className, Element layout_element) {
+    private Layout buildLayout(final String className, final Element layout_element) {
         try {
-            Layout layout = LoaderUtil.newInstanceOf(className);
-            PropertySetter propSetter = new PropertySetter(layout);
+            final Layout layout = LoaderUtil.newInstanceOf(className);
+            final PropertySetter propSetter = new PropertySetter(layout);
             forEachElement(layout_element.getChildNodes(), currentElement -> {
-                String tagName = currentElement.getTagName();
+                final String tagName = currentElement.getTagName();
                 if (tagName.equals(PARAM_TAG)) {
                     setParameter(currentElement, propSetter);
                 } else {
@@ -648,7 +655,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             propSetter.activate();
             return layout;
         } catch (Exception e) {
-            Throwable cause = e.getCause();
+            final Throwable cause = e.getCause();
             if (e instanceof InterruptedException
                 || e instanceof InterruptedIOException
                 || cause instanceof InterruptedException
@@ -669,7 +676,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             catName = "root";
         }
 
-        String priStr = subst(element.getAttribute(VALUE_ATTR));
+        final String priStr = subst(element.getAttribute(VALUE_ATTR));
         LOGGER.debug("Level value for {} is [{}].", catName, priStr);
 
         if (INHERITED.equalsIgnoreCase(priStr) || NULL.equalsIgnoreCase(priStr)) {
@@ -679,7 +686,7 @@ public class XmlConfiguration extends Log4j1Configuration {
                 logger.setLevel(null);
             }
         } else {
-            String className = subst(element.getAttribute(CLASS_ATTR));
+            final String className = subst(element.getAttribute(CLASS_ATTR));
             final Level level;
             if (EMPTY_STR.equals(className)) {
                 level = OptionConverter.toLevel(priStr, DEFAULT_LEVEL);
@@ -692,7 +699,7 @@ public class XmlConfiguration extends Log4j1Configuration {
     }
 
     private void setParameter(Element element, PropertySetter propSetter) {
-        String name = subst(element.getAttribute(NAME_ATTR));
+        final String name = subst(element.getAttribute(NAME_ATTR));
         String value = element.getAttribute(VALUE_ATTR);
         value = subst(OptionConverter.convertSpecialChars(value));
         propSetter.setProperty(name, value);
@@ -704,7 +711,7 @@ public class XmlConfiguration extends Log4j1Configuration {
      * href="doc-files/log4j.dtd">log4j.dtd</a>.
      */
     private void parse(Element element) {
-        String rootElementName = element.getTagName();
+        final String rootElementName = element.getTagName();
 
         if (!rootElementName.equals(CONFIGURATION_TAG)) {
             if (rootElementName.equals(OLD_CONFIGURATION_TAG)) {
@@ -717,7 +724,7 @@ public class XmlConfiguration extends Log4j1Configuration {
         }
 
 
-        String debugAttrib = subst(element.getAttribute(INTERNAL_DEBUG_ATTR));
+        final String debugAttrib = subst(element.getAttribute(INTERNAL_DEBUG_ATTR));
 
         LOGGER.debug("debug attribute= \"" + debugAttrib + "\".");
         // if the log4j.dtd is not specified in the XML file, then the
@@ -729,7 +736,7 @@ public class XmlConfiguration extends Log4j1Configuration {
             LOGGER.debug("Ignoring " + INTERNAL_DEBUG_ATTR + " attribute.");
         }
 
-        String confDebug = subst(element.getAttribute(CONFIG_DEBUG_ATTR));
+        final String confDebug = subst(element.getAttribute(CONFIG_DEBUG_ATTR));
         if (!confDebug.equals("") && !confDebug.equals("null")) {
             LOGGER.warn("The \"" + CONFIG_DEBUG_ATTR + "\" attribute is deprecated.");
             LOGGER.warn("Use the \"" + INTERNAL_DEBUG_ATTR + "\" attribute instead.");
@@ -766,7 +773,7 @@ public class XmlConfiguration extends Log4j1Configuration {
                     LOGGER.warn("Log4j 1 logger factories are not supported by Log4j 2 and will be ignored.");
                     break;
                 case APPENDER_TAG:
-                    Appender appender = parseAppender(currentElement);
+                    final Appender appender = parseAppender(currentElement);
                     appenderMap.put(appender.getName(), appender);
                     addAppender(AppenderAdapter.adapt(appender));
                     break;
@@ -780,7 +787,7 @@ public class XmlConfiguration extends Log4j1Configuration {
         return getStrSubstitutor().replace(value);
     }
 
-    public static void forEachElement(NodeList list, Consumer<Element> consumer) {
+    public static void forEachElement(final NodeList list, final Consumer<Element> consumer) {
         IntStream.range(0, list.getLength()).mapToObj(list::item)
             .filter(node -> node.getNodeType() == Node.ELEMENT_NODE)
             .forEach(node -> consumer.accept((Element) node));
@@ -816,7 +823,7 @@ public class XmlConfiguration extends Log4j1Configuration {
 
     private static class ConsumerException extends RuntimeException {
 
-        ConsumerException(Exception ex) {
+        ConsumerException(final Exception ex) {
             super(ex);
         }
     }

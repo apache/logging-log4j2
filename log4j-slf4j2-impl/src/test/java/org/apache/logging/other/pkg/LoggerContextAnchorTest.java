@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.other.pkg;
 
@@ -36,28 +36,28 @@ public class LoggerContextAnchorTest {
 
     @Test
     public void testLoggerFactoryLookupClass() {
-        String fqcn = getAnchorFqcn(() -> LoggerFactory.getLogger(LoggerContextAnchorTest.class));
+        final String fqcn = getAnchorFqcn(() -> LoggerFactory.getLogger(LoggerContextAnchorTest.class));
         assertEquals(getClass().getName(), fqcn);
     }
 
     @Test
     public void testLoggerFactoryLookupString() {
-        String fqcn = getAnchorFqcn(() -> LoggerFactory.getLogger("custom.logger"));
+        final String fqcn = getAnchorFqcn(() -> LoggerFactory.getLogger("custom.logger"));
         assertEquals(getClass().getName(), fqcn);
     }
 
     @Test
     public void testLoggerFactoryGetILoggerFactoryLookup() {
-        String fqcn = getAnchorFqcn(() -> LoggerFactory.getILoggerFactory().getLogger("custom.logger"));
+        final String fqcn = getAnchorFqcn(() -> LoggerFactory.getILoggerFactory().getLogger("custom.logger"));
         assertEquals(getClass().getName(), fqcn);
     }
 
-    private static String getAnchorFqcn(Runnable runnable) {
-        List<String> results = new CopyOnWriteArrayList<>();
-        StatusListener listener = new StatusListener() {
+    private static String getAnchorFqcn(final Runnable runnable) {
+        final List<String> results = new CopyOnWriteArrayList<>();
+        final StatusListener listener = new StatusListener() {
             @Override
-            public void log(StatusData data) {
-                String formattedMessage = data.getMessage().getFormattedMessage();
+            public void log(final StatusData data) {
+                final String formattedMessage = data.getMessage().getFormattedMessage();
                 if (formattedMessage.startsWith(PREFIX)) {
                     results.add(formattedMessage.substring(PREFIX.length()));
                 }
@@ -73,7 +73,7 @@ public class LoggerContextAnchorTest {
                 // nop
             }
         };
-        StatusLogger statusLogger = StatusLogger.getLogger();
+        final StatusLogger statusLogger = StatusLogger.getLogger();
         statusLogger.registerListener(listener);
         try {
             runnable.run();

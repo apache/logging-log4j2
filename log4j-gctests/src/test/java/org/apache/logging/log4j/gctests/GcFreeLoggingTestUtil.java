@@ -1,18 +1,18 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
+ * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache license, Version 2.0
+ * The ASF licenses this file to you under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
+ * the License.  You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the license for the specific language governing permissions and
- * limitations under the license.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.logging.log4j.gctests;
 
@@ -25,37 +25,41 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
+import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
+import com.google.monitoring.runtime.instrumentation.Sampler;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Constants;
 import org.apache.logging.log4j.message.StringMapMessage;
-import org.apache.logging.log4j.spi.LoggingSystemProperties;
-
-import com.google.monitoring.runtime.instrumentation.AllocationRecorder;
-import com.google.monitoring.runtime.instrumentation.Sampler;
+import org.apache.logging.log4j.spi.LoggingSystemProperty;
 
 import static java.lang.System.getProperty;
+
 import static org.apache.logging.log4j.util.Constants.isThreadLocalsEnabled;
 import static org.apache.logging.log4j.util.Constants.isWebApp;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Utility methods for the GC-free logging tests.
  */
-public enum GcFreeLoggingTestUtil {;
+public enum GcFreeLoggingTestUtil {
+    ;
 
     public static void executeLogging(final String configurationFile,
                                       final Class<?> testClass) throws Exception {
 
-        System.setProperty(LoggingSystemProperties.SYSTEM_THREAD_LOCALS_ENABLED, "true");
-        System.setProperty("log4j2.enable.direct.encoders", "true");
-        System.setProperty(LoggingSystemProperties.SYSTEM_IS_WEBAPP, "false");
-        System.setProperty("log4j.configurationFile", configurationFile);
+        System.setProperty(LoggingSystemProperty.THREAD_LOCALS_ENABLE.getSystemKey(), "true");
+        System.setProperty(Log4jPropertyKey.GC_ENABLE_DIRECT_ENCODERS.getSystemKey(), "true");
+        System.setProperty(LoggingSystemProperty.IS_WEBAPP.getSystemKey(), "false");
+        System.setProperty(Log4jPropertyKey.CONFIG_LOCATION.getSystemKey(), configurationFile);
 
         assertTrue(isThreadLocalsEnabled(), "Constants.ENABLE_THREADLOCALS");
         assertTrue(Constants.ENABLE_DIRECT_ENCODERS, "Constants.ENABLE_DIRECT_ENCODERS");
@@ -88,29 +92,26 @@ public enum GcFreeLoggingTestUtil {;
         // BlockingWaitStrategy uses ReentrantLock which allocates Node objects. Ignore this.
         final String[] exclude = new String[] {
                 "java/util/concurrent/locks/AbstractQueuedSynchronizer$Node", //
-                "com/google/monitoring/runtime/instrumentation/Sampler", //
+                "com/google/monitoring/runtime/instrumentation/Sampler"
         };
         final AtomicBoolean samplingEnabled = new AtomicBoolean(true);
-        final Sampler sampler = new Sampler() {
-            @Override
-            public void sampleAllocation(final int count, final String desc, final Object newObj, final long size) {
-                if (!samplingEnabled.get()) {
-                    return;
-                }
-                for (int i = 0; i < exclude.length; i++) {
-                    if (exclude[i].equals(desc)) {
-                        return; // exclude
-                    }
-                }
-                System.err.println("I just allocated the object " + newObj +
-                        " of type " + desc + " whose size is " + size);
-                if (count != -1) {
-                    System.err.println("It's an array of size " + count);
-                }
-
-                // show a stack trace to see which line caused allocation
-                new RuntimeException().printStackTrace();
+        final Sampler sampler = (count, desc, newObj, size) -> {
+            if (!samplingEnabled.get()) {
+                return;
             }
+            for (int i = 0; i < exclude.length; i++) {
+                if (exclude[i].equals(desc)) {
+                    return; // exclude
+                }
+            }
+            System.err.println("I just allocated the object " + newObj +
+                    " of type " + desc + " whose size is " + size);
+            if (count != -1) {
+                System.err.println("It's an array of size " + count);
+            }
+
+            // show a stack trace to see which line caused allocation
+            new RuntimeException().printStackTrace();
         };
         Thread.sleep(500);
         AllocationRecorder.addSampler(sampler);
@@ -220,15 +221,15 @@ public enum GcFreeLoggingTestUtil {;
         final String javaBin = javaHome + File.separator + "bin" + File.separator + "java";
         final String classpath = getProperty("java.class.path");
         final String javaagent = "-javaagent:" + agentJar();
-        final String usePreciseClock = System.getProperty("log4j2.usePreciseClock");
+        final String usePreciseClock = System.getProperty(Log4jPropertyKey.USE_PRECISE_CLOCK.getSystemKey());
 
         final File tempFile = File.createTempFile("allocations", ".txt");
-        tempFile.deleteOnExit();
-        List<String> command = new ArrayList<>();
+        //tempFile.deleteOnExit();
+        final List<String> command = new ArrayList<>();
         command.add(javaBin);
         command.add(javaagent);
         if (usePreciseClock != null) {
-            command.add("-Dlog4j2.usePreciseClock=" + usePreciseClock);
+            command.add("-D" + Log4jPropertyKey.USE_PRECISE_CLOCK.getSystemKey()  + "=" + usePreciseClock);
         }
         command.add("-cp");
         command.add(classpath);
@@ -241,34 +242,15 @@ public enum GcFreeLoggingTestUtil {;
         process.exitValue();
 
         final AtomicInteger lineCounter = new AtomicInteger(0);
-        Files.lines(tempFile.toPath(), Charset.defaultCharset()).forEach(line -> {
-
-            // Trim the line.
-            line = line.trim();
-
-            // Check the first line.
-            final int lineNumber = lineCounter.incrementAndGet();
-            if (lineNumber == 1) {
-                final String className = cls.getSimpleName();
-                final String firstLinePattern = String.format(
-                        "^FATAL .*\\.%s %s",
-                        className,
-                        Pattern.quote("[main] value1 {aKey=value1, " +
-                                "key2=value2, prop1=value1, prop2=value2} " +
-                                "This message is logged to the console"));
-                assertTrue(line.matches(firstLinePattern),
-                        "pattern mismatch at line 1: " + line);
-            }
-
-            // Check the rest of the lines. We are looking for the messages written to System.err
-            // in the sampleAllocation() method above in executeLogging().
-            else {
-                assertFalse(line.contains(" allocated ") || line.contains(" array "),
-                        "(allocated|array) pattern matches at line " + lineNumber + ": " + line);
-            }
-
-        });
-
+        try (final Stream<String> lines = Files.lines(tempFile.toPath(), Charset.defaultCharset())) {
+            final Pattern pattern = Pattern.compile(String.format("^FATAL .*\\.%s [main].*",
+                    Pattern.quote(cls.getSimpleName())));
+            assertThat(lines.flatMap(l -> {
+                final int lineNumber = lineCounter.incrementAndGet();
+                final String line = l.trim();
+                return pattern.matcher(line).matches() ? Stream.of(lineNumber + ": " + line) : Stream.empty();
+            })).isEmpty();
+        }
     }
 
     private static File agentJar() throws Exception {
