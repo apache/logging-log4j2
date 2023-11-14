@@ -145,7 +145,7 @@ public class RingBufferLogEvent implements ReusableLogEvent, ReusableMessage, Ch
     private StringBuilder getMessageTextForWriting() {
         if (messageText == null) {
             // Happens the first time messageText is requested or if a user logs
-            // a custom reused message when Constants.ENABLE_THREADLOCALS is false
+            // a custom reused message when Constants.isThreadLocalsEnabled() is false
             messageText = new StringBuilder(Constants.INITIAL_REUSABLE_MESSAGE_SIZE);
         }
         messageText.setLength(0);

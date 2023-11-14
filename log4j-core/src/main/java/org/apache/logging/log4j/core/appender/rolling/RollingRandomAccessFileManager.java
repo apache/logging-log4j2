@@ -99,25 +99,6 @@ public class RollingRandomAccessFileManager extends RollingFileManager {
                 filePermissions, fileOwner, fileGroup, configuration), FACTORY));
     }
 
-    /**
-     * No longer used, the {@link org.apache.logging.log4j.core.LogEvent#isEndOfBatch()} attribute is used instead.
-     * @return {@link Boolean#FALSE}.
-     * @deprecated end-of-batch on the event is used instead.
-     */
-    @Deprecated
-    public Boolean isEndOfBatch() {
-        return Boolean.FALSE;
-    }
-
-    /**
-     * No longer used, the {@link org.apache.logging.log4j.core.LogEvent#isEndOfBatch()} attribute is used instead.
-     * This method is a no-op.
-     * @deprecated end-of-batch on the event is used instead.
-     */
-    @Deprecated
-    public void setEndOfBatch(@SuppressWarnings("unused") final boolean endOfBatch) {
-    }
-
     // override to make visible for unit tests
     @Override
     protected void write(final byte[] bytes, final int offset, final int length,

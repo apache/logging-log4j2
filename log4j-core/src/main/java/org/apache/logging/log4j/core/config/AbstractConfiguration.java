@@ -16,8 +16,6 @@
  */
 package org.apache.logging.log4j.core.config;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -1130,18 +1128,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         return null;
     }
 
-    /**
-     * This method is used by Arbiters to create specific children.
-     * @param type The PluginType.
-     * @param node The Node.
-     * @return The created object or null;
-     * @deprecated use {@link #createPluginObject(Node)}
-     */
-    @Deprecated
-    public Object createPluginObject(final PluginType<?> type, final Node node) {
-        return createPluginObject(node);
-    }
-
     private void setParents() {
         for (final Map.Entry<String, LoggerConfig> entry : loggerConfigs.entrySet()) {
             final LoggerConfig logger = entry.getValue();
@@ -1160,20 +1146,6 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 }
             }
         }
-    }
-
-    /**
-     * Reads an InputStream using buffered reads into a byte array buffer. The given InputStream will remain open after
-     * invocation of this method.
-     *
-     * @param is the InputStream to read into a byte array buffer.
-     * @return a byte array of the InputStream contents.
-     * @throws IOException if the {@code read} method of the provided InputStream throws this exception.
-     * @deprecated use {@link InputStream#readAllBytes()}
-     */
-    @Deprecated(since = "3.0.0")
-    protected static byte[] toByteArray(final InputStream is) throws IOException {
-        return is.readAllBytes();
     }
 
     @Override

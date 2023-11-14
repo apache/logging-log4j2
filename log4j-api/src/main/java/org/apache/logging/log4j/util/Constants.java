@@ -48,12 +48,6 @@ public final class Constants {
         isWebApp.reset();
     }
 
-    /**
-     * @deprecated use {@link #isWebApp()}
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static final boolean IS_WEB_APP = isWebApp();
-
     private static final LazyBoolean threadLocalsEnabled = new LazyBoolean(
             () -> !isWebApp() && PropertiesUtil.getProperties().getBooleanProperty(LoggingSystemProperty.THREAD_LOCALS_ENABLE, true));
 
@@ -75,12 +69,6 @@ public final class Constants {
     public static void resetThreadLocalsEnabled() {
         threadLocalsEnabled.reset();
     }
-
-    /**
-     * @deprecated use {@link #isThreadLocalsEnabled()}
-     */
-    @Deprecated(since = "3.0.0", forRemoval = true)
-    public static final boolean ENABLE_THREADLOCALS = isThreadLocalsEnabled();
 
     public static final int JAVA_MAJOR_VERSION = getMajorVersion();
 

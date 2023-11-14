@@ -72,25 +72,6 @@ public class RandomAccessFileManager extends OutputStreamManager {
                 new FactoryData(append, immediateFlush, bufferSize, advertiseURI, layout, configuration), FACTORY));
     }
 
-    /**
-     * No longer used, the {@link org.apache.logging.log4j.core.LogEvent#isEndOfBatch()} attribute is used instead.
-     * @return {@link Boolean#FALSE}.
-     * @deprecated end-of-batch on the event is used instead.
-     */
-    @Deprecated
-    public Boolean isEndOfBatch() {
-        return Boolean.FALSE;
-    }
-
-    /**
-     * No longer used, the {@link org.apache.logging.log4j.core.LogEvent#isEndOfBatch()} attribute is used instead.
-     * This method is a no-op.
-     * @deprecated end-of-batch on the event is used instead.
-     */
-    @Deprecated
-    public void setEndOfBatch(@SuppressWarnings("unused") final boolean endOfBatch) {
-    }
-
     @Override
     protected void writeToDestination(final byte[] bytes, final int offset, final int length) {
         try {

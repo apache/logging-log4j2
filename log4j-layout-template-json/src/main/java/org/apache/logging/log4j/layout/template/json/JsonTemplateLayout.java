@@ -30,7 +30,6 @@ import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.core.layout.StringBuilderEncoder;
-import org.apache.logging.log4j.core.util.StringEncoder;
 import org.apache.logging.log4j.layout.template.json.resolver.*;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
 import org.apache.logging.log4j.layout.template.json.util.Uris;
@@ -193,7 +192,10 @@ public class JsonTemplateLayout implements StringLayout {
     @Override
     public byte[] toByteArray(final LogEvent event) {
         final String eventJson = toSerializable(event);
-        return StringEncoder.toBytes(eventJson, charset);
+        if (eventJson != null) {
+            return eventJson.getBytes(charset != null ? charset : Charset.defaultCharset());
+        }
+        return null;
     }
 
     @Override

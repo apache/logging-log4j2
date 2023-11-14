@@ -273,18 +273,6 @@ public class SmtpManager extends AbstractManager {
         return mp;
     }
 
-    /**
-     * @deprecated Please use the {@link #sendMultipartMessage(MimeMessage, MimeMultipart, String)} method instead.
-     */
-    @Deprecated
-    protected void sendMultipartMessage(final MimeMessage msg, final MimeMultipart mp) throws MessagingException {
-        synchronized (msg) {
-            msg.setContent(mp);
-            msg.setSentDate(new Date());
-            Transport.send(msg);
-        }
-    }
-
     protected void sendMultipartMessage(final MimeMessage msg, final MimeMultipart mp, final String subject) throws MessagingException {
         synchronized (msg) {
             msg.setContent(mp);

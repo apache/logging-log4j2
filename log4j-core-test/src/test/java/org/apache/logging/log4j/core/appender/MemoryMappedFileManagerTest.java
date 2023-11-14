@@ -45,7 +45,7 @@ public class MemoryMappedFileManagerTest {
         final boolean append = false;
         final boolean immediateFlush = false;
         try (final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(file.getAbsolutePath(),
-                append, immediateFlush, mapSize, null, null)) {
+                append, immediateFlush, mapSize, null, null, null)) {
             byte[] msg;
             for (int i = 0; i < 1000; i++) {
                 msg = ("Message " + i + "\n").getBytes();
@@ -80,7 +80,7 @@ public class MemoryMappedFileManagerTest {
         final boolean isAppend = true;
         final boolean immediateFlush = false;
         try (final MemoryMappedFileManager manager = MemoryMappedFileManager.getFileManager(file.getAbsolutePath(),
-                isAppend, immediateFlush, MemoryMappedFileManager.DEFAULT_REGION_LENGTH, null, null)) {
+                isAppend, immediateFlush, MemoryMappedFileManager.DEFAULT_REGION_LENGTH, null, null, null)) {
             manager.writeBytes(new byte[initialLength], 0, initialLength);
         }
         final int expected = initialLength * 2;

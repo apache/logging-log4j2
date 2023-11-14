@@ -24,14 +24,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderAttribute;
-import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
-import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
-import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.pattern.PatternFormatter;
 import org.apache.logging.log4j.core.pattern.PatternParser;
 import org.apache.logging.log4j.plugins.Configurable;
+import org.apache.logging.log4j.plugins.Factory;
+import org.apache.logging.log4j.plugins.Inject;
 import org.apache.logging.log4j.plugins.Plugin;
+import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
+import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.status.StatusLogger;
 
 /**
@@ -44,24 +44,23 @@ public class LevelPatternSelector implements PatternSelector{
     /**
      * Custom MarkerPatternSelector builder. Use the {@link LevelPatternSelector#newBuilder() builder factory method} to create this.
      */
-    public static class Builder implements org.apache.logging.log4j.core.util.Builder<LevelPatternSelector> {
+    public static class Builder implements org.apache.logging.log4j.plugins.util.Builder<LevelPatternSelector> {
 
         @PluginElement("PatternMatch")
         private PatternMatch[] properties;
 
-        @PluginBuilderAttribute("defaultPattern")
+        @PluginBuilderAttribute
         private String defaultPattern;
 
-        @PluginBuilderAttribute(value = "alwaysWriteExceptions")
+        @PluginBuilderAttribute
         private boolean alwaysWriteExceptions = true;
 
-        @PluginBuilderAttribute(value = "disableAnsi")
+        @PluginBuilderAttribute
         private boolean disableAnsi;
 
-        @PluginBuilderAttribute(value = "noConsoleNoAnsi")
+        @PluginBuilderAttribute
         private boolean noConsoleNoAnsi;
 
-        @PluginConfiguration
         private Configuration configuration;
 
         @Override
@@ -102,6 +101,7 @@ public class LevelPatternSelector implements PatternSelector{
             return this;
         }
 
+        @Inject
         public Builder setConfiguration(final Configuration configuration) {
             this.configuration = configuration;
             return this;
@@ -120,16 +120,6 @@ public class LevelPatternSelector implements PatternSelector{
     private static final Logger LOGGER = StatusLogger.getLogger();
 
     private final boolean requiresLocation;
-
-    /**
-     * @deprecated Use {@link #newBuilder()} instead. This will be private in a future version.
-     */
-    @Deprecated
-    public LevelPatternSelector(final PatternMatch[] properties, final String defaultPattern,
-                                 final boolean alwaysWriteExceptions, final boolean noConsoleNoAnsi,
-                                 final Configuration config) {
-        this(properties, defaultPattern, alwaysWriteExceptions, false, noConsoleNoAnsi, config);
-    }
 
     private LevelPatternSelector(final PatternMatch[] properties, final String defaultPattern,
                                  final boolean alwaysWriteExceptions, final boolean disableAnsi,
@@ -189,35 +179,9 @@ public class LevelPatternSelector implements PatternSelector{
      *
      * @return a ScriptPatternSelector builder.
      */
-    @PluginBuilderFactory
+    @Factory
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    /**
-     * Deprecated, use {@link #newBuilder()} instead.
-     * @param properties
-     * @param defaultPattern
-     * @param alwaysWriteExceptions
-     * @param noConsoleNoAnsi
-     * @param configuration
-     * @return a new MarkerPatternSelector.
-     * @deprecated Use {@link #newBuilder()} instead.
-     */
-    @Deprecated
-    public static LevelPatternSelector createSelector(
-            final PatternMatch[] properties,
-            final String defaultPattern,
-            final boolean alwaysWriteExceptions,
-            final boolean noConsoleNoAnsi,
-            final Configuration configuration) {
-        final Builder builder = newBuilder();
-        builder.setProperties(properties);
-        builder.setDefaultPattern(defaultPattern);
-        builder.setAlwaysWriteExceptions(alwaysWriteExceptions);
-        builder.setNoConsoleNoAnsi(noConsoleNoAnsi);
-        builder.setConfiguration(configuration);
-        return builder.build();
     }
 
     @Override

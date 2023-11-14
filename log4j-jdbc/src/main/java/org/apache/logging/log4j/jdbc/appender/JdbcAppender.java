@@ -92,7 +92,7 @@ public final class JdbcAppender extends AbstractDatabaseAppender<JdbcDatabaseMan
                     + Arrays.toString(columnMappings) + '}';
             final JdbcDatabaseManager manager = JdbcDatabaseManager.getManager(managerName, bufferSize, getLayout(),
                     connectionSource, tableName, columnConfigs, columnMappings, immediateFail, reconnectIntervalMillis,
-                    truncateStrings);
+                    truncateStrings, getConfiguration());
             if (manager == null) {
                 return null;
             }

@@ -131,35 +131,6 @@ public abstract class AbstractAppender extends AbstractFilterable implements App
         this.ignoreExceptions = ignoreExceptions;
     }
 
-    /**
-     * Constructor that defaults to suppressing exceptions.
-     *
-     * @param name The Appender name.
-     * @param filter The Filter to associate with the Appender.
-     * @param layout The layout to use to format the event.
-     * @deprecated Use {@link #AbstractAppender(String, Filter, Layout, boolean, Property[])}.
-     */
-    @Deprecated
-    protected AbstractAppender(final String name, final Filter filter, final Layout layout) {
-        this(name, filter, layout, true, Property.EMPTY_ARRAY);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param name The Appender name.
-     * @param filter The Filter to associate with the Appender.
-     * @param layout The layout to use to format the event.
-     * @param ignoreExceptions If true, exceptions will be logged and suppressed. If false errors will be logged and
-     *            then passed to the application.
-     * @deprecated Use {@link #AbstractAppender(String, Filter, Layout, boolean, Property[])}
-     */
-    @Deprecated
-    protected AbstractAppender(final String name, final Filter filter, final Layout layout,
-            final boolean ignoreExceptions) {
-        this(name, filter, layout, ignoreExceptions, Property.EMPTY_ARRAY);
-    }
-
     public static int parseInt(final String s, final int defaultValue) {
         try {
             return Integers.parseInt(s, defaultValue);

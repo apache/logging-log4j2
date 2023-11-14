@@ -16,9 +16,8 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import com.lmax.disruptor.LifecycleAware;
+import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.Sequence;
-import com.lmax.disruptor.SequenceReportingEventHandler;
 
 /**
  * This event handler gets passed messages from the RingBuffer as they become
@@ -27,7 +26,7 @@ import com.lmax.disruptor.SequenceReportingEventHandler;
  * constructor.
  */
 public class RingBufferLogEventHandler implements
-        SequenceReportingEventHandler<RingBufferLogEvent>, LifecycleAware {
+        EventHandler<RingBufferLogEvent> {
 
     private static final int NOTIFY_PROGRESS_THRESHOLD = 50;
     private Sequence sequenceCallback;

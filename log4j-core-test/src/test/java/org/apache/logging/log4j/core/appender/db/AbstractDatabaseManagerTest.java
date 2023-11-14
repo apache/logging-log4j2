@@ -36,7 +36,7 @@ public class AbstractDatabaseManagerTest {
     private static class StubDatabaseManager extends AbstractDatabaseManager {
 
         protected StubDatabaseManager(final String name, final int bufferSize) {
-            super(name, bufferSize);
+            super(name, bufferSize, null, null);
         }
 
         @Override

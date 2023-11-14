@@ -34,6 +34,7 @@ import java.util.Objects;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.util.Closer;
 import org.apache.logging.log4j.core.util.FileUtils;
 import org.apache.logging.log4j.util.ReflectionUtil;
@@ -74,8 +75,9 @@ public class MemoryMappedFileManager extends OutputStreamManager {
 
     protected MemoryMappedFileManager(final RandomAccessFile file, final String fileName, final OutputStream os,
                                       final boolean immediateFlush, final long position, final int regionLength, final String advertiseURI,
-                                      final Layout layout, final boolean writeHeader) throws IOException {
-        super(os, fileName, layout, writeHeader, ByteBuffer.wrap(new byte[0]));
+                                      final Layout layout, final boolean writeHeader, final LoggerContext loggerContext) throws IOException {
+
+        super(loggerContext, os, fileName, false, layout, writeHeader, ByteBuffer.wrap(new byte[0]));
         this.immediateFlush = immediateFlush;
         this.randomAccessFile = Objects.requireNonNull(file, "RandomAccessFile");
         this.regionLength = regionLength;
@@ -96,30 +98,11 @@ public class MemoryMappedFileManager extends OutputStreamManager {
      * @param layout The layout.
      * @return A MemoryMappedFileManager for the File.
      */
-    public static MemoryMappedFileManager getFileManager(final String fileName, final boolean append,
-            final boolean immediateFlush, final int regionLength, final String advertiseURI,
-            final Layout layout) {
+    public static MemoryMappedFileManager getFileManager(
+            final String fileName, final boolean append, final boolean immediateFlush, final int regionLength,
+            final String advertiseURI, final Layout layout, final LoggerContext loggerContext) {
         return narrow(MemoryMappedFileManager.class, getManager(fileName, new FactoryData(append, immediateFlush,
-                regionLength, advertiseURI, layout), FACTORY));
-    }
-
-    /**
-     * No longer used, the {@link org.apache.logging.log4j.core.LogEvent#isEndOfBatch()} attribute is used instead.
-     * @return {@link Boolean#FALSE}.
-     * @deprecated end-of-batch on the event is used instead.
-     */
-    @Deprecated
-    public Boolean isEndOfBatch() {
-        return Boolean.FALSE;
-    }
-
-    /**
-     * No longer used, the {@link org.apache.logging.log4j.core.LogEvent#isEndOfBatch()} attribute is used instead.
-     * This method is a no-op.
-     * @deprecated end-of-batch on the event is used instead.
-     */
-    @Deprecated
-    public void setEndOfBatch(@SuppressWarnings("unused") final boolean endOfBatch) {
+                regionLength, advertiseURI, layout, loggerContext), FACTORY));
     }
 
     @Override
@@ -323,6 +306,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
         private final int regionLength;
         private final String advertiseURI;
         private final Layout layout;
+        private final LoggerContext loggerContext;
 
         /**
          * Constructor.
@@ -334,12 +318,13 @@ public class MemoryMappedFileManager extends OutputStreamManager {
          * @param layout The layout.
          */
         public FactoryData(final boolean append, final boolean immediateFlush, final int regionLength,
-                final String advertiseURI, final Layout layout) {
+                final String advertiseURI, final Layout layout, final LoggerContext loggerContext) {
             this.append = append;
             this.immediateFlush = immediateFlush;
             this.regionLength = regionLength;
             this.advertiseURI = advertiseURI;
             this.layout = layout;
+            this.loggerContext = loggerContext;
         }
     }
 
@@ -377,7 +362,7 @@ public class MemoryMappedFileManager extends OutputStreamManager {
                 final long position = (data.append) ? raf.length() : 0;
                 raf.setLength(position + data.regionLength);
                 return new MemoryMappedFileManager(raf, name, os, data.immediateFlush, position, data.regionLength,
-                        data.advertiseURI, data.layout, writeHeader);
+                        data.advertiseURI, data.layout, writeHeader, data.loggerContext);
             } catch (final Exception ex) {
                 LOGGER.error("MemoryMappedFileManager (" + name + ") " + ex, ex);
                 Closer.closeSilently(raf);

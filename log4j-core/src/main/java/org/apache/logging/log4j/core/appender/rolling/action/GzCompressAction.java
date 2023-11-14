@@ -77,16 +77,6 @@ public final class GzCompressAction extends AbstractAction {
     }
 
     /**
-     * Prefer the constructor with compression level.
-     *
-     * @deprecated Prefer {@link GzCompressAction#GzCompressAction(File, File, boolean, int)}.
-     */
-    @Deprecated
-    public GzCompressAction(final File source, final File destination, final boolean deleteSource) {
-        this(source, destination, deleteSource, Deflater.DEFAULT_COMPRESSION);
-    }
-
-    /**
      * Compress.
      *
      * @return true if successfully compressed.
@@ -95,23 +85,6 @@ public final class GzCompressAction extends AbstractAction {
     @Override
     public boolean execute() throws IOException {
         return execute(source, destination, deleteSource, compressionLevel);
-    }
-
-    /**
-     * Compress a file.
-     *
-     * @param source       file to compress, may not be null.
-     * @param destination  compressed file, may not be null.
-     * @param deleteSource if true, attempt to delete file on completion.  Failure to delete
-     *                     does not cause an exception to be thrown or affect return value.
-     * @return true if source file compressed.
-     * @throws IOException on IO exception.
-     * @deprecated In favor of {@link #execute(File, File, boolean, int)}.
-     */
-    @Deprecated
-    public static boolean execute(final File source, final File destination, final boolean deleteSource)
-            throws IOException {
-        return execute(source, destination, deleteSource, Deflater.DEFAULT_COMPRESSION);
     }
 
     /**

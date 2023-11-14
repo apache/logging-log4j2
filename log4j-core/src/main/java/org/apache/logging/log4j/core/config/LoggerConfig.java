@@ -38,7 +38,6 @@ import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
-import org.apache.logging.log4j.core.util.Booleans;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Inject;
@@ -87,7 +86,7 @@ public class LoggerConfig extends AbstractFilterable {
      *            The type to build
      */
     public static class Builder<B extends Builder<B>>
-            implements org.apache.logging.log4j.core.util.Builder<LoggerConfig> {
+            implements org.apache.logging.log4j.plugins.util.Builder<LoggerConfig> {
 
         @PluginBuilderAttribute
         private Boolean additivity;
@@ -151,7 +150,7 @@ public class LoggerConfig extends AbstractFilterable {
             return refs;
         }
 
-        public B setRefs(@PluginElement final AppenderRef[] refs) {
+        public B setRefs(@PluginElement final AppenderRef... refs) {
             this.refs = refs;
             return asBuilder();
         }
@@ -160,7 +159,7 @@ public class LoggerConfig extends AbstractFilterable {
             return properties;
         }
 
-        public B setProperties(@PluginElement final Property[] properties) {
+        public B setProperties(@PluginElement final Property... properties) {
             this.properties = properties;
             return asBuilder();
         }
@@ -643,29 +642,6 @@ public class LoggerConfig extends AbstractFilterable {
         return Strings.isEmpty(name) ? ROOT : name;
     }
 
-    /**
-     * Factory method to create a LoggerConfig.
-     *
-     * @param additivity true if additive, false otherwise.
-     * @param level The Level to be associated with the Logger.
-     * @param loggerName The name of the Logger.
-     * @param includeLocation whether location should be passed downstream
-     * @param refs An array of Appender names.
-     * @param properties Properties to pass to the Logger.
-     * @param config The Configuration.
-     * @param filter A Filter.
-     * @return A new LoggerConfig.
-     * @since 2.6
-     */
-    @Deprecated
-    public static LoggerConfig createLogger(
-            final boolean additivity, final Level level, final String loggerName, final String includeLocation,
-            final AppenderRef[] refs, final Property[] properties, final Configuration config, final Filter filter) {
-        final String name = loggerName.equals(ROOT) ? Strings.EMPTY : loggerName;
-        return new LoggerConfig(name, Arrays.asList(refs), filter, level, additivity, properties, config,
-            includeLocation(includeLocation, config), config.getLogEventFactory());
-    }
-
     // Note: for asynchronous loggers, includeLocation default is FALSE,
     // for synchronous loggers, includeLocation default is TRUE.
     protected static boolean includeLocation(final String includeLocationConfigValue, final Configuration configuration) {
@@ -706,7 +682,7 @@ public class LoggerConfig extends AbstractFilterable {
          *            The type to build
          */
         public static class Builder<B extends Builder<B>>
-                implements org.apache.logging.log4j.core.util.Builder<LoggerConfig> {
+                implements org.apache.logging.log4j.plugins.util.Builder<LoggerConfig> {
 
             private boolean additivity;
             private Level level;
@@ -814,18 +790,6 @@ public class LoggerConfig extends AbstractFilterable {
         }
 
 
-        @Deprecated
-        public static LoggerConfig createLogger(
-                final String additivity, final Level level, final String includeLocation, final AppenderRef[] refs,
-                final Property[] properties, final Configuration config, final Filter filter) {
-            final List<AppenderRef> appenderRefs = Arrays.asList(refs);
-            final Level actualLevel = level == null ? Level.ERROR : level;
-            final boolean additive = Booleans.parseBoolean(additivity, true);
-
-            return new LoggerConfig(LogManager.ROOT_LOGGER_NAME, appenderRefs, filter, actualLevel, additive,
-                    properties, config, includeLocation(includeLocation, config),
-                    config.getLogEventFactory());
-        }
     }
 
     protected static LevelAndRefs getLevelAndRefs(final Level level, final AppenderRef[] refs, final String levelAndRefs,

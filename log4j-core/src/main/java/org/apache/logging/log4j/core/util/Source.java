@@ -134,18 +134,6 @@ public class Source {
     }
 
     /**
-     * Constructs a new {@code Source} from the specified URI.
-     *
-     * @param uri the URI where the input stream originated
-     * @param lastModified Not used.
-     * @deprecated Use {@link Source#Source(URI)}.
-     */
-    @Deprecated
-    public Source(final URI uri, final long lastModified) {
-        this(uri);
-    }
-
-    /**
      * Constructs a new {@code Source} from the specified URL.
      *
      * @param url the URL where the input stream originated

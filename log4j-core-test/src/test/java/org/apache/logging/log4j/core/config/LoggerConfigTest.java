@@ -44,11 +44,14 @@ public class LoggerConfigTest {
     private static final String FQCN = LoggerConfigTest.class.getName();
 
     private static LoggerConfig createForProperties(final Property[] properties) {
-        return LoggerConfig.createLogger(true, Level.INFO, "name", "false", new AppenderRef[0], properties,
-                new NullConfiguration(), null);
+        return LoggerConfig.newBuilder()
+                .setLevel(Level.INFO)
+                .setLoggerName("name")
+                .setProperties(properties)
+                .setConfig(new NullConfiguration())
+                .build();
     }
 
-    @SuppressWarnings({"deprecation"})
     @Test
     public void testPropertiesWithoutSubstitution() {
         assertNull(createForProperties(null).getPropertyList(), "null propertiesList");
