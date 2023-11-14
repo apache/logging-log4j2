@@ -75,9 +75,7 @@ public class Log4jThreadFactory implements ThreadFactory {
         this.threadNamePrefix = PREFIX + FACTORY_NUMBER.getAndIncrement() + "-" + threadFactoryName + "-";
         this.daemon = daemon;
         this.priority = priority;
-        final SecurityManager securityManager = System.getSecurityManager();
-        this.group = securityManager != null ? securityManager.getThreadGroup()
-                : Thread.currentThread().getThreadGroup();
+        this.group = Thread.currentThread().getThreadGroup();
     }
 
     @Override
