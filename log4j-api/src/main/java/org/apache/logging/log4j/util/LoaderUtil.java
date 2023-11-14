@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
@@ -45,38 +43,11 @@ public final class LoaderUtil {
     // this variable must be lazily loaded; otherwise, we get a nice circular class loading problem where LoaderUtil
     // wants to use PropertiesUtil, but then PropertiesUtil wants to use LoaderUtil.
     private static Boolean ignoreTCCL;
-
-    private static final RuntimePermission GET_CLASS_LOADER = new RuntimePermission("getClassLoader");
-    private static final boolean GET_CLASS_LOADER_DISABLED;
-
     static Boolean forceTcclOnly;
-
-    private static final PrivilegedAction<ClassLoader> TCCL_GETTER = new ThreadContextClassLoaderGetter();
-    private static final PrivilegedAction<ClassLoader[]> CLASSLOADER_ACCUMULATOR = new ClassLoaderAccumulator();
 
     static {
         if (System.getSecurityManager() != null) {
-            boolean getClassLoaderDisabled;
-            try {
-                AccessController.checkPermission(GET_CLASS_LOADER);
-                // seems like we'll be ok
-                getClassLoaderDisabled = false;
-            } catch (final SecurityException ignored) {
-                try {
-                    // let's see if we can obtain that permission
-                    AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-                        AccessController.checkPermission(GET_CLASS_LOADER);
-                        return null;
-                    }, null, GET_CLASS_LOADER);
-                    getClassLoaderDisabled = false;
-                } catch (final SecurityException ignore) {
-                    // no chance
-                    getClassLoaderDisabled = true;
-                }
-            }
-            GET_CLASS_LOADER_DISABLED = getClassLoaderDisabled;
-        } else {
-            GET_CLASS_LOADER_DISABLED = false;
+            LowLevelLogUtil.log("A custom SecurityManager was detected; Log4j no longer supports security permissions.");
         }
     }
 
@@ -94,18 +65,13 @@ public final class LoaderUtil {
 
     // TODO: this method could use some explanation
     public static ClassLoader getClassLoader(final Class<?> class1, final Class<?> class2) {
-        PrivilegedAction<ClassLoader> action = () -> {
-            final ClassLoader loader1 = class1 == null ? null : class1.getClassLoader();
-            final ClassLoader loader2 = class2 == null ? null : class2.getClassLoader();
-            final ClassLoader referenceLoader = GET_CLASS_LOADER_DISABLED
-                    ? getThisClassLoader()
-                    : Thread.currentThread().getContextClassLoader();
-            if (isChild(referenceLoader, loader1)) {
-                return isChild(referenceLoader, loader2) ? referenceLoader : loader2;
-            }
-            return isChild(loader1, loader2) ? loader1 : loader2;
-        };
-        return AccessController.doPrivileged(action, null, GET_CLASS_LOADER);
+        final ClassLoader loader1 = class1 == null ? null : class1.getClassLoader();
+        final ClassLoader loader2 = class2 == null ? null : class2.getClassLoader();
+        final ClassLoader referenceLoader = Thread.currentThread().getContextClassLoader();
+        if (isChild(referenceLoader, loader1)) {
+            return isChild(referenceLoader, loader2) ? referenceLoader : loader2;
+        }
+        return isChild(loader1, loader2) ? loader1 : loader2;
     }
 
     /**
@@ -129,101 +95,74 @@ public final class LoaderUtil {
     }
 
     /**
-     * Looks up the ClassLoader for this current thread. If this class does not have the runtime permission
-     * {@code getClassLoader}, then the only ClassLoader this attempts to look up is the loader behind this
-     * class. When a SecurityManager is installed, this attempts to make a privileged call to get the current
-     * {@linkplain Thread#getContextClassLoader() thread context ClassLoader}, falling back to either the
+     * Looks up the ClassLoader for this current thread falling back to either the
      * ClassLoader of this class or the {@linkplain ClassLoader#getSystemClassLoader() system ClassLoader}.
-     * When no SecurityManager is present, the same lookups are performed without use of {@link AccessController}.
      * If none of these strategies can obtain a ClassLoader, then this returns {@code null}.
      *
      * @return the current thread's ClassLoader, a fallback loader, or null if no fallback can be determined
      */
     public static ClassLoader getThreadContextClassLoader() {
-        if (GET_CLASS_LOADER_DISABLED) {
-            // we can at least get this class's ClassLoader regardless of security context
-            // however, if this is null, there's really no option left at this point
-            try {
-                return getThisClassLoader();
-            } catch (final SecurityException ignored) {
-                return null;
-            }
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        if (contextClassLoader != null) {
+            return contextClassLoader;
         }
-        return AccessController.doPrivileged(TCCL_GETTER, null, GET_CLASS_LOADER);
+        final ClassLoader thisClassLoader = getThisClassLoader();
+        if (thisClassLoader != null) {
+            return thisClassLoader;
+        }
+        return ClassLoader.getSystemClassLoader();
     }
 
     public static ClassLoader[] getClassLoaders() {
-        return AccessController.doPrivileged(CLASSLOADER_ACCUMULATOR, null, GET_CLASS_LOADER);
+        final Collection<ClassLoader> classLoaders = new LinkedHashSet<>();
+        final ClassLoader tcl = getThreadContextClassLoader();
+        if (tcl != null) {
+            classLoaders.add(tcl);
+        }
+        final ModuleLayer layer = LoaderUtil.class.getModule().getLayer();
+        if (layer == null) {
+            if (!isForceTccl()) {
+                accumulateClassLoaders(getThisClassLoader(), classLoaders);
+                accumulateClassLoaders(tcl == null ? null : tcl.getParent(), classLoaders);
+                final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
+                if (systemClassLoader != null) {
+                    classLoaders.add(systemClassLoader);
+                }
+            }
+        } else {
+            accumulateLayerClassLoaders(layer, classLoaders);
+            if (layer != ModuleLayer.boot()) {
+                for (final Module module : ModuleLayer.boot().modules()) {
+                    accumulateClassLoaders(module.getClassLoader(), classLoaders);
+                }
+            }
+        }
+        return classLoaders.toArray(EMPTY_CLASS_LOADER_ARRAY);
     }
 
     private static ClassLoader getThisClassLoader() {
         return LoaderUtil.class.getClassLoader();
     }
 
-    private static class ThreadContextClassLoaderGetter implements PrivilegedAction<ClassLoader> {
-        @Override
-        public ClassLoader run() {
-            final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-            if (contextClassLoader != null) {
-                return contextClassLoader;
+    private static void accumulateLayerClassLoaders(final ModuleLayer layer, final Collection<ClassLoader> classLoaders) {
+        for (final Module module : layer.modules()) {
+            accumulateClassLoaders(module.getClassLoader(), classLoaders);
+        }
+        if (!layer.parents().isEmpty()) {
+            for (final ModuleLayer parent : layer.parents()) {
+                accumulateLayerClassLoaders(parent, classLoaders);
             }
-            final ClassLoader thisClassLoader = getThisClassLoader();
-            if (thisClassLoader != null || GET_CLASS_LOADER_DISABLED) {
-                return thisClassLoader;
-            }
-            return ClassLoader.getSystemClassLoader();
         }
     }
 
-    private static class ClassLoaderAccumulator implements PrivilegedAction<ClassLoader[]> {
-        @Override
-        public ClassLoader[] run() {
-            final Collection<ClassLoader> classLoaders = new LinkedHashSet<>();
-            final ClassLoader tcl = TCCL_GETTER.run();
-            if (tcl != null) {
-                classLoaders.add(tcl);
-            }
-            final ModuleLayer layer = LoaderUtil.class.getModule().getLayer();
-            if (layer == null) {
-                if (!isForceTccl()) {
-                    accumulateClassLoaders(getThisClassLoader(), classLoaders);
-                    accumulateClassLoaders(tcl == null ? null : tcl.getParent(), classLoaders);
-                    final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
-                    if (systemClassLoader != null) {
-                        classLoaders.add(systemClassLoader);
-                    }
-                }
-            } else {
-                accumulateLayerClassLoaders(layer, classLoaders);
-                if (layer != ModuleLayer.boot()) {
-                    for (final Module module : ModuleLayer.boot().modules()) {
-                        accumulateClassLoaders(module.getClassLoader(), classLoaders);
-                    }
-                }
-            }
-            return classLoaders.toArray(EMPTY_CLASS_LOADER_ARRAY);
-        }
-
-        private static void accumulateLayerClassLoaders(final ModuleLayer layer, final Collection<ClassLoader> classLoaders) {
-            for (final Module module : layer.modules()) {
-                accumulateClassLoaders(module.getClassLoader(), classLoaders);
-            }
-            if (!layer.parents().isEmpty()) {
-                for (final ModuleLayer parent : layer.parents()) {
-                    accumulateLayerClassLoaders(parent, classLoaders);
-                }
-            }
-        }
-
-        /**
-         * Adds the provided loader to the loaders collection, and traverses up the tree until either a null
-         * value or a classloader which has already been added is encountered.
-         */
-        private static void accumulateClassLoaders(final ClassLoader loader, final Collection<ClassLoader> loaders) {
-            // Some implementations may use null to represent the bootstrap class loader.
-            if (loader != null && loaders.add(loader)) {
-                accumulateClassLoaders(loader.getParent(), loaders);
-            }
+    /**
+     * Adds the provided loader to the loaders collection, and traverses up the tree until either a null
+     * value or a classloader which has already been added is encountered.
+     */
+    private static void accumulateClassLoaders(final ClassLoader loader, final Collection<ClassLoader> loaders) {
+        // Some implementations may use null to represent the bootstrap class loader.
+        if (loader != null && loaders.add(loader)) {
+            accumulateClassLoaders(loader.getParent(), loaders);
         }
     }
 
@@ -447,16 +386,7 @@ public final class LoaderUtil {
     private static boolean isForceTccl() {
         if (forceTcclOnly == null) {
             // PropertiesUtil.getProperties() uses that code path so don't use that!
-            final String key = LoggingSystemProperty.LOADER_FORCE_THREAD_CONTEXT_LOADER.getSystemKey();
-            final SecurityManager securityManager = System.getSecurityManager();
-            try {
-                if (securityManager != null) {
-                    securityManager.checkPropertyAccess(key);
-                }
-                forceTcclOnly = Boolean.getBoolean(key);
-            } catch (final SecurityException se) {
-                forceTcclOnly = false;
-            }
+            forceTcclOnly = Boolean.getBoolean(LoggingSystemProperty.LOADER_FORCE_THREAD_CONTEXT_LOADER.getSystemKey());
         }
         return forceTcclOnly;
     }
