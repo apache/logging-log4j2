@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import aQute.bnd.annotation.Resolution;
 import aQute.bnd.annotation.spi.ServiceProvider;
 
 /**
@@ -35,7 +34,7 @@ import aQute.bnd.annotation.spi.ServiceProvider;
  *
  * @since 2.10.0
  */
-@ServiceProvider(value = PropertySource.class, resolution = Resolution.OPTIONAL)
+@ServiceProvider(PropertySource.class)
 public class SystemPropertiesPropertySource extends ContextAwarePropertySource implements PropertySource {
 
     private static final int DEFAULT_PRIORITY = 0;
@@ -51,18 +50,6 @@ public class SystemPropertiesPropertySource extends ContextAwarePropertySource i
 
     public SystemPropertiesPropertySource() {
         super(null, SYSTEM_CONTEXT, true);
-    }
-
-    /**
-     * Used by bootstrap code to get system properties without loading PropertiesUtil.
-     */
-    public static String getSystemProperty(final String key, final String defaultValue) {
-        try {
-            return System.getProperty(key, defaultValue);
-        } catch (SecurityException e) {
-            // Silently ignore the exception
-            return defaultValue;
-        }
     }
 
     @Override
@@ -104,11 +91,11 @@ public class SystemPropertiesPropertySource extends ContextAwarePropertySource i
     @Override
     public String getProperty(final String contextName, final String key) {
         if (contextName != null && !contextName.equals(SYSTEM_CONTEXT)) {
-            return getSystemProperty(PREFIX + contextName + DELIM + key, null);
+            return System.getProperty(PREFIX + contextName + DELIM + key, null);
         } else {
-            String result = getSystemProperty(PREFIX + SYSTEM_CONTEXT + DELIM + key, null);
+            String result = System.getProperty(PREFIX + SYSTEM_CONTEXT + DELIM + key, null);
             if (result == null) {
-                result = getSystemProperty(key, null);
+                result = System.getProperty(key, null);
             }
             return result;
         }
@@ -117,10 +104,10 @@ public class SystemPropertiesPropertySource extends ContextAwarePropertySource i
     @Override
     public boolean containsProperty(final String contextName, final String key) {
         if (contextName != null && !contextName.equals(SYSTEM_CONTEXT)) {
-            return getSystemProperty(PREFIX + contextName + DELIM + key, null) != null;
+            return System.getProperty(PREFIX + contextName + DELIM + key, null) != null;
         } else {
-            return getSystemProperty(PREFIX + SYSTEM_CONTEXT + DELIM + key, null) != null
-                    || getSystemProperty(key, null) != null;
+            return System.getProperty(PREFIX + SYSTEM_CONTEXT + DELIM + key, null) != null
+                    || System.getProperty(key, null) != null;
         }
     }
 
@@ -137,7 +124,7 @@ public class SystemPropertiesPropertySource extends ContextAwarePropertySource i
          */
         RELOAD_LOCK.lock();
         try {
-            final Properties props = getProperties();
+            final Properties props = System.getProperties();
             if (props == null) {
                 return false;
             }
@@ -164,14 +151,6 @@ public class SystemPropertiesPropertySource extends ContextAwarePropertySource i
             PropertiesUtil.getProperties().reload();
         }
         return true;
-    }
-
-    private static Properties getProperties() {
-        try {
-            return System.getProperties();
-        } catch (final SecurityException e) {
-            return null;
-        }
     }
 
 }

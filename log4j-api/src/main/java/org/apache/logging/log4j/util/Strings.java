@@ -46,8 +46,7 @@ public final class Strings {
      * OS-dependent line separator, defaults to {@code "\n"} if the system property {@code ""line.separator"} cannot be
      * read.
      */
-    public static final String LINE_SEPARATOR = SystemPropertiesPropertySource.getSystemProperty("line.separator",
-            "\n");
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator", "\n");
 
     private Strings() {
         // empty
