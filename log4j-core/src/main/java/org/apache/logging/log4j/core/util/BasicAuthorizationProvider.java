@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.core.util;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.net.URLConnection;
 import java.util.Base64;
 import org.apache.logging.log4j.Logger;
@@ -58,7 +60,7 @@ public class BasicAuthorizationProvider implements AuthorizationProvider {
             }
         }
         if (userName != null && password != null) {
-            authString = "Basic " + encoder.encodeToString((userName + ":" + password).getBytes());
+            authString = "Basic " + encoder.encodeToString((userName + ":" + password).getBytes(UTF_8));
         }
     }
 
