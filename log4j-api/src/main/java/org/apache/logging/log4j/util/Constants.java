@@ -107,7 +107,8 @@ public final class Constants {
     }
 
     static int getMajorVersion(final String version) {
-        final String[] parts = version.split("-|\\.", -1);
+        // Split into `major.minor.rest`
+        final String[] parts = version.split("-|\\.", 3);
         boolean isJEP223;
         try {
             final int token = Integer.parseInt(parts[0]);

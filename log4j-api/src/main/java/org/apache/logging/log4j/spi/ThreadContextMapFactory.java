@@ -53,6 +53,10 @@ public final class ThreadContextMapFactory {
 
     private static boolean GcFreeThreadContextKey;
     private static String ThreadContextMapName;
+    private static final String GARBAGE_FREE_CONTEXT_MAP = "org.apache.logging.log4j.spi" +
+            ".GarbageFreeSortedArrayThreadContextMap";
+    private static final String COPY_ON_WRITE_CONTEXT_MAP = "org.apache.logging.log4j.spi" +
+            ".CopyOnWriteSortedArrayThreadContextMap";
 
     static {
         initPrivate();
@@ -86,15 +90,25 @@ public final class ThreadContextMapFactory {
         final ClassLoader cl = ProviderUtil.findClassLoader();
         ThreadContextMap result = null;
         if (ThreadContextMapName != null) {
-            try {
-                final Class<?> clazz = cl.loadClass(ThreadContextMapName);
-                if (ThreadContextMap.class.isAssignableFrom(clazz)) {
-                    result = (ThreadContextMap) clazz.getDeclaredConstructor().newInstance();
-                }
-            } catch (final ClassNotFoundException cnfe) {
-                LOGGER.error("Unable to locate configured ThreadContextMap {}", ThreadContextMapName);
-            } catch (final Exception ex) {
-                LOGGER.error("Unable to create configured ThreadContextMap {}", ThreadContextMapName, ex);
+            /*
+             * Two implementation are package-private classes, so we instantiate them directly.
+             * Other implementation must be publicly accessible (through `LoaderUtil`).
+             */
+            switch (ThreadContextMapName) {
+                case GARBAGE_FREE_CONTEXT_MAP:
+                    result = new GarbageFreeSortedArrayThreadContextMap();
+                    break;
+                case COPY_ON_WRITE_CONTEXT_MAP:
+                    result = new CopyOnWriteSortedArrayThreadContextMap();
+                    break;
+                default:
+                    try {
+                        result = LoaderUtil.newCheckedInstanceOf(ThreadContextMapName, ThreadContextMap.class);
+                    } catch (final ClassNotFoundException cnfe) {
+                        LOGGER.error("Unable to locate configured ThreadContextMap {}", ThreadContextMapName);
+                    } catch (final Exception ex) {
+                        LOGGER.error("Unable to create configured ThreadContextMap {}", ThreadContextMapName, ex);
+                    }
             }
         }
         if (result == null && ProviderUtil.hasProviders() && LogManager.getFactory() != null) { //LOG4J2-1658

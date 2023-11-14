@@ -252,6 +252,7 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @deprecated Use {@link StructuredDataId#makeId(String, String)} instead
      */
     @Deprecated
+    @InlineMe(replacement = "this.makeId(defaultId, String.valueOf(anEnterpriseNumber))")
     public StructuredDataId makeId(final String defaultId, final int anEnterpriseNumber) {
         return makeId(defaultId, String.valueOf(anEnterpriseNumber));
     }

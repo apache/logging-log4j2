@@ -50,6 +50,10 @@ public final class Base64Util {
     private Base64Util() {
     }
 
+    /**
+     * This method does not specify an encoding for the {@code str} parameter and should not be used.
+     */
+    @Deprecated
     public static String encode(final String str) {
         if (str == null) {
             return null;
