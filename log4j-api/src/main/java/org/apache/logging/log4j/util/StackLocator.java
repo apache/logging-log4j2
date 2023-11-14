@@ -99,10 +99,6 @@ public final class StackLocator {
 
     @PerformanceSensitive
     public Deque<Class<?>> getCurrentStackTrace() {
-        // benchmarks show that using the SecurityManager is much faster than looping through getCallerClass(int)
-        if (PrivateSecurityManagerStackTraceUtil.isEnabled()) {
-            return PrivateSecurityManagerStackTraceUtil.getCurrentStackTrace();
-        }
         final Deque<Class<?>> stack = new ArrayDeque<>();
         return WALKER.walk(s -> {
             s.forEach(f -> stack.add(f.getDeclaringClass()));

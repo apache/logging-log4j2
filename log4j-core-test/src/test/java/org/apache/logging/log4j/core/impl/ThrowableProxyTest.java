@@ -17,20 +17,10 @@
 package org.apache.logging.log4j.core.impl;
 
 import java.io.IOException;
-import java.net.BindException;
-import java.net.InetSocketAddress;
-import java.nio.channels.ServerSocketChannel;
-import java.security.Permission;
-import java.security.SecureRandom;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.spec.IvParameterSpec;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,8 +29,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.pattern.PlainTextRenderer;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledForJreRange;
-import org.junit.jupiter.api.condition.JRE;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -119,72 +107,6 @@ public class ThrowableProxyTest {
             logger.error(e.getMessage(), e);
             logger.error(e);
         });
-    }
-
-    @Test
-    @DisabledForJreRange(min = JRE.JAVA_18) // custom SecurityManager instances throw UnsupportedOperationException
-    public void testLogStackTraceWithClassThatWillCauseSecurityException() throws IOException {
-        final SecurityManager sm = System.getSecurityManager();
-        try {
-            System.setSecurityManager(
-                    new SecurityManager() {
-                        @Override
-                        public void checkPermission(final Permission perm) {
-                            if (perm instanceof RuntimePermission) {
-                                // deny access to the class to trigger the security exception
-                                if ("accessClassInPackage.sun.nio.ch".equals(perm.getName())) {
-                                    throw new SecurityException(perm.toString());
-                                }
-                            }
-                        }
-                    });
-            final BindException e = assertThrows(BindException.class, () -> {
-                ServerSocketChannel.open().socket().bind(new InetSocketAddress("localhost", 9300));
-                ServerSocketChannel.open().socket().bind(new InetSocketAddress("localhost", 9300));
-            });
-            assertDoesNotThrow(() -> new ThrowableProxy(e));
-        } finally {
-            // restore the security manager
-            System.setSecurityManager(sm);
-        }
-    }
-
-    @Test
-    @DisabledForJreRange(min = JRE.JAVA_18) // custom SecurityManager instances throw UnsupportedOperationException
-    public void testLogStackTraceWithClassLoaderThatWithCauseSecurityException() throws Exception {
-        final SecurityManager sm = System.getSecurityManager();
-        try {
-            System.setSecurityManager(
-                    new SecurityManager() {
-                        @Override
-                        public void checkPermission(final Permission perm) {
-                            if (perm instanceof RuntimePermission) {
-                                // deny access to the classloader to trigger the security exception
-                                if ("getClassLoader".equals(perm.getName())) {
-                                    throw new SecurityException(perm.toString());
-                                }
-                            }
-                        }
-                    });
-            final String algorithm = "AES/CBC/PKCS5Padding";
-            final Cipher ec = Cipher.getInstance(algorithm);
-            final byte[] bytes = new byte[16]; // initialization vector
-            final SecureRandom secureRandom = new SecureRandom();
-            secureRandom.nextBytes(bytes);
-            final KeyGenerator generator = KeyGenerator.getInstance("AES");
-            generator.init(128);
-            final IvParameterSpec algorithmParameterSpec = new IvParameterSpec(bytes);
-            ec.init(Cipher.ENCRYPT_MODE, generator.generateKey(), algorithmParameterSpec, secureRandom);
-            final byte[] raw = new byte[0];
-            final byte[] encrypted = ec.doFinal(raw);
-            final Cipher dc = Cipher.getInstance(algorithm);
-            dc.init(Cipher.DECRYPT_MODE, generator.generateKey(), algorithmParameterSpec, secureRandom);
-            final BadPaddingException e = assertThrows(BadPaddingException.class, () -> dc.doFinal(encrypted));
-            assertDoesNotThrow(() -> new ThrowableProxy(e));
-        } finally {
-            // restore the existing security manager
-            System.setSecurityManager(sm);
-        }
     }
 
     @Test

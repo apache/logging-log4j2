@@ -85,15 +85,6 @@ public class StackLocatorUtilTest {
     }
 
     @Test
-    public void testTopElementInStackTrace() {
-        final StackLocator stackLocator = StackLocator.getInstance();
-        final Deque<Class<?>> classes = stackLocator.getCurrentStackTrace();
-        //Removing private class in "PrivateSecurityManagerStackTraceUtil"
-        classes.removeFirst();
-        assertSame(PrivateSecurityManagerStackTraceUtil.class, classes.getFirst());
-    }
-
-    @Test
     public void testGetCallerClassViaName() throws Exception {
         final Class<?> expected = InterceptingExecutableInvoker.class;
         final Class<?> actual = StackLocatorUtil.getCallerClass("org.junit.jupiter.engine.execution.InvocationInterceptorChain");
@@ -159,7 +150,7 @@ public class StackLocatorUtilTest {
         final StackTraceElement element = new Foo().foo();
         assertEquals("org.apache.logging.log4j.util.StackLocatorUtilTest$Foo", element.getClassName());
         // The line number below may need adjustment if this file is changed.
-        assertEquals(125, element.getLineNumber());
+        assertEquals(116, element.getLineNumber());
     }
 
     @Test

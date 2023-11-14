@@ -60,14 +60,6 @@ public class ReflectionBenchmark {
         }
     }
 
-    @State(Scope.Benchmark)
-    public static class ClassContextManager extends SecurityManager {
-        @Override
-        protected Class[] getClassContext() {
-            return super.getClassContext();
-        }
-    }
-
     @Benchmark
     public void baseline() {
     }
@@ -125,11 +117,6 @@ public class ReflectionBenchmark {
             classes[i] = clazz;
         }
         return classes;
-    }
-
-    @Benchmark
-    public Class<?>[] test12_getClassContextViaSecurityManager(final ClassContextManager classContextManager) {
-        return classContextManager.getClassContext();
     }
 
 
