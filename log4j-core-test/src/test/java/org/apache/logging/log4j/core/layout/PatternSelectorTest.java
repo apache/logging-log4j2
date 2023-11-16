@@ -57,7 +57,7 @@ public class PatternSelectorTest {
                 .build();
         final String result1 = new FauxLogger().formatEvent(event1, layout);
         final String expectSuffix1 =
-                String.format("====== PatternSelectorTest.testMarkerPatternSelector:53 entry ======%n");
+                String.format("====== PatternSelectorTest.testMarkerPatternSelector:58 entry ======%n");
         assertTrue(result1.endsWith(expectSuffix1), "Unexpected result: " + result1);
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName())
@@ -89,7 +89,7 @@ public class PatternSelectorTest {
                 .build();
         final String result1 = new FauxLogger().formatEvent(event1, layout);
         final String expectSuffix1 =
-                String.format("====== PatternSelectorTest.testLevelPatternSelector:78 entry ======%n");
+                String.format("====== PatternSelectorTest.testLevelPatternSelector:90 entry ======%n");
         assertTrue(result1.endsWith(expectSuffix1), "Unexpected result: " + result1);
         final LogEvent event2 = Log4jLogEvent.newBuilder() //
                 .setLoggerName(this.getClass().getName())

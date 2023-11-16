@@ -131,7 +131,7 @@ public class StackLocatorTest {
         final StackTraceElement element = new Foo().foo();
         assertEquals("org.apache.logging.log4j.util.java9.StackLocatorTest$Foo", element.getClassName());
         // The line number below may need adjustment if this file is changed.
-        assertEquals(100, element.getLineNumber());
+        assertEquals(99, element.getLineNumber());
     }
 
     @Test
