@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.web;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
@@ -23,62 +25,87 @@ import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
+import org.mockito.Mock.Strictness;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.apache.logging.log4j.web.Log4jServletContextListener.DEFAULT_STOP_TIMEOUT;
 import static org.apache.logging.log4j.web.Log4jServletContextListener.DEFAULT_STOP_TIMEOUT_TIMEUNIT;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.AdditionalAnswers.answerVoid;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.doAnswer;
 
 @ExtendWith(MockitoExtension.class)
 public class Log4jServletContextListenerTest {
     /* event and servletContext are marked lenient because they aren't used in the
      * testDestroyWithNoInit but are only accessed during initialization
      */
-    @Mock(lenient = true)
+    @Mock(strictness = Strictness.LENIENT)
     private ServletContextEvent event;
-    @Mock(lenient = true)
+    @Mock(strictness = Strictness.LENIENT)
     private ServletContext servletContext;
     @Mock
     private Log4jWebLifeCycle initializer;
 
-    private Log4jServletContextListener listener;
+    private final AtomicReference<Object> count = new AtomicReference<>();
 
     @BeforeEach
     public void setUp() {
-        this.listener = new Log4jServletContextListener();
         given(event.getServletContext()).willReturn(servletContext);
         given(servletContext.getAttribute(Log4jWebSupport.SUPPORT_ATTRIBUTE)).willReturn(initializer);
+
+        doAnswer(answerVoid((k, v) -> count.set(v)))
+                .when(servletContext)
+                .setAttribute(eq(Log4jServletContextListener.START_COUNT_ATTR), any());
+        doAnswer(__ -> count.get())
+                .when(servletContext)
+                .getAttribute(Log4jServletContextListener.START_COUNT_ATTR);
     }
 
-    @Test
-    public void testInitAndDestroy() throws Exception {
-        this.listener.contextInitialized(this.event);
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 3 })
+    public void testInitAndDestroy(final int listenerCount) throws Exception {
+        final Log4jServletContextListener[] listeners = new Log4jServletContextListener[listenerCount];
+        for (int idx = 0; idx < listenerCount; idx++) {
+            final Log4jServletContextListener listener = new Log4jServletContextListener();
+            listeners[idx] = listener;
 
-        then(initializer).should().start();
-        then(initializer).should().setLoggerContext();
+            listener.contextInitialized(event);
+            if (idx == 0) {
+                then(initializer).should().start();
+                then(initializer).should().setLoggerContext();
+            } else {
+                then(initializer).shouldHaveNoMoreInteractions();
+            }
+        }
 
-        this.listener.contextDestroyed(this.event);
+        for (int idx = listenerCount - 1; idx >= 0; idx--) {
+            final Log4jServletContextListener listener = listeners[idx];
 
-        then(initializer).should().clearLoggerContext();
-        then(initializer).should().stop(DEFAULT_STOP_TIMEOUT, DEFAULT_STOP_TIMEOUT_TIMEUNIT);
+            listener.contextDestroyed(event);
+            if (idx == 0) {
+                then(initializer).should().clearLoggerContext();
+                then(initializer).should().stop(DEFAULT_STOP_TIMEOUT, DEFAULT_STOP_TIMEOUT_TIMEUNIT);
+            } else {
+                then(initializer).shouldHaveNoMoreInteractions();
+            }
+        }
     }
 
     @Test
     public void testInitFailure() throws Exception {
         willThrow(new IllegalStateException(Strings.EMPTY)).given(initializer).start();
+        final Log4jServletContextListener listener = new Log4jServletContextListener();
 
-        try {
-            this.listener.contextInitialized(this.event);
-            fail("Expected a RuntimeException.");
-        } catch (final RuntimeException e) {
-            assertEquals("Failed to initialize Log4j properly.", e.getMessage(), "The message is not correct.");
-        }
+        assertThrows(RuntimeException.class, () -> listener.contextInitialized(this.event),
+                "Failed to initialize Log4j properly.");
     }
 
     @Test
@@ -96,17 +123,12 @@ public class Log4jServletContextListenerTest {
     }
 
     private void ensureInitializingFailsWhenAuthShutdownIsEnabled() {
-        try {
-            this.listener.contextInitialized(this.event);
-            fail("Expected a RuntimeException.");
-        } catch (final RuntimeException e) {
-            final String expectedMessage =
-                    "Do not use " + Log4jServletContextListener.class.getSimpleName() + " when "
-                            + Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED + " is true. Please use "
-                            + Log4jShutdownOnContextDestroyedListener.class.getSimpleName() + " instead of "
-                            + Log4jServletContextListener.class.getSimpleName() + ".";
+        final Log4jServletContextListener listener = new Log4jServletContextListener();
+        final String message = "Do not use " + Log4jServletContextListener.class.getSimpleName() + " when "
+                + Log4jWebSupport.IS_LOG4J_AUTO_SHUTDOWN_DISABLED + " is true. Please use "
+                + Log4jShutdownOnContextDestroyedListener.class.getSimpleName() + " instead of "
+                + Log4jServletContextListener.class.getSimpleName() + ".";
 
-            assertEquals(expectedMessage, e.getMessage(), "The message is not correct");
-        }
+        assertThrows(RuntimeException.class, () -> listener.contextInitialized(event), message);
     }
 }

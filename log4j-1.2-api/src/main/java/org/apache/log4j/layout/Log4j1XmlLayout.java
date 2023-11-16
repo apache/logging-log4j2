@@ -25,8 +25,11 @@ import java.util.Objects;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.layout.Encoder;
 import org.apache.logging.log4j.core.util.Transform;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -53,15 +56,16 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
     @PluginFactory
     public static Log4j1XmlLayout createLayout(
             // @formatter:off
+            @PluginConfiguration Configuration configuration,
             @PluginAttribute(value = "locationInfo") final boolean locationInfo,
             @PluginAttribute(value = "properties") final boolean properties
             // @formatter:on
     ) {
-        return new Log4j1XmlLayout(locationInfo, properties);
+        return new Log4j1XmlLayout(configuration, locationInfo, properties);
     }
 
-    private Log4j1XmlLayout(final boolean locationInfo, final boolean properties) {
-        super(StandardCharsets.UTF_8);
+    private Log4j1XmlLayout(final Configuration configuration, final boolean locationInfo, final boolean properties) {
+        super(configuration, StandardCharsets.UTF_8);
         this.locationInfo = locationInfo;
         this.properties = properties;
     }
@@ -76,16 +80,29 @@ public final class Log4j1XmlLayout extends AbstractStringLayout {
 
     @Override
     public void encode(final LogEvent event, final ByteBufferDestination destination) {
-        final StringBuilder text = getStringBuilder();
-        formatTo(event, text);
-        getStringBuilderEncoder().encode(text, destination);
+        final StringBuilder text = stringBuilderRecycler.acquire();
+        try {
+            formatTo(event, text);
+            final Encoder<StringBuilder> stringBuilderEncoder = stringBuilderEncoderRecycler.acquire();
+            try {
+                stringBuilderEncoder.encode(text, destination);
+            } finally {
+                stringBuilderEncoderRecycler.release(stringBuilderEncoder);
+            }
+        } finally {
+            stringBuilderRecycler.release(text);
+        }
     }
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder text = getStringBuilder();
-        formatTo(event, text);
-        return text.toString();
+        final StringBuilder text = stringBuilderRecycler.acquire();
+        try {
+            formatTo(event, text);
+            return text.toString();
+        } finally {
+            stringBuilderRecycler.release(text);
+        }
     }
 
     @SuppressFBWarnings(

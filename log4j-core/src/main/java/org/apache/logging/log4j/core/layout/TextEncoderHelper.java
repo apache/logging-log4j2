@@ -23,6 +23,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 
+import org.apache.logging.log4j.status.StatusLogger;
+
 /**
  * Helper class to encode text to binary data without allocating temporary objects.
  *
@@ -33,9 +35,15 @@ public class TextEncoderHelper {
     private TextEncoderHelper() {
     }
 
-    static void encodeTextFallBack(final Charset charset, final StringBuilder text,
-            final ByteBufferDestination destination) {
-        final byte[] bytes = text.toString().getBytes(charset);
+    /* for JIT-ergonomics: */ static void encodeTextFallback(
+            final Charset charset,
+            final StringBuilder source,
+            final ByteBufferDestination destination,
+            final Exception error) {
+        StatusLogger
+                .getLogger()
+                .error("`TextEncoderHelper.encodeText()` failure, falling back to `String#getBytes(Charset)`", error);
+        final byte[] bytes = source.toString().getBytes(charset);
         destination.writeBytes(bytes, 0, bytes.length);
     }
 
@@ -79,7 +87,9 @@ public class TextEncoderHelper {
         }
         result = charsetEncoder.flush(byteBuf);
         if (!result.isUnderflow()) {
-            destination.withLock(() -> flushRemainingBytes(charsetEncoder, destination, byteBuf));
+            synchronized (destination) {
+                flushRemainingBytes(charsetEncoder, destination, byteBuf);
+            }
             return;
         }
         // Thread-safety note: no explicit synchronization on ByteBufferDestination below. This is safe, because
@@ -103,9 +113,12 @@ public class TextEncoderHelper {
      * @since 2.9
      */
     private static void writeChunkedEncodedText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            final ByteBufferDestination destination, final ByteBuffer byteBuf, final CoderResult result) {
-        destination.withLock(() -> flushRemainingBytes(charsetEncoder, destination,
-                writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf, result)));
+            final ByteBufferDestination destination, ByteBuffer byteBuf, final CoderResult result) {
+        synchronized (destination) {
+            byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, true, destination, byteBuf,
+                    result);
+            flushRemainingBytes(charsetEncoder, destination, byteBuf);
+        }
     }
 
     /**
@@ -117,7 +130,7 @@ public class TextEncoderHelper {
      * @since 2.9
      */
     private static void encodeChunkedText(final CharsetEncoder charsetEncoder, final CharBuffer charBuf,
-            final ByteBuffer byteBuf, final StringBuilder text, final ByteBufferDestination destination) {
+            ByteBuffer byteBuf, final StringBuilder text, final ByteBufferDestination destination) {
 
         // LOG4J2-1874 ByteBuffer, CharBuffer and CharsetEncoder are thread-local, so no need to synchronize while
         // modifying these objects. Postpone synchronization until accessing the ByteBufferDestination.
@@ -136,27 +149,24 @@ public class TextEncoderHelper {
             writeEncodedText(charsetEncoder, charBuf, byteBuf, destination, result);
             return;
         }
-        final CoderResult intermediateResult = result;
-        final int intermediatePosition = start;
-        destination.withLock(() -> {
-            var buf = writeAndEncodeAsMuchAsPossible(
-                    charsetEncoder, charBuf, false, destination, byteBuf, intermediateResult);
-            boolean end = false;
-            int position = intermediatePosition;
-            while (!end) {
-                CoderResult coderResult = CoderResult.UNDERFLOW;
-                while (!end && coderResult.isUnderflow()) {
+        synchronized (destination) {
+            byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf,
+                    result);
+            while (!endOfInput) {
+                result = CoderResult.UNDERFLOW;
+                while (!endOfInput && result.isUnderflow()) {
                     charBuf.clear();
-                    final int copied = copy(text, position, charBuf);
-                    position += copied;
-                    end = position >= text.length();
+                    final int copied = copy(text, start, charBuf);
+                    start += copied;
+                    endOfInput = start >= text.length();
                     charBuf.flip();
-                    coderResult = charsetEncoder.encode(charBuf, buf, end);
+                    result = charsetEncoder.encode(charBuf, byteBuf, endOfInput);
                 }
-                buf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, end, destination, buf, coderResult);
+                byteBuf = writeAndEncodeAsMuchAsPossible(charsetEncoder, charBuf, endOfInput, destination, byteBuf,
+                        result);
             }
-            flushRemainingBytes(charsetEncoder, destination, buf);
-        });
+            flushRemainingBytes(charsetEncoder, destination, byteBuf);
+        }
     }
 
     /**
@@ -218,17 +228,17 @@ public class TextEncoderHelper {
         if (result.isOverflow()) { // byte buffer full
             // all callers already synchronize on destination but for safety ensure we are synchronized because
             // below calls to drain() may cause destination to swap in a new ByteBuffer object
-            return destination.withLock(() -> {
+            synchronized (destination) {
                 final ByteBuffer destinationBuffer = destination.getByteBuffer();
                 if (destinationBuffer != temp) {
                     temp.flip();
-                    destination.unsynchronizedWrite(temp);
+                    ByteBufferDestinationHelper.writeToUnsynchronized(temp, destination);
                     temp.clear();
                     return destination.getByteBuffer();
                 } else {
                     return destination.drain(destinationBuffer);
                 }
-            });
+            }
         } else {
             return temp;
         }
@@ -247,7 +257,7 @@ public class TextEncoderHelper {
         }
         if (temp.remaining() > 0 && temp != destination.getByteBuffer()) {
             temp.flip();
-            destination.unsynchronizedWrite(temp);
+            ByteBufferDestinationHelper.writeToUnsynchronized(temp, destination);
             temp.clear();
         }
     }

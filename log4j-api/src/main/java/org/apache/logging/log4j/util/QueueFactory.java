@@ -14,18 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.util;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.Queue;
 
+/**
+ * A {@link Queue} factory contract.
+ *
+ * @see QueueFactories
+ * @since 3.0.0
+ */
 @FunctionalInterface
-public interface RecyclerFactory {
+public interface QueueFactory {
 
-    default <V> Recycler<V> create(final Supplier<V> supplier) {
-        return create(supplier, ignored -> {});
-    }
-
-    <V> Recycler<V> create(Supplier<V> supplier, Consumer<V> cleaner);
+    <E> Queue<E> create();
 
 }

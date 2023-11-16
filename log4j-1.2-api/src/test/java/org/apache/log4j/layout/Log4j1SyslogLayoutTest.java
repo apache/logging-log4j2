@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.net.Facility;
 import org.apache.logging.log4j.core.time.MutableInstant;
@@ -71,15 +72,18 @@ public class Log4j1SyslogLayoutTest {
     public void testSimpleLayout(final String expected, final Facility facility, final boolean header, final boolean facilityPrinting) {
         final LogEvent logEvent = createLogEvent();
         StringLayout appenderLayout = Log4j1SyslogLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setFacility(facility)
                 .setHeader(header)
                 .setFacilityPrinting(facilityPrinting)
                 .build();
         assertEquals(expected, appenderLayout.toSerializable(logEvent));
         final StringLayout messageLayout = PatternLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setPattern("%m")
                 .build();
         appenderLayout = Log4j1SyslogLayout.newBuilder()
+                .setConfiguration(new DefaultConfiguration())
                 .setFacility(facility)
                 .setHeader(header)
                 .setFacilityPrinting(facilityPrinting)

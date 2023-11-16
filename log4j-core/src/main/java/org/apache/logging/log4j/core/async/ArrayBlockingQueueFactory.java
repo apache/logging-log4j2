@@ -30,14 +30,14 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  */
 @Configurable(elementType = BlockingQueueFactory.ELEMENT_TYPE)
 @Plugin("ArrayBlockingQueue")
-public class ArrayBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
+public class ArrayBlockingQueueFactory implements BlockingQueueFactory {
     @Override
-    public BlockingQueue<E> create(final int capacity) {
+    public <E> BlockingQueue<E> create(final int capacity) {
         return new ArrayBlockingQueue<>(capacity);
     }
 
     @PluginFactory
-    public static <E> ArrayBlockingQueueFactory<E> createFactory() {
-        return new ArrayBlockingQueueFactory<>();
+    public static ArrayBlockingQueueFactory createFactory() {
+        return new ArrayBlockingQueueFactory();
     }
 }

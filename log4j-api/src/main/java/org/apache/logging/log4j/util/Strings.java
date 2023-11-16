@@ -29,8 +29,6 @@ import java.util.Optional;
 @InternalApi
 public final class Strings {
 
-    private static final ThreadLocal<StringBuilder> tempStr = ThreadLocal.withInitial(StringBuilder::new);
-
     /**
      * The empty string.
      */
@@ -193,6 +191,26 @@ public final class Strings {
     }
 
     /**
+     * Shorthand for {@code str.toLowerCase(Locale.ROOT);}
+     * @param str The string to lower case.
+     * @return a new string
+     * @see String#toLowerCase(Locale)
+     */
+    public static String toRootLowerCase(final String str) {
+        return str.toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Shorthand for {@code str.toUpperCase(Locale.ROOT);}
+     * @param str The string to upper case.
+     * @return a new string
+     * @see String#toUpperCase(Locale)
+     */
+    public static String toRootUpperCase(final String str) {
+        return str.toUpperCase(Locale.ROOT);
+    }
+
+    /**
      * <p>
      * Removes control characters (char &lt;= 32) from both ends of this String returning {@code null} if the String is
      * empty ("") after the trim or if it is {@code null}.
@@ -300,69 +318,6 @@ public final class Strings {
      */
     public static String[] splitList(final String string) {
         return string != null ? string.split(COMMA_DELIMITED_RE) : new String[0];
-    }
-
-    /**
-     * Shorthand for {@code str.toLowerCase(Locale.ROOT);}
-     * @param str The string to upper case.
-     * @return a new string
-     * @see String#toLowerCase(Locale)
-     */
-    public static String toRootLowerCase(final String str) {
-        return str.toLowerCase(Locale.ROOT);
-    }
-
-    /**
-     * Shorthand for {@code str.toUpperCase(Locale.ROOT);}
-     * @param str The string to lower case.
-     * @return a new string
-     * @see String#toLowerCase(Locale)
-     */
-    public static String toRootUpperCase(final String str) {
-        return str.toUpperCase(Locale.ROOT);
-    }
-
-    /**
-     * Concatenates 2 Strings without allocation.
-     * @param str1 the first string.
-     * @param str2 the second string.
-     * @return the concatenated String.
-     */
-    public static String concat(final String str1, final String str2) {
-        if (isEmpty(str1)) {
-            return str2;
-        } else if (isEmpty(str2)) {
-            return str1;
-        }
-        final StringBuilder sb = tempStr.get();
-        try {
-            return sb.append(str1).append(str2).toString();
-        } finally {
-            sb.setLength(0);
-        }
-    }
-
-    /**
-     * Creates a new string repeating given {@code str} {@code count} times.
-     * @param str input string
-     * @param count the repetition count
-     * @return the new string
-     * @throws IllegalArgumentException if either {@code str} is null or {@code count} is negative
-     */
-    public static String repeat(final String str, final int count) {
-        Objects.requireNonNull(str, "str");
-        if (count < 0) {
-            throw new IllegalArgumentException("count");
-        }
-        final StringBuilder sb = tempStr.get();
-        try {
-            for (int index = 0; index < count; index++) {
-                sb.append(str);
-            }
-            return sb.toString();
-        } finally {
-            sb.setLength(0);
-        }
     }
 
 }

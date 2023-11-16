@@ -14,17 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.logging.log4j.layout.template.json.util;
+package org.apache.logging.log4j.util;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 
-import org.apache.logging.log4j.util.Strings;
-
+/**
+ * Utility class for parsing string-formatted parameters, e.g., {@code queue:supplier=com.acme.FastestQueue.new,capacity=42}.
+ * <p>
+ * See the associated test class for possible combinations and double-, single-quote handling.
+ * </p>
+ */
+@InternalApi
 public final class StringParameterParser {
 
     private StringParameterParser() {}

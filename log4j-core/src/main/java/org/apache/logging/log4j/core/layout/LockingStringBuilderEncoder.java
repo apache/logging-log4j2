@@ -23,7 +23,6 @@ import java.nio.charset.CodingErrorAction;
 import java.util.Objects;
 
 import org.apache.logging.log4j.core.util.Constants;
-import org.apache.logging.log4j.status.StatusLogger;
 
 /**
  * Encoder for StringBuilders that locks on the ByteBufferDestination.
@@ -53,17 +52,14 @@ public class LockingStringBuilderEncoder implements Encoder<StringBuilder> {
     public void encode(final StringBuilder source, final ByteBufferDestination destination) {
         try {
             // This synchronized is needed to be able to call destination.getByteBuffer()
-            destination.withLock(() -> TextEncoderHelper.encodeText(
-                    charsetEncoder, cachedCharBuffer, destination.getByteBuffer(), source, destination));
-        } catch (final Exception ex) {
-            logEncodeTextException(ex, source, destination);
-            TextEncoderHelper.encodeTextFallBack(charset, source, destination);
+            synchronized (destination) {
+                TextEncoderHelper.encodeText(charsetEncoder, cachedCharBuffer, destination.getByteBuffer(), source,
+                        destination);
+            }
+        } catch (final Exception error) {
+            TextEncoderHelper.encodeTextFallback(charset, source, destination, error);
         }
 
     }
 
-    private void logEncodeTextException(final Exception ex, final StringBuilder text,
-                                        final ByteBufferDestination destination) {
-        StatusLogger.getLogger().error("Recovering from LockingStringBuilderEncoder.encode('{}') error", text, ex);
-    }
 }

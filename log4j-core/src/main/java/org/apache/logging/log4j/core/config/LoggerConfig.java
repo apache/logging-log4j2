@@ -37,7 +37,6 @@ import org.apache.logging.log4j.core.filter.AbstractFilterable;
 import org.apache.logging.log4j.core.impl.DefaultLogEventFactory;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.LogEventFactory;
-import org.apache.logging.log4j.core.impl.ReusableLogEventFactory;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -252,7 +251,8 @@ public class LoggerConfig extends AbstractFilterable {
         this.includeLocation = includeLocation;
         this.config = config;
         if (properties != null && properties.length > 0) {
-            this.properties = List.of(properties.clone());
+            // don't use List.of() here as that will create temporary iterators downstream
+            this.properties = Arrays.asList(properties.clone());
         } else {
             this.properties = null;
         }
@@ -477,7 +477,7 @@ public class LoggerConfig extends AbstractFilterable {
             log(logEvent, LoggerConfigPredicate.ALL);
         } finally {
             // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
-            ReusableLogEventFactory.release(logEvent);
+            logEventFactory.recycle(logEvent);
         }
     }
 
@@ -506,7 +506,7 @@ public class LoggerConfig extends AbstractFilterable {
             log(logEvent, LoggerConfigPredicate.ALL);
         } finally {
             // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
-            ReusableLogEventFactory.release(logEvent);
+            logEventFactory.recycle(logEvent);
         }
     }
 

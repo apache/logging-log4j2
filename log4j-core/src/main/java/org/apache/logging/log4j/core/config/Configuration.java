@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.async.AsyncLoggerConfigDelegate;
 import org.apache.logging.log4j.core.async.AsyncWaitStrategyFactory;
 import org.apache.logging.log4j.core.filter.Filterable;
+import org.apache.logging.log4j.core.impl.LogEventFactory;
 import org.apache.logging.log4j.core.lookup.ConfigurationStrSubstitutor;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
 import org.apache.logging.log4j.core.net.Advertiser;
@@ -39,6 +40,7 @@ import org.apache.logging.log4j.core.util.NetUtils;
 import org.apache.logging.log4j.core.util.WatchManager;
 import org.apache.logging.log4j.plugins.Node;
 import org.apache.logging.log4j.plugins.di.Key;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.PropertyEnvironment;
 
 /**
@@ -247,4 +249,13 @@ public interface Configuration extends Filterable {
      * @return the logger context.
      */
     LoggerContext getLoggerContext();
+
+    default LogEventFactory getLogEventFactory() {
+        return getComponent(LogEventFactory.KEY);
+    }
+
+    default RecyclerFactory getRecyclerFactory() {
+        return getComponent(Key.forClass(RecyclerFactory.class));
+    }
+
 }

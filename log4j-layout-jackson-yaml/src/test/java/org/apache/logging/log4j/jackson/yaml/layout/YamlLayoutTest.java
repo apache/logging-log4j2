@@ -101,6 +101,7 @@ public class YamlLayoutTest {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         // @formatter:off
         final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setConfiguration(ctx.getConfiguration())
                 .setIncludeStacktrace(true)
                 .setStacktraceAsString(stacktraceAsString)
                 .build();
@@ -149,6 +150,7 @@ public class YamlLayoutTest {
             final boolean includeContext, final boolean contextMapAslist, final boolean includeStacktrace) throws Exception {
         final Log4jLogEvent expected = LogEventFixtures.createLogEvent();
         final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setConfiguration(ctx.getConfiguration())
                 .setLocationInfo(includeSource)
                 .setProperties(includeContext)
                 .setIncludeStacktrace(includeStacktrace)
@@ -270,6 +272,7 @@ public class YamlLayoutTest {
     @Test
     public void testIncludeNullDelimiterFalse() throws Exception {
         final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setConfiguration(ctx.getConfiguration())
                 .setIncludeNullDelimiter(false)
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
@@ -279,6 +282,7 @@ public class YamlLayoutTest {
     @Test
     public void testIncludeNullDelimiterTrue() throws Exception {
         final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setConfiguration(ctx.getConfiguration())
                 .setIncludeNullDelimiter(true)
                 .build();
         final String str = layout.toSerializable(LogEventFixtures.createLogEvent());
@@ -338,6 +342,7 @@ public class YamlLayoutTest {
     @Test
     public void testLayoutLoggerName() throws Exception {
         final AbstractJacksonLayout layout = YamlLayout.newBuilder()
+                .setConfiguration(ctx.getConfiguration())
                 .setLocationInfo(false)
                 .setProperties(false)
                 .setIncludeStacktrace(true)

@@ -25,7 +25,7 @@ public class RunJCTools extends AbstractRunQueue {
 
     @Override
     BlockingQueue<String> createQueue(final int capacity) {
-        return JCToolsBlockingQueueFactory.<String>createFactory(WaitStrategy.SPIN).create(capacity);
+        return JCToolsBlockingQueueFactory.createFactory(WaitStrategy.SPIN).create(capacity);
     }
 
 

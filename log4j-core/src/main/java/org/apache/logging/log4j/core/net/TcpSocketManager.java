@@ -314,13 +314,16 @@ public class TcpSocketManager extends AbstractSocketManager {
             final OutputStream newOS = sock.getOutputStream();
             final InetAddress prev = socket != null ? socket.getInetAddress() : null;
             final OutputStream oldOS = getOutputStream();
-            owner.withLock(() -> {
+            writeLock.lock();
+            try {
                 Closer.closeSilently(oldOS);
                 setOutputStream(newOS);
                 socket = sock;
                 reconnector = null;
                 shutdown = true;
-            });
+            } finally {
+                writeLock.unlock();
+            }
             final String type = prev != null && prev.getHostAddress().equals(socketAddress.getAddress().getHostAddress()) ?
                     "reestablished" : "established";
             LOGGER.debug("Connection to {}:{} {}: {}", host, port, type, socket);

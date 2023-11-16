@@ -192,7 +192,7 @@ public class RingBufferLogEventTest {
             assertArrayEquals(new String[]{"World"}, actual.getParameters());
             assertEquals("Hello World!", actual.getFormattedMessage());
         } finally {
-            ReusableMessageFactory.release(message);
+            factory.recycle(message);
         }
     }
 
@@ -220,7 +220,7 @@ public class RingBufferLogEventTest {
             final Message memento2 = evt.memento();
             assertThat(memento1, sameInstance(memento2));
         } finally {
-            ReusableMessageFactory.release(message);
+            factory.recycle(message);
         }
     }
 

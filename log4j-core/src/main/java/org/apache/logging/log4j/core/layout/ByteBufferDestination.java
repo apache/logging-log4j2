@@ -17,7 +17,6 @@
 package org.apache.logging.log4j.core.layout;
 
 import java.nio.ByteBuffer;
-import java.util.function.Supplier;
 
 import org.apache.logging.log4j.core.appender.OutputStreamManager;
 
@@ -54,7 +53,6 @@ public interface ByteBufferDestination {
      * synchronize themselves inside this method, if needed.
      *
      * @since 2.9 (see LOG4J2-1874)
-     * @see #unsynchronizedWrite(ByteBuffer)
      */
     void writeBytes(ByteBuffer data);
 
@@ -71,72 +69,7 @@ public interface ByteBufferDestination {
      * the method to be public breaks source compatibility.
      *
      * @since 2.9 (see LOG4J2-1874)
-     * @see #unsynchronizedWrite(byte[], int, int)
      */
     void writeBytes(byte[] data, int offset, int length);
 
-    /**
-     * Writes the given data to this ByteBufferDestination without any synchronization. This is useful for
-     * implementing {@link #writeBytes(ByteBuffer)}.
-     *
-     * @since 3.0.0 (see LOG4J2-1874)
-     */
-    default void unsynchronizedWrite(final ByteBuffer data) {
-        var destination = getByteBuffer();
-        while (data.remaining() > destination.remaining()) {
-            final int originalLimit = data.limit();
-            final int potentialLimit = data.position() + destination.remaining();
-            final int limit = Math.min(originalLimit, potentialLimit);
-            destination.put(data.limit(limit));
-            data.limit(originalLimit);
-            destination = drain(destination);
-        }
-        destination.put(data);
-        // No drain in the end.
-    }
-
-    /**
-     * Writes the given data to this ByteBufferDestination without any synchronization. This is useful for
-     * implementing {@link #writeBytes(byte[], int, int)}.
-     *
-     * @since 3.0.0 (see LOG4J2-1874)
-     */
-    default void unsynchronizedWrite(final byte[] data, final int offset, final int length) {
-        var destination = getByteBuffer();
-        int position = offset;
-        int remaining = length;
-        while (remaining > destination.remaining()) {
-            final int chunk = destination.remaining();
-            destination.put(data, position, remaining);
-            position += chunk;
-            remaining -= chunk;
-            destination = drain(destination);
-        }
-        destination.put(data, position, remaining);
-        // No drain in the end.
-    }
-
-    /**
-     * Runs the provided action synchronized with the lock for this destination. This should be used instead
-     * of synchronizing on this instance directly.
-     *
-     * @since 3.0.0
-     */
-    default void withLock(final Runnable action) {
-        synchronized (this) {
-            action.run();
-        }
-    }
-
-    /**
-     * Runs the provided action synchronized with the lock for this destination and returns its result.
-     * This should be used instead of synchronizing on this instance directly.
-     *
-     * @since 3.0.0
-     */
-    default <T> T withLock(final Supplier<T> supplier) {
-        synchronized (this) {
-            return supplier.get();
-        }
-    }
 }

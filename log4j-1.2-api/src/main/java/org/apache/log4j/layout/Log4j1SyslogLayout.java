@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.StringLayout;
+import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.plugins.PluginBuilderFactory;
 import org.apache.logging.log4j.core.layout.AbstractStringLayout;
 import org.apache.logging.log4j.core.net.Facility;
@@ -85,7 +86,7 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
                 LOGGER.error("Log4j1SyslogLayout: the message layout must be a StringLayout.");
                 return null;
             }
-            return new Log4j1SyslogLayout(facility, facilityPrinting, header, (StringLayout) messageLayout, getCharset());
+            return new Log4j1SyslogLayout(getConfiguration(), facility, facilityPrinting, header, (StringLayout) messageLayout, getCharset());
         }
 
         public Facility getFacility() {
@@ -147,9 +148,14 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
     private final LogEventPatternConverter dateConverter =  DatePatternConverter.newInstance(dateFormatOptions);
 
 
-    private Log4j1SyslogLayout(final Facility facility, final boolean facilityPrinting, final boolean header,
-            final StringLayout messageLayout, final Charset charset) {
-        super(charset);
+    private Log4j1SyslogLayout(
+            final Configuration config,
+            final Facility facility,
+            final boolean facilityPrinting,
+            final boolean header,
+            final StringLayout messageLayout,
+            final Charset charset) {
+        super(config, charset);
         this.facility = facility;
         this.facilityPrinting = facilityPrinting;
         this.header = header;
@@ -168,32 +174,36 @@ public final class Log4j1SyslogLayout  extends AbstractStringLayout {
         // so we generate the message first
         final String message = messageLayout != null ? messageLayout.toSerializable(event)
                 : event.getMessage().getFormattedMessage();
-        final StringBuilder buf = getStringBuilder();
+        final StringBuilder buf = stringBuilderRecycler.acquire();
 
-        buf.append('<');
-        buf.append(Priority.getPriority(facility, event.getLevel()));
-        buf.append('>');
+        try {
+            buf.append('<');
+            buf.append(Priority.getPriority(facility, event.getLevel()));
+            buf.append('>');
 
-        if (header) {
-            final int index = buf.length() + 4;
-            dateConverter.format(event, buf);
-            // RFC 3164 says leading space, not leading zero on days 1-9
-            if (buf.charAt(index) == '0') {
-                buf.setCharAt(index, Chars.SPACE);
+            if (header) {
+                final int index = buf.length() + 4;
+                dateConverter.format(event, buf);
+                // RFC 3164 says leading space, not leading zero on days 1-9
+                if (buf.charAt(index) == '0') {
+                    buf.setCharAt(index, Chars.SPACE);
+                }
+
+                buf.append(Chars.SPACE);
+                buf.append(localHostname);
+                buf.append(Chars.SPACE);
             }
-
-            buf.append(Chars.SPACE);
-            buf.append(localHostname);
-            buf.append(Chars.SPACE);
-        }
 
         if (facilityPrinting) {
             buf.append(facility != null ? toRootLowerCase(facility.name()) : "user").append(':');
         }
 
-        buf.append(message);
-        // TODO: splitting message into 1024 byte chunks?
-        return buf.toString();
+            buf.append(message);
+            // TODO: splitting message into 1024 byte chunks?
+            return buf.toString();
+        } finally {
+            stringBuilderRecycler.release(buf);
+        }
     }
 
     /**

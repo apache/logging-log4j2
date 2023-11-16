@@ -24,6 +24,7 @@ import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.plugins.Configurable;
@@ -52,11 +53,11 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class CsvParameterLayout extends AbstractCsvLayout {
 
     public static AbstractCsvLayout createDefaultLayout() {
-        return new CsvParameterLayout(null, Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
+        return new CsvParameterLayout(new DefaultConfiguration(), Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
     }
 
     public static AbstractCsvLayout createLayout(final CSVFormat format) {
-        return new CsvParameterLayout(null, Charset.forName(DEFAULT_CHARSET), format, null, null);
+        return new CsvParameterLayout(new DefaultConfiguration(), Charset.forName(DEFAULT_CHARSET), format, null, null);
     }
 
     @PluginFactory
@@ -88,13 +89,15 @@ public class CsvParameterLayout extends AbstractCsvLayout {
     public String toSerializable(final LogEvent event) {
         final Message message = event.getMessage();
         final Object[] parameters = message.getParameters();
-        final StringBuilder buffer = getStringBuilder();
+        final StringBuilder buffer = stringBuilderRecycler.acquire();
         try {
             getFormat().printRecord(buffer, parameters);
             return buffer.toString();
         } catch (final IOException e) {
             StatusLogger.getLogger().error(message, e);
             return getFormat().getCommentMarker() + " " + e;
+        } finally {
+            stringBuilderRecycler.release(buffer);
         }
     }
 

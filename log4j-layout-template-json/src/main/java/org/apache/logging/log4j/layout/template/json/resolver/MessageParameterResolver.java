@@ -18,10 +18,10 @@ package org.apache.logging.log4j.layout.template.json.resolver;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.layout.template.json.util.Recycler;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.ParameterConsumer;
 import org.apache.logging.log4j.message.ParameterVisitable;
+import org.apache.logging.log4j.spi.Recycler;
 
 /**
  * {@link Message} parameter (i.e., {@link Message#getParameters()}) resolver.
@@ -83,6 +83,7 @@ public final class MessageParameterResolver implements EventResolver {
             final EventResolverContext context,
             final TemplateResolverConfig config) {
         this.parameterConsumerStateRecycler = context
+                .getConfiguration()
                 .getRecyclerFactory()
                 .create(ParameterConsumerState::new);
         this.stringified = config.getBoolean("stringified", false);

@@ -29,6 +29,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.test.appender.ListAppender;
 import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.core.test.junit.LoggerContextRule;
@@ -69,7 +70,7 @@ public class CsvParameterLayoutTest {
 
     @Test
     public void testCustomCharset() {
-        final AbstractCsvLayout layout = CsvParameterLayout.createLayout(null, "Excel", null, null, null, null, null,
+        final AbstractCsvLayout layout = CsvParameterLayout.createLayout(new DefaultConfiguration(), "Excel", null, null, null, null, null,
                 null, StandardCharsets.UTF_16, null, null);
         assertEquals("text/csv; charset=UTF-16", layout.getContentType());
     }

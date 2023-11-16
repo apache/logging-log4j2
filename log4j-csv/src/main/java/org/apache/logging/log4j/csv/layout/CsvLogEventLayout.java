@@ -24,6 +24,7 @@ import org.apache.commons.csv.QuoteMode;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.plugins.PluginConfiguration;
 import org.apache.logging.log4j.plugins.Configurable;
 import org.apache.logging.log4j.plugins.Plugin;
@@ -43,11 +44,11 @@ import org.apache.logging.log4j.status.StatusLogger;
 public class CsvLogEventLayout extends AbstractCsvLayout {
 
     public static CsvLogEventLayout createDefaultLayout() {
-        return new CsvLogEventLayout(null, Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
+        return new CsvLogEventLayout(new DefaultConfiguration(), Charset.forName(DEFAULT_CHARSET), CSVFormat.valueOf(DEFAULT_FORMAT), null, null);
     }
 
     public static CsvLogEventLayout createLayout(final CSVFormat format) {
-        return new CsvLogEventLayout(null, Charset.forName(DEFAULT_CHARSET), format, null, null);
+        return new CsvLogEventLayout(new DefaultConfiguration(), Charset.forName(DEFAULT_CHARSET), format, null, null);
     }
 
     @PluginFactory
@@ -77,7 +78,7 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
 
     @Override
     public String toSerializable(final LogEvent event) {
-        final StringBuilder buffer = getStringBuilder();
+        final StringBuilder buffer = stringBuilderRecycler.acquire();
         final CSVFormat format = getFormat();
         try {
             format.print(event.getNanoTime(), buffer, true);
@@ -99,6 +100,8 @@ public class CsvLogEventLayout extends AbstractCsvLayout {
         } catch (final IOException e) {
             StatusLogger.getLogger().error(event.toString(), e);
             return format.getCommentMarker() + " " + e;
+        } finally {
+            stringBuilderRecycler.release(buffer);
         }
     }
 

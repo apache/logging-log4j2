@@ -18,15 +18,11 @@ package org.apache.logging.log4j.status;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.logging.log4j.Level;
@@ -38,6 +34,7 @@ import org.apache.logging.log4j.simple.SimpleLoggerContext;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.LoggingSystemProperty;
 import org.apache.logging.log4j.util.LowLevelLogUtil;
+import org.apache.logging.log4j.util.QueueFactories;
 
 /**
  * Records events that occur in the logging system. By default, only error messages are logged to {@link System#err}.
@@ -67,8 +64,6 @@ public final class StatusLogger extends AbstractLogger {
     private final ReadWriteLock listenersLock = new ReentrantReadWriteLock();
 
     private final Queue<StatusData> messages;
-
-    private final Lock msgLock = new ReentrantLock();
 
     private int listenersLevel;
 
@@ -102,7 +97,7 @@ public final class StatusLogger extends AbstractLogger {
         this.logger = logger;
         this.configuration = configuration;
         this.listenersLevel = configuration.getDefaultLevel().intLevel();
-        messages = new BoundedQueue<>(configuration.getMaxEntries());
+        messages = QueueFactories.MPMC.create(configuration.getMaxEntries());
     }
 
     /**
@@ -178,6 +173,7 @@ public final class StatusLogger extends AbstractLogger {
      * Clears the list of status events and listeners.
      */
     public void reset() {
+        messages.clear();
         listenersLock.writeLock().lock();
         try {
             for (final StatusListener listener : listeners) {
@@ -186,8 +182,6 @@ public final class StatusLogger extends AbstractLogger {
         } finally {
             listeners.clear();
             listenersLock.writeLock().unlock();
-            // note this should certainly come after the unlock to avoid unnecessary nested locking
-            clear();
         }
     }
 
@@ -205,24 +199,14 @@ public final class StatusLogger extends AbstractLogger {
      * @return The list of StatusData objects.
      */
     public List<StatusData> getStatusData() {
-        msgLock.lock();
-        try {
-            return new ArrayList<>(messages);
-        } finally {
-            msgLock.unlock();
-        }
+        return List.copyOf(messages);
     }
 
     /**
      * Clears the list of status events.
      */
     public void clear() {
-        msgLock.lock();
-        try {
-            messages.clear();
-        } finally {
-            msgLock.unlock();
-        }
+        messages.clear();
     }
 
     @Override
@@ -247,11 +231,9 @@ public final class StatusLogger extends AbstractLogger {
             element = getStackTraceElement(fqcn, Thread.currentThread().getStackTrace());
         }
         final StatusData data = new StatusData(element, level, msg, t, null);
-        msgLock.lock();
-        try {
-            messages.add(data);
-        } finally {
-            msgLock.unlock();
+        while (!messages.offer(data)) {
+            // discard an old message and retry
+            messages.poll();
         }
         // LOG4J2-1813 if system property "log4j2.debug" is defined, all status logging is enabled
         if (configuration.isDebugEnabled() || listeners.isEmpty()) {
@@ -393,28 +375,4 @@ public final class StatusLogger extends AbstractLogger {
         return logger.isEnabled(level, marker);
     }
 
-    /**
-     * Queues for status events.
-     *
-     * @param <E> Object type to be stored in the queue.
-     */
-    private class BoundedQueue<E> extends ConcurrentLinkedQueue<E> {
-
-        private static final long serialVersionUID = -3945953719763255337L;
-
-        private final int size;
-
-        BoundedQueue(final int size) {
-            this.size = size;
-        }
-
-        @Override
-        public boolean add(final E object) {
-            super.add(object);
-            while (messages.size() > size) {
-                messages.poll();
-            }
-            return size > 0;
-        }
-    }
 }

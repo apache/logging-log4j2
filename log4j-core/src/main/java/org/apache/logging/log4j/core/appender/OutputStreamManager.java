@@ -18,14 +18,15 @@ package org.apache.logging.log4j.core.appender;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
+import org.apache.logging.log4j.core.layout.ByteBufferDestinationHelper;
 import org.apache.logging.log4j.core.util.Constants;
 
 /**
@@ -177,26 +178,6 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         write(data, offset, length, false);
     }
 
-    @Override
-    public void withLock(final Runnable action) {
-        writeLock.lock();
-        try {
-            action.run();
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
-    @Override
-    public <T> T withLock(final Supplier<T> supplier) {
-        writeLock.lock();
-        try {
-            return supplier.get();
-        } finally {
-            writeLock.unlock();
-        }
-    }
-
     /**
      * Some output streams synchronize writes while others do not. Synchronizing here insures that
      * log events won't be intertwined.
@@ -291,9 +272,10 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
      * @since 2.6
      */
     protected void flushBuffer(final ByteBuffer buf) {
+        ((Buffer) buf).flip();
         writeLock.lock();
         try {
-            if (buf.flip().hasRemaining()) {
+            if (buf.hasRemaining()) {
                 writeToDestination(buf.array(), buf.arrayOffset() + buf.position(), buf.remaining());
             }
         } finally {
@@ -376,7 +358,7 @@ public class OutputStreamManager extends AbstractManager implements ByteBufferDe
         }
         writeLock.lock();
         try {
-            unsynchronizedWrite(data);
+            ByteBufferDestinationHelper.writeToUnsynchronized(data, this);
         } finally {
             writeLock.unlock();
         }

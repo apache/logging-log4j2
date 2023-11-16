@@ -44,4 +44,11 @@
     </bnd-extra-module-options>
 
   </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.jctools</groupId>
+      <artifactId>jctools-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
 </project>

@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.ContextDataInjector;
 import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.async.RingBufferLogEvent;
+import org.apache.logging.log4j.core.ReusableLogEvent;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.core.time.Clock;
 import org.apache.logging.log4j.core.time.ClockFactory;
@@ -91,12 +91,8 @@ public class Log4jLogEvent implements LogEvent {
 
         public Builder(final LogEvent other) {
             Objects.requireNonNull(other);
-            if (other instanceof RingBufferLogEvent) {
-                ((RingBufferLogEvent) other).initializeBuilder(this);
-                return;
-            }
-            if (other instanceof MutableLogEvent) {
-                ((MutableLogEvent) other).initializeBuilder(this);
+            if (other instanceof ReusableLogEvent) {
+                ((ReusableLogEvent) other).initializeBuilder(this);
                 return;
             }
             this.loggerFqcn = other.getLoggerFqcn();

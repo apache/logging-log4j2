@@ -16,26 +16,11 @@
  */
 package org.apache.logging.log4j.spi;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogBuilder;
-import org.apache.logging.log4j.LoggingException;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.MarkerManager;
+import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.internal.DefaultLogBuilder;
-import org.apache.logging.log4j.message.EntryMessage;
-import org.apache.logging.log4j.message.FlowMessageFactory;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.MessageFactory;
-import org.apache.logging.log4j.message.ReusableMessageFactory;
-import org.apache.logging.log4j.message.StringFormattedMessage;
+import org.apache.logging.log4j.message.*;
 import org.apache.logging.log4j.status.StatusLogger;
-import org.apache.logging.log4j.util.Cast;
-import org.apache.logging.log4j.util.Constants;
-import org.apache.logging.log4j.util.LambdaUtil;
-import org.apache.logging.log4j.util.MessageSupplier;
-import org.apache.logging.log4j.util.PerformanceSensitive;
-import org.apache.logging.log4j.util.StackLocatorUtil;
-import org.apache.logging.log4j.util.Supplier;
+import org.apache.logging.log4j.util.*;
 
 /**
  * Base implementation of a Logger. It is highly recommended that any Logger implementation extend this class.
@@ -84,17 +69,13 @@ public abstract class AbstractLogger implements ExtendedLogger {
     private final MessageFactory messageFactory;
     private final FlowMessageFactory flowMessageFactory;
     private static final ThreadLocal<int[]> recursionDepthHolder = new ThreadLocal<>(); // LOG4J2-1518, LOG4J2-2031
-    private static final ThreadLocal<DefaultLogBuilder> logBuilder = ThreadLocal.withInitial(DefaultLogBuilder::new);
-
+    private final Recycler<DefaultLogBuilder> recycler;
 
     /**
      * Creates a new logger named after this class (or subclass).
      */
     public AbstractLogger() {
-        final String canonicalName = getClass().getCanonicalName();
-        this.name = canonicalName != null ? canonicalName : getClass().getName();
-        this.messageFactory = LoggingSystem.getMessageFactory();
-        this.flowMessageFactory = LoggingSystem.getFlowMessageFactory();
+        this(null, null, null, null);
     }
 
     /**
@@ -103,7 +84,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
      * @param name the logger name
      */
     public AbstractLogger(final String name) {
-        this(name, LoggingSystem.getMessageFactory());
+        this(name, LoggingSystem.getMessageFactory(), null, null);
     }
 
     /**
@@ -113,9 +94,31 @@ public abstract class AbstractLogger implements ExtendedLogger {
      * @param messageFactory the message factory, if null then use the default message factory.
      */
     public AbstractLogger(final String name, final MessageFactory messageFactory) {
-        this.name = name;
-        this.messageFactory = messageFactory == null ? LoggingSystem.getMessageFactory() : messageFactory;
-        this.flowMessageFactory = LoggingSystem.getFlowMessageFactory();
+        this(name, messageFactory, null, null);
+    }
+
+    private AbstractLogger(
+            final String name,
+            final MessageFactory messageFactory,
+            final FlowMessageFactory flowMessageFactory,
+            final RecyclerFactory recyclerFactory) {
+        this.name = createNameFromClass(name, getClass());
+        this.messageFactory = messageFactory != null ? messageFactory : LoggingSystem.getMessageFactory();
+        this.flowMessageFactory = flowMessageFactory != null
+                ? flowMessageFactory
+                : LoggingSystem.getFlowMessageFactory();
+        final RecyclerFactory effectiveRecyclerFactory = recyclerFactory != null
+                ? recyclerFactory
+                : LoggingSystem.getRecyclerFactory();
+        this.recycler = effectiveRecyclerFactory.create(DefaultLogBuilder::new);
+    }
+
+    private static String createNameFromClass(String name, Class<?> clazz) {
+        if (name != null) {
+            return name;
+        }
+        final String canonicalName = clazz.getCanonicalName();
+        return canonicalName != null ? canonicalName : clazz.getName();
     }
 
     /**
@@ -1942,7 +1945,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             handleLogMessageException(ex, fqcn, message);
         } finally {
             decrementRecursionDepth();
-            ReusableMessageFactory.release(message);
+            messageFactory.recycle(message);
         }
     }
 
@@ -1976,7 +1979,7 @@ public abstract class AbstractLogger implements ExtendedLogger {
             logMessageTrackRecursion(fqcn, level, marker, msg, throwable);
         } finally {
             // LOG4J2-1583 prevent scrambled logs when logging calls are nested (logging in toString())
-            ReusableMessageFactory.release(msg);
+            messageFactory.recycle(msg);
         }
     }
 
@@ -2762,13 +2765,9 @@ public abstract class AbstractLogger implements ExtendedLogger {
      *
      * @since 2.20.0
      */
-    protected LogBuilder getLogBuilder(final Level level) {
-        if (Constants.isThreadLocalsEnabled()) {
-            final DefaultLogBuilder builder = logBuilder.get();
-            if (!builder.isInUse()) {
-                return builder.reset(this, level);
-            }
-        }
-        return new DefaultLogBuilder(this, level);
+    protected LogBuilder getLogBuilder(Level level) {
+        DefaultLogBuilder builder = recycler.acquire();
+        return builder.reset(this, level);
     }
+
 }

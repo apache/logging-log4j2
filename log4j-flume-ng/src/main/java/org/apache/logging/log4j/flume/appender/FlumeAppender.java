@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.Rfc5424Layout;
 import org.apache.logging.log4j.core.net.Facility;
@@ -255,6 +256,7 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
         if (layout == null) {
             final int enterpriseNumber = Rfc5424Layout.DEFAULT_ENTERPRISE_NUMBER;
             layout = new Rfc5424Layout.Rfc5424LayoutBuilder()
+                    .setConfig(new DefaultConfiguration())
                     .setFacility(Facility.LOCAL0)
                     .setEin(String.valueOf(enterpriseNumber))
                     .setIncludeMDC(true)

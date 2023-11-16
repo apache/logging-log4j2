@@ -38,7 +38,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.util.JsonReader;
-import org.apache.logging.log4j.util.Strings;
 
 /**
  * Utility class to summarize {@link JsonTemplateLayoutBenchmark} results in Asciidoctor.
@@ -362,7 +361,7 @@ public enum JsonTemplateLayoutBenchmarkReport {;
                 .toBigInteger()
                 .add(BigInteger.ONE)
                 .intValueExact();
-        final String opRateBar = Strings.repeat("▉", opRateBarLength);
+        final String opRateBar = "▉".repeat(opRateBarLength);
         final int opRatePercent = normalizedOpRate
                 .multiply(BigDecimal.valueOf(100))
                 .toBigInteger()

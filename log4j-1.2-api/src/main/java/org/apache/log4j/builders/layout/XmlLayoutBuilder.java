@@ -25,6 +25,7 @@ import org.apache.log4j.builders.AbstractBuilder;
 import org.apache.log4j.config.PropertiesConfiguration;
 import org.apache.log4j.layout.Log4j1XmlLayout;
 import org.apache.log4j.xml.XmlConfiguration;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.apache.logging.log4j.plugins.Namespace;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.w3c.dom.Element;
@@ -73,6 +74,6 @@ public class XmlLayoutBuilder extends AbstractBuilder<Layout> implements LayoutB
     }
 
     private Layout createLayout(final boolean properties, final boolean locationInfo) {
-        return LayoutWrapper.adapt(Log4j1XmlLayout.createLayout(locationInfo, properties));
+        return LayoutWrapper.adapt(Log4j1XmlLayout.createLayout(new DefaultConfiguration(), locationInfo, properties));
     }
 }

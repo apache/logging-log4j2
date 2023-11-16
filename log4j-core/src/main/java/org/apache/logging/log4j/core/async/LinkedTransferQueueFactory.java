@@ -30,14 +30,14 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  */
 @Configurable(elementType = BlockingQueueFactory.ELEMENT_TYPE, printObject = true)
 @Plugin("LinkedTransferQueue")
-public class LinkedTransferQueueFactory<E> implements BlockingQueueFactory<E> {
+public class LinkedTransferQueueFactory implements BlockingQueueFactory {
     @Override
-    public BlockingQueue<E> create(final int capacity) {
+    public <E> BlockingQueue<E> create(final int capacity) {
         return new LinkedTransferQueue<>();
     }
 
     @PluginFactory
-    public static <E> LinkedTransferQueueFactory<E> createFactory() {
-        return new LinkedTransferQueueFactory<>();
+    public static LinkedTransferQueueFactory createFactory() {
+        return new LinkedTransferQueueFactory();
     }
 }

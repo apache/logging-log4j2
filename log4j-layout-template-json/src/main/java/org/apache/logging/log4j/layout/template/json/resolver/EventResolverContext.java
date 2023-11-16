@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.layout.template.json.JsonTemplateLayout.EventTemplateAdditionalField;
 import org.apache.logging.log4j.layout.template.json.util.JsonWriter;
-import org.apache.logging.log4j.layout.template.json.util.RecyclerFactory;
 import org.apache.logging.log4j.util.Strings;
 
 /**
@@ -48,8 +47,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
     private final JsonWriter jsonWriter;
 
-    private final RecyclerFactory recyclerFactory;
-
     private final int maxStringByteCount;
 
     private final String truncatedStringSuffix;
@@ -71,7 +68,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
         this.substitutor = builder.substitutor;
         this.charset = builder.charset;
         this.jsonWriter = builder.jsonWriter;
-        this.recyclerFactory = builder.recyclerFactory;
         this.maxStringByteCount = builder.maxStringByteCount;
         this.truncatedStringSuffix = builder.truncatedStringSuffix;
         this.locationInfoEnabled = builder.locationInfoEnabled;
@@ -112,10 +108,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
     @Override
     public JsonWriter getJsonWriter() {
         return jsonWriter;
-    }
-
-    public RecyclerFactory getRecyclerFactory() {
-        return recyclerFactory;
     }
 
     public int getMaxStringByteCount() {
@@ -164,8 +156,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         private JsonWriter jsonWriter;
 
-        private RecyclerFactory recyclerFactory;
-
         private int maxStringByteCount;
 
         private String truncatedStringSuffix;
@@ -213,11 +203,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
 
         public Builder setJsonWriter(final JsonWriter jsonWriter) {
             this.jsonWriter = jsonWriter;
-            return this;
-        }
-
-        public Builder setRecyclerFactory(final RecyclerFactory recyclerFactory) {
-            this.recyclerFactory = recyclerFactory;
             return this;
         }
 
@@ -272,7 +257,6 @@ public final class EventResolverContext implements TemplateResolverContext<LogEv
             Objects.requireNonNull(substitutor, "substitutor");
             Objects.requireNonNull(charset, "charset");
             Objects.requireNonNull(jsonWriter, "jsonWriter");
-            Objects.requireNonNull(recyclerFactory, "recyclerFactory");
             if (maxStringByteCount <= 0) {
                 throw new IllegalArgumentException(
                         "was expecting maxStringByteCount > 0: " +

@@ -34,7 +34,7 @@ import org.jctools.queues.MpscArrayQueue;
  */
 @Configurable(elementType = BlockingQueueFactory.ELEMENT_TYPE, printObject = true)
 @Plugin("JCToolsBlockingQueue")
-public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
+public class JCToolsBlockingQueueFactory implements BlockingQueueFactory {
 
     private final WaitStrategy waitStrategy;
 
@@ -43,14 +43,14 @@ public class JCToolsBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
     }
 
     @Override
-    public BlockingQueue<E> create(final int capacity) {
+    public <E> BlockingQueue<E> create(final int capacity) {
         return new MpscBlockingQueue<>(capacity, waitStrategy);
     }
 
     @PluginFactory
-    public static <E> JCToolsBlockingQueueFactory<E> createFactory(
+    public static JCToolsBlockingQueueFactory createFactory(
         @PluginAttribute(defaultString = "PARK") final WaitStrategy waitStrategy) {
-        return new JCToolsBlockingQueueFactory<>(waitStrategy);
+        return new JCToolsBlockingQueueFactory(waitStrategy);
     }
 
     /**

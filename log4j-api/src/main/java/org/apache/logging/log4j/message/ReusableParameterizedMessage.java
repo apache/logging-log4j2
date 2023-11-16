@@ -18,6 +18,9 @@ package org.apache.logging.log4j.message;
 
 import java.util.Arrays;
 
+import org.apache.logging.log4j.spi.LoggingSystem;
+import org.apache.logging.log4j.spi.Recycler;
+import org.apache.logging.log4j.spi.RecyclerFactory;
 import org.apache.logging.log4j.util.Constants;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilders;
@@ -34,7 +37,6 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
 
     private static final int MIN_BUILDER_SIZE = 512;
     private static final int MAX_PARMS = 10;
-    private ThreadLocal<StringBuilder> buffer; // non-static: LOG4J2-1583
 
     private String messagePattern;
     private int argCount;
@@ -43,12 +45,28 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
     private Object[] varargs;
     private Object[] params = new Object[MAX_PARMS];
     private Throwable throwable;
-    boolean reserved = false; // LOG4J2-1583 prevent scrambled logs with nested logging calls
+
+    private final Recycler<StringBuilder> bufferRecycler;
 
     /**
      * Creates a reusable message.
      */
     public ReusableParameterizedMessage() {
+        this(LoggingSystem.getRecyclerFactory());
+    }
+
+    public ReusableParameterizedMessage(final RecyclerFactory recyclerFactory) {
+        bufferRecycler = recyclerFactory.create(
+                () -> {
+                    final int currentPatternLength = messagePattern == null ? 0 : messagePattern.length();
+                    int capacity = Math.max(MIN_BUILDER_SIZE, Math.multiplyExact(currentPatternLength, 2));
+                    return new StringBuilder(capacity);
+                },
+                buffer -> {
+                    StringBuilders.trimToMaxSize(buffer, Constants.MAX_REUSABLE_MESSAGE_SIZE);
+                    buffer.setLength(0);
+                }
+        );
     }
 
     private Object[] getTrimmedParams() {
@@ -299,25 +317,13 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
      */
     @Override
     public String getFormattedMessage() {
-        final StringBuilder sb = getBuffer();
-        formatTo(sb);
-        final String result = sb.toString();
-        StringBuilders.trimToMaxSize(sb, Constants.MAX_REUSABLE_MESSAGE_SIZE);
-        return result;
-    }
-
-    private StringBuilder getBuffer() {
-        if (buffer == null) {
-            buffer = new ThreadLocal<>();
+        final StringBuilder sb = bufferRecycler.acquire();
+        try {
+            formatTo(sb);
+            return sb.toString();
+        } finally {
+            bufferRecycler.release(sb);
         }
-        StringBuilder result = buffer.get();
-        if (result == null) {
-            final int currentPatternLength = messagePattern == null ? 0 : messagePattern.length();
-            result = new StringBuilder(Math.max(MIN_BUILDER_SIZE, currentPatternLength * 2));
-            buffer.set(result);
-        }
-        result.setLength(0);
-        return result;
     }
 
     @Override
@@ -327,16 +333,6 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
         } else {
             ParameterFormatter.formatMessage2(builder, messagePattern, getParams(), usedCount, indices);
         }
-    }
-
-    /**
-     * Sets the reserved flag to true and returns this object.
-     * @return this object
-     * @since 2.7
-     */
-    ReusableParameterizedMessage reserve() {
-        reserved = true;
-        return this;
     }
 
     @Override
@@ -349,7 +345,6 @@ public class ReusableParameterizedMessage implements ReusableMessage, ParameterV
     public void clear() { // LOG4J2-1583
         // This method does not clear parameter values, those are expected to be swapped to a
         // reusable message, which is responsible for clearing references.
-        reserved = false;
         varargs = null;
         messagePattern = null;
         throwable = null;

@@ -48,7 +48,7 @@ public class CsvLogEventLayoutTest {
 
     @Test
     public void testCustomCharset() {
-        final AbstractCsvLayout layout = CsvLogEventLayout.createLayout(null, "Excel", null, null, null, null, null,
+        final AbstractCsvLayout layout = CsvLogEventLayout.createLayout(ctx.getConfiguration(), "Excel", null, null, null, null, null,
                 null, StandardCharsets.UTF_16, null, null);
         assertEquals("text/csv; charset=UTF-16", layout.getContentType());
     }

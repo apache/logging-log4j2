@@ -142,6 +142,7 @@ public class SyslogAppenderBuilder extends AbstractBuilder implements AppenderBu
         resolveSyslogHost(syslogHost, host, port);
         final org.apache.logging.log4j.core.Layout messageLayout = LayoutAdapter.adapt(layout);
         final Log4j1SyslogLayout appenderLayout = Log4j1SyslogLayout.newBuilder()
+                .setConfiguration(configuration)
                 .setHeader(header)
                 .setFacility(Facility.toFacility(facility))
                 .setFacilityPrinting(facilityPrinting)

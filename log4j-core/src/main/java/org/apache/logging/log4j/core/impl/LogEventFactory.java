@@ -45,4 +45,6 @@ public interface LogEventFactory {
             Throwable t) {
         return createEvent(loggerName, marker, fqcn, level, data, properties, t);
     }
+
+    default void recycle(final LogEvent event) {}
 }

@@ -75,9 +75,9 @@ public final class AsyncAppender extends AbstractAppender {
     private AsyncQueueFullPolicy asyncQueueFullPolicy;
 
     private AsyncAppender(final String name, final Filter filter, final AppenderRef[] appenderRefs,
-            final String errorRef, final int queueSize, final boolean blocking, final boolean ignoreExceptions,
-            final long shutdownTimeout, final Configuration config, final boolean includeLocation,
-            final BlockingQueueFactory<LogEvent> blockingQueueFactory, final Property[] properties) {
+                          final String errorRef, final int queueSize, final boolean blocking, final boolean ignoreExceptions,
+                          final long shutdownTimeout, final Configuration config, final boolean includeLocation,
+                          final BlockingQueueFactory blockingQueueFactory, final Property[] properties) {
         super(name, filter, null, ignoreExceptions, properties);
         this.queue = blockingQueueFactory.create(queueSize);
         this.queueSize = queueSize;
@@ -273,7 +273,7 @@ public final class AsyncAppender extends AbstractAppender {
         private boolean ignoreExceptions = true;
 
         @PluginElement(BlockingQueueFactory.ELEMENT_TYPE)
-        private BlockingQueueFactory<LogEvent> blockingQueueFactory = new ArrayBlockingQueueFactory<>();
+        private BlockingQueueFactory blockingQueueFactory = new ArrayBlockingQueueFactory();
 
         public Builder setAppenderRefs(final AppenderRef[] appenderRefs) {
             this.appenderRefs = appenderRefs;
@@ -320,7 +320,7 @@ public final class AsyncAppender extends AbstractAppender {
             return this;
         }
 
-        public Builder setBlockingQueueFactory(final BlockingQueueFactory<LogEvent> blockingQueueFactory) {
+        public Builder setBlockingQueueFactory(final BlockingQueueFactory blockingQueueFactory) {
             this.blockingQueueFactory = blockingQueueFactory;
             return this;
         }

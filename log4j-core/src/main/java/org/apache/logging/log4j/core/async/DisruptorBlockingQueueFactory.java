@@ -32,7 +32,7 @@ import org.apache.logging.log4j.plugins.PluginFactory;
  */
 @Configurable(elementType = BlockingQueueFactory.ELEMENT_TYPE, printObject = true)
 @Plugin("DisruptorBlockingQueue")
-public class DisruptorBlockingQueueFactory<E> implements BlockingQueueFactory<E> {
+public class DisruptorBlockingQueueFactory implements BlockingQueueFactory {
 
     private final SpinPolicy spinPolicy;
 
@@ -41,14 +41,14 @@ public class DisruptorBlockingQueueFactory<E> implements BlockingQueueFactory<E>
     }
 
     @Override
-    public BlockingQueue<E> create(final int capacity) {
+    public <E> BlockingQueue<E> create(final int capacity) {
         return new DisruptorBlockingQueue<>(capacity, spinPolicy);
     }
 
     @PluginFactory
-    public static <E> DisruptorBlockingQueueFactory<E> createFactory(
+    public static DisruptorBlockingQueueFactory createFactory(
         @PluginAttribute(defaultString = "WAITING") final SpinPolicy spinPolicy
     ) {
-        return new DisruptorBlockingQueueFactory<>(spinPolicy);
+        return new DisruptorBlockingQueueFactory(spinPolicy);
     }
 }

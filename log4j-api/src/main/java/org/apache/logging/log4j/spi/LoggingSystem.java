@@ -104,6 +104,7 @@ public class LoggingSystem {
             () -> getProvider().createContextMap(environment));
     private final Lazy<Supplier<ThreadContextStack>> threadContextStackFactoryLazy = environmentLazy.map(environment ->
             () -> getProvider().createContextStack(environment));
+    private final Lazy<RecyclerFactory> recyclerFactoryLazy = Lazy.relaxed(RecyclerFactories::getDefault);
 
     public LoggingSystem() {
     }
@@ -149,6 +150,10 @@ public class LoggingSystem {
         threadContextStackFactoryLazy.set(threadContextStackFactory);
     }
 
+    public void setRecyclerFactory(final RecyclerFactory factory) {
+        recyclerFactoryLazy.set(factory);
+    }
+
     /**
      * Gets the LoggingSystem instance.
      */
@@ -184,6 +189,10 @@ public class LoggingSystem {
      */
     public static ThreadContextStack createContextStack() {
         return getInstance().threadContextStackFactoryLazy.value().get();
+    }
+
+    public static RecyclerFactory getRecyclerFactory() {
+        return getInstance().recyclerFactoryLazy.value();
     }
 
     private static List<Provider> loadDefaultProviders() {

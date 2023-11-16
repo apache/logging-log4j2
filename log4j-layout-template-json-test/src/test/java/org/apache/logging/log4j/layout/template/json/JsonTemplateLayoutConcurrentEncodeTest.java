@@ -35,7 +35,6 @@ import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilder;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.apache.logging.log4j.core.layout.ByteBufferDestination;
 import org.apache.logging.log4j.core.layout.StringBuilderEncoder;
-import org.apache.logging.log4j.util.Strings;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -177,7 +176,7 @@ class JsonTemplateLayoutConcurrentEncodeTest {
 
         // Determine the message to be logged.
         final String messageLetter = String.valueOf((char) ('A' + threadIndex));
-        final String message = Strings.repeat(messageLetter, messageLength);
+        final String message = messageLetter.repeat(messageLength);
 
         // Create the worker thread.
         final String threadName = String.format("Worker-%d", threadIndex);

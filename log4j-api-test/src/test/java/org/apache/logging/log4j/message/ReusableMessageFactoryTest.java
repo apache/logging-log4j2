@@ -16,6 +16,8 @@
  */
 package org.apache.logging.log4j.message;
 
+import org.apache.logging.log4j.spi.ThreadLocalRecyclerFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,35 +27,39 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class ReusableMessageFactoryTest {
 
+    private ReusableMessageFactory factory;
+
+    @BeforeEach
+    void setUp() {
+        factory = new ReusableMessageFactory(new ThreadLocalRecyclerFactory(8));
+    }
+
     @Test
     public void testCreateEventReturnsDifferentInstanceIfNotReleased() throws Exception {
-        final ReusableMessageFactory factory = new ReusableMessageFactory();
         final Message message1 = factory.newMessage("text, p0={} p1={} p2={} p3={}", 1, 2, 3, 4);
         final Message message2 = factory.newMessage("text, p0={} p1={} p2={} p3={}", 9, 8, 7, 6);
         assertNotSame(message1, message2);
-        ReusableMessageFactory.release(message1);
-        ReusableMessageFactory.release(message2);
+        factory.recycle(message1);
+        factory.recycle(message2);
     }
 
     @Test
     public void testCreateEventReturnsSameInstance() throws Exception {
-        final ReusableMessageFactory factory = new ReusableMessageFactory();
         final Message message1 = factory.newMessage("text, p0={} p1={} p2={} p3={}", 1, 2, 3, 4);
 
-        ReusableMessageFactory.release(message1);
+        factory.recycle(message1);
         final Message message2 = factory.newMessage("text, p0={} p1={} p2={} p3={}", 9, 8, 7, 6);
         assertSame(message1, message2);
 
-        ReusableMessageFactory.release(message2);
+        factory.recycle(message2);
         final Message message3 = factory.newMessage("text, AAA={} BBB={} p2={} p3={}", 9, 8, 7, 6);
         assertSame(message2, message3);
-        ReusableMessageFactory.release(message3);
+        factory.recycle(message3);
     }
 
     private void assertReusableParameterizeMessage(final Message message, final String txt, final Object[] params) {
         assertTrue(message instanceof ReusableParameterizedMessage);
         final ReusableParameterizedMessage msg = (ReusableParameterizedMessage) message;
-        assertTrue(msg.reserved, "reserved");
 
         assertEquals(txt, msg.getFormat());
         assertEquals(msg.getParameterCount(), params.length, "count");
@@ -65,7 +71,6 @@ public class ReusableMessageFactoryTest {
 
     @Test
     public void testCreateEventOverwritesFields() throws Exception {
-        final ReusableMessageFactory factory = new ReusableMessageFactory();
         final Message message1 = factory.newMessage("text, p0={} p1={} p2={} p3={}", 1, 2, 3, 4);
         assertReusableParameterizeMessage(message1, "text, p0={} p1={} p2={} p3={}", new Object[]{
                 new Integer(1), //
@@ -74,7 +79,7 @@ public class ReusableMessageFactoryTest {
                 new Integer(4), //
         });
 
-        ReusableMessageFactory.release(message1);
+        factory.recycle(message1);
         final Message message2 = factory.newMessage("other, A={} B={} C={} D={}", 1, 2, 3, 4);
         assertReusableParameterizeMessage(message1, "other, A={} B={} C={} D={}", new Object[]{
                 new Integer(1), //
@@ -83,12 +88,11 @@ public class ReusableMessageFactoryTest {
                 new Integer(4), //
         });
         assertSame(message1, message2);
-        ReusableMessageFactory.release(message2);
+        factory.recycle(message2);
     }
 
     @Test
     public void testCreateEventReturnsThreadLocalInstance() throws Exception {
-        final ReusableMessageFactory factory = new ReusableMessageFactory();
         final Message[] message1 = new Message[1];
         final Message[] message2 = new Message[1];
         final Thread t1 = new Thread("THREAD 1") {
@@ -123,8 +127,8 @@ public class ReusableMessageFactoryTest {
                 new Integer(3), //
                 new Integer(4), //
         });
-        ReusableMessageFactory.release(message1[0]);
-        ReusableMessageFactory.release(message2[0]);
+        factory.recycle(message1[0]);
+        factory.recycle(message2[0]);
     }
 
 }
