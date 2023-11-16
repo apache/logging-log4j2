@@ -15,10 +15,11 @@
     limitations under the License.
 ////
 
-[#release-notes-2-x-x]
-== 2.x.x
+[#release-notes-${release.version?replace("[^a-zA-Z0-9]", "-", "r")}]
+== ${release.version}
 
+<#if release.date?has_content>Release date:: ${release.date}</#if>
 
+This releases contains bug fixes addressing issues in the JPMS & OSGi infrastructure overhauled in `2.21.0`, dependency updates, and some other minor fixes and improvements.
 
-This releases contains ...
-
+<#include "../.changelog.adoc.ftl">
