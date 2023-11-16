@@ -230,7 +230,7 @@ public class ParameterizedMessage implements Message, StringBuilderFormattable {
             return false;
         }
         final ParameterizedMessage that = (ParameterizedMessage) object;
-        return Objects.equals(pattern, that.pattern) && Arrays.equals(args, that.args);
+        return Objects.equals(this.messagePattern, that.messagePattern) && Arrays.equals(this.argArray, that.argArray);
     }
 
     @Override

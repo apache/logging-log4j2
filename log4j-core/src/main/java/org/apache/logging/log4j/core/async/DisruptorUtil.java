@@ -16,10 +16,11 @@
  */
 package org.apache.logging.log4j.core.async;
 
-import com.lmax.disruptor.ExceptionHandler;
-import com.lmax.disruptor.WaitStrategy;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+
+import com.lmax.disruptor.ExceptionHandler;
+import com.lmax.disruptor.WaitStrategy;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.impl.Log4jPropertyKey;
 import org.apache.logging.log4j.core.util.Integers;
