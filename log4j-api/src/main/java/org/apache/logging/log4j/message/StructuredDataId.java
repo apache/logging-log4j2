@@ -18,6 +18,7 @@ package org.apache.logging.log4j.message;
 
 import java.io.Serializable;
 
+import aQute.bnd.annotation.baseline.BaselineIgnore;
 import com.google.errorprone.annotations.InlineMe;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.apache.logging.log4j.util.Strings;
@@ -252,7 +253,10 @@ public class StructuredDataId implements Serializable, StringBuilderFormattable 
      * @deprecated Use {@link StructuredDataId#makeId(String, String)} instead
      */
     @Deprecated
-    public StructuredDataId makeId(final String defaultId, final int anEnterpriseNumber) {
+    // This method should have been `final` from the start, we don't expect anyone to override it.
+    @BaselineIgnore("2.22.0")
+    @InlineMe(replacement = "this.makeId(defaultId, String.valueOf(anEnterpriseNumber))")
+    public final StructuredDataId makeId(final String defaultId, final int anEnterpriseNumber) {
         return makeId(defaultId, String.valueOf(anEnterpriseNumber));
     }
 
