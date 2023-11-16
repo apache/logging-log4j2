@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.util.ClassUtil;
 import java.io.IOException;
 import org.apache.logging.log4j.core.test.categories.Layouts;
 import org.apache.logging.log4j.util.Strings;
@@ -78,7 +79,11 @@ public class JacksonIssue429MyNamesTest {
                 }
                 return new StackTraceElement(className, methodName, fileName, lineNumber);
             }
-            throw ctxt.mappingException(_valueClass, t);
+            throw JsonMappingException.from(
+                    jp,
+                    String.format(
+                            "Cannot deserialize instance of %s out of %s token",
+                            ClassUtil.nameOf(this._valueClass), t));
         }
     }
 

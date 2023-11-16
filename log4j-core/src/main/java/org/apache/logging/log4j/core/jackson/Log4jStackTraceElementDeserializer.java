@@ -17,11 +17,11 @@
 package org.apache.logging.log4j.core.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
+import com.fasterxml.jackson.databind.util.ClassUtil;
 import java.io.IOException;
 import org.apache.logging.log4j.core.util.Integers;
 
@@ -43,8 +43,7 @@ public final class Log4jStackTraceElementDeserializer extends StdScalarDeseriali
     }
 
     @Override
-    public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt)
-            throws IOException, JsonProcessingException {
+    public StackTraceElement deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException {
         JsonToken t = jp.getCurrentToken();
         // Must get an Object
         if (t == JsonToken.START_OBJECT) {
@@ -90,6 +89,9 @@ public final class Log4jStackTraceElementDeserializer extends StdScalarDeseriali
             }
             return new StackTraceElement(className, methodName, fileName, lineNumber);
         }
-        throw ctxt.mappingException(this._valueClass, t);
+        throw JsonMappingException.from(
+                jp,
+                String.format(
+                        "Cannot deserialize instance of %s out of %s token", ClassUtil.nameOf(this._valueClass), t));
     }
 }
